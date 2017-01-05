@@ -17,10 +17,10 @@ except ImportError as e:
     print('Try app.py --lib or adding jsonschema to setup.py')
 
 # Load Schema
-schema_file = os.path.join('tcex', 'tcex_json_schema.json')
+base_dir = os.path.dirname(__file__)
+schema_file = os.path.join(base_dir, 'tcex_json_schema.json')
 with open(schema_file) as fh:
     schema = json.load(fh)
-
 
 class TcExLocal:
     """
@@ -350,7 +350,8 @@ class TcExLocal:
                 shutil.move(collection_file, collection_zip)
 
         # cleanup template directory
-        shutil.rmtree(template_app_path)
+        if os.access(template_app_path, os.W_OK):
+            shutil.rmtree(template_app_path)
 
     def validate(self, install_json):
         """Validate install.json file for required parameters"""
