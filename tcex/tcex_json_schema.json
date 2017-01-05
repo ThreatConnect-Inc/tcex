@@ -1,0 +1,158 @@
+{
+  "properties": {
+    "allowOnDemand": {
+      "type": "boolean"
+    },
+    "apiUserTokenParam": {
+      "type": "boolean"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "languageVersion": {
+      "type": "string"
+    },
+    "listDelimiter": {
+      "type": "string"
+    },
+    "params": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "allowMultiple": {
+            "type": "boolean"
+          },
+          "default": {
+            "type": [
+              "boolean",
+              "integer",
+              "string"
+            ]
+          },
+          "encrypt": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "playbookDataType": {
+            "items": {
+              "enum": [
+                "Any",
+                "Binary",
+                "BinaryArray",
+                "KeyValue",
+                "KeyValueArray",
+                "String",
+                "StringArray",
+                "TCEntity",
+                "TCEntityArray"
+              ]
+            },
+            "type": "array"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "sequence": {
+            "type": "integer"
+          },
+          "type": {
+            "enum": [
+              "Boolean",
+              "Choice",
+              "KeyValueList",
+              "Multichoice",
+              "String",
+              "StringMixed"
+            ],
+            "type": "string"
+          },
+          "validValues": {
+            "type": "array"
+          },
+          "viewRows": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "name",
+          "type"
+        ],
+        "type": "object"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "playbook": {
+      "properties": {
+        "outputVariables": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "Binary",
+                  "BinaryArray",
+                  "KeyValue",
+                  "KeyValueArray",
+                  "String",
+                  "StringArray",
+                  "TCEntity",
+                  "TCEntityArray"
+                ],
+                "type": "string"
+              }
+            },
+            "required": ["name", "type"],
+            "type": "object"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "type": "object"
+    },
+    "programIcon": {
+      "type": "string"
+    },
+    "programLanguage": {
+      "type": "string"
+    },
+    "programMain": {
+      "type": "string"
+    },
+    "programVersion": {
+      "type": "string"
+    },
+    "runtimeContext": {
+      "type": "array"
+    },
+    "runtimeLevel": {
+      "type": [
+        "array",
+        "string"
+      ]
+    }
+  },
+  "required": [
+    "allowOnDemand",
+    "displayName",
+    "params",
+    "programLanguage",
+    "programMain",
+    "programVersion",
+    "runtimeLevel"
+  ],
+  "type": "object"
+}

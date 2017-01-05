@@ -1,0 +1,34 @@
+#
+# Language Exclusions
+#
+*.pyc
+
+#
+# Module Specific Exclusions
+#
+*.log
+log
+tc.json
+
+#
+# Docs
+#
+docs/*example
+docs/00__build.sh
+docs/_build
+docs/_static
+docs/_templates
+docs/tcex
+
+#
+# IDE Exclusions
+#
+.c9
+.python-version
+
+#
+# Other Nonsense
+#
+bcs*
+test*
+threatconnect*
