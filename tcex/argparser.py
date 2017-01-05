@@ -171,10 +171,10 @@ class ArgParser(ArgumentParser):
 
         self.add_argument(
             '--tc_proxy_external', '--apply_proxy_ext', action='store_true', default=False,
-            help='Proxy External Connections')
+            help='Proxy External Connections', dest='tc_proxy_external')
         self.add_argument(
             '--tc_proxy_tc', '--apply_proxy_tc', action='store_true', default=False,
-            help='Proxy TC Connection')
+            help='Proxy TC Connection', dest='tc_proxy_tc')
 
         #
         # Logging
