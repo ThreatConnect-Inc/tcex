@@ -17,7 +17,7 @@ except ImportError as e:
     print('Try app.py --lib or adding jsonschema to setup.py')
 
 # Load Schema
-schema_file = os.path.join('tcex', 'tcex_json_schema.json')
+schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
 with open(schema_file) as fh:
     schema = json.load(fh)
 
