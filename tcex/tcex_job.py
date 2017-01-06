@@ -186,71 +186,28 @@ class TcExJob(object):
 
     ##     return batch_jobs
 
-    def indicator(self, indicator):
-        """Add indicator data to TcEx job.
-
-        This method will add indicator data to the indicator list.  No
-        validation of the data will be performed and duplicates will only
-        be handle when a dict is provided.
-
-        {
-            'summary': '1.1.1.1',
-            'type': 'Address',
-            'rating': '3',
-            'confidence': 5,
-            'attribute': attributes,
-            'tag': tags
-        }
-
-        Args:
-            indicator (dict | list): Dictionary or List containing indicator
-                data
-        """
-        if isinstance(indicator, list):
-            self._indicators.extend(indicator)
-        elif isinstance(indicator, dict):
-            # verifiy indicator is not a duplicate before adding
-            if indicator['summary'] not in self._indicators:
-                self._indicators.append(indicator)
-
-    @property
-    def indicator_data(self):
-        """Return the indicator list
-
-        Returns:
-            (list): The indicator list
-        """
-        return self._indicators
-
-    @property
-    def indicator_len(self):
-        """The current length of the indicator list
-
-        Returns:
-            (integer): The length of the indicator list
-        """
-        return len(self._indicators)
-
     def group(self, group):
         """Add group data to job
 
         This method will add group data to the group list.  No
         validation of the data will be performed.
 
-        # required
-        {
-            'name': 'adversary-001',
-            'type': 'Adversary',
-            'attribute': attributes,
-            'tag': tags
-        }
+        Required Data::
 
-        # optional values
-        {
-            'name': 'incident-001',
-            'type': 'Incident',
-            'eventDate': '2015-03-7T00:00:00Z'
-        }
+            {
+                'name': 'adversary-001',
+                'type': 'Adversary',
+                'attribute': attributes,
+                'tag': tags
+            }
+
+        Optional Data::
+
+            {
+                'name': 'incident-001',
+                'type': 'Incident',
+                'eventDate': '2015-03-7T00:00:00Z'
+            }
 
         Args:
             group (dict | list): Dictionary or List containing group
@@ -328,13 +285,14 @@ class TcExJob(object):
         This method will add group association data to the group association
         list.  No validation of the data will be performed.
 
-        # required
-        {
-            'group_name': 'adversary-001',
-            'group_type': 'Adversary',
-            'indicator': '1.1.1.1',
-            'indicator_type': 'Address'
-        }
+        Required Data::
+
+            {
+                'group_name': 'adversary-001',
+                'group_type': 'Adversary',
+                'indicator': '1.1.1.1',
+                'indicator_type': 'Address'
+            }
 
         Args:
             associations (dict | list): Dictionary or List containing group
@@ -409,11 +367,57 @@ class TcExJob(object):
         """
         return len(self._groups)
 
-    def _chunk_indicators(self):
-        """Split indicator list into smaller more manageable numbers
+    def indicator(self, indicator):
+        """Add indicator data to TcEx job.
+
+        This method will add indicator data to the indicator list.  No
+        validation of the data will be performed and duplicates will only
+        be handle when a dict is provided.
+
+        Example Structure::
+
+            {
+                'summary': '1.1.1.1',
+                'type': 'Address',
+                'rating': '3',
+                'confidence': 5,
+                'attribute': attributes,
+                'tag': tags
+            }
 
         Args:
-            indicators (list):  The list of indicators
+            indicator (dict | list): Dictionary or List containing indicator
+                data
+        """
+        if isinstance(indicator, list):
+            self._indicators.extend(indicator)
+        elif isinstance(indicator, dict):
+            # verifiy indicator is not a duplicate before adding
+            if indicator['summary'] not in self._indicators:
+                self._indicators.append(indicator)
+
+    @property
+    def indicator_data(self):
+        """Return the indicator list
+
+        Returns:
+            (list): The indicator list
+        """
+        return self._indicators
+
+    @property
+    def indicator_len(self):
+        """The current length of the indicator list
+
+        Returns:
+            (integer): The length of the indicator list
+        """
+        return len(self._indicators)
+
+
+    def _chunk_indicators(self):
+        """Split indicator list into smaller more manageable numbers.
+
         """
         for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk):
             yield self._indicators[i:i+self._tcex._args.batch_chunk]

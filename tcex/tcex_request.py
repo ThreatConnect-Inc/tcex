@@ -210,6 +210,9 @@ class TcExRequest(object):
         This method will send the request to the remote endpoint.  It will try to handle
         temporary communications issues by retrying the request automatically.
 
+        Args:
+            stream (boolean): Boolean to enable stream download.
+
         Returns:
             (Requests.Response) The Request response
         """

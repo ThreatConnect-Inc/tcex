@@ -10,6 +10,7 @@ import os
 import sys
 import urllib
 import time
+import types
 from urlparse import urlparse
 
 """ third party """
@@ -213,7 +214,10 @@ class TcEx(object):
         self.jobs = TcExJob(self)
 
     def _playbook(self):
-        """Include Playbook Module"""
+        """Include Playbook Module
+
+        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        """
         try:
             from tcex_playbook import TcExPlaybook
             self.playbook = TcExPlaybook(self)
@@ -225,7 +229,10 @@ class TcEx(object):
         """Initialize the resource module.
 
         This method will make a request to the ThreatConnect API to dynamically
-        build classes to support custom Indicators.
+        build classes to support custom Indicators.  All other resources are available
+        via this class.
+
+        .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>``.
         """
         self.resources = type('resources', (object,), {})
 
@@ -403,11 +410,17 @@ class TcEx(object):
         return indicator_list
 
     def _logger(self, file_name='app.log'):
-        """Create tcex app logger
+        """Create TcEx app logger instance.
 
-        Create logger for the App using the provided path and filename.
+        The logger is accessible via the ``tc.log.<level>`` call.
 
-        Only used for logging to a file (as opposed to logging to the api and a file)
+        **Logging examples**
+        ::
+
+            tcex.log.debug('logging debug')
+            tcex.log.info('logging info')
+            tcex.log.error('logging error')
+            tcex.log.critical('logging critical')
 
         Args:
             file_name (Optional[string]): The name for the log file
@@ -455,7 +468,7 @@ class TcEx(object):
         return log
 
     def message_tc(self, message):
-        """Write data to message_tc file in TcEX specified directory
+        """Write data to message_tc file in TcEX specified directory.
 
         This method is used to set and exit message in the ThreatConnect Platform.
         ThreatConnect only supports files of max_message_length.  Any data exceeding
@@ -494,7 +507,11 @@ class TcEx(object):
 
         Generates a dictionary for use with the Python Requests module format
         proxying remote connections.
-        ex: { "http": "http://user:pass@10.10.1.10:3128/" }
+
+        **Example Response**
+        ::
+
+            {"http": "http://user:pass@10.10.1.10:3128/"}
 
         Returns:
            (dictionary): Dictionary of proxy settings
@@ -570,7 +587,9 @@ class TcEx(object):
     def safe_rt(resource_type, lower=False):
         """Format Resource Type
 
-        Take indicator Type "User Agent" and covert to User_Agent or user_agent.
+        Takes Custom Indicator types with a space characer and return a *safe* string.
+
+        (e.g. *User Agent* is coverted to User_Agent or user_agent.)
 
         Args:
            resource_type (string): The resource type to format.
@@ -587,7 +606,9 @@ class TcEx(object):
 
     @staticmethod
     def safetag(tag):
-        """Truncate tag to match limit of ThreatConnect API
+        """Truncate tag to match limit (35 characters) of ThreatConnect API.
+
+        .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to new limit.
 
         Args:
            tag (string): The tag to be truncated
@@ -622,11 +643,17 @@ class TcEx(object):
             (any): Return validate or encoded data
 
         """
-        if data is None or isinstance(data, (int, list, dict)):
+        ## if data is None or isinstance(data, (int, list, dict)):
+        ##     return data
+        ## elif isinstance(data, unicode):
+        ##     return unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
+        ## elif not isinstance(data, unicode):
+        ##     return unicode(data, 'utf-8', errors='ignore')
+        ## else:
+        ##     return data
+        if data is None or not isinstance(data, types.StringTypes):
             return data
         elif isinstance(data, unicode):
             return unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
         elif not isinstance(data, unicode):
             return unicode(data, 'utf-8', errors='ignore')
-        else:
-            return data

@@ -67,12 +67,14 @@ class ApiLoggingHandler(FileHandler):
 
         Send logs to API and do nothing if the attempt fails.
 
-        Sample log event:
-        [{
-          "timestamp": 1478907537000,
-          "message": "Test Message",
-          "level": "DEBUG"
-        }]
+        Example log event::
+
+            [{
+                "timestamp": 1478907537000,
+                "message": "Test Message",
+                "level": "DEBUG"
+            }]
+
         """
         if len(self.entries) > 0:
             # Make API call

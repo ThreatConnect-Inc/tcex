@@ -59,7 +59,7 @@ class Resource(object):
     def api_branch(self):
         """The ThreatConnect API branch for this resource.
 
-        e.g. - *addresses* from /v2/indicators/addresses/
+        The **addresses** endpoint from ``/v2/indicators/addresses/``.
         """
         return self._api_branch
 
@@ -67,7 +67,7 @@ class Resource(object):
     def api_branch_base(self):
         """The ThreatConnect API branch base (parent branch) for this resource.
 
-        e.g. - *indicators* from /v2/indicators or /v2/indicators/addresses
+        The **indicators** endpoint from ``/v2/indicators`` or ``/v2/indicators/addresses``.
         """
         return self._api_branch_base
 
@@ -75,7 +75,7 @@ class Resource(object):
     def api_entity(self):
         """The ThreatConnect API entity for this resource.
 
-        e.g. - *address* json entity from json response to /v2/indicators/addresses
+        The **address** JSON entity from JSON response to ``/v2/indicators/addresses``.
         """
         return self._api_entity
 
@@ -83,9 +83,36 @@ class Resource(object):
     def api_uri(self):
         """The ThreatConnect API URI for this resource.
 
-        e.g. - /v2/indicators/addresses
+        The API URI endpoint ``/v2/indicators/addresses``.
         """
         return self._api_uri
+
+    def association_custom(self, resource_api_branch, association_name):
+        """Association pivot for this resource with resource value.
+
+        .. Attention:: New untested method
+
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                 |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType} |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+
+        Args:
+            resource_api_branch (string): The resource pivot api branch.
+            resource_value (string): The resource pivot value (group id or indicator).
+            association_name (string): The name of the custom association as defined in the UI.
+        """
+        if self._pivot:
+            self._tcex.log.warn('Overriding previous pivot')
+
+        self._pivot = True
+        self._request_uri = '{}/{}/associations/{}/{}'.format(
+            resource_api_branch, association_name, self._request_uri)
 
     def association_pivot(self, resource_api_branch):
         """Pivot point on association for this resource.
@@ -94,13 +121,23 @@ class Resource(object):
         victims, etc) for this resource that are associated with the provided
         resource_type and value.
 
-        Example Endpoints URI's:
-        GET: /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}
-        GET: /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}
-        POST: /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}
-        GET: /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}
-        GET: /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}
-        POST: /v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                     |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                 |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
@@ -117,27 +154,6 @@ class Resource(object):
             #       the uri should get reset after the request is made is should be okay to
             #       use request_uri here.
 
-    def association_custom(self, resource_api_branch, association_name):
-        """Association pivot for this resource with resource value.
-
-        bcs - qa this method
-
-        Example Endpoints URI's:
-        GET: /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators
-        GET: /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}
-
-        Args:
-            resource_api_branch (string): The resource pivot api branch.
-            resource_value (string): The resource pivot value (group id or indicator).
-            association_name (string): The name of the custom association as defined in the UI.
-        """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
-
-        self._pivot = True
-        self._request_uri = '{}/{}/associations/{}/{}'.format(
-            resource_api_branch, association_name, self._request_uri)
-
     def attributes(self, resource_id=None):
         """Attribute endpoint for this resource with optional attribute id.
 
@@ -151,12 +167,21 @@ class Resource(object):
         HTTP DELETE method will remove the provided attribute from this
         resource.
 
-        Example Endpoints URI's:
-        GET: /v2/groups/{resourceType}/{uniqueId}/attributes
-        GET: /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}
-        DELETE: /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}
-        POST: /v2/groups/{resourceType}/{uniqueId}/attributes
-        PUT: /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (attribute id).
@@ -201,13 +226,19 @@ class Resource(object):
     def file_action(self, resource_id, action_name):
         """File action pivot for this resource.
 
-        bcs - qa this method
+        .. Attention:: New untested method
 
-        action_name: drop, archive or traffic
+        .. Note:: Possible action_names are: drop, archive or traffic
 
-        Example Endpoints URI's:
-        GET: /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/
-        GET: /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/                                    |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (file hash).
@@ -227,13 +258,23 @@ class Resource(object):
         etc) for this resource that are associated with the provided resource
         id (indicator value).
 
-        Example Endpoints URI's:
-        GET: /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}
-        GET: /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}
-        GET: /v2/groups/{resourceType}/{resourceId}/tasks/
-        GET: /v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}
-        GET: /v2/groups/{resourceType}/{resourceId}/victims/
-        GET: /v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}                                    |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/                                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}                                             |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/                                                     |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_type (string): The resource pivot resource type (indicator type).
@@ -266,13 +307,23 @@ class Resource(object):
         for this resource that are associated with the provided resource id
         (indicator value).
 
-        Example Endpoints URI's:
-        GET: /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}
-        GET: /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}
-        GET: /v2/indicators/{resourceType}/{resourceId}/tasks/
-        GET: /v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}
-        GET: /v2/indicators/{resourceType}/{resourceId}/victims/
-        GET: /v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}                                    |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/                                                   |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}                                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/                                                 |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_type (string): The resource pivot resource type (indicator type).
@@ -289,7 +340,7 @@ class Resource(object):
     def name(self):
         """The name value for this resource.
 
-        e.g. - Indicator, Task, etc.
+        The name of the Resource Type (e.g. Indicator, Task, etc.)
         """
         return self._name
 
@@ -342,10 +393,10 @@ class Resource(object):
             self._r.add_payload('filters', ','.join(filters))
 
         results = {
-            "data": [],
-            "response": None,
-            "result_count": None,
-            "status": None
+            'data': [],
+            'response': None,
+            'result_count': None,
+            'status': None
         }
 
         response = self._r.send(stream=self._stream)
@@ -438,11 +489,19 @@ class Resource(object):
         victims, etc) for this resource that have the provided security
         label applied.
 
-        Example Endpoints URI's:
-        GET: /v2/securityLabels/{resourceId}/groups/{resourceType}
-        GET: /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}
-        GET: /v2/securityLabels/{resourceId}/indicators/{resourceType}
-        GET: /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                                               |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}                                    |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (security label name).
@@ -465,11 +524,19 @@ class Resource(object):
         resource using the HTTP POST method.  The HTTP DELETE method will
         remove the provided security label from this resource.
 
-        Example Endpoints URI's:
-        GET: /v2/{resourceType}/{uniqueId}/securityLabels
-        GET: /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}
-        DELETE: /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}
-        POST: /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels                                                        |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (security label name).
@@ -489,13 +556,23 @@ class Resource(object):
         This method will return all *resources* (group, indicators, task,
         victims, etc) for this resource that have the provided tag applied.
 
-        Example Endpoints URI's:
-        GET: /v2/tags/{resourceId}/groups/{resourceType}
-        GET: /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}
-        GET: /v2/tags/{resourceId}/indicators/{resourceType}
-        GET: /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}
-        POST: /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}
-        POST: /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                                                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}                                                     |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (tag name).
@@ -518,15 +595,27 @@ class Resource(object):
         the HTTP POST method.  The HTTP DELETE method will remove the provided
         tag from this resource.
 
-        Example Endpoints URI's:
-        GET: /v2/groups/{resourceType}/{uniqueId}/tags
-        GET: /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}
-        GET: /v2/indicators/{resourceType}/{uniqueId}/tags
-        GET: /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}
-        DELETE: /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}
-        DELETE: /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}
-        POST: /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}
-        POST: /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags                                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (tag name).
@@ -547,11 +636,19 @@ class Resource(object):
         This method will return all *resources* (group, indicators, victims,
         etc) for this resource that are associated with the provided task id.
 
-        Example Endpoints URI's:
-        GET: /v2/tasks/{resourceId}/groups/{resourceType}
-        GET: /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}
-        GET: /v2/tasks/{resourceId}/indicators/{resourceType}
-        GET: /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                                                        |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}                                             |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}                                                    |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}                                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (integer): The resource pivot id (task id).
@@ -578,11 +675,19 @@ class Resource(object):
         This method will return all *resources* (group, indicators, task,
         etc) for this resource that are associated with the provided victim id.
 
-        Example Endpoints URI's:
-        GET: /v2/victims/{resourceId}/groups/{resourceType}
-        GET: /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}
-        GET: /v2/victims/{resourceId}/indicators/{resourceType}
-        GET: /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                                                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}                                                  |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
             resource_id (integer): The resource pivot id (victim id).
@@ -654,12 +759,20 @@ class Batch(Resource):
         # self._value_fields = ['summary']
 
     def batch_id(self, batch_id):
-        """The ID of the batch job used to push data and/or retrieve status."""
+        """The ID of the batch job used to push data and/or retrieve status.
+
+        Args:
+            batch_id (integer): The id of the batch job.
+        """
         self._request_uri = '{}/{}'.format(self._api_uri, batch_id)
         self._request_entity = 'batchStatus'
 
     def errors(self, batch_id):
-        """Update the URI to retrieve errors for a batch job."""
+        """Update the URI to retrieve errors for a batch job.
+
+        Args:
+            batch_id (integer): The id of the batch job.
+        """
         self._request_uri = '{}/{}/errors'.format(self._api_uri, batch_id)
 
 #
@@ -719,7 +832,7 @@ class Address(Indicator):
     """Address Resource Class
 
     This resource class will return indicators of type Address (ipv4 and/or
-    ipv6). To filter on specific indicators use the *indicator* or *resoure_id*
+    ipv6). To filter on specific indicators use the **indicator** or **resoure_id**
     methods provided in the parent Class.
     """
 
@@ -740,23 +853,24 @@ class Bulk(Indicator):
 
     This resource class will return bulk status or bulk indicators via the Bulk
     API endpoint.  The base URL will return a status of bulk generation (see
-    example below), while the */csv* and */json* endpoints will return the
+    example below), while the **/csv** and **/json** endpoints will return the
     indicator is the selected format.
 
-    Base response:
-    {
-      "status": "Success",
-      "data": {
-        "bulkStatus": {
-          "name": "Acme Corp",
-          "csvEnabled": false,
-          "jsonEnabled": true,
-          "nextRun": "2016-12-07T00:00:00Z",
-          "lastRun": "2016-12-06T00:04:33Z",
-          "status": "Complete"
+    Base response::
+
+        {
+            "status": "Success",
+            "data": {
+                "bulkStatus": {
+                    "name": "Acme Corp",
+                    "csvEnabled": false,
+                    "jsonEnabled": true,
+                    "nextRun": "2016-12-07T00:00:00Z",
+                    "lastRun": "2016-12-06T00:04:33Z",
+                    "status": "Complete"
+                }
+            }
         }
-      }
-    }
     """
 
     def __init__(self, tcex):
@@ -803,7 +917,7 @@ class EmailAddress(Indicator):
     """EmailAddress Resource Class
 
     This resource class will return indicators of type Email. To filter on
-    specific indicators use the *indicator* or *resoure_id* methods provided
+    specific indicators use the **indicator** or **resoure_id** methods provided
     in the parent Class.
     """
 
@@ -823,8 +937,8 @@ class File(Indicator):
     """File Resource Class
 
     This resource class will return indicators of type File (e.g md5, sha1,
-    sha256). To filter on specific indicators use the *indicator* or
-    *resoure_id* methods provided in the parent Class.
+    sha256). To filter on specific indicators use the **indicator** or
+    **resoure_id** methods provided in the parent Class.
     """
 
     def __init__(self, tcex):
@@ -851,7 +965,7 @@ class Host(Indicator):
     """Host Resource Class
 
     This resource class will return indicators of type Host. To filter on
-    specific indicators use the *indicator* or *resoure_id* methods provided
+    specific indicators use the **indicator** or **resoure_id** methods provided
     in the parent Class.
     """
 
@@ -871,7 +985,7 @@ class URL(Indicator):
     """URL Resource Class
 
     This resource class will return indicators of type URL. To filter on
-    specific indicators use the *indicator* or *resoure_id* methods provided
+    specific indicators use the **indicator** or **resoure_id** methods provided
     in the parent Class.
     """
 
@@ -949,7 +1063,7 @@ class Adversary(Group):
     """Adversary Resource Class
 
     This resource class will return groups of type Adversary. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 
@@ -968,7 +1082,7 @@ class Document(Group):
     """Document Resource Class
 
     This resource class will return groups of type Document. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 
@@ -1012,7 +1126,7 @@ class Email(Group):
     """Email Resource Class
 
     This resource class will return groups of type Email. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 
@@ -1031,7 +1145,7 @@ class Incident(Group):
     """Incident Resource Class
 
     This resource class will return groups of type Incident. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 
@@ -1045,8 +1159,14 @@ class Incident(Group):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
 
-    def event_date(self, data):
-        """ """
+    def event_date(self, date):
+        """Incident Event Date.
+
+        .. Attention:: Not implemented at this time
+
+        Args:
+            date: The event date in ISO 8601 format.
+        """
         pass
 
 
@@ -1054,7 +1174,7 @@ class Signature(Group):
     """Signature Resource Class
 
     This resource class will return groups of type Signature. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 
@@ -1073,7 +1193,7 @@ class Threat(Group):
     """Threat Resource Class
 
     This resource class will return groups of type Threat. To filter on
-    specific groups use the *group_id* or *resource_id* methods provided in
+    specific groups use the **group_id** or **resource_id** methods provided in
     the parent class.
     """
 

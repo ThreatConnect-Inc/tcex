@@ -68,7 +68,9 @@ class TcExPlaybook(object):
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
 
-        (e.g) #App:1234:status!String,#App:1234:status_code!String
+        **Example Varible Format**::
+
+            #App:1234:status!String,#App:1234:status_code!String
         """
         if self._tcex._args.tc_playbook_out_variables is not None:
             variables = self._tcex._args.tc_playbook_out_variables.strip()
@@ -159,7 +161,9 @@ class TcExPlaybook(object):
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
 
-        (e.g) #App:1234:output!String
+        **Example Variable**::
+
+        #App:1234:output!String
 
         Args:
             variable (string): The variable name to parse.
@@ -221,8 +225,8 @@ class TcExPlaybook(object):
     def read_embedded(self, data):
         """Read method for "mixed" variable type.
 
-        Note: The read() method will automatically determine if the variable is embedded
-        and call this method.  There usually is no reason to call this method directly.
+        .. Note:: The ``read()`` method will automatically determine if the variable is embedded and
+                  call this method.  There usually is no reason to call this method directly.
 
         This method will automatically covert keys/variables embedded in a string
         with data retrieved from DB. If there are no keys/variables the raw string
@@ -255,13 +259,18 @@ class TcExPlaybook(object):
         return data
 
     def variable_type(self, variable):
-        """Get the Type from the variable string or default to String type
+        """Get the Type from the variable string or default to String type.
 
         The default type is "String" for those cases when the input variable is
         contains not "DB variable" and is just a String.
 
-        (e.g) #App:1234:output!StringArray returns "StringArray"
-        (e.g) "My Data" returns "String"
+        **Example Variable**::
+
+            #App:1234:output!StringArray returns **StringArray**
+
+        **Example String**::
+
+            "My Data" returns **String**
 
         Args:
             variable (string): The variable to be parsed
@@ -562,7 +571,7 @@ class TcExPlaybook(object):
     def entity_to_bulk(entities, resource_type_parent):
         """Convert Single TC Entity to Bulk format
 
-        NOTE: This method is subject to frequent changes
+        .. Attention:: This method is subject to frequent changes
 
         Args:
             entity (dictionary): TC Entity to be converted to Bulk.
@@ -615,7 +624,7 @@ class TcExPlaybook(object):
     def json_to_bulk(tc_data, value_fields, resource_type, resource_type_parent):
         """Convert ThreatConnect JSON response to a TCEntityArray
 
-        NOTE: This method is subject to frequent changes
+        .. Attention:: This method is subject to frequent changes
 
         Args:
             tc_data (dictionary): Array of data returned from TC API call.
@@ -661,7 +670,7 @@ class TcExPlaybook(object):
     def json_to_entity(tc_data, value_fields, resource_type, resource_type_parent):
         """Convert ThreatConnect JSON response to a TCEntityArray
 
-        NOTE: This method is subject to frequent changes
+        .. Attention:: This method is subject to frequent changes
 
         Args:
             tc_data (dictionary): Array of data returned from TC API call.

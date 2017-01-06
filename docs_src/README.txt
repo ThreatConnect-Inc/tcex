@@ -4,5 +4,5 @@ pip install CommonMark==0.5.5 recommonmark
 pip install reno
 
 # Build Docs
-sphinx-apidoc -f -o tcex ../tcex/
+sphinx-apidoc -f -o tcex_docs ../tcex/
 make html
