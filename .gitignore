@@ -13,12 +13,10 @@ tc.json
 #
 # Docs
 #
-docs_src/*example
-docs_src/00__build.sh
-docs_src/_build
-docs_src/_static
-docs_src/_templates
-docs_src/tcex
+docs/src/*example
+docs/src/_build
+docs/src/_static
+docs/src/_templates
 
 #
 # IDE Exclusions
