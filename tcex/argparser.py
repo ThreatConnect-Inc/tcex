@@ -186,4 +186,4 @@ class ArgParser(ArgumentParser):
             help='ThreatConnect API Logging')
         self.add_argument(
             '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=self._tc_log_level, help='Logging Level')
+            default=self._tc_log_level, help='Logging Level', dest='tc_log_level')
