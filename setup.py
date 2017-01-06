@@ -15,7 +15,7 @@ setup(
     license='Apache License, Version 2',
     name='tcex',
     packages=find_packages(),
-    package_data={'': ['tcex_json_schema.json']}
+    package_data={'': ['tcex_json_schema.json']},
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,
     # use_2to3_exclude_fixers=['lib2to3.fixes.fix_print'],
