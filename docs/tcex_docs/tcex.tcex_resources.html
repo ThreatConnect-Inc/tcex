@@ -1,0 +1,1440 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.tcex_resources module &mdash; TcEx 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>tcex.tcex_resources module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-tcex.tcex_resources">
+<span id="tcex-tcex-resources-module"></span><h1>tcex.tcex_resources module<a class="headerlink" href="#module-tcex.tcex_resources" title="Permalink to this headline">¶</a></h1>
+<p>standard</p>
+<dl class="class">
+<dt id="tcex.tcex_resources.Address">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Address</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>Address Resource Class</p>
+<p>This resource class will return indicators of type Address (ipv4 and/or
+ipv6). To filter on specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong>
+methods provided in the parent Class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Adversary">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Adversary</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Adversary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Adversary Resource Class</p>
+<p>This resource class will return groups of type Adversary. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Batch">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Batch</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Batch Resource Class</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Batch.batch_id">
+<code class="descname">batch_id</code><span class="sig-paren">(</span><em>batch_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Batch.batch_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ID of the batch job used to push data and/or retrieve status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>integer</em>) &#8211; The id of the batch job.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Batch.errors">
+<code class="descname">errors</code><span class="sig-paren">(</span><em>batch_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Batch.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the URI to retrieve errors for a batch job.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>integer</em>) &#8211; The id of the batch job.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Bulk">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Bulk</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Bulk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>Bulk Resource Class</p>
+<p>This resource class will return bulk status or bulk indicators via the Bulk
+API endpoint.  The base URL will return a status of bulk generation (see
+example below), while the <strong>/csv</strong> and <strong>/json</strong> endpoints will return the
+indicator is the selected format.</p>
+<p>Base response:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;bulkStatus&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Acme Corp&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;csvEnabled&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+            <span class="s2">&quot;jsonEnabled&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+            <span class="s2">&quot;nextRun&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-12-07T00:00:00Z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lastRun&quot;</span><span class="p">:</span> <span class="s2">&quot;2016-12-06T00:04:33Z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Complete&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="tcex.tcex_resources.Bulk.csv">
+<code class="descname">csv</code><span class="sig-paren">(</span><em>ondemand=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Bulk.csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update request URI to return CSV data.</p>
+<p>For onDemand bulk generation to work it must first be enabled in the
+ThreatConnect platform under System settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ondemand</strong> (<em>boolean</em>) &#8211; Enable on demand bulk generation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Bulk.json">
+<code class="descname">json</code><span class="sig-paren">(</span><em>ondemand=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Bulk.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update request URI to return JSON data.</p>
+<p>For onDemand bulk generation to work it must first be enabled in the
+ThreatConnect platform under System settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ondemand</strong> (<em>boolean</em>) &#8211; Enable on demand bulk generation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="tcex.tcex_resources.ClassFactory">
+<code class="descclassname">tcex.tcex_resources.</code><code class="descname">ClassFactory</code><span class="sig-paren">(</span><em>name</em>, <em>base_class</em>, <em>class_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.ClassFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method for dynamically building Custom Indicator classes.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Document">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Document Resource Class</p>
+<p>This resource class will return groups of type Document. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Document.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Document.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to download the document for this resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>integer</em>) &#8211; The group id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Document.upload">
+<code class="descname">upload</code><span class="sig-paren">(</span><em>resource_id</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Document.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to upload the a document to this resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_id</strong> (<em>integer</em>) &#8211; The group id.</li>
+<li><strong>data</strong> (<em>any</em>) &#8211; The raw data to upload.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Email">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Email</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Email Resource Class</p>
+<p>This resource class will return groups of type Email. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.EmailAddress">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">EmailAddress</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.EmailAddress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>EmailAddress Resource Class</p>
+<p>This resource class will return indicators of type Email. To filter on
+specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+in the parent Class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.File">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">File</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>File Resource Class</p>
+<p>This resource class will return indicators of type File (e.g md5, sha1,
+sha256). To filter on specific indicators use the <strong>indicator</strong> or
+<strong>resoure_id</strong> methods provided in the parent Class.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.File.occurrence">
+<code class="descname">occurrence</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.File.occurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the URI to retrieve file occurrences for the provided indicator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>string</em>) &#8211; The indicator to retrieve file occurrences.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Group">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Group Resource Class</p>
+<p>This resource class is the base for all groups and will return groups of
+all types.  For specific group types use the child class of the type
+required.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Group.group_id">
+<code class="descname">group_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Group.group_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Group ID for specific group retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The group id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Group.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Group.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for group_id method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The group id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Host">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>Host Resource Class</p>
+<p>This resource class will return indicators of type Host. To filter on
+specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+in the parent Class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Incident">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Incident</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Incident" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Incident Resource Class</p>
+<p>This resource class will return groups of type Incident. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Incident.event_date">
+<code class="descname">event_date</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Incident.event_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Incident Event Date.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Not implemented at this time</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> &#8211; The event date in ISO 8601 format.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Indicator">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Indicator</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Indicator Resource Class</p>
+<p>This resource class is the base for all indicators and will return
+indicators of all types.  For specific indicator types use the child
+class of the type required.  Custom indicator types are suppored
+dynamically and are not defined here.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Indicator.indicator">
+<code class="descname">indicator</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Indicator.indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Indicator for specific indicator retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; The indicator value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Indicator.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Indicator.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for indicator method.</p>
+<p>The resource id for an indicator in this class is the indicator value and not
+the actual indicator id stored in ThreatConnect.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; The indicator value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Owner">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Owner</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Owner Class</p>
+<p>This resource class will return Owners.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Owner.owner_id">
+<code class="descname">owner_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Owner.owner_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Owner Id for specific retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The owner id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Owner.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Owner.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for owner_id method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The owner id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Resource">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Resource</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Common settings for All ThreatConnect API Endpoints</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A printable string for this resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.add_filter">
+<code class="descname">add_filter</code><span class="sig-paren">(</span><em>name</em>, <em>operator</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.add_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add ThreatConnect API Filter for this resource request.</p>
+<dl class="docutils">
+<dt>Internal Reference:</dt>
+<dd><a class="reference external" href="https://docs.google.com/document/d/1mZx9qF9o9RqVGXd_hT6t55aqLtPyzTL2zWRVQsB3HiM">https://docs.google.com/document/d/1mZx9qF9o9RqVGXd_hT6t55aqLtPyzTL2zWRVQsB3HiM</a></dd>
+<dt>External Reference:</dt>
+<dd><a class="reference external" href="https://docs.threatconnect.com">https://docs.threatconnect.com</a></dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; The filter field name.</li>
+<li><strong>operator</strong> (<em>string</em>) &#8211; The filter comparison operator.</li>
+<li><strong>value</strong> (<em>string</em>) &#8211; The filter value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.api_branch">
+<code class="descname">api_branch</code><a class="headerlink" href="#tcex.tcex_resources.Resource.api_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ThreatConnect API branch for this resource.</p>
+<p>The <strong>addresses</strong> endpoint from <code class="docutils literal"><span class="pre">/v2/indicators/addresses/</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.api_branch_base">
+<code class="descname">api_branch_base</code><a class="headerlink" href="#tcex.tcex_resources.Resource.api_branch_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ThreatConnect API branch base (parent branch) for this resource.</p>
+<p>The <strong>indicators</strong> endpoint from <code class="docutils literal"><span class="pre">/v2/indicators</span></code> or <code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.api_entity">
+<code class="descname">api_entity</code><a class="headerlink" href="#tcex.tcex_resources.Resource.api_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ThreatConnect API entity for this resource.</p>
+<p>The <strong>address</strong> JSON entity from JSON response to <code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.api_uri">
+<code class="descname">api_uri</code><a class="headerlink" href="#tcex.tcex_resources.Resource.api_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ThreatConnect API URI for this resource.</p>
+<p>The API URI endpoint <code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.association_custom">
+<code class="descname">association_custom</code><span class="sig-paren">(</span><em>resource_api_branch</em>, <em>association_name</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.association_custom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Association pivot for this resource with resource value.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">New untested method</p>
+</div>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch.</li>
+<li><strong>resource_value</strong> (<em>string</em>) &#8211; The resource pivot value (group id or indicator).</li>
+<li><strong>association_name</strong> (<em>string</em>) &#8211; The name of the custom association as defined in the UI.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.association_pivot">
+<code class="descname">association_pivot</code><span class="sig-paren">(</span><em>resource_api_branch</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.association_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on association for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task,
+victims, etc) for this resource that are associated with the provided
+resource_type and value.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>/v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch including resource id.</li>
+<li><strong>resource_value</strong> (<em>string</em>) &#8211; The resource pivot value (group id or indicator).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.attributes">
+<code class="descname">attributes</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute endpoint for this resource with optional attribute id.</p>
+<p>This method will set the resource endpoint for working with Attributes.
+The HTTP GET method will return all attributes applied to this resource
+or if a resource id (attribute id) is provided it will return the
+provided attribute if exists on this resource. An attribute can be added
+to this resource using the HTTP POST method and passing a JSON body
+containing the attribute type and attribute value. Using the HTTP PUT
+method with a provided resource id an attribute can be updated. The
+HTTP DELETE method will remove the provided attribute from this
+resource.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/attributes</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/attributes</td>
+</tr>
+<tr class="row-even"><td>PUT</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The resource id (attribute id).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.authorization_method">
+<code class="descname">authorization_method</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.authorization_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to create authorization header for this resource request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>method</em>) &#8211; The method to use to genearate the authorization header(s).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.body">
+<code class="descname">body</code><a class="headerlink" href="#tcex.tcex_resources.Resource.body" title="Permalink to this definition">¶</a></dt>
+<dd><p>The body for this resource request.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.content_type">
+<code class="descname">content_type</code><a class="headerlink" href="#tcex.tcex_resources.Resource.content_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Content-Type header value for this resource request.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.file_action">
+<code class="descname">file_action</code><span class="sig-paren">(</span><em>resource_id</em>, <em>action_name</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.file_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>File action pivot for this resource.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">New untested method</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Possible action_names are: drop, archive or traffic</p>
+</div>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_id</strong> (<em>string</em>) &#8211; The resource pivot id (file hash).</li>
+<li><strong>action_name</strong> (<em>string</em>) &#8211; The name of the action as defined by Threatconnect.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.group_pivot">
+<code class="descname">group_pivot</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.group_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on groups for this resource.</p>
+<p>This method will return all <em>resources</em> (indicators, tasks, victims,
+etc) for this resource that are associated with the provided resource
+id (indicator value).</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/tasks/</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/victims/</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource pivot resource type (indicator type).</li>
+<li><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (indicator value).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.http_method">
+<code class="descname">http_method</code><a class="headerlink" href="#tcex.tcex_resources.Resource.http_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The HTTP Method for this resource request.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.indicator_pivot">
+<code class="descname">indicator_pivot</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.indicator_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on indicators for this resource.</p>
+<p>This method will return all <em>resources</em> (groups, tasks, victims, etc)
+for this resource that are associated with the provided resource id
+(indicator value).</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/tasks/</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/victims/</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource pivot resource type (indicator type).</li>
+<li><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (indicator value).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.name">
+<code class="descname">name</code><a class="headerlink" href="#tcex.tcex_resources.Resource.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name value for this resource.</p>
+<p>The name of the Resource Type (e.g. Indicator, Task, etc.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.owner">
+<code class="descname">owner</code><a class="headerlink" href="#tcex.tcex_resources.Resource.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Owner payload value for this resource request.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.parent">
+<code class="descname">parent</code><a class="headerlink" href="#tcex.tcex_resources.Resource.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent object name for this resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.request">
+<code class="descname">request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the request to the API.</p>
+<p>This method will send the request to the API.  It will try to handle
+all the types of responses and provide the relevant data when possible.
+Some basic error detection and handling is implemented, but not all failure
+cases will get caught.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Response/Results data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.request_entity">
+<code class="descname">request_entity</code><a class="headerlink" href="#tcex.tcex_resources.Resource.request_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The temporary entity name used for the request.</p>
+<p>The request entity starts as the resource api_entity and changes
+depending on the pivot resource. This value is reset after the
+<em>request()</em> method is called.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.request_uri">
+<code class="descname">request_uri</code><a class="headerlink" href="#tcex.tcex_resources.Resource.request_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>The temporary uri used for the request.</p>
+<p>The request uri starts as the resource api_uri and changes depending on
+the pivot resource. This value is reset after the <em>request()</em> method is
+called.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.security_label_pivot">
+<code class="descname">security_label_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.security_label_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on security labels for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task,
+victims, etc) for this resource that have the provided security
+label applied.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/securityLabels/{resourceId}/groups/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/securityLabels/{resourceId}/indicators/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The resource pivot id (security label name).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.security_labels">
+<code class="descname">security_labels</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.security_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Security Label endpoint for this resource with optional label name.</p>
+<p>This method will set the resource endpoint for working with Security
+Labels.  The HTTP GET method will return all security labels applied
+to this resource or if a resource id (security label name) is provided
+it will return the provided security label if it has been applied,
+which could be useful to verify a security label is applied.  The
+provided resource_id (security label name) can be applied to this
+resource using the HTTP POST method.  The HTTP DELETE method will
+remove the provided security label from this resource.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/{resourceType}/{uniqueId}/securityLabels</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The resource id (security label name).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.tag_pivot">
+<code class="descname">tag_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.tag_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on tags for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task,
+victims, etc) for this resource that have the provided tag applied.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/tags/{resourceId}/groups/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/tags/{resourceId}/indicators/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>/v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The resource pivot id (tag name).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.tags">
+<code class="descname">tags</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tag endpoint for this resource with optional tag name.</p>
+<p>This method will set the resource endpoint for working with Tags. The
+HTTP GET method will return all tags applied to this resource or if a
+resource id (tag name) is provided it will return the provided tag if
+it has been applied, which could be useful to verify a tag is applied.
+The provided resource_id (tag) can be applied to this resource using
+the HTTP POST method.  The HTTP DELETE method will remove the provided
+tag from this resource.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/tags</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/tags</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>DELETE</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The resource id (tag name).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.task_pivot">
+<code class="descname">task_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.task_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on Tasks for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, victims,
+etc) for this resource that are associated with the provided task id.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/tasks/{resourceId}/groups/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/tasks/{resourceId}/indicators/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (task id).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.url">
+<code class="descname">url</code><a class="headerlink" href="#tcex.tcex_resources.Resource.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ThreatConnect URL for this resource request.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_resources.Resource.value_fields">
+<code class="descname">value_fields</code><a class="headerlink" href="#tcex.tcex_resources.Resource.value_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value fields for this resource.</p>
+<p>The fields in the response JSON that have the key value
+(e.g. [&#8216;md5&#8217;, &#8216;sha1&#8217;, &#8216;sha256&#8217;] or [&#8216;ip&#8217;]).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.victim_pivot">
+<code class="descname">victim_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Resource.victim_pivot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on Victims for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task,
+etc) for this resource that are associated with the provided victim id.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/victims/{resourceId}/groups/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/victims/{resourceId}/indicators/{resourceType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (victim id).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.SecurityLabel">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">SecurityLabel</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.SecurityLabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Security Label Class</p>
+<p>This resource class will return Security Labels.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.SecurityLabel.label">
+<code class="descname">label</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.SecurityLabel.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Security Label for specific retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The security label.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.SecurityLabel.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.SecurityLabel.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for label method</p>
+<p>The resource id is the security label name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The security label.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Signature">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Signature</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Signature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Signature Resource Class</p>
+<p>This resource class will return groups of type Signature. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Task">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Task</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Task Class</p>
+<p>This resource class will return Tasks.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Task.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Task.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Task Id for specific retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The task id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Threat">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Threat</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Threat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Threat Resource Class</p>
+<p>This resource class will return groups of type Threat. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.URL">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">URL</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<p>URL Resource Class</p>
+<p>This resource class will return indicators of type URL. To filter on
+specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+in the parent Class.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.URL.indicator">
+<code class="descname">indicator</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.URL.indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Indicator for specific indicator retrieval.</p>
+<p>Overload parent class method to ensure URL indicator is properly encoded.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; The indicator value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Victim">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Victim</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Victim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Victim Class</p>
+<p>This resource class will return Victims.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Victim.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_resources.Victim.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Victim Id for specific retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The victim id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parser / Args &mdash; TcEx 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="Playbooks" href="playbook.html"/>
+        <link rel="prev" title="Message TC" href="message_tc.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parser / Args</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#default-arguments">Default Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-argument-example">Custom Argument Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Parser / Args</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="parser-args">
+<h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-meth docutils literal"><span class="pre">TcEx()</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-meth docutils literal"><span class="pre">parser()</span></code></a> property which returns and instance of <a class="reference internal" href="tcex_docs/tcex.argparser.html#module-tcex.argparser" title="tcex.argparser"><code class="xref py py-meth docutils literal"><span class="pre">argparser()</span></code></a>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange apps..</p>
+<div class="section" id="default-arguments">
+<h2>Default Arguments<a class="headerlink" href="#default-arguments" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Section</th>
+<th class="head">Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>API</td>
+<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._api_arguments" title="tcex.argparser.ArgParser._api_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Batch</td>
+<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._batch_arguments" title="tcex.argparser.ArgParser._batch_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Playbook</td>
+<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._playbook_arguments" title="tcex.argparser.ArgParser._playbook_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Standard</td>
+<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments" title="tcex.argparser.ArgParser._standard_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="custom-argument-example">
+<h2>Custom Argument Example<a class="headerlink" href="#custom-argument-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="k">import</span> <span class="n">TcEx</span>
+
+<span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">parser</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--myarg&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;My Custom Argument&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="playbook.html" class="btn btn-neutral float-right" title="Playbooks" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="message_tc.html" class="btn btn-neutral" title="Message TC" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

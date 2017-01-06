@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Resources &mdash; TcEx 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 1.0.0 documentation" href="index.html"/>
+        <link rel="next" title="Results TC" href="results_tc.html"/>
+        <link rel="prev" title="Requests" href="request.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#group-resources">Group Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indicator-resources">Indicator Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#owner-resources">Owner Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#task-resources">Task Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#victim-resources">Victim Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Resources</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="resources">
+<span id="id1"></span><h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-meth docutils literal"><span class="pre">TcEx()</span></code></a> Class provides access to the ThreatConnect API through instantiation of a <em>Resource</em> Class in the <code class="docutils literal"><span class="pre">tcex.resource</span></code> property.</p>
+<div class="section" id="group-resources">
+<h2>Group Resources<a class="headerlink" href="#group-resources" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Group (Base)</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">Group</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Adversary</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Adversary" title="tcex.tcex_resources.Adversary"><code class="xref py py-class docutils literal"><span class="pre">Adversary</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Document</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document" title="tcex.tcex_resources.Document"><code class="xref py py-class docutils literal"><span class="pre">Document</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Email</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Email" title="tcex.tcex_resources.Email"><code class="xref py py-class docutils literal"><span class="pre">Email</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Incident</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Incident" title="tcex.tcex_resources.Incident"><code class="xref py py-class docutils literal"><span class="pre">Incident</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Signature</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Signature" title="tcex.tcex_resources.Signature"><code class="xref py py-class docutils literal"><span class="pre">Signature</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Threat</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Threat" title="tcex.tcex_resources.Threat"><code class="xref py py-class docutils literal"><span class="pre">Threat</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="indicator-resources">
+<h2>Indicator Resources<a class="headerlink" href="#indicator-resources" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Indicator (Base)</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">Indicator</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Address</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Address" title="tcex.tcex_resources.Address"><code class="xref py py-class docutils literal"><span class="pre">Address</span></code></a></td>
+</tr>
+<tr class="row-even"><td>EmailAddress</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.EmailAddress" title="tcex.tcex_resources.EmailAddress"><code class="xref py py-class docutils literal"><span class="pre">EmailAddress</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>File</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File" title="tcex.tcex_resources.File"><code class="xref py py-class docutils literal"><span class="pre">File</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Host</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host" title="tcex.tcex_resources.Host"><code class="xref py py-class docutils literal"><span class="pre">Host</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>URL</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.URL" title="tcex.tcex_resources.URL"><code class="xref py py-class docutils literal"><span class="pre">URL</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Custom Indicators can be accessed by the <strong>Type</strong>. The ThreatConnect platform support Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made <strong>safe</strong> by using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt" title="tcex.tcex.TcEx.safe_rt"><code class="xref py py-meth docutils literal"><span class="pre">safe_rt()</span></code></a> method.</p>
+</div>
+</div>
+<div class="section" id="owner-resources">
+<h2>Owner Resources<a class="headerlink" href="#owner-resources" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Owner</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner" title="tcex.tcex_resources.Owner"><code class="xref py py-class docutils literal"><span class="pre">Owner</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="task-resources">
+<h2>Task Resources<a class="headerlink" href="#task-resources" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Task</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task" title="tcex.tcex_resources.Task"><code class="xref py py-class docutils literal"><span class="pre">Task</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="victim-resources">
+<h2>Victim Resources<a class="headerlink" href="#victim-resources" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Victim</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim" title="tcex.tcex_resources.Victim"><code class="xref py py-class docutils literal"><span class="pre">Victim</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="results_tc.html" class="btn btn-neutral float-right" title="Results TC" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="request.html" class="btn btn-neutral" title="Requests" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

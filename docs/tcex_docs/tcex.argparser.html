@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.argparser module &mdash; TcEx 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>tcex.argparser module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-tcex.argparser">
+<span id="tcex-argparser-module"></span><h1>tcex.argparser module<a class="headerlink" href="#module-tcex.argparser" title="Permalink to this headline">¶</a></h1>
+<p>standard</p>
+<dl class="class">
+<dt id="tcex.argparser.ArgParser">
+<em class="property">class </em><code class="descclassname">tcex.argparser.</code><code class="descname">ArgParser</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">argparse.ArgumentParser</span></code></p>
+<p>Overload of the ArgumentParser class.</p>
+<p>Adding common arguments for TcEx apps.</p>
+<dl class="method">
+<dt id="tcex.argparser.ArgParser._api_arguments">
+<code class="descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._api_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument specific to working with TC API.</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_token <var>token</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Token provided by ThreatConnect for app Authorization.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_token_expires <var>token_expires</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Expiration time for the passed Token.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--api_access_id <var>access_id</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Access ID used for HMAC Authorization.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--api_secret_key <var>secret_key</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Secret Key used for HMAC Authorization.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.argparser.ArgParser._batch_arguments">
+<code class="descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arguments specific to Batch API writes.</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_action <var>action</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Action for the batch job [&#8216;Create&#8217;, &#8216;Delete&#8217;].</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_chunk <var>number</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The maximum number of indicator per batch job.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_halt_on_error</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Flag to indicate that batch job should halt on error.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_poll_interval <var>seconds</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Seconds between batch status polls.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_interval_max <var>seconds</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Seconds before app should time out waiting on batch job completion.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--batch_write_type <var>type</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Write type for Indiator attributes [&#8216;Append&#8217;, &#8216;Replace&#8217;].</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.argparser.ArgParser._playbook_arguments">
+<code class="descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument specific to playbook apps.</p>
+<p>These arguments will be passed to every playbook app by default.</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_playbook_db_type <var>type</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The DB type (currently on Redis is supported).</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_playbook_db_context <var>context</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The playbook context provided by TC.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_playbook_db_path <var>path</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The DB path or server name.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_playbook_db_port <var>port</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The DB port when required.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_playbook_out_variables <var>vars</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The output variable requested by downsteam apps.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.argparser.ArgParser._standard_arguments">
+<code class="descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>These are the standard args passed to every TcEx App.</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_api_path <var>path</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The TC API path (e.g <a class="reference external" href="https://api.threatconnect.com">https://api.threatconnect.com</a>).</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_log_path <var>path</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The app log path.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_out_path <var>path</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The app out path.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_temp_path <var>path</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The app temp path.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_user_id <var>id</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The user id of user running the job.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_proxy_host <var>host</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The proxy host.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_proxy_port <var>port</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The proxy port.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_proxy_username <var>user</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The proxy username.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_proxy_password <var>pass</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>The proxy password.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_proxy_external</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Flag to indicate external communications requires the use of a proxy.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--tc_proxy_tc</span></kbd></td>
+<td>Flag to indicate TC communications requires the use of a proxy.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--tc_log_to_api</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Flag to indicate that app should log to API.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--tc_log_level</span></kbd></td>
+<td>The logging level for the app.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--logging <var>level</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Alias for <strong>tc_log_level</strong>.</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
