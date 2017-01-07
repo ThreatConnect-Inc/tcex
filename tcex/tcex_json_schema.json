@@ -119,6 +119,21 @@
           },
           "type": "array",
           "uniqueItems": true
+        },
+        "retry": {
+          "additionalProperties": false,
+          "properties": {
+            "allowed": {
+              "type": "boolean"
+            },
+            "defaultDelayMinutes": {
+              "type": "integer"
+            },
+            "defaultMaxRetries": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
         }
       },
       "type": "object"

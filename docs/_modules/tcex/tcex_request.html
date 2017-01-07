@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.tcex_request &mdash; TcEx 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>tcex.tcex_request</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tcex.tcex_request</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="p">(</span><span class="n">exceptions</span><span class="p">,</span> <span class="n">packages</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Session</span><span class="p">)</span>
+<span class="c1"># disable ssl warning message</span>
+<span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
+
+<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TcExRequest"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest">[docs]</a><span class="k">class</span> <span class="nc">TcExRequest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="s1">&#39;ThreatConnect&#39;</span>
+
+        <span class="c1"># request properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_retries</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sleep</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verify_ssl</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Body</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The POST/PUT body content for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span>
+
+    <span class="nd">@body</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The POST/PUT body content for this request.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">))</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># HTTP Headers</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The header values for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span>
+
+<div class="viewcode-block" id="TcExRequest.reset_headers"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.reset_headers">[docs]</a>    <span class="k">def</span> <span class="nf">reset_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset header dictionary for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="TcExRequest.add_header"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.add_header">[docs]</a>    <span class="k">def</span> <span class="nf">add_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a key value pair to header.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The header key</span>
+<span class="sd">            value (string): The header value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">authorization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The &quot;Authorization&quot; header value for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Authorization&#39;</span><span class="p">)</span>
+
+    <span class="nd">@authorization</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">authorization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The &quot;Authorization&quot; header value for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Authorization&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TcExRequest.authorization_method"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.authorization_method">[docs]</a>    <span class="k">def</span> <span class="nf">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method to create Authorization header for this request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method (method): The method to use to genearate the authorization header(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="n">method</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">basic_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The basic auth settings for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span>
+
+    <span class="nd">@basic_auth</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">basic_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The basic auth settings for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Content-Type header value for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span>
+
+    <span class="nd">@content_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Content-Type header value for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The the User-Agent header value for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_agent</span>
+
+    <span class="nd">@user_agent</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The the User-Agent header value for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;User-agent&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># HTTP Payload</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The payload values for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span>
+
+<div class="viewcode-block" id="TcExRequest.reset_payload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.reset_payload">[docs]</a>    <span class="k">def</span> <span class="nf">reset_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset payload dictionary&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="TcExRequest.add_payload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.add_payload">[docs]</a>    <span class="k">def</span> <span class="nf">add_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a key value pair to payload for this request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The payload key</span>
+<span class="sd">            value (string): The payload value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># HTTP Method</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">http_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP method for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span>
+
+    <span class="nd">@http_method</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">http_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP method for this request.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="n">data</span>
+
+            <span class="c1"># set content type for commit methods (best guess)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Request Object Error: </span><span class="si">{0!s}</span><span class="s1"> is not a valid HTTP method.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Send Properties</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The proxy settings for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span>
+
+    <span class="nd">@proxies</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The proxy settings for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP timeout value for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+
+    <span class="nd">@timeout</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP timeout value for this request.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">verify_ssl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The SSL validation setting for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verify_ssl</span>
+
+    <span class="nd">@verify_ssl</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">verify_ssl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The SSL validation setting for this request.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_verify_ssl</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Send</span>
+    <span class="c1">#</span>
+
+<div class="viewcode-block" id="TcExRequest.send"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send the HTTP request via Python Requests modules.</span>
+
+<span class="sd">        This method will send the request to the remote endpoint.  It will try to handle</span>
+<span class="sd">        temporary communications issues by retrying the request automatically.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stream (boolean): Boolean to enable stream download.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (Requests.Response) The Request response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#</span>
+        <span class="c1"># prepare request</span>
+        <span class="c1">#</span>
+
+        <span class="n">api_request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">)</span>
+
+        <span class="n">request_prepped</span> <span class="o">=</span> <span class="n">api_request</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+
+        <span class="c1"># add authorization header returned by authorization method</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span><span class="p">(</span><span class="n">request_prepped</span><span class="p">))</span>
+        <span class="n">request_prepped</span><span class="o">.</span><span class="n">prepare_headers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;URL: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request_prepped</span><span class="o">.</span><span class="n">prepare_auth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># api request (gracefully handle temporary communications issues with the API)</span>
+        <span class="c1">#</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retries</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">send</span><span class="p">(</span>
+                    <span class="n">request_prepped</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">,</span>
+                    <span class="n">verify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verify_ssl</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ReadTimeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;The server may be experiencing delays at the moment.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pausing for </span><span class="si">{0!s}</span><span class="s1"> seconds to give server time to catch up.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sleep</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sleep</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retry </span><span class="si">{0!s}</span><span class="s1"> ....&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retries</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Exiting: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Connection Error. The server may be down.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pausing for </span><span class="si">{0!s}</span><span class="s1"> seconds to give server time to catch up.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sleep</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sleep</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Retry </span><span class="si">{0!s}</span><span class="s1"> ....&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retries</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Exiting: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Exiting: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Status Code: </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># URL</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The URL for this request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span>
+
+    <span class="nd">@url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The URL for this request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="TcExRequest.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print this request instance configuration.&quot;&quot;&quot;</span>
+        <span class="n">printable_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:_^80}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Request&#39;</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># http settings</span>
+        <span class="c1">#</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;HTTP Settings&#39;</span><span class="p">)</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;HTTP Method&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">http_method</span><span class="p">)</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Request URL&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Content Type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span><span class="p">)</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Body&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># headers</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Headers&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># payload</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Payload&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">printable_string</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

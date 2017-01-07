@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,12 +144,12 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
-<em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps</p>
 <dl class="method">
 <dt id="tcex.tcex.TcEx._authorization_token_renew">
-<code class="descname">_authorization_token_renew</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._authorization_token_renew" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_authorization_token_renew</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._authorization_token_renew"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._authorization_token_renew" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for handling token authorization to ThreatConnect API.</p>
 <p>This method will automatically renew the ThreatConnect token if it has expired.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -164,13 +166,13 @@
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._jobs">
-<code class="descname">_jobs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._jobs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_jobs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._jobs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include jobs Module</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._logger">
-<code class="descname">_logger</code><span class="sig-paren">(</span><em>file_name='app.log'</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_logger</code><span class="sig-paren">(</span><em>file_name='app.log'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create TcEx app logger instance.</p>
 <p>The logger is accessible via the <code class="docutils literal"><span class="pre">tc.log.&lt;level&gt;</span></code> call.</p>
 <p><strong>Logging examples</strong></p>
@@ -196,7 +198,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._playbook">
-<code class="descname">_playbook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._playbook" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_playbook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._playbook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._playbook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include Playbook Module</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -206,7 +208,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._resources">
-<code class="descname">_resources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_resources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the resource module.</p>
 <p>This method will make a request to the ThreatConnect API to dynamically
 build classes to support custom Indicators.  All other resources are available
@@ -219,7 +221,7 @@ via this class.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._unknown_args">
-<code class="descname">_unknown_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx._unknown_args" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_unknown_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._unknown_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._unknown_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log argparser unknown arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -249,8 +251,19 @@ via this class.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.authorization">
-<code class="descname">authorization</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.authorization" title="Permalink to this definition">¶</a></dt>
+<code class="descname">authorization</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.authorization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.authorization" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method to handle the different methods of authenticating to the ThreatConnect API.</p>
+<p><strong>Token Based Authorization</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>HMAC Based Authorization</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">,</span>
+    <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">unix</span> <span class="n">timestamp</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -265,7 +278,7 @@ via this class.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.authorization_hmac">
-<code class="descname">authorization_hmac</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.authorization_hmac" title="Permalink to this definition">¶</a></dt>
+<code class="descname">authorization_hmac</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.authorization_hmac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.authorization_hmac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for handling HMAC authorization to ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -281,7 +294,7 @@ via this class.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.bulk_enabled">
-<code class="descname">bulk_enabled</code><span class="sig-paren">(</span><em>owner=None</em>, <em>api_path=None</em>, <em>authorization=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.bulk_enabled" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bulk_enabled</code><span class="sig-paren">(</span><em>owner=None</em>, <em>api_path=None</em>, <em>authorization=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.bulk_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.bulk_enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if bulk indicators is enabled for owner</p>
 <p>Using the TC API validate that bulk indicator download is enabled and
 has successfully run for the provided owner.</p>
@@ -308,11 +321,11 @@ has successfully run for the provided owner.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.exit">
-<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application exit method with proper exit code</p>
 <p>The method will run the Python standard sys.exit() with the exit code
-previously defined in the app or provided during the call of this
-method.</p>
+previously defined via <a class="reference internal" href="#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> or provided
+during the call of this method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -325,7 +338,7 @@ method.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.exit_code">
-<code class="descname">exit_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.exit_code" title="Permalink to this definition">¶</a></dt>
+<code class="descname">exit_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the app exit code</p>
 <p>For TC Exchange Apps there are 3 supported exit codes.
 * 0 indicates a normal exit
@@ -343,7 +356,7 @@ method.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.expand_indicators">
-<code class="descname">expand_indicators</code><span class="sig-paren">(</span><em>indicator</em>, <em>first_indicator=True</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
+<code class="descname">expand_indicators</code><span class="sig-paren">(</span><em>indicator</em>, <em>first_indicator=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process indicators expanding file hashes/custom indicators into multiple entries</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -362,7 +375,7 @@ matched indicator.</li>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.message_tc">
-<code class="descname">message_tc</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">message_tc</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to message_tc file in TcEX specified directory.</p>
 <p>This method is used to set and exit message in the ThreatConnect Platform.
 ThreatConnect only supports files of max_message_length.  Any data exceeding
@@ -436,7 +449,7 @@ API endpoints.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.results_tc">
-<code class="descname">results_tc</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">results_tc</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to results_tc file in TcEX specified directory</p>
 <p>The TcEx platform support persistent values between executions of the App.  This
 method will store the values for TC to read and put into the Database.</p>
@@ -474,7 +487,7 @@ TcEX platform and is only intended for testing apps locally.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.safe_rt">
-<em class="property">static </em><code class="descname">safe_rt</code><span class="sig-paren">(</span><em>resource_type</em>, <em>lower=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">safe_rt</code><span class="sig-paren">(</span><em>resource_type</em>, <em>lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format Resource Type</p>
 <p>Takes Custom Indicator types with a space characer and return a <em>safe</em> string.</p>
 <p>(e.g. <em>User Agent</em> is coverted to User_Agent or user_agent.)</p>
@@ -500,7 +513,7 @@ TcEX platform and is only intended for testing apps locally.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.safetag">
-<em class="property">static </em><code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truncate tag to match limit (35 characters) of ThreatConnect API.</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
@@ -522,7 +535,7 @@ TcEX platform and is only intended for testing apps locally.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.safeurl">
-<em class="property">static </em><code class="descname">safeurl</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">safeurl</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safeurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL encode value for safe HTTP request</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -540,7 +553,7 @@ TcEX platform and is only intended for testing apps locally.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.uni">
-<em class="property">static </em><code class="descname">uni</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex.TcEx.uni" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">uni</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.uni"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.uni" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-encode poorly encoded unicode data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -570,11 +583,10 @@ TcEX platform and is only intended for testing apps locally.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -592,7 +604,7 @@ TcEX platform and is only intended for testing apps locally.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

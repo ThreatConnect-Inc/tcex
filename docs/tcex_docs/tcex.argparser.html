@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.argparser module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,13 +144,13 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.argparser.ArgParser">
-<em class="property">class </em><code class="descclassname">tcex.argparser.</code><code class="descname">ArgParser</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.argparser.</code><code class="descname">ArgParser</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/argparser.html#ArgParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.argparser.ArgParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">argparse.ArgumentParser</span></code></p>
 <p>Overload of the ArgumentParser class.</p>
 <p>Adding common arguments for TcEx apps.</p>
 <dl class="method">
 <dt id="tcex.argparser.ArgParser._api_arguments">
-<code class="descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._api_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_api_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/argparser.html#ArgParser._api_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.argparser.ArgParser._api_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument specific to working with TC API.</p>
 <table class="docutils option-list" frame="void" rules="none">
 <col class="option" />
@@ -176,7 +178,7 @@
 
 <dl class="method">
 <dt id="tcex.argparser.ArgParser._batch_arguments">
-<code class="descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_batch_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/argparser.html#ArgParser._batch_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.argparser.ArgParser._batch_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arguments specific to Batch API writes.</p>
 <table class="docutils option-list" frame="void" rules="none">
 <col class="option" />
@@ -212,7 +214,7 @@
 
 <dl class="method">
 <dt id="tcex.argparser.ArgParser._playbook_arguments">
-<code class="descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_playbook_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/argparser.html#ArgParser._playbook_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.argparser.ArgParser._playbook_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument specific to playbook apps.</p>
 <p>These arguments will be passed to every playbook app by default.</p>
 <table class="docutils option-list" frame="void" rules="none">
@@ -245,7 +247,7 @@
 
 <dl class="method">
 <dt id="tcex.argparser.ArgParser._standard_arguments">
-<code class="descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.argparser.ArgParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_standard_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/argparser.html#ArgParser._standard_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.argparser.ArgParser._standard_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>These are the standard args passed to every TcEx App.</p>
 <table class="docutils option-list" frame="void" rules="none">
 <col class="option" />
@@ -323,11 +325,10 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -345,7 +346,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

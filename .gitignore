@@ -9,6 +9,8 @@
 *.log
 log
 tc.json
+app.py
+__main__.py
 
 #
 # Docs

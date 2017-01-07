@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,229 +144,19 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.tcex_job.TcExJob">
-<em class="property">class </em><code class="descclassname">tcex.tcex_job.</code><code class="descname">TcExJob</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_job.</code><code class="descname">TcExJob</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Job processing functionality for batch indicator adds and allows
-structured group additions.</p>
+<p>Job processing functionality</p>
+<p>Supports batch indicator adds and allows structured group adds.</p>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._chunk_indicators">
-<code class="descname">_chunk_indicators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob._chunk_indicators" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_chunk_indicators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._chunk_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._chunk_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split indicator list into smaller more manageable numbers.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_job.TcExJob._process_file_occurrences">
-<code class="descname">_process_file_occurrences</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_file_occurrences" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process file occurrences and write to TC API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob._process_group_association">
-<code class="descname">_process_group_association</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_group_association" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process groups and write to TC API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob._process_groups">
-<code class="descname">_process_groups</code><span class="sig-paren">(</span><em>owner</em>, <em>duplicates=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process groups and write to TC API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob._process_indicators">
-<code class="descname">_process_indicators</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process batch indicators and write to TC API</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_action">
-<code class="descname">batch_action</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_action" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the default batch action for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> (<em>string</em>) &#8211; Set batch job action</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_chunk">
-<code class="descname">batch_chunk</code><span class="sig-paren">(</span><em>chunk_size</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_chunk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch chunk_size for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk_size</strong> (<em>integer</em>) &#8211; Set batch job chunk size</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_halt_on_error">
-<code class="descname">batch_halt_on_error</code><span class="sig-paren">(</span><em>halt_on_error</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_halt_on_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch halt on error boolean for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>halt_on_error</strong> (<em>boolean</em>) &#8211; Boolean value for halt on error</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_indicator_success">
-<code class="descname">batch_indicator_success</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_indicator_success" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check completion for all batch jobs associated with this instance</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The status results from the Batch jobs.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_poll_interval">
-<code class="descname">batch_poll_interval</code><span class="sig-paren">(</span><em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_poll_interval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch polling interval for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval</strong> (<em>integer</em>) &#8211; Seconds between polling</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_poll_interval_max">
-<code class="descname">batch_poll_interval_max</code><span class="sig-paren">(</span><em>interval_max</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_poll_interval_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch polling interval max for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval_max</strong> (<em>integer</em>) &#8211; Max seconds before timeout on batch</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_status">
-<code class="descname">batch_status</code><span class="sig-paren">(</span><em>batch_id</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the status of a batch job</p>
-<p>This method will get the status of a Threatconnect API batch job.  If the batch
-job had any errors they will be automatically logged.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>int</em>) &#8211; Id of the batch job</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Status of batch job.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.batch_write_type">
-<code class="descname">batch_write_type</code><span class="sig-paren">(</span><em>write_type</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_write_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch write type for argument parser.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_type</strong> (<em>string</em>) &#8211; Type of Append or Replace</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.group">
-<code class="descname">group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add group data to job</p>
-<p>This method will add group data to the group list.  No
-validation of the data will be performed.</p>
-<p>Required Data:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="n">attributes</span><span class="p">,</span>
-    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">tags</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Optional Data:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;incident-001&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Incident&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;eventDate&#39;</span><span class="p">:</span> <span class="s1">&#39;2015-03-7T00:00:00Z&#39;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group</strong> (<em>dict | list</em>) &#8211; Dictionary or List containing group
-data</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_job.TcExJob.group_add">
-<code class="descname">group_add</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_name</em>, <em>owner</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_add" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_job.TcExJob._group_add">
+<code class="descname">_group_add</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_name</em>, <em>owner</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a group to ThreatConnect</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -390,20 +182,262 @@ or attributes</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_job.TcExJob.group_association">
-<code class="descname">group_association</code><span class="sig-paren">(</span><em>associations</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_association" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add group association data to job</p>
-<p>This method will add group association data to the group association
-list.  No validation of the data will be performed.</p>
-<p>Required Data:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;group_name&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;group_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;indicator&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;indicator_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Address&#39;</span>
-<span class="p">}</span>
-</pre></div>
+<dt id="tcex.tcex_job.TcExJob._process_file_occurrences">
+<code class="descname">_process_file_occurrences</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_file_occurrences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_file_occurrences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process file occurrences and write to TC API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob._process_group_association">
+<code class="descname">_process_group_association</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_group_association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process groups and write to TC API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob._process_groups">
+<code class="descname">_process_groups</code><span class="sig-paren">(</span><em>owner</em>, <em>duplicates=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process groups and write to TC API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob._process_indicators">
+<code class="descname">_process_indicators</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process batch indicators and write to TC API</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) &#8211; The owner name for the indicator to be written</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_action">
+<code class="descname">batch_action</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default batch action for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> (<em>string</em>) &#8211; Set batch job action</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_chunk">
+<code class="descname">batch_chunk</code><span class="sig-paren">(</span><em>chunk_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set batch chunk_size for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk_size</strong> (<em>integer</em>) &#8211; Set batch job chunk size</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_halt_on_error">
+<code class="descname">batch_halt_on_error</code><span class="sig-paren">(</span><em>halt_on_error</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_halt_on_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_halt_on_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set batch halt on error boolean for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>halt_on_error</strong> (<em>boolean</em>) &#8211; Boolean value for halt on error</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_indicator_success">
+<code class="descname">batch_indicator_success</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_indicator_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_indicator_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check completion for all batch jobs associated with this instance.</p>
+<p>Iterate over self._indicator_batch_ids set in
+<a class="reference internal" href="#tcex.tcex_job.TcExJob._process_indicators" title="tcex.tcex_job.TcExJob._process_indicators"><code class="xref py py-meth docutils literal"><span class="pre">_process_indicators()</span></code></a> and return the status of all job.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The status results from the Batch jobs.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_poll_interval">
+<code class="descname">batch_poll_interval</code><span class="sig-paren">(</span><em>interval</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_poll_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_poll_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set batch polling interval for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval</strong> (<em>integer</em>) &#8211; Seconds between polling</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_poll_interval_max">
+<code class="descname">batch_poll_interval_max</code><span class="sig-paren">(</span><em>interval_max</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_poll_interval_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_poll_interval_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set batch polling interval max for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval_max</strong> (<em>integer</em>) &#8211; Max seconds before timeout on batch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_status">
+<code class="descname">batch_status</code><span class="sig-paren">(</span><em>batch_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the status of a batch job</p>
+<p>This method will get the status of a batch job. Any errors returned from the batch status
+will be automatically logged.</p>
+<p>Critical errors are defined in the __init__ method in the self._batch_failures dictionary.
+If any of the critical errors are found the execution of the App will halt with a exit
+code of 1.  All other errors will set the status code to 3, but will not cause the execution
+to halt.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>int</em>) &#8211; Id of the batch job</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Status of batch job.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.batch_write_type">
+<code class="descname">batch_write_type</code><span class="sig-paren">(</span><em>write_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_write_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_write_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set batch write type for argument parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_type</strong> (<em>string</em>) &#8211; Type of Append or Replace</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.group">
+<code class="descname">group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add group data to TcEx job.</p>
+<p>This method will accept a list or dictionary of formatted <em>Group</em> data and submit it to the
+API when the <a class="reference internal" href="#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method is called.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">There is no validation of the data passed to this method.</p>
 </div>
+<p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;attribute&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s1">&#39;eventDate&#39;</span><span class="o">:</span> <span class="s1">&#39;2015-03-7T00:00:00Z&#39;</span>
+<span class="hll">  <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
+</span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Crimeware&#39;</span>
+  <span class="p">],</span>
+<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group</strong> (<em>dict | list</em>) &#8211; Dictionary or List containing group data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.group_association">
+<code class="descname">group_association</code><span class="sig-paren">(</span><em>associations</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add group association data to TcEx job.</p>
+<p>This method will add group association data to the group association list.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">There is no validation of the data passed to this method.</p>
+</div>
+<p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">  <span class="s1">&#39;group_name&#39;</span><span class="o">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s1">&#39;group_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s1">&#39;indicator&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s1">&#39;indicator_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -415,11 +449,27 @@ association data</td>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex_job.TcExJob.group_association_len">
+<code class="descname">group_association_len</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_association_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current length of the group association list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The length of the group association list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(integer)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.group_cache">
-<code class="descname">group_cache</code><span class="sig-paren">(</span><em>owner</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cache group data from TC</p>
-<p>The method will cache TC group data by owner and type.</p>
+<code class="descname">group_cache</code><span class="sig-paren">(</span><em>owner</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache group data from the ThreatConnect Platform.</p>
+<p>The method will cache ThreatConnect group data by owner and type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -442,8 +492,8 @@ association data</td>
 
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.group_id">
-<code class="descname">group_id</code><span class="sig-paren">(</span><em>name</em>, <em>owner</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the group id from the group cache</p>
+<code class="descname">group_id</code><span class="sig-paren">(</span><em>name</em>, <em>owner</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the group id from the group cache.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -455,10 +505,10 @@ association data</td>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Dictionary containing group name and group id</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID for the provided group name and owner.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
 </td>
 </tr>
 </tbody>
@@ -468,12 +518,12 @@ association data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.group_len">
 <code class="descname">group_len</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_len" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current length of the indicator list</p>
+<dd><p>The current length of the group list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The lenght of the indicator list</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The length of the group list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(integer)</td>
 </tr>
@@ -483,22 +533,56 @@ association data</td>
 
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.indicator">
-<code class="descname">indicator</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator" title="Permalink to this definition">¶</a></dt>
+<code class="descname">indicator</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add indicator data to TcEx job.</p>
-<p>This method will add indicator data to the indicator list.  No
-validation of the data will be performed and duplicates will only
-be handle when a dict is provided.</p>
-<p>Example Structure:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Address&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;rating&#39;</span><span class="p">:</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="n">attributes</span><span class="p">,</span>
-    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">tags</span>
-<span class="p">}</span>
-</pre></div>
+<p>This method will add indicator data to this TcEx job to be submitted via batch import.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">There is no validation of the data passed to this method. Duplicate prevention
+will only be handled when a dictionary is provided.</p>
 </div>
+<p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;associatedGroup&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;8&#39;</span>
+  <span class="p">],</span>
+  <span class="s1">&#39;attribute&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s1">&#39;confidence&#39;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="s1">&#39;rating&#39;</span><span class="o">:</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span>
+<span class="hll">  <span class="s1">&#39;summary&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
+</span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Crimeware&#39;</span>
+  <span class="p">],</span>
+<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -513,7 +597,7 @@ data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.indicator_data">
 <code class="descname">indicator_data</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the indicator list</p>
+<dd><p>Return the current indicator list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -544,8 +628,8 @@ data</td>
 
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process data and write to TC API</p>
+<code class="descname">process</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process all association, group and indicator data.</p>
 <p>Process each of the supported data types for this job.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -571,11 +655,10 @@ data</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -593,7 +676,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

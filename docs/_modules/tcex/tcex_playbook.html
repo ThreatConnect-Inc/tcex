@@ -1,0 +1,975 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.tcex_playbook &mdash; TcEx 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>tcex.tcex_playbook</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tcex.tcex_playbook</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="TcExPlaybook"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook">[docs]</a><span class="k">class</span> <span class="nc">TcExPlaybook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Playbook methods for accessing Database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class data</span>
+
+<span class="sd">        Intialize parent class for default values and logging method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_data_type</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Binary&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_binary</span><span class="p">,</span>
+            <span class="s1">&#39;BinaryArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_binary_array</span><span class="p">,</span>
+            <span class="s1">&#39;KeyValue&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_key_value</span><span class="p">,</span>
+            <span class="s1">&#39;KeyValueArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_key_value_array</span><span class="p">,</span>
+            <span class="s1">&#39;String&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_string</span><span class="p">,</span>
+            <span class="s1">&#39;StringArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_string_array</span><span class="p">,</span>
+            <span class="s1">&#39;TCEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity</span><span class="p">,</span>
+            <span class="s1">&#39;TCEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_tc_entity_array</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;Binary&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_binary</span><span class="p">,</span>
+            <span class="s1">&#39;BinaryArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_binary_array</span><span class="p">,</span>
+            <span class="s1">&#39;KeyValue&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_key_value</span><span class="p">,</span>
+            <span class="s1">&#39;KeyValueArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_key_value_array</span><span class="p">,</span>
+            <span class="s1">&#39;String&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_string</span><span class="p">,</span>
+            <span class="s1">&#39;StringArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_string_array</span><span class="p">,</span>
+            <span class="s1">&#39;TCEntity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity</span><span class="p">,</span>
+            <span class="s1">&#39;TCEntityArray&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_tc_entity_array</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sd">r&quot;&quot;&quot;^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sd">r&quot;&quot;&quot;(#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># parse out variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_out_variable</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">tcex_redis</span> <span class="k">import</span> <span class="n">TcExRedis</span>
+            <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Redis Module is not installed.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">TcExRedis</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_db_path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_db_port</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Invalid DB Type: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TcExPlaybook._parse_out_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook._parse_out_variable">[docs]</a>    <span class="k">def</span> <span class="nf">_parse_out_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Internal method to parse the tc_playbook_out_variable arg.</span>
+
+<span class="sd">        **Example Varible Format**::</span>
+
+<span class="sd">            #App:1234:status!String,#App:1234:status_code!String</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_out_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_playbook_out_variables</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">variables</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">parsed_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_variable</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+                <span class="n">variable_name</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span><span class="p">[</span><span class="n">variable_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="c1"># &#39;root&#39;: parsed_key[&#39;root&#39;],</span>
+                    <span class="c1"># &#39;job_id&#39;: parsed_key[&#39;job_id&#39;],</span>
+                    <span class="c1"># &#39;type&#39;: parsed_key[&#39;type&#39;],</span>
+                    <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">o</span>
+                <span class="p">}</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.check_output_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.check_output_variable">[docs]</a>    <span class="k">def</span> <span class="nf">check_output_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check to see if output variable was requested by downstream app.</span>
+
+<span class="sd">        Using the autogenerated dictionary of output variables check to see if provided</span>
+<span class="sd">        variable was requested by downstream app.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (string): The variable name, not the full variable.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (boolean): Boolean value indicator whether a match was found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">match</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for working with KeyValue DB.</span>
+
+<span class="sd">        This method will automatically determine the variable type and</span>
+<span class="sd">        call the appropriate method to write the data.  If a non standard</span>
+<span class="sd">        type is provided the data will be written as RAW data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result string of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;create variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="c1">## bcs - only for debugging or binary might cause issues</span>
+        <span class="c1">## self._tcex.log.debug(&#39;variable value: {0}&#39;.format(value))</span>
+        <span class="n">parsed_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_variable</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">variable_type</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_data_type</span><span class="p">[</span><span class="n">variable_type</span><span class="p">](</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_raw</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.create_output"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_output">[docs]</a>    <span class="k">def</span> <span class="nf">create_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for Create method of CRUD operation for working with KeyValue DB.</span>
+
+<span class="sd">        This method will automatically check to see if provided variable was requested by</span>
+<span class="sd">        a downstream app and if so create the data in the KeyValue DB.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result string of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;Variable </span><span class="si">{0}</span><span class="s1"> was requested by downstream app.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1">## bcs - only for debugging or binary might cause issues</span>
+                <span class="c1">## self._tcex.log.debug(&#39;variable value: {0}&#39;.format(value))</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Variable </span><span class="si">{0}</span><span class="s1"> has a none value an will not be written.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;Variable </span><span class="si">{0}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.parse_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.parse_variable">[docs]</a>    <span class="k">def</span> <span class="nf">parse_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method to parse an input or output variable.</span>
+
+<span class="sd">        **Example Variable**::</span>
+
+<span class="sd">        #App:1234:output!String</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (string): The variable name to parse.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Result of parsed string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parse variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                <span class="s1">&#39;job_id&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+            <span class="p">}</span>
+
+        <span class="c1"># self._tcex.log.debug(&#39;data {}&#39;.format(data))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for working with KeyValue DB.</span>
+
+<span class="sd">        This method will automatically check to see if a single variable is passed</span>
+<span class="sd">        or if &quot;mixed&quot; data is passed and return the results from the DB. It will also</span>
+<span class="sd">        automatically determine the variable type to read.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            array (boolean): Convert string/dict to Array/List before returning.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (any): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;read variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="n">parsed_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_variable</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">variable_type</span> <span class="o">=</span> <span class="n">parsed_key</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">variable_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">[</span><span class="n">variable_type</span><span class="p">](</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="c1"># return data as a list</span>
+        <span class="k">if</span> <span class="n">array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;read data </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_embedded"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded">[docs]</a>    <span class="k">def</span> <span class="nf">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method for &quot;mixed&quot; variable type.</span>
+
+<span class="sd">        .. Note:: The ``read()`` method will automatically determine if the variable is embedded and</span>
+<span class="sd">                  call this method.  There usually is no reason to call this method directly.</span>
+
+<span class="sd">        This method will automatically covert keys/variables embedded in a string</span>
+<span class="sd">        with data retrieved from DB. If there are no keys/variables the raw string</span>
+<span class="sd">        will be returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): The data to parsed and updated from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="c1">#     val = &#39; &#39;.join(val)</span>
+                <span class="c1"># elif isinstance(val, dict):</span>
+                <span class="c1">#     val = str(json.dumps(val))</span>
+                <span class="c1"># elif isinstance(val, int):</span>
+                <span class="c1">#     val = str(val)</span>
+                <span class="c1"># bcs - could just convert to string here?</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.variable_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.variable_type">[docs]</a>    <span class="k">def</span> <span class="nf">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the Type from the variable string or default to String type.</span>
+
+<span class="sd">        The default type is &quot;String&quot; for those cases when the input variable is</span>
+<span class="sd">        contains not &quot;DB variable&quot; and is just a String.</span>
+
+<span class="sd">        **Example Variable**::</span>
+
+<span class="sd">            #App:1234:output!StringArray returns **StringArray**</span>
+
+<span class="sd">        **Example String**::</span>
+
+<span class="sd">            &quot;My Data&quot; returns **String**</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (string): The variable to be parsed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The variable type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">var_type</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Variable </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+            <span class="n">var_type</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">var_type</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># db methods</span>
+    <span class="c1">#</span>
+
+    <span class="c1"># binary</span>
+<div class="viewcode-block" id="TcExPlaybook.create_binary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_binary">[docs]</a>    <span class="k">def</span> <span class="nf">create_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for binary data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_binary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># binary array</span>
+<div class="viewcode-block" id="TcExPlaybook.create_binary_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_binary_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_binary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for binary array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_binary_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># key/value</span>
+<div class="viewcode-block" id="TcExPlaybook.create_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">create_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for key/value data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># key/value array</span>
+<div class="viewcode-block" id="TcExPlaybook.create_key_value_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_key_value_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_key_value_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for key/value array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_key_value_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># raw</span>
+<div class="viewcode-block" id="TcExPlaybook.create_raw"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_raw">[docs]</a>    <span class="k">def</span> <span class="nf">create_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for raw data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_raw"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_raw">[docs]</a>    <span class="k">def</span> <span class="nf">read_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for raw data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
+
+    <span class="c1"># string</span>
+<div class="viewcode-block" id="TcExPlaybook.create_string"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_string">[docs]</a>    <span class="k">def</span> <span class="nf">create_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for string data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_string"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string">[docs]</a>    <span class="k">def</span> <span class="nf">read_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># handle improperly saved string</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># string array</span>
+<div class="viewcode-block" id="TcExPlaybook.create_string_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_string_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_string_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for string array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_string_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_string_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># tc entity</span>
+<div class="viewcode-block" id="TcExPlaybook.create_tc_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_tc_entity">[docs]</a>    <span class="k">def</span> <span class="nf">create_tc_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for TC entity data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_tc_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1"># tc entity array</span>
+<div class="viewcode-block" id="TcExPlaybook.create_tc_entity_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array">[docs]</a>    <span class="k">def</span> <span class="nf">create_tc_entity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create method of CRUD operation for TC entity array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to write to the DB.</span>
+<span class="sd">            value (any): The data to write to the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Result of DB write</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.read_tc_entity_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity array data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="c1">#</span>
+    <span class="c1"># Static Methods</span>
+    <span class="c1">#</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExPlaybook.entity_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">entity_to_bulk</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Single TC Entity to Bulk format</span>
+
+<span class="sd">        .. Attention:: This method is subject to frequent changes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (dictionary): TC Entity to be converted to Bulk.</span>
+<span class="sd">            value_field (string): Field names that &quot;value&quot; should be converted.</span>
+<span class="sd">            resource_type_parent (string): The resoure parent type of the tc_data provided.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): A dictionary representing TC Bulk format</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">entities</span> <span class="o">=</span> <span class="p">[</span><span class="n">entities</span><span class="p">]</span>
+
+        <span class="n">bulk_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="n">bulk</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+            <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;ownerName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ownerName&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Group&#39;</span><span class="p">,</span> <span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="s1">&#39;Victim&#39;</span><span class="p">]:</span>
+                <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Indicator&#39;</span><span class="p">]:</span>
+                <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;confidence&#39;</span><span class="p">)</span>
+                <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
+                <span class="n">bulk</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
+            <span class="n">bulk_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bulk</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bulk_array</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bulk_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">bulk_array</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExPlaybook.indicator_arrays"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.indicator_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_arrays</span><span class="p">(</span><span class="n">tc_entity_array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert TCEntityArray to Indicator Type dictionary</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tc_entity_array (dictionary): The TCEntityArray to convert</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Dictionary containing arrays of indicators for each indicator type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ea</span> <span class="ow">in</span> <span class="n">tc_entity_array</span><span class="p">:</span>
+            <span class="n">type_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">type_dict</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_bulk</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert ThreatConnect JSON response to a TCEntityArray</span>
+
+<span class="sd">        .. Attention:: This method is subject to frequent changes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tc_data (dictionary): Array of data returned from TC API call.</span>
+<span class="sd">            value_fields (list): Field names that contain the &quot;value&quot; data.</span>
+<span class="sd">            resource_type (string): The resoure type of the tc_data provided.</span>
+<span class="sd">            resource_type_parent (string): The resoure parent type of the tc_data provided.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A dictionary representing a TCEntityArray</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">tc_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tc_data</span><span class="p">]</span>
+
+        <span class="n">bulk_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tc_data</span><span class="p">:</span>
+
+            <span class="c1"># value</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">value_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+                    <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Group&#39;</span><span class="p">,</span> <span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="s1">&#39;Victim&#39;</span><span class="p">]:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; : &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Indicator&#39;</span><span class="p">]:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; : &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;owner&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ownerName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">]</span>
+
+            <span class="c1"># type</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource_type</span>
+
+            <span class="n">bulk_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bulk_array</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_entity">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_entity</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert ThreatConnect JSON response to a TCEntityArray</span>
+
+<span class="sd">        .. Attention:: This method is subject to frequent changes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tc_data (dictionary): Array of data returned from TC API call.</span>
+<span class="sd">            value_fields (list): Field names that contain the &quot;value&quot; data.</span>
+<span class="sd">            resource_type (string): The resoure type of the tc_data provided.</span>
+<span class="sd">            resource_type_parent (string): The resoure parent type of the tc_data provided.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): A list representing a TCEntityArray</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">tc_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tc_data</span><span class="p">]</span>
+
+        <span class="n">entity_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tc_data</span><span class="p">:</span>
+            <span class="n">entity</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;webLink&#39;</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;webLink&#39;</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="c1"># value</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="s1">&#39;summary&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">value_fields</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; : &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="c1"># type</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource_type</span>
+
+            <span class="k">if</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Indicator&#39;</span><span class="p">]:</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;confidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;confidence&#39;</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;rating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;threatAssessConfidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;threatAssessConfidence&#39;</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;threatAssessRating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;threatAssessRating&#39;</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;dateLastModified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastModified&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Indicator&#39;</span><span class="p">,</span> <span class="s1">&#39;Group&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;owner&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                    <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;ownerName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;ownerName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ownerName&#39;</span><span class="p">)</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">resource_type_parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Victim&#39;</span><span class="p">]:</span>
+                <span class="n">entity</span><span class="p">[</span><span class="s1">&#39;ownerName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;org&#39;</span><span class="p">)</span>
+
+            <span class="n">entity_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">entity_array</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_key_value</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">key_field</span><span class="p">,</span> <span class="n">value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert JSON data to a KeyValue/KeyValueArray</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            json_data (dictionary|list): Array/List of JSON data.</span>
+<span class="sd">            key_field (string): Field name for the key.</span>
+<span class="sd">            value_field (string): Field name for the value or use the value of the key field.</span>
+<span class="sd">            array (boolean): Always return array even if only on result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary|list): A dictionary or list representing a KeyValue or KeyValueArray.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">json_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">json_data</span><span class="p">]</span>
+
+        <span class="n">key_value_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># key / value based off same entry</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">key_field</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_field</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value_field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># key / value data are from seperate entries</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key_field</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value_field</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">key_value_array</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span>
+            <span class="p">})</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_value_array</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">array</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key_value_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">key_value_array</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

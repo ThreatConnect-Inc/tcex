@@ -1,0 +1,1585 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.tcex_resources &mdash; TcEx 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>tcex.tcex_resources</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tcex.tcex_resources</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Resource"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource">[docs]</a><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Common settings for All ThreatConnect API Endpoints&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+
+        <span class="c1"># request</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
+        <span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
+
+        <span class="c1"># common</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">authorization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_or</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Resource.add_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.add_filter">[docs]</a>    <span class="k">def</span> <span class="nf">add_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add ThreatConnect API Filter for this resource request.</span>
+
+<span class="sd">        Internal Reference:</span>
+<span class="sd">            https://docs.google.com/document/d/1mZx9qF9o9RqVGXd_hT6t55aqLtPyzTL2zWRVQsB3HiM</span>
+
+<span class="sd">        External Reference:</span>
+<span class="sd">            https://docs.threatconnect.com</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (string): The filter field name.</span>
+<span class="sd">            operator (string): The filter comparison operator.</span>
+<span class="sd">            value (string): The filter value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="n">operator</span><span class="p">,</span>
+            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span>
+        <span class="p">})</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect API branch for this resource.</span>
+
+<span class="sd">        The **addresses** endpoint from ``/v2/indicators/addresses/``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_branch_base</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect API branch base (parent branch) for this resource.</span>
+
+<span class="sd">        The **indicators** endpoint from ``/v2/indicators`` or ``/v2/indicators/addresses``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect API entity for this resource.</span>
+
+<span class="sd">        The **address** JSON entity from JSON response to ``/v2/indicators/addresses``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect API URI for this resource.</span>
+
+<span class="sd">        The API URI endpoint ``/v2/indicators/addresses``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+
+<div class="viewcode-block" id="Resource.association_custom"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom">[docs]</a>    <span class="k">def</span> <span class="nf">association_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Association pivot for this resource with resource value.</span>
+
+<span class="sd">        .. Attention:: New untested method</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                 |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType} |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
+<span class="sd">            resource_value (string): The resource pivot value (group id or indicator).</span>
+<span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_api_branch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on association for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
+<span class="sd">        victims, etc) for this resource that are associated with the provided</span>
+<span class="sd">        resource_type and value.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                 |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                      |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_api_branch (string): The resource pivot api branch including resource id.</span>
+<span class="sd">            resource_value (string): The resource pivot value (group id or indicator).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+            <span class="c1"># bcs ^ by using request_uri a user can change pivots without having to worry about the</span>
+            <span class="c1">#       uri getting mangled, but adding id&#39;s and indicators gets overwritten.  Since</span>
+            <span class="c1">#       the uri should get reset after the request is made is should be okay to</span>
+            <span class="c1">#       use request_uri here.</span>
+
+<div class="viewcode-block" id="Resource.attributes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Attribute endpoint for this resource with optional attribute id.</span>
+
+<span class="sd">        This method will set the resource endpoint for working with Attributes.</span>
+<span class="sd">        The HTTP GET method will return all attributes applied to this resource</span>
+<span class="sd">        or if a resource id (attribute id) is provided it will return the</span>
+<span class="sd">        provided attribute if exists on this resource. An attribute can be added</span>
+<span class="sd">        to this resource using the HTTP POST method and passing a JSON body</span>
+<span class="sd">        containing the attribute type and attribute value. Using the HTTP PUT</span>
+<span class="sd">        method with a provided resource id an attribute can be updated. The</span>
+<span class="sd">        HTTP DELETE method will remove the provided attribute from this</span>
+<span class="sd">        resource.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (Optional [string]): The resource id (attribute id).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/attributes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;attribute&#39;</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.authorization_method"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.authorization_method">[docs]</a>    <span class="k">def</span> <span class="nf">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method to create authorization header for this resource request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method (method): The method to use to genearate the authorization header(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="n">method</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The body for this resource request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span>
+
+    <span class="nd">@body</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The POST/PUT body content for this resource request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Content-Type header value for this resource request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">content_type</span>
+
+    <span class="nd">@content_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Content-Type header for this resource request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="Resource.file_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.file_action">[docs]</a>    <span class="k">def</span> <span class="nf">file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;File action pivot for this resource.</span>
+
+<span class="sd">        .. Attention:: New untested method</span>
+
+<span class="sd">        .. Note:: Possible action_names are: drop, archive or traffic</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/                                    |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
+<span class="sd">            action_name (string): The name of the action as defined by Threatconnect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">resource_value</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.group_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.group_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">group_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on groups for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (indicators, tasks, victims,</span>
+<span class="sd">        etc) for this resource that are associated with the provided resource</span>
+<span class="sd">        id (indicator value).</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}                                    |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/                                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}                                             |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/                                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_type (string): The resource pivot resource type (indicator type).</span>
+<span class="sd">            resource_id (integer): The resource pivot id (indicator value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;groups/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">http_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP Method for this resource request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">http_method</span>
+
+    <span class="nd">@http_method</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">http_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The HTTP Method for this resource request.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="Resource.indicator_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.indicator_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on indicators for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (groups, tasks, victims, etc)</span>
+<span class="sd">        for this resource that are associated with the provided resource id</span>
+<span class="sd">        (indicator value).</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}                                    |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/                                                   |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}                                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/                                                 |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_type (string): The resource pivot resource type (indicator type).</span>
+<span class="sd">            resource_id (integer): The resource pivot id (indicator value).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;indicators/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">indicator_type</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The name value for this resource.</span>
+
+<span class="sd">        The name of the Resource Type (e.g. Indicator, Task, etc.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Owner payload value for this resource request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">)</span>
+
+    <span class="nd">@owner</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The Owner payload value for this resource request.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Provided owner was invalid. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The parent object name for this resource.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
+
+<div class="viewcode-block" id="Resource.request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.request">[docs]</a>    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send the request to the API.</span>
+
+<span class="sd">        This method will send the request to the API.  It will try to handle</span>
+<span class="sd">        all the types of responses and provide the relevant data when possible.</span>
+<span class="sd">        Some basic error detection and handling is implemented, but not all failure</span>
+<span class="sd">        cases will get caught.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            (dictionary): Response/Results data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;URL must not be None Type.&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Resource URL: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
+            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;operator&#39;</span><span class="p">],</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;filters: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filters</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filters</span><span class="p">))</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;response&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;result_count&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stream</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;application/json&#39;</span><span class="p">:</span>
+                    <span class="c1"># handle bulk</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">==</span> <span class="s1">&#39;bulk&#39;</span><span class="p">:</span>
+                        <span class="c1"># bcs - handle multiple downloads</span>
+                        <span class="n">temp_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;temp json file: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">temp_file</span><span class="p">))</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="mi">1024</span><span class="p">):</span>
+                                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># data = response.json()</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">==</span> <span class="s1">&#39;bulk&#39;</span><span class="p">:</span>
+                        <span class="c1"># bulk response - {&quot;indicator&quot; : [{........</span>
+                        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">request_entity</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="c1"># bcs - not sure about this one.  may need a better check for results</span>
+                        <span class="c1">#       that only returns {&quot;status&quot;:&quot;Success&quot;}</span>
+                        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                        <span class="sd">&quot;&quot;&quot; this should be the most common outcome &quot;&quot;&quot;</span>
+                        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">request_entity</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="s1">&#39;Failed Request: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">:</span>
+                    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request for </span><span class="si">{}</span><span class="s1">: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Error: Invalid key </span><span class="si">{}</span><span class="s1">. [</span><span class="si">{}</span><span class="s1">] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_entity</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># bcs - to reset or not to reset?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># self._r.reset_headers()</span>
+        <span class="c1"># self._r.reset_payload()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The temporary entity name used for the request.</span>
+
+<span class="sd">        The request entity starts as the resource api_entity and changes</span>
+<span class="sd">        depending on the pivot resource. This value is reset after the</span>
+<span class="sd">        *request()* method is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The temporary uri used for the request.</span>
+
+<span class="sd">        The request uri starts as the resource api_uri and changes depending on</span>
+<span class="sd">        the pivot resource. This value is reset after the *request()* method is</span>
+<span class="sd">        called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span>
+
+<div class="viewcode-block" id="Resource.security_label_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.security_label_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">security_label_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on security labels for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
+<span class="sd">        victims, etc) for this resource that have the provided security</span>
+<span class="sd">        label applied.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                                               |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}                                    |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}                                |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The resource pivot id (security label name).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;securityLabels/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.security_labels"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.security_labels">[docs]</a>    <span class="k">def</span> <span class="nf">security_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Security Label endpoint for this resource with optional label name.</span>
+
+<span class="sd">        This method will set the resource endpoint for working with Security</span>
+<span class="sd">        Labels.  The HTTP GET method will return all security labels applied</span>
+<span class="sd">        to this resource or if a resource id (security label name) is provided</span>
+<span class="sd">        it will return the provided security label if it has been applied,</span>
+<span class="sd">        which could be useful to verify a security label is applied.  The</span>
+<span class="sd">        provided resource_id (security label name) can be applied to this</span>
+<span class="sd">        resource using the HTTP POST method.  The HTTP DELETE method will</span>
+<span class="sd">        remove the provided security label from this resource.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels                                                        |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (Optional [string]): The resource id (security label name).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/securityLabels&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.tag_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.tag_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">tag_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on tags for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
+<span class="sd">        victims, etc) for this resource that have the provided tag applied.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                                                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}                                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The resource pivot id (tag name).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;tags/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Resource.tags"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tag endpoint for this resource with optional tag name.</span>
+
+<span class="sd">        This method will set the resource endpoint for working with Tags. The</span>
+<span class="sd">        HTTP GET method will return all tags applied to this resource or if a</span>
+<span class="sd">        resource id (tag name) is provided it will return the provided tag if</span>
+<span class="sd">        it has been applied, which could be useful to verify a tag is applied.</span>
+<span class="sd">        The provided resource_id (tag) can be applied to this resource using</span>
+<span class="sd">        the HTTP POST method.  The HTTP DELETE method will remove the provided</span>
+<span class="sd">        tag from this resource.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags                                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/tags&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Resource.task_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.task_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">task_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on Tasks for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, victims,</span>
+<span class="sd">        etc) for this resource that are associated with the provided task id.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                                                        |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}                                             |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}                                                    |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}                                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The resource pivot id (task id).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;tasks/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The value fields for this resource.</span>
+
+<span class="sd">        The fields in the response JSON that have the key value</span>
+<span class="sd">        (e.g. [&#39;md5&#39;, &#39;sha1&#39;, &#39;sha256&#39;] or [&#39;ip&#39;]).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span>
+
+<div class="viewcode-block" id="Resource.victim_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">victim_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on Victims for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
+<span class="sd">        etc) for this resource that are associated with the provided victim id.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                                                      |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}                                                  |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;victims/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect URL for this resource request.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span>
+
+    <span class="nd">@url</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ThreatConnect URL for this resource request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="Resource.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A printable string for this resource.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: update to include resource specific data.</span>
+        <span class="n">printable_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:_^80}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Resource&#39;</span><span class="p">)</span>
+
+        <span class="c1"># body</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Body&#39;</span><span class="p">)</span>
+        <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Body&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+
+        <span class="c1"># headers</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Headers&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="c1"># payload</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0!s:40}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Payload&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">printable_string</span> <span class="o">+=</span> <span class="s1">&#39;  </span><span class="si">{0!s:&lt;29}{1!s:&lt;50}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">printable_string</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Batch</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Batch">[docs]</a><span class="k">class</span> <span class="nc">Batch</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Batch Resource Class&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Batch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;batch&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="c1"># only on parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;batchId&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Batch&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Batch&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="c1"># self._value_fields = [&#39;summary&#39;]</span>
+
+<div class="viewcode-block" id="Batch.batch_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Batch.batch_id">[docs]</a>    <span class="k">def</span> <span class="nf">batch_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ID of the batch job used to push data and/or retrieve status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            batch_id (integer): The id of the batch job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;batchStatus&#39;</span></div>
+
+<div class="viewcode-block" id="Batch.errors"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Batch.errors">[docs]</a>    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the URI to retrieve errors for a batch job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            batch_id (integer): The id of the batch job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/errors&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">)</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Indicator</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Indicator Resource Class</span>
+
+<span class="sd">    This resource class is the base for all indicators and will return</span>
+<span class="sd">    indicators of all types.  For specific indicator types use the child</span>
+<span class="sd">    class of the type required.  Custom indicator types are suppored</span>
+<span class="sd">    dynamically and are not defined here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Indicator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;indicators&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="c1"># only on parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Indicator&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Indicator&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Indicator.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): The indicator value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Bulk&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Indicator.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for indicator method.</span>
+
+<span class="sd">        The resource id for an indicator in this class is the indicator value and not</span>
+<span class="sd">        the actual indicator id stored in ThreatConnect.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): The indicator value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Address"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Address">[docs]</a><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Address Resource Class</span>
+
+<span class="sd">    This resource class will return indicators of type Address (ipv4 and/or</span>
+<span class="sd">    ipv6). To filter on specific indicators use the **indicator** or **resoure_id**</span>
+<span class="sd">    methods provided in the parent Class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Address</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;addresses&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;address&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Address&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Bulk">[docs]</a><span class="k">class</span> <span class="nc">Bulk</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Bulk Resource Class</span>
+
+<span class="sd">    This resource class will return bulk status or bulk indicators via the Bulk</span>
+<span class="sd">    API endpoint.  The base URL will return a status of bulk generation (see</span>
+<span class="sd">    example below), while the **/csv** and **/json** endpoints will return the</span>
+<span class="sd">    indicator is the selected format.</span>
+
+<span class="sd">    Base response::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;status&quot;: &quot;Success&quot;,</span>
+<span class="sd">            &quot;data&quot;: {</span>
+<span class="sd">                &quot;bulkStatus&quot;: {</span>
+<span class="sd">                    &quot;name&quot;: &quot;Acme Corp&quot;,</span>
+<span class="sd">                    &quot;csvEnabled&quot;: false,</span>
+<span class="sd">                    &quot;jsonEnabled&quot;: true,</span>
+<span class="sd">                    &quot;nextRun&quot;: &quot;2016-12-07T00:00:00Z&quot;,</span>
+<span class="sd">                    &quot;lastRun&quot;: &quot;2016-12-06T00:04:33Z&quot;,</span>
+<span class="sd">                    &quot;status&quot;: &quot;Complete&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Bulk</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;bulk&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Indicator&#39;</span>  <span class="c1"># bcs - should this be bulk?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Bulk.csv"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Bulk.csv">[docs]</a>    <span class="k">def</span> <span class="nf">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ondemand</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update request URI to return CSV data.</span>
+
+<span class="sd">        For onDemand bulk generation to work it must first be enabled in the</span>
+<span class="sd">        ThreatConnect platform under System settings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ondemand (boolean): Enable on demand bulk generation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="s1">&#39;csv&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">ondemand</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;runNow&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bulk.json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Bulk.json">[docs]</a>    <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ondemand</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update request URI to return JSON data.</span>
+
+<span class="sd">        For onDemand bulk generation to work it must first be enabled in the</span>
+<span class="sd">        ThreatConnect platform under System settings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ondemand (boolean): Enable on demand bulk generation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">ondemand</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;runNow&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="EmailAddress"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.EmailAddress">[docs]</a><span class="k">class</span> <span class="nc">EmailAddress</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;EmailAddress Resource Class</span>
+
+<span class="sd">    This resource class will return indicators of type Email. To filter on</span>
+<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    in the parent Class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EmailAddress</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;emailAddresses&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;emailAddress&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;EmailAddress&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="File"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File">[docs]</a><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File Resource Class</span>
+
+<span class="sd">    This resource class will return indicators of type File (e.g md5, sha1,</span>
+<span class="sd">    sha256). To filter on specific indicators use the **indicator** or</span>
+<span class="sd">    **resoure_id** methods provided in the parent Class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;files&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;file&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;File&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">,</span> <span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="File.occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the URI to retrieve file occurrences for the provided indicator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator (string): The indicator to retrieve file occurrences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/fileOccurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">indicator</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Host Resource Class</span>
+
+<span class="sd">    This resource class will return indicators of type Host. To filter on</span>
+<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    in the parent Class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Host</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;hosts&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;host&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Host&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hostName&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="URL"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.URL">[docs]</a><span class="k">class</span> <span class="nc">URL</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;URL Resource Class</span>
+
+<span class="sd">    This resource class will return indicators of type URL. To filter on</span>
+<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    in the parent Class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;urls&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;url&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;URL&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="URL.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.URL.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
+
+<span class="sd">        Overload parent class method to ensure URL indicator is properly encoded.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): The indicator value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safeurl</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Group</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Group Resource Class</span>
+
+<span class="sd">    This resource class is the base for all groups and will return groups of</span>
+<span class="sd">    all types.  For specific group types use the child class of the type</span>
+<span class="sd">    required.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;groups&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Group&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Group&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Group.group_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group.group_id">[docs]</a>    <span class="k">def</span> <span class="nf">group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Group ID for specific group retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The group id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for group_id method</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The group id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Adversary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Adversary">[docs]</a><span class="k">class</span> <span class="nc">Adversary</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adversary Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Adversary. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;adversaries&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;adversary&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Adversary&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+
+
+<div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Document Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Document. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcex (instance): Instance of TcEx Class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;document&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Document&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+
+<div class="viewcode-block" id="Document.download"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to download the document for this resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The group id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Document.upload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to upload the a document to this resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The group id.</span>
+<span class="sd">            data (any): The raw data to upload.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/octet-stream&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/upload&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Email"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Email">[docs]</a><span class="k">class</span> <span class="nc">Email</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Email Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Email. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Email</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;emails&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;email&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Email&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+
+
+<div class="viewcode-block" id="Incident"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Incident">[docs]</a><span class="k">class</span> <span class="nc">Incident</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Incident Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Incident. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Incident</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;incidents&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;incident&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Incident&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+
+<div class="viewcode-block" id="Incident.event_date"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Incident.event_date">[docs]</a>    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Incident Event Date.</span>
+
+<span class="sd">        .. Attention:: Not implemented at this time</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            date: The event date in ISO 8601 format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Signature Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Signature. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Signature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;signatures&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;signature&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Signature&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+
+
+<div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Threat Resource Class</span>
+
+<span class="sd">    This resource class will return groups of type Threat. To filter on</span>
+<span class="sd">    specific groups use the **group_id** or **resource_id** methods provided in</span>
+<span class="sd">    the parent class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Threat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;threats&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;threat&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Threat&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+<span class="c1">#</span>
+<span class="c1"># Owner</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Owner"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner">[docs]</a><span class="k">class</span> <span class="nc">Owner</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Owner Class</span>
+
+<span class="sd">    This resource class will return Owners.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Owner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;owners&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;owner&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Owner&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Owner&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Owner.owner_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner.owner_id">[docs]</a>    <span class="k">def</span> <span class="nf">owner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Owner Id for specific retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The owner id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Owner.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for owner_id method</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The owner id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Security Label</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="SecurityLabel"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.SecurityLabel">[docs]</a><span class="k">class</span> <span class="nc">SecurityLabel</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Security Label Class</span>
+
+<span class="sd">    This resource class will return Security Labels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;securityLabels&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;SecurityLabel&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;SecurityLabel&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SecurityLabel.label"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.SecurityLabel.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Security Label for specific retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The security label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SecurityLabel.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.SecurityLabel.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for label method</span>
+
+<span class="sd">        The resource id is the security label name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The security label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Task</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Task Class</span>
+
+<span class="sd">    This resource class will return Tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;tasks&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;task&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Task&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Task&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Task.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Task Id for specific retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The task id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Victim</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="Victim"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim">[docs]</a><span class="k">class</span> <span class="nc">Victim</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Victim Class</span>
+
+<span class="sd">    This resource class will return Victims.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Victim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;victims&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;victim&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Victim&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Victim&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Victim.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Victim Id for specific retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The victim id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># Class Factory</span>
+<span class="c1">#</span>
+
+<div class="viewcode-block" id="ClassFactory"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.ClassFactory">[docs]</a><span class="k">def</span> <span class="nf">ClassFactory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base_class</span><span class="p">,</span> <span class="n">class_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Internal method for dynamically building Custom Indicator classes.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="n">base_class</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">class_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),{</span><span class="s2">&quot;__init__&quot;</span><span class="p">:</span> <span class="n">__init__</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">newclass</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

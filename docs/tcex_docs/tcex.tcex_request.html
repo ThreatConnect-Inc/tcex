@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_request module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.tcex_request module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,17 +144,17 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.tcex_request.TcExRequest">
-<em class="property">class </em><code class="descclassname">tcex.tcex_request.</code><code class="descname">TcExRequest</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_request.</code><code class="descname">TcExRequest</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.__str__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print this request instance configuration.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.add_header">
-<code class="descname">add_header</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.add_header" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_header</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.add_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.add_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a key value pair to header.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -170,7 +172,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.add_payload">
-<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.add_payload" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.add_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.add_payload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a key value pair to payload for this request.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -194,7 +196,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.authorization_method">
-<code class="descname">authorization_method</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.authorization_method" title="Permalink to this definition">¶</a></dt>
+<code class="descname">authorization_method</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.authorization_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.authorization_method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to create Authorization header for this request.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -250,19 +252,19 @@
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.reset_headers">
-<code class="descname">reset_headers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.reset_headers" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reset_headers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.reset_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.reset_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset header dictionary for this request.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.reset_payload">
-<code class="descname">reset_payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.reset_payload" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reset_payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.reset_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.reset_payload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset payload dictionary</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_request.TcExRequest.send">
-<code class="descname">send</code><span class="sig-paren">(</span><em>stream=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_request.TcExRequest.send" title="Permalink to this definition">¶</a></dt>
+<code class="descname">send</code><span class="sig-paren">(</span><em>stream=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_request.html#TcExRequest.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_request.TcExRequest.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the HTTP request via Python Requests modules.</p>
 <p>This method will send the request to the remote endpoint.  It will try to handle
 temporary communications issues by retrying the request automatically.</p>
@@ -316,11 +318,10 @@ temporary communications issues by retrying the request automatically.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -338,7 +339,7 @@ temporary communications issues by retrying the request automatically.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

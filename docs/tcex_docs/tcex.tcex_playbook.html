@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,12 +144,12 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.tcex_playbook.TcExPlaybook">
-<em class="property">class </em><code class="descclassname">tcex.tcex_playbook.</code><code class="descname">TcExPlaybook</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_playbook.</code><code class="descname">TcExPlaybook</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Playbook methods for accessing Database</p>
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook._parse_out_variable">
-<code class="descname">_parse_out_variable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook._parse_out_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_parse_out_variable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook._parse_out_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook._parse_out_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal method to parse the tc_playbook_out_variable arg.</p>
 <p><strong>Example Varible Format</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#App:1234:status!String,#App:1234:status_code!String</span>
@@ -157,7 +159,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.check_output_variable">
-<code class="descname">check_output_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.check_output_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_output_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.check_output_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.check_output_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check to see if output variable was requested by downstream app.</p>
 <p>Using the autogenerated dictionary of output variables check to see if provided
 variable was requested by downstream app.</p>
@@ -177,7 +179,7 @@ variable was requested by downstream app.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically determine the variable type and
 call the appropriate method to write the data.  If a non standard
@@ -204,7 +206,7 @@ type is provided the data will be written as RAW data.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_binary">
-<code class="descname">create_binary</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_binary</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -228,7 +230,7 @@ type is provided the data will be written as RAW data.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_binary_array">
-<code class="descname">create_binary_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_binary_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for binary array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -252,7 +254,7 @@ type is provided the data will be written as RAW data.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_key_value">
-<code class="descname">create_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -276,7 +278,7 @@ type is provided the data will be written as RAW data.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_key_value_array">
-<code class="descname">create_key_value_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_key_value_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for key/value array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -300,7 +302,7 @@ type is provided the data will be written as RAW data.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_output">
-<code class="descname">create_output</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_output" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_output</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for Create method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if provided variable was requested by
 a downstream app and if so create the data in the KeyValue DB.</p>
@@ -326,7 +328,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_raw">
-<code class="descname">create_raw</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_raw" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_raw</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for raw data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -350,7 +352,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_string">
-<code class="descname">create_string</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_string</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -374,7 +376,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_string_array">
-<code class="descname">create_string_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_string_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for string array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -398,7 +400,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_tc_entity">
-<code class="descname">create_tc_entity</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_tc_entity</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -422,7 +424,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array">
-<code class="descname">create_tc_entity_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_tc_entity_array</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.create_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.create_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create method of CRUD operation for TC entity array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -446,7 +448,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">
-<em class="property">static </em><code class="descname">entity_to_bulk</code><span class="sig-paren">(</span><em>entities</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">entity_to_bulk</code><span class="sig-paren">(</span><em>entities</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.entity_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Single TC Entity to Bulk format</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
@@ -475,7 +477,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.indicator_arrays">
-<em class="property">static </em><code class="descname">indicator_arrays</code><span class="sig-paren">(</span><em>tc_entity_array</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">indicator_arrays</code><span class="sig-paren">(</span><em>tc_entity_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.indicator_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert TCEntityArray to Indicator Type dictionary</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -493,7 +495,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_bulk">
-<em class="property">static </em><code class="descname">json_to_bulk</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_bulk" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">json_to_bulk</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_bulk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ThreatConnect JSON response to a TCEntityArray</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
@@ -523,7 +525,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_entity">
-<em class="property">static </em><code class="descname">json_to_entity</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_entity" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">json_to_entity</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ThreatConnect JSON response to a TCEntityArray</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
@@ -553,7 +555,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_key_value">
-<em class="property">static </em><code class="descname">json_to_key_value</code><span class="sig-paren">(</span><em>json_data</em>, <em>key_field</em>, <em>value_field=None</em>, <em>array=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_key_value" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">json_to_key_value</code><span class="sig-paren">(</span><em>json_data</em>, <em>key_field</em>, <em>value_field=None</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert JSON data to a KeyValue/KeyValueArray</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -579,7 +581,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.parse_variable">
-<code class="descname">parse_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.parse_variable" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse_variable</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.parse_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.parse_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to parse an input or output variable.</p>
 <p><strong>Example Variable</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#App:1234:output!String</span>
@@ -601,7 +603,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if a single variable is passed
 or if &#8220;mixed&#8221; data is passed and return the results from the DB. It will also
@@ -628,7 +630,7 @@ automatically determine the variable type to read.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary">
-<code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -646,7 +648,7 @@ automatically determine the variable type to read.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary_array">
-<code class="descname">read_binary_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_binary_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -664,7 +666,7 @@ automatically determine the variable type to read.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_embedded">
-<code class="descname">read_embedded</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_embedded</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_embedded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method for &#8220;mixed&#8221; variable type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -690,7 +692,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value">
-<code class="descname">read_key_value</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_key_value</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -708,7 +710,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value_array">
-<code class="descname">read_key_value_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_key_value_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -726,7 +728,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_raw">
-<code class="descname">read_raw</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_raw" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_raw</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for raw data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -744,7 +746,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string">
-<code class="descname">read_string</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_string</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -762,7 +764,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string_array">
-<code class="descname">read_string_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_string_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -780,7 +782,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity">
-<code class="descname">read_tc_entity</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_tc_entity</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -798,7 +800,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">
-<code class="descname">read_tc_entity_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_tc_entity_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -816,7 +818,7 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.variable_type">
-<code class="descname">variable_type</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.variable_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">variable_type</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.variable_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.variable_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the Type from the variable string or default to String type.</p>
 <p>The default type is &#8220;String&#8221; for those cases when the input variable is
 contains not &#8220;DB variable&#8221; and is just a String.</p>
@@ -856,11 +858,10 @@ contains not &#8220;DB variable&#8221; and is just a String.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -878,7 +879,7 @@ contains not &#8220;DB variable&#8221; and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

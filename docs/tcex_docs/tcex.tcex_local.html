@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local module &mdash; TcEx 1.0.0 documentation</title>
+  <title>tcex.tcex_local module &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -84,8 +84,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -142,11 +144,11 @@
 <p>standard</p>
 <dl class="class">
 <dt id="tcex.tcex_local.TcExLocal">
-<em class="property">class </em><code class="descclassname">tcex.tcex_local.</code><code class="descname">TcExLocal</code><a class="headerlink" href="#tcex.tcex_local.TcExLocal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_local.</code><code class="descname">TcExLocal</code><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to support running local instance TcEx Apps</p>
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal._exit">
-<code class="descname">_exit</code><span class="sig-paren">(</span><em>message</em>, <em>code=0</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal._exit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_exit</code><span class="sig-paren">(</span><em>message</em>, <em>code=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit the script</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -164,7 +166,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal._required_arguments">
-<code class="descname">_required_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal._required_arguments" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_required_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._required_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._required_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required arguments for this class to function</p>
 </dd></dl>
 
@@ -186,7 +188,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal.gen_lib">
-<code class="descname">gen_lib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal.gen_lib" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gen_lib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.gen_lib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.gen_lib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build libs locally for app</p>
 <p>Using the setup.py this method will install all required python modules locally
 to be used for local testing.</p>
@@ -194,13 +196,13 @@ to be used for local testing.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal.load_install_json">
-<code class="descname">load_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal.load_install_json" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.load_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.load_install_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the install.json file</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal.package">
-<code class="descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal.package" title="Permalink to this definition">¶</a></dt>
+<code class="descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.package" title="Permalink to this definition">¶</a></dt>
 <dd><p>Package the app for deployment</p>
 <p>This method will package the app for deployment to ThreatConnect.  It will download
 all required dependencies and include them in the package.  Validating of the
@@ -231,7 +233,7 @@ install.json file or files will be automatically run before packaging the app.</
 
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="headerlink" href="#tcex.tcex_local.TcExLocal.validate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate install.json file for required parameters</p>
 </dd></dl>
 
@@ -249,11 +251,10 @@ install.json file or files will be automatically run before packaging the app.</
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -271,7 +272,7 @@ install.json file or files will be automatically run before packaging the app.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
