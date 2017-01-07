@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcEx &mdash; TcEx 1.0.0 documentation</title>
+  <title>TcEx &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -33,8 +33,8 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 1.0.0 documentation" href="#"/>
-        <link rel="next" title="Authorization (Token/HMAC)" href="authorization.html"/> 
+    <link rel="top" title="TcEx 0.0.1 documentation" href="#"/>
+        <link rel="next" title="Authorization (Token / HMAC)" href="authorization.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0
+                0.0.1
               </div>
             
           
@@ -85,8 +85,9 @@
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
@@ -96,6 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -140,21 +142,32 @@
             
   <div class="section" id="tcex">
 <h1>TcEx<a class="headerlink" href="#tcex" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="python-helper-module-for-threatconnect-exchange-and-playbook-apps">
-<h2>Python helper module for ThreatConnect Exchange and Playbook Apps<a class="headerlink" href="#python-helper-module-for-threatconnect-exchange-and-playbook-apps" title="Permalink to this headline">¶</a></h2>
-<p>Release v1.0.</p>
+<div class="section" id="threatconnect-exchange-app-framework">
+<h2>ThreatConnect Exchange App Framework<a class="headerlink" href="#threatconnect-exchange-app-framework" title="Permalink to this headline">¶</a></h2>
+<p>Release 0.0.1.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="authorization.html#token-refresh">Token Refresh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authorization.html#hmac-authorization">HMAC Authorization</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exit.html#setting-exit-code">Setting Exit Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exit.html#immediate-exit">Immediate Exit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exit.html#supported-exit-codes">Supported Exit Codes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install_json.html#schema-definition">Schema Definition</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="jobs.html#groups">Groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jobs.html#group-associations">Group Associations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jobs.html#indicator-structure">Indicator Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jobs.html#indicators">Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jobs.html#sample-job-flow">Sample Job Flow</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
@@ -182,11 +195,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id2">0.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#id3">0.0.1</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="overview">
 <h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-class docutils literal"><span class="pre">TcEx</span></code></a> Class provides method for common functionality used in ThreatConnect Exchange or ThreatConnect Playbook apps.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides commonly used Classes and Methods for writing ThreatConnect Exchange Apps.  The Framework is intended to speed up the development process and ensure Apps contains the core functionality required.</p>
+<p>This documenation provides a detailed level view of the TcEx Framework as well as some App overviews.  The Building Apps section is a good place to start when working on your first app.  The section overviews are intended to provide details of the core functionality of an App and the code references should provide further information for more in depth questions.</p>
 </div>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
@@ -194,6 +213,7 @@
 <li>Automatic authorization for HMAC and Token base authentication when using <a class="reference internal" href="resource.html#resources"><span class="std std-ref">Resources</span></a> functionality.  This allow the app to work seemlessly on both ThreatConnect Exchange and the ThreatConnect Integration Server.</li>
 <li>App logger that supports both filesystem and API logging (<a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a>).</li>
 <li>Batch add through job interface (<a class="reference internal" href="jobs.html#jobs"><span class="std std-ref">Jobs</span></a>).</li>
+<li>Common methods for proper execution exit codes (<a class="reference internal" href="exit.html#exit"><span class="std std-ref">Exit</span></a>)</li>
 </ul>
 <div class="section" id="indices-and-tables">
 <h4>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h4>
@@ -213,7 +233,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="authorization.html" class="btn btn-neutral float-right" title="Authorization (Token/HMAC)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="authorization.html" class="btn btn-neutral float-right" title="Authorization (Token / HMAC)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -223,11 +243,10 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc..
+        &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -245,7 +264,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.0',
+            VERSION:'0.0.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

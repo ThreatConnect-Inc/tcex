@@ -135,6 +135,17 @@ class TcEx(object):
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
 
+        **Token Based Authorization**::
+
+            {'Authorization': authorization}
+
+        **HMAC Based Authorization**::
+
+            {
+                'Authorization': authorization,
+                'Timestamp': <unix timestamp>
+            }
+
         Returns:
             (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
         """
@@ -354,8 +365,8 @@ class TcEx(object):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
-        previously defined in the app or provided during the call of this
-        method.
+        previously defined via :py:meth:`~tcex.tcex.TcEx.exit_code` or provided
+        during the call of this method.
 
         Args:
             code (Optional [integer]): The exit code value for the app.

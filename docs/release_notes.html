@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Message TC &mdash; TcEx 0.0.1 documentation</title>
+  <title>Release Notes &mdash; TcEx 0.0.1 documentation</title>
   
 
   
@@ -34,8 +34,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="TcEx 0.0.1 documentation" href="index.html"/>
-        <link rel="next" title="Parser / Args" href="parser.html"/>
-        <link rel="prev" title="Logging" href="logging.html"/> 
+        <link rel="prev" title="Results TC" href="results_tc.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -91,14 +90,18 @@
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.0.1</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -129,7 +132,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Message TC</li>
+    <li>Release Notes</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -141,16 +144,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="message-tc">
-<span id="id1"></span><h1>Message TC<a class="headerlink" href="#message-tc" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect Exchange and Playbook Apps should write to <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal"><span class="pre">message_tc()</span></code></a> before exiting.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
-<div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">A successful execution might output: <code class="docutils literal"><span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
+  <div class="section" id="release-notes">
+<span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>0.0.2<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Updates to <code class="docutils literal"><span class="pre">setup.py</span></code> for build</li>
+</ul>
 </div>
-<div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">A failed execution might output: <code class="docutils literal"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
+<div class="section" id="id3">
+<h2>0.0.1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Initial Public Release</li>
+</ul>
 </div>
 </div>
 
@@ -161,10 +167,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="parser.html" class="btn btn-neutral float-right" title="Parser / Args" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="logging.html" class="btn btn-neutral" title="Logging" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="results_tc.html" class="btn btn-neutral" title="Results TC" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

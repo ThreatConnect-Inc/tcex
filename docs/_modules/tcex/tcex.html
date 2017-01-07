@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>tcex.tcex &mdash; TcEx 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TcEx</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>tcex.tcex</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">base64</span>  <span class="c1"># authorization</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>  <span class="c1"># authorization</span>
+<span class="kn">import</span> <span class="nn">hmac</span>  <span class="c1"># authorization</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">urlparse</span> <span class="k">import</span> <span class="n">urlparse</span>
+
+<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
+<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provides basic functionality for all types of TxEx Apps&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class data.</span>
+
+<span class="sd">        Setup default values and logging method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># bcs - replace group_type with dynamic values from API</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="s1">&#39;Threat&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indicator_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">=</span> <span class="mi">255</span>
+        <span class="c1"># bcs - odd issue where args is not updating properly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Parser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">ArgParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+
+        <span class="c1"># bcs - odd issue where args is not updating properly</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
+
+        <span class="c1"># logger (must parse args first)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">()</span>
+
+        <span class="c1"># include jobs module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span><span class="p">()</span>
+
+        <span class="c1"># include playbook module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span><span class="p">()</span>
+
+        <span class="c1"># include resources module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The parsed args from argparser</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (namespace): ArgParser parsed arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># log unknown arguments only once</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The ArgParser parser object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (ArgumentParser): TcEX instance of ArgParser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">results_tc_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read data from results_tc file from previous run of app.</span>
+
+<span class="sd">        This method is only required when not running from the with the</span>
+<span class="sd">        TcEX platform and is only intended for testing apps locally.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): A dictionary of values written to results_tc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">result_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rh</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">rh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">result_file</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; = &#39;</span><span class="p">)</span>
+            <span class="n">args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance of the Request Class</span>
+
+<span class="sd">        A wrapper on the Python Request Module specifically for interacting with the</span>
+<span class="sd">        ThreatConnect API.  However, this can also be used for connecting to other</span>
+<span class="sd">        API endpoints.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (instance): An instance of Request Class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">tcex_request</span> <span class="k">import</span> <span class="n">TcExRequest</span>
+            <span class="k">return</span> <span class="n">TcExRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TcEx.authorization"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization">[docs]</a>    <span class="k">def</span> <span class="nf">authorization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_prepped</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A method to handle the different methods of authenticating to the ThreatConnect API.</span>
+
+<span class="sd">        **Token Based Authorization**::</span>
+
+<span class="sd">            {&#39;Authorization&#39;: authorization}</span>
+
+<span class="sd">        **HMAC Based Authorization**::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &#39;Authorization&#39;: authorization,</span>
+<span class="sd">                &#39;Timestamp&#39;: &lt;unix timestamp&gt;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC-Token </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">authorization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_token_renew</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_access_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_secret_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">authorization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorization_hmac</span><span class="p">(</span><span class="n">request_prepped</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">authorization</span></div>
+
+<div class="viewcode-block" id="TcEx.authorization_hmac"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization_hmac">[docs]</a>    <span class="k">def</span> <span class="nf">authorization_hmac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_prepped</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for handling HMAC authorization to ThreatConnect API.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">request_prepped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+            <span class="n">signature</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request_prepped</span><span class="o">.</span><span class="n">path_url</span><span class="p">,</span> <span class="n">request_prepped</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span>
+            <span class="n">hmac_signature</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_secret_key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">signature</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">digestmod</span><span class="o">=</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+            <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC </span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_access_id</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">hmac_signature</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;HMAC authorization requires a PreparedRequest Object&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">,</span>
+            <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="TcEx._authorization_token_renew"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._authorization_token_renew">[docs]</a>    <span class="k">def</span> <span class="nf">_authorization_token_renew</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for handling token authorization to ThreatConnect API.</span>
+
+<span class="sd">        This method will automatically renew the ThreatConnect token if it has expired.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC-Token </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
+
+        <span class="n">window_padding</span> <span class="o">=</span> <span class="mi">15</span>  <span class="c1"># bcs - possible configuration option</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">-</span> <span class="n">window_padding</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">&lt;</span> <span class="n">current_time</span><span class="p">):</span>
+            <span class="c1"># Renew Token</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;expiredToken&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/appAuth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">))</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;expiredToken&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Expired API token has been renewed.&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiToken&#39;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiTokenExpires&#39;</span><span class="p">])</span>
+                    <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC-Token </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiToken&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed to renew Token. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failure during token renewal. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TcEx._jobs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._jobs">[docs]</a>    <span class="k">def</span> <span class="nf">_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include jobs Module&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span> <span class="o">=</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx._playbook"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._playbook">[docs]</a>    <span class="k">def</span> <span class="nf">_playbook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include Playbook Module</span>
+
+<span class="sd">        .. Note:: Playbook methods can be accessed using ``tcex.playbook.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">tcex_playbook</span> <span class="k">import</span> <span class="n">TcExPlaybook</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">playbook</span> <span class="o">=</span> <span class="n">TcExPlaybook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Required playbook python dependency is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx._resources"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources">[docs]</a>    <span class="k">def</span> <span class="nf">_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the resource module.</span>
+
+<span class="sd">        This method will make a request to the ThreatConnect API to dynamically</span>
+<span class="sd">        build classes to support custom Indicators.  All other resources are available</span>
+<span class="sd">        via this class.</span>
+
+<span class="sd">        .. Note:: Resource Classes can be accessed using ``tcex.resources.&lt;Class&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{})</span>
+
+        <span class="kn">import</span> <span class="nn">tcex_resources</span> <span class="k">as</span> <span class="nn">Resources</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">Resources</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Resources</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Dynamically create custom indicator class</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using proxy server </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/indicatorTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;indicatorType&#39;</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">indicator_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+
+                    <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                        <span class="n">value_fields</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value1Label&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value1Label&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;value1Label&#39;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value2Label&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value2Label&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;value2Label&#39;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;value3Label&#39;</span><span class="p">])</span>
+
+                        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                        <span class="n">custom</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;_api_branch&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;_api_entity&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;_api_uri&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">]),</span>
+                            <span class="s1">&#39;_name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                            <span class="s1">&#39;_request_entity&#39;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;_request_uri&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">]),</span>
+                            <span class="s1">&#39;_status_codes&#39;</span><span class="p">:</span> <span class="p">{</span>
+                                <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+                                <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+                                <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+                                <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+                            <span class="p">},</span>
+                            <span class="s1">&#39;_value_fields&#39;</span><span class="p">:</span> <span class="n">value_fields</span>
+                        <span class="p">}</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">Resources</span><span class="o">.</span><span class="n">ClassFactory</span><span class="p">(</span>
+                            <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">,</span> <span class="n">custom</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed retrieving indicator types from API. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx._unknown_args"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._unknown_args">[docs]</a>    <span class="k">def</span> <span class="nf">_unknown_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log argparser unknown arguments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args (list): List of unknown arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{0!s}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcEx.bulk_enabled"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.bulk_enabled">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">authorization</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if bulk indicators is enabled for owner</span>
+
+<span class="sd">        Using the TC API validate that bulk indicator download is enabled and</span>
+<span class="sd">        has successfully run for the provided owner.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            owner (Optional [string]): Owner name to check.</span>
+<span class="sd">            api_path (Optional [string]): The url to the ThreatConnect API.</span>
+<span class="sd">            authorization (Optional [string]): The authorization header value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (boolean): True if bulk indicator download is enabled and has run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">api_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">api_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
+
+        <span class="c1"># Dynamically create custom indicator class</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
+        <span class="k">if</span> <span class="n">authorization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">authorization</span> <span class="o">=</span> <span class="n">authorization</span>
+        <span class="c1"># r.authorization = self.authorization()</span>
+        <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/indicators/bulk&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;application/json&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;bulkStatus&#39;</span><span class="p">][</span><span class="s1">&#39;jsonEnabled&#39;</span><span class="p">]</span> <span class="ow">and</span>
+                            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;bulkStatus&#39;</span><span class="p">][</span><span class="s1">&#39;lastRun&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed api request for bulk enabled check. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="TcEx.exit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Application exit method with proper exit code</span>
+
+<span class="sd">        The method will run the Python standard sys.exit() with the exit code</span>
+<span class="sd">        previously defined via :py:meth:`~tcex.tcex.TcEx.exit_code` or provided</span>
+<span class="sd">        during the call of this method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (Optional [integer]): The exit code value for the app.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;api&#39;</span><span class="p">:</span>
+                        <span class="n">handler</span><span class="o">.</span><span class="n">log_to_api</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;exit_code: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;exit_code: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># exit with error</span></div>
+
+<div class="viewcode-block" id="TcEx.exit_code"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code">[docs]</a>    <span class="k">def</span> <span class="nf">exit_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the app exit code</span>
+
+<span class="sd">        For TC Exchange Apps there are 3 supported exit codes.</span>
+<span class="sd">        * 0 indicates a normal exit</span>
+<span class="sd">        * 1 indicates a failure during execution</span>
+<span class="sd">        * 3 indicates a partial failure</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (integer): The exit code value for the app.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">code</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid exit code&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx.expand_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.expand_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">expand_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">first_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process indicators expanding file hashes/custom indicators into multiple entries</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator (string): &quot; : &quot; delimeted string</span>
+<span class="sd">            first_indicator (boolean): Indicate whether to only include the first</span>
+<span class="sd">                matched indicator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
+            <span class="n">indicator_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">first_indicator</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">indicator_list</span></div>
+
+<div class="viewcode-block" id="TcEx._logger"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger">[docs]</a>    <span class="k">def</span> <span class="nf">_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;app.log&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create TcEx app logger instance.</span>
+
+<span class="sd">        The logger is accessible via the ``tc.log.&lt;level&gt;`` call.</span>
+
+<span class="sd">        **Logging examples**</span>
+<span class="sd">        ::</span>
+
+<span class="sd">            tcex.log.debug(&#39;logging debug&#39;)</span>
+<span class="sd">            tcex.log.info(&#39;logging info&#39;)</span>
+<span class="sd">            tcex.log.error(&#39;logging error&#39;)</span>
+<span class="sd">            tcex.log.critical(&#39;logging critical&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name (Optional[string]): The name for the log file</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            logger: An instance of logging</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+        <span class="n">log_level</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;debug&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+            <span class="s1">&#39;info&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+            <span class="s1">&#39;warning&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+            <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+            <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span>
+        <span class="p">}</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;tcapp&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">log_level</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">log_level</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">]</span>
+
+        <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="n">tx_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1"> &#39;</span>
+        <span class="n">tx_format</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">%(funcName)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">)&#39;</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">tx_format</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
+            <span class="c1"># api &amp; file logger</span>
+            <span class="kn">from</span> <span class="nn">api_logging_handler</span> <span class="k">import</span> <span class="n">ApiLoggingHandler</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="n">ApiLoggingHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">api</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;api&#39;</span><span class="p">)</span>  <span class="c1"># not supported in python 2.6</span>
+            <span class="n">api</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="n">api</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># file logger</span>
+            <span class="n">fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;fh&#39;</span><span class="p">)</span>  <span class="c1"># not supported in python 2.6</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">log</span></div>
+
+<div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write data to message_tc file in TcEX specified directory.</span>
+
+<span class="sd">        This method is used to set and exit message in the ThreatConnect Platform.</span>
+<span class="sd">        ThreatConnect only supports files of max_message_length.  Any data exceeding</span>
+<span class="sd">        this limit will be truncated by this method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (string): The message to add to message_tc file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">message_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/message.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message_file</span> <span class="o">=</span> <span class="s1">&#39;message.tc&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">message_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mh</span><span class="p">:</span>
+                <span class="n">mh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">message_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mh</span><span class="p">:</span>
+                <span class="n">mh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+    <span class="c1">## def proxy_external(self, force_proxy=False):</span>
+    <span class="c1">##     &quot;&quot;&quot;</span>
+    <span class="c1">##     &quot;&quot;&quot;</span>
+    <span class="c1">##     session = Session()</span>
+    <span class="c1">##     if force_proxy or self._args.tc_proxy_external:</span>
+    <span class="c1">##         session.proxies = self.proxies()</span>
+<span class="c1">##</span>
+    <span class="c1">##     return session</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Formats proxy configuration into required format for Python Requests module.</span>
+
+<span class="sd">        Generates a dictionary for use with the Python Requests module format</span>
+<span class="sd">        proxying remote connections.</span>
+
+<span class="sd">        **Example Response**</span>
+<span class="sd">        ::</span>
+
+<span class="sd">            {&quot;http&quot;: &quot;http://user:pass@10.10.1.10:3128/&quot;}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           (dictionary): Dictionary of proxy settings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">proxies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+
+                <span class="n">proxies</span> <span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
+                <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">proxies</span>
+
+<div class="viewcode-block" id="TcEx.results_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc">[docs]</a>    <span class="k">def</span> <span class="nf">results_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write data to results_tc file in TcEX specified directory</span>
+
+<span class="sd">        The TcEx platform support persistent values between executions of the App.  This</span>
+<span class="sd">        method will store the values for TC to read and put into the Database.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The data key to be stored</span>
+<span class="sd">            value (string): The data value to be stored</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1"> = </span><span class="si">{1!s}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rh</span><span class="p">:</span>
+            <span class="n">rh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+    <span class="c1">## def use_bulk(self, owner, last_bulk_run):</span>
+    <span class="c1">##     &quot;&quot;&quot;Determine if bulk indicator should be used.</span>
+<span class="c1">##</span>
+    <span class="c1">##     Calculate if bulk should be used to download indicators.</span>
+<span class="c1">##</span>
+    <span class="c1">##     Args:</span>
+    <span class="c1">##         owner (string): Owner name to check.</span>
+    <span class="c1">##         last_bulk_run (integer): Seconds since last bulk run.</span>
+<span class="c1">##</span>
+    <span class="c1">##     Returns:</span>
+    <span class="c1">##         (boolean): True if bulk indicator download is enabled and has run over 86400 seconds ago.</span>
+    <span class="c1">##     &quot;&quot;&quot;</span>
+    <span class="c1">##     bulk_run_period = (86400 - 15)  # standard time period for bulk run with 15 second padding</span>
+<span class="c1">##</span>
+    <span class="c1">##     if self.bulk_enabled(owner):</span>
+    <span class="c1">##         if float(last_bulk_run) == 0.0:</span>
+    <span class="c1">##             return True</span>
+<span class="c1">##</span>
+    <span class="c1">##         if time.time() - float(last_bulk_run) &gt;= bulk_run_period:</span>
+    <span class="c1">##             return True</span>
+<span class="c1">##</span>
+    <span class="c1">##     return False</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcEx.safe_rt"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt">[docs]</a>    <span class="k">def</span> <span class="nf">safe_rt</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Format Resource Type</span>
+
+<span class="sd">        Takes Custom Indicator types with a space characer and return a *safe* string.</span>
+
+<span class="sd">        (e.g. *User Agent* is coverted to User_Agent or user_agent.)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">           resource_type (string): The resource type to format.</span>
+<span class="sd">           lower (boolean): Return type in all lower case</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The formatted resource type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">resource_type</span> <span class="o">=</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lower</span><span class="p">:</span>
+                <span class="n">resource_type</span> <span class="o">=</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Truncate tag to match limit (35 characters) of ThreatConnect API.</span>
+
+<span class="sd">        .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to new limit.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">           tag (string): The tag to be truncated</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The truncated tag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">35</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">[:</span><span class="mi">35</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="k">def</span> <span class="nf">safeurl</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;URL encode value for safe HTTP request</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): String to URL Encode</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The urlencoded string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcEx.uni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.uni">[docs]</a>    <span class="k">def</span> <span class="nf">uni</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Re-encode poorly encoded unicode data</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (any): Data to ve validated and re-encoded</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (any): Return validate or encoded data</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## if data is None or isinstance(data, (int, list, dict)):</span>
+        <span class="c1">##     return data</span>
+        <span class="c1">## elif isinstance(data, unicode):</span>
+        <span class="c1">##     return unicode(data.encode(&#39;utf-8&#39;).strip(), errors=&#39;ignore&#39;)  # re-encode poorly encoded unicode</span>
+        <span class="c1">## elif not isinstance(data, unicode):</span>
+        <span class="c1">##     return unicode(data, &#39;utf-8&#39;, errors=&#39;ignore&#39;)</span>
+        <span class="c1">## else:</span>
+        <span class="c1">##     return data</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">StringTypes</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>  <span class="c1"># re-encode poorly encoded unicode</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
