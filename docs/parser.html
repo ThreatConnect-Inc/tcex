@@ -93,8 +93,11 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Parser / Args</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#default-arguments">Default Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-argument-example">Custom Argument Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-arguments">API Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#batch-arguments">Batch Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#playbook-arguments">Playbook Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#standard-arguments">Standard Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-argument">Custom Argument</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
@@ -146,46 +149,53 @@
            <div itemprop="articleBody">
             
   <div class="section" id="parser-args">
-<h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-meth docutils literal"><span class="pre">TcEx()</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-meth docutils literal"><span class="pre">parser()</span></code></a> property which returns and instance of <a class="reference internal" href="tcex_docs/tcex.argparser.html#module-tcex.argparser" title="tcex.argparser"><code class="xref py py-meth docutils literal"><span class="pre">argparser()</span></code></a>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange apps..</p>
-<div class="section" id="default-arguments">
-<h2>Default Arguments<a class="headerlink" href="#default-arguments" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="29%" />
-<col width="71%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Section</th>
-<th class="head">Values</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>API</td>
-<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._api_arguments" title="tcex.argparser.ArgParser._api_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code></a></td>
-</tr>
-<tr class="row-odd"><td>Batch</td>
-<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._batch_arguments" title="tcex.argparser.ArgParser._batch_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code></a></td>
-</tr>
-<tr class="row-even"><td>Playbook</td>
-<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._playbook_arguments" title="tcex.argparser.ArgParser._playbook_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code></a></td>
-</tr>
-<tr class="row-odd"><td>Standard</td>
-<td><a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments" title="tcex.argparser.ArgParser._standard_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code></a></td>
-</tr>
-</tbody>
-</table>
+<span id="parser"></span><h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
+<p>The ThreatConnect ™ TcEx App Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<div class="section" id="api-arguments">
+<h2>API Arguments<a class="headerlink" href="#api-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal"><span class="pre">tc_token</span></code> argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="install_json.html#install-json"><span class="std std-ref">Install JSON</span></a> configuration file and configured in each job to be passed to the app.  The <code class="docutils literal"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange Platform.</p>
 </div>
-<div class="section" id="custom-argument-example">
-<h2>Custom Argument Example<a class="headerlink" href="#custom-argument-example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="k">import</span> <span class="n">TcEx</span>
+<p>The list of API args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._api_arguments" title="tcex.argparser.ArgParser._api_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code></a> method.</p>
+</div>
+<div class="section" id="batch-arguments">
+<h2>Batch Arguments<a class="headerlink" href="#batch-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal"><span class="pre">install.json</span></code> configureation file.  These default values can also be overriden with methods provided in the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module.</p>
+<p>The list of Batch args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._batch_arguments" title="tcex.argparser.ArgParser._batch_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code></a> method.</p>
+</div>
+<div class="section" id="playbook-arguments">
+<h2>Playbook Arguments<a class="headerlink" href="#playbook-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Playbook Apps have a standard set of arguments. All of these argument will be passed by the ThreatConnect Exchange Platform for all Playbook apps.</p>
+<p>The list of Playbook args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._playbook_arguments" title="tcex.argparser.ArgParser._playbook_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code></a> method.</p>
+</div>
+<div class="section" id="standard-arguments">
+<h2>Standard Arguments<a class="headerlink" href="#standard-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The ThreatConnect Platform passes all apps a set of standard arguments.  Some of these arguments are depended on App settings and others on System settings.  The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<p>The list of standard args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments" title="tcex.argparser.ArgParser._standard_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code></a> method.</p>
+</div>
+<div class="section" id="custom-argument">
+<h2>Custom Argument<a class="headerlink" href="#custom-argument" title="Permalink to this headline">¶</a></h2>
+<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a></p>
+<p><strong>Example</strong></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
-<span class="n">parser</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">parser</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--myarg&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;My Custom Argument&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">args</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
+<span class="hll"><span class="n">parser</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">parser</span>
+</span><span class="hll"><span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--myarg&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;My Custom Argument&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">args</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
+</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 

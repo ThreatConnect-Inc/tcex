@@ -146,18 +146,30 @@
             
   <div class="section" id="proxies">
 <span id="id1"></span><h1>Proxies<a class="headerlink" href="#proxies" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-class docutils literal"><span class="pre">TcEx</span></code></a> Class provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property to automatically create a dictionary with the properly formatted proxy settings used by the Python Requests module.</p>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property is helpful when using the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property to automatically create a dictionary with the properly formatted proxy settings used by the Python Requests module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-meth docutils literal"><span class="pre">tcex_resources()</span></code></a> module the proxies are automatically configured if passed to the App.</p>
+</div>
+<div class="admonition hint">
+<p class="first admonition-title">Hint</p>
+<p class="last">The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property can be helpful when using the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module.</p>
+</div>
 <div class="section" id="example-request-using-proxy">
 <h2>Example Request using Proxy<a class="headerlink" href="#example-request-using-proxy" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
-<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
-    <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
-<span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://remote_api.example&#39;</span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
+<span class="hll"><span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
+</span><span class="hll">    <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
+</span><span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://remote_api.example&#39;</span>
 <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;abc123&#39;</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 </div>
 

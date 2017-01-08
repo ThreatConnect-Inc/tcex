@@ -149,7 +149,7 @@
             
   <div class="section" id="jobs">
 <span id="id1"></span><h1>Jobs<a class="headerlink" href="#jobs" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-meth docutils literal"><span class="pre">TcExJob()</span></code></a> module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.</p>
+<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.</p>
 <p>Once all the data has been added to the job a call to the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method will attempt to write the data to the ThreatConnect API.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -178,9 +178,9 @@
       <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
     <span class="p">}</span>
   <span class="p">],</span>
-  <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
-<span class="hll">  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
-</span>    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
+<span class="hll">  <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Robin Sparkles&#39;</span><span class="p">,</span>
+</span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Crimeware&#39;</span>
   <span class="p">],</span>
 <span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span>
@@ -201,13 +201,19 @@
 4
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="hll">  <span class="s1">&#39;group_name&#39;</span><span class="o">:</span> <span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span>
+<span class="hll">  <span class="s1">&#39;group_name&#39;</span><span class="o">:</span> <span class="s1">&#39;Robin Sparkles&#39;</span><span class="p">,</span>
 </span><span class="hll">  <span class="s1">&#39;group_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
 </span><span class="hll">  <span class="s1">&#39;indicator&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
 </span><span class="hll">  <span class="s1">&#39;indicator_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
 </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If more than on Group exist with the same name the association created using
+<a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> will only associate the indicator
+to the first group found with the name.</p>
+</div>
 </div>
 <div class="section" id="indicators">
 <h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
@@ -334,17 +340,11 @@
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The Batch API call allows for Group Associations via the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field.
-However, if Groups are being added in the Job the Group Id will not be known until after
-the Group is added.  The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> method allows
-the Group named to be used instead of the Group Id. If the Group Id is already known
-it can be association using the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">If more than on Group exist with the same name the association create using
-<a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> will only associate the indicator
-to the first group.</p>
+<p class="last">The Batch API call allows for Group Associations via the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field using
+the Group Id. However, if Groups are being added in the Job the Group Id will not be known
+until after the Group is added.  The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a>
+method allows the Group named to be used instead of the Group Id. If the Group Id is
+already known it can be associated using the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field.</p>
 </div>
 </div>
 </div>
