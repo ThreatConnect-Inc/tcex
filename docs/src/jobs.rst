@@ -4,7 +4,7 @@
 =====
 Jobs
 =====
-The ThreatConnect |trade| TcEx Framework provides the :py:meth:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
+The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
 
 Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_job.TcExJob.process` method will attempt to write the data to the ThreatConnect API.
 
@@ -17,7 +17,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
 .. code-block:: javascript
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 9,13
+    :emphasize-lines: 8,13
 
     {
       'attribute': [
@@ -51,6 +51,10 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
       'indicator': '1.1.1.1',
       'indicator_type': 'Address'
     }
+
+.. Warning:: If more than on Group exist with the same name the association created using
+             :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
+             to the first group found with the name.
 
 Indicators
 -----------
@@ -135,7 +139,3 @@ The key method calls are highlighted in the following code sample.
           until after the Group is added.  The :py:meth:`~tcex.tcex_job.TcExJob.group_association`
           method allows the Group named to be used instead of the Group Id. If the Group Id is
           already known it can be associated using the ``associatedGroup`` field.
-
-.. Warning:: If more than on Group exist with the same name the association created using
-            :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
-            to the first group found with the name.

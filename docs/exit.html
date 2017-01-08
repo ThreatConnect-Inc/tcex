@@ -89,7 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Exit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#setting-exit-code">Setting Exit Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#immediate-exit">Immediate Exit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#immediate-exit-on-failure">Immediate Exit on Failure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported-exit-codes">Supported Exit Codes</a></li>
 </ul>
 </li>
@@ -183,13 +183,34 @@
 </span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 
-<span class="hll"><span class="n">tc</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 </span></pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="immediate-exit">
-<h2>Immediate Exit<a class="headerlink" href="#immediate-exit" title="Permalink to this headline">¶</a></h2>
-<p>Certain failures require that the App exit immediately.  In these cases calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method while passing the failure code will immediately exit the app and notify the ThreatConnect Platform of a failure.</p>
+<div class="section" id="immediate-exit-on-failure">
+<h2>Immediate Exit on Failure<a class="headerlink" href="#immediate-exit-on-failure" title="Permalink to this headline">¶</a></h2>
+<p>Certain failures require that the App exit immediately.  In these cases calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 <div class="section" id="supported-exit-codes">
 <h2>Supported Exit Codes<a class="headerlink" href="#supported-exit-codes" title="Permalink to this headline">¶</a></h2>

@@ -143,19 +143,21 @@
             
   <div class="section" id="logging">
 <span id="id1"></span><h1>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
-<p>The TcEx module has a built-in <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger" title="tcex.tcex.TcEx._logger"><code class="xref py py-meth docutils literal"><span class="pre">_logger()</span></code></a> method that will log to the <code class="docutils literal"><span class="pre">args.tc_log_path</span></code> directory. If the job is running with a <strong>API Token</strong> and <code class="docutils literal"><span class="pre">args.tc_log_to_api</span></code> is enabled the logger will automatically log to the API.  This logger is a instance of the standard Python logger with modification for API logging.</p>
+<p>The ThreatConnect ™ TcEx App Framework has a built-in logger that will log to the <code class="docutils literal"><span class="pre">args.tc_log_path</span></code> directory. If the App is passed <code class="docutils literal"><span class="pre">args.tc_token</span></code> and <code class="docutils literal"><span class="pre">args.tc_log_to_api</span></code> the logger will automatically log to the ThreatConnect API.  This built-in logger is a instance of the standard <a class="reference external" href="https://docs.python.org/2/library/logging.html">Python Logger</a> with modification for API logging.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">args.tc_log_to_api</span></code> variable is passed only if API Logging in turned on in System Settings.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">args.tc_log_to_api</span></code> variable is passed only if API Logging in turned on in the System Settings in the ThreatConnect Platform UI.</p>
 </div>
-<p>Example Logging:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># logging examples</span>
-<span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;logging debug&#39;</span><span class="p">)</span>
+<p><strong>Example Logging</strong></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;logging debug&#39;</span><span class="p">)</span>
 <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;logging info&#39;</span><span class="p">)</span>
 <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;logging error&#39;</span><span class="p">)</span>
 <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;logging critical&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
+</td></tr></table></div>
 </div>
 
 

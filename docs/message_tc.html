@@ -143,15 +143,51 @@
             
   <div class="section" id="message-tc">
 <span id="id1"></span><h1>Message TC<a class="headerlink" href="#message-tc" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect Exchange and Playbook Apps should write to <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal"><span class="pre">message_tc()</span></code></a> before exiting.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
+<p>All ThreatConnect ™ Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal"><span class="pre">message_tc()</span></code></a> method to handle writing this message.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The Message TC exit message only supports up to 255 characters.  All data added after that will be truncated.</p>
+</div>
 <div class="admonition hint">
 <p class="first admonition-title">Hint</p>
-<p class="last">A successful execution might output: <code class="docutils literal"><span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
+<p class="last">A successful execution might output: <code class="docutils literal"><span class="pre">A</span> <span class="pre">total</span> <span class="pre">of</span> <span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">were</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
 </div>
 <div class="admonition hint">
 <p class="first admonition-title">Hint</p>
 <p class="last">A failed execution might output: <code class="docutils literal"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
 </div>
+<p><strong>Example Exit Message</strong></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="s1">&#39;Failed to open datafile for reading.&#39;</span><span class="p">)</span>
+</span>    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="s1">&#39;File successfully read.&#39;</span><span class="p">)</span>
+</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
 </div>
 
 

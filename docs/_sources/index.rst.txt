@@ -37,9 +37,9 @@ This documenation provides a detailed level view of the TcEx Framework as well a
 Features
 ---------
 
-+ Automatic authorization for HMAC and Token base authentication when using :ref:`resources` functionality.  This allow the app to work seemlessly on both ThreatConnect Exchange and the ThreatConnect Integration Server.
++ Automatic authorization for HMAC and Token base authentication when using :ref:`resources` functionality.  This allows the App to work seemlessly on both ThreatConnect Exchange Platform and the ThreatConnect Integration Server.
 + App logger that supports both filesystem and API logging (:ref:`logging`).
-+ Batch add through job interface (:ref:`jobs`).
++ Batch add through jobs interface (:ref:`jobs`).
 + Common methods for proper execution exit codes (:ref:`exit`)
 
 Indices and tables
