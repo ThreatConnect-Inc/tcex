@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Resources &mdash; TcEx 0.0.1 documentation</title>
+  <title>Resources &mdash; TcEx 0.0.3 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.0.1 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.0.3 documentation" href="index.html"/>
         <link rel="next" title="Results TC" href="results_tc.html"/>
         <link rel="prev" title="Requests" href="request.html"/> 
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.0.3
               </div>
             
           
@@ -150,7 +150,47 @@
             
   <div class="section" id="resources">
 <span id="id1"></span><h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-meth docutils literal"><span class="pre">TcEx()</span></code></a> Class provides access to the ThreatConnect API through instantiation of a <em>Resource</em> Class in the <code class="docutils literal"><span class="pre">tcex.resource</span></code> property.</p>
+<p>The ThreatConnect ™ TcEx Framework provides access to the ThreatConnect API using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> module.  The Resource Classes can be accessed via the <code class="docutils literal"><span class="pre">tcex.resources</span></code> property of the TcEx Framework.</p>
+<p><strong>Direct Access</strong></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="hll"><span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Adversary</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+</span><span class="hll"><span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p><strong>Dynamic Access</strong></p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="hll"><span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="s1">&#39;User Agent&#39;</span><span class="p">))(</span><span class="n">tcex</span><span class="p">)</span>
+</span><span class="hll"><span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>
+<span class="k">print</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">resource</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
 <div class="section" id="group-resources">
 <h2>Group Resources<a class="headerlink" href="#group-resources" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
@@ -170,19 +210,22 @@
 <tr class="row-odd"><td>Adversary</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Adversary" title="tcex.tcex_resources.Adversary"><code class="xref py py-class docutils literal"><span class="pre">Adversary</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Document</td>
+<tr class="row-even"><td>Campaign</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Campaign" title="tcex.tcex_resources.Campaign"><code class="xref py py-class docutils literal"><span class="pre">Campaign</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Document</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document" title="tcex.tcex_resources.Document"><code class="xref py py-class docutils literal"><span class="pre">Document</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Email</td>
+<tr class="row-even"><td>Email</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Email" title="tcex.tcex_resources.Email"><code class="xref py py-class docutils literal"><span class="pre">Email</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Incident</td>
+<tr class="row-odd"><td>Incident</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Incident" title="tcex.tcex_resources.Incident"><code class="xref py py-class docutils literal"><span class="pre">Incident</span></code></a></td>
 </tr>
-<tr class="row-odd"><td>Signature</td>
+<tr class="row-even"><td>Signature</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Signature" title="tcex.tcex_resources.Signature"><code class="xref py py-class docutils literal"><span class="pre">Signature</span></code></a></td>
 </tr>
-<tr class="row-even"><td>Threat</td>
+<tr class="row-odd"><td>Threat</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Threat" title="tcex.tcex_resources.Threat"><code class="xref py py-class docutils literal"><span class="pre">Threat</span></code></a></td>
 </tr>
 </tbody>
@@ -223,7 +266,7 @@
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Custom Indicators can be accessed by the <strong>Type</strong>. The ThreatConnect platform support Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made <strong>safe</strong> by using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt" title="tcex.tcex.TcEx.safe_rt"><code class="xref py py-meth docutils literal"><span class="pre">safe_rt()</span></code></a> method.</p>
+<p class="last">Custom Indicators can be accessed by the <strong>Type</strong>. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made <strong>safe</strong> by using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt" title="tcex.tcex.TcEx.safe_rt"><code class="xref py py-meth docutils literal"><span class="pre">safe_rt()</span></code></a> method.</p>
 </div>
 </div>
 <div class="section" id="owner-resources">
@@ -325,7 +368,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.0.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

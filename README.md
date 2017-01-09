@@ -14,13 +14,13 @@ Python requirements with known working version:
 
 Installation
 -------------
-Using pip
+**Using pip**
 
 ```
 pip install tcex
 ```
 
-Manually
+**Manually**
 
 ```
 cd tcex

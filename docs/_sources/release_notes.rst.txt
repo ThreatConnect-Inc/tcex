@@ -4,6 +4,11 @@
 Release Notes
 ==============
 
+0.0.3
+------
+* Added :py:meth:`~tcex.tcex_resources.Campaign` Class.
+* Multiple updates to documenation
+
 0.0.2
 ------
 * Updates to ``setup.py`` for build

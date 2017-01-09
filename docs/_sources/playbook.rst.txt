@@ -14,12 +14,12 @@ Playbook Flow
 --------------
 As a Playbook starts execution each App will have input and output variables.  The input variables can be user provided data or output from an upstream App.  The Apps input and output variables are defined in the :ref:`install_json` file of the App.  A downstream App has access to all output variables from any upstream Apps.
 
-.. Tip:: Upstream Apps are app that have completed execution previous to the current Apps execution.
+.. Note:: Upstream Apps are app that have completed execution previous to the current Apps execution.
 
 
 Input Variables
 ----------------
-Inputs to an App can be static user data or dynamic output variables from a triggers or upstream Apps.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides the :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` method for pulling dynamic data from an upstream App. The :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` method will automatically determine the variable type for the App developer. If user data was passed instead of the output variable the :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` will return the unaltered string.
+Inputs to an App can be static user data or dynamic output variables from a trigger or upstream App.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides the :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` method for pulling dynamic data from an upstream App. The :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` method will automatically determine the variable type for the App developer. If user data was passed instead of the output variable the :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` will return the unaltered string.
 
 .. Tip:: The :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read` method will also handle mixed type data by automatically calling the :py:mod:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method when a mixed type variable is identified.
 
