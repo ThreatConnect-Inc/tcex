@@ -1078,6 +1078,25 @@ class Adversary(Group):
         self._request_uri = self._api_uri
 
 
+class Campaign(Group):
+    """Campaign Resource Class
+
+    This resource class will return groups of type Campaign. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Adversary, self).__init__(tcex)
+        self._api_branch = 'campaigns'
+        self._api_entity = 'campaign'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Campaign'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+
 class Document(Group):
     """Document Resource Class
 
