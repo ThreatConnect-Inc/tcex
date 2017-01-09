@@ -1088,7 +1088,7 @@ class Campaign(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Adversary, self).__init__(tcex)
+        super(Campaign, self).__init__(tcex)
         self._api_branch = 'campaigns'
         self._api_entity = 'campaign'
         self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
