@@ -86,6 +86,8 @@
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
@@ -1233,7 +1235,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Campaign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;campaigns&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;campaign&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>

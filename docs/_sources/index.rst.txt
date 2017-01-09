@@ -15,6 +15,8 @@ Release |version|.
    :maxdepth: 2
 
    authorization
+   building_apps
+   development_tools
    exit
    install_json
    jobs
@@ -39,8 +41,8 @@ Features
 
 + Automatic authorization for HMAC and Token base authentication when using :ref:`resources` functionality.  This allows the App to work seemlessly on both ThreatConnect Exchange Platform and the ThreatConnect Integration Server.
 + App logger that supports both filesystem and API logging (:ref:`logging`).
-+ Batch add through jobs interface (:ref:`jobs`).
-+ Common methods for proper execution exit codes (:ref:`exit`)
++ Batch add through :ref:`jobs` job module.
++ Common methods for proper App execution: exit codes (:ref:`exit`); exit messages (:ref:`message_tc`) and more
 
 Indices and tables
 ==================
