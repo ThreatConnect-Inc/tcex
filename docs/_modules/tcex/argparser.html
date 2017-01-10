@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser &mdash; TcEx 0.0.3 documentation</title>
+  <title>tcex.argparser &mdash; TcEx 0.0.5 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.0.3 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.0.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.3
+                0.0.5
               </div>
             
           
@@ -228,7 +228,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--batch_action&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Create, Delete&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span><span class="p">,</span>
+            <span class="s1">&#39;--batch_action&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Create&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Action for the batch job&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--batch_chunk&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">,</span>
@@ -243,7 +243,7 @@
             <span class="s1">&#39;--batch_poll_interval_max&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum amount of time for status check on batch job.&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--batch_write_type&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Append, Replace&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span><span class="p">,</span>
+            <span class="s1">&#39;--batch_write_type&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Append&#39;</span><span class="p">,</span> <span class="s1">&#39;Replace&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Append or Replace attributes.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArgParser._playbook_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._playbook_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_playbook_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -333,7 +333,7 @@
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Logging&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_log_level&#39;</span><span class="p">,</span> <span class="s1">&#39;--logging&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>
-            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">)</span></div></div>
+            <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_level</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Logging Level&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_log_level&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -366,7 +366,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.0.3',
+            VERSION:'0.0.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

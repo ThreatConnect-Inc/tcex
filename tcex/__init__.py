@@ -3,7 +3,7 @@ import sys
 import inspect
 
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 __license__ = 'Apache License, Version 2'
 
 # For Apps Append the '/lib' directory

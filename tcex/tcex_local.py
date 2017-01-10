@@ -336,7 +336,8 @@ class TcExLocal:
             self._app_packages.append(zip_file_tcx)
 
             # cleanup build directory
-            shutil.rmtree(tmp_app_path)
+            if install_json != 'install.json':
+                shutil.rmtree(tmp_app_path)
 
         if self._args.collection and len(self._app_packages) > 0:
             collection_file = '{}.zip'.format(base_name)

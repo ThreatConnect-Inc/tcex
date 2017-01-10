@@ -81,7 +81,7 @@ class ArgParser(ArgumentParser):
         """
 
         self.add_argument(
-            '--batch_action', choices=['Create, Delete'], default=self._batch_action,
+            '--batch_action', choices=['Create', 'Delete'], default=self._batch_action,
             help='Action for the batch job')
         self.add_argument(
             '--batch_chunk', default=self._batch_chunk,
@@ -96,7 +96,7 @@ class ArgParser(ArgumentParser):
             '--batch_poll_interval_max', default=self._batch_poll_interval_max,
             help='Maximum amount of time for status check on batch job.', type=int)
         self.add_argument(
-            '--batch_write_type', choices=['Append, Replace'], default=self._batch_write_type,
+            '--batch_write_type', choices=['Append', 'Replace'], default=self._batch_write_type,
             help='Append or Replace attributes.')
 
     def _playbook_arguments(self):
