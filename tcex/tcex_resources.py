@@ -409,7 +409,7 @@ class Resource(object):
                         # bcs - handle multiple downloads
                         temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
                         self._tcex.log.debug('temp json file: {}'.format(temp_file))
-                        with open(temp_file, 'w') as fh:
+                        with open(temp_file, 'wb') as fh:
                             for block in response.iter_content(1024):
                                 fh.write(block)
                         with open(temp_file, 'r') as fh:
