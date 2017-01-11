@@ -4,6 +4,14 @@
 Release Notes
 ==============
 
+0.0.6
+------
++ Updated open call for bytes issue on Python 3
+
+0.0.5
+------
++ Updated to setup.py for Python 3 support
+
 0.0.4
 ------
 + Update for Campaign resource type Class.
