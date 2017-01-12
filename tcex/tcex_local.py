@@ -205,10 +205,12 @@ class TcExLocal:
         Using the setup.py this method will install all required python modules locally
         to be used for local testing.
         """
+        lib_directory = 'lib_{}.{}.{}'.format(
+                sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
         app_path = os.getcwd()
         app_name = os.path.basename(app_path)
 
-        lib_path = os.path.join(app_path, 'lib')
+        lib_path = os.path.join(app_path, lib_directory)
         if not os.path.isdir(lib_path):
             os.mkdir(lib_path)
 
@@ -232,9 +234,6 @@ class TcExLocal:
         build_path = os.path.join(app_path, 'build')
         if os.access(build_path, os.W_OK):
             shutil.rmtree(build_path)
-        # egg_path = os.path.join(app_path, '{}.egg-info'.format(app_name))
-        # if os.access(egg_path, os.W_OK):
-        #     shutil.rmtree(egg_path)
         temp_path = os.path.join(app_path, 'temp')
         if os.access(temp_path, os.W_OK):
             shutil.rmtree(temp_path)
@@ -251,6 +250,8 @@ class TcExLocal:
         # app_name = self._install_json['displayName'].replace(' ', '_')
         # app_path = os.path.dirname(os.path.realpath(__file__))
 
+        lib_directory = 'lib_{}.{}.{}'.format(
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
         app_path = os.getcwd()
         contents = os.listdir(app_path)
 
@@ -287,7 +288,7 @@ class TcExLocal:
             if tmp_app_path != template_app_path:
                 shutil.copytree(template_app_path, tmp_app_path)
 
-            lib_path = os.path.join(tmp_app_path, 'lib')
+            lib_path = os.path.join(tmp_app_path, lib_directory)
             if os.access(lib_path, os.W_OK):
                 shutil.rmtree(lib_path)
             os.mkdir(lib_path)

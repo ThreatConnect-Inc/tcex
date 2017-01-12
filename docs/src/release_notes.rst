@@ -8,6 +8,7 @@ Release Notes
 ------
 + Updated :py:meth:`tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.
 + Updated logging to better debug API request failures.
++ Updated package command to create lib directory with python version (e.g. lib_3.6.0)
 
 0.0.6
 ------
