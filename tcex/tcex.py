@@ -260,49 +260,48 @@ class TcEx(object):
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
             r.proxies = self.proxies
         r.url = '{}/v2/types/indicatorTypes'.format(self._args.tc_api_path)
-        results = r.send()
+        response = r.send()
+
+        if (int(response.status_code) != 200
+                or data.get('status') != 'Success'
+                or response.headers.get('content-type') != 'application/json'):
+            warn = 'Custom Indicators are not supported.'
+            self.log.warn(warn)
+            return
 
         try:
-            data = results.json()
-            if data['status'] == 'Success':
-                data = results.json()['data']['indicatorType']
+            data = response.json()['data']['indicatorType']
+            for entry in data:
+                name = self.safe_rt(entry['name'])
+                self.indicator_types.append(str(entry['name']))
 
-                for entry in data:
-                    name = self.safe_rt(entry['name'])
-                    self.indicator_types.append(str(entry['name']))
+                if entry['custom'] == 'true':
+                    value_fields = []
+                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
+                        value_fields.append(entry['value1Label'])
+                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
+                        value_fields.append(entry['value2Label'])
+                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
+                        value_fields.append(entry['value3Label'])
 
-                    if entry['custom'] == 'true':
-                        value_fields = []
-                        if entry.get('value1Label') is not None and entry.get('value1Label') != '':
-                            value_fields.append(entry['value1Label'])
-                        if entry.get('value2Label') is not None and entry.get('value2Label') != '':
-                            value_fields.append(entry['value2Label'])
-                        if entry.get('value3Label') is not None and entry.get('value3Label') != '':
-                            value_fields.append(entry['value3Label'])
-
-                        i = self.resources.Indicator(self)
-                        custom = {
-                            '_api_branch': entry['apiBranch'],
-                            '_api_entity': entry['apiEntity'],
-                            '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_name': name,
-                            '_request_entity': entry['apiEntity'],
-                            '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_status_codes': {
-                                'DELETE': [200],
-                                'GET': [200],
-                                'POST': [200],
-                                'PUT': [200]
-                            },
-                            '_value_fields': value_fields
-                        }
-                        setattr(self.resources, name, Resources.ClassFactory(
-                            name, self.resources.Indicator, custom))
-            else:
-                self.log.error(results.text)
-                raise RuntimeError(results.text)
-        except RuntimeError:
-            raise
+                    i = self.resources.Indicator(self)
+                    custom = {
+                        '_api_branch': entry['apiBranch'],
+                        '_api_entity': entry['apiEntity'],
+                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_name': name,
+                        '_request_entity': entry['apiEntity'],
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_status_codes': {
+                            'DELETE': [200],
+                            'GET': [200],
+                            'POST': [200],
+                            'PUT': [200]
+                        },
+                        '_value_fields': value_fields
+                    }
+                    setattr(self.resources, name, Resources.ClassFactory(
+                        name, self.resources.Indicator, custom))
         except:
             err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
             self.log.error(err)

@@ -229,7 +229,7 @@ class TcExRequest(object):
         if self._authorization_method is not None:
             self._headers.update(self._authorization_method(request_prepped))
         request_prepped.prepare_headers(self._headers)
-        self._tcex.log.info('URL: {}'.format(self._url))
+        self._tcex.log.debug('Request URL: {}'.format(self._url))
 
         if self._basic_auth is not None:
             request_prepped.prepare_auth(self._basic_auth)
@@ -267,6 +267,7 @@ class TcExRequest(object):
                 raise RuntimeError(e)
 
         self._tcex.log.info('Status Code: {0!s}'.format(response.status_code))
+        self._tcex.log.info('Response URL: {}'.format(response.url))
         return response
 
     #

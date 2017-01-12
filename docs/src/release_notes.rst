@@ -4,6 +4,11 @@
 Release Notes
 ==============
 
+0.0.7
+------
++ Updated :py:meth:`tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.
++ Updated logging to better debug API request failures.
+
 0.0.6
 ------
 + Updated open call for bytes issue on Python 3
