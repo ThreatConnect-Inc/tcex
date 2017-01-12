@@ -7,6 +7,7 @@ import inspect
 import json
 import logging
 import os
+import re
 import sys
 import urllib
 import time
@@ -49,6 +50,10 @@ class TcEx(object):
         # logger (must parse args first)
         self.log = self._logger()
 
+        # Log versions
+        self._log_python_version()
+        self._log_tcex_version()
+
         # include jobs module
         self._jobs()
 
@@ -57,6 +62,227 @@ class TcEx(object):
 
         # include resources module
         self._resources()
+
+    def _authorization_token_renew(self):
+        """Method for handling token authorization to ThreatConnect API.
+
+        This method will automatically renew the ThreatConnect token if it has expired.
+
+        Returns:
+            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
+        """
+        authorization = 'TC-Token {}'.format(self._tc_token)
+
+        window_padding = 15  # bcs - possible configuration option
+        current_time = int(time.time()) - window_padding
+        if (self._tc_token_expires < current_time):
+            # Renew Token
+            r = self.request
+            r.add_payload('expiredToken', self._tc_token)
+            r.url = '{}/appAuth'.format(self._args.tc_api_path.strip('api'))
+            r.add_payload('expiredToken', self._tc_token)
+            results = r.send()
+            try:
+                data = results.json()
+                if data['success']:
+                    self.log.info('Expired API token has been renewed.')
+                    self._tc_token = str(data['apiToken'])
+                    self._tc_token_expires = int(data['apiTokenExpires'])
+                    authorization = 'TC-Token {}'.format(data['apiToken'])
+                else:
+                    err = 'Failed to renew Token. ({})'.format(results.text)
+                    raise RuntimeError(err)
+            except RuntimeError:
+                raise
+            except:
+                self.log.error('Failure during token renewal. ({})'.format(results.text))
+
+        return {'Authorization': authorization}
+
+    def _jobs(self):
+        """Include jobs Module"""
+        from tcex_job import TcExJob
+        self.jobs = TcExJob(self)
+
+    def _log_python_version(self):
+        """Log the current Python Version"""
+        self.log.info('Python Version: {}.{}.{}'.format(
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+
+    def _log_tcex_version(self):
+        """Log the current TcEx Version"""
+
+        # Get the *actual* path to the module
+        module_path = os.path.realpath(
+            os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
+
+        # Open the __init__.py file and extract the version using regex
+        with open(os.path.join(module_path, '__init__.py'), 'r') as fd:
+            tcex_version = re.search(
+                r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]', fd.read(), re.MULTILINE).group(1)
+
+        self.log.info('TcEx Version: {}'.format(tcex_version))
+
+    def _logger(self, file_name='app.log'):
+        """Create TcEx app logger instance.
+
+        The logger is accessible via the ``tc.log.<level>`` call.
+
+        **Logging examples**
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            tcex.log.debug('logging debug')
+            tcex.log.info('logging info')
+            tcex.log.error('logging error')
+            tcex.log.critical('logging critical')
+
+        Args:
+            file_name (Optional[string]): The name for the log file
+
+        Returns:
+            logger: An instance of logging
+        """
+
+        level = logging.INFO
+        log_level = {
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warning': logging.WARNING,
+            'error': logging.ERROR,
+            'critical': logging.CRITICAL
+        }
+        name = 'tcapp'
+        if self._args.tc_log_level.lower() in log_level.keys():
+            level = log_level[self._args.tc_log_level]
+
+        logfile = os.path.join(self._args.tc_log_path, file_name)
+        log = logging.getLogger(name)
+        log.setLevel(level)
+
+        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+        tx_format += '(%(funcName)s:%(lineno)d)'
+        formatter = logging.Formatter(tx_format)
+
+        if self._args.tc_token is not None and self._args.tc_log_to_api:
+            # api & file logger
+            from api_logging_handler import ApiLoggingHandler
+            api = ApiLoggingHandler(logfile, self)
+            api.set_name('api')  # not supported in python 2.6
+            api.setLevel(level)
+            api.setFormatter(formatter)
+            log.addHandler(api)
+        else:
+            # file logger
+            fh = logging.FileHandler(logfile)
+            fh.set_name('fh')  # not supported in python 2.6
+            fh.setLevel(level)
+            fh.setFormatter(formatter)
+            log.addHandler(fh)
+
+        log.info('Logging Level: {}'.format(logging.getLevelName(level)))
+        return log
+
+    def _playbook(self):
+        """Include Playbook Module
+
+        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        """
+        try:
+            from tcex_playbook import TcExPlaybook
+            self.playbook = TcExPlaybook(self)
+        except ImportError as e:
+            warn = 'Required playbook python dependency is not installed ({}).'.format(e)
+            self.log.warn(warn)
+
+    def _resources(self):
+        """Initialize the resource module.
+
+        This method will make a request to the ThreatConnect API to dynamically
+        build classes to support custom Indicators.  All other resources are available
+        via this class.
+
+        .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>``.
+        """
+        self.resources = type('resources', (object,), {})
+
+        import tcex_resources as Resources
+        for name, obj in inspect.getmembers(Resources):
+            if inspect.isclass(obj):
+                setattr(self.resources, name, getattr(Resources, name))
+
+        # Dynamically create custom indicator class
+        r = self.request
+        r.authorization_method(self.authorization)
+        if self._args.tc_proxy_tc:
+            self.log.info('Using proxy server {}:{}.'.format(
+                self._args.tc_proxy_host, self._args.tc_proxy_port))
+            r.proxies = self.proxies
+        r.url = '{}/v2/types/indicatorTypes'.format(self._args.tc_api_path)
+        response = r.send()
+
+        # check for bad status code and response that is not JSON
+        if (int(response.status_code) != 200
+                or response.headers.get('content-type') != 'application/json'):
+            warn = 'Custom Indicators are not supported.'
+            self.log.warn(warn)
+            return
+
+        # validate succcessful API results
+        data = response.json()
+        if data.get('status') != 'Success':
+            warn = 'Bad Status: Custom Indicators are not supported.'
+            self.log.warn(warn)
+            return
+
+        try:
+            data = response.json()['data']['indicatorType']
+            for entry in data:
+                name = self.safe_rt(entry['name'])
+                self.indicator_types.append(str(entry['name']))
+
+                if entry['custom'] == 'true':
+                    value_fields = []
+                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
+                        value_fields.append(entry['value1Label'])
+                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
+                        value_fields.append(entry['value2Label'])
+                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
+                        value_fields.append(entry['value3Label'])
+
+                    i = self.resources.Indicator(self)
+                    custom = {
+                        '_api_branch': entry['apiBranch'],
+                        '_api_entity': entry['apiEntity'],
+                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_name': name,
+                        '_request_entity': entry['apiEntity'],
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_status_codes': {
+                            'DELETE': [200],
+                            'GET': [200],
+                            'POST': [200],
+                            'PUT': [200]
+                        },
+                        '_value_fields': value_fields
+                    }
+                    setattr(self.resources, name, Resources.ClassFactory(
+                        name, self.resources.Indicator, custom))
+        except:
+            err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
+            self.log.error(err)
+            raise RuntimeError(err)
+
+    def _unknown_args(self, args):
+        """Log argparser unknown arguments.
+
+        Args:
+            args (list): List of unknown arguments
+        """
+        for u in args:
+            self.log.debug('Unsupported arg found ({0!s}).'.format(u))
 
     @property
     def args(self):
@@ -74,63 +300,6 @@ class TcEx(object):
             self._unknown_args(unknown)
 
         return self._args
-
-    @property
-    def parser(self):
-        """The ArgParser parser object
-
-        Returns:
-            (ArgumentParser): TcEX instance of ArgParser
-        """
-        return self._parser
-
-    @property
-    def results_tc_args(self):
-        """Read data from results_tc file from previous run of app.
-
-        This method is only required when not running from the with the
-        TcEX platform and is only intended for testing apps locally.
-
-        Returns:
-            (dictionary): A dictionary of values written to results_tc.
-        """
-        args = {}
-        results = []
-        if os.access(self._args.tc_out_path, os.W_OK):
-            result_file = '{0!s}/results.tc'.format(self._args.tc_out_path)
-        else:
-            result_file = 'results.tc'
-
-        if os.path.isfile(result_file):
-            with open(result_file, 'r') as rh:
-                results = rh.read().strip().split('\n')
-            os.remove(result_file)
-
-        for line in results:
-            key, value = line.split(' = ')
-            args[key] = value
-
-        return args
-
-    @property
-    def request(self):
-        """Return an instance of the Request Class
-
-        A wrapper on the Python Request Module specifically for interacting with the
-        ThreatConnect API.  However, this can also be used for connecting to other
-        API endpoints.
-
-        Returns:
-            (instance): An instance of Request Class
-        """
-        try:
-            from tcex_request import TcExRequest
-            return TcExRequest(self)
-        except ImportError as e:
-            err = 'Required Module is not installed ({}).'.format(e)
-            self.log.error(err)
-            self.message_tc(err)
-            self.exit(1)
 
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
@@ -182,139 +351,6 @@ class TcEx(object):
             'Authorization': authorization,
             'Timestamp': str(timestamp)
         }
-
-    def _authorization_token_renew(self):
-        """Method for handling token authorization to ThreatConnect API.
-
-        This method will automatically renew the ThreatConnect token if it has expired.
-
-        Returns:
-            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
-        """
-        authorization = 'TC-Token {}'.format(self._tc_token)
-
-        window_padding = 15  # bcs - possible configuration option
-        current_time = int(time.time()) - window_padding
-        if (self._tc_token_expires < current_time):
-            # Renew Token
-            r = self.request
-            r.add_payload('expiredToken', self._tc_token)
-            r.url = '{}/appAuth'.format(self._args.tc_api_path.strip('api'))
-            r.add_payload('expiredToken', self._tc_token)
-            results = r.send()
-            try:
-                data = results.json()
-                if data['success']:
-                    self.log.info('Expired API token has been renewed.')
-                    self._tc_token = str(data['apiToken'])
-                    self._tc_token_expires = int(data['apiTokenExpires'])
-                    authorization = 'TC-Token {}'.format(data['apiToken'])
-                else:
-                    err = 'Failed to renew Token. ({})'.format(results.text)
-                    raise RuntimeError(err)
-            except RuntimeError:
-                raise
-            except:
-                self.log.error('Failure during token renewal. ({})'.format(results.text))
-
-        return {'Authorization': authorization}
-
-    def _jobs(self):
-        """Include jobs Module"""
-        from tcex_job import TcExJob
-        self.jobs = TcExJob(self)
-
-    def _playbook(self):
-        """Include Playbook Module
-
-        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
-        """
-        try:
-            from tcex_playbook import TcExPlaybook
-            self.playbook = TcExPlaybook(self)
-        except ImportError as e:
-            warn = 'Required playbook python dependency is not installed ({}).'.format(e)
-            self.log.warn(warn)
-
-    def _resources(self):
-        """Initialize the resource module.
-
-        This method will make a request to the ThreatConnect API to dynamically
-        build classes to support custom Indicators.  All other resources are available
-        via this class.
-
-        .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>``.
-        """
-        self.resources = type('resources', (object,), {})
-
-        import tcex_resources as Resources
-        for name, obj in inspect.getmembers(Resources):
-            if inspect.isclass(obj):
-                setattr(self.resources, name, getattr(Resources, name))
-
-        # Dynamically create custom indicator class
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self._args.tc_proxy_tc:
-            self.log.info('Using proxy server {}:{}.'.format(
-                self._args.tc_proxy_host, self._args.tc_proxy_port))
-            r.proxies = self.proxies
-        r.url = '{}/v2/types/indicatorTypes'.format(self._args.tc_api_path)
-        response = r.send()
-
-        if (int(response.status_code) != 200
-                or data.get('status') != 'Success'
-                or response.headers.get('content-type') != 'application/json'):
-            warn = 'Custom Indicators are not supported.'
-            self.log.warn(warn)
-            return
-
-        try:
-            data = response.json()['data']['indicatorType']
-            for entry in data:
-                name = self.safe_rt(entry['name'])
-                self.indicator_types.append(str(entry['name']))
-
-                if entry['custom'] == 'true':
-                    value_fields = []
-                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
-                        value_fields.append(entry['value1Label'])
-                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
-                        value_fields.append(entry['value2Label'])
-                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
-                        value_fields.append(entry['value3Label'])
-
-                    i = self.resources.Indicator(self)
-                    custom = {
-                        '_api_branch': entry['apiBranch'],
-                        '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_name': name,
-                        '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_status_codes': {
-                            'DELETE': [200],
-                            'GET': [200],
-                            'POST': [200],
-                            'PUT': [200]
-                        },
-                        '_value_fields': value_fields
-                    }
-                    setattr(self.resources, name, Resources.ClassFactory(
-                        name, self.resources.Indicator, custom))
-        except:
-            err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
-            self.log.error(err)
-            raise RuntimeError(err)
-
-    def _unknown_args(self, args):
-        """Log argparser unknown arguments.
-
-        Args:
-            args (list): List of unknown arguments
-        """
-        for u in args:
-            self.log.debug('Unsupported arg found ({0!s}).'.format(u))
 
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
         """Check if bulk indicators is enabled for owner
@@ -419,64 +455,6 @@ class TcEx(object):
 
         return indicator_list
 
-    def _logger(self, file_name='app.log'):
-        """Create TcEx app logger instance.
-
-        The logger is accessible via the ``tc.log.<level>`` call.
-
-        **Logging examples**
-        ::
-
-            tcex.log.debug('logging debug')
-            tcex.log.info('logging info')
-            tcex.log.error('logging error')
-            tcex.log.critical('logging critical')
-
-        Args:
-            file_name (Optional[string]): The name for the log file
-
-        Returns:
-            logger: An instance of logging
-        """
-
-        level = logging.INFO
-        log_level = {
-            'debug': logging.DEBUG,
-            'info': logging.INFO,
-            'warning': logging.WARNING,
-            'error': logging.ERROR,
-            'critical': logging.CRITICAL
-        }
-        name = 'tcapp'
-        if self._args.tc_log_level.lower() in log_level.keys():
-            level = log_level[self._args.tc_log_level]
-
-        logfile = os.path.join(self._args.tc_log_path, file_name)
-        log = logging.getLogger(name)
-        log.setLevel(level)
-
-        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        tx_format += '(%(funcName)s:%(lineno)d)'
-        formatter = logging.Formatter(tx_format)
-
-        if self._args.tc_token is not None and self._args.tc_log_to_api:
-            # api & file logger
-            from api_logging_handler import ApiLoggingHandler
-            api = ApiLoggingHandler(logfile, self)
-            api.set_name('api')  # not supported in python 2.6
-            api.setLevel(level)
-            api.setFormatter(formatter)
-            log.addHandler(api)
-        else:
-            # file logger
-            fh = logging.FileHandler(logfile)
-            fh.set_name('fh')  # not supported in python 2.6
-            fh.setLevel(level)
-            fh.setFormatter(formatter)
-            log.addHandler(fh)
-
-        return log
-
     def message_tc(self, message):
         """Write data to message_tc file in TcEX specified directory.
 
@@ -502,14 +480,14 @@ class TcEx(object):
 
         self._max_message_length -= len(message)
 
-    ## def proxy_external(self, force_proxy=False):
-    ##     """
-    ##     """
-    ##     session = Session()
-    ##     if force_proxy or self._args.tc_proxy_external:
-    ##         session.proxies = self.proxies()
-##
-    ##     return session
+    @property
+    def parser(self):
+        """The ArgParser parser object
+
+        Returns:
+            (ArgumentParser): TcEX instance of ArgParser
+        """
+        return self._parser
 
     @property
     def proxies(self):
@@ -551,6 +529,26 @@ class TcEx(object):
 
         return proxies
 
+    @property
+    def request(self):
+        """Return an instance of the Request Class
+
+        A wrapper on the Python Request Module specifically for interacting with the
+        ThreatConnect API.  However, this can also be used for connecting to other
+        API endpoints.
+
+        Returns:
+            (instance): An instance of Request Class
+        """
+        try:
+            from tcex_request import TcExRequest
+            return TcExRequest(self)
+        except ImportError as e:
+            err = 'Required Module is not installed ({}).'.format(e)
+            self.log.error(err)
+            self.message_tc(err)
+            self.exit(1)
+
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory
 
@@ -570,28 +568,33 @@ class TcEx(object):
         with open(result_file, 'a') as rh:
             rh.write(results)
 
-    ## def use_bulk(self, owner, last_bulk_run):
-    ##     """Determine if bulk indicator should be used.
-##
-    ##     Calculate if bulk should be used to download indicators.
-##
-    ##     Args:
-    ##         owner (string): Owner name to check.
-    ##         last_bulk_run (integer): Seconds since last bulk run.
-##
-    ##     Returns:
-    ##         (boolean): True if bulk indicator download is enabled and has run over 86400 seconds ago.
-    ##     """
-    ##     bulk_run_period = (86400 - 15)  # standard time period for bulk run with 15 second padding
-##
-    ##     if self.bulk_enabled(owner):
-    ##         if float(last_bulk_run) == 0.0:
-    ##             return True
-##
-    ##         if time.time() - float(last_bulk_run) >= bulk_run_period:
-    ##             return True
-##
-    ##     return False
+    @property
+    def results_tc_args(self):
+        """Read data from results_tc file from previous run of app.
+
+        This method is only required when not running from the with the
+        TcEX platform and is only intended for testing apps locally.
+
+        Returns:
+            (dictionary): A dictionary of values written to results_tc.
+        """
+        args = {}
+        results = []
+        if os.access(self._args.tc_out_path, os.W_OK):
+            result_file = '{0!s}/results.tc'.format(self._args.tc_out_path)
+        else:
+            result_file = 'results.tc'
+
+        if os.path.isfile(result_file):
+            with open(result_file, 'r') as rh:
+                results = rh.read().strip().split('\n')
+            os.remove(result_file)
+
+        for line in results:
+            key, value = line.split(' = ')
+            args[key] = value
+
+        return args
 
     @staticmethod
     def safe_rt(resource_type, lower=False):
@@ -653,17 +656,41 @@ class TcEx(object):
             (any): Return validate or encoded data
 
         """
-        ## if data is None or isinstance(data, (int, list, dict)):
-        ##     return data
-        ## elif isinstance(data, unicode):
-        ##     return unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
-        ## elif not isinstance(data, unicode):
-        ##     return unicode(data, 'utf-8', errors='ignore')
-        ## else:
-        ##     return data
         if data is None or not isinstance(data, types.StringTypes):
             return data
         elif isinstance(data, unicode):
             return unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
         elif not isinstance(data, unicode):
             return unicode(data, 'utf-8', errors='ignore')
+
+    ## def proxy_external(self, force_proxy=False):
+    ##     """
+    ##     """
+    ##     session = Session()
+    ##     if force_proxy or self._args.tc_proxy_external:
+    ##         session.proxies = self.proxies()
+    ##
+    ##     return session
+
+    ## def use_bulk(self, owner, last_bulk_run):
+    ##     """Determine if bulk indicator should be used.
+    ##
+    ##     Calculate if bulk should be used to download indicators.
+    ##
+    ##     Args:
+    ##         owner (string): Owner name to check.
+    ##         last_bulk_run (integer): Seconds since last bulk run.
+    ##
+    ##     Returns:
+    ##         (boolean): True if bulk indicator download is enabled and has run over 86400 seconds ago.
+    ##     """
+    ##     bulk_run_period = (86400 - 15)  # standard time period for bulk run with 15 second padding
+    ##
+    ##     if self.bulk_enabled(owner):
+    ##         if float(last_bulk_run) == 0.0:
+    ##             return True
+    ##
+    ##         if time.time() - float(last_bulk_run) >= bulk_run_period:
+    ##             return True
+    ##
+    ##     return False
