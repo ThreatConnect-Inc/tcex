@@ -31,6 +31,9 @@ class Resource(object):
         self._parent = None
         self._request_entity = None
         self._request_uri = None
+        self._result_count = None
+        self._result_limit = 500
+        self._result_start = 0
         self._stream = False
         self._status_codes = {}
         self._url = None
@@ -360,6 +363,41 @@ class Resource(object):
     def parent(self):
         """The parent object name for this resource."""
         return self._parent
+
+    def paginate(self):
+        """Paginate results from ThreatConnect API
+
+        Some API Endpoints require pagination.  This method will paginate through all results and
+        return the combined data.
+
+        Return:
+            (dictionary): Resource Data
+        """
+        self._r.add_payload('resultStart', self._result_start)
+        self._r.add_payload('resultLimit', self._result_limit)
+        results = self.request()
+        response = results.get('response')
+        if results.get('status') == 'Success':
+            data = response.json()['data']
+            resources = data[self.request_entity]
+
+            # set results count returned by first API call
+            if data.get('resultCount') is not None:
+                self._result_count = data.get('resultCount')
+                # self._result_start = self._result_limit
+
+            self._tcex.log.debug('Result Count: {}'.format(self._result_count))
+
+            while True:
+                if len(resources) >= self._result_count:
+                    break
+                self._result_start += self._result_limit
+                self._r.add_payload('resultStart', self._result_start)
+                results = self.request()
+                resources.extend(results['data'])
+
+            self._tcex.log.debug('Resource Count: {}'.format(len(resources)))
+            return resources
 
     def request(self):
         """Send the request to the API.

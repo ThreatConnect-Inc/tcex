@@ -71,8 +71,8 @@ class TcExJob(object):
         resource.url = self._tcex._args.tc_api_path
 
         # incident
-        if 'eventDate' in data:
-            resource_body['eventDate'] = data['eventDate']
+        if data.get('eventDate') is not None:
+            resource_body['eventDate'] = data.get('eventDate')
 
         resource.body = json.dumps(resource_body)
         results = resource.request()
@@ -159,6 +159,7 @@ class TcExJob(object):
         for group in self._groups:
             cache = self.group_cache(owner, group['type'])
 
+            self._tcex.log.debug(u'Processing group ({})'.format(group.get('name')))
             if duplicates:
                 # bcs - support duplicate groups
                 pass
@@ -166,8 +167,9 @@ class TcExJob(object):
                 group_id = self._group_add(group['type'], group['name'], owner, group)
                 if group_id is not None:
                     self._group_cache[owner][group['type']][group['name']] = group_id
-                self._tcex.log.info(u'creating group {} [{}]'.format(
-                    group['name'], group_id))
+                self._tcex.log.info(u'Creating group {} [{}]'.format(group['name'], group_id))
+            else:
+                self._tcex.log.debug(u'Existing Group ({})'.format(group.get('name')))
 
     def _process_indicators(self, owner):
         """Process batch indicators and write to TC API
@@ -479,9 +481,10 @@ class TcExJob(object):
         resource = getattr(Resources, resource_type)(self._tcex)
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
-        results = resource.request()
+        results = resource.paginate()
 
-        for group in results['data']:
+        for group in results:
+            self._tcex.log.debug('cache - group name: ({})'.format(group.get('name')))
             self._group_cache[owner][resource_type][group['name']] = group['id']
 
         return self._group_cache[owner][resource_type]
