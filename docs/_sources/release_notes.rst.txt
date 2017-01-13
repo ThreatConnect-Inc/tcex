@@ -4,6 +4,12 @@
 Release Notes
 ==============
 
+0.0.8
+------
++ Change logging level logic to use ``logging`` over ``tc_logging_level`` if it exist.
++ Added App version logging attempt.
+
+
 0.0.7
 ------
 + Updated :py:meth:`tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.

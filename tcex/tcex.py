@@ -51,6 +51,7 @@ class TcEx(object):
         self.log = self._logger()
 
         # Log versions
+        self._log_app_version()
         self._log_python_version()
         self._log_tcex_version()
 
@@ -104,6 +105,19 @@ class TcEx(object):
         from tcex_job import TcExJob
         self.jobs = TcExJob(self)
 
+    def _log_app_version(self):
+        """Log the current App Version"""
+
+        # Best Effort
+        try:
+            install_json = os.path.join(os.getcwd(), 'install.json')
+            with open(install_json, 'r') as fh:
+                app_version = json.load(fh)['programVersion']
+
+            self.log.info('App Version: {}'.format(app_version))
+        except:
+            self.log.debug('Could not retrieve App Version')
+
     def _log_python_version(self):
         """Log the current Python Version"""
         self.log.info('Python Version: {}.{}.{}'.format(
@@ -155,7 +169,13 @@ class TcEx(object):
             'critical': logging.CRITICAL
         }
         name = 'tcapp'
-        if self._args.tc_log_level.lower() in log_level.keys():
+        # if self._args.tc_log_level.lower() in log_level.keys():
+        #     level = log_level[self._args.tc_log_level]
+
+        # BCS - temporarily until there is some way to configure App logging level in the UI
+        if self._args.logging is not None:
+            level = log_level[self._args.logging]
+        elif self._args.tc_log_level is not None:
             level = log_level[self._args.tc_log_level]
 
         logfile = os.path.join(self._args.tc_log_path, file_name)
