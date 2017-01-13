@@ -649,12 +649,14 @@ class TcEx(object):
         Returns:
             (string): The truncated tag
         """
-        if len(tag) > 35:
-            return TcEx.uni(tag[:35])
-        return TcEx.uni(tag)
+        if tag is not None:
+            tag = TcEx.uni(tag)
+            if len(tag) > 35:
+                tag = tag[:35]
+        return tag
 
     @staticmethod
-    def safeurl(data):
+    def safeurl(url):
         """URL encode value for safe HTTP request
 
         Args:
@@ -663,7 +665,9 @@ class TcEx(object):
         Returns:
             (string): The urlencoded string
         """
-        return urllib.quote(TcEx.uni(data), safe='~')
+        if url is not None:
+            url = urllib.quote(TcEx.uni(url), safe='~')
+        return url
 
     @staticmethod
     def uni(data):
@@ -676,12 +680,15 @@ class TcEx(object):
             (any): Return validate or encoded data
 
         """
+        uni_data = data
         if data is None or not isinstance(data, types.StringTypes):
-            return data
+            pass
         elif isinstance(data, unicode):
-            return unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
+            uni_data = unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
         elif not isinstance(data, unicode):
-            return unicode(data, 'utf-8', errors='ignore')
+            uni_data = unicode(data, 'utf-8', errors='ignore')
+
+        return uni_data
 
     ## def proxy_external(self, force_proxy=False):
     ##     """

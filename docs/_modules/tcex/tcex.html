@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.0.8 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.0.9 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.0.8 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.0.9 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.8
+                0.0.9
               </div>
             
           
@@ -796,12 +796,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): The truncated tag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">35</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">[:</span><span class="mi">35</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">35</span><span class="p">:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[:</span><span class="mi">35</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tag</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="k">def</span> <span class="nf">safeurl</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="k">def</span> <span class="nf">safeurl</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;URL encode value for safe HTTP request</span>
 
 <span class="sd">        Args:</span>
@@ -810,7 +812,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): The urlencoded string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span></div>
 
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="TcEx.uni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.uni">[docs]</a>    <span class="k">def</span> <span class="nf">uni</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -823,12 +827,15 @@
 <span class="sd">            (any): Return validate or encoded data</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uni_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">StringTypes</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">data</span>
+            <span class="k">pass</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>  <span class="c1"># re-encode poorly encoded unicode</span>
+            <span class="n">uni_data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>  <span class="c1"># re-encode poorly encoded unicode</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span></div></div>
+            <span class="n">uni_data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">uni_data</span></div></div>
 
     <span class="c1">## def proxy_external(self, force_proxy=False):</span>
     <span class="c1">##     &quot;&quot;&quot;</span>
@@ -893,7 +900,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.0.8',
+            VERSION:'0.0.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

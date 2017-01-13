@@ -84,21 +84,19 @@ class TcExJob(object):
             resource.url = self._tcex._args.tc_api_path
 
             # add attributes
-            if 'attributes' in data:
-                for attribute in data['attributes']:
-                    self._tcex.log.debug('Adding attribute type ({})'.format(attribute['type']))
-                    resource.resource_id(resource_id)
-                    resource.attribute()
-                    resource.body = json.dumps(attribute)
-                    results = resource.request()
+            for attribute in data.get('attributes', []):
+                self._tcex.log.debug('Adding attribute type ({})'.format(attribute['type']))
+                resource.resource_id(resource_id)
+                resource.attributes()
+                resource.body = json.dumps(attribute)
+                results = resource.request()
 
             # add tags
-            if 'tags' in data:
-                for tag in data['tags']:
-                    self._tcex.log.debug(u'Adding tag ({})'.format(tag))
-                    resource.resource_id(resource_id)
-                    resource.tag(tag)
-                    results = resource.request()
+            for tag in data.get('tags', []):
+                self._tcex.log.debug(u'Adding tag ({})'.format(tag))
+                resource.resource_id(resource_id)
+                resource.tags(tag)
+                results = resource.request()
         else:
             err = 'Failed adding group ({})'.format(resource_name)
             self._tcex.log.error(err)
@@ -148,7 +146,8 @@ class TcExJob(object):
             resource.url = self._tcex._args.tc_api_path
 
             association_resource = getattr(Resources, ga['group_type'])(self._tcex)
-            resource.set_association(association_resource.api_uri, group_id)
+            association_resource.resource_id(group_id)
+            resource.association_pivot(association_resource.request_uri)
             resource.request()
 
     def _process_groups(self, owner, duplicates=False):

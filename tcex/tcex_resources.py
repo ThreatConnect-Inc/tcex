@@ -147,12 +147,11 @@ class Resource(object):
             self._tcex.log.warn('Overriding previous pivot')
 
         self._pivot = True
-        self._request_uri = '{}/{}'.format(
-            resource_api_branch, self._request_uri)
-            # bcs ^ by using request_uri a user can change pivots without having to worry about the
-            #       uri getting mangled, but adding id's and indicators gets overwritten.  Since
-            #       the uri should get reset after the request is made is should be okay to
-            #       use request_uri here.
+        self._request_uri = '{}/{}'.format(resource_api_branch, self._request_uri)
+        # bcs ^ by using request_uri a user can change pivots without having to worry about the
+        #       uri getting mangled, but adding id's and indicators gets overwritten.  Since
+        #       the uri should get reset after the request is made is should be okay to
+        #       use request_uri here.
 
     def attributes(self, resource_id=None):
         """Attribute endpoint for this resource with optional attribute id.

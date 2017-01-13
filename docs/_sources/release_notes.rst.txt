@@ -4,6 +4,10 @@
 Release Notes
 ==============
 
+0.0.9
+------
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module for :py:mod:`~tcex.tcex_resources` modules renamed methods and changes.
+
 0.0.8
 ------
 + Change logging level logic to use ``logging`` over ``tc_logging_level`` if it exist.
@@ -12,7 +16,7 @@ Release Notes
 
 0.0.7
 ------
-+ Updated :py:meth:`tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.
++ Updated :py:meth:`~tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.
 + Updated logging to better debug API request failures.
 + Updated package command to create lib directory with python version (e.g. lib_3.6.0)
 + Logging the Logging Level, Python and TcEx verison for additional debugging.

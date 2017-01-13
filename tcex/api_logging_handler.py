@@ -90,9 +90,9 @@ class ApiLoggingHandler(FileHandler):
             r.url = '{}/v2/logs/app'.format(self._tcex._args.tc_api_path)
             try:
                 results = r.send()
-                # if results.headers['content-type'] == 'application/json':
+                # if results.headers.get('content-type') == 'application/json':
                 #     data = results.json()
-                #     if data['status'] == 'Success':
+                #     if data.get('status') == 'Success':
                 #         pass
             except:
                 # best effort for now.  don't fret if logging fails

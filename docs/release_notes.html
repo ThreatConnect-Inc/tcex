@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Release Notes &mdash; TcEx 0.0.8 documentation</title>
+  <title>Release Notes &mdash; TcEx 0.0.9 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.0.8 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.0.9 documentation" href="index.html"/>
         <link rel="prev" title="Results TC" href="results_tc.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.8
+                0.0.9
               </div>
             
           
@@ -100,14 +100,15 @@
 <li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.0.8</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">0.0.7</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">0.0.6</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">0.0.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">0.0.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">0.0.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">0.0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id9">0.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.0.9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.0.8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.0.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.0.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">0.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">0.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">0.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -155,55 +156,61 @@
   <div class="section" id="release-notes">
 <span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id2">
-<h2>0.0.8<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2>0.0.9<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module for <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> modules renamed methods and changes.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>0.0.8<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Change logging level logic to use <code class="docutils literal"><span class="pre">logging</span></code> over <code class="docutils literal"><span class="pre">tc_logging_level</span></code> if it exist.</li>
 <li>Added App version logging attempt.</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>0.0.7<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>0.0.7<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources" title="tcex.tcex.TcEx._resources"><code class="xref py py-meth docutils literal"><span class="pre">tcex.tcex.TcEx._resources()</span></code></a> method to handle TC version without custom indicators.</li>
+<li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources" title="tcex.tcex.TcEx._resources"><code class="xref py py-meth docutils literal"><span class="pre">_resources()</span></code></a> method to handle TC version without custom indicators.</li>
 <li>Updated logging to better debug API request failures.</li>
 <li>Updated package command to create lib directory with python version (e.g. lib_3.6.0)</li>
 <li>Logging the Logging Level, Python and TcEx verison for additional debugging.</li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>0.0.6<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>0.0.6<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated open call for bytes issue on Python 3</li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>0.0.5<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>0.0.5<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated to setup.py for Python 3 support</li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>0.0.4<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>0.0.4<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Update for Campaign resource type Class.</li>
 <li>Added <a class="reference internal" href="building_apps.html#building-apps"><span class="std std-ref">Building Apps</span></a> and <a class="reference internal" href="development_tools.html#development-tools"><span class="std std-ref">Development Tools</span></a> section to documenation.</li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h2>0.0.3<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h2>0.0.3<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Campaign" title="tcex.tcex_resources.Campaign"><code class="xref py py-meth docutils literal"><span class="pre">Campaign()</span></code></a> Class.</li>
 <li>Multiple updates to documenation</li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h2>0.0.2<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h2>0.0.2<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updates to <code class="docutils literal"><span class="pre">setup.py</span></code> for build</li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h2>0.0.1<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h2>0.0.1<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Initial Public Release</li>
 </ul>
@@ -248,7 +255,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.8',
+            VERSION:'0.0.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
