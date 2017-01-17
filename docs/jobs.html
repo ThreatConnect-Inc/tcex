@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jobs &mdash; TcEx 0.0.9 documentation</title>
+  <title>Jobs &mdash; TcEx 0.0.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.0.9 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.0.11 documentation" href="index.html"/>
         <link rel="next" title="Logging" href="logging.html"/>
         <link rel="prev" title="Install JSON" href="install_json.html"/> 
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.9
+                0.0.11
               </div>
             
           
@@ -88,6 +88,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -95,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#group-associations">Group Associations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indicators">Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-occurrence">File Occurrence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-job-flow">Sample Job Flow</a></li>
 </ul>
 </li>
@@ -239,7 +241,10 @@ to the first group found with the name.</p>
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+20
+21
+22
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;associatedGroup&#39;</span><span class="o">:</span> <span class="p">[</span>
     <span class="s1">&#39;1&#39;</span><span class="p">,</span>
     <span class="s1">&#39;8&#39;</span>
@@ -254,11 +259,41 @@ to the first group found with the name.</p>
   <span class="s1">&#39;rating&#39;</span><span class="o">:</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span>
 <span class="hll">  <span class="s1">&#39;summary&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
 </span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
-    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Crimeware&#39;</span>
+    <span class="p">{</span>
+      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;APT&#39;</span>
+    <span class="p">},{</span>
+<span class="hll">      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Crimeware&#39;</span>
+</span>    <span class="p">}</span>
   <span class="p">],</span>
-<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
-</span><span class="p">}</span>
+  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="file-occurrence">
+<h2>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence" title="tcex.tcex_job.TcExJob.file_occurrence"><code class="xref py py-meth docutils literal"><span class="pre">file_occurrence()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="nx">code</span><span class="o">-</span><span class="nx">block</span><span class="o">::</span> <span class="nx">javascript</span>
+    <span class="o">:</span><span class="nx">linenos</span><span class="o">:</span>
+    <span class="o">:</span><span class="nx">lineno</span><span class="o">-</span><span class="nx">start</span><span class="o">:</span> <span class="mi">1</span>
+    <span class="o">:</span><span class="nx">emphasize</span><span class="o">-</span><span class="nx">lines</span><span class="o">:</span> <span class="mi">3</span>
+
+    <span class="p">{</span>
+        <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="s2">&quot;2014-11-03T00:00:00-05:00&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\\Windows\\System&quot;</span>
+    <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -391,7 +426,7 @@ already known it can be associated using the <code class="docutils literal"><spa
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.9',
+            VERSION:'0.0.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

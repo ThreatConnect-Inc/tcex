@@ -4,10 +4,15 @@
 Release Notes
 ==============
 
+0.0.11
+------
++ Updated :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` in the :py:mod:`~tcex.tcex_job.TcExJob` module.
++ Added :py:meth:`~tcex.tcex_data_filter` module.
+
 0.0.10
 ------
 + Added :py:meth:`~tcex.tcex_resources.Resource.paginate` method to :py:mod:`~tcex.tcex_resources` module.
-+ Update :py:meth:`~tcex.tcex_job.TcExJob.group_cache` module to use :py:meth:`~tcex.tcex_resources.Resource.paginate` method.
++ Updated :py:meth:`~tcex.tcex_job.TcExJob.group_cache` module to use :py:meth:`~tcex.tcex_resources.Resource.paginate` method.
 
 0.0.9
 ------

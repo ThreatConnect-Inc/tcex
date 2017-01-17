@@ -16,6 +16,7 @@ Release |version|.
 
    authorization
    building_apps
+   data_filter
    development_tools
    exit
    install_json

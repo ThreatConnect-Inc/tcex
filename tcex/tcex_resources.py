@@ -373,6 +373,7 @@ class Resource(object):
         Return:
             (dictionary): Resource Data
         """
+        resources = []
         self._r.add_payload('resultStart', self._result_start)
         self._r.add_payload('resultLimit', self._result_limit)
         results = self.request()
@@ -397,7 +398,8 @@ class Resource(object):
                 resources.extend(results['data'])
 
             self._tcex.log.debug('Resource Count: {}'.format(len(resources)))
-            return resources
+
+        return resources
 
     def request(self):
         """Send the request to the API.
@@ -443,7 +445,7 @@ class Resource(object):
                 if response.headers['content-type'] == 'application/json':
                     # handle bulk
                     if self._api_branch == 'bulk':
-                        # bcs - handle multiple downloads
+                        # write bulk download to disk with uniquie ID
                         temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
                         self._tcex.log.debug('temp json file: {}'.format(temp_file))
                         with open(temp_file, 'wb') as fh:
@@ -995,6 +997,7 @@ class File(Indicator):
         Args:
             indicator (string): The indicator to retrieve file occurrences.
         """
+        self._request_entity = 'fileOccurrence'
         self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
 
 

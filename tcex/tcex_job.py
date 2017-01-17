@@ -32,7 +32,7 @@ class TcExJob(object):
 
         # batch "bad" errors
         self._batch_failures = [
-            b'would exceed the number of allowed indicators'
+            'would exceed the number of allowed indicators'
         ]
 
         # keep the batch_id
@@ -110,19 +110,18 @@ class TcExJob(object):
         Args:
             owner (string):  The owner name for the indicator to be written
         """
+        # POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences
+        # supported format -> 2014-11-03T00:00:00-05:00
+
         resource = getattr(Resources, 'File')(self._tcex)
         resource.http_method = 'POST'
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
 
         for occurrence in self._file_occurrences:
-
-            resource.body = json.dumps({'fileName': occurrence['file_name']})
-            # bcs - research and update this
-            # supported format -> 2014-11-03T00:00:00-05:00
-            # body['date'] = occurrence['file_date']
-            # body['path'] = occurrence['path']
-            resouce.occurrence(occurrence['indicator'])
+            # remove the hash from the dictionary and add to URI
+            resource.occurrence(occurrence.pop('hash'))
+            resource.body = json.dumps(occurrence)
             results = resource.request()
 
     def _process_group_association(self, owner):
@@ -177,6 +176,7 @@ class TcExJob(object):
         Args:
             owner (string):  The owner name for the indicator to be written
         """
+        self._tcex.log.info('Processing {} indicators'.format(len(self._indicators)))
 
         resource = getattr(Resources, 'Batch')(self._tcex)
         resource.http_method = 'POST'
@@ -190,6 +190,7 @@ class TcExJob(object):
         }
 
         for chunk in self._chunk_indicators():
+            self._tcex.log.info('Batch Chunk Size: {}'.format(len(chunk)))
             resource.content_type = 'application/json'
             resource.body = json.dumps(batch_job_body)
             results = resource.request()
@@ -341,6 +342,7 @@ class TcExJob(object):
                     for error in json.loads(error_results['data']):
                         error_reason = error.get('errorReason')
                         for error_msg in self._batch_failures:
+
                             if re.findall(error_msg, error_reason):
                                 # Critical Error
                                 err = 'Batch Error: {0}'.format(error)
@@ -354,13 +356,45 @@ class TcExJob(object):
         return status
 
     def batch_write_type(self, write_type):
-        """Set batch write type for argument parser.
+        """Set batch attributes write type for argument parser.
 
         Args:
             write_type (string): Type of Append or Replace
         """
         if write_type in ['Append', 'Replace']:
             self._tcex._parser.set_defaults(batch_write_type=write_type)
+
+    def file_occurrence(self, fo):
+        """
+
+        Args:
+            fo (dictionary): The file occurrence data.
+
+        .. Warning:: There is no validation of the data passed to this method.
+
+        **Example Data** *(required fields are highlighted)*
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+            :emphasize-lines: 3
+
+            {
+                "date" : "2014-11-03T00:00:00-05:00",
+                "fileName" : "win999301.dll",
+                "hash": "BE7DE2F0CF48294400C714C9E28ECD01",
+                "path" : "C:\\Windows\\System"
+            }
+
+        .. Note:: The hash in the example above is not posted in the body, but extracted to use
+                  in the URI.
+        """
+        # POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences
+
+        if isinstance(fo, list):
+            self._file_occurrences.extend(fo)
+        elif isinstance(fo, dict):
+            self._file_occurrences.append(fo)
 
     ## bcs - not rewriting this until I know what it is for.
     ## def get_batch_job(self, batch_id):

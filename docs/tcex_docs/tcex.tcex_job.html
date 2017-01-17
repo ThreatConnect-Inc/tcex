@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.0.9 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.0.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.0.9 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.11 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.9
+                0.0.11
               </div>
             
           
@@ -86,6 +86,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
@@ -354,7 +355,7 @@ to halt.</p>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.batch_write_type">
 <code class="descname">batch_write_type</code><span class="sig-paren">(</span><em>write_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_write_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_write_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set batch write type for argument parser.</p>
+<dd><p>Set batch attributes write type for argument parser.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -363,6 +364,42 @@ to halt.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.file_occurrence">
+<code class="descname">file_occurrence</code><span class="sig-paren">(</span><em>fo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.file_occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.file_occurrence" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fo</strong> (<em>dictionary</em>) &#8211; The file occurrence data.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">There is no validation of the data passed to this method.</p>
+</div>
+<p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="s2">&quot;2014-11-03T00:00:00-05:00&quot;</span><span class="p">,</span>
+<span class="hll">    <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
+</span>    <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\Windows\System&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The hash in the example above is not posted in the body, but extracted to use
+in the URI.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -678,7 +715,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.0.9',
+            VERSION:'0.0.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

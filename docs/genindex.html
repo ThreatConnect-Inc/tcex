@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; TcEx 0.0.9 documentation</title>
+  <title>Index &mdash; TcEx 0.0.11 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.0.9 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.0.11 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.9
+                0.0.11
               </div>
             
           
@@ -87,6 +87,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -172,9 +173,11 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.__str__">__str__() (tcex.tcex_request.TcExRequest method)</a>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj.__str__">__str__() (tcex.tcex_data_filter.DataObj method)</a>
 
       <ul>
+        <li><a href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.__str__">(tcex.tcex_request.TcExRequest method)</a>
+</li>
         <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.__str__">(tcex.tcex_resources.Resource method)</a>
 </li>
       </ul></li>
@@ -184,11 +187,17 @@
 </li>
       <li><a href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._batch_arguments">_batch_arguments() (tcex.argparser.ArgParser method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._build_indexes">_build_indexes() (tcex.tcex_data_filter.DataFilter method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._chunk_indicators">_chunk_indicators() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal._exit">_exit() (tcex.tcex_local.TcExLocal method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_add">_group_add() (tcex.tcex_job.TcExJob method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._in">_in() (tcex.tcex_data_filter.DataFilter method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._index_filter">_index_filter() (tcex.tcex_data_filter.DataFilter method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._jobs">_jobs() (tcex.tcex.TcEx method)</a>
 </li>
@@ -196,11 +205,15 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_python_version">_log_python_version() (tcex.tcex.TcEx method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tcex_version">_log_tcex_version() (tcex.tcex.TcEx method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tcex_version">_log_tcex_version() (tcex.tcex.TcEx method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger">_logger() (tcex.tcex.TcEx method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._loop_filter">_loop_filter() (tcex.tcex_data_filter.DataFilter method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">_ni() (tcex.tcex_data_filter.DataFilter method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook._parse_out_variable">_parse_out_variable() (tcex.tcex_playbook.TcExPlaybook method)</a>
 </li>
@@ -221,6 +234,8 @@
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources">_resources() (tcex.tcex.TcEx method)</a>
 </li>
       <li><a href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments">_standard_arguments() (tcex.argparser.ArgParser method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._starts_with">_starts_with() (tcex.tcex_data_filter.DataFilter method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._unknown_args">_unknown_args() (tcex.tcex.TcEx method)</a>
 </li>
@@ -374,10 +389,18 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document">Document (class in tcex.tcex_resources)</a>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj.data">data (tcex.tcex_data_filter.DataObj attribute)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.data_filter">data_filter() (tcex.tcex.TcEx method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter">DataFilter (class in tcex.tcex_data_filter)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj">DataObj (class in tcex.tcex_data_filter)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document">Document (class in tcex.tcex_resources)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document.download">download() (tcex.tcex_resources.Document method)</a>
 </li>
   </ul></td>
@@ -414,9 +437,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File">File (class in tcex.tcex_resources)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.file_action">file_action() (tcex.tcex_resources.Resource method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.file_action">file_action() (tcex.tcex_resources.Resource method)</a>
+      <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence">file_occurrence() (tcex.tcex_job.TcExJob method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.filter_data">filter_data() (tcex.tcex_data_filter.DataFilter method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -548,10 +575,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">occurrence() (tcex.tcex_resources.File method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner">Owner (class in tcex.tcex_resources)</a>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.operator">operator (tcex.tcex_data_filter.DataFilter attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner">Owner (class in tcex.tcex_resources)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.owner">owner (tcex.tcex_resources.Resource attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner.owner_id">owner_id() (tcex.tcex_resources.Owner method)</a>
@@ -704,12 +733,14 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#module-tcex.tcex">tcex.tcex (module)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_job.html#module-tcex.tcex_job">tcex.tcex_job (module)</a>
+      <li><a href="tcex_docs/tcex.tcex_data_filter.html#module-tcex.tcex_data_filter">tcex.tcex_data_filter (module)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_local.html#module-tcex.tcex_local">tcex.tcex_local (module)</a>
+      <li><a href="tcex_docs/tcex.tcex_job.html#module-tcex.tcex_job">tcex.tcex_job (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex_local.html#module-tcex.tcex_local">tcex.tcex_local (module)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_playbook.html#module-tcex.tcex_playbook">tcex.tcex_playbook (module)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_redis.html#module-tcex.tcex_redis">tcex.tcex_redis (module)</a>
@@ -809,7 +840,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.9',
+            VERSION:'0.0.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -100,6 +100,29 @@ class TcEx(object):
 
         return {'Authorization': authorization}
 
+    def data_filter(self, data):
+        """Return an instance of the Data Filter Class
+
+        A simple helper module to filter results from ThreatConnect API or other data
+        source.  For example if results need to be filtered by an unsupported field the module
+        allows you to pass the data array/list in and specify one or more filters to get just the
+        results required.
+
+        Args:
+            data (list): The list of dictionary structure to filter.
+
+        Returns:
+            (instance): An instance of DataFilter Class
+        """
+        try:
+            from tcex_data_filter import DataFilter
+            return DataFilter(self, data)
+        except ImportError as e:
+            err = 'Required Module is not installed ({}).'.format(e)
+            self.log.error(err)
+            self.message_tc(err)
+            self.exit(1)
+
     def _jobs(self):
         """Include jobs Module"""
         from tcex_job import TcExJob

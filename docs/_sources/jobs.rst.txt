@@ -80,11 +80,35 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
       'rating': '3',
       'summary': '1.1.1.1',
       'tag': [
-        'APT',
-        'Crimeware'
+        {
+          'name': 'APT'
+        },{
+          'name': 'Crimeware'
+        }
       ],
       'type': 'Address'
     }
+
+File Occurrence
+----------------
+The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the following data structure. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 14,19
+
+    .. code-block:: javascript
+        :linenos:
+        :lineno-start: 1
+        :emphasize-lines: 3
+
+        {
+            "date" : "2014-11-03T00:00:00-05:00",
+            "fileName" : "win999301.dll",
+            "hash": "BE7DE2F0CF48294400C714C9E28ECD01",
+            "path" : "C:\\Windows\\System"
+        }
 
 Sample Job Flow
 -----------------
