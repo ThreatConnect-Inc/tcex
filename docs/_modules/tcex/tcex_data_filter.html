@@ -385,7 +385,16 @@
             <span class="s1">&#39;SW&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starts_with</span><span class="p">,</span>
             <span class="s1">&#39;IN&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in</span><span class="p">,</span>
             <span class="s1">&#39;NI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ni</span>  <span class="c1"># not in</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="DataFilter.results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.results">[docs]</a>    <span class="k">def</span> <span class="nf">results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cdata</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">cdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cdata</span></div></div>
+
 
     <span class="c1"># def union(self, results1, results2):</span>
     <span class="c1">#     &quot;&quot;&quot;Perform Union on the data sets.</span>
