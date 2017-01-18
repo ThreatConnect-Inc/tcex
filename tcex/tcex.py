@@ -12,10 +12,13 @@ import sys
 import urllib
 import time
 import types
+from argparser import ArgParser
+from datetime import datetime
 from urlparse import urlparse
 
 """ third party """
-from argparser import ArgParser
+from dateutil.relativedelta import relativedelta
+
 """ custom """
 
 class TcEx(object):
@@ -99,29 +102,6 @@ class TcEx(object):
                 self.log.error('Failure during token renewal. ({})'.format(results.text))
 
         return {'Authorization': authorization}
-
-    def data_filter(self, data):
-        """Return an instance of the Data Filter Class
-
-        A simple helper module to filter results from ThreatConnect API or other data
-        source.  For example if results need to be filtered by an unsupported field the module
-        allows you to pass the data array/list in and specify one or more filters to get just the
-        results required.
-
-        Args:
-            data (list): The list of dictionary structure to filter.
-
-        Returns:
-            (instance): An instance of DataFilter Class
-        """
-        try:
-            from tcex_data_filter import DataFilter
-            return DataFilter(self, data)
-        except ImportError as e:
-            err = 'Required Module is not installed ({}).'.format(e)
-            self.log.error(err)
-            self.message_tc(err)
-            self.exit(1)
 
     def _jobs(self):
         """Include jobs Module"""
@@ -438,6 +418,45 @@ class TcEx(object):
             raise RuntimeError(err)
 
         return False
+
+    def data_filter(self, data):
+        """Return an instance of the Data Filter Class
+
+        A simple helper module to filter results from ThreatConnect API or other data
+        source.  For example if results need to be filtered by an unsupported field the module
+        allows you to pass the data array/list in and specify one or more filters to get just the
+        results required.
+
+        Args:
+            data (list): The list of dictionary structure to filter.
+
+        Returns:
+            (instance): An instance of DataFilter Class
+        """
+        try:
+            from tcex_data_filter import DataFilter
+            return DataFilter(self, data)
+        except ImportError as e:
+            err = 'Required Module is not installed ({}).'.format(e)
+            self.log.error(err)
+            self.message_tc(err)
+            self.exit(1)
+
+    def epoch_seconds(self, delta=None):
+        """Get epoch seconds for now or using a time delta.
+
+        ::
+            # {'days': 1}
+            {unit: value}
+
+        Args:
+            code (Optional [integer]): The exit code value for the app.
+        """
+        epoch = datetime.now()
+        if delta is not None:
+            epoch = epoch - relativedelta(**delta)
+
+        return int(time.mktime(epoch.timetuple()))
 
     def exit(self, code=None):
         """Application exit method with proper exit code

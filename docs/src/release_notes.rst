@@ -7,7 +7,9 @@ Release Notes
 0.0.11
 ------
 + Updated :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` in the :py:mod:`~tcex.tcex_job.TcExJob` module.
-+ Added :py:meth:`~tcex.tcex_data_filter` module.
++ Added :py:mod:`~tcex.tcex_data_filter` module accessed via ``tcex.data_filter(data)``.
++ Added :py:meth:`~tcex.tcex.TcEx.epoch_seconds` method to return epoch seconds with optional delta period.
++ Added ``python-dateutil==2.4.2`` as a Python dependency.
 
 0.0.10
 ------

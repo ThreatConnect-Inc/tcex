@@ -16,6 +16,7 @@ setup(
     install_requires = [
         'hiredis==0.2.0',
         'jsonschema==2.5.1',
+        'python-dateutil==2.4.2',
         'redis==2.10.5',
         'requests==2.11.1'
     ],

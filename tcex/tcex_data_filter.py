@@ -239,6 +239,15 @@ class DataFilter(object):
             'NI': self._ni  # not in
         }
 
+    def results(self, data):
+        """
+        """
+        cdata = []
+        for r in data:
+            cdata.append(r.data)
+        return cdata
+
+
     # def union(self, results1, results2):
     #     """Perform Union on the data sets.
     #
