@@ -4,6 +4,10 @@
 Release Notes
 ==============
 
+0.0.12 (Develop)
+-----------------
++ Documenation updates.
+
 0.0.11
 ------
 + Updated :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` in the :py:mod:`~tcex.tcex_job.TcExJob` module.

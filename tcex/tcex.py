@@ -445,9 +445,15 @@ class TcEx(object):
     def epoch_seconds(self, delta=None):
         """Get epoch seconds for now or using a time delta.
 
-        ::
-            # {'days': 1}
-            {unit: value}
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+
+            {'days': 1}
+            {'weeks': 3}
+            {'months': 4}
+
+        .. Note:: More information can be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html
 
         Args:
             code (Optional [integer]): The exit code value for the app.
