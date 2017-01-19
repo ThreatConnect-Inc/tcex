@@ -1,4 +1,5 @@
 {
+  "additionalProperties": false,
   "properties": {
     "allowOnDemand": {
       "type": "boolean"
@@ -68,7 +69,7 @@
               "Boolean",
               "Choice",
               "KeyValueList",
-              "Multichoice",
+              "MultiChoice",
               "String",
               "StringMixed"
             ],
@@ -149,6 +150,12 @@
     },
     "programVersion": {
       "type": "string"
+    },
+    "publishOutFiles": {
+      "type": "array"
+    },
+    "repeatingMinutes": {
+      "type": "array"
     },
     "runtimeContext": {
       "type": "array"
