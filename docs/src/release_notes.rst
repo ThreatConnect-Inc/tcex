@@ -4,7 +4,7 @@
 Release Notes
 =============
 
-0.0.12 (Develop)
+0.0.12
 ----------------
 + Documentation updates.
 + Changes to :py:mod:`~tcex.tcex_resources` to allow iteration over the instance to retrieve paginated results.
