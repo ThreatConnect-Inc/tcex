@@ -7,6 +7,11 @@ Release Notes
 0.0.12 (Develop)
 -----------------
 + Documenation updates.
++ Changes to :py:mod:`~tcex.tcex_resources` to allow iteration over the instance to retrieve paginated results.
++ Updates to support persistent args when running app locally.
++ Updated playbook module for Python 3.
++ Added logging of platform for debugging purposes.
++ Cleanup and Pep 8 changes.
 
 0.0.11
 ------

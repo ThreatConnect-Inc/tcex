@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.0.11 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.0.12 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.0.11 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.0.12 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.11
+                0.0.12
               </div>
             
           
@@ -177,6 +177,12 @@
 <dt id="tcex.tcex.TcEx._log_app_version">
 <code class="descname">_log_app_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_app_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_app_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Log the current App Version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx._log_platform">
+<code class="descname">_log_platform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log_platform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log_platform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log the current OS</p>
 </dd></dl>
 
 <dl class="method">
@@ -365,9 +371,9 @@ results required.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.epoch_seconds">
-<code class="descname">epoch_seconds</code><span class="sig-paren">(</span><em>delta=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.epoch_seconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.epoch_seconds" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">epoch_seconds</code><span class="sig-paren">(</span><em>delta=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.epoch_seconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.epoch_seconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get epoch seconds for now or using a time delta.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -384,7 +390,7 @@ results required.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em><em></em>) &#8211; The exit code value for the app.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>delta</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em><em></em>) &#8211; The exit code value for the app.</td>
 </tr>
 </tbody>
 </table>
@@ -425,16 +431,16 @@ during the call of this method.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.expand_indicators">
-<code class="descname">expand_indicators</code><span class="sig-paren">(</span><em>indicator</em>, <em>first_indicator=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">expand_indicators</code><span class="sig-paren">(</span><em>indicator</em>, <em>first_indicator=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.expand_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.expand_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process indicators expanding file hashes/custom indicators into multiple entries</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>indicator</strong> (<em>string</em>) &#8211; &#8221; : &#8221; delimeted string</li>
+<li><strong>indicator</strong> (<em>string</em>) &#8211; &#8221; : &#8221; delimited string</li>
 <li><strong>first_indicator</strong> (<em>boolean</em>) &#8211; Indicate whether to only include the first
 matched indicator.</li>
 </ul>
@@ -482,7 +488,7 @@ this limit will be truncated by this method.</p>
 <code class="descname">proxies</code><a class="headerlink" href="#tcex.tcex.TcEx.proxies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats proxy configuration into required format for Python Requests module.</p>
 <p>Generates a dictionary for use with the Python Requests module format
-proxying remote connections.</p>
+when proxy is required for remote connections.</p>
 <p><strong>Example Response</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://user:pass@10.10.1.10:3128/&quot;</span><span class="p">}</span>
 </pre></div>
@@ -538,9 +544,9 @@ method will store the values for TC to read and put into the Database.</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="tcex.tcex.TcEx.results_tc_args">
-<code class="descname">results_tc_args</code><a class="headerlink" href="#tcex.tcex.TcEx.results_tc_args" title="Permalink to this definition">¶</a></dt>
+<code class="descname">results_tc_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from results_tc file from previous run of app.</p>
 <p>This method is only required when not running from the with the
 TcEX platform and is only intended for testing apps locally.</p>
@@ -560,8 +566,8 @@ TcEX platform and is only intended for testing apps locally.</p>
 <dt id="tcex.tcex.TcEx.safe_rt">
 <em class="property">static </em><code class="descname">safe_rt</code><span class="sig-paren">(</span><em>resource_type</em>, <em>lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_rt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format Resource Type</p>
-<p>Takes Custom Indicator types with a space characer and return a <em>safe</em> string.</p>
-<p>(e.g. <em>User Agent</em> is coverted to User_Agent or user_agent.)</p>
+<p>Takes Custom Indicator types with a space character and return a <em>safe</em> string.</p>
+<p>(e.g. <em>User Agent</em> is converted to User_Agent or user_agent.)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -612,7 +618,7 @@ TcEX platform and is only intended for testing apps locally.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; String to URL Encode</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>string</em>) &#8211; String to URL Encode</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The urlencoded string</td>
 </tr>
@@ -675,7 +681,7 @@ TcEX platform and is only intended for testing apps locally.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.0.11',
+            VERSION:'0.0.12',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

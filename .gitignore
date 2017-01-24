@@ -6,6 +6,7 @@
 #
 # Module Specific Exclusions
 #
+lib*
 *.log
 log
 tc.json

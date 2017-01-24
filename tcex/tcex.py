@@ -1,5 +1,5 @@
 """ standard """
-import argparse
+# import argparse
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
@@ -12,14 +12,16 @@ import sys
 import urllib
 import time
 import types
-from argparser import ArgParser
+from .argparser import ArgParser
 from datetime import datetime
-from urlparse import urlparse
+from platform import platform
+# from urlparse import urlparse
 
 """ third party """
 from dateutil.relativedelta import relativedelta
 
 """ custom """
+
 
 class TcEx(object):
     """Provides basic functionality for all types of TxEx Apps"""
@@ -54,6 +56,7 @@ class TcEx(object):
         self.log = self._logger()
 
         # Log versions
+        self._log_platform()
         self._log_app_version()
         self._log_python_version()
         self._log_tcex_version()
@@ -79,7 +82,7 @@ class TcEx(object):
 
         window_padding = 15  # bcs - possible configuration option
         current_time = int(time.time()) - window_padding
-        if (self._tc_token_expires < current_time):
+        if self._tc_token_expires < current_time:
             # Renew Token
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
@@ -99,6 +102,7 @@ class TcEx(object):
             except RuntimeError:
                 raise
             except:
+                # TODO: Limit this exception
                 self.log.error('Failure during token renewal. ({})'.format(results.text))
 
         return {'Authorization': authorization}
@@ -119,7 +123,12 @@ class TcEx(object):
 
             self.log.info('App Version: {}'.format(app_version))
         except:
+            # TODO: Limit this exception
             self.log.debug('Could not retrieve App Version')
+
+    def _log_platform(self):
+        """Log the current OS"""
+        self.log.info('OS Platform: {}'.format(platform()))
 
     def _log_python_version(self):
         """Log the current Python Version"""
@@ -136,7 +145,8 @@ class TcEx(object):
         # Open the __init__.py file and extract the version using regex
         with open(os.path.join(module_path, '__init__.py'), 'r') as fd:
             tcex_version = re.search(
-                r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]', fd.read(), re.MULTILINE).group(1)
+                r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]', fd.read(),
+                re.MULTILINE).group(1)
 
         self.log.info('TcEx Version: {}'.format(tcex_version))
 
@@ -231,10 +241,10 @@ class TcEx(object):
         """
         self.resources = type('resources', (object,), {})
 
-        import tcex_resources as Resources
-        for name, obj in inspect.getmembers(Resources):
+        import tcex_resources as resources
+        for name, obj in inspect.getmembers(resources):
             if inspect.isclass(obj):
-                setattr(self.resources, name, getattr(Resources, name))
+                setattr(self.resources, name, getattr(resources, name))
 
         # Dynamically create custom indicator class
         r = self.request
@@ -253,7 +263,7 @@ class TcEx(object):
             self.log.warn(warn)
             return
 
-        # validate succcessful API results
+        # validate successful API results
         data = response.json()
         if data.get('status') != 'Success':
             warn = 'Bad Status: Custom Indicators are not supported.'
@@ -291,7 +301,7 @@ class TcEx(object):
                         },
                         '_value_fields': value_fields
                     }
-                    setattr(self.resources, name, Resources.ClassFactory(
+                    setattr(self.resources, name, resources.ClassFactory(
                         name, self.resources.Indicator, custom))
         except:
             err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
@@ -317,6 +327,7 @@ class TcEx(object):
 
         if not self._parsed:
             self._args, unknown = self._parser.parse_known_args()
+            self.results_tc_args()  # for local testing only
             self._parsed = True
 
             # log unknown arguments only once
@@ -400,11 +411,11 @@ class TcEx(object):
         # r.authorization = self.authorization()
         if owner is not None:
             r.owner = owner
-        r.url = '{}/v2/indicators/bulk'.format(self._args.tc_api_path)
+        r.url = '{}/v2/indicators/bulk'.format(api_path)
 
         results = r.send()
         try:
-            if data.headers['content-type'] == 'application/json':
+            if results.headers['content-type'] == 'application/json':
                 data = results.json()
 
                 if data['status'] == 'Success':
@@ -441,28 +452,6 @@ class TcEx(object):
             self.log.error(err)
             self.message_tc(err)
             self.exit(1)
-
-    def epoch_seconds(self, delta=None):
-        """Get epoch seconds for now or using a time delta.
-
-        .. code-block:: javascript
-            :linenos:
-            :lineno-start: 1
-
-            {'days': 1}
-            {'weeks': 3}
-            {'months': 4}
-
-        .. Note:: More information can be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html
-
-        Args:
-            code (Optional [integer]): The exit code value for the app.
-        """
-        epoch = datetime.now()
-        if delta is not None:
-            epoch = epoch - relativedelta(**delta)
-
-        return int(time.mktime(epoch.timetuple()))
 
     def exit(self, code=None):
         """Application exit method with proper exit code
@@ -506,23 +495,6 @@ class TcEx(object):
         else:
             self.log.error('Invalid exit code')
 
-    def expand_indicators(self, indicator, first_indicator=True):
-        """Process indicators expanding file hashes/custom indicators into multiple entries
-
-        Args:
-            indicator (string): " : " delimeted string
-            first_indicator (boolean): Indicate whether to only include the first
-                matched indicator.
-        """
-        indicator_list = []
-        for i in indicator.split(' : '):
-            indicator_list.append(i)
-
-            if first_indicator:
-                break
-
-        return indicator_list
-
     def message_tc(self, message):
         """Write data to message_tc file in TcEX specified directory.
 
@@ -562,7 +534,7 @@ class TcEx(object):
         """Formats proxy configuration into required format for Python Requests module.
 
         Generates a dictionary for use with the Python Requests module format
-        proxying remote connections.
+        when proxy is required for remote connections.
 
         **Example Response**
         ::
@@ -574,12 +546,12 @@ class TcEx(object):
         """
         proxies = {}
         if (self._args.tc_proxy_host is not None and
-                    self._args.tc_proxy_port is not None):
+                self._args.tc_proxy_port is not None):
 
             if (self._args.tc_proxy_username is not None and
-                        self._args.tc_proxy_password is not None):
+                    self._args.tc_proxy_password is not None):
 
-                proxies ={
+                proxies = {
                     'http': 'http://{0!s}:{1!s}@{2!s}:{3!s}'.format(
                         self._args.tc_proxy_username, self._args.tc_proxy_password,
                         self._args.tc_proxy_host, self._args.tc_proxy_port),
@@ -636,7 +608,6 @@ class TcEx(object):
         with open(result_file, 'a') as rh:
             rh.write(results)
 
-    @property
     def results_tc_args(self):
         """Read data from results_tc file from previous run of app.
 
@@ -646,7 +617,6 @@ class TcEx(object):
         Returns:
             (dictionary): A dictionary of values written to results_tc.
         """
-        args = {}
         results = []
         if os.access(self._args.tc_out_path, os.W_OK):
             result_file = '{0!s}/results.tc'.format(self._args.tc_out_path)
@@ -660,17 +630,56 @@ class TcEx(object):
 
         for line in results:
             key, value = line.split(' = ')
-            args[key] = value
+            setattr(self._args, key, value)
 
-        return args
+    @staticmethod
+    def epoch_seconds(delta=None):
+        """Get epoch seconds for now or using a time delta.
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+
+            {'days': 1}
+            {'weeks': 3}
+            {'months': 4}
+
+        .. Note:: More information can be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html
+
+        Args:
+            delta (Optional [integer]): The exit code value for the app.
+        """
+        epoch = datetime.now()
+        if delta is not None:
+            epoch = epoch - relativedelta(**delta)
+
+        return int(time.mktime(epoch.timetuple()))
+
+    @staticmethod
+    def expand_indicators(indicator, first_indicator=True):
+        """Process indicators expanding file hashes/custom indicators into multiple entries
+
+        Args:
+            indicator (string): " : " delimited string
+            first_indicator (boolean): Indicate whether to only include the first
+                matched indicator.
+        """
+        indicator_list = []
+        for i in indicator.split(' : '):
+            indicator_list.append(i)
+
+            if first_indicator:
+                break
+
+        return indicator_list
 
     @staticmethod
     def safe_rt(resource_type, lower=False):
         """Format Resource Type
 
-        Takes Custom Indicator types with a space characer and return a *safe* string.
+        Takes Custom Indicator types with a space character and return a *safe* string.
 
-        (e.g. *User Agent* is coverted to User_Agent or user_agent.)
+        (e.g. *User Agent* is converted to User_Agent or user_agent.)
 
         Args:
            resource_type (string): The resource type to format.
@@ -708,7 +717,7 @@ class TcEx(object):
         """URL encode value for safe HTTP request
 
         Args:
-            data (string): String to URL Encode
+            url (string): String to URL Encode
 
         Returns:
             (string): The urlencoded string
@@ -737,35 +746,3 @@ class TcEx(object):
             uni_data = unicode(data, 'utf-8', errors='ignore')
 
         return uni_data
-
-    ## def proxy_external(self, force_proxy=False):
-    ##     """
-    ##     """
-    ##     session = Session()
-    ##     if force_proxy or self._args.tc_proxy_external:
-    ##         session.proxies = self.proxies()
-    ##
-    ##     return session
-
-    ## def use_bulk(self, owner, last_bulk_run):
-    ##     """Determine if bulk indicator should be used.
-    ##
-    ##     Calculate if bulk should be used to download indicators.
-    ##
-    ##     Args:
-    ##         owner (string): Owner name to check.
-    ##         last_bulk_run (integer): Seconds since last bulk run.
-    ##
-    ##     Returns:
-    ##         (boolean): True if bulk indicator download is enabled and has run over 86400 seconds ago.
-    ##     """
-    ##     bulk_run_period = (86400 - 15)  # standard time period for bulk run with 15 second padding
-    ##
-    ##     if self.bulk_enabled(owner):
-    ##         if float(last_bulk_run) == 0.0:
-    ##             return True
-    ##
-    ##         if time.time() - float(last_bulk_run) >= bulk_run_period:
-    ##             return True
-    ##
-    ##     return False

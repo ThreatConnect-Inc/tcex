@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jobs &mdash; TcEx 0.0.11 documentation</title>
+  <title>Jobs &mdash; TcEx 0.0.12 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.0.11 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.0.12 documentation" href="index.html"/>
         <link rel="next" title="Logging" href="logging.html"/>
         <link rel="prev" title="Install JSON" href="install_json.html"/> 
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.11
+                0.0.12
               </div>
             
           
@@ -157,7 +157,7 @@
 <p>Once all the data has been added to the job a call to the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method will attempt to write the data to the ThreatConnect API.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Any failures will set the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> to <strong>3</strong> (partial failure) unless the error is defined as a critical failure (defined in the __init__ method of <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-meth docutils literal"><span class="pre">TcExJob()</span></code></a>.</p>
+<p class="last">Any failures will set the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> to <strong>3</strong> or partial failure, unless the error is defined as a critical failure (defined in the __init__ method of <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-meth docutils literal"><span class="pre">TcExJob()</span></code></a>.</p>
 </div>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
@@ -262,38 +262,28 @@ to the first group found with the name.</p>
     <span class="p">{</span>
       <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;APT&#39;</span>
     <span class="p">},{</span>
-<span class="hll">      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Crimeware&#39;</span>
-</span>    <span class="p">}</span>
+      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Crimeware&#39;</span>
+    <span class="p">}</span>
   <span class="p">],</span>
-  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
-<span class="p">}</span>
+<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+</span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="file-occurrence">
 <h2>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence" title="tcex.tcex_job.TcExJob.file_occurrence"><code class="xref py py-meth docutils literal"><span class="pre">file_occurrence()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="nx">code</span><span class="o">-</span><span class="nx">block</span><span class="o">::</span> <span class="nx">javascript</span>
-    <span class="o">:</span><span class="nx">linenos</span><span class="o">:</span>
-    <span class="o">:</span><span class="nx">lineno</span><span class="o">-</span><span class="nx">start</span><span class="o">:</span> <span class="mi">1</span>
-    <span class="o">:</span><span class="nx">emphasize</span><span class="o">-</span><span class="nx">lines</span><span class="o">:</span> <span class="mi">3</span>
-
-    <span class="p">{</span>
-        <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="s2">&quot;2014-11-03T00:00:00-05:00&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\\Windows\\System&quot;</span>
-    <span class="p">}</span>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="s2">&quot;2014-11-03T00:00:00-05:00&quot;</span><span class="p">,</span>
+<span class="hll">    <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
+</span>    <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\\Windows\\System&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -426,7 +416,7 @@ already known it can be associated using the <code class="docutils literal"><spa
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.11',
+            VERSION:'0.0.12',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

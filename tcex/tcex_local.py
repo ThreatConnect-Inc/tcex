@@ -136,13 +136,13 @@ class TcExLocal:
                 for val in config_val:
                     parameters += '--{0} {1} '.format(
                         config_key, self._wrap(val))
-            elif isinstance(config_val, (int, float, long, str, unicode)):
+            elif isinstance(config_val, dict):
+                msg = 'Error: Dictionary types are not currently supported for field {}'
+                msg.format(config_val)
+                self._exit(msg, 1)
+            else:
                 parameters += '--{0} {1} '.format(
                     config_key, self._wrap(str(config_val)))
-            else:
-                msg = '{0} error: ({1}) is not of Type list or str. ({2})'
-                msg.format(type(config_val), config_val)
-                self._exit(msg, 1)
 
         return parameters
 

@@ -36,9 +36,14 @@ Use the *--test* arg to pass a selected test.
 """
 
 """ standard """
+import sys
+
 """ third-party """
 """ custom """
 from tcex import TcExLocal
+
+print('Python Version: {}.{}.{}'.format(
+    sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
 
 tcex_local = TcExLocal()
 args = tcex_local.args

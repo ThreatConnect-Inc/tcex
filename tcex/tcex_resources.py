@@ -24,6 +24,9 @@ class Resource(object):
         self._api_entity = None
         self._api_uri = None
         self._authorization_method = self._tcex.authorization
+        self._has_next = True
+        self._has_next_count = 0
+        self._has_prev = False
         self._http_method = 'GET'
         self._filters = []
         self._filter_or = False
@@ -37,6 +40,174 @@ class Resource(object):
         self._stream = False
         self._status_codes = {}
         self._url = None
+
+    def _apply_filters(self):
+        """
+        """
+        # apply filters
+        filters = []
+        for f in self._filters:
+            filters.append('{}{}{}'.format(f['name'], f['operator'], f['value']))
+        self._tcex.log.debug('filters: {}'.format(filters))
+
+        if len(filters) > 0:
+            self._r.add_payload('filters', ','.join(filters))
+
+    def _request_bulk(self, response):
+        """
+
+        """
+        data = None
+        try:
+            # write bulk download to disk with uniquie ID
+            temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
+            self._tcex.log.debug('temp json file: {}'.format(temp_file))
+            with open(temp_file, 'wb') as fh:
+                for block in response.iter_content(1024):
+                    fh.write(block)
+            with open(temp_file, 'r') as fh:
+                data = json.load(fh)
+        except IOError as e:
+            err = 'Failed retrievent Bulk JSON (e).'
+            self._tcex.log.error(err)
+            raise RuntimeError(err)
+
+        return data
+
+    def _request_process(self, response):
+        """
+        """
+        data = []
+        status = None
+
+        if response.status_code in self._status_codes[self._http_method]:
+            # Process all JSON type responses
+            if response.headers['content-type'] == 'application/json':
+                data, status = self._request_process_json(response)
+            elif response.headers['content-type'] == 'application/octet-stream':
+                data, status = self._request_process_octet(response)
+                self._has_next = False  # pagination not supported
+            else:
+                self._has_next = False  # pagination not supported
+                err = 'Failed Request: {}'.format(response.text)
+                self._tcex.log.error(err)
+                self._tcex.message_tc(err)
+        else:
+            status = 'Failure'
+            err = 'Failed Request for {}: ({})'.format(self._name, response.text)
+            self._tcex.log.error(err)
+
+        return data, status
+
+    ## def _request_process_failure(self):
+    ##     """
+    ##     """
+    ##     pass
+
+    def _request_process_json(self, response):
+        """Handle response data of type JSON
+
+        Return:
+            (string): The data from the download
+            (string): The status of the download
+        """
+        data = []
+        status = None
+        try:
+            if self._api_branch == 'bulk':
+                response_data = self._request_bulk(response)
+            else:
+                response_data = response.json()
+
+            if self._api_branch == 'bulk':
+                data, status = self._request_process_json_bulk(response_data)
+                self._has_next = False  # pagination not supported
+            elif response_data.get('data') is None:
+                data, status = self._request_process_json_status(response_data)
+                self._has_next = False  # pagination not supported
+            elif response_data.get('status') == 'Success':
+                data, status = self._request_process_json_standard(response_data)
+
+                """ setup pagination """
+                if self._result_count is None:
+                    self._result_count = response_data.get('data', {}).get('resultCount')
+
+                    if self._result_count is not None:
+                        if self._result_count > self._result_limit:
+                            self._has_next = True
+            else:
+                self._tcex.message_tc('Failed Request: {}'.format(response.text))
+                status = 'Failure'
+        except KeyError as e:
+            self._has_next = False  # pagination not supported
+            status = 'Failure'
+            msg = 'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
+            self._tcex.message_tc(msg)
+            self._tcex.log.error(msg)
+            # bcs = raise error
+        except ValueError as e:
+            self._has_next = False  # pagination not supported
+            status = 'Failure'
+            msg = 'Error: ({})'.format(e)
+            self._tcex.message_tc(msg)
+            self._tcex.log.error(msg)
+            # bcs = raise error
+
+        return data, status
+
+    def _request_process_json_bulk(self, response_data):
+        """Handle bulk JSON response
+
+        Return:
+            (string): The response data
+            (string): The response status
+        """
+        status = Failure
+        data = response_data.get(self.request_entity, [])
+        if len(data) != 0:
+            status = 'Success'
+        return data, status
+
+    def _request_process_json_standard(self, response_data):
+        """Handle JSON response
+
+        This should be the most common response from the ThreatConnect API.
+
+        Return:
+            (string): The response data
+            (string): The response status
+        """
+        data = response_data.get('data', {}).get(self.request_entity, [])
+        status = response_data.get('status', 'Failure')
+        return data, status
+
+    def _request_process_json_status(self, response_data):
+        """Handle JSON response with no "data" entity
+
+        Return:
+            (string): The response data
+            (string): The response status
+        """
+        # bcs - not sure about this one.  may need a better check for results
+        #       that only returns {"status":"Success"}
+        data = []
+        status = response_data.get('status')
+        return data, status
+
+    def _request_process_octect(self, response):
+        """Handle Document download.
+
+        Return:
+            (string): The data from the download
+            (string): The status of the download
+        """
+        status = 'Failure'
+        # Handle document download
+        data = response.content
+        if len(data) != 0:
+            status = 'Success'
+
+        return data, status
 
     def add_filter(self, name, operator, value):
         """Add ThreatConnect API Filter for this resource request.
@@ -62,7 +233,8 @@ class Resource(object):
     def api_branch(self):
         """The ThreatConnect API branch for this resource.
 
-        The **addresses** endpoint from ``/v2/indicators/addresses/``.
+        Return:
+            (str): The **addresses** endpoint from ``/v2/indicators/addresses/``.
         """
         return self._api_branch
 
@@ -70,7 +242,8 @@ class Resource(object):
     def api_branch_base(self):
         """The ThreatConnect API branch base (parent branch) for this resource.
 
-        The **indicators** endpoint from ``/v2/indicators`` or ``/v2/indicators/addresses``.
+        Return:
+            (str): The **indicators** endpoint from ``/v2/indicators`` or ``/v2/indicators/addresses``.
         """
         return self._api_branch_base
 
@@ -78,7 +251,8 @@ class Resource(object):
     def api_entity(self):
         """The ThreatConnect API entity for this resource.
 
-        The **address** JSON entity from JSON response to ``/v2/indicators/addresses``.
+        Return:
+            (str): The **address** JSON entity from JSON response to ``/v2/indicators/addresses``.
         """
         return self._api_entity
 
@@ -86,7 +260,8 @@ class Resource(object):
     def api_uri(self):
         """The ThreatConnect API URI for this resource.
 
-        The API URI endpoint ``/v2/indicators/addresses``.
+        Return:
+            (string): The API URI endpoint ``/v2/indicators/addresses``.
         """
         return self._api_uri
 
@@ -207,7 +382,11 @@ class Resource(object):
 
     @property
     def body(self):
-        """The body for this resource request."""
+        """The body for this resource request.
+
+        Return:
+            (any): The HTTP request body.
+        """
         return self._r.body
 
     @body.setter
@@ -290,8 +469,30 @@ class Resource(object):
             resource_type, resource_id, self._request_uri)
 
     @property
+    def has_next(self):
+        """Boolean for API pagination when there are more results to retrieve.
+
+        Return:
+            (boolean): True if the API request has more results otherwise False.
+        """
+        return self._has_next
+
+    @property
+    def has_prev(self):
+        """Boolean for API pagination when there are previous results to retrieve.
+
+        Return:
+            (boolean): True if the API request has previous results otherwise False.
+        """
+        return self._has_prev
+
+    @property
     def http_method(self):
-        """The HTTP Method for this resource request."""
+        """The HTTP Method for this resource request.
+
+        Return:
+            (string): The HTTP request method (GET, POST, etc.)
+        """
         return self._r.http_method
 
     @http_method.setter
@@ -342,13 +543,18 @@ class Resource(object):
     def name(self):
         """The name value for this resource.
 
-        The name of the Resource Type (e.g. Indicator, Task, etc.)
+        Return:
+            (str): The name of the Resource Type (e.g. Indicator, Task, etc.)
         """
         return self._name
 
     @property
     def owner(self):
-        """The Owner payload value for this resource request."""
+        """The Owner payload value for this resource request.
+
+        Return:
+            (str): The ThreatConnect owner name set during request.
+        """
         return self._r.payload.get('owner')
 
     @owner.setter
@@ -361,22 +567,26 @@ class Resource(object):
 
     @property
     def parent(self):
-        """The parent object name for this resource."""
+        """The parent object name for this resource.
+
+        Return:
+            (str): The API endpoint parent value (e.g. Indicator for Address or Group for Adversary.)
+        """
         return self._parent
 
     def paginate(self):
         """Paginate results from ThreatConnect API
 
-        Some API Endpoints require pagination.  This method will paginate through all results and
-        return the combined data.
+        .. Attention:: This method will be deprecated in a future release.
 
         Return:
             (dictionary): Resource Data
         """
+        self._tcex.log.warning('Using deprecated method (paginate).')
         resources = []
         self._r.add_payload('resultStart', self._result_start)
         self._r.add_payload('resultLimit', self._result_limit)
-        results = self.request()
+        results = self._request()
         response = results.get('response')
         if results.get('status') == 'Success':
             data = response.json()['data']
@@ -394,14 +604,14 @@ class Resource(object):
                     break
                 self._result_start += self._result_limit
                 self._r.add_payload('resultStart', self._result_start)
-                results = self.request()
+                results = self._request()
                 resources.extend(results['data'])
 
             self._tcex.log.debug('Resource Count: {}'.format(len(resources)))
 
         return resources
 
-    def request(self):
+    def _request(self):
         """Send the request to the API.
 
         This method will send the request to the API.  It will try to handle
@@ -417,80 +627,14 @@ class Resource(object):
             self._tcex.log.error(err)
             raise AttributeError(err)
 
-        data = []
-
+        """ configure request """
         self._r.authorization_method(self._authorization_method)
         self._r.url = '{}/v2/{}'.format(self._url, self._request_uri)
+        self._apply_filters()
         self._tcex.log.debug('Resource URL: ({})'.format(self._r.url))
 
-        filters = []
-        for f in self._filters:
-            filters.append('{}{}{}'.format(f['name'], f['operator'], f['value']))
-        self._tcex.log.debug('filters: {}'.format(filters))
-
-        if len(filters) > 0:
-            self._r.add_payload('filters', ','.join(filters))
-
-        results = {
-            'data': [],
-            'response': None,
-            'result_count': None,
-            'status': None
-        }
-
         response = self._r.send(stream=self._stream)
-        results['response'] = response
-        try:
-            if response.status_code in self._status_codes[self._http_method]:
-                if response.headers['content-type'] == 'application/json':
-                    # handle bulk
-                    if self._api_branch == 'bulk':
-                        # write bulk download to disk with uniquie ID
-                        temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
-                        self._tcex.log.debug('temp json file: {}'.format(temp_file))
-                        with open(temp_file, 'wb') as fh:
-                            for block in response.iter_content(1024):
-                                fh.write(block)
-                        with open(temp_file, 'r') as fh:
-                            data = json.load(fh)
-                    else:
-                        # data = response.json()
-                        data = json.loads(response.text)
-                        results['status'] = data.get('status')
-
-                    if self._api_branch == 'bulk':
-                        # bulk response - {"indicator" : [{........
-                        results['data'] = data[self.request_entity]
-                    elif 'data' not in data:
-                        # bcs - not sure about this one.  may need a better check for results
-                        #       that only returns {"status":"Success"}
-                        results['data'] = []
-                    elif data.get('status') == 'Success':
-                        """ this should be the most common outcome """
-                        results['data'] = data['data'][self.request_entity]
-                    else:
-                        self._tcex.message_tc('Failed Request: {}'.format(response.text))
-                elif response.headers['content-type'] == 'application/octet-stream':
-                    results['data'] = response.content
-                else:
-                    err = 'Failed Request: {}'.format(response.text)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-            else:
-                results['status'] = 'Failure'
-                err = 'Failed Request for {}: ({})'.format(self._name, response.text)
-                self._tcex.log.error(err)
-
-        except KeyError as e:
-            results['status'] = 'Failure'
-            msg = 'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
-            self._tcex.message_tc(msg)
-            self._tcex.log.error(msg)
-        except ValueError as e:
-            results['status'] = 'Failure'
-            msg = 'Error: ({})'.format(e)
-            self._tcex.message_tc(msg)
-            self._tcex.log.error(msg)
+        data, status = self._request_process(response)
 
         # bcs - to reset or not to reset?
         self._r.body = None
@@ -499,7 +643,41 @@ class Resource(object):
         self._pivot = False
         self._request_uri = self._api_uri
         self._request_entity = self._api_entity
-        return results
+
+        return {
+            'data': data,
+            'response': response,
+            'status': status
+        }
+
+    def request(self):
+        """Paginate to the next set of results.
+
+        Return:
+            (dictionary): Response/Results data.
+        """
+        if self._has_next:
+            # some endpoints don't require a resultLimit
+            self._r.add_payload('resultLimit', self._result_limit)
+            if self._result_count is not None:
+                # on an endpoint that support pagination the default resultStart is 0
+                self._r.add_payload('resultStart', self._result_start)
+
+            results = self._request()
+
+            # endpoints that support pagination
+            if self._result_count is not None:
+                self._result_start += self._result_limit
+                self._has_next_count += len(results.get('data'))
+
+                if self._has_next_count >= self._result_count:
+                    self._has_next = False
+
+            return results
+        else:
+            err = 'Result set has not "next".'
+            self._tcex.log.error(err)
+            raise RuntimeError(err)
 
     @property
     def request_entity(self):
@@ -508,6 +686,9 @@ class Resource(object):
         The request entity starts as the resource api_entity and changes
         depending on the pivot resource. This value is reset after the
         *request()* method is called.
+
+        Return:
+            (str): The entity field in the API results data.
         """
         return self._request_entity
 
@@ -518,8 +699,38 @@ class Resource(object):
         The request uri starts as the resource api_uri and changes depending on
         the pivot resource. This value is reset after the *request()* method is
         called.
+
+        Return:
+            (str): The requests API URI.
         """
         return self._request_uri
+
+    @property
+    def result_count(self):
+        """Boolean for API pagination when there are previous results to retrieve.
+
+        Return:
+            (int): The number of results a paginated API call will return.
+        """
+        return self._result_count
+
+    @property
+    def result_limit(self):
+        """Return the ThreatConnect API query paramater for the number of results.
+
+        Return:
+            (int): The limit of results to return during pagination.
+        """
+        return self._result_limit
+
+    @result_limit.setter
+    def result_limit(self, limit):
+        """Set the ThreatConnect API query paramater for the number of results.
+
+        Args:
+            limit (int): The limit of results to return during pagination.
+        """
+        self._result_limit = limit
 
     def security_label_pivot(self, resource_id):
         """Pivot point on security labels for this resource.
@@ -703,8 +914,8 @@ class Resource(object):
     def value_fields(self):
         """The value fields for this resource.
 
-        The fields in the response JSON that have the key value
-        (e.g. ['md5', 'sha1', 'sha256'] or ['ip']).
+        Returns:
+            (list): The fields in the response JSON that have the key value (e.g. ['md5', 'sha1', 'sha256'] or ['ip']).
         """
         return self._value_fields
 
@@ -740,7 +951,11 @@ class Resource(object):
 
     @property
     def url(self):
-        """The ThreatConnect URL for this resource request."""
+        """The ThreatConnect URL for this resource request.
+
+        Return:
+            (str): The requested URL.
+        """
         return self._url
 
     @url.setter
@@ -748,8 +963,18 @@ class Resource(object):
         """The ThreatConnect URL for this resource request."""
         self._url = data
 
+    def __iter__(self):
+        """Iterate over API results
+        """
+        while self._has_next:
+            yield self.request()
+
     def __str__(self):
-        """A printable string for this resource."""
+        """A printable string for this resource.
+
+        Return:
+            (str): A printable string with Class data.
+        """
         # TODO: update to include resource specific data.
         printable_string = '\n{0!s:_^80}\n'.format('Resource')
 

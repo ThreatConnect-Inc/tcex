@@ -8,7 +8,7 @@ The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.Tc
 
 Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_job.TcExJob.process` method will attempt to write the data to the ThreatConnect API.
 
-.. Note:: Any failures will set the :py:meth:`~tcex.tcex.TcEx.exit_code` to **3** (partial failure) unless the error is defined as a critical failure (defined in the __init__ method of :py:meth:`~tcex.tcex_job.TcExJob`.
+.. Note:: Any failures will set the :py:meth:`~tcex.tcex.TcEx.exit_code` to **3** or partial failure, unless the error is defined as a critical failure (defined in the __init__ method of :py:meth:`~tcex.tcex_job.TcExJob`.
 
 Groups
 -------
@@ -63,7 +63,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
 .. code-block:: javascript
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,19
+    :emphasize-lines: 14,22
 
     {
       'associatedGroup': [
@@ -96,19 +96,14 @@ The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the followi
 .. code-block:: javascript
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,19
+    :emphasize-lines: 3
 
-    .. code-block:: javascript
-        :linenos:
-        :lineno-start: 1
-        :emphasize-lines: 3
-
-        {
-            "date" : "2014-11-03T00:00:00-05:00",
-            "fileName" : "win999301.dll",
-            "hash": "BE7DE2F0CF48294400C714C9E28ECD01",
-            "path" : "C:\\Windows\\System"
-        }
+    {
+        "date" : "2014-11-03T00:00:00-05:00",
+        "fileName" : "win999301.dll",
+        "hash": "BE7DE2F0CF48294400C714C9E28ECD01",
+        "path" : "C:\\Windows\\System"
+    }
 
 Sample Job Flow
 -----------------

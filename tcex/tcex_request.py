@@ -266,7 +266,7 @@ class TcExRequest(object):
                 self._tcex.log.critical('Exiting: {0!s}'.format(e))
                 raise RuntimeError(e)
 
-        self._tcex.log.info('URL: {}'.format(response.url))
+        self._tcex.log.info('URL ({}): {}'.format(self._http_method, response.url))
         self._tcex.log.info('Status Code: {0!s}'.format(response.status_code))
         return response
 

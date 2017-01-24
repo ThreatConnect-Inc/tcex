@@ -240,7 +240,7 @@ class TcExPlaybook(object):
         """
         if data is not None:
             data = data.strip()
-            variables = re.findall(self._vars_match, data)
+            variables = re.findall(self._vars_match, str(data))
 
             for var in variables:
                 val = self.read(var)
@@ -303,7 +303,8 @@ class TcExPlaybook(object):
         """
         data = None
         if value is not None:
-            data = self._db.create(key.strip(), json.dumps(base64.b64encode(value)))
+            ## data = self._db.create(key.strip(), json.dumps(base64.b64encode(value)))
+            data = self._db.create(key.strip(), json.dumps(str(base64.b64encode(bytes(value)))))
         return data
 
     def read_binary(self, key):
