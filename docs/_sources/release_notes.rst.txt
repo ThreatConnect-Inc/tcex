@@ -1,11 +1,20 @@
 .. _release_notes:
 
-=============
 Release Notes
-=============
+#############
+
+0.1.x
+=====
+
+0.1.0
+------
++ Reworked iterator logic in :py:mod:`~tcex.tcex_resources`.
+
+0.0.x
+=====
 
 0.0.12
-----------------
+------
 + Documentation updates.
 + Changes to :py:mod:`~tcex.tcex_resources` to allow iteration over the instance to retrieve paginated results.
 + Updates to support persistent args when running app locally.

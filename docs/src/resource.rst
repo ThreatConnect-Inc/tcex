@@ -17,10 +17,10 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
     tcex = TcEx()
 
     resource = tcex.resources.Adversary(tcex)
-    results = resource.request()
-
-    print(resource['status'])
-    print(resource['data'])
+    # paginate over results
+    for result in resource:
+        print(result['status'])
+        print(result['data'])
 
     tcex.exit()
 
@@ -34,13 +34,14 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
     tcex = TcEx()
 
     resource = getattr(tcex.resources, tcex.safe_rt('User Agent'))(tcex)
-    results = resource.request()
-
-    print(resource['status'])
-    print(resource['data'])
+    # paginate over results
+    for result in resource:
+        print(result['status'])
+        print(result['data'])
 
     tcex.exit()
 
+.. Note:: For result sets that do not support pagination the ``resource.request()`` method can be called directly.
 
 Group Resources
 ---------------

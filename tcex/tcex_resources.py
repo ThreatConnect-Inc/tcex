@@ -25,14 +25,13 @@ class Resource(object):
         self._api_entity = None
         self._api_uri = None
         self._authorization_method = self._tcex.authorization
-        self._has_next = True
-        self._has_next_count = 0
-        self._has_prev = False
         self._http_method = 'GET'
         self._filters = []
         self._filter_or = False
         self._name = None
         self._pivot = False
+        self._paginate = True
+        self._paginate_count = 0
         self._parent = None
         self._request_entity = None
         self._request_uri = None
@@ -58,7 +57,6 @@ class Resource(object):
 
     def _request_bulk(self, response):
         """
-
         """
         try:
             # write bulk download to disk with unique ID
@@ -88,9 +86,7 @@ class Resource(object):
                 data, status = self._request_process_json(response)
             elif response.headers['content-type'] == 'application/octet-stream':
                 data, status = self._request_process_octet(response)
-                self._has_next = False  # pagination not supported
             else:
-                self._has_next = False  # pagination not supported
                 err = 'Failed Request: {}'.format(response.text)
                 self._tcex.log.error(err)
                 self._tcex.message_tc(err)
@@ -122,32 +118,25 @@ class Resource(object):
 
             if self._api_branch == 'bulk':
                 data, status = self._request_process_json_bulk(response_data)
-                self._has_next = False  # pagination not supported
             elif response_data.get('data') is None:
                 data, status = self._request_process_json_status(response_data)
-                self._has_next = False  # pagination not supported
             elif response_data.get('status') == 'Success':
                 data, status = self._request_process_json_standard(response_data)
 
                 """ setup pagination """
                 if self._result_count is None:
                     self._result_count = response_data.get('data', {}).get('resultCount')
-
-                    if self._result_count is not None:
-                        if self._result_count > self._result_limit:
-                            self._has_next = True
             else:
                 self._tcex.message_tc('Failed Request: {}'.format(response.text))
                 status = 'Failure'
         except KeyError as e:
-            self._has_next = False  # pagination not supported
+            # TODO: Remove try/except block
             status = 'Failure'
             msg = 'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
             self._tcex.message_tc(msg)
             self._tcex.log.error(msg)
-            # bcs = raise error
         except ValueError as e:
-            self._has_next = False  # pagination not supported
+            # TODO: Remove try/except block
             status = 'Failure'
             msg = 'Error: ({})'.format(e)
             self._tcex.message_tc(msg)
@@ -468,24 +457,6 @@ class Resource(object):
             resource_type, resource_id, self._request_uri)
 
     @property
-    def has_next(self):
-        """Boolean for API pagination when there are more results to retrieve.
-
-        Return:
-            (boolean): True if the API request has more results otherwise False.
-        """
-        return self._has_next
-
-    @property
-    def has_prev(self):
-        """Boolean for API pagination when there are previous results to retrieve.
-
-        Return:
-            (boolean): True if the API request has previous results otherwise False.
-        """
-        return self._has_prev
-
-    @property
     def http_method(self):
         """The HTTP Method for this resource request.
 
@@ -610,7 +581,7 @@ class Resource(object):
 
         return resources
 
-    def _request(self):
+    def request(self):
         """Send the request to the API.
 
         This method will send the request to the API.  It will try to handle
@@ -648,35 +619,6 @@ class Resource(object):
             'response': response,
             'status': status
         }
-
-    def request(self):
-        """Paginate to the next set of results.
-
-        Return:
-            (dictionary): Response/Results data.
-        """
-        if self._has_next:
-            # some endpoints don't require a resultLimit
-            self._r.add_payload('resultLimit', self._result_limit)
-            if self._result_count is not None:
-                # on an endpoint that support pagination the default resultStart is 0
-                self._r.add_payload('resultStart', self._result_start)
-
-            results = self._request()
-
-            # endpoints that support pagination
-            if self._result_count is not None:
-                self._result_start += self._result_limit
-                self._has_next_count += len(results.get('data'))
-
-                if self._has_next_count >= self._result_count:
-                    self._has_next = False
-
-            return results
-        else:
-            err = 'Result set has not "next".'
-            self._tcex.log.error(err)
-            raise RuntimeError(err)
 
     @property
     def request_entity(self):
@@ -963,10 +905,39 @@ class Resource(object):
         self._url = data
 
     def __iter__(self):
-        """Iterate over API results
-        """
-        while self._has_next:
-            yield self.request()
+        """Add iterator to Resource Object"""
+        return self
+
+    def __next__(self):
+        """Add next interator to Resource Object"""
+        if not self._paginate:
+            # check to see if pagination is supported
+            self._paginate = True  # reset so object can be reused
+            raise StopIteration
+
+        # some endpoints don't require a resultLimit
+        self._r.add_payload('resultLimit', self._result_limit)
+        if self._result_count is not None:
+            # on an endpoint that support pagination the default resultStart is 0
+            self._r.add_payload('resultStart', self._result_start)
+
+        results = self.request()
+
+        # endpoints that support pagination will set self._result_count
+        if self._result_count is not None:
+            self._result_start += self._result_limit
+            self._paginate_count += len(results.get('data'))
+
+            if self._paginate_count >= self._result_count:
+                self._paginate = True  # reset so object can be reused
+                raise StopIteration
+        else:
+            self._paginate = False
+
+        return results
+
+    # define next after __next__ for Python 2
+    next = __next__
 
     def __str__(self):
         """A printable string for this resource.
