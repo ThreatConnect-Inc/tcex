@@ -153,7 +153,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="c1"># import time</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">setuptools.command</span> <span class="k">import</span> <span class="n">easy_install</span>
 
@@ -168,6 +168,7 @@
 <span class="n">schema_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span> <span class="s1">&#39;tcex_json_schema.json&#39;</span><span class="p">)</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schema_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
     <span class="n">schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="TcExLocal"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal">[docs]</a><span class="k">class</span> <span class="nc">TcExLocal</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -255,7 +256,8 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="TcExLocal._exit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal._exit">[docs]</a>    <span class="k">def</span> <span class="nf">_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_exit</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Exit the script</span>
 
 <span class="sd">        Args:</span>
@@ -263,7 +265,7 @@
 <span class="sd">            code (Optional [int]): The exit status code</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></div>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -347,7 +349,8 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcExLocal.gen_lib"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal.gen_lib">[docs]</a>    <span class="k">def</span> <span class="nf">gen_lib</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExLocal.gen_lib"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal.gen_lib">[docs]</a>    <span class="k">def</span> <span class="nf">gen_lib</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Build libs locally for app</span>
 
 <span class="sd">        Using the setup.py this method will install all required python modules locally</span>
@@ -377,7 +380,8 @@
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">stderr</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">lib_path</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Encountered error running easy_install for </span><span class="si">{}</span><span class="s1">.  Check log file for details.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Encountered error running easy_install for </span><span class="si">{}</span><span class="s1">.  Check log file for details.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">app_name</span><span class="p">))</span>
 
         <span class="n">build_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_path</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">build_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
@@ -456,7 +460,8 @@
                 <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">stderr</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">lib_path</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Encountered error running easy_install for </span><span class="si">{}</span><span class="s1">.  Check log file for details.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_name</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Encountered error running easy_install for </span><span class="si">{}</span><span class="s1">.  Check log file for details.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">app_name</span><span class="p">))</span>
 
             <span class="c1"># cleanup</span>
             <span class="n">git_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;.git&#39;</span><span class="p">)</span>
@@ -502,7 +507,8 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">template_app_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">template_app_path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcExLocal.validate"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">install_json</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="TcExLocal.validate"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">install_json</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate install.json file for required parameters&quot;&quot;&quot;</span>
 
         <span class="c1"># install.json validation</span>

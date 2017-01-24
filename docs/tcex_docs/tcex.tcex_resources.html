@@ -151,7 +151,7 @@
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>Address Resource Class</p>
 <p>This resource class will return indicators of type Address (ipv4 and/or
-ipv6). To filter on specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong>
+ipv6). To filter on specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong>
 methods provided in the parent Class.</p>
 </dd></dl>
 
@@ -269,12 +269,6 @@ specific groups use the <strong>group_id</strong> or <strong>resource_id</strong
 the parent class.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="tcex.tcex_resources.ClassFactory">
-<code class="descclassname">tcex.tcex_resources.</code><code class="descname">ClassFactory</code><span class="sig-paren">(</span><em>name</em>, <em>base_class</em>, <em>class_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#ClassFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.ClassFactory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal method for dynamically building Custom Indicator classes.</p>
-</dd></dl>
-
 <dl class="class">
 <dt id="tcex.tcex_resources.Document">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Document" title="Permalink to this definition">¶</a></dt>
@@ -333,7 +327,7 @@ the parent class.</p>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>EmailAddress Resource Class</p>
 <p>This resource class will return indicators of type Email. To filter on
-specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
 in the parent Class.</p>
 </dd></dl>
 
@@ -344,7 +338,7 @@ in the parent Class.</p>
 <p>File Resource Class</p>
 <p>This resource class will return indicators of type File (e.g md5, sha1,
 sha256). To filter on specific indicators use the <strong>indicator</strong> or
-<strong>resoure_id</strong> methods provided in the parent Class.</p>
+<strong>resource_id</strong> methods provided in the parent Class.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.File.occurrence">
 <code class="descname">occurrence</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.occurrence" title="Permalink to this definition">¶</a></dt>
@@ -405,7 +399,7 @@ required.</p>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>Host Resource Class</p>
 <p>This resource class will return indicators of type Host. To filter on
-specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
 in the parent Class.</p>
 </dd></dl>
 
@@ -444,7 +438,7 @@ the parent class.</p>
 <p>Indicator Resource Class</p>
 <p>This resource class is the base for all indicators and will return
 indicators of all types.  For specific indicator types use the child
-class of the type required.  Custom indicator types are suppored
+class of the type required.  Custom indicator types are supported
 dynamically and are not defined here.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Indicator.indicator">
@@ -646,8 +640,8 @@ cases will get caught.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_resources.Resource._request_process_octect">
-<code class="descname">_request_process_octect</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._request_process_octect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._request_process_octect" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_resources.Resource._request_process_octet">
+<code class="descname">_request_process_octet</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._request_process_octet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._request_process_octet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle Document download.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -785,7 +779,6 @@ cases will get caught.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch.</li>
-<li><strong>resource_value</strong> (<em>string</em>) &#8211; The resource pivot value (group id or indicator).</li>
 <li><strong>association_name</strong> (<em>string</em>) &#8211; The name of the custom association as defined in the UI.</li>
 </ul>
 </td>
@@ -837,11 +830,7 @@ resource_type and value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch including resource id.</li>
-<li><strong>resource_value</strong> (<em>string</em>) &#8211; The resource pivot value (group id or indicator).</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch including resource id.</td>
 </tr>
 </tbody>
 </table>
@@ -907,7 +896,7 @@ resource.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>method</em>) &#8211; The method to use to genearate the authorization header(s).</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>method</em>) &#8211; The method to use to generate the authorization header(s).</td>
 </tr>
 </tbody>
 </table>
@@ -973,7 +962,7 @@ resource.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>resource_id</strong> (<em>string</em>) &#8211; The resource pivot id (file hash).</li>
-<li><strong>action_name</strong> (<em>string</em>) &#8211; The name of the action as defined by Threatconnect.</li>
+<li><strong>action_name</strong> (<em>string</em>) &#8211; The name of the action as defined by ThreatConnect.</li>
 </ul>
 </td>
 </tr>
@@ -1276,7 +1265,7 @@ called.</p>
 <dl class="attribute">
 <dt id="tcex.tcex_resources.Resource.result_limit">
 <code class="descname">result_limit</code><a class="headerlink" href="#tcex.tcex_resources.Resource.result_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the ThreatConnect API query paramater for the number of results.</p>
+<dd><p>Return the ThreatConnect API query parameter for the number of results.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1660,7 +1649,7 @@ the parent class.</p>
 <p>This resource class will return Tasks.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Task.resource_id">
-<code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task.resource_id" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task.resource_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the request URI to include the Task Id for specific retrieval.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1690,7 +1679,7 @@ the parent class.</p>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>URL Resource Class</p>
 <p>This resource class will return indicators of type URL. To filter on
-specific indicators use the <strong>indicator</strong> or <strong>resoure_id</strong> methods provided
+specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
 in the parent Class.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.URL.indicator">
@@ -1717,7 +1706,7 @@ in the parent Class.</p>
 <p>This resource class will return Victims.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Victim.resource_id">
-<code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Victim.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Victim.resource_id" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Victim.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Victim.resource_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the request URI to include the Victim Id for specific retrieval.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1729,6 +1718,12 @@ in the parent Class.</p>
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="tcex.tcex_resources.class_factory">
+<code class="descclassname">tcex.tcex_resources.</code><code class="descname">class_factory</code><span class="sig-paren">(</span><em>name</em>, <em>base_class</em>, <em>class_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#class_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.class_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method for dynamically building Custom Indicator classes.</p>
 </dd></dl>
 
 </div>

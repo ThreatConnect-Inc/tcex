@@ -147,11 +147,11 @@
             
   <h1>Source code for tcex.tcex_data_filter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<span class="c1"># import json</span>
 <span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="c1"># import os</span>
+<span class="c1"># import types</span>
+<span class="c1"># import uuid</span>
 
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
@@ -170,7 +170,7 @@
 <span class="sd">            data (list): List of Dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="c1">## self._filtered_results = ()  # the filtered results</span>
+        <span class="c1"># self._filtered_results = ()  # the filtered results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_master_index</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># bcs - is this needed?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
@@ -197,7 +197,8 @@
 
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="c1"># bcs - update this</span>
-                    <span class="c1">## if not isinstance(value, (types.StringType, float, int, long)):</span>
+                    <span class="c1"># if not isinstance(value, (types.StringType, float, int, long)):</span>
+                    <span class="c1"># TODO: This is not Python 3 ready</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">long</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unicode</span><span class="p">)):</span>
                         <span class="c1"># For comparison operators the value needs to be a StringType</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Can only build index String Types.&#39;</span><span class="p">)</span>
@@ -241,8 +242,8 @@
         <span class="k">if</span> <span class="n">filter_operator</span> <span class="o">==</span> <span class="n">operator</span><span class="o">.</span><span class="n">eq</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">field_converter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">filter_value</span> <span class="o">=</span> <span class="n">field_converter</span><span class="p">(</span><span class="n">filter_value</span><span class="p">)</span>
-            <span class="c1">## for data_obj in index_data:</span>
-            <span class="c1">##     yield data_obj.data</span>
+            <span class="c1"># for data_obj in index_data:</span>
+            <span class="c1">#     yield data_obj.data</span>
             <span class="n">filtered_data</span> <span class="o">=</span> <span class="n">index_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">filter_value</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -252,8 +253,8 @@
 
                 <span class="k">if</span> <span class="n">filter_operator</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>  <span class="c1"># bcs enum</span>
                     <span class="n">filtered_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data_obj_list</span><span class="p">)</span>
-                    <span class="c1">## for data_obj in data_obj_list:</span>
-                    <span class="c1">##     yield data_obj.data</span>
+                    <span class="c1"># for data_obj in data_obj_list:</span>
+                    <span class="c1">#     yield data_obj.data</span>
 
         <span class="k">return</span> <span class="n">filtered_data</span></div>
 
@@ -268,25 +269,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-        <span class="c1">## if not isinstance(self._data, list):</span>
-        <span class="c1">##     raise RuntimeError(&#39;Only *List* data type is currently supported&#39;)</span>
-        <span class="c1">##</span>
-        <span class="c1">## filtered_data = []</span>
-        <span class="c1">## for d in self._data:</span>
-        <span class="c1">##     if not isinstance(d, dict):</span>
-        <span class="c1">##         self._tcex.log.debug(&#39;Can filter for non Dict type.&#39;)</span>
-        <span class="c1">##</span>
-        <span class="c1">##     for key, value in d.items():</span>
-        <span class="c1">##         if field != key:</span>
-        <span class="c1">##             continue</span>
-        <span class="c1">##</span>
-        <span class="c1">##         if fv_converter is not None:</span>
-        <span class="c1">##             filter_value = fv_converter(filter_value)</span>
-        <span class="c1">##</span>
-        <span class="c1">##         if filter_operator(key, filter_value):</span>
-        <span class="c1">##             filtered_data.append(value)</span>
-        <span class="c1">##</span>
-        <span class="c1">## return filtered_data</span>
+        <span class="c1"># if not isinstance(self._data, list):</span>
+        <span class="c1">#     raise RuntimeError(&#39;Only *List* data type is currently supported&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1"># filtered_data = []</span>
+        <span class="c1"># for d in self._data:</span>
+        <span class="c1">#     if not isinstance(d, dict):</span>
+        <span class="c1">#         self._tcex.log.debug(&#39;Can filter for non Dict type.&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1">#     for key, value in d.items():</span>
+        <span class="c1">#         if field != key:</span>
+        <span class="c1">#             continue</span>
+        <span class="c1">#</span>
+        <span class="c1">#         if fv_converter is not None:</span>
+        <span class="c1">#             filter_value = fv_converter(filter_value)</span>
+        <span class="c1">#</span>
+        <span class="c1">#         if filter_operator(key, filter_value):</span>
+        <span class="c1">#             filtered_data.append(value)</span>
+        <span class="c1">#</span>
+        <span class="c1"># return filtered_data</span>
 
 <div class="viewcode-block" id="DataFilter._ni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">[docs]</a>    <span class="k">def</span> <span class="nf">_ni</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field **NOT IN** string or list.</span>
@@ -333,8 +334,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_filter</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="p">)</span>
-        <span class="c1">## else:</span>
-        <span class="c1">##     data = self._loop_filter(field, filter_value, filter_operator)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     data = self._loop_filter(field, filter_value, filter_operator)</span>
 
         <span class="c1"># if set_operator == &quot;intersection&quot;:</span>
         <span class="c1">#     self._filtered_results.intersection(data)</span>
@@ -395,19 +396,18 @@
             <span class="n">cdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cdata</span></div></div>
 
-
-    <span class="c1"># def union(self, results1, results2):</span>
-    <span class="c1">#     &quot;&quot;&quot;Perform Union on the data sets.</span>
-    <span class="c1">#</span>
-    <span class="c1">#     Args:</span>
-    <span class="c1">#         results1 (set): First set of objects</span>
-    <span class="c1">#         results2 (set): Second set of objects</span>
-    <span class="c1">#</span>
-    <span class="c1">#     Returns:</span>
-    <span class="c1">#         (set): List of intersected objects</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#</span>
-    <span class="c1">#     return results1.union(results2)</span>
+        <span class="c1"># def union(self, results1, results2):</span>
+        <span class="c1">#     &quot;&quot;&quot;Perform Union on the data sets.</span>
+        <span class="c1">#</span>
+        <span class="c1">#     Args:</span>
+        <span class="c1">#         results1 (set): First set of objects</span>
+        <span class="c1">#         results2 (set): Second set of objects</span>
+        <span class="c1">#</span>
+        <span class="c1">#     Returns:</span>
+        <span class="c1">#         (set): List of intersected objects</span>
+        <span class="c1">#     &quot;&quot;&quot;</span>
+        <span class="c1">#</span>
+        <span class="c1">#     return results1.union(results2)</span>
 
 
 <div class="viewcode-block" id="DataObj"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj">[docs]</a><span class="k">class</span> <span class="nc">DataObj</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

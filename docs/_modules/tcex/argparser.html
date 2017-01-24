@@ -209,7 +209,7 @@
             <span class="s1">&#39;--tc_token&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Token&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_token_expires&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Token Expriation Time&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Token Expiration Time&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
         <span class="c1"># TC Integrations Server  or TC main &lt; 4.4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -225,7 +225,7 @@
 <span class="sd">        --batch_halt_on_error          Flag to indicate that batch job should halt on error.</span>
 <span class="sd">        --batch_poll_interval seconds  Seconds between batch status polls.</span>
 <span class="sd">        --batch_interval_max seconds   Seconds before app should time out waiting on batch job completion.</span>
-<span class="sd">        --batch_write_type type        Write type for Indiator attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
+<span class="sd">        --batch_write_type type        Write type for Indicator attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -256,7 +256,7 @@
 <span class="sd">        --tc_playbook_db_context context  The playbook context provided by TC.</span>
 <span class="sd">        --tc_playbook_db_path path        The DB path or server name.</span>
 <span class="sd">        --tc_playbook_db_port port        The DB port when required.</span>
-<span class="sd">        --tc_playbook_out_variables vars  The output variable requested by downsteam apps.</span>
+<span class="sd">        --tc_playbook_out_variables vars  The output variable requested by downstream apps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -272,7 +272,7 @@
             <span class="s1">&#39;--tc_playbook_db_port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_playbook_db_port</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Playbook DB port&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--tc_playbook_out_variables&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Playboook output variables&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+            <span class="s1">&#39;--tc_playbook_out_variables&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Playbook output variables&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArgParser._standard_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_standard_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;These are the standard args passed to every TcEx App.</span>
@@ -332,9 +332,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_log_to_api&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Logging&#39;</span><span class="p">)</span>
-        <span class="c1">## self.add_argument(</span>
-        <span class="c1">##     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;, &#39;critical&#39;],</span>
-        <span class="c1">##     default=self._tc_log_level, help=&#39;Logging Level&#39;, dest=&#39;tc_log_level&#39;)</span>
+        <span class="c1"># self.add_argument(</span>
+        <span class="c1">#     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;, &#39;critical&#39;],</span>
+        <span class="c1">#     default=self._tc_log_level, help=&#39;Logging Level&#39;, dest=&#39;tc_log_level&#39;)</span>
         <span class="c1"># BCS - temporarily until there is some way to configure App logging level in the UI</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--logging&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;critical&#39;</span><span class="p">],</span>

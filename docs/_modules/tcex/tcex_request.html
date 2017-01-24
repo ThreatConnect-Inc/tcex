@@ -152,13 +152,16 @@
 
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="p">(</span><span class="n">exceptions</span><span class="p">,</span> <span class="n">packages</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Session</span><span class="p">)</span>
+
 <span class="c1"># disable ssl warning message</span>
 <span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
 
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="TcExRequest"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest">[docs]</a><span class="k">class</span> <span class="nc">TcExRequest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
@@ -195,7 +198,7 @@
         <span class="sd">&quot;&quot;&quot;The POST/PUT body content for this request.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="n">data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">)))</span>
 
     <span class="c1">#</span>
     <span class="c1"># HTTP Headers</span>
@@ -215,7 +218,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The header key</span>
-<span class="sd">            value (string): The header value</span>
+<span class="sd">            val (string): The header value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
 
@@ -233,7 +236,7 @@
         <span class="sd">&quot;&quot;&quot;Method to create Authorization header for this request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            method (method): The method to use to genearate the authorization header(s).</span>
+<span class="sd">            method (method): The method to use to generate the authorization header(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="n">method</span></div>
 
@@ -261,7 +264,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The the User-Agent header value for this request.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_agent</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;User-agent&#39;</span><span class="p">)</span>
 
     <span class="nd">@user_agent</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -286,7 +289,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The payload key</span>
-<span class="sd">            value (string): The payload value</span>
+<span class="sd">            val (string): The payload value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
 

@@ -150,24 +150,6 @@
 <em class="property">class </em><code class="descclassname">tcex.tcex_local.</code><code class="descname">TcExLocal</code><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to support running local instance TcEx Apps</p>
 <dl class="method">
-<dt id="tcex.tcex_local.TcExLocal._exit">
-<code class="descname">_exit</code><span class="sig-paren">(</span><em>message</em>, <em>code=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._exit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exit the script</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>message</strong> (<em>str</em>) &#8211; An exit message</li>
-<li><strong>code</strong> (<em>Optional</em><em> [</em><em>int</em><em>]</em><em></em>) &#8211; The exit status code</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex_local.TcExLocal._required_arguments">
 <code class="descname">_required_arguments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._required_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._required_arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required arguments for this class to function</p>
@@ -189,9 +171,9 @@
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="tcex.tcex_local.TcExLocal.gen_lib">
-<code class="descname">gen_lib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.gen_lib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.gen_lib" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">gen_lib</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.gen_lib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.gen_lib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build libs locally for app</p>
 <p>Using the setup.py this method will install all required python modules locally
 to be used for local testing.</p>
@@ -234,9 +216,9 @@ install.json file or files will be automatically run before packaging the app.</
 <dd><p>Execute the script with arguments provided in tc.json.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="tcex.tcex_local.TcExLocal.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.validate" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate install.json file for required parameters</p>
 </dd></dl>
 

@@ -147,9 +147,10 @@
             
   <h1>Source code for tcex.api_logging_handler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="c1"># import time</span>
 <span class="kn">from</span> <span class="nn">json</span> <span class="k">import</span> <span class="n">dumps</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">FileHandler</span><span class="p">,</span> <span class="n">makeLogRecord</span>
+<span class="c1"># from logging import FileHandler, makeLogRecord</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">FileHandler</span>
 
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
@@ -234,10 +235,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># clear entries</span>
             <span class="n">r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_proxy_config</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">proxies</span>
             <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/logs/app&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+                <span class="c1"># results = r.send()</span>
                 <span class="c1"># if results.headers.get(&#39;content-type&#39;) == &#39;application/json&#39;:</span>
                 <span class="c1">#     data = results.json()</span>
                 <span class="c1">#     if data.get(&#39;status&#39;) == &#39;Success&#39;:</span>

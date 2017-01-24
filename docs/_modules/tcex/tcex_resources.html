@@ -154,6 +154,7 @@
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="Resource"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource">[docs]</a><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Common settings for All ThreatConnect API Endpoints&quot;&quot;&quot;</span>
 
@@ -178,6 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter_or</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="kc">None</span>
@@ -188,6 +190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="Resource._apply_filters"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -205,9 +208,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># write bulk download to disk with uniquie ID</span>
+            <span class="c1"># write bulk download to disk with unique ID</span>
             <span class="n">temp_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;temp json file: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">temp_file</span><span class="p">))</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
@@ -216,7 +218,7 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed retrievent Bulk JSON (e).&#39;</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed retrieving Bulk JSON (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
@@ -242,15 +244,15 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request for </span><span class="si">{}</span><span class="s1">: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request </span><span class="si">{}</span><span class="s1">: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">status</span></div>
 
-    <span class="c1">## def _request_process_failure(self):</span>
-    <span class="c1">##     &quot;&quot;&quot;</span>
-    <span class="c1">##     &quot;&quot;&quot;</span>
-    <span class="c1">##     pass</span>
+    <span class="c1"># def _request_process_failure(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     pass</span>
 
 <div class="viewcode-block" id="Resource._request_process_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._request_process_json">[docs]</a>    <span class="k">def</span> <span class="nf">_request_process_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handle response data of type JSON</span>
@@ -260,7 +262,6 @@
 <span class="sd">            (string): The status of the download</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">==</span> <span class="s1">&#39;bulk&#39;</span><span class="p">:</span>
                 <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_bulk</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
@@ -310,7 +311,7 @@
 <span class="sd">            (string): The response data</span>
 <span class="sd">            (string): The response status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="n">Failure</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_entity</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
@@ -342,7 +343,7 @@
         <span class="n">status</span> <span class="o">=</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">status</span></div>
 
-<div class="viewcode-block" id="Resource._request_process_octect"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._request_process_octect">[docs]</a>    <span class="k">def</span> <span class="nf">_request_process_octect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource._request_process_octet"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._request_process_octet">[docs]</a>    <span class="k">def</span> <span class="nf">_request_process_octet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handle Document download.</span>
 
 <span class="sd">        Return:</span>
@@ -430,14 +431,13 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
-<span class="sd">            resource_value (string): The resource pivot value (group id or indicator).</span>
 <span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_api_branch</span><span class="p">):</span>
@@ -467,7 +467,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_api_branch (string): The resource pivot api branch including resource id.</span>
-<span class="sd">            resource_value (string): The resource pivot value (group id or indicator).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
@@ -524,7 +523,7 @@
         <span class="sd">&quot;&quot;&quot;Method to create authorization header for this resource request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            method (method): The method to use to genearate the authorization header(s).</span>
+<span class="sd">            method (method): The method to use to generate the authorization header(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="n">method</span></div>
 
@@ -545,7 +544,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The Content-Type header value for this resource request.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">content_type</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">content_type</span>
 
     <span class="nd">@content_type</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -571,14 +570,14 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
-<span class="sd">            action_name (string): The name of the action as defined by Threatconnect.</span>
+<span class="sd">            action_name (string): The name of the action as defined by ThreatConnect.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">resource_value</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_api_branch</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Resource.group_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.group_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">group_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on groups for this resource.</span>
@@ -685,7 +684,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;indicators/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">indicator_type</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+            <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -864,7 +863,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">result_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the ThreatConnect API query paramater for the number of results.</span>
+        <span class="sd">&quot;&quot;&quot;Return the ThreatConnect API query parameter for the number of results.</span>
 
 <span class="sd">        Return:</span>
 <span class="sd">            (int): The limit of results to return during pagination.</span>
@@ -873,7 +872,7 @@
 
     <span class="nd">@result_limit</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">result_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the ThreatConnect API query paramater for the number of results.</span>
+        <span class="sd">&quot;&quot;&quot;Set the ThreatConnect API query parameter for the number of results.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            limit (int): The limit of results to return during pagination.</span>
@@ -1144,9 +1143,11 @@
 
         <span class="k">return</span> <span class="n">printable_string</span></div></div>
 
+
 <span class="c1">#</span>
 <span class="c1"># Batch</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Batch">[docs]</a><span class="k">class</span> <span class="nc">Batch</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Batch Resource Class&quot;&quot;&quot;</span>
@@ -1155,7 +1156,7 @@
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Batch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;batch&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="c1"># only on parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>  <span class="c1"># only on parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;batchId&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Batch&#39;</span>
@@ -1187,16 +1188,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/errors&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">)</span></div></div>
 
+
 <span class="c1">#</span>
 <span class="c1"># Indicator</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Indicator Resource Class</span>
 
 <span class="sd">    This resource class is the base for all indicators and will return</span>
 <span class="sd">    indicators of all types.  For specific indicator types use the child</span>
-<span class="sd">    class of the type required.  Custom indicator types are suppored</span>
+<span class="sd">    class of the type required.  Custom indicator types are supported</span>
 <span class="sd">    dynamically and are not defined here.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1204,7 +1207,7 @@
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Indicator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;indicators&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="c1"># only on parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>  <span class="c1"># only on parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Indicator&#39;</span>
@@ -1244,7 +1247,7 @@
     <span class="sd">&quot;&quot;&quot;Address Resource Class</span>
 
 <span class="sd">    This resource class will return indicators of type Address (ipv4 and/or</span>
-<span class="sd">    ipv6). To filter on specific indicators use the **indicator** or **resoure_id**</span>
+<span class="sd">    ipv6). To filter on specific indicators use the **indicator** or **resource_id**</span>
 <span class="sd">    methods provided in the parent Class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1329,7 +1332,7 @@
     <span class="sd">&quot;&quot;&quot;EmailAddress Resource Class</span>
 
 <span class="sd">    This resource class will return indicators of type Email. To filter on</span>
-<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    specific indicators use the **indicator** or **resource_id** methods provided</span>
 <span class="sd">    in the parent Class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1350,7 +1353,7 @@
 
 <span class="sd">    This resource class will return indicators of type File (e.g md5, sha1,</span>
 <span class="sd">    sha256). To filter on specific indicators use the **indicator** or</span>
-<span class="sd">    **resoure_id** methods provided in the parent Class.</span>
+<span class="sd">    **resource_id** methods provided in the parent Class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
@@ -1378,7 +1381,7 @@
     <span class="sd">&quot;&quot;&quot;Host Resource Class</span>
 
 <span class="sd">    This resource class will return indicators of type Host. To filter on</span>
-<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    specific indicators use the **indicator** or **resource_id** methods provided</span>
 <span class="sd">    in the parent Class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1398,7 +1401,7 @@
     <span class="sd">&quot;&quot;&quot;URL Resource Class</span>
 
 <span class="sd">    This resource class will return indicators of type URL. To filter on</span>
-<span class="sd">    specific indicators use the **indicator** or **resoure_id** methods provided</span>
+<span class="sd">    specific indicators use the **indicator** or **resource_id** methods provided</span>
 <span class="sd">    in the parent Class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1423,9 +1426,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safeurl</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div></div>
 
+
 <span class="c1">#</span>
 <span class="c1"># Group</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Group Resource Class</span>
@@ -1538,7 +1543,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The group id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.upload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Document.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -1550,7 +1555,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/octet-stream&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/upload&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div></div>
 
 
@@ -1638,9 +1643,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Threat&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+
+
 <span class="c1">#</span>
 <span class="c1"># Owner</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Owner"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner">[docs]</a><span class="k">class</span> <span class="nc">Owner</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Owner Class</span>
@@ -1679,9 +1687,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
 
+
 <span class="c1">#</span>
 <span class="c1"># Security Label</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="SecurityLabel"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.SecurityLabel">[docs]</a><span class="k">class</span> <span class="nc">SecurityLabel</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Security Label Class</span>
@@ -1691,7 +1701,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SecurityLabel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;securityLabels&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -1725,9 +1735,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
 
+
 <span class="c1">#</span>
 <span class="c1"># Task</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Task Class</span>
@@ -1753,17 +1765,19 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Task.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="Task.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Task Id for specific retrieval.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The task id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+
 
 <span class="c1">#</span>
 <span class="c1"># Victim</span>
 <span class="c1">#</span>
+
 
 <div class="viewcode-block" id="Victim"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim">[docs]</a><span class="k">class</span> <span class="nc">Victim</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Victim Class</span>
@@ -1789,26 +1803,29 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Victim.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="Victim.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Victim Id for specific retrieval.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The victim id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+
 
 <span class="c1">#</span>
 <span class="c1"># Class Factory</span>
 <span class="c1">#</span>
 
-<div class="viewcode-block" id="ClassFactory"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.ClassFactory">[docs]</a><span class="k">def</span> <span class="nf">ClassFactory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base_class</span><span class="p">,</span> <span class="n">class_dict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="class_factory"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.class_factory">[docs]</a><span class="k">def</span> <span class="nf">class_factory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base_class</span><span class="p">,</span> <span class="n">class_dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Internal method for dynamically building Custom Indicator classes.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="n">base_class</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">class_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),{</span><span class="s2">&quot;__init__&quot;</span><span class="p">:</span> <span class="n">__init__</span><span class="p">})</span>
+    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),</span> <span class="p">{</span><span class="s2">&quot;__init__&quot;</span><span class="p">:</span> <span class="n">__init__</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">newclass</span></div>
 </pre></div>
 

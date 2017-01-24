@@ -1,13 +1,13 @@
 .. include:: <isonum.txt>
 .. _requests:
 
-=========
+========
 Requests
-=========
+========
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_request.TcExRequest` module to accessed using the ``tcex.request`` property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.
 
 Example Request
-----------------
+---------------
 
 .. code-block:: python
     :linenos:

@@ -152,9 +152,11 @@
 
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="TcExRedis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis">[docs]</a><span class="k">class</span> <span class="nc">TcExRedis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">rhash</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="n">rhash</span>
@@ -162,7 +164,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcExRedis.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create key/valu pair in Redis&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRedis.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>

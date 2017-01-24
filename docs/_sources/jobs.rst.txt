@@ -1,9 +1,9 @@
 .. include:: <isonum.txt>
 .. _jobs:
 
-=====
+====
 Jobs
-=====
+====
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
 
 Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_job.TcExJob.process` method will attempt to write the data to the ThreatConnect API.
@@ -11,7 +11,7 @@ Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_j
 .. Note:: Any failures will set the :py:meth:`~tcex.tcex.TcEx.exit_code` to **3** or partial failure, unless the error is defined as a critical failure (defined in the __init__ method of :py:meth:`~tcex.tcex_job.TcExJob`.
 
 Groups
--------
+------
 The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -37,7 +37,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
 .. Note:: The Jobs module will make multiple API calls to push all this data to the ThreatConnect API.
 
 Group Associations
--------------------
+------------------
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -57,7 +57,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
              to the first group found with the name.
 
 Indicators
------------
+----------
 The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -90,7 +90,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
     }
 
 File Occurrence
-----------------
+---------------
 The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -106,7 +106,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the followi
     }
 
 Sample Job Flow
------------------
+---------------
 The key method calls are highlighted in the following code sample.
 
 .. code-block:: python

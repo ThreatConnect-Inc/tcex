@@ -163,6 +163,7 @@
 <span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
+
 <span class="c1"># from urlparse import urlparse</span>
 
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
@@ -406,7 +407,7 @@
 
         <span class="c1"># check for bad status code and response that is not JSON</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">200</span>
-                <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
+            <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
             <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Custom Indicators are not supported.&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
             <span class="k">return</span>
@@ -449,7 +450,7 @@
                         <span class="p">},</span>
                         <span class="s1">&#39;_value_fields&#39;</span><span class="p">:</span> <span class="n">value_fields</span>
                     <span class="p">}</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resources</span><span class="o">.</span><span class="n">ClassFactory</span><span class="p">(</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resources</span><span class="o">.</span><span class="n">class_factory</span><span class="p">(</span>
                         <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">,</span> <span class="n">custom</span><span class="p">))</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed retrieving indicator types from API. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
