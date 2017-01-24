@@ -1,9 +1,9 @@
 .. include:: <isonum.txt>
 .. _resources:
 
-==========
+=========
 Resources
-==========
+=========
 
 The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed via the ``tcex.resources`` property of the TcEx Framework.
 
@@ -43,7 +43,7 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 
 
 Group Resources
--------------------
+---------------
 
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
@@ -87,7 +87,7 @@ Indicator Resources
 .. Note:: Custom Indicators can be accessed by the **Type**. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made **safe** by using the :py:meth:`~tcex.tcex.TcEx.safe_rt` method.
 
 Owner Resources
--------------------
+---------------
 
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
@@ -96,7 +96,7 @@ Owner Resources
 +------------------------+----------------------------------------------------------+
 
 Task Resources
--------------------
+--------------
 
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
@@ -105,7 +105,7 @@ Task Resources
 +------------------------+----------------------------------------------------------+
 
 Victim Resources
--------------------
+----------------
 
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |

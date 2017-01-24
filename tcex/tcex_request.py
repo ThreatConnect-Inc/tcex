@@ -4,13 +4,16 @@ import time
 
 """ third-party """
 from requests import (exceptions, packages, Request, Session)
+
 # disable ssl warning message
 packages.urllib3.disable_warnings()
 
 """ custom """
 
+
 class TcExRequest(object):
     """ """
+
     def __init__(self, tcex):
         """ """
         self._tcex = tcex
@@ -47,7 +50,7 @@ class TcExRequest(object):
         """The POST/PUT body content for this request."""
         if data is not None:
             self._body = data
-            self.add_header('Content-Length', len(self._body))
+            self.add_header('Content-Length', str(len(self._body)))
 
     #
     # HTTP Headers
@@ -67,7 +70,7 @@ class TcExRequest(object):
 
         Args:
             key (string): The header key
-            value (string): The header value
+            val (string): The header value
         """
         self._headers[key] = str(self._tcex.uni(val))
 
@@ -85,7 +88,7 @@ class TcExRequest(object):
         """Method to create Authorization header for this request.
 
         Args:
-            method (method): The method to use to genearate the authorization header(s).
+            method (method): The method to use to generate the authorization header(s).
         """
         self._authorization_method = method
 
@@ -113,7 +116,7 @@ class TcExRequest(object):
     @property
     def user_agent(self):
         """The the User-Agent header value for this request."""
-        return self._user_agent
+        return self._headers.get('User-agent')
 
     @user_agent.setter
     def user_agent(self, data):
@@ -138,7 +141,7 @@ class TcExRequest(object):
 
         Args:
             key (string): The payload key
-            value (string): The payload value
+            val (string): The payload value
         """
         self._payload[key] = str(self._tcex.uni(val))
 

@@ -1,9 +1,9 @@
 """ standard """
-import json
+# import json
 import operator
-import os
-import types
-import uuid
+# import os
+# import types
+# import uuid
 
 """ third party """
 """ custom """
@@ -22,7 +22,7 @@ class DataFilter(object):
             data (list): List of Dictionary.
         """
         self._data = data
-        ## self._filtered_results = ()  # the filtered results
+        # self._filtered_results = ()  # the filtered results
         self._indexes = {}
         self._master_index = {}  # bcs - is this needed?
         self._tcex = tcex
@@ -49,7 +49,8 @@ class DataFilter(object):
 
                 for key, value in d.items():
                     # bcs - update this
-                    ## if not isinstance(value, (types.StringType, float, int, long)):
+                    # if not isinstance(value, (types.StringType, float, int, long)):
+                    # TODO: This is not Python 3 ready
                     if not isinstance(value, (float, int, long, str, unicode)):
                         # For comparison operators the value needs to be a StringType
                         self._tcex.log.debug('Can only build index String Types.')
@@ -93,8 +94,8 @@ class DataFilter(object):
         if filter_operator == operator.eq:
             if field_converter is not None:
                 filter_value = field_converter(filter_value)
-            ## for data_obj in index_data:
-            ##     yield data_obj.data
+            # for data_obj in index_data:
+            #     yield data_obj.data
             filtered_data = index_data.get(filter_value)
 
         else:
@@ -104,8 +105,8 @@ class DataFilter(object):
 
                 if filter_operator(field, filter_value):  # bcs enum
                     filtered_data.extend(data_obj_list)
-                    ## for data_obj in data_obj_list:
-                    ##     yield data_obj.data
+                    # for data_obj in data_obj_list:
+                    #     yield data_obj.data
 
         return filtered_data
 
@@ -120,25 +121,25 @@ class DataFilter(object):
         """
         pass
 
-        ## if not isinstance(self._data, list):
-        ##     raise RuntimeError('Only *List* data type is currently supported')
-        ##
-        ## filtered_data = []
-        ## for d in self._data:
-        ##     if not isinstance(d, dict):
-        ##         self._tcex.log.debug('Can filter for non Dict type.')
-        ##
-        ##     for key, value in d.items():
-        ##         if field != key:
-        ##             continue
-        ##
-        ##         if fv_converter is not None:
-        ##             filter_value = fv_converter(filter_value)
-        ##
-        ##         if filter_operator(key, filter_value):
-        ##             filtered_data.append(value)
-        ##
-        ## return filtered_data
+        # if not isinstance(self._data, list):
+        #     raise RuntimeError('Only *List* data type is currently supported')
+        #
+        # filtered_data = []
+        # for d in self._data:
+        #     if not isinstance(d, dict):
+        #         self._tcex.log.debug('Can filter for non Dict type.')
+        #
+        #     for key, value in d.items():
+        #         if field != key:
+        #             continue
+        #
+        #         if fv_converter is not None:
+        #             filter_value = fv_converter(filter_value)
+        #
+        #         if filter_operator(key, filter_value):
+        #             filtered_data.append(value)
+        #
+        # return filtered_data
 
     def _ni(self, field, filter_value):
         """Validate field **NOT IN** string or list.
@@ -185,8 +186,8 @@ class DataFilter(object):
         if self._indexes.get(field) is not None:
             data = self._index_filter(
                 self._indexes.get(field), filter_value, filter_operator, field_converter)
-        ## else:
-        ##     data = self._loop_filter(field, filter_value, filter_operator)
+        # else:
+        #     data = self._loop_filter(field, filter_value, filter_operator)
 
         # if set_operator == "intersection":
         #     self._filtered_results.intersection(data)
@@ -247,19 +248,18 @@ class DataFilter(object):
             cdata.append(r.data)
         return cdata
 
-
-    # def union(self, results1, results2):
-    #     """Perform Union on the data sets.
-    #
-    #     Args:
-    #         results1 (set): First set of objects
-    #         results2 (set): Second set of objects
-    #
-    #     Returns:
-    #         (set): List of intersected objects
-    #     """
-    #
-    #     return results1.union(results2)
+        # def union(self, results1, results2):
+        #     """Perform Union on the data sets.
+        #
+        #     Args:
+        #         results1 (set): First set of objects
+        #         results2 (set): Second set of objects
+        #
+        #     Returns:
+        #         (set): List of intersected objects
+        #     """
+        #
+        #     return results1.union(results2)
 
 
 class DataObj(object):

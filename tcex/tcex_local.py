@@ -5,7 +5,7 @@ import os
 import re
 import shutil
 import sys
-import time
+# import time
 import zipfile
 from setuptools.command import easy_install
 
@@ -20,6 +20,7 @@ except ImportError as e:
 schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
 with open(schema_file) as fh:
     schema = json.load(fh)
+
 
 class TcExLocal:
     """
@@ -107,7 +108,8 @@ class TcExLocal:
 
         return data
 
-    def _exit(self, message, code=0):
+    @staticmethod
+    def _exit(message, code=0):
         """Exit the script
 
         Args:
@@ -199,7 +201,8 @@ class TcExLocal:
         with open('install.json') as fh:
             self._install_json = json.load(fh)
 
-    def gen_lib(self):
+    @staticmethod
+    def gen_lib():
         """Build libs locally for app
 
         Using the setup.py this method will install all required python modules locally
@@ -229,7 +232,8 @@ class TcExLocal:
             sys.stderr = stderr
 
         if len(os.listdir(lib_path)) == 0:
-            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(app_name))
+            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
+                app_name))
 
         build_path = os.path.join(app_path, 'build')
         if os.access(build_path, os.W_OK):
@@ -308,7 +312,8 @@ class TcExLocal:
                 sys.stderr = stderr
 
             if len(os.listdir(lib_path)) == 0:
-                raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(app_name))
+                raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
+                    app_name))
 
             # cleanup
             git_path = os.path.join(tmp_app_path, '.git')
@@ -354,7 +359,8 @@ class TcExLocal:
         if os.access(template_app_path, os.W_OK):
             shutil.rmtree(template_app_path)
 
-    def validate(self, install_json):
+    @staticmethod
+    def validate(install_json):
         """Validate install.json file for required parameters"""
 
         # install.json validation

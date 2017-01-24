@@ -1,7 +1,8 @@
 """ standard """
-import time
+# import time
 from json import dumps
-from logging import FileHandler, makeLogRecord
+# from logging import FileHandler, makeLogRecord
+from logging import FileHandler
 
 """ third-party """
 """ custom """
@@ -86,10 +87,11 @@ class ApiLoggingHandler(FileHandler):
             self.entries = []  # clear entries
             r.http_method = 'POST'
             if self._tcex._args.tc_proxy_tc:
-                r.proxies = self._tcex._proxy_config
+                r.proxies = self._tcex.proxies
             r.url = '{}/v2/logs/app'.format(self._tcex._args.tc_api_path)
             try:
-                results = r.send()
+                r.send()
+                # results = r.send()
                 # if results.headers.get('content-type') == 'application/json':
                 #     data = results.json()
                 #     if data.get('status') == 'Success':

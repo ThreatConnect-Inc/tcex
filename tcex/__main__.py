@@ -1,6 +1,9 @@
 import os
 import sys
+
+
 # import inspect
+
 
 def main():
     lib_directory = None
@@ -41,7 +44,8 @@ def main():
         sys.exit(1)
 
     # use this if you want to include modules from a subfolder
-    # lib_path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))
+    # lib_path = os.path.realpath(
+    #     os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))
     lib_path = os.path.join(app_path, lib_directory)
     for root, directories, files in os.walk(lib_path):
         while len(directories) > 0:
@@ -55,6 +59,7 @@ def main():
     sys.argv[0] = sys.executable
     sys.argv[1] = '{}.py'.format(sys.argv[1])
     os.execv('{}'.format(sys.executable), sys.argv)
+
 
 if __name__ == '__main__':
     main()

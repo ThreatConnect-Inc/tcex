@@ -6,6 +6,7 @@ import uuid
 """ third party """
 """ custom """
 
+
 class Resource(object):
     """Common settings for All ThreatConnect API Endpoints"""
 
@@ -30,6 +31,7 @@ class Resource(object):
         self._http_method = 'GET'
         self._filters = []
         self._filter_or = False
+        self._name = None
         self._pivot = False
         self._parent = None
         self._request_entity = None
@@ -40,6 +42,7 @@ class Resource(object):
         self._stream = False
         self._status_codes = {}
         self._url = None
+        self._value_fields = []
 
     def _apply_filters(self):
         """
@@ -57,9 +60,8 @@ class Resource(object):
         """
 
         """
-        data = None
         try:
-            # write bulk download to disk with uniquie ID
+            # write bulk download to disk with unique ID
             temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
             self._tcex.log.debug('temp json file: {}'.format(temp_file))
             with open(temp_file, 'wb') as fh:
@@ -68,7 +70,7 @@ class Resource(object):
             with open(temp_file, 'r') as fh:
                 data = json.load(fh)
         except IOError as e:
-            err = 'Failed retrievent Bulk JSON (e).'
+            err = 'Failed retrieving Bulk JSON ({}).'.format(e)
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
@@ -94,15 +96,15 @@ class Resource(object):
                 self._tcex.message_tc(err)
         else:
             status = 'Failure'
-            err = 'Failed Request for {}: ({})'.format(self._name, response.text)
+            err = 'Failed Request {}: ({})'.format(self._name, response.text)
             self._tcex.log.error(err)
 
         return data, status
 
-    ## def _request_process_failure(self):
-    ##     """
-    ##     """
-    ##     pass
+    # def _request_process_failure(self):
+    #     """
+    #     """
+    #     pass
 
     def _request_process_json(self, response):
         """Handle response data of type JSON
@@ -112,7 +114,6 @@ class Resource(object):
             (string): The status of the download
         """
         data = []
-        status = None
         try:
             if self._api_branch == 'bulk':
                 response_data = self._request_bulk(response)
@@ -162,7 +163,7 @@ class Resource(object):
             (string): The response data
             (string): The response status
         """
-        status = Failure
+        status = 'Failure'
         data = response_data.get(self.request_entity, [])
         if len(data) != 0:
             status = 'Success'
@@ -194,7 +195,7 @@ class Resource(object):
         status = response_data.get('status')
         return data, status
 
-    def _request_process_octect(self, response):
+    def _request_process_octet(self, response):
         """Handle Document download.
 
         Return:
@@ -282,14 +283,13 @@ class Resource(object):
 
         Args:
             resource_api_branch (string): The resource pivot api branch.
-            resource_value (string): The resource pivot value (group id or indicator).
             association_name (string): The name of the custom association as defined in the UI.
         """
         if self._pivot:
             self._tcex.log.warn('Overriding previous pivot')
 
         self._pivot = True
-        self._request_uri = '{}/{}/associations/{}/{}'.format(
+        self._request_uri = '{}/associations/{}/{}'.format(
             resource_api_branch, association_name, self._request_uri)
 
     def association_pivot(self, resource_api_branch):
@@ -319,7 +319,6 @@ class Resource(object):
 
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
-            resource_value (string): The resource pivot value (group id or indicator).
         """
         if self._pivot:
             self._tcex.log.warn('Overriding previous pivot')
@@ -376,7 +375,7 @@ class Resource(object):
         """Method to create authorization header for this resource request.
 
         Args:
-            method (method): The method to use to genearate the authorization header(s).
+            method (method): The method to use to generate the authorization header(s).
         """
         self._authorization_method = method
 
@@ -397,7 +396,7 @@ class Resource(object):
     @property
     def content_type(self):
         """The Content-Type header value for this resource request."""
-        self._r.content_type
+        return self._r.content_type
 
     @content_type.setter
     def content_type(self, data):
@@ -423,14 +422,14 @@ class Resource(object):
 
         Args:
             resource_id (string): The resource pivot id (file hash).
-            action_name (string): The name of the action as defined by Threatconnect.
+            action_name (string): The name of the action as defined by ThreatConnect.
         """
         if self._pivot:
             self._tcex.log.warn('Overriding previous pivot')
 
         self._pivot = True
         self._request_uri = '{}/{}/actions/{}/{}'.format(
-            resource_api_branch, resource_value, association_name, self._request_uri)
+            self._request_api_branch, resource_id, action_name, self._request_uri)
 
     def group_pivot(self, resource_type, resource_id):
         """Pivot point on groups for this resource.
@@ -537,7 +536,7 @@ class Resource(object):
 
         self._pivot = True
         self._request_uri = 'indicators/{}/{}/{}'.format(
-            indicator_type, indicator, self._request_uri)
+            resource_type, resource_id, self._request_uri)
 
     @property
     def name(self):
@@ -716,7 +715,7 @@ class Resource(object):
 
     @property
     def result_limit(self):
-        """Return the ThreatConnect API query paramater for the number of results.
+        """Return the ThreatConnect API query parameter for the number of results.
 
         Return:
             (int): The limit of results to return during pagination.
@@ -725,7 +724,7 @@ class Resource(object):
 
     @result_limit.setter
     def result_limit(self, limit):
-        """Set the ThreatConnect API query paramater for the number of results.
+        """Set the ThreatConnect API query parameter for the number of results.
 
         Args:
             limit (int): The limit of results to return during pagination.
@@ -996,9 +995,11 @@ class Resource(object):
 
         return printable_string
 
+
 #
 # Batch
 #
+
 
 class Batch(Resource):
     """Batch Resource Class"""
@@ -1007,7 +1008,7 @@ class Batch(Resource):
         """Initialize default class values."""
         super(Batch, self).__init__(tcex)
         self._api_branch = 'batch'
-        self._api_branch_base = self._api_branch # only on parent
+        self._api_branch_base = self._api_branch  # only on parent
         self._api_entity = 'batchId'
         self._api_uri = self._api_branch
         self._name = 'Batch'
@@ -1039,16 +1040,18 @@ class Batch(Resource):
         """
         self._request_uri = '{}/{}/errors'.format(self._api_uri, batch_id)
 
+
 #
 # Indicator
 #
+
 
 class Indicator(Resource):
     """Indicator Resource Class
 
     This resource class is the base for all indicators and will return
     indicators of all types.  For specific indicator types use the child
-    class of the type required.  Custom indicator types are suppored
+    class of the type required.  Custom indicator types are supported
     dynamically and are not defined here.
     """
 
@@ -1056,7 +1059,7 @@ class Indicator(Resource):
         """Initialize default class values."""
         super(Indicator, self).__init__(tcex)
         self._api_branch = 'indicators'
-        self._api_branch_base = self._api_branch # only on parent
+        self._api_branch_base = self._api_branch  # only on parent
         self._api_entity = 'indicator'
         self._api_uri = self._api_branch
         self._name = 'Indicator'
@@ -1096,7 +1099,7 @@ class Address(Indicator):
     """Address Resource Class
 
     This resource class will return indicators of type Address (ipv4 and/or
-    ipv6). To filter on specific indicators use the **indicator** or **resoure_id**
+    ipv6). To filter on specific indicators use the **indicator** or **resource_id**
     methods provided in the parent Class.
     """
 
@@ -1181,7 +1184,7 @@ class EmailAddress(Indicator):
     """EmailAddress Resource Class
 
     This resource class will return indicators of type Email. To filter on
-    specific indicators use the **indicator** or **resoure_id** methods provided
+    specific indicators use the **indicator** or **resource_id** methods provided
     in the parent Class.
     """
 
@@ -1202,7 +1205,7 @@ class File(Indicator):
 
     This resource class will return indicators of type File (e.g md5, sha1,
     sha256). To filter on specific indicators use the **indicator** or
-    **resoure_id** methods provided in the parent Class.
+    **resource_id** methods provided in the parent Class.
     """
 
     def __init__(self, tcex):
@@ -1230,7 +1233,7 @@ class Host(Indicator):
     """Host Resource Class
 
     This resource class will return indicators of type Host. To filter on
-    specific indicators use the **indicator** or **resoure_id** methods provided
+    specific indicators use the **indicator** or **resource_id** methods provided
     in the parent Class.
     """
 
@@ -1250,7 +1253,7 @@ class URL(Indicator):
     """URL Resource Class
 
     This resource class will return indicators of type URL. To filter on
-    specific indicators use the **indicator** or **resoure_id** methods provided
+    specific indicators use the **indicator** or **resource_id** methods provided
     in the parent Class.
     """
 
@@ -1275,9 +1278,11 @@ class URL(Indicator):
         """
         self._request_uri = '{}/{}'.format(self._api_uri, self._tcex.safeurl(data))
 
+
 #
 # Group
 #
+
 
 class Group(Resource):
     """Group Resource Class
@@ -1390,7 +1395,7 @@ class Document(Group):
         Args:
             resource_id (integer): The group id.
         """
-        self.resource_id(resource_id)
+        self.resource_id(str(resource_id))
         self._request_uri = '{}/download'.format(self._request_uri)
 
     def upload(self, resource_id, data):
@@ -1402,7 +1407,7 @@ class Document(Group):
         """
         self.body = data
         self.content_type = 'application/octet-stream'
-        self.resource_id(resource_id)
+        self.resource_id(str(resource_id))
         self._request_uri = '{}/upload'.format(self._request_uri)
 
 
@@ -1490,9 +1495,12 @@ class Threat(Group):
         self._name = 'Threat'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
+
+
 #
 # Owner
 #
+
 
 class Owner(Resource):
     """Owner Class
@@ -1531,9 +1539,11 @@ class Owner(Resource):
         """
         self.owner_id(resource_id)
 
+
 #
 # Security Label
 #
+
 
 class SecurityLabel(Resource):
     """Security Label Class
@@ -1543,7 +1553,7 @@ class SecurityLabel(Resource):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(Task, self).__init__(tcex)
+        super(SecurityLabel, self).__init__(tcex)
         self._api_branch = 'securityLabels'
         self._api_entity = 'securityLabel'
         self._api_uri = self._api_branch
@@ -1577,9 +1587,11 @@ class SecurityLabel(Resource):
         """
         self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
 
+
 #
 # Task
 #
+
 
 class Task(Resource):
     """Task Class
@@ -1605,17 +1617,19 @@ class Task(Resource):
         }
         self._value_fields = ['name']
 
-    def resource_id(self, data):
+    def resource_id(self, resource_id):
         """Update the request URI to include the Task Id for specific retrieval.
 
         Args:
             resource_id (string): The task id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, data)
+        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+
 
 #
 # Victim
 #
+
 
 class Victim(Resource):
     """Victim Class
@@ -1641,24 +1655,27 @@ class Victim(Resource):
         }
         self._value_fields = ['name']
 
-    def resource_id(self, data):
+    def resource_id(self, resource_id):
         """Update the request URI to include the Victim Id for specific retrieval.
 
         Args:
             resource_id (string): The victim id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, data)
+        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+
 
 #
 # Class Factory
 #
 
-def ClassFactory(name, base_class, class_dict):
+
+def class_factory(name, base_class, class_dict):
     """Internal method for dynamically building Custom Indicator classes."""
+
     def __init__(self, tcex):
         base_class.__init__(self, tcex)
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    newclass = type(name, (base_class,),{"__init__": __init__})
+    newclass = type(name, (base_class,), {"__init__": __init__})
     return newclass

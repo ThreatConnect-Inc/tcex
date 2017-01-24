@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+""" standard """
+import sys
+
+""" third-party """
+""" custom """
+from tcex import TcExLocal
+
 """
 Copy this python script to your app base directory to use the tcex_local module.
 
@@ -34,13 +41,6 @@ Use the *--test* arg to pass a selected test.
 ./app.py --run --script <script name>
 ./app.py --run --script <script name> --test Test1
 """
-
-""" standard """
-import sys
-
-""" third-party """
-""" custom """
-from tcex import TcExLocal
 
 print('Python Version: {}.{}.{}'.format(
     sys.version_info.major, sys.version_info.minor, sys.version_info.micro))

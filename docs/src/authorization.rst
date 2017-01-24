@@ -1,9 +1,9 @@
 .. include:: <isonum.txt>
 .. _authorization:
 
-=============================
+============================
 Authorization (Token / HMAC)
-=============================
+============================
 In general when communication with the ThreatConnect |trade| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without have to change any code.
 
 .. Note:: The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The Integration Server only supports HMAC authorization.  Apps should be written to run on both platforms.
@@ -15,7 +15,7 @@ Token Refresh
 Token based authorization required that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the ``tc_token`` and ``tc_token_expires`` arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the :py:meth:`~tcex.tcex.TcEx.authorization` method.
 
 HMAC Authorization
--------------------
+------------------
 Generation of the Authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the Integration Server these arguments should be required.
 
 Example install.json param section::

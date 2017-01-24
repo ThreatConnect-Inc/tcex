@@ -15,6 +15,7 @@ import types
 from .argparser import ArgParser
 from datetime import datetime
 from platform import platform
+
 # from urlparse import urlparse
 
 """ third party """
@@ -258,7 +259,7 @@ class TcEx(object):
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200
-                or response.headers.get('content-type') != 'application/json'):
+            or response.headers.get('content-type') != 'application/json'):
             warn = 'Custom Indicators are not supported.'
             self.log.warn(warn)
             return
@@ -301,7 +302,7 @@ class TcEx(object):
                         },
                         '_value_fields': value_fields
                     }
-                    setattr(self.resources, name, resources.ClassFactory(
+                    setattr(self.resources, name, resources.class_factory(
                         name, self.resources.Indicator, custom))
         except:
             err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])

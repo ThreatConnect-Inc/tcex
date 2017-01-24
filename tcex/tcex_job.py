@@ -6,7 +6,6 @@ import time
 """ third-party """
 
 """ custom """
-import tcex_resources as Resources
 
 
 class TcExJob(object):
@@ -43,7 +42,7 @@ class TcExJob(object):
 
         """
         for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk):
-            yield self._indicators[i:i+self._tcex._args.batch_chunk]
+            yield self._indicators[i:i + self._tcex._args.batch_chunk]
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect
@@ -65,7 +64,7 @@ class TcExJob(object):
         self._tcex.log.debug(u'Adding {} "{}" in owner {}'.format(
             resource_type, resource_name, owner))
         resource_body = {'name': resource_name}
-        resource = getattr(Resources, resource_type)(self._tcex)
+        resource = getattr(self._tcex.resources, resource_type)(self._tcex)
         resource.http_method = 'POST'
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
@@ -79,7 +78,7 @@ class TcExJob(object):
 
         if results.get('status') == 'Success':
             resource_id = results['data']['id']
-            resource = getattr(Resources, resource_type)(self._tcex)
+            resource = getattr(self._tcex.resources, resource_type)(self._tcex)
             resource.http_method = 'POST'
             resource.url = self._tcex._args.tc_api_path
 
@@ -89,14 +88,16 @@ class TcExJob(object):
                 resource.resource_id(resource_id)
                 resource.attributes()
                 resource.body = json.dumps(attribute)
-                results = resource.request()
+                # results = resource.request()
+                resource.request()
 
             # add tags
             for tag in data.get('tags', []):
                 self._tcex.log.debug(u'Adding tag ({})'.format(tag))
                 resource.resource_id(resource_id)
                 resource.tags(tag)
-                results = resource.request()
+                # results = resource.request()
+                resource.request()
         else:
             err = 'Failed adding group ({})'.format(resource_name)
             self._tcex.log.error(err)
@@ -113,7 +114,7 @@ class TcExJob(object):
         # POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences
         # supported format -> 2014-11-03T00:00:00-05:00
 
-        resource = getattr(Resources, 'File')(self._tcex)
+        resource = getattr(self._tcex.resources, 'File')(self._tcex)
         resource.http_method = 'POST'
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
@@ -122,7 +123,8 @@ class TcExJob(object):
             # remove the hash from the dictionary and add to URI
             resource.occurrence(occurrence.pop('hash'))
             resource.body = json.dumps(occurrence)
-            results = resource.request()
+            # results = resource.request()
+            resource.request()
 
     def _process_group_association(self, owner):
         """Process groups and write to TC API
@@ -132,19 +134,19 @@ class TcExJob(object):
         """
         for ga in self._group_associations:
             self._tcex.log.info(u'creating association: group {} indicator {}'.format(
-                    ga['group_name'], ga['indicator']))
+                ga['group_name'], ga['indicator']))
 
             group_id = self.group_id(ga['group_name'], owner, ga['group_type'])
             if group_id is None:
                 continue
 
-            resource = getattr(Resources, ga['indicator_type'])(self._tcex)
+            resource = getattr(self._tcex.resources, ga['indicator_type'])(self._tcex)
             resource.http_method = 'POST'
             resource.indicator(ga['indicator'])
             resource.owner = owner
             resource.url = self._tcex._args.tc_api_path
 
-            association_resource = getattr(Resources, ga['group_type'])(self._tcex)
+            association_resource = getattr(self._tcex.resources, ga['group_type'])(self._tcex)
             association_resource.resource_id(group_id)
             resource.association_pivot(association_resource.request_uri)
             resource.request()
@@ -178,7 +180,7 @@ class TcExJob(object):
         """
         self._tcex.log.info('Processing {} indicators'.format(len(self._indicators)))
 
-        resource = getattr(Resources, 'Batch')(self._tcex)
+        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
         resource.http_method = 'POST'
         resource.url = self._tcex._args.tc_api_path
 
@@ -202,7 +204,8 @@ class TcExJob(object):
                 resource.content_type = 'application/octet-stream'
                 resource.batch_id(batch_id)
                 resource.body = json.dumps(chunk)
-                results = resource.request()
+                # results = resource.request()
+                resource.request()
 
                 # bcs - add a small delay before first status check then normal delay in loop
                 time.sleep(3)
@@ -261,7 +264,7 @@ class TcExJob(object):
 
         status = {'success': 0, 'failure': 0, 'unprocessed': 0}
 
-        resource = getattr(Resources, 'Batch')(self._tcex)
+        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
         resource.url = self._tcex._args.tc_api_path
 
         for batch_id in self._indicator_batch_ids:
@@ -269,9 +272,8 @@ class TcExJob(object):
             results = resource.request()
 
             if (results.get('status') == 'Success' and
-                'batchStatus' in results['data'] and
-                results['data']['batchStatus'] == 'Completed'):
-
+                        'batchStatus' in results['data'] and
+                        results['data']['batchStatus'] == 'Completed'):
                 status['success'] += results['data']['batchStatus']['successCount']
                 status['failure'] += results['data']['batchStatus']['errorCount']
                 status['unprocessed'] += results['data']['batchStatus']['unprocessCount']
@@ -315,7 +317,7 @@ class TcExJob(object):
         """
         status = False
 
-        resource = getattr(Resources, 'Batch')(self._tcex)
+        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
         resource.url = self._tcex._args.tc_api_path
         resource.batch_id(batch_id)
         results = resource.request()
@@ -334,7 +336,7 @@ class TcExJob(object):
                 if results['data']['errorCount'] > 0:
                     self._tcex.exit_code(3)
 
-                    resource = getattr(Resources, 'Batch')(self._tcex)
+                    resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
                     resource.url = self._tcex._args.tc_api_path
                     resource.errors(batch_id)
                     error_results = resource.request()
@@ -396,21 +398,21 @@ class TcExJob(object):
         elif isinstance(fo, dict):
             self._file_occurrences.append(fo)
 
-    ## bcs - not rewriting this until I know what it is for.
-    ## def get_batch_job(self, batch_id):
-    ##     """what is this for?"""
-    ##
-    ##     batch_jobs = tc.batch_jobs()
-    ##     batch_filter = batch_jobs.add_filter()
-    ##     batch_filter.add_id(batch_id)
+    # bcs - not rewriting this until I know what it is for.
+    # def get_batch_job(self, batch_id):
+    #     """what is this for?"""
+    #
+    #     batch_jobs = tc.batch_jobs()
+    #     batch_filter = batch_jobs.add_filter()
+    #     batch_filter.add_id(batch_id)
 
-    ##     try:
-    ##         batch_jobs.retrieve()
-    ##     except RuntimeError as re:
-    ##         self._tcex.log.error(re)
-    ##         self._tcex.message_tc(re)
+    #     try:
+    #         batch_jobs.retrieve()
+    #     except RuntimeError as re:
+    #         self._tcex.log.error(re)
+    #         self._tcex.message_tc(re)
 
-    ##     return batch_jobs
+    #     return batch_jobs
 
     def group(self, group):
         """Add group data to TcEx job.
@@ -496,8 +498,8 @@ class TcExJob(object):
         The method will cache ThreatConnect group data by owner and type.
 
         Args:
-            owner (string): The name of the TC owner
-            resource (dictionary): Dictonary containing resource parameters
+            owner (string): The name of the ThreatConnect owner
+            resource_type (string): The resource type name
 
         Returns:
             (dictionary): Dictionary of group resources
@@ -512,7 +514,7 @@ class TcExJob(object):
         self._group_cache.setdefault(owner, {})
         self._group_cache[owner].setdefault(resource_type, {})
 
-        resource = getattr(Resources, resource_type)(self._tcex)
+        resource = getattr(self._tcex.resources, resource_type)(self._tcex)
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
         results = resource.paginate()
@@ -529,7 +531,7 @@ class TcExJob(object):
         Args:
             name(string): The name of the Group
             owner (string): The TC Owner where the resouce should be found
-            resource (dictionary): Dictionary of resource parameters
+            resource_type (string): The resource type name
 
         Returns:
             (integer): The ID for the provided group name and owner.
