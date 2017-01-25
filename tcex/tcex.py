@@ -1,5 +1,4 @@
 """ standard """
-# import argparse
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
@@ -15,8 +14,6 @@ import types
 from .argparser import ArgParser
 from datetime import datetime
 from platform import platform
-
-# from urlparse import urlparse
 
 """ third party """
 from dateutil.relativedelta import relativedelta
@@ -61,6 +58,7 @@ class TcEx(object):
         self._log_app_version()
         self._log_python_version()
         self._log_tcex_version()
+        self._log_tc_proxy()
 
         # include jobs module
         self._jobs()
@@ -128,13 +126,19 @@ class TcEx(object):
             self.log.debug('Could not retrieve App Version')
 
     def _log_platform(self):
-        """Log the current OS"""
-        self.log.info('OS Platform: {}'.format(platform()))
+        """Log the current Platform"""
+        self.log.info('Platform: {}'.format(platform()))
 
     def _log_python_version(self):
         """Log the current Python Version"""
         self.log.info('Python Version: {}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+
+    def _log_tc_proxy(self):
+        """Log the current Python Version"""
+        if self._args.tc_proxy_tc:
+            self.log.info('Proxy Server (TC): {}:{}.'.format(
+                self._args.tc_proxy_host, self._args.tc_proxy_port))
 
     def _log_tcex_version(self):
         """Log the current TcEx Version"""
@@ -251,8 +255,6 @@ class TcEx(object):
         r = self.request
         r.authorization_method(self.authorization)
         if self._args.tc_proxy_tc:
-            self.log.info('Using proxy server {}:{}.'.format(
-                self._args.tc_proxy_host, self._args.tc_proxy_port))
             r.proxies = self.proxies
         r.url = '{}/v2/types/indicatorTypes'.format(self._args.tc_api_path)
         response = r.send()

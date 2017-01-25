@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.1.0 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.1.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.1.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.1.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
             
           
@@ -147,7 +147,6 @@
             
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="c1"># import argparse</span>
 <span class="kn">import</span> <span class="nn">base64</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hmac</span>  <span class="c1"># authorization</span>
@@ -163,8 +162,6 @@
 <span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
-
-<span class="c1"># from urlparse import urlparse</span>
 
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
@@ -209,6 +206,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_app_version</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_python_version</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tcex_version</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_tc_proxy</span><span class="p">()</span>
 
         <span class="c1"># include jobs module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span><span class="p">()</span>
@@ -276,13 +274,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Could not retrieve App Version&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._log_platform"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_platform">[docs]</a>    <span class="k">def</span> <span class="nf">_log_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Log the current OS&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;OS Platform: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="p">()))</span></div>
+        <span class="sd">&quot;&quot;&quot;Log the current Platform&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Platform: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">platform</span><span class="p">()))</span></div>
 
 <div class="viewcode-block" id="TcEx._log_python_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_python_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_python_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Python Version&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Python Version: </span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcEx._log_tc_proxy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tc_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tc_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log the current Python Version&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Proxy Server (TC): </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcEx._log_tcex_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tcex_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tcex_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current TcEx Version&quot;&quot;&quot;</span>
@@ -399,8 +403,6 @@
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
         <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Using proxy server </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
             <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
         <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/indicatorTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
@@ -927,7 +929,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.0',
+            VERSION:'0.1.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

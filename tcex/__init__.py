@@ -3,7 +3,7 @@
 # import inspect
 
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __license__ = 'Apache License, Version 2'
 
 # BCS - This is invalid after lib change for multiple Python versions.

@@ -76,10 +76,10 @@ class TcExLocal:
             self._args.python,
             self._args.script.split('.')[0],
             self._parameters)
-        os.system(command)
+        status = os.system(command)
 
         msg = 'Executed: {0}'.format(command)
-        self._exit(msg)
+        self._exit(msg, status)
 
     @property
     def _config(self):
@@ -117,7 +117,12 @@ class TcExLocal:
             code (Optional [int]): The exit status code
         """
         print(message)
-        sys.exit(code)
+        print('Original Exit Code: {}'.format(code))
+        if code != 0:
+            # maven has issue with other exit codes
+            sys.exit(1)
+        else:
+            sys.exit(0)
 
     @property
     def _parameters(self):

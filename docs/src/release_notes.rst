@@ -6,8 +6,13 @@ Release Notes
 0.1.x
 =====
 
+0.1.1
+-----
++ Update tcex_local for exit code when app.py is called (maven build issue).
++ Added new log event for proxy settings.
+
 0.1.0
-------
+-----
 + Reworked iterator logic in :py:mod:`~tcex.tcex_resources` module.
 
 0.0.x
