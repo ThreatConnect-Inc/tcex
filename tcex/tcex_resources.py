@@ -556,7 +556,7 @@ class Resource(object):
         resources = []
         self._r.add_payload('resultStart', self._result_start)
         self._r.add_payload('resultLimit', self._result_limit)
-        results = self._request()
+        results = self.request()
         response = results.get('response')
         if results.get('status') == 'Success':
             data = response.json()['data']
@@ -574,7 +574,7 @@ class Resource(object):
                     break
                 self._result_start += self._result_limit
                 self._r.add_payload('resultStart', self._result_start)
-                results = self._request()
+                results = self.request()
                 resources.extend(results['data'])
 
             self._tcex.log.debug('Resource Count: {}'.format(len(resources)))

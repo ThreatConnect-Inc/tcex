@@ -517,7 +517,14 @@ class TcExJob(object):
         resource = getattr(self._tcex.resources, resource_type)(self._tcex)
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
-        results = resource.paginate()
+        data = []
+        for result in resource:
+            if results['status'] == 'Success':
+                results += results.get('data')
+            else:
+                err = 'Failed retrieving result during pagination.'
+                self._tcex.log.err(err)
+                raise RuntimeError(e)
 
         for group in results:
             self._tcex.log.debug('cache - group name: ({})'.format(group.get('name')))

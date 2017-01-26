@@ -6,6 +6,11 @@ Release Notes
 0.1.x
 =====
 
+0.1.3
+-----
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module to use new pagination functionality in :py:mod:`~tcex.tcex_resources` module.
++ Updated and labeled :py:mod:`~tcex.tcex_resources.Resource.paginate` method as deprecated.
+
 0.1.2
 -----
 + Updated tcex_local for additional parameter support during build process.
