@@ -6,6 +6,10 @@ Release Notes
 0.1.x
 =====
 
+0.1.4
+-----
++ Fixed issue with Job :py:mod:`~tcex.tcex_job.TcExJob.group_cache` method.
+
 0.1.3
 -----
 + Updated :py:mod:`~tcex.tcex_job.TcExJob` module to use new pagination functionality in :py:mod:`~tcex.tcex_resources` module.
