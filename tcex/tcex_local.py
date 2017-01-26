@@ -31,7 +31,7 @@ class TcExLocal:
         """
         """
         # Required Argument
-        self._parsed = False  # only parse once from user
+        # self._parsed = False  # only parse once from user
         self._parser = argparse.ArgumentParser()
 
         self._install_json = {}
@@ -39,7 +39,7 @@ class TcExLocal:
         self._app_packages = []
 
         self._required_arguments()
-        self._args, unknown = self._parser.parse_known_args()
+        self._args, self._extra_args = self._parser.parse_known_args()
 
     @property
     def args(self):
@@ -48,9 +48,9 @@ class TcExLocal:
         Returns:
             (namespace): ArgParser parsed arguments
         """
-        if not self._parsed:
-            self._args, unknown = self._parser.parse_known_args()
-            self._parsed = True
+        # if not self._parsed:
+        #     self._args, self._extra_args = self._parser.parse_known_args()
+        #     self._parsed = True
 
         return self._args
 
@@ -148,8 +148,20 @@ class TcExLocal:
                 msg.format(config_val)
                 self._exit(msg, 1)
             else:
-                parameters += '--{0} {1} '.format(
-                    config_key, self._wrap(str(config_val)))
+                """
+                Special use case just for Jenkins builds to overwrite values in tc-jenkins.json
+                This can't be used for arguments names already used by app.py
+                """
+                self._parser.add_argument('--{}'.format(config_key), required=False)
+                self._args, self._new_extra_args = self._parser.parse_known_args()
+
+                args_config_value = getattr(self._args, config_key)
+                if args_config_value is not None:
+                    parameters += '--{0} {1} '.format(
+                        config_key, self._wrap(str(args_config_value)))
+                else:
+                    parameters += '--{0} {1} '.format(
+                        config_key, self._wrap(str(config_val)))
 
         return parameters
 

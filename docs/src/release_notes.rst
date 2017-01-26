@@ -6,6 +6,10 @@ Release Notes
 0.1.x
 =====
 
+0.1.2
+-----
++ Updated tcex_local for additional parameter support during build process.
+
 0.1.1
 -----
 + Update tcex_local for exit code when app.py is called (maven build issue).

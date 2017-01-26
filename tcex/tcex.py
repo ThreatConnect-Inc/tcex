@@ -86,7 +86,6 @@ class TcEx(object):
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
             r.url = '{}/appAuth'.format(self._args.tc_api_path.strip('api'))
-            r.add_payload('expiredToken', self._tc_token)
             results = r.send()
             try:
                 data = results.json()
