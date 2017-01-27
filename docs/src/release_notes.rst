@@ -6,9 +6,14 @@ Release Notes
 0.1.x
 =====
 
+0.1.5
+-----
++ Added :py:meth:`~tcex.tcex_resources.Indicator.entity_body` method to :py:mod:`~tcex.tcex_resources` for generating indicator body.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method to :py:mod:`~tcex.tcex_resources` for generating indicator body.
+
 0.1.4
 -----
-+ Fixed issue with Job :py:mod:`~tcex.tcex_job.TcExJob.group_cache` method.
++ Fixed issue with Job :py:meth:`~tcex.tcex_job.TcExJob.group_cache` method.
 
 0.1.3
 -----

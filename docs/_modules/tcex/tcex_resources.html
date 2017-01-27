@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.1.4 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.1.5 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.1.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.1.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.4
+                0.1.5
               </div>
             
           
@@ -1193,6 +1193,17 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
 
+<div class="viewcode-block" id="Indicator.entity_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.entity_body">[docs]</a>    <span class="k">def</span> <span class="nf">entity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (list): A list of appropriate indicators for the Indicator Type.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            (dict): Dictionary containing the indicator part of the body.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_body</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Indicator.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
 
@@ -1201,6 +1212,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Bulk&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Indicator.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicators</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of a **single** indicator.</span>
+
+<span class="sd">        For an Address indicator a list with a single IP Address and for File indicators a list of</span>
+<span class="sd">        1 up to 3 hash values.  Custom indicators fields have to be in the correct order (e.g.</span>
+<span class="sd">        field 1, field 2, field 3 as defined in the UI).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicators (list): A list of appropriate indicators for the Indicator Type.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            (dict): Dictionary containing the indicator part of the body.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">vf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="n">vf</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicators</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indicators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">body</span></div>
 
 <div class="viewcode-block" id="Indicator.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias for indicator method.</span>
@@ -1337,6 +1369,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">,</span> <span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="File.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator_body">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="n">indicators</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of an File indicator</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicators (list): A list of one or more hash value(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hash_patterns</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
+                <span class="n">body</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator</span>
+            <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
+                <span class="n">body</span><span class="p">[</span><span class="s1">&#39;sha1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator</span>
+            <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
+                <span class="n">body</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator</span>
+
+        <span class="k">return</span> <span class="n">body</span></div>
 
 <div class="viewcode-block" id="File.occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the URI to retrieve file occurrences for the provided indicator.</span>
@@ -1830,7 +1885,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.4',
+            VERSION:'0.1.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

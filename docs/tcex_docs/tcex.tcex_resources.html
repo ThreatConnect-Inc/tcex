@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.1.4 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.1.5 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.1.4 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.1.5 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.4
+                0.1.5
               </div>
             
           
@@ -339,6 +339,20 @@ in the parent Class.</p>
 <p>This resource class will return indicators of type File (e.g md5, sha1,
 sha256). To filter on specific indicators use the <strong>indicator</strong> or
 <strong>resource_id</strong> methods provided in the parent Class.</p>
+<dl class="staticmethod">
+<dt id="tcex.tcex_resources.File.indicator_body">
+<em class="property">static </em><code class="descname">indicator_body</code><span class="sig-paren">(</span><em>indicators</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.indicator_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.indicator_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the appropriate dictionary content for POST of an File indicator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicators</strong> (<em>list</em>) &#8211; A list of one or more hash value(s).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_resources.File.occurrence">
 <code class="descname">occurrence</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.occurrence" title="Permalink to this definition">¶</a></dt>
@@ -441,6 +455,24 @@ indicators of all types.  For specific indicator types use the child
 class of the type required.  Custom indicator types are supported
 dynamically and are not defined here.</p>
 <dl class="method">
+<dt id="tcex.tcex_resources.Indicator.entity_body">
+<code class="descname">entity_body</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.entity_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.entity_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to <a class="reference internal" href="#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal"><span class="pre">indicator_body()</span></code></a> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>list</em>) &#8211; A list of appropriate indicators for the Indicator Type.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing the indicator part of the body.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Indicator.indicator">
 <code class="descname">indicator</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the request URI to include the Indicator for specific indicator retrieval.</p>
@@ -449,6 +481,27 @@ dynamically and are not defined here.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; The indicator value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Indicator.indicator_body">
+<code class="descname">indicator_body</code><span class="sig-paren">(</span><em>indicators</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.indicator_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.indicator_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the appropriate dictionary content for POST of a <strong>single</strong> indicator.</p>
+<p>For an Address indicator a list with a single IP Address and for File indicators a list of
+1 up to 3 hash values.  Custom indicators fields have to be in the correct order (e.g.
+field 1, field 2, field 3 as defined in the UI).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicators</strong> (<em>list</em>) &#8211; A list of appropriate indicators for the Indicator Type.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing the indicator part of the body.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
 </tr>
 </tbody>
 </table>
@@ -1723,7 +1776,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.1.4',
+            VERSION:'0.1.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

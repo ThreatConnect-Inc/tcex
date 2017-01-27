@@ -1045,6 +1045,17 @@ class Indicator(Resource):
         }
         self._value_fields = ['summary']
 
+    def entity_body(self, data):
+        """Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.
+
+        Args:
+            data (list): A list of appropriate indicators for the Indicator Type.
+
+        Return:
+            (dict): Dictionary containing the indicator part of the body.
+        """
+        return self.indicator_body(data)
+
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
 
@@ -1053,6 +1064,27 @@ class Indicator(Resource):
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
             self._request_uri = '{}/{}'.format(self._request_uri, data)
+
+    def indicator_body(self, indicators):
+        """Generate the appropriate dictionary content for POST of a **single** indicator.
+
+        For an Address indicator a list with a single IP Address and for File indicators a list of
+        1 up to 3 hash values.  Custom indicators fields have to be in the correct order (e.g.
+        field 1, field 2, field 3 as defined in the UI).
+
+        Args:
+            indicators (list): A list of appropriate indicators for the Indicator Type.
+
+        Return:
+            (dict): Dictionary containing the indicator part of the body.
+        """
+        body = {}
+        for vf in self._value_fields:
+            body[vf] = indicators.pop(0)
+            if len(indicators) == 0:
+                break
+
+        return body
 
     def resource_id(self, data):
         """Alias for indicator method.
@@ -1189,6 +1221,29 @@ class File(Indicator):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
         self._value_fields = ['md5', 'sha1', 'sha256']
+
+    @staticmethod
+    def indicator_body(indicators):
+        """Generate the appropriate dictionary content for POST of an File indicator
+
+        Args:
+            indicators (list): A list of one or more hash value(s).
+        """
+        hash_patterns = {
+            'md5': re.compile(r'^([a-fA-F\d]{32})$'),
+            'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
+            'sha256': re.compile(r'^([a-fA-F\d]{64})$')
+        }
+        body = {}
+        for indicator in indicators:
+            if hash_patterns['md5'].match(indicator):
+                body['md5'] = indicator
+            elif hash_patterns['sha1'].match(indicator):
+                body['sha1'] = indicator
+            elif hash_patterns['sha256'].match(indicator):
+                body['sha256'] = indicator
+
+        return body
 
     def occurrence(self, indicator):
         """Update the URI to retrieve file occurrences for the provided indicator.
