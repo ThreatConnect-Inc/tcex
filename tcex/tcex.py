@@ -298,7 +298,7 @@ class TcEx(object):
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],
-                            'POST': [200],
+                            'POST': [200, 201],
                             'PUT': [200]
                         },
                         '_value_fields': value_fields

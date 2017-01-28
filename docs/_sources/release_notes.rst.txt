@@ -6,6 +6,10 @@ Release Notes
 0.1.x
 =====
 
+0.1.6
+-----
++ Added accepted status code of 201 for Custom Indicator POST on dynamic class creation.
+
 0.1.5
 -----
 + Added :py:meth:`~tcex.tcex_resources.Indicator.entity_body` method to :py:mod:`~tcex.tcex_resources` for generating indicator body.
