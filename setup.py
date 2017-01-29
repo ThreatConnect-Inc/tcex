@@ -15,10 +15,11 @@ setup(
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
     install_requires=[
         'hiredis==0.2.0',
+        'inflect==0.2.5',
         'jsonschema==2.5.1',
-        'python-dateutil==2.4.2',
+        'python-dateutil==2.6.0',
         'redis==2.10.5',
-        'requests==2.11.1'
+        'requests==2.13.0'
     ],
     license='Apache License, Version 2',
     name='tcex',

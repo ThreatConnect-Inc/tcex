@@ -1,11 +1,12 @@
 """ standard """
 import argparse
+import inflect
 import json
 import os
 import re
 import shutil
+import subprocess
 import sys
-# import time
 import zipfile
 from setuptools.command import easy_install
 
@@ -30,8 +31,12 @@ class TcExLocal:
     def __init__(self):
         """
         """
+        # init inflect engine
+        self.inflect = inflect.engine()
+
         # Required Argument
         # self._parsed = False  # only parse once from user
+        self._config = {}
         self._parser = argparse.ArgumentParser()
 
         self._install_json = {}
@@ -41,91 +46,17 @@ class TcExLocal:
         self._required_arguments()
         self._args, self._extra_args = self._parser.parse_known_args()
 
-    @property
-    def args(self):
-        """The parsed args
-
-        Returns:
-            (namespace): ArgParser parsed arguments
-        """
-        # if not self._parsed:
-        #     self._args, self._extra_args = self._parser.parse_known_args()
-        #     self._parsed = True
-
-        return self._args
-
-    @property
-    def parser(self):
-        """The ArgParser parser object
-
-        Returns:
-            (ArgumentParser): TcEx local parser object
-        """
-        return self._parser
-
-    @property
-    def run(self):
-        """Execute the script with arguments provided in tc.json."""
-
-        if not os.path.isfile(self._args.script):
-            msg = 'Provided script file does not exist ({0}).'
-            msg.format(self._args.script)
-            self._exit(msg, 1)
-
-        command = '{0} . {1} {2}'.format(
-            self._args.python,
-            self._args.script.split('.')[0],
-            self._parameters)
-        status = os.system(command)
-
-        msg = 'Executed: {0}'.format(command)
-        self._exit(msg, status)
-
-    @property
-    def _config(self):
-        """Configuration value retrieve from JSON configuration file
-
-        Returns:
-            (dict): Dictionary of configuration parameters
-        """
+    def _load_config(self):
+        """Load the configuration file."""
         if not os.path.isfile(self._args.config):
             msg = 'Provided config file does not exist ({0}).'
             msg.format(self._args.config)
             self._exit(msg, 1)
 
         with open(self._args.config) as data_file:
-            # return json.load(data_file)
-            data = json.load(data_file)
+            self._config = json.load(data_file)
 
-        test_section = self._args.test
-        if self._args.test is None:
-            test_section = 'default'
-
-        data = data.get(test_section)
-        if data is None:
-            msg = 'The tc.json configuration test named {} was not found.'.format(test_section)
-            self._exit(msg, 1)
-
-        return data
-
-    @staticmethod
-    def _exit(message, code=0):
-        """Exit the script
-
-        Args:
-            message (str): An exit message
-            code (Optional [int]): The exit status code
-        """
-        print(message)
-        print('Original Exit Code: {}'.format(code))
-        if code != 0:
-            # maven has issue with other exit codes
-            sys.exit(1)
-        else:
-            sys.exit(0)
-
-    @property
-    def _parameters(self):
+    def _parameters(self, args):
         """Build CLI arguments to pass to script on the command line.
 
         This method takes the json data and covert it to CLI args for the execution
@@ -135,7 +66,7 @@ class TcExLocal:
             (str): A string containing all parameter to pass to script
         """
         parameters = ' '
-        for config_key, config_val in self._config.items():
+        for config_key, config_val in args.items():
             if isinstance(config_val, bool):
                 if config_val:
                     parameters += '--{0} '.format(config_key)
@@ -152,8 +83,11 @@ class TcExLocal:
                 Special use case just for Jenkins builds to overwrite values in tc-jenkins.json
                 This can't be used for arguments names already used by app.py
                 """
-                self._parser.add_argument('--{}'.format(config_key), required=False)
-                self._args, self._new_extra_args = self._parser.parse_known_args()
+                try:
+                    self._parser.add_argument('--{}'.format(config_key), required=False)
+                    self._args, self._new_extra_args = self._parser.parse_known_args()
+                except argparse.ArgumentError:
+                    pass
 
                 args_config_value = getattr(self._args, config_key)
                 if args_config_value is not None:
@@ -180,84 +114,97 @@ class TcExLocal:
 
         # run args
         self._parser.add_argument(
-            '--config', help='The configuration file', default='tc.json')
+            '--config', default='tc.json', help='The configuration file')
         self._parser.add_argument(
-            '--python', help='The python executable', default='python')
+            '--script', default=None, help='The Python script name')
         self._parser.add_argument(
-            '--script', help='The script to be executed', required=False)
+            '--group', default=None, help='The group of profiles to executed')
         self._parser.add_argument(
-            '--test', help='The test to be executed', default=None)
+            '--python', default='python', help='The python executable')
+        self._parser.add_argument(
+            '--profile', default='default', help='The profile to be executed')
+        self._parser.add_argument(
+            '--quiet', action='store_true', help='Suppress output')
 
         # validate args
         self._parser.add_argument(
-            '--install_json', help='The install.json filename', default='install.json')
+            '--install_json', default='install.json', help='The install.json filename')
 
         # package args
         self._parser.add_argument(
-            '--collection', help='Build app collection', action='store_true')
+            '--collection', action='store_true', help='Build app collection')
         self._parser.add_argument(
-            '--zip_out', help='The zip output path', default=None)
+            '--zip_out', default=None, help='The zip output path')
 
-    @staticmethod
-    def _wrap(data):
-        """Wrap any parameters that contain spaces
+    @property
+    def args(self):
+        """The parsed args
 
         Returns:
-            (string): String containing parameters wrapped in double quotes
+            (namespace): ArgParser parsed arguments
         """
-        if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
-            data = '\'{}\''.format(data)
-        return data
+        return self._args
 
-    ############################################################################
-    # bcs - add comment and cleanup
-    ############################################################################
+    @property
+    def parser(self):
+        """The ArgParser parser object
+
+        Returns:
+            (ArgumentParser): TcEx local parser object
+        """
+        return self._parser
+
+    @property
+    def run(self):
+        """Execute the script with arguments provided in tc.json."""
+
+        # load tc config
+        self._load_config()
+
+        selected_profiles = []
+        for profile, config in self._config.get('profiles').items():
+            if profile == self._args.profile:
+                selected_profiles.append(config)
+            elif config.get('group') == self._args.group:
+                selected_profiles.append(config)
+
+        command_count = 0
+        status_code = 0
+        for sp in selected_profiles:
+            command_count += 1
+
+            # get script name
+            script = sp.get('script')
+            if self._args.script is not None:
+                script = self._args.script
+
+            if script is None:
+                self._exit('No script provided', 1)
+
+            command = '{0} . {1} {2}'.format(
+                self._args.python,
+                script.replace('.py', ''),  # TODO: replace with regex relace to end of line
+                self._parameters(sp.get('args')))
+            print('Executing: {}'.format(command))
+
+            p = subprocess.Popen(
+                command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+
+            if not sp.get('quiet') and not self._args.quiet:
+                print(out)
+            print('Exit Code: {}'.format(p.returncode))
+            if p.returncode != 0:
+                status_code = p.returncode
+                break
+
+        msg = 'Executed {}'.format(self.inflect.no('command', command_count))
+        self._exit(msg, status_code)
 
     def load_install_json(self):
         """Read the install.json file"""
         with open('install.json') as fh:
             self._install_json = json.load(fh)
-
-    @staticmethod
-    def gen_lib():
-        """Build libs locally for app
-
-        Using the setup.py this method will install all required python modules locally
-        to be used for local testing.
-        """
-        lib_directory = 'lib_{}.{}.{}'.format(
-                sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-        app_path = os.getcwd()
-        app_name = os.path.basename(app_path)
-
-        lib_path = os.path.join(app_path, lib_directory)
-        if not os.path.isdir(lib_path):
-            os.mkdir(lib_path)
-
-        os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
-        stdout = sys.stdout
-        stderr = sys.stderr
-        try:
-            with open(os.path.join(app_path, '{}-libs.log'.format(app_name)), 'w') as log:
-                sys.stdout = log
-                sys.stderr = log
-                easy_install.main(['-axZ', '-d', lib_path, str(app_path)])
-        except SystemExit as e:
-            raise Exception(str(e))
-        finally:
-            sys.stdout = stdout
-            sys.stderr = stderr
-
-        if len(os.listdir(lib_path)) == 0:
-            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
-                app_name))
-
-        build_path = os.path.join(app_path, 'build')
-        if os.access(build_path, os.W_OK):
-            shutil.rmtree(build_path)
-        temp_path = os.path.join(app_path, 'temp')
-        if os.access(temp_path, os.W_OK):
-            shutil.rmtree(temp_path)
 
     def package(self):
         """Package the app for deployment
@@ -266,10 +213,6 @@ class TcExLocal:
         all required dependencies and include them in the package.  Validating of the
         install.json file or files will be automatically run before packaging the app.
         """
-
-        # bcs - other options
-        # app_name = self._install_json['displayName'].replace(' ', '_')
-        # app_path = os.path.dirname(os.path.realpath(__file__))
 
         lib_directory = 'lib_{}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
@@ -377,6 +320,58 @@ class TcExLocal:
             shutil.rmtree(template_app_path)
 
     @staticmethod
+    def _exit(message, code=0):
+        """Exit the script
+
+        Args:
+            message (str): An exit message
+            code (Optional [int]): The exit status code
+        """
+        print('{} (exit code: {})'.format(message, code))
+        sys.exit(code)
+
+    @staticmethod
+    def gen_lib():
+        """Build libs locally for app
+
+        Using the setup.py this method will install all required python modules locally
+        to be used for local testing.
+        """
+        lib_directory = 'lib_{}.{}.{}'.format(
+                sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+        app_path = os.getcwd()
+        app_name = os.path.basename(app_path)
+
+        lib_path = os.path.join(app_path, lib_directory)
+        if not os.path.isdir(lib_path):
+            os.mkdir(lib_path)
+
+        os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
+        stdout = sys.stdout
+        stderr = sys.stderr
+        try:
+            with open(os.path.join(app_path, '{}-libs.log'.format(app_name)), 'w') as log:
+                sys.stdout = log
+                sys.stderr = log
+                easy_install.main(['-axZ', '-d', lib_path, str(app_path)])
+        except SystemExit as e:
+            raise Exception(str(e))
+        finally:
+            sys.stdout = stdout
+            sys.stderr = stderr
+
+        if len(os.listdir(lib_path)) == 0:
+            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
+                app_name))
+
+        build_path = os.path.join(app_path, 'build')
+        if os.access(build_path, os.W_OK):
+            shutil.rmtree(build_path)
+        temp_path = os.path.join(app_path, 'temp')
+        if os.access(temp_path, os.W_OK):
+            shutil.rmtree(temp_path)
+
+    @staticmethod
     def validate(install_json):
         """Validate install.json file for required parameters"""
 
@@ -390,3 +385,14 @@ class TcExLocal:
             print('{} is invalid "{}"'.format(install_json, e))
         except ValidationError as e:
             print('{} is invalid "{}"'.format(install_json, e))
+
+    @staticmethod
+    def _wrap(data):
+        """Wrap any parameters that contain spaces
+
+        Returns:
+            (string): String containing parameters wrapped in double quotes
+        """
+        if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
+            data = '\'{}\''.format(data)
+        return data

@@ -2,6 +2,7 @@
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
+import inflect
 import inspect
 import json
 import logging
@@ -29,13 +30,15 @@ class TcEx(object):
 
         Setup default values and logging method.
         """
+        # init inflect engine
+        self.inflect = inflect.engine()
 
         self._exit_code = 0
-        # bcs - replace group_type with dynamic values from API
+        # TODO: replace group_type with dynamic values from API (bcs)
         self.group_types = ['Adversary', 'Document', 'Email', 'Incident', 'Signature', 'Threat']
         self.indicator_types = []
         self._max_message_length = 255
-        # bcs - odd issue where args is not updating properly
+        # NOTE: odd issue where args is not updating properly
         self._tc_token = None
         self._tc_token_expires = None
 
@@ -44,7 +47,7 @@ class TcEx(object):
         self._parser = ArgParser()
         self._args, unknown = self._parser.parse_known_args()
 
-        # bcs - odd issue where args is not updating properly
+        # NOTE: odd issue where args is not updating properly
         if self._args.tc_token is not None:
             self._tc_token = self._args.tc_token
         if self._args.tc_token_expires is not None:

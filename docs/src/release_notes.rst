@@ -3,6 +3,19 @@
 Release Notes
 #############
 
+0.2.x
+=====
+
+0.2.0
+-----
++ Rework of :py:mod:`~tcex.tcex_local` :py:meth:`~tcex.tcex_local.TcExLocal.run` logic to support updated tc.json schema.
++ Changed **--test** arg to **--profile** in :py:meth:`~tcex.tcex_local.TcExLocal._required_arguments`.
++ Added **script** field to tc.json that matches **--script** arg to support predefined script names.
++ Added **group** field to tc.json that matches **--group** arg in :py:meth:`~tcex.tcex_local.TcExLocal._required_arguments` to support running multiple profiles.
++ Added `inflect <https://pypi.python.org/pypi/inflect>`_ requirement version 0.2.5.
++ Changed python-dateutil requirement to version 2.6.10.
++ Changed requests requirement to version 2.13.0.
+
 0.1.x
 =====
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.1.6 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.2.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.1.6 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.6
+                0.2.0
               </div>
             
           
@@ -150,6 +150,7 @@
 <span class="kn">import</span> <span class="nn">base64</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hmac</span>  <span class="c1"># authorization</span>
+<span class="kn">import</span> <span class="nn">inflect</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -177,13 +178,15 @@
 
 <span class="sd">        Setup default values and logging method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># init inflect engine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># bcs - replace group_type with dynamic values from API</span>
+        <span class="c1"># TODO: replace group_type with dynamic values from API (bcs)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">group_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="s1">&#39;Threat&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indicator_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">=</span> <span class="mi">255</span>
-        <span class="c1"># bcs - odd issue where args is not updating properly</span>
+        <span class="c1"># NOTE: odd issue where args is not updating properly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -192,7 +195,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">ArgParser</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
 
-        <span class="c1"># bcs - odd issue where args is not updating properly</span>
+        <span class="c1"># NOTE: odd issue where args is not updating properly</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -928,7 +931,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.6',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
