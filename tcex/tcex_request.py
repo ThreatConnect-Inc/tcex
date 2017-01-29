@@ -72,7 +72,7 @@ class TcExRequest(object):
             key (string): The header key
             val (string): The header value
         """
-        self._headers[key] = str(self._tcex.uni(val))
+        self._headers[key] = str(val)
 
     @property
     def authorization(self):
@@ -110,8 +110,8 @@ class TcExRequest(object):
     @content_type.setter
     def content_type(self, data):
         """The Content-Type header value for this request."""
-        self._content_type = self._tcex.uni(data)
-        self.add_header('Content-Type', data)
+        self._content_type = str(data)
+        self.add_header('Content-Type', str(data))
 
     @property
     def user_agent(self):
@@ -143,7 +143,7 @@ class TcExRequest(object):
             key (string): The payload key
             val (string): The payload value
         """
-        self._payload[key] = str(self._tcex.uni(val))
+        self._payload[key] = str(val)
 
     #
     # HTTP Method

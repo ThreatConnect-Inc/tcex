@@ -303,8 +303,7 @@ class TcExPlaybook(object):
         """
         data = None
         if value is not None:
-            # data = self._db.create(key.strip(), json.dumps(base64.b64encode(value)))
-            data = self._db.create(key.strip(), json.dumps(str(base64.b64encode(bytes(value)))))
+            data = self._db.create(key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
         return data
 
     def read_binary(self, key):
@@ -318,7 +317,7 @@ class TcExPlaybook(object):
         """
         data = self._db.read(key.strip())
         if data is not None:
-            data = base64.b64decode(json.loads(data))
+            data = base64.b64decode(json.loads(data.decode('utf-8')))
         return data
 
     # binary array
@@ -334,7 +333,7 @@ class TcExPlaybook(object):
         """
         data = None
         if value is not None:
-            data = self._db.create(key.strip(), json.dumps(base64.b64encode(value)))
+            data = self._db.create(key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
         return data
 
     def read_binary_array(self, key):
@@ -348,7 +347,7 @@ class TcExPlaybook(object):
         """
         data = self._db.read(key.strip())
         if data is not None:
-            data = base64.b64decode(json.loads(data))
+            data = base64.b64decode(json.loads(data.decode('utf-8')))
         return data
 
     # key/value

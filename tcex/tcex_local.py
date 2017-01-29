@@ -5,9 +5,11 @@ import json
 import os
 import re
 import shutil
+import six
 import subprocess
 import sys
 import zipfile
+# from builtins import bytes
 from setuptools.command import easy_install
 
 """ third-party """
@@ -183,17 +185,19 @@ class TcExLocal:
 
             command = '{0} . {1} {2}'.format(
                 self._args.python,
-                script.replace('.py', ''),  # TODO: replace with regex relace to end of line
+                script.replace('.py', ''),  # TODO: replace with regex to end of line
                 self._parameters(sp.get('args')))
             print('Executing: {}'.format(command))
 
             p = subprocess.Popen(
                 command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
+            print('Exit Code: {}'.format(p.returncode))
 
             if not sp.get('quiet') and not self._args.quiet:
-                print(out)
-            print('Exit Code: {}'.format(p.returncode))
+                print(self.to_string(out, 'ignore'))
+                if len(err) != 0:
+                    print('Error: {}'.format(err))
             if p.returncode != 0:
                 status_code = p.returncode
                 break
@@ -370,6 +374,25 @@ class TcExLocal:
         temp_path = os.path.join(app_path, 'temp')
         if os.access(temp_path, os.W_OK):
             shutil.rmtree(temp_path)
+
+    @staticmethod
+    def to_string(data, errors='strict'):
+        """Covert x to string in Python 2/3
+
+        Args:
+            data (any): Data to ve validated and re-encoded
+
+        Returns:
+            (any): Return validate or encoded data
+
+        """
+        # TODO: Find better way using six or unicode_literals
+        if isinstance(data, (bytes, str)):
+            try:
+                data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
+            except NameError:
+                data = str(data, 'utf-8', errors=errors)
+        return data
 
     @staticmethod
     def validate(install_json):

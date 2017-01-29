@@ -9,9 +9,9 @@ import logging
 import os
 import re
 import sys
-import urllib
 import time
 import types
+import urllib
 from .argparser import ArgParser
 from datetime import datetime
 from platform import platform
@@ -110,7 +110,7 @@ class TcEx(object):
 
     def _jobs(self):
         """Include jobs Module"""
-        from tcex_job import TcExJob
+        from .tcex_job import TcExJob
         self.jobs = TcExJob(self)
 
     def _log_app_version(self):
@@ -248,7 +248,7 @@ class TcEx(object):
         """
         self.resources = type('resources', (object,), {})
 
-        import tcex_resources as resources
+        from . import tcex_resources as resources
         for name, obj in inspect.getmembers(resources):
             if inspect.isclass(obj):
                 setattr(self.resources, name, getattr(resources, name))
@@ -712,7 +712,7 @@ class TcEx(object):
             (string): The truncated tag
         """
         if tag is not None:
-            tag = TcEx.uni(tag)
+            tag = unicode(tag, 'utf-8', error='ignore')
             if len(tag) > 35:
                 tag = tag[:35]
         return tag
@@ -728,26 +728,25 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if url is not None:
-            url = urllib.quote(TcEx.uni(url), safe='~')
+            url = urllib.quote(unicode(url, 'utf-8', error='ignore'), safe='~')  # 2to3 converts unicode to str
         return url
 
-    @staticmethod
-    def uni(data):
-        """Re-encode poorly encoded unicode data
-
-        Args:
-            data (any): Data to ve validated and re-encoded
-
-        Returns:
-            (any): Return validate or encoded data
-
-        """
-        uni_data = data
-        if data is None or not isinstance(data, types.StringTypes):
-            pass
-        elif isinstance(data, unicode):
-            uni_data = unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
-        elif not isinstance(data, unicode):
-            uni_data = unicode(data, 'utf-8', errors='ignore')
-
-        return uni_data
+    # @staticmethod
+    # def uni(data):
+    #     """Re-encode poorly encoded unicode data
+    #
+    #     Args:
+    #         data (any): Data to ve validated and re-encoded
+    #
+    #     Returns:
+    #         (any): Return validate or encoded data
+    #
+    #     """
+    #     if data is None or not isinstance(data, types.StringTypes):
+    #         pass
+    #     elif isinstance(data, unicode):
+    #         uni_data = unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
+    #     elif not isinstance(data, unicode):
+    #         uni_data = unicode(data, 'utf-8', errors='ignore')
+    #
+    #     return uni_data

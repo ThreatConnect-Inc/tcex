@@ -6,6 +6,11 @@ Release Notes
 0.2.x
 =====
 
+0.2.1
+-----
++ Update of :py:mod:`~tcex.tcex_local` module for Python 2/3 support.
++ Update binary methods in :py:mod:`~tcex.tcex_playbook` module for Python 2/3 support.
+
 0.2.0
 -----
 + Rework of :py:mod:`~tcex.tcex_local` :py:meth:`~tcex.tcex_local.TcExLocal.run` logic to support updated tc.json schema.

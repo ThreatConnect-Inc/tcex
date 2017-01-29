@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.2.0 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.2.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.2.1
               </div>
             
           
@@ -157,9 +157,9 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
@@ -258,7 +258,7 @@
 
 <div class="viewcode-block" id="TcEx._jobs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._jobs">[docs]</a>    <span class="k">def</span> <span class="nf">_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Include jobs Module&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
+        <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span> <span class="o">=</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._log_app_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_app_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_app_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,7 +396,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="p">{})</span>
 
-        <span class="kn">import</span> <span class="nn">tcex_resources</span> <span class="k">as</span> <span class="nn">resources</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">tcex_resources</span> <span class="k">as</span> <span class="n">resources</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">resources</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">resources</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
@@ -860,7 +860,7 @@
 <span class="sd">            (string): The truncated tag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tag</span> <span class="o">=</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">35</span><span class="p">:</span>
                 <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[:</span><span class="mi">35</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">tag</span></div>
@@ -876,29 +876,28 @@
 <span class="sd">            (string): The urlencoded string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">uni</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">url</span></div>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">unicode</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>  <span class="c1"># 2to3 converts unicode to str</span>
+        <span class="k">return</span> <span class="n">url</span></div></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcEx.uni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.uni">[docs]</a>    <span class="k">def</span> <span class="nf">uni</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Re-encode poorly encoded unicode data</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (any): Data to ve validated and re-encoded</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (any): Return validate or encoded data</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">uni_data</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">StringTypes</span><span class="p">):</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
-            <span class="n">uni_data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>  <span class="c1"># re-encode poorly encoded unicode</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
-            <span class="n">uni_data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">uni_data</span></div></div>
+    <span class="c1"># @staticmethod</span>
+    <span class="c1"># def uni(data):</span>
+    <span class="c1">#     &quot;&quot;&quot;Re-encode poorly encoded unicode data</span>
+    <span class="c1">#</span>
+    <span class="c1">#     Args:</span>
+    <span class="c1">#         data (any): Data to ve validated and re-encoded</span>
+    <span class="c1">#</span>
+    <span class="c1">#     Returns:</span>
+    <span class="c1">#         (any): Return validate or encoded data</span>
+    <span class="c1">#</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if data is None or not isinstance(data, types.StringTypes):</span>
+    <span class="c1">#         pass</span>
+    <span class="c1">#     elif isinstance(data, unicode):</span>
+    <span class="c1">#         uni_data = unicode(data.encode(&#39;utf-8&#39;).strip(), errors=&#39;ignore&#39;)  # re-encode poorly encoded unicode</span>
+    <span class="c1">#     elif not isinstance(data, unicode):</span>
+    <span class="c1">#         uni_data = unicode(data, &#39;utf-8&#39;, errors=&#39;ignore&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     return uni_data</span>
 </pre></div>
 
            </div>
@@ -931,7 +930,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.0',
+            VERSION:'0.2.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
