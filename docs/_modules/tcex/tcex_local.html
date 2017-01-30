@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local &mdash; TcEx 0.2.4 documentation</title>
+  <title>tcex.tcex_local &mdash; TcEx 0.2.5 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.4
+                0.2.5
               </div>
             
           
@@ -229,23 +229,11 @@
                 <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_val</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Special use case just for Jenkins builds to overwrite values in tc-jenkins.json</span>
-<span class="sd">                This can&#39;t be used for arguments names already used by app.py</span>
-<span class="sd">                &quot;&quot;&quot;</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_extra_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
-                <span class="k">except</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-
-                <span class="n">args_config_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">config_key</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">args_config_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">parameters</span> <span class="o">+=</span> <span class="s1">&#39;--</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">config_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">args_config_value</span><span class="p">)))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">parameters</span> <span class="o">+=</span> <span class="s1">&#39;--</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">config_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)))</span>
+                <span class="n">env_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^\$env\.(.*)$&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">env_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)):</span>
+                    <span class="n">env_key</span> <span class="o">=</span> <span class="n">env_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">config_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_key</span><span class="p">,</span> <span class="n">config_val</span><span class="p">)</span>
+                <span class="n">parameters</span> <span class="o">+=</span> <span class="s1">&#39;--</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">parameters</span></div>
 
@@ -312,17 +300,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">()</span>
 
         <span class="c1"># TODO: Output profile name</span>
-        <span class="n">selected_profiles</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">profile</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">profile</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
-                <span class="n">selected_profiles</span><span class="p">[</span><span class="n">profile</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="n">selected_profiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
+                <span class="n">selected_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
-                <span class="n">selected_profiles</span><span class="p">[</span><span class="n">profile</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+                <span class="n">selected_profiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
         <span class="n">command_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">status_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">selected_profiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">selected_profiles</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)))</span>
             <span class="n">command_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># get script name</span>
@@ -601,7 +589,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.4',
+            VERSION:'0.2.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

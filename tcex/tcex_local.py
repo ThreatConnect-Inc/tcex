@@ -81,23 +81,11 @@ class TcExLocal:
                 msg.format(config_val)
                 self._exit(msg, 1)
             else:
-                """
-                Special use case just for Jenkins builds to overwrite values in tc-jenkins.json
-                This can't be used for arguments names already used by app.py
-                """
-                try:
-                    self._parser.add_argument('--{}'.format(config_key), required=False)
-                    self._args, self._new_extra_args = self._parser.parse_known_args()
-                except argparse.ArgumentError:
-                    pass
-
-                args_config_value = getattr(self._args, config_key)
-                if args_config_value is not None:
-                    parameters += '--{0} {1} '.format(
-                        config_key, self._wrap(str(args_config_value)))
-                else:
-                    parameters += '--{0} {1} '.format(
-                        config_key, self._wrap(str(config_val)))
+                env_var = re.compile(r'^\$env\.(.*)$')
+                if env_var.match(str(config_val)):
+                    env_key = env_var.match(str(config_val)).groups()[0]
+                    config_val = os.environ.get(env_key, config_val)
+                parameters += '--{0} {1} '.format(config_key, self._wrap(str(config_val)))
 
         return parameters
 
@@ -164,17 +152,17 @@ class TcExLocal:
         self._load_config()
 
         # TODO: Output profile name
-        selected_profiles = {}
-        for profile, config in self._config.get('profiles').items():
-            if profile == self._args.profile:
-                selected_profiles[profile] = config
+        selected_profiles = []
+        for config in self._config.get('profiles'):
+            if config.get('profile_name') == self._args.profile:
+                selected_profiles.append(config)
             elif config.get('group') is not None and config.get('group') == self._args.group:
-                selected_profiles[profile] = config
+                selected_profiles.append(config)
 
         command_count = 0
         status_code = 0
-        for profile, sp in selected_profiles.items():
-            print('Profile: {}'.format(profile))
+        for sp in selected_profiles:
+            print('Profile: {}'.format(sp.get('profile_name')))
             command_count += 1
 
             # get script name
