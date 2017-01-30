@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local &mdash; TcEx 0.2.5 documentation</title>
+  <title>tcex.tcex_local &mdash; TcEx 0.2.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.5 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.6 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.5
+                0.2.6
               </div>
             
           
@@ -156,6 +156,7 @@
 <span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="c1"># from builtins import bytes</span>
 <span class="kn">from</span> <span class="nn">setuptools.command</span> <span class="k">import</span> <span class="n">easy_install</span>
@@ -299,6 +300,9 @@
         <span class="c1"># load tc config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">()</span>
 
+        <span class="c1"># get global sleep</span>
+        <span class="n">sleep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
         <span class="c1"># TODO: Output profile name</span>
         <span class="n">selected_profiles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">):</span>
@@ -313,6 +317,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Profile: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)))</span>
             <span class="n">command_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
+
             <span class="c1"># get script name</span>
             <span class="n">script</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">script</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -326,6 +331,11 @@
                 <span class="n">script</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>  <span class="c1"># TODO: replace with regex to end of line</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">)))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executing: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+
+            <span class="c1"># add a delay between profiles</span>
+            <span class="n">sleep</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="n">sleep</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sleep: </span><span class="si">{}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sleep</span><span class="p">))</span>
 
             <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
                 <span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
@@ -589,7 +599,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.5',
+            VERSION:'0.2.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

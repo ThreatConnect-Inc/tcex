@@ -8,6 +8,7 @@ import shutil
 import six
 import subprocess
 import sys
+import time
 import zipfile
 # from builtins import bytes
 from setuptools.command import easy_install
@@ -151,6 +152,9 @@ class TcExLocal:
         # load tc config
         self._load_config()
 
+        # get global sleep
+        sleep = self._config.get('sleep', 5)
+
         # TODO: Output profile name
         selected_profiles = []
         for config in self._config.get('profiles'):
@@ -165,6 +169,7 @@ class TcExLocal:
             print('Profile: {}'.format(sp.get('profile_name')))
             command_count += 1
 
+
             # get script name
             script = sp.get('script')
             if self._args.script is not None:
@@ -178,6 +183,11 @@ class TcExLocal:
                 script.replace('.py', ''),  # TODO: replace with regex to end of line
                 self._parameters(sp.get('args')))
             print('Executing: {}'.format(command))
+
+            # add a delay between profiles
+            sleep = sp.get('sleep', sleep)
+            time.sleep(sleep)
+            print('Sleep: {} seconds'.format(sleep))
 
             p = subprocess.Popen(
                 command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

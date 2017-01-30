@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.6
+-----
++ Added sleep option for test profiles that take time to complete.
+
 0.2.5
 -----
 + Update to :py:mod:`~tcex.tcex_local` module to change tc.json profiles to list instead of dictionary to maintain order of profiles.
