@@ -163,16 +163,18 @@ class TcExLocal:
         # load tc config
         self._load_config()
 
-        selected_profiles = []
+        # TODO: Output profile name
+        selected_profiles = {}
         for profile, config in self._config.get('profiles').items():
             if profile == self._args.profile:
-                selected_profiles.append(config)
-            elif config.get('group') == self._args.group:
-                selected_profiles.append(config)
+                selected_profiles[profile] = config
+            elif config.get('group') is not None and config.get('group') == self._args.group:
+                selected_profiles[profile] = config
 
         command_count = 0
         status_code = 0
-        for sp in selected_profiles:
+        for profile, sp in selected_profiles.items():
+            print('Profile: {}'.format(profile))
             command_count += 1
 
             # get script name

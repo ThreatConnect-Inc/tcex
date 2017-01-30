@@ -711,8 +711,8 @@ class TcEx(object):
         Returns:
             (string): The truncated tag
         """
-        if tag is not None:
-            tag = unicode(tag, 'utf-8', error='ignore')
+        if tag is not None and not isinstance(tag, unicode):  # 2to3 converts unicode to str
+            tag = unicode(tag, 'utf-8', errors='ignore')   # 2to3 converts unicode to str
             if len(tag) > 35:
                 tag = tag[:35]
         return tag
@@ -727,8 +727,8 @@ class TcEx(object):
         Returns:
             (string): The urlencoded string
         """
-        if url is not None:
-            url = urllib.quote(unicode(url, 'utf-8', error='ignore'), safe='~')  # 2to3 converts unicode to str
+        if url is not None and not isinstance(url, unicode):  # 2to3 converts unicode to str
+            url = urllib.quote(unicode(url, 'utf-8', errors='ignore'), safe='~')  # 2to3 converts unicode to str
         return url
 
     # @staticmethod

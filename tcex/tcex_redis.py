@@ -21,4 +21,4 @@ class TcExRedis(object):
 
     def read(self, key):
         """Read data from Redis for the provided key"""
-        return self._r.hget(self._hash, key)
+        return unicode(self._r.hget(self._hash, key), 'utf-8')  # 2to3 converts unicode to str

@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.2
+-----
++ Update for string, unicode, bytes issue between Python 2/3
+
 0.2.1
 -----
 + Update of :py:mod:`~tcex.tcex_local` module for Python 2/3 support.
