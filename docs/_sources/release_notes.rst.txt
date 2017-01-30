@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.3
+-----
++ Added :py:meth:`~tcex.tcex.TcEx.to_string` method to replace old ``uni()`` method (handle Python 2/3 encoding for apps).
+
 0.2.2
 -----
 + Update for string, unicode, bytes issue between Python 2/3

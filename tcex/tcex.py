@@ -731,6 +731,22 @@ class TcEx(object):
             url = urllib.quote(unicode(url, 'utf-8', errors='ignore'), safe='~')  # 2to3 converts unicode to str
         return url
 
+    @staticmethod
+    def to_string(data, errors='strict'):
+        """Decode value using correct Python 2/3 method
+
+        Args:
+            data (any): Data to ve validated and re-encoded
+            errors (string): What method to use when dealing with errors.
+
+        Returns:
+            (string): Return decoded data
+
+        """
+        if data is not None and not isinstance(data, unicode):  # 2to3 converts unicode to str
+            data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
+        return data
+
     # @staticmethod
     # def uni(data):
     #     """Re-encode poorly encoded unicode data
