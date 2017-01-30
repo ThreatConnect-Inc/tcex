@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.4
+-----
++ Handle None type returned by Redis module.
+
 0.2.3
 -----
 + Added :py:meth:`~tcex.tcex.TcEx.to_string` method to replace old ``uni()`` method (handle Python 2/3 encoding for apps).
