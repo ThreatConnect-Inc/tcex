@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.9
+-----
++ Fixed issue with boolean parameters having an extra space at the end.
+
 0.2.8
 -----
 + Updated :py:meth:`~tcex.tcex_local.TcExLocal._parameters` method to build a list for subprocess.popen instead of a string.

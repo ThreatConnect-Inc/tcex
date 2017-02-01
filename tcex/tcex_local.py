@@ -56,7 +56,7 @@ class TcExLocal:
     def _load_config(self):
         """Load the configuration file."""
         if not os.path.isfile(self._args.config):
-            msg = 'Provided config file does not exist ({0}).'
+            msg = 'Provided config file does not exist ({}).'.format(self._args.config)
             msg.format(self._args.config)
             self._exit(msg, 1)
 
@@ -76,7 +76,7 @@ class TcExLocal:
         for config_key, config_val in args.items():
             if isinstance(config_val, bool):
                 if config_val:
-                    parameters.append('--{} '.format(config_key))
+                    parameters.append('--{}'.format(config_key))
             elif isinstance(config_val, list):
                 for val in config_val:
                     parameters.append('--{}'.format(config_key))
@@ -213,8 +213,8 @@ class TcExLocal:
 
             if not sp.get('quiet') and not self._args.quiet:
                 print(self.to_string(out, 'ignore'))
-                if len(err) != 0:
-                    print('Error: {}'.format(err))
+            if len(err) != 0:
+                print('Error: {}'.format(err))
             if p.returncode != 0:
                 status_code = p.returncode
                 break
