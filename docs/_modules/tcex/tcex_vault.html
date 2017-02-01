@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis &mdash; TcEx 0.2.7 documentation</title>
+  <title>tcex.tcex_vault &mdash; TcEx 0.2.7 documentation</title>
   
 
   
@@ -133,7 +133,7 @@
       
           <li><a href="../index.html">Module code</a> &raquo;</li>
       
-    <li>tcex.tcex_redis</li>
+    <li>tcex.tcex_vault</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -145,34 +145,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for tcex.tcex_redis</h1><div class="highlight"><pre>
+  <h1>Source code for tcex.tcex_vault</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">redis</span>
-
+<span class="kn">import</span> <span class="nn">hvac</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="TcExRedis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis">[docs]</a><span class="k">class</span> <span class="nc">TcExRedis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExVault"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault">[docs]</a><span class="k">class</span> <span class="nc">TcExVault</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">rhash</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="n">rhash</span>
-        <span class="c1"># self._r = redis.StrictRedis(host=host, port=port, db=0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;VAULT_TOKEN&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8200&#39;</span>
 
-<div class="viewcode-block" id="TcExRedis.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">hvac</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="n">cert</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TcExRedis.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read data from Redis for the provided key&quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>  <span class="c1"># 2to3 converts unicode to str</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># 2to3 converts unicode to str</span>
-        <span class="k">return</span> <span class="n">data</span></div></div>
+<div class="viewcode-block" id="TcExVault.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">lease</span><span class="o">=</span><span class="s1">&#39;1h&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create key/value pair in Vault&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">lease</span><span class="o">=</span><span class="n">lease</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExVault.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read data from Vault for the provided key&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExVault.delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete data from Valut for the provided key&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

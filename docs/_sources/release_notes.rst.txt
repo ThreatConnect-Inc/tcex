@@ -6,6 +6,12 @@ Release Notes
 0.2.x
 =====
 
+0.2.7
+-----
++ Remove hiredis as a dependency.
++ Added hvac as a dependency for vault credential storage.
++ Fix to Args wrapper for Windows (' to ").
+
 0.2.6
 -----
 + Added sleep option for test profiles that take time to complete.

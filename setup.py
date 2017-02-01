@@ -14,7 +14,8 @@ setup(
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
     install_requires=[
-        'hiredis==0.2.0',
+        # 'hiredis==0.2.0',
+        'hvac==0.2.17',
         'inflect==0.2.5',
         'jsonschema==2.5.1',
         'python-dateutil==2.6.0',

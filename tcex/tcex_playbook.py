@@ -202,7 +202,9 @@ class TcExPlaybook(object):
         """
         key = key.strip()
         self._tcex.log.debug('read variable {}'.format(key))
-        if re.match(self._var_parse, key):
+        if key is None:
+            data = None
+        elif re.match(self._var_parse, key):
             parsed_key = self.parse_variable(key)
             variable_type = parsed_key['type']
             if variable_type in self._read_data_type:

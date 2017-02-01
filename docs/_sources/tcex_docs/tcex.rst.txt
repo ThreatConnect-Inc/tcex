@@ -16,6 +16,7 @@ Submodules
    tcex.tcex_redis
    tcex.tcex_request
    tcex.tcex_resources
+   tcex.tcex_vault
 
 Module contents
 ---------------

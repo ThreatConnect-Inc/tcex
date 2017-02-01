@@ -14,6 +14,7 @@ import zipfile
 from setuptools.command import easy_install
 
 """ third-party """
+from .tcex_vault import TcExVault
 try:
     from jsonschema import SchemaError, ValidationError, validate
 except ImportError as e:
@@ -36,6 +37,7 @@ class TcExLocal:
         """
         # init inflect engine
         self.inflect = inflect.engine()
+        self._vault = TcExVault()
 
         # Required Argument
         # self._parsed = False  # only parse once from user
@@ -82,10 +84,16 @@ class TcExLocal:
                 msg.format(config_val)
                 self._exit(msg, 1)
             else:
+                # read value from environment variable
                 env_var = re.compile(r'^\$env\.(.*)$')
+                vault_var = re.compile(r'^\$vault\.(.*)$')
                 if env_var.match(str(config_val)):
                     env_key = env_var.match(str(config_val)).groups()[0]
                     config_val = os.environ.get(env_key, config_val)
+                elif vault_var.match(str(config_val)):
+                    vault_key = vault_var.match(str(config_val)).groups()[0]
+                    config_val = self._vault.read(vault_key).get('data', {}).get('value')
+
                 parameters += '--{0} {1} '.format(config_key, self._wrap(str(config_val)))
 
         return parameters
@@ -152,9 +160,6 @@ class TcExLocal:
         # load tc config
         self._load_config()
 
-        # get global sleep
-        sleep = self._config.get('sleep', 5)
-
         # TODO: Output profile name
         selected_profiles = []
         for config in self._config.get('profiles'):
@@ -185,6 +190,7 @@ class TcExLocal:
             print('Executing: {}'.format(command))
 
             # add a delay between profiles
+            sleep = self._config.get('sleep', 5)
             sleep = sp.get('sleep', sleep)
             time.sleep(sleep)
             print('Sleep: {} seconds'.format(sleep))

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex &mdash; TcEx 0.2.7 documentation</title>
+  <title>tcex.tcex_vault module &mdash; TcEx 0.2.7 documentation</title>
   
 
   
@@ -130,7 +130,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>tcex</li>
+    <li>tcex.tcex_vault module</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -142,30 +142,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tcex">
-<h1>tcex<a class="headerlink" href="#tcex" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tcex.html">tcex package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.argparser.html">tcex.argparser module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <div class="section" id="module-tcex.tcex_vault">
+<span id="tcex-tcex-vault-module"></span><h1>tcex.tcex_vault module<a class="headerlink" href="#module-tcex.tcex_vault" title="Permalink to this headline">¶</a></h1>
+<p>standard</p>
+<dl class="class">
+<dt id="tcex.tcex_vault.TcExVault">
+<em class="property">class </em><code class="descclassname">tcex.tcex_vault.</code><code class="descname">TcExVault</code><span class="sig-paren">(</span><em>url=None</em>, <em>token=None</em>, <em>cert=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="tcex.tcex_vault.TcExVault.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>lease='1h'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create key/value pair in Vault</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_vault.TcExVault.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete data from Valut for the provided key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_vault.TcExVault.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_vault.html#TcExVault.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_vault.TcExVault.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from Vault for the provided key</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

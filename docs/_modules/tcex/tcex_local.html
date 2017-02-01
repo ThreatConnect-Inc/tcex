@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local &mdash; TcEx 0.2.6 documentation</title>
+  <title>tcex.tcex_local &mdash; TcEx 0.2.7 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.6 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.7 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.6
+                0.2.7
               </div>
             
           
@@ -162,6 +162,7 @@
 <span class="kn">from</span> <span class="nn">setuptools.command</span> <span class="k">import</span> <span class="n">easy_install</span>
 
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.tcex_vault</span> <span class="k">import</span> <span class="n">TcExVault</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">SchemaError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">validate</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -184,6 +185,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># init inflect engine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vault</span> <span class="o">=</span> <span class="n">TcExVault</span><span class="p">()</span>
 
         <span class="c1"># Required Argument</span>
         <span class="c1"># self._parsed = False  # only parse once from user</span>
@@ -230,10 +232,16 @@
                 <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_val</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># read value from environment variable</span>
                 <span class="n">env_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^\$env\.(.*)$&#39;</span><span class="p">)</span>
+                <span class="n">vault_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^\$vault\.(.*)$&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">env_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)):</span>
                     <span class="n">env_key</span> <span class="o">=</span> <span class="n">env_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">config_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_key</span><span class="p">,</span> <span class="n">config_val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">vault_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)):</span>
+                    <span class="n">vault_key</span> <span class="o">=</span> <span class="n">vault_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">config_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vault</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vault_key</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
                 <span class="n">parameters</span> <span class="o">+=</span> <span class="s1">&#39;--</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">parameters</span></div>
@@ -300,9 +308,6 @@
         <span class="c1"># load tc config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">()</span>
 
-        <span class="c1"># get global sleep</span>
-        <span class="n">sleep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-
         <span class="c1"># TODO: Output profile name</span>
         <span class="n">selected_profiles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">):</span>
@@ -333,6 +338,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executing: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
 
             <span class="c1"># add a delay between profiles</span>
+            <span class="n">sleep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
             <span class="n">sleep</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="n">sleep</span><span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sleep: </span><span class="si">{}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sleep</span><span class="p">))</span>
@@ -565,7 +571,7 @@
 <span class="sd">            (string): String containing parameters wrapped in double quotes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">r&#39;[!\-\s\$]{1,}&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 </pre></div>
 
@@ -599,7 +605,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.6',
+            VERSION:'0.2.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
