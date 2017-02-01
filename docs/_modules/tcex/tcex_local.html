@@ -185,7 +185,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># init inflect engine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vault</span> <span class="o">=</span> <span class="n">TcExVault</span><span class="p">()</span>
 
         <span class="c1"># Required Argument</span>
         <span class="c1"># self._parsed = False  # only parse once from user</span>
@@ -198,6 +197,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_required_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+
+        <span class="c1"># Get instance of vault (after args are passed)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vault</span> <span class="o">=</span> <span class="n">TcExVault</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vault_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">vault_token</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcExLocal._load_config"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal._load_config">[docs]</a>    <span class="k">def</span> <span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the configuration file.&quot;&quot;&quot;</span>
@@ -275,6 +277,10 @@
             <span class="s1">&#39;--profile&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The profile to be executed&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Suppress output&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--vault_token&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Vault token&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--vault_url&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;http://localhost:8200&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Vault URL&#39;</span><span class="p">)</span>
 
         <span class="c1"># validate args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>

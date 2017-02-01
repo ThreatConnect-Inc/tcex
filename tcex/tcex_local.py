@@ -37,7 +37,6 @@ class TcExLocal:
         """
         # init inflect engine
         self.inflect = inflect.engine()
-        self._vault = TcExVault()
 
         # Required Argument
         # self._parsed = False  # only parse once from user
@@ -50,6 +49,9 @@ class TcExLocal:
 
         self._required_arguments()
         self._args, self._extra_args = self._parser.parse_known_args()
+
+        # Get instance of vault (after args are passed)
+        self._vault = TcExVault(self.args.vault_url, self.args.vault_token)
 
     def _load_config(self):
         """Load the configuration file."""
@@ -127,6 +129,10 @@ class TcExLocal:
             '--profile', default='default', help='The profile to be executed')
         self._parser.add_argument(
             '--quiet', action='store_true', help='Suppress output')
+        self._parser.add_argument(
+            '--vault_token', default=None, help='Vault token')
+        self._parser.add_argument(
+            '--vault_url', default='http://localhost:8200', help='Vault URL')
 
         # validate args
         self._parser.add_argument(
