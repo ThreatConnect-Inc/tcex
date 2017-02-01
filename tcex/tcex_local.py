@@ -417,5 +417,5 @@ class TcExLocal:
             (string): String containing parameters wrapped in double quotes
         """
         if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
-            data = '\'{}\''.format(data)
+            data = '"{}"'.format(data)
         return data
