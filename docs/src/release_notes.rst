@@ -6,10 +6,16 @@ Release Notes
 0.2.x
 =====
 
+0.2.8
+-----
++ Updated to :py:meth:`~tcex.tcex_local._parameters` to build a list for subprocess.popen instead of a string.
++ Updated install.json schema to support **note** field.
+
 0.2.7
 -----
 + Remove hiredis as a dependency.
 + Added hvac as a dependency for vault credential storage.
++ Added ability to use Vault as a credential store for local testing.
 + Fix to Args wrapper for Windows (' to ").
 
 0.2.6

@@ -16,6 +16,9 @@
     "listDelimiter": {
       "type": "string"
     },
+    "note": {
+      "type": "string"
+    },
     "params": {
       "items": {
         "additionalProperties": false,
@@ -40,6 +43,9 @@
             "type": "string"
           },
           "name": {
+            "type": "string"
+          },
+          "note": {
             "type": "string"
           },
           "playbookDataType": {

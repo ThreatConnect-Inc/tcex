@@ -70,31 +70,34 @@ class TcExLocal:
         Returns:
             (str): A string containing all parameter to pass to script
         """
-        parameters = ' '
+        parameters = []
         for config_key, config_val in args.items():
             if isinstance(config_val, bool):
                 if config_val:
-                    parameters += '--{0} '.format(config_key)
+                    parameters.append('--{} '.format(config_key))
             elif isinstance(config_val, list):
                 for val in config_val:
-                    parameters += '--{0} {1} '.format(
-                        config_key, self._wrap(val))
+                    parameters.append('--{}'.format(config_key))
+                    parameters.append('{}'.format(val))
             elif isinstance(config_val, dict):
                 msg = 'Error: Dictionary types are not currently supported for field {}'
                 msg.format(config_val)
                 self._exit(msg, 1)
             else:
-                # read value from environment variable
                 env_var = re.compile(r'^\$env\.(.*)$')
                 vault_var = re.compile(r'^\$vault\.(.*)$')
+
                 if env_var.match(str(config_val)):
+                    # read value from environment variable
                     env_key = env_var.match(str(config_val)).groups()[0]
                     config_val = os.environ.get(env_key, config_val)
                 elif vault_var.match(str(config_val)):
+                    # read value from vault
                     vault_key = vault_var.match(str(config_val)).groups()[0]
                     config_val = self._vault.read(vault_key).get('data', {}).get('value')
 
-                parameters += '--{0} {1} '.format(config_key, self._wrap(str(config_val)))
+                parameters.append('--{}'.format(config_key))
+                parameters.append('{}'.format(config_val))
 
         return parameters
 
@@ -183,10 +186,12 @@ class TcExLocal:
             if script is None:
                 self._exit('No script provided', 1)
 
-            command = '{0} . {1} {2}'.format(
+            command = [
                 self._args.python,
-                script.replace('.py', ''),  # TODO: replace with regex to end of line
-                self._parameters(sp.get('args')))
+                '.',
+                script.replace('.py', ''),
+            ]
+            command += self._parameters(sp.get('args'))
             print('Executing: {}'.format(command))
 
             # add a delay between profiles
@@ -196,7 +201,7 @@ class TcExLocal:
             print('Sleep: {} seconds'.format(sleep))
 
             p = subprocess.Popen(
-                command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
             print('Exit Code: {}'.format(p.returncode))
 
@@ -415,13 +420,13 @@ class TcExLocal:
         except ValidationError as e:
             print('{} is invalid "{}"'.format(install_json, e))
 
-    @staticmethod
-    def _wrap(data):
-        """Wrap any parameters that contain spaces
-
-        Returns:
-            (string): String containing parameters wrapped in double quotes
-        """
-        if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
-            data = '"{}"'.format(data)
-        return data
+    # @staticmethod
+    # def _wrap(data):
+    #     """Wrap any parameters that contain spaces
+#
+    #     Returns:
+    #         (string): String containing parameters wrapped in double quotes
+    #     """
+    #     if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
+    #         data = '"{}"'.format(data)
+    #     return data
