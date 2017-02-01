@@ -8,7 +8,7 @@ Release Notes
 
 0.2.8
 -----
-+ Updated to :py:meth:`~tcex.tcex_local._parameters` to build a list for subprocess.popen instead of a string.
++ Updated :py:meth:`~tcex.tcex_local.TcExLocal._parameters` method to build a list for subprocess.popen instead of a string.
 + Updated install.json schema to support **note** field.
 
 0.2.7
