@@ -27,6 +27,7 @@ class TcExRequest(object):
         self._payload = {}
         self._proxies = {}
         self._url = None
+        self._files = None
         self.user_agent = 'ThreatConnect'
 
         # request properties
@@ -200,9 +201,19 @@ class TcExRequest(object):
     @verify_ssl.setter
     def verify_ssl(self, data):
         """The SSL validation setting for this request."""
-        if isinstance(data, bool):
+        if isinstance(data, dict):
             self._verify_ssl = data
 
+    @property
+    def files(self):
+        """Files setting for this request"""
+        return self._files
+    
+    @files.setter
+    def files(self, data):
+        """Files setting for this request"""
+        if isinstnace(data, bool):
+            self._files = data
     #
     # Send
     #
@@ -224,7 +235,7 @@ class TcExRequest(object):
         #
 
         api_request = Request(
-            method=self._http_method, url=self._url, data=self._body, params=self._payload)
+            method=self._http_method, url=self._url, data=self._body, params=self._payload, files=self._files)
 
         request_prepped = api_request.prepare()
 
