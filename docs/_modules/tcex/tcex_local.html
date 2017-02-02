@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local &mdash; TcEx 0.2.9 documentation</title>
+  <title>tcex.tcex_local &mdash; TcEx 0.2.10 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.9 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.10 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.9
+                0.2.10
               </div>
             
           
@@ -221,19 +221,25 @@
 <span class="sd">            (str): A string containing all parameter to pass to script</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">parameters_masked</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">config_key</span><span class="p">,</span> <span class="n">config_val</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">config_val</span><span class="p">:</span>
                     <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
+                    <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="c1"># TODO: support env vars and vault in list w/masked vaules</span>
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">config_val</span><span class="p">:</span>
                     <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
+                    <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
                     <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                    <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Error: Dictionary types are not currently supported for field </span><span class="si">{}</span><span class="s1">&#39;</span>
                 <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_val</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="n">env_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^\$env\.(.*)$&#39;</span><span class="p">)</span>
                 <span class="n">vault_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^\$vault\.(.*)$&#39;</span><span class="p">)</span>
 
@@ -243,13 +249,23 @@
                     <span class="n">config_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_key</span><span class="p">,</span> <span class="n">config_val</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">vault_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)):</span>
                     <span class="c1"># read value from vault</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="n">vault_key</span> <span class="o">=</span> <span class="n">vault_var</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">config_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vault</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vault_key</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
                 <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
+                <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_key</span><span class="p">))</span>
                 <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
+                    <span class="n">config_val</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">))</span>
+                    <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">parameters_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_val</span><span class="p">)))</span>
 
-        <span class="k">return</span> <span class="n">parameters</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;masked&#39;</span><span class="p">:</span> <span class="n">parameters_masked</span><span class="p">,</span>
+            <span class="s1">&#39;unmasked&#39;</span><span class="p">:</span> <span class="n">parameters</span>
+        <span class="p">}</span></div>
 
 <div class="viewcode-block" id="TcExLocal._required_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_local.html#tcex.tcex_local.TcExLocal._required_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_required_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Required arguments for this class to function&quot;&quot;&quot;</span>
@@ -345,8 +361,10 @@
                 <span class="s1">&#39;.&#39;</span><span class="p">,</span>
                 <span class="n">script</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
             <span class="p">]</span>
-            <span class="n">command</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executing: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">))</span>
+            <span class="n">exe_command</span> <span class="o">=</span> <span class="n">command</span> <span class="o">+</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unmasked&#39;</span><span class="p">)</span>
+            <span class="n">print_command</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command</span> <span class="o">+</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;masked&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executing: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">print_command</span><span class="p">))</span>
 
             <span class="c1"># add a delay between profiles</span>
             <span class="n">sleep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sleep&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
@@ -355,7 +373,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sleep: </span><span class="si">{}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sleep</span><span class="p">))</span>
 
             <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
-                <span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                <span class="n">exe_command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
             <span class="n">out</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Exit Code: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">))</span>
 
@@ -616,7 +634,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.9',
+            VERSION:'0.2.10',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

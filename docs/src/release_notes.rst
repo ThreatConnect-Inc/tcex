@@ -6,6 +6,10 @@ Release Notes
 0.2.x
 =====
 
+0.2.10
+------
++ Added file property to :py:mod:`~tcex.tcex_request` module.
+
 0.2.9
 -----
 + Fixed issue with boolean parameters having an extra space at the end.

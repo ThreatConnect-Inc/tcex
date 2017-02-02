@@ -73,19 +73,25 @@ class TcExLocal:
             (str): A string containing all parameter to pass to script
         """
         parameters = []
+        parameters_masked = []
         for config_key, config_val in args.items():
             if isinstance(config_val, bool):
                 if config_val:
                     parameters.append('--{}'.format(config_key))
+                    parameters_masked.append('--{}'.format(config_key))
             elif isinstance(config_val, list):
+                # TODO: support env vars and vault in list w/masked vaules
                 for val in config_val:
                     parameters.append('--{}'.format(config_key))
+                    parameters_masked.append('--{}'.format(config_key))
                     parameters.append('{}'.format(val))
+                    parameters_masked.append('{}'.format(val))
             elif isinstance(config_val, dict):
                 msg = 'Error: Dictionary types are not currently supported for field {}'
                 msg.format(config_val)
                 self._exit(msg, 1)
             else:
+                mask = False
                 env_var = re.compile(r'^\$env\.(.*)$')
                 vault_var = re.compile(r'^\$vault\.(.*)$')
 
@@ -95,13 +101,23 @@ class TcExLocal:
                     config_val = os.environ.get(env_key, config_val)
                 elif vault_var.match(str(config_val)):
                     # read value from vault
+                    mask = True
                     vault_key = vault_var.match(str(config_val)).groups()[0]
                     config_val = self._vault.read(vault_key).get('data', {}).get('value')
 
                 parameters.append('--{}'.format(config_key))
+                parameters_masked.append('--{}'.format(config_key))
                 parameters.append('{}'.format(config_val))
+                if mask:
+                    config_val = 'x' * len(str(config_val))
+                    parameters_masked.append('{}'.format(str(config_val)))
+                else:
+                    parameters_masked.append('{}'.format(str(config_val)))
 
-        return parameters
+        return {
+            'masked': parameters_masked,
+            'unmasked': parameters
+        }
 
     def _required_arguments(self):
         """Required arguments for this class to function"""
@@ -197,8 +213,10 @@ class TcExLocal:
                 '.',
                 script.replace('.py', ''),
             ]
-            command += self._parameters(sp.get('args'))
-            print('Executing: {}'.format(command))
+            parameters = self._parameters(sp.get('args'))
+            exe_command = command + parameters.get('unmasked')
+            print_command = ' '.join(command + parameters.get('masked'))
+            print('Executing: {}'.format(print_command))
 
             # add a delay between profiles
             sleep = self._config.get('sleep', 5)
@@ -207,7 +225,7 @@ class TcExLocal:
             print('Sleep: {} seconds'.format(sleep))
 
             p = subprocess.Popen(
-                command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
             print('Exit Code: {}'.format(p.returncode))
 
