@@ -6,9 +6,15 @@ Release Notes
 0.2.x
 =====
 
+0.2.11
+------
++ Updated :py:meth:`~tcex.tcex_request.TcExRequest.add_payload` method to not force the value to string.
++ Updated :py:meth:`~tcex.tcex_request.TcExRequest.files` method.
++ Updated :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` method for instance where normal method does not work.
+
 0.2.10
 ------
-+ Added file property to :py:mod:`~tcex.tcex_request` module.
++ Added :py:meth:`~tcex.tcex_request.TcExRequest.files` property to :py:mod:`~tcex.tcex_request` module.
 
 0.2.9
 -----

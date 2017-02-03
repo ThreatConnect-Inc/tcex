@@ -1,6 +1,7 @@
 """ standard """
 import socket
 import time
+from base64 import b64encode
 
 """ third-party """
 from requests import (exceptions, packages, Request, Session)
@@ -114,6 +115,11 @@ class TcExRequest(object):
         self._content_type = str(data)
         self.add_header('Content-Type', str(data))
 
+    def set_basic_auth(self, username, password):
+        """Manually set basic auth in the header when normal method does not work."""
+        credentials = b64encode(b'{}:{}'.format(username, password)).decode('ascii')
+        self.authorization = 'Basic {}'.format(credentials)
+
     @property
     def user_agent(self):
         """The the User-Agent header value for this request."""
@@ -144,7 +150,7 @@ class TcExRequest(object):
             key (string): The payload key
             val (string): The payload value
         """
-        self._payload[key] = str(val)
+        self._payload[key] = val
 
     #
     # HTTP Method
@@ -208,7 +214,7 @@ class TcExRequest(object):
     def files(self):
         """Files setting for this request"""
         return self._files
-    
+
     @files.setter
     def files(self, data):
         """Files setting for this request"""

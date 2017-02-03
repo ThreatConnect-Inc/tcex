@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_request &mdash; TcEx 0.2.10 documentation</title>
+  <title>tcex.tcex_request &mdash; TcEx 0.2.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.2.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.2.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
             
           
@@ -149,6 +149,7 @@
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">b64encode</span>
 
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="p">(</span><span class="n">exceptions</span><span class="p">,</span> <span class="n">packages</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Session</span><span class="p">)</span>
@@ -262,6 +263,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 
+<div class="viewcode-block" id="TcExRequest.set_basic_auth"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.set_basic_auth">[docs]</a>    <span class="k">def</span> <span class="nf">set_basic_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manually set basic auth in the header when normal method does not work.&quot;&quot;&quot;</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">b</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;Basic </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">user_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The the User-Agent header value for this request.&quot;&quot;&quot;</span>
@@ -292,7 +298,7 @@
 <span class="sd">            key (string): The payload key</span>
 <span class="sd">            val (string): The payload value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span></div>
 
     <span class="c1">#</span>
     <span class="c1"># HTTP Method</span>
@@ -356,11 +362,11 @@
     <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Files setting for this request&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span>
-    
+
     <span class="nd">@files</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Files setting for this request&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">isinstnace</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="n">data</span>
     <span class="c1">#</span>
     <span class="c1"># Send</span>
@@ -508,7 +514,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.2.10',
+            VERSION:'0.2.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
