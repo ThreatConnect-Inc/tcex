@@ -212,7 +212,7 @@ class TcExRequest(object):
     @files.setter
     def files(self, data):
         """Files setting for this request"""
-        if isinstnace(data, dict):
+        if isinstance(data, dict):
             self._files = data
     #
     # Send
