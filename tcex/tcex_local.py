@@ -219,7 +219,7 @@ class TcExLocal:
             print('Executing: {}'.format(print_command))
 
             # add a delay between profiles
-            sleep = self._config.get('sleep', 5)
+            sleep = self._config.get('sleep', 1)
             sleep = sp.get('sleep', sleep)
             time.sleep(sleep)
             print('Sleep: {} seconds'.format(sleep))

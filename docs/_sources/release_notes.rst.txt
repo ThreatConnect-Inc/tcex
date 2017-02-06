@@ -3,6 +3,15 @@
 Release Notes
 #############
 
+0.3.x
+=====
+
+0.3.0
+------
++ Added :py:meth:`~tcex.tcex_request.TcExRequest.json` method that accepts a dictionary and automatically sets content-type and body.
++ Updated :py:meth:`~tcex.tcex.TcEx.safeurl` and :py:meth:`~tcex.tcex.TcEx.safetag` to use :py:meth:`~tcex.tcex.TcEx.to_string`.
++ Update :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` for 2/3 compatibility.
+
 0.2.x
 =====
 

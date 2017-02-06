@@ -1,4 +1,5 @@
 """ standard """
+import json
 import socket
 import time
 from base64 import b64encode
@@ -25,6 +26,7 @@ class TcExRequest(object):
         self._content_type = None
         self._headers = {}
         self._http_method = 'GET'
+        self._json = None
         self._payload = {}
         self._proxies = {}
         self._url = None
@@ -53,6 +55,18 @@ class TcExRequest(object):
         if data is not None:
             self._body = data
             self.add_header('Content-Length', str(len(self._body)))
+
+    @property
+    def json(self):
+        """The POST/PUT body content in JSON format for this request."""
+        return self._body
+
+    @json.setter
+    def json(self, data):
+        """The POST/PUT body content in JSON format for this request."""
+        if data is not None:
+            self._body = json.dumps(data)
+            self.add_header('Content-Type', 'application/json')
 
     #
     # HTTP Headers
@@ -117,7 +131,7 @@ class TcExRequest(object):
 
     def set_basic_auth(self, username, password):
         """Manually set basic auth in the header when normal method does not work."""
-        credentials = b64encode(b'{}:{}'.format(username, password)).decode('ascii')
+        credentials = str(b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
         self.authorization = 'Basic {}'.format(credentials)
 
     @property
@@ -241,7 +255,8 @@ class TcExRequest(object):
         #
 
         api_request = Request(
-            method=self._http_method, url=self._url, data=self._body, params=self._payload, files=self._files)
+            method=self._http_method, url=self._url, data=self._body, files=self._files,
+            params=self._payload)
 
         request_prepped = api_request.prepare()
 

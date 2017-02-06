@@ -700,7 +700,7 @@ class TcEx(object):
         return str(resource_type)
 
     @staticmethod
-    def safetag(tag):
+    def safetag(tag, errors='strict'):
         """Truncate tag to match limit (35 characters) of ThreatConnect API.
 
         .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to new limit.
@@ -711,14 +711,14 @@ class TcEx(object):
         Returns:
             (string): The truncated tag
         """
-        if tag is not None and not isinstance(tag, unicode):  # 2to3 converts unicode to str
-            tag = unicode(tag, 'utf-8', errors='ignore')   # 2to3 converts unicode to str
-            if len(tag) > 35:
-                tag = tag[:35]
+        if tag is not None:
+            tag = TcEx.to_string(tag, errors=errors)
+            if len(tag) > 128:
+                tag = tag[:128]
         return tag
 
     @staticmethod
-    def safeurl(url):
+    def safeurl(url, errors='strict'):
         """URL encode value for safe HTTP request
 
         Args:
@@ -727,8 +727,8 @@ class TcEx(object):
         Returns:
             (string): The urlencoded string
         """
-        if url is not None and not isinstance(url, unicode):  # 2to3 converts unicode to str
-            url = urllib.quote(unicode(url, 'utf-8', errors='ignore'), safe='~')  # 2to3 converts unicode to str
+        if url is not None:
+            url = urllib.quote(TcEx.to_string(url, errors=errors), safe='~')
         return url
 
     @staticmethod
