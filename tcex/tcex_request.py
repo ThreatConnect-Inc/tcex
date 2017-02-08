@@ -131,7 +131,7 @@ class TcExRequest(object):
 
     def set_basic_auth(self, username, password):
         """Manually set basic auth in the header when normal method does not work."""
-        credentials = str(b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
+        credentials = unicode(b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
         self.authorization = 'Basic {}'.format(credentials)
 
     @property

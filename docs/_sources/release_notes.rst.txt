@@ -6,6 +6,11 @@ Release Notes
 0.3.x
 =====
 
+0.3.1
+------
++ Updated :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` method to use proper unicode method.
++ Updated :py:mod:`~tcex.tcex_playbook` create and read methods to warn when None vaule is passed.
+
 0.3.0
 ------
 + Added :py:meth:`~tcex.tcex_request.TcExRequest.json` method that accepts a dictionary and automatically sets content-type and body.
