@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.3.1 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.3.2 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.3.1 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.3.2 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -1131,6 +1131,50 @@ for this resource that are associated with the provided resource id
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.indicators">
+<code class="descname">indicators</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for indicator values.</p>
+<p>Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
+values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
+indicator values.</p>
+<p>Both the <strong>summary</strong> field and the individual indicator fields (e.g. <strong>md5</strong>, <strong>sha1</strong>,
+<strong>sha256</strong>) are supported.</p>
+<p>For indicators that have only one value such as <strong>ip</strong> or <strong>hostName</strong> the generator will
+only return the one result.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resource</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="p">):</span>  <span class="c1"># the individual indicator JSON from the API</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>  <span class="c1"># md5, sha1, sha256, etc</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span>  <span class="c1"># hash or custom indicator value</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method could break for custom indicators that have &#8221; : &#8221; in the value of
+the indicator while using the summary field.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For <code class="docutils literal"><span class="pre">/v2/indicators</span></code> and <code class="docutils literal"><span class="pre">/v2/indicators/bulk/json</span></code> API endpoints only one
+hash is returned for a file Indicator even if there are multiple in the platform.
+If all hashes are required the <code class="docutils literal"><span class="pre">/v2/indicators/files</span></code> or
+<code class="docutils literal"><span class="pre">/v2/indicators/files/&lt;hash&gt;</span></code> endpoints will provide all hashes.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict</em>) &#8211; The indicator dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dict containing the indicator type and value.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex_resources.Resource.name">
 <code class="descname">name</code><a class="headerlink" href="#tcex.tcex_resources.Resource.name" title="Permalink to this definition">¶</a></dt>
@@ -1776,7 +1820,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.3.1',
+            VERSION:'0.3.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

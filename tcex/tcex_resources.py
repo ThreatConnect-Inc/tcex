@@ -1,6 +1,7 @@
 """ standard """
 import json
 import os
+import re
 import uuid
 
 """ third party """
@@ -391,6 +392,88 @@ class Resource(object):
     def content_type(self, data):
         """The Content-Type header for this resource request."""
         self._r.content_type = data
+
+    def indicators(self, indicator_data):
+        """Generator for indicator values.
+
+        Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
+        values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
+        indicator values.
+
+        Both the **summary** field and the individual indicator fields (e.g. **md5**, **sha1**,
+        **sha256**) are supported.
+
+        For indicators that have only one value such as **ip** or **hostName** the generator will
+        only return the one result.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API
+                print(i.get('type'))  # md5, sha1, sha256, etc
+                print(i.get('value'))  # hash or custom indicator value
+
+        .. Warning:: This method could break for custom indicators that have " : " in the value of
+                     the indicator while using the summary field.
+
+        .. Note:: For ``/v2/indicators`` and ``/v2/indicators/bulk/json`` API endpoints only one
+                  hash is returned for a file Indicator even if there are multiple in the platform.
+                  If all hashes are required the ``/v2/indicators/files`` or 
+                  ``/v2/indicators/files/<hash>`` endpoints will provide all hashes.
+
+        Args:
+            indicator_data (dict): The indicator dictionary.
+
+        Returns:
+            (dictionary): A dict containing the indicator type and value.
+        """
+        indicator_list = []
+        for indicator_field in self.value_fields:
+            if indicator_field == 'summary':
+                if indicator_data.get('type') == 'File':
+                    hash_patterns = {
+                        'md5': re.compile(r'^([a-fA-F\d]{32})$'),
+                        'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
+                        'sha256': re.compile(r'^([a-fA-F\d]{64})$')
+                    }
+                    body = {}
+                    for i in indicator_data.get('summary').split(' : '):
+                        if hash_patterns['md5'].match(i):
+                            i_type = 'md5'
+                        elif hash_patterns['sha1'].match(i):
+                            i_type = 'sha1'
+                        elif hash_patterns['sha256'].match(i):
+                            i_type = 'sha256'
+
+                        data = {
+                            'type': i_type,
+                            'value': i
+                        }
+                        yield data
+                else:
+                    resource = getattr(
+                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(self._tcex)
+                    values = resource.value_fields
+
+                    index = 0
+                    for i in indicator_data.get('summary').split(' : '):
+                        # TODO: remove workaround for bug in indicatorTypes API endpoint
+                        if len(values) - 1 < index:
+                            break
+
+                        data = {
+                            'type': values[index],
+                            'value': i
+                        }
+                        index += 1
+                        yield data
+            else:
+                if indicator_data.get(indicator_field) is not None:
+                    yield {
+                        'type': indicator_field,
+                        'value': indicator_data.get(indicator_field)
+                    }
 
     def file_action(self, resource_id, action_name):
         """File action pivot for this resource.
@@ -929,8 +1012,7 @@ class Resource(object):
             self._paginate_count += len(results.get('data'))
 
             if self._paginate_count >= self._result_count:
-                self._paginate = True  # reset so object can be reused
-                raise StopIteration
+                self._paginate = False
         else:
             self._paginate = False
 

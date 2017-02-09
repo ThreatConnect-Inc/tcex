@@ -6,6 +6,10 @@ Release Notes
 0.3.x
 =====
 
+0.3.2
+------
++ Added :py:meth:`~tcex.tcex_resources.Resource.indicators` method to allow iteration over indicator values in Indicator response JSON.
+
 0.3.1
 ------
 + Updated :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` method to use proper unicode method.
@@ -101,7 +105,7 @@ Release Notes
 0.1.3
 -----
 + Updated :py:mod:`~tcex.tcex_job.TcExJob` module to use new pagination functionality in :py:mod:`~tcex.tcex_resources` module.
-+ Updated and labeled :py:mod:`~tcex.tcex_resources.Resource.paginate` method as deprecated.
++ Updated and labeled :py:meth:`~tcex.tcex_resources.Resource.paginate` method as deprecated.
 
 0.1.2
 -----

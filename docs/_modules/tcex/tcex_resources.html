@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.3.1 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.3.2 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.3.1 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.3.2 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -149,6 +149,7 @@
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
@@ -539,6 +540,88 @@
     <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The Content-Type header for this resource request.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="Resource.indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.indicators">[docs]</a>    <span class="k">def</span> <span class="nf">indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator for indicator values.</span>
+
+<span class="sd">        Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator</span>
+<span class="sd">        values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all</span>
+<span class="sd">        indicator values.</span>
+
+<span class="sd">        Both the **summary** field and the individual indicator fields (e.g. **md5**, **sha1**,</span>
+<span class="sd">        **sha256**) are supported.</span>
+
+<span class="sd">        For indicators that have only one value such as **ip** or **hostName** the generator will</span>
+<span class="sd">        only return the one result.</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+
+<span class="sd">            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API</span>
+<span class="sd">                print(i.get(&#39;type&#39;))  # md5, sha1, sha256, etc</span>
+<span class="sd">                print(i.get(&#39;value&#39;))  # hash or custom indicator value</span>
+
+<span class="sd">        .. Warning:: This method could break for custom indicators that have &quot; : &quot; in the value of</span>
+<span class="sd">                     the indicator while using the summary field.</span>
+
+<span class="sd">        .. Note:: For ``/v2/indicators`` and ``/v2/indicators/bulk/json`` API endpoints only one</span>
+<span class="sd">                  hash is returned for a file Indicator even if there are multiple in the platform.</span>
+<span class="sd">                  If all hashes are required the ``/v2/indicators/files`` or </span>
+<span class="sd">                  ``/v2/indicators/files/&lt;hash&gt;`` endpoints will provide all hashes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator_data (dict): The indicator dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): A dict containing the indicator type and value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">indicator_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indicator_field</span> <span class="o">==</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;File&#39;</span><span class="p">:</span>
+                    <span class="n">hash_patterns</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+                    <span class="p">}</span>
+                    <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                            <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;md5&#39;</span>
+                        <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                            <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;sha1&#39;</span>
+                        <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                            <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;sha256&#39;</span>
+
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">i_type</span><span class="p">,</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span>
+                        <span class="p">}</span>
+                        <span class="k">yield</span> <span class="n">data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)))(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">value_fields</span>
+
+                    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
+                        <span class="c1"># TODO: remove workaround for bug in indicatorTypes API endpoint</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
+                            <span class="k">break</span>
+
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">i</span>
+                        <span class="p">}</span>
+                        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">yield</span> <span class="n">data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">indicator_field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">{</span>
+                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">indicator_field</span><span class="p">,</span>
+                        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">indicator_field</span><span class="p">)</span>
+                    <span class="p">}</span></div>
 
 <div class="viewcode-block" id="Resource.file_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.file_action">[docs]</a>    <span class="k">def</span> <span class="nf">file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;File action pivot for this resource.</span>
@@ -1077,8 +1160,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_count</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># reset so object can be reused</span>
-                <span class="k">raise</span> <span class="ne">StopIteration</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -1885,7 +1967,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.1',
+            VERSION:'0.3.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
