@@ -248,18 +248,10 @@ class TcExPlaybook(object):
             variables = re.findall(self._vars_match, str(data))
 
             for var in variables:
-                val = self.read(var)
+                val = self.read_raw(var)
                 if val is None:
                     val = ''
-                elif isinstance(val, (dict, int, list)):
-                    val = json.dumps(val)
-                # val = ' '.join(val)
-                # elif isinstance(val, dict):
-                #     val = str(json.dumps(val))
-                # elif isinstance(val, int):
-                #     val = str(val)
-                # bcs - could just convert to string here?
-                data = re.sub(var, val, data)
+                data = data.replace(var, val)
 
         return data
 

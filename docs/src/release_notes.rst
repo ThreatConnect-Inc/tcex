@@ -6,6 +6,11 @@ Release Notes
 0.3.x
 =====
 
+0.3.3
+------
++ Added :py:meth:`~tcex.tcex.TcEx.s` method to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method (handle bad unicode in Python2 and still support Python3).
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better handle embedded Vars.
+
 0.3.2
 ------
 + Added :py:meth:`~tcex.tcex_resources.Resource.indicators` method to allow iteration over indicator values in Indicator response JSON.

@@ -747,22 +747,30 @@ class TcEx(object):
             data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
         return data
 
-    # @staticmethod
-    # def uni(data):
-    #     """Re-encode poorly encoded unicode data
-    #
-    #     Args:
-    #         data (any): Data to ve validated and re-encoded
-    #
-    #     Returns:
-    #         (any): Return validate or encoded data
-    #
-    #     """
-    #     if data is None or not isinstance(data, types.StringTypes):
-    #         pass
-    #     elif isinstance(data, unicode):
-    #         uni_data = unicode(data.encode('utf-8').strip(), errors='ignore')  # re-encode poorly encoded unicode
-    #     elif not isinstance(data, unicode):
-    #         uni_data = unicode(data, 'utf-8', errors='ignore')
-    #
-    #     return uni_data
+    def s(self, data, errors='strict'):
+        """Decode value using correct Python 2/3 method
+
+        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with
+        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.
+
+        Args:
+            data (any): Data to ve validated and (de)encoded
+            errors (string): What method to use when dealing with errors.
+
+        Returns:
+            (string): Return decoded data
+
+        """
+        if data is None or isinstance(data, (int, list, dict)):
+            pass  # do nothing with these types
+        elif isinstance(data, unicode):
+            try:
+                data.decode('utf-8')
+            except UnicodeEncodeError as e:  # 2to3 converts unicode to str
+                data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
+                self.log.warning('Encoding poorly encoded string ({})'.format(data))
+            except AttributeError:
+                pass  # Python 3 can't decode a str
+        else:
+            data = unicode(data, 'utf-8', errors=errors)
+        return data
