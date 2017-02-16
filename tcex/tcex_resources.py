@@ -419,7 +419,7 @@ class Resource(object):
 
         .. Note:: For ``/v2/indicators`` and ``/v2/indicators/bulk/json`` API endpoints only one
                   hash is returned for a file Indicator even if there are multiple in the platform.
-                  If all hashes are required the ``/v2/indicators/files`` or 
+                  If all hashes are required the ``/v2/indicators/files`` or
                   ``/v2/indicators/files/<hash>`` endpoints will provide all hashes.
 
         Args:
@@ -1009,10 +1009,9 @@ class Resource(object):
         # endpoints that support pagination will set self._result_count
         if self._result_count is not None:
             self._result_start += self._result_limit
-            self._paginate_count += len(results.get('data'))
-
             if self._paginate_count >= self._result_count:
                 self._paginate = False
+            self._paginate_count += len(results.get('data'))
         else:
             self._paginate = False
 
