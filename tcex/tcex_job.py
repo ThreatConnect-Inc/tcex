@@ -25,9 +25,11 @@ class TcExJob(object):
         # containers
         self._file_occurrences = []
         self._group_cache = {}
+        self._group_cache_id = {}
         self._group_associations = []
         self._groups = []
         self._indicators = []
+        self._indicators_results = []
 
         # batch "bad" errors
         self._batch_failures = [
@@ -83,7 +85,7 @@ class TcExJob(object):
             resource.url = self._tcex._args.tc_api_path
 
             # add attributes
-            for attribute in data.get('attributes', []):
+            for attribute in data.get('attribute', []):
                 self._tcex.log.debug('Adding attribute type ({})'.format(attribute['type']))
                 resource.resource_id(resource_id)
                 resource.attributes()
@@ -92,10 +94,10 @@ class TcExJob(object):
                 resource.request()
 
             # add tags
-            for tag in data.get('tags', []):
+            for tag in data.get('tag', []):
                 self._tcex.log.debug(u'Adding tag ({})'.format(tag))
                 resource.resource_id(resource_id)
-                resource.tags(tag)
+                resource.tags(tag.get('name'))
                 # results = resource.request()
                 resource.request()
         else:
@@ -140,7 +142,8 @@ class TcExJob(object):
             if group_id is None:
                 continue
 
-            resource = getattr(self._tcex.resources, ga['indicator_type'])(self._tcex)
+            resource = getattr(
+                self._tcex.resources, self._tcex.safe_rt(ga['indicator_type']))(self._tcex)
             resource.http_method = 'POST'
             resource.indicator(ga['indicator'])
             resource.owner = owner
@@ -172,14 +175,26 @@ class TcExJob(object):
             else:
                 self._tcex.log.debug(u'Existing Group ({})'.format(group.get('name')))
 
-    def _process_indicators(self, owner):
+    def _process_indicators(self, owner, batch):
+        """Process batch indicators and write to TC API
+
+        Args:
+            owner (string): The owner name for the indicator to be written
+            batch (boolean): Use the batch API to create indicators
+        """
+        self._tcex.log.info('Processing {} indicators'.format(len(self._indicators)))
+
+        if batch:
+            self._process_indicators_batch(owner)
+        else:
+            self._process_indicators_v2(owner)
+
+    def _process_indicators_batch(self, owner):
         """Process batch indicators and write to TC API
 
         Args:
             owner (string):  The owner name for the indicator to be written
         """
-        self._tcex.log.info('Processing {} indicators'.format(len(self._indicators)))
-
         resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
         resource.http_method = 'POST'
         resource.url = self._tcex._args.tc_api_path
@@ -225,6 +240,116 @@ class TcExJob(object):
                     time.sleep(self._tcex._args.batch_poll_interval)
 
                     poll_time += self._tcex._args.batch_poll_interval
+
+    def _process_indicators_v2(self, owner):
+        """Process batch indicators and write to TC API
+
+        Args:
+            owner (string):  The owner name for the indicator to be written
+        """
+        for i_data in self._indicators:
+            i_value = i_data.get('summary').split(' : ')[0]  # only need the first indicator value
+            resource = getattr(self._tcex.resources, 'Indicator')(self._tcex)
+
+            body = {}
+            for i_field in resource.indicators(i_data):
+                body[i_field.get('type')] = i_field.get('value')
+
+            if i_data.get('rating') is not None:
+                body['rating'] = i_data.get('rating')
+            if i_data.get('confidence') is not None:
+                body['confidence'] = i_data.get('confidence')
+            if i_data.get('size') is not None:
+                body['size'] = i_data.get('size')
+            if i_data.get('dns_active') is not None:
+                body['dns_active'] = i_data.get('dns_active')
+            if i_data.get('whois_active') is not None:
+                body['whois_active'] = i_data.get('whois_active')
+            if i_data.get('source') is not None:
+                body['source'] = i_data.get('source')
+
+            resource = getattr(
+                self._tcex.resources, self._tcex.safe_rt(i_data.get('type')))(self._tcex)
+            resource.body = json.dumps(body)
+            resource.http_method = 'POST'
+            resource.owner = owner
+            resource.url = self._tcex._args.tc_api_path
+
+            i_results = resource.request()
+
+            # PUT file indicator since API does not work consistenly for all indiator types
+            if i_data.get('type') == 'File' and i_results.get('response').status_code == 400:
+                resource.http_method = 'PUT'
+                resource.indicator(i_value)
+                i_results = resource.request()
+                resource.http_method = 'POST'
+
+            # Log error and continue
+            if i_results.get('status') != 'Success':
+                err = 'Failed adding indicator {} type {} ({}).'.format(
+                    i_data.get('summary'), i_data.get('type'), i_results.get('response').text)
+                self._tcex.log.error(err)
+                self._tcex.exit_code(3)
+                continue
+            results_data = i_results.get('data')
+
+            # Add attribute to Indicator
+            for attribute in i_data.get('attribute', []):
+                # process attributes
+                if resource.custom:
+                    resource.indicator(i_data.get('summary'))
+                else:
+                    resource.indicator(i_value)
+                resource.attributes()  # pivot to attribute
+                resource.body = json.dumps(attribute)
+                a_results = resource.request()
+                if a_results.get('status') != 'Success':
+                    err = 'Failed adding attribute type {} to indicator {}.'.format(
+                        attribute.get('type'), i_data.get('summary'))
+                    self._tcex.log.error(err)
+                    self._tcex.exit_code(3)
+                results_data.setdefault('attribute', []).append(a_results.get('data'))
+
+            for tag in i_data.get('tag', []):
+                # process attributes
+                if resource.custom:
+                    resource.indicator(i_data.get('summary'))
+                else:
+                    resource.indicator(i_value)
+                resource.tags(self._tcex.safetag(tag.get('name')))
+                t_results = resource.request()
+                if t_results.get('status') != 'Success':
+                    err = 'Failed adding tag {} to indicator {}.'.format(
+                        tag.get('name'), i_data.get('summary'))
+                    self._tcex.log.error(err)
+                    self._tcex.exit_code(3)
+                results_data.setdefault('tag', []).append(a_results.get('data'))
+
+            for group_id in i_data.get('associatedGroup', []):
+                group_type = self.group_cache_type(group_id, owner)
+                if group_type is None:
+                    err = 'Could not get Group Type for Group ID {} in Owner "{}"'.format(
+                        group_id, owner)
+                    self._tcex.log.error(err)
+                    self._tcex.exit_code(3)
+                    continue
+
+                if resource.custom:
+                    resource.indicator(i_data.get('summary'))
+                else:
+                    resource.indicator(i_value)
+                association_resource = getattr(self._tcex.resources, group_type)(self._tcex)
+                association_resource.resource_id(group_id)
+                resource.association_pivot(association_resource.request_uri)
+                a_results = resource.request()
+                if a_results.get('status') != 'Success':
+                    err = 'Failed association group id {} to indicator {}.'.format(
+                        group_id, i_data.get('summary'))
+                    self._tcex.log.error(err)
+                    self._tcex.exit_code(3)
+                results_data.setdefault('associatedGroup', []).append(group_id)
+
+            self._indicators_results.append(results_data)
 
     def batch_action(self, action):
         """Set the default batch action for argument parser.
@@ -438,10 +563,9 @@ class TcExJob(object):
               ],
               'eventDate': '2015-03-7T00:00:00Z'
               'name': 'adversary-001',
-              'tag': [
-                'APT',
-                'Crimeware'
-              ],
+              'tag': [{
+                'name': 'Pop Star'
+              }],
               'type': 'Adversary'
             }
 
@@ -497,6 +621,11 @@ class TcExJob(object):
 
         The method will cache ThreatConnect group data by owner and type.
 
+        **Cache Structure**
+        ::
+
+            Owner -> Group Type -> Group Name:Group Id
+
         Args:
             owner (string): The name of the ThreatConnect owner
             resource_type (string): The resource type name
@@ -528,6 +657,10 @@ class TcExJob(object):
 
         for group in data:
             self._tcex.log.debug('cache - group name: ({})'.format(group.get('name')))
+            if self._group_cache.get(owner, {}).get(resource_type, {}).get(group.get('name')) is not None:
+                warn = 'A duplicate Group name was found ({}). Duplicates are not supported in cache.'
+                warn = warn.format(group.get('name'))
+                self._tcex.log.warning(warn)
             self._group_cache[owner][resource_type][group['name']] = group['id']
 
         return self._group_cache[owner][resource_type]
@@ -554,6 +687,43 @@ class TcExJob(object):
             group_id = self._group_cache[owner][resource_type][name]
 
         return group_id
+
+    def group_cache_type(self, group_id, owner):
+        """Get the group type for the provided group id
+
+        **Cache Structure**
+        ::
+
+            Owner -> Group Id:Group Type
+
+
+        Args:
+            group_id (string): The group id to lookup
+            owner (string): The TC Owner where the resouce should be found
+            resource_type (string): The resource type name
+
+        Returns:
+            (integer): The ID for the provided group name and owner.
+        """
+        if self._group_cache_id.get(owner) is None:
+
+            self._tcex.log.info(u'Caching groups for owner {}'.format(owner))
+            self._group_cache_id.setdefault(owner, {})
+
+            resource = getattr(self._tcex.resources, 'Group')(self._tcex)
+            resource.owner = owner
+            resource.url = self._tcex._args.tc_api_path
+            data = []
+            for results in resource:
+                if results['status'] == 'Success':
+                    for group in results.get('data'):
+                        self._group_cache_id[owner][group.get('id')] = group['type']
+                else:
+                    err = 'Failed retrieving result during pagination.'
+                    self._tcex.log.error(err)
+                    raise RuntimeError(e)
+
+        return self._group_cache_id.get(owner, {}).get(group_id)
 
     @property
     def group_len(self):
@@ -618,7 +788,10 @@ class TcExJob(object):
         Returns:
             (list): The indicator list
         """
-        return self._indicators
+        data = self._indicators
+        if len(self._indicators_results) > 0:
+            data = self._indicators_results
+        return data
 
     @property
     def indicator_len(self):
@@ -629,7 +802,7 @@ class TcExJob(object):
         """
         return len(self._indicators)
 
-    def process(self, owner):
+    def process(self, owner, indicator_batch=True):
         """Process all association, group and indicator data.
 
         Process each of the supported data types for this job.
@@ -643,7 +816,7 @@ class TcExJob(object):
 
         if len(self._indicators) > 0:
             self._tcex.log.info('Processing Indicators')
-            self._process_indicators(owner)
+            self._process_indicators(owner, indicator_batch)
 
         if len(self._file_occurrences) > 0:
             self._tcex.log.info('Processing File Occurrences')

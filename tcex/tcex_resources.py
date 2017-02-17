@@ -1,7 +1,9 @@
 """ standard """
+import gzip
 import json
 import os
 import re
+import shutil
 import uuid
 
 """ third party """
@@ -26,10 +28,13 @@ class Resource(object):
         self._api_entity = None
         self._api_uri = None
         self._authorization_method = self._tcex.authorization
+        self._case_preference = 'sensitive'
+        self._custom = False
         self._http_method = 'GET'
         self._filters = []
         self._filter_or = False
         self._name = None
+        self._parsable = False
         self._pivot = False
         self._paginate = True
         self._paginate_count = 0
@@ -68,6 +73,16 @@ class Resource(object):
                     fh.write(block)
             with open(temp_file, 'r') as fh:
                 data = json.load(fh)
+
+            # remove temporary json file
+            if self._tcex._args.logging == 'debug':
+                try:
+                    with open(temp_file, 'rb') as f_in, gzip.open('{}.gz'.format(temp_file), 'wb') as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                except:
+                    self._tcex.log.warning('Could not compress temporary bulk JSON file.')
+            os.remove(temp_file)
+
         except IOError as e:
             err = 'Failed retrieving Bulk JSON ({}).'.format(e)
             self._tcex.log.error(err)
@@ -393,6 +408,24 @@ class Resource(object):
         """The Content-Type header for this resource request."""
         self._r.content_type = data
 
+    @property
+    def case_preference(self):
+        """String value for Custom Indicators case preference
+
+        Return:
+            (string): Either lower, upper or case sensitive.
+        """
+        return self._case_preference
+
+    @property
+    def custom(self):
+        """Boolean value for Custom Indicators
+
+        Return:
+            (boolean): True if the Indicator is a Custom Type.
+        """
+        return self._custom
+
     def indicators(self, indicator_data):
         """Generator for indicator values.
 
@@ -663,6 +696,15 @@ class Resource(object):
             self._tcex.log.debug('Resource Count: {}'.format(len(resources)))
 
         return resources
+
+    @property
+    def parsable(self):
+        """Boolean value for Custom Indicators parsable setting.
+
+        Return:
+            (boolean): True if the Custom Indicator is parsable.
+        """
+        return self._parsable
 
     def request(self):
         """Send the request to the API.

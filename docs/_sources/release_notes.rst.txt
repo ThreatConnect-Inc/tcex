@@ -6,6 +6,13 @@ Release Notes
 0.3.x
 =====
 
+0.3.5
+------
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module to allow indicators to be added via ``/v2/indicators/<type>``.
++ Updated structure for attributes/tags adds on groups to use singular version (attribute/tag) in Jobs modules to match format used for Indicators.
++ Added custom, case_preference and parsable properties to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added logic to cleanup temporary JSON bulk file. When logging is "debug" a compressed copy of the file will remain.
+
 0.3.4
 ------
 + Fixed issue in :py:mod:`~tcex.tcex_resources` module with pagination stopping before all results are retrieved.

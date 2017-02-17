@@ -290,12 +290,22 @@ class TcEx(object):
                     if entry.get('value3Label') is not None and entry.get('value3Label') != '':
                         value_fields.append(entry['value3Label'])
 
+                    # TODO: Add validate option when type is selectone??? Might be bets to let API handle validation.
+                    """
+                    value3Label
+                    value3Type - selectone
+                    value3Option - <semi-colon delimited list>
+                    """
+
                     i = self.resources.Indicator(self)
                     custom = {
                         '_api_branch': entry['apiBranch'],
                         '_api_entity': entry['apiEntity'],
                         '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_case_preference': entry['casePreference'],
+                        '_custom': entry['custom'],
                         '_name': name,
+                        '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
                         '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
                         '_status_codes': {

@@ -17,7 +17,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
 .. code-block:: javascript
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 8,13
+    :emphasize-lines: 8,16
 
     {
       'attribute': [
@@ -28,8 +28,11 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
       ],
       'name': 'Robin Sparkles',
       'tag': [
-        'APT',
-        'Crimeware'
+        {
+          'name': 'APT'
+        },{
+          'name': 'Crimeware'
+        }
       ],
       'type': 'Adversary'
     }
