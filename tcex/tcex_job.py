@@ -27,12 +27,26 @@ class TcExJob(object):
         self._group_cache = {}
         self._group_cache_id = {}
         self._group_associations = []
+        self._group_results = {
+            'failed': [],
+            'not_saved': [],
+            'saved': [],
+            'submitted': []
+        }
         self._groups = []
+        self._groups_response = []
+        self._indicator_results = {
+            'failed': [],
+            'not_saved': [],
+            'saved': [],
+            'submitted': []
+        }
         self._indicators = []
-        self._indicators_results = []
+        self._indicators_response = []
 
         # batch "bad" errors
         self._batch_failures = [
+            'Encountered an unexpected Exception while processing batch job',
             'would exceed the number of allowed indicators'
         ]
 
@@ -192,6 +206,8 @@ class TcExJob(object):
     def _process_indicators_batch(self, owner):
         """Process batch indicators and write to TC API
 
+        .. Note:: Failed attributes and/or tags will not cause a batch import to fail.
+
         Args:
             owner (string):  The owner name for the indicator to be written
         """
@@ -206,6 +222,7 @@ class TcExJob(object):
             'owner': owner
         }
 
+        halt = False
         for chunk in self._chunk_indicators():
             self._tcex.log.info('Batch Chunk Size: {}'.format(len(chunk)))
             resource.content_type = 'application/json'
@@ -234,12 +251,36 @@ class TcExJob(object):
                         self._tcex.message_tc(msg)
                         self._tcex.exit(1)
 
-                    if self.batch_status(batch_id):
-                        break
+                    status = self.batch_status(batch_id)
+                    if status.get('completed'):
+                        if status.get('errors'):
+                            if self._tcex.args.batch_halt_on_error:
+                                self._tcex.exit_code(1)
+                                halt = True
+                                # all indicator in chunk will be not_saved
+                                self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
+                                break
+                            else:
+                                # all indicators were saved minus failed; not_save == failed
+                                self._indicator_results['not_saved'] = self._indicator_results['failed']
+                                self._indicator_results['saved'].extend(
+                                    [i.get('summary') for i in chunk if i.get('summary') not in self._indicator_results['failed']])
+                                self._indicators_response.extend(
+                                    [i for i in chunk if i.get('summary') not in self._indicator_results['failed']])
+                        else:
+                            # all indicators were saved
+                            self._indicator_results['saved'].extend([i.get('summary') for i in chunk])
+                            self._indicators_response.extend(chunk)
+                        break  # no need to check status anymore
 
                     time.sleep(self._tcex._args.batch_poll_interval)
-
                     poll_time += self._tcex._args.batch_poll_interval
+            else:
+                halt = True
+
+            if halt:
+                self._tcex.log.info('Halting on error.')
+                break
 
     def _process_indicators_v2(self, owner):
         """Process batch indicators and write to TC API
@@ -247,6 +288,7 @@ class TcExJob(object):
         Args:
             owner (string):  The owner name for the indicator to be written
         """
+        self._indicator_results['not_saved'] = list(self._indicator_results['submitted'])
         for i_data in self._indicators:
             i_value = i_data.get('summary').split(' : ')[0]  # only need the first indicator value
             resource = getattr(self._tcex.resources, 'Indicator')(self._tcex)
@@ -286,12 +328,29 @@ class TcExJob(object):
 
             # Log error and continue
             if i_results.get('status') != 'Success':
+                self._indicator_results['failed'].append(i_data.get('summary'))
                 err = 'Failed adding indicator {} type {} ({}).'.format(
                     i_data.get('summary'), i_data.get('type'), i_results.get('response').text)
                 self._tcex.log.error(err)
-                self._tcex.exit_code(3)
-                continue
+
+                # halt on error check
+                if self._tcex.args.batch_halt_on_error:
+                    self._tcex.log.info('Halt on error is enabled.')
+                    self._tcex.exit_code(1)
+                    break
+                else:
+                    self._tcex.exit_code(3)
+                    continue
+
+            # update indicator result list
+            self._indicator_results['saved'].append(i_data.get('summary'))
+            self._indicator_results['not_saved'].remove(i_data.get('summary'))
+
+            # build indicator results output
             results_data = i_results.get('data')
+
+            # Boolen for halt on error
+            halt = False
 
             # Add attribute to Indicator
             for attribute in i_data.get('attribute', []):
@@ -303,12 +362,23 @@ class TcExJob(object):
                 resource.attributes()  # pivot to attribute
                 resource.body = json.dumps(attribute)
                 a_results = resource.request()
+
                 if a_results.get('status') != 'Success':
                     err = 'Failed adding attribute type {} to indicator {}.'.format(
                         attribute.get('type'), i_data.get('summary'))
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
+
+                    # halt on error check
+                    if self._tcex.args.batch_halt_on_error:
+                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.exit_code(1)
+                        halt = True
+                        break
+                    else:
+                        self._tcex.exit_code(3)
+                        continue
                 results_data.setdefault('attribute', []).append(a_results.get('data'))
+            if halt: break
 
             for tag in i_data.get('tag', []):
                 # process attributes
@@ -322,8 +392,18 @@ class TcExJob(object):
                     err = 'Failed adding tag {} to indicator {}.'.format(
                         tag.get('name'), i_data.get('summary'))
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
-                results_data.setdefault('tag', []).append(a_results.get('data'))
+
+                    # halt on error check
+                    if self._tcex.args.batch_halt_on_error:
+                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.exit_code(1)
+                        halt = True
+                        break
+                    else:
+                        self._tcex.exit_code(3)
+                        continue
+                results_data.setdefault('tag', []).append(tag)
+            if halt: break
 
             for group_id in i_data.get('associatedGroup', []):
                 group_type = self.group_cache_type(group_id, owner)
@@ -346,10 +426,20 @@ class TcExJob(object):
                     err = 'Failed association group id {} to indicator {}.'.format(
                         group_id, i_data.get('summary'))
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
-                results_data.setdefault('associatedGroup', []).append(group_id)
 
-            self._indicators_results.append(results_data)
+                    # halt on error check
+                    if self._tcex.args.batch_halt_on_error:
+                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.exit_code(1)
+                        halt = True
+                        break
+                    else:
+                        self._tcex.exit_code(3)
+                        continue
+                results_data.setdefault('associatedGroup', []).append(group_id)
+            if halt: break
+
+            self._indicators_response.append(results_data)
 
     def batch_action(self, action):
         """Set the default batch action for argument parser.
@@ -438,9 +528,12 @@ class TcExJob(object):
             batch_id (int): Id of the batch job
 
         Returns:
-            (boolean): Status of batch job.
+            (dict): A dictionary with status and error boolean.
         """
-        status = False
+        status = {
+            'completed': False,
+            'errors': False
+        }
 
         resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
         resource.url = self._tcex._args.tc_api_path
@@ -450,7 +543,7 @@ class TcExJob(object):
         self._tcex.log.info('batch id: {}'.format(batch_id))
         if results.get('status') == 'Success':
             if results['data']['status'] == 'Completed':
-                status = True
+                status['completed'] = True
 
                 status_msg = 'Batch Job completed, totals: '
                 status_msg += 'succeeded: {0}, '.format(results['data']['successCount'])
@@ -459,6 +552,7 @@ class TcExJob(object):
                 self._tcex.log.info(status_msg)
 
                 if results['data']['errorCount'] > 0:
+                    status['errors'] = True
                     self._tcex.exit_code(3)
 
                     resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
@@ -468,8 +562,9 @@ class TcExJob(object):
 
                     for error in json.loads(error_results['data']):
                         error_reason = error.get('errorReason')
+                        if error.get('errorSource') is not None:
+                            self._indicator_results['failed'].append(error.get('errorSource'))
                         for error_msg in self._batch_failures:
-
                             if re.findall(error_msg, error_reason):
                                 # Critical Error
                                 err = 'Batch Error: {0}'.format(error)
@@ -739,8 +834,8 @@ class TcExJob(object):
 
         This method will add indicator data to this TcEx job to be submitted via batch import.
 
-        .. Warning:: There is no validation of the data passed to this method. Duplicate prevention
-                     will only be handled when a dictionary is provided.
+        .. Warning:: There is no validation of the data passed to this method. Any duplicate
+                     indicator will be skipped.
 
         **Example Data** *(required fields are highlighted)*
 
@@ -774,12 +869,14 @@ class TcExJob(object):
             indicator (dict | list): Dictionary or List containing indicator
                 data
         """
-        if isinstance(indicator, list):
-            self._indicators.extend(indicator)
-        elif isinstance(indicator, dict):
+        if isinstance(indicator, dict):
+            indicator = [indicator]
+
+        for i in indicator:  # Not extending now since we need to build submitted list
             # verifiy indicator is not a duplicate before adding
-            if indicator['summary'] not in self._indicators:
-                self._indicators.append(indicator)
+            if i.get('summary') not in self._indicators:
+                self._indicator_results['submitted'].append(i.get('summary'))
+                self._indicators.append(i)
 
     @property
     def indicator_data(self):
@@ -788,10 +885,7 @@ class TcExJob(object):
         Returns:
             (list): The indicator list
         """
-        data = self._indicators
-        if len(self._indicators_results) > 0:
-            data = self._indicators_results
-        return data
+        return self._indicators_response
 
     @property
     def indicator_len(self):
@@ -801,6 +895,15 @@ class TcExJob(object):
             (integer): The length of the indicator list
         """
         return len(self._indicators)
+
+    @property
+    def indicator_results(self):
+        """The current length of the indicator list
+
+        Returns:
+            (integer): The length of the indicator list
+        """
+        return self._indicator_results
 
     def process(self, owner, indicator_batch=True):
         """Process all association, group and indicator data.

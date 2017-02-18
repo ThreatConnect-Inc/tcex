@@ -42,7 +42,7 @@ class TcExPlaybook(object):
         self._var_parse = re.compile(
             r"""^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$""")
         self._vars_match = re.compile(
-            r"""(#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))""")
+            r"""([\"]#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)[\"])""")
 
         # parse out variable
         self._parse_out_variable()
@@ -246,11 +246,10 @@ class TcExPlaybook(object):
         if data is not None:
             data = data.strip()
             variables = re.findall(self._vars_match, str(data))
-
             for var in variables:
-                val = self.read_raw(var)
+                val = self.read_raw(var.strip('"'))
                 if val is None:
-                    val = ''
+                    val = '""'
                 data = data.replace(var, val)
 
         return data
