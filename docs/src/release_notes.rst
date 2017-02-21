@@ -6,6 +6,14 @@ Release Notes
 0.3.x
 =====
 
+0.3.6
+------
++ Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` Module.
++ Added :py:meth:`~tcex.tcex.TcEx.request_external` and :py:meth:`~tcex.tcex.TcEx.request_tc` methods.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with a better regex for matching variables.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook` module with better error handling with JSON loads.
++ Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to sleep after subprocess executes the first time.
+
 0.3.5
 ------
 + Updated :py:mod:`~tcex.tcex_job.TcExJob` module to allow indicators to be added via ``/v2/indicators/<type>``.

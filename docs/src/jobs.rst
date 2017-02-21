@@ -20,24 +20,49 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
     :emphasize-lines: 8,16
 
     {
-      'attribute': [
+      "attribute": [
         {
-          'type': 'Description',
-          'value': 'Test Description'
+          "type": "Description",
+          "value": "Test Description"
         }
       ],
-      'name': 'Robin Sparkles',
-      'tag': [
+      "name": "Robin Sparkles",
+      "tag": [
         {
-          'name': 'APT'
+          "name": "APT"
         },{
-          'name': 'Crimeware'
+          "name": "Crimeware"
         }
       ],
-      'type': 'Adversary'
+      "type": "Adversary"
     }
 
 .. Note:: The Jobs module will make multiple API calls to push all this data to the ThreatConnect API.
+
+The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property to get the status of each Group submitted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-5,8
+
+    {
+        "cached": [],
+        "failed": [],
+        "not_saved": [],
+        "saved": [
+            "Robin Sparkles",
+        ],
+        "submitted": [
+            "Robin Sparkles",
+        ]
+    }
+
++ Cached - The Group already existed in ThreatConnect and was pulled from cache.
++ Failed - The Group add encountered an error when submitting to the API.
++ Not Saved - The Group was not saved either due to a failure or "Halt on Error" was selected and a previous Group failed.
++ Saved - The Group was saved to ThreatConnect via the API.
++ Submitted - The complete list of submitted Group Names.
 
 Group Associations
 ------------------
@@ -49,10 +74,10 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
     :emphasize-lines: 2-5
 
     {
-      'group_name': 'Robin Sparkles',
-      'group_type': 'Adversary',
-      'indicator': '1.1.1.1',
-      'indicator_type': 'Address'
+      "group_name": "Robin Sparkles",
+      "group_type": "Adversary",
+      "indicator": "1.1.1.1",
+      "indicator_type": "Address"
     }
 
 .. Warning:: If more than on Group exist with the same name the association created using
@@ -69,28 +94,63 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
     :emphasize-lines: 14,22
 
     {
-      'associatedGroup': [
-        '1',
-        '8'
+      "associatedGroup": [
+        "1",
+        "8"
       ],
-      'attribute': [
+      "attribute": [
         {
-          'type': 'Description',
-          'value': 'Test Description'
+          "type": "Description",
+          "value": "Test Description"
         }
       ],
-      'confidence': 5,
-      'rating': '3',
-      'summary': '1.1.1.1',
-      'tag': [
+      "confidence": 5,
+      "rating": "3",
+      "summary": "1.1.1.1",
+      "tag": [
         {
-          'name': 'APT'
+          "name": "APT"
         },{
-          'name': 'Crimeware'
+          "name": "Crimeware"
         }
       ],
-      'type': 'Address'
+      "type": "Address"
     }
+
+The module provides the :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` property to get the status of each Indicator submitted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2,5,8,14
+
+    {
+        "failed": [
+            "905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0"
+        ],
+        "not_saved": [
+            "905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0"
+        ],
+        "saved": [
+            "1.2.3.4",
+            "1.2.3.5",
+            "https://www.moonmoon.com/whotripme",
+            "HKEY_LOCAL_MACHINE : my-registry-key : REG_DWORD"
+        ],
+        "submitted": [
+            "1.2.3.4",
+            "1.2.3.5",
+            "https://www.moonmoon.com/whotripme",
+            "905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0",
+            "HKEY_LOCAL_MACHINE : my-registry-key : REG_DWORD"
+        ]
+    }
+
++ Failed - The Indicator add encountered an error when submitting to the API.
++ Not Saved - The Indicator was not saved either due to a failure or "Halt on Error" was selected and a previous Indicator failed.
++ Saved - The Indicator was saved to ThreatConnect via the API.
++ Submitted - The complete list of submitted Indicator Names.
+
 
 File Occurrence
 ---------------
@@ -99,7 +159,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the followi
 .. code-block:: javascript
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 3
+    :emphasize-lines: 4
 
     {
         "date" : "2014-11-03T00:00:00-05:00",
@@ -107,6 +167,9 @@ The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the followi
         "hash": "BE7DE2F0CF48294400C714C9E28ECD01",
         "path" : "C:\\Windows\\System"
     }
+
+.. Note:: The hash value is not part of the File Occurrence body and will be stripped out before
+          the POST.  It is used to indicator which File Indicator to add the occurrence.
 
 Sample Job Flow
 ---------------

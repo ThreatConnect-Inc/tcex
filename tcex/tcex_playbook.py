@@ -42,7 +42,7 @@ class TcExPlaybook(object):
         self._var_parse = re.compile(
             r"""^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$""")
         self._vars_match = re.compile(
-            r"""([\"]#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)[\"])""")
+            r"""(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)\"?)""")
 
         # parse out variable
         self._parse_out_variable()
@@ -390,7 +390,13 @@ class TcExPlaybook(object):
         if key is not None:
             data = self.read_embedded(self._db.read(key.strip()))
             if data is not None:
-                data = json.loads(data)
+                try:
+                    data = json.loads(data)
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
+                    self._tcex.message_tc(err)
+                    self._tcex.exit(1)
         else:
             self._tcex.log.warning('The key field was None.')
         return data
@@ -426,7 +432,13 @@ class TcExPlaybook(object):
         if key is not None:
             data = self.read_embedded(self._db.read(key.strip()))
             if data is not None:
-                data = json.loads(data)
+                try:
+                    data = json.loads(data)
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
+                    self._tcex.message_tc(err)
+                    self._tcex.exit(1)
         else:
             self._tcex.log.warning('The key field was None.')
         return data
@@ -501,7 +513,9 @@ class TcExPlaybook(object):
                 # handle improperly saved string
                 try:
                     data = json.loads(data)
-                except ValueError:
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
                     pass
         else:
             self._tcex.log.warning('The key field was None.')
@@ -538,7 +552,13 @@ class TcExPlaybook(object):
         if key is not None:
             data = self.read_embedded(self._db.read(key.strip()))
             if data is not None:
-                data = json.loads(data)
+                try:
+                    data = json.loads(data)
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
+                    self._tcex.message_tc(err)
+                    self._tcex.exit(1)
         else:
             self._tcex.log.warning('The key field was None.')
         return data
@@ -574,7 +594,13 @@ class TcExPlaybook(object):
         if key is not None:
             data = self.read_embedded(self._db.read(key.strip()))
             if data is not None:
-                data = json.loads(data)
+                try:
+                    data = json.loads(data)
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
+                    self._tcex.message_tc(err)
+                    self._tcex.exit(1)
         else:
             self._tcex.log.warning('The key field was None.')
         return data
@@ -610,7 +636,13 @@ class TcExPlaybook(object):
         if key is not None:
             data = self.read_embedded(self._db.read(key.strip()))
             if data is not None:
-                data = json.loads(data)
+                try:
+                    data = json.loads(data)
+                except ValueError as e:
+                    err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
+                    self._tcex.log.error(err)
+                    self._tcex.message_tc(err)
+                    self._tcex.exit(1)
         else:
             self._tcex.log.warning('The key field was None.')
         return data

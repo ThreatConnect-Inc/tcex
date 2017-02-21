@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jobs &mdash; TcEx 0.3.5 documentation</title>
+  <title>Jobs &mdash; TcEx 0.3.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.3.5 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.3.6 documentation" href="index.html"/>
         <link rel="next" title="Logging" href="logging.html"/>
         <link rel="prev" title="Install JSON" href="install_json.html"/> 
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.3.5
+                0.3.6
               </div>
             
           
@@ -179,21 +179,21 @@
 15
 16
 17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s1">&#39;attribute&#39;</span><span class="o">:</span> <span class="p">[</span>
+  <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
+      <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Test Description&quot;</span>
     <span class="p">}</span>
   <span class="p">],</span>
-<span class="hll">  <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Robin Sparkles&#39;</span><span class="p">,</span>
-</span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
+<span class="hll">  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Robin Sparkles&quot;</span><span class="p">,</span>
+</span>  <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;APT&#39;</span>
+      <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;APT&quot;</span>
     <span class="p">},{</span>
-      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Crimeware&#39;</span>
+      <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Crimeware&quot;</span>
     <span class="p">}</span>
   <span class="p">],</span>
-<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span>
+<span class="hll">  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Adversary&quot;</span>
 </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
@@ -201,6 +201,37 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The Jobs module will make multiple API calls to push all this data to the ThreatConnect API.</p>
 </div>
+<p>The module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_results" title="tcex.tcex_job.TcExJob.group_results"><code class="xref py py-mod docutils literal"><span class="pre">group_results</span></code></a> property to get the status of each Group submitted.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;cached&quot;</span><span class="o">:</span> <span class="p">[],</span>
+</span><span class="hll">    <span class="s2">&quot;failed&quot;</span><span class="o">:</span> <span class="p">[],</span>
+</span><span class="hll">    <span class="s2">&quot;not_saved&quot;</span><span class="o">:</span> <span class="p">[],</span>
+</span><span class="hll">    <span class="s2">&quot;saved&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;Robin Sparkles&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="hll">    <span class="s2">&quot;submitted&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;Robin Sparkles&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<ul class="simple">
+<li>Cached - The Group already existed in ThreatConnect and was pulled from cache.</li>
+<li>Failed - The Group add encountered an error when submitting to the API.</li>
+<li>Not Saved - The Group was not saved either due to a failure or &#8220;Halt on Error&#8221; was selected and a previous Group failed.</li>
+<li>Saved - The Group was saved to ThreatConnect via the API.</li>
+<li>Submitted - The complete list of submitted Group Names.</li>
+</ul>
 </div>
 <div class="section" id="group-associations">
 <h2>Group Associations<a class="headerlink" href="#group-associations" title="Permalink to this headline">¶</a></h2>
@@ -211,10 +242,10 @@
 4
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="hll">  <span class="s1">&#39;group_name&#39;</span><span class="o">:</span> <span class="s1">&#39;Robin Sparkles&#39;</span><span class="p">,</span>
-</span><span class="hll">  <span class="s1">&#39;group_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Adversary&#39;</span><span class="p">,</span>
-</span><span class="hll">  <span class="s1">&#39;indicator&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
-</span><span class="hll">  <span class="s1">&#39;indicator_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+<span class="hll">  <span class="s2">&quot;group_name&quot;</span><span class="o">:</span> <span class="s2">&quot;Robin Sparkles&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;group_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Adversary&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;indicator&quot;</span><span class="o">:</span> <span class="s2">&quot;1.1.1.1&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;indicator_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span>
 </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
@@ -251,30 +282,80 @@ to the first group found with the name.</p>
 21
 22
 23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s1">&#39;associatedGroup&#39;</span><span class="o">:</span> <span class="p">[</span>
-    <span class="s1">&#39;1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;8&#39;</span>
+  <span class="s2">&quot;associatedGroup&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;8&quot;</span>
   <span class="p">],</span>
-  <span class="s1">&#39;attribute&#39;</span><span class="o">:</span> <span class="p">[</span>
+  <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
+      <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Test Description&quot;</span>
     <span class="p">}</span>
   <span class="p">],</span>
-  <span class="s1">&#39;confidence&#39;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
-  <span class="s1">&#39;rating&#39;</span><span class="o">:</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span>
-<span class="hll">  <span class="s1">&#39;summary&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
-</span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
+  <span class="s2">&quot;confidence&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="s2">&quot;rating&quot;</span><span class="o">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span>
+<span class="hll">  <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;1.1.1.1&quot;</span><span class="p">,</span>
+</span>  <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;APT&#39;</span>
+      <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;APT&quot;</span>
     <span class="p">},{</span>
-      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;Crimeware&#39;</span>
+      <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Crimeware&quot;</span>
     <span class="p">}</span>
   <span class="p">],</span>
-<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+<span class="hll">  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span>
 </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
+<p>The module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator_results" title="tcex.tcex_job.TcExJob.indicator_results"><code class="xref py py-mod docutils literal"><span class="pre">indicator_results</span></code></a> property to get the status of each Indicator submitted.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;failed&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0&quot;</span>
+    <span class="p">],</span>
+<span class="hll">    <span class="s2">&quot;not_saved&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0&quot;</span>
+    <span class="p">],</span>
+<span class="hll">    <span class="s2">&quot;saved&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;1.2.3.4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;1.2.3.5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;https://www.moonmoon.com/whotripme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HKEY_LOCAL_MACHINE : my-registry-key : REG_DWORD&quot;</span>
+    <span class="p">],</span>
+<span class="hll">    <span class="s2">&quot;submitted&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span>        <span class="s2">&quot;1.2.3.4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;1.2.3.5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;https://www.moonmoon.com/whotripme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HKEY_LOCAL_MACHINE : my-registry-key : REG_DWORD&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<ul class="simple">
+<li>Failed - The Indicator add encountered an error when submitting to the API.</li>
+<li>Not Saved - The Indicator was not saved either due to a failure or &#8220;Halt on Error&#8221; was selected and a previous Indicator failed.</li>
+<li>Saved - The Indicator was saved to ThreatConnect via the API.</li>
+<li>Submitted - The complete list of submitted Indicator Names.</li>
+</ul>
 </div>
 <div class="section" id="file-occurrence">
 <h2>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h2>
@@ -286,12 +367,17 @@ to the first group found with the name.</p>
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="s2">&quot;2014-11-03T00:00:00-05:00&quot;</span><span class="p">,</span>
-<span class="hll">    <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
-</span>    <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\\Windows\\System&quot;</span>
+    <span class="s2">&quot;fileName&quot;</span> <span class="o">:</span> <span class="s2">&quot;win999301.dll&quot;</span><span class="p">,</span>
+<span class="hll">    <span class="s2">&quot;hash&quot;</span><span class="o">:</span> <span class="s2">&quot;BE7DE2F0CF48294400C714C9E28ECD01&quot;</span><span class="p">,</span>
+</span>    <span class="s2">&quot;path&quot;</span> <span class="o">:</span> <span class="s2">&quot;C:\\Windows\\System&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The hash value is not part of the File Occurrence body and will be stripped out before
+the POST.  It is used to indicator which File Indicator to add the occurrence.</p>
+</div>
 </div>
 <div class="section" id="sample-job-flow">
 <h2>Sample Job Flow<a class="headerlink" href="#sample-job-flow" title="Permalink to this headline">¶</a></h2>
@@ -422,7 +508,7 @@ already known it can be associated using the <code class="docutils literal"><spa
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.3.5',
+            VERSION:'0.3.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

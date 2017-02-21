@@ -604,6 +604,33 @@ class TcEx(object):
             self.message_tc(err)
             self.exit(1)
 
+    def request_external(self):
+        """Return an instance of the Request Class with Proxy Set
+
+        See :py:mod:`~tcex.tcex.TcEx.request`
+
+        Returns:
+            (instance): An instance of Request Class
+        """
+        if self._args.tc_proxy_external:
+            tcex.log.info(u'Using proxy server for external request {}:{}.'.format(
+                self._args.tc_proxy_host, self._args.tc_proxy_port))
+        return self.request
+
+
+    def request_tc(self):
+        """Return an instance of the Request Class with Proxy Set
+
+        See :py:mod:`~tcex.tcex.TcEx.request`
+
+        Returns:
+            (instance): An instance of Request Class
+        """
+        if self._args.tc_proxy_tc:
+            tcex.log.info(u'Using proxy server for TC request {}:{}.'.format(
+                self._args.tc_proxy_host, self._args.tc_proxy_port))
+        return self.request
+
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory
 

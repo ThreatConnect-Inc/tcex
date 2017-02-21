@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.3.5 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.3.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.3.5 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.3.6 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.3.5
+                0.3.6
               </div>
             
           
@@ -248,6 +248,10 @@ or attributes</li>
 <dt id="tcex.tcex_job.TcExJob._process_indicators_batch">
 <code class="descname">_process_indicators_batch</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_indicators_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators_batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process batch indicators and write to TC API</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Failed attributes and/or tags will not cause a batch import to fail.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -320,6 +324,31 @@ or attributes</li>
 <dd><p>Check completion for all batch jobs associated with this instance.</p>
 <p>Iterate over self._indicator_batch_ids set in
 <a class="reference internal" href="#tcex.tcex_job.TcExJob._process_indicators" title="tcex.tcex_job.TcExJob._process_indicators"><code class="xref py py-meth docutils literal"><span class="pre">_process_indicators()</span></code></a> and return the status of all job.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+<span class="hll">  <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span>    <span class="s2">&quot;batchStatus&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">392</span><span class="p">,</span>
+      <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Completed&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;errorCount&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;successCount&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+      <span class="s2">&quot;unprocessCount&quot;</span><span class="o">:</span> <span class="mi">0</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -376,9 +405,9 @@ to halt.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>int</em>) &#8211; Id of the batch job</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Status of batch job.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with status and error boolean.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict)</td>
 </tr>
 </tbody>
 </table>
@@ -442,7 +471,8 @@ in the URI.</p>
 API when the <a class="reference internal" href="#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method is called.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">There is no validation of the data passed to this method.</p>
+<p class="last">There is no validation of the data passed to this method. Any duplicate group
+name will be skipped.</p>
 </div>
 <p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -633,6 +663,22 @@ association data</td>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex_job.TcExJob.group_results">
+<code class="descname">group_results</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Result dictionary of failed, saved, not_saved, and submitted groups</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of group names for each status</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.indicator">
 <code class="descname">indicator</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator" title="Permalink to this definition">¶</a></dt>
@@ -640,8 +686,8 @@ association data</td>
 <p>This method will add indicator data to this TcEx job to be submitted via batch import.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">There is no validation of the data passed to this method. Duplicate prevention
-will only be handled when a dictionary is provided.</p>
+<p class="last">There is no validation of the data passed to this method. Any duplicate
+indicator will be skipped.</p>
 </div>
 <p><strong>Example Data</strong> <em>(required fields are highlighted)</em></p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -728,6 +774,22 @@ data</td>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex_job.TcExJob.indicator_results">
+<code class="descname">indicator_results</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Result dictionary of failed, saved, not_saved, and submitted indicators</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of indicator values for each status</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.process">
 <code class="descname">process</code><span class="sig-paren">(</span><em>owner</em>, <em>indicator_batch=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
@@ -778,7 +840,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.3.5',
+            VERSION:'0.3.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -218,12 +218,6 @@ class TcExLocal:
             print_command = ' '.join(command + parameters.get('masked'))
             print('Executing: {}'.format(print_command))
 
-            # add a delay between profiles
-            sleep = self._config.get('sleep', 1)
-            sleep = sp.get('sleep', sleep)
-            time.sleep(sleep)
-            print('Sleep: {} seconds'.format(sleep))
-
             p = subprocess.Popen(
                 exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
@@ -236,6 +230,12 @@ class TcExLocal:
             if p.returncode != 0:
                 status_code = p.returncode
                 break
+
+            # add a delay between profiles
+            sleep = self._config.get('sleep', 1)
+            sleep = sp.get('sleep', sleep)
+            time.sleep(sleep)
+            print('Sleep: {} seconds'.format(sleep))
 
         msg = 'Executed {}'.format(self.inflect.no('command', command_count))
         self._exit(msg, status_code)

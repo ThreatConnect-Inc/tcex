@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.3.5 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.3.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.3.5 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.3.6 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.3.5
+                0.3.6
               </div>
             
           
@@ -175,12 +175,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache_id</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;cached&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;failed&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;not_saved&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;saved&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;submitted&#39;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups_response</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;failed&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;not_saved&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;saved&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;submitted&#39;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># batch &quot;bad&quot; errors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_failures</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;Encountered an unexpected Exception while processing batch job&#39;</span><span class="p">,</span>
             <span class="s1">&#39;would exceed the number of allowed indicators&#39;</span>
         <span class="p">]</span>
 
@@ -227,6 +242,8 @@
         <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
             <span class="n">resource_id</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
             <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
@@ -234,21 +251,32 @@
 
             <span class="c1"># add attributes</span>
             <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding attribute type (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding attribute type (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)))</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">attributes</span><span class="p">()</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
-                <span class="c1"># results = resource.request()</span>
-                <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+                <span class="n">a_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> with value </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
             <span class="c1"># add tags</span>
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">u&#39;Adding tag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                <span class="c1"># results = resource.request()</span>
-                <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+                <span class="n">t_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">t_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding tag </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
             <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding group (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -271,9 +299,12 @@
 
         <span class="k">for</span> <span class="n">occurrence</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_occurrences</span><span class="p">:</span>
             <span class="c1"># remove the hash from the dictionary and add to URI</span>
+            <span class="k">if</span> <span class="n">occurrence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hash&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;A hash value must be provided.&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="k">return</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">occurrence</span><span class="p">(</span><span class="n">occurrence</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;hash&#39;</span><span class="p">))</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">occurrence</span><span class="p">)</span>
-            <span class="c1"># results = resource.request()</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_group_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_group_association">[docs]</a>    <span class="k">def</span> <span class="nf">_process_group_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
@@ -284,20 +315,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">ga</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;creating association: group </span><span class="si">{}</span><span class="s1"> indicator </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">ga</span><span class="p">[</span><span class="s1">&#39;group_name&#39;</span><span class="p">],</span> <span class="n">ga</span><span class="p">[</span><span class="s1">&#39;indicator&#39;</span><span class="p">]))</span>
+                <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_name&#39;</span><span class="p">),</span> <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">)))</span>
 
-            <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">ga</span><span class="p">[</span><span class="s1">&#39;group_name&#39;</span><span class="p">],</span> <span class="n">owner</span><span class="p">,</span> <span class="n">ga</span><span class="p">[</span><span class="s1">&#39;group_type&#39;</span><span class="p">])</span>
+            <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_name&#39;</span><span class="p">),</span> <span class="n">owner</span><span class="p">,</span> <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_type&#39;</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">ga</span><span class="p">[</span><span class="s1">&#39;indicator_type&#39;</span><span class="p">]))(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator_type&#39;</span><span class="p">)))(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">ga</span><span class="p">[</span><span class="s1">&#39;indicator&#39;</span><span class="p">])</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
 
-            <span class="n">association_resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">ga</span><span class="p">[</span><span class="s1">&#39;group_type&#39;</span><span class="p">])(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+            <span class="n">association_resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_type&#39;</span><span class="p">))(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
             <span class="n">association_resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">association_pivot</span><span class="p">(</span><span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span></div>
@@ -308,19 +339,28 @@
 <span class="sd">        Args:</span>
 <span class="sd">            owner (string):  The owner name for the indicator to be written</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
-            <span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_cache</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_cache</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">u&#39;Processing group (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)))</span>
             <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
-                <span class="c1"># bcs - support duplicate groups</span>
+                <span class="c1"># TODO - support duplicate group names</span>
                 <span class="k">pass</span>
-            <span class="k">elif</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]][</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">group_id</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;Creating group </span><span class="si">{}</span><span class="s1"> [</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">group_id</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)][</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group_id</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">u&#39;Creating group </span><span class="si">{}</span><span class="s1"> [</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">group_id</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;cached&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">u&#39;Existing Group (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
@@ -340,6 +380,8 @@
 <div class="viewcode-block" id="TcExJob._process_indicators_batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators_batch">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process batch indicators and write to TC API</span>
 
+<span class="sd">        .. Note:: Failed attributes and/or tags will not cause a batch import to fail.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            owner (string):  The owner name for the indicator to be written</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -354,6 +396,7 @@
             <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span>
         <span class="p">}</span>
 
+        <span class="n">halt</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_indicators</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Chunk Size: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)))</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
@@ -361,7 +404,7 @@
             <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                <span class="n">batch_id</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="n">batch_id</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_batch_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
 
                 <span class="n">resource</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/octet-stream&#39;</span>
@@ -382,12 +425,36 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_status</span><span class="p">(</span><span class="n">batch_id</span><span class="p">):</span>
-                        <span class="k">break</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_status</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="c1"># all indicator in chunk will be not_saved</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">])</span>
+                                <span class="k">break</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="c1"># all indicators were saved minus failed; not_save == failed</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="p">[])</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                                    <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="p">[])])</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                                    <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="p">[])])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># all indicators were saved</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">])</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="k">break</span>  <span class="c1"># no need to check status anymore</span>
 
                     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">)</span>
+                    <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
 
-                    <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span></div>
+            <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halting on error.&#39;</span><span class="p">)</span>
+                <span class="k">break</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_indicators_v2"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators_v2">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators_v2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process batch indicators and write to TC API</span>
@@ -395,6 +462,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            owner (string):  The owner name for the indicator to be written</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">for</span> <span class="n">i_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
             <span class="n">i_value</span> <span class="o">=</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># only need the first indicator value</span>
             <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
@@ -434,12 +502,29 @@
 
             <span class="c1"># Log error and continue</span>
             <span class="k">if</span> <span class="n">i_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding indicator </span><span class="si">{}</span><span class="s1"> type </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">),</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">i_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="k">continue</span>
+
+                <span class="c1"># halt on error check</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># update indicator result list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+
+            <span class="c1"># build indicator results output</span>
             <span class="n">results_data</span> <span class="o">=</span> <span class="n">i_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Boolen for halt on error</span>
+            <span class="n">halt</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># Add attribute to Indicator</span>
             <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[]):</span>
@@ -451,12 +536,24 @@
                 <span class="n">resource</span><span class="o">.</span><span class="n">attributes</span><span class="p">()</span>  <span class="c1"># pivot to attribute</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
                 <span class="n">a_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+
                 <span class="k">if</span> <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> to indicator </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> with value </span><span class="si">{}</span><span class="s1"> to indicator </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+                    <span class="c1"># halt on error check</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="k">continue</span>
                 <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">halt</span><span class="p">:</span> <span class="k">break</span>
 
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="c1"># process attributes</span>
@@ -470,8 +567,18 @@
                     <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding tag </span><span class="si">{}</span><span class="s1"> to indicator </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
+
+                    <span class="c1"># halt on error check</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">halt</span><span class="p">:</span> <span class="k">break</span>
 
             <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="n">group_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_type</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
@@ -494,10 +601,20 @@
                     <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed association group id </span><span class="si">{}</span><span class="s1"> to indicator </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">group_id</span><span class="p">,</span> <span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_data</span><span class="p">)</span></div>
+                    <span class="c1"># halt on error check</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">halt</span><span class="p">:</span> <span class="k">break</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_action">[docs]</a>    <span class="k">def</span> <span class="nf">batch_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the default batch action for argument parser.</span>
@@ -531,6 +648,24 @@
 <span class="sd">        Iterate over self._indicator_batch_ids set in</span>
 <span class="sd">        :py:meth:`~tcex.tcex_job.TcExJob._process_indicators` and return the status of all job.</span>
 
+<span class="sd">        .. code-block:: javascript</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+<span class="sd">            :emphasize-lines: 3</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;status&quot;: &quot;Success&quot;,</span>
+<span class="sd">              &quot;data&quot;: {</span>
+<span class="sd">                &quot;batchStatus&quot;: {</span>
+<span class="sd">                  &quot;id&quot;: 392,</span>
+<span class="sd">                  &quot;status&quot;: &quot;Completed&quot;,</span>
+<span class="sd">                  &quot;errorCount&quot;: 1,</span>
+<span class="sd">                  &quot;successCount&quot;: 4,</span>
+<span class="sd">                  &quot;unprocessCount&quot;: 0</span>
+<span class="sd">                }</span>
+<span class="sd">              }</span>
+<span class="sd">            }</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): The status results from the Batch jobs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -543,13 +678,12 @@
         <span class="k">for</span> <span class="n">batch_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_batch_ids</span><span class="p">:</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">batch_id</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+            <span class="n">batch_status</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span> <span class="ow">and</span>
-                        <span class="s1">&#39;batchStatus&#39;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="ow">and</span>
-                        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span><span class="p">):</span>
-                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">][</span><span class="s1">&#39;successCount&#39;</span><span class="p">]</span>
-                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;failure&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">][</span><span class="s1">&#39;errorCount&#39;</span><span class="p">]</span>
-                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;unprocessed&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">][</span><span class="s1">&#39;unprocessCount&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span> <span class="ow">and</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span><span class="p">:</span>
+                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;successCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;failure&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;unprocessed&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unprocessCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">status</span></div>
 
@@ -586,9 +720,12 @@
 <span class="sd">            batch_id (int): Id of the batch job</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (boolean): Status of batch job.</span>
+<span class="sd">            (dict): A dictionary with status and error boolean.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;completed&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
 
         <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="s1">&#39;Batch&#39;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
@@ -598,15 +735,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;batch id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batch_id</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span><span class="p">:</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">status</span><span class="p">[</span><span class="s1">&#39;completed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="n">status_msg</span> <span class="o">=</span> <span class="s1">&#39;Batch Job completed, totals: &#39;</span>
-                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;succeeded: </span><span class="si">{0}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;successCount&#39;</span><span class="p">])</span>
-                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;failed: </span><span class="si">{0}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;errorCount&#39;</span><span class="p">])</span>
-                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;unprocessed: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;unprocessCount&#39;</span><span class="p">])</span>
+                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;succeeded: </span><span class="si">{0}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;successCount&#39;</span><span class="p">))</span>
+                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;failed: </span><span class="si">{0}</span><span class="s1">, &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">))</span>
+                <span class="n">status_msg</span> <span class="o">+=</span> <span class="s1">&#39;unprocessed: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unprocessCount&#39;</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">status_msg</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;errorCount&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">status</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
                     <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="s1">&#39;Batch&#39;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
@@ -614,10 +752,16 @@
                     <span class="n">resource</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
                     <span class="n">error_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
 
-                    <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">error_results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">error_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bcs error&#39;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
                         <span class="n">error_reason</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorReason&#39;</span><span class="p">)</span>
+                        <span class="n">error_source</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorSource&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="s1">&#39;  :  &#39;</span> <span class="ow">in</span> <span class="n">error_source</span><span class="p">:</span>  <span class="c1"># fix issue with API response</span>
+                            <span class="n">error_source</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorSource&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+                        <span class="c1"># errorSource won&#39;t always have an indicator per cblades</span>
+                        <span class="k">if</span> <span class="n">error_source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error_source</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">error_msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_failures</span><span class="p">:</span>
-
                             <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">error_msg</span><span class="p">,</span> <span class="n">error_reason</span><span class="p">):</span>
                                 <span class="c1"># Critical Error</span>
                                 <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Batch Error: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
@@ -626,7 +770,7 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Batch Error: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Batch Status: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Batch Status: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">status</span></div>
 
@@ -693,7 +837,8 @@
 <span class="sd">        This method will accept a list or dictionary of formatted *Group* data and submit it to the</span>
 <span class="sd">        API when the :py:meth:`~tcex.tcex_job.TcExJob.process` method is called.</span>
 
-<span class="sd">        .. Warning:: There is no validation of the data passed to this method.</span>
+<span class="sd">        .. Warning:: There is no validation of the data passed to this method. Any duplicate group</span>
+<span class="sd">                     name will be skipped.</span>
 
 <span class="sd">        **Example Data** *(required fields are highlighted)*</span>
 
@@ -720,10 +865,13 @@
 <span class="sd">        Args:</span>
 <span class="sd">            group (dict | list): Dictionary or List containing group data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;submitted&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob.group_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association">[docs]</a>    <span class="k">def</span> <span class="nf">group_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">associations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add group association data to TcEx job.</span>
@@ -784,8 +932,8 @@
 
         <span class="c1"># already cached</span>
         <span class="k">if</span> <span class="n">owner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">]:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;Caching group type </span><span class="si">{}</span><span class="s1"> for owner </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">owner</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span>
@@ -882,13 +1030,22 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted groups</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Dictionary of group names for each status</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span>
+
 <div class="viewcode-block" id="TcExJob.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add indicator data to TcEx job.</span>
 
 <span class="sd">        This method will add indicator data to this TcEx job to be submitted via batch import.</span>
 
-<span class="sd">        .. Warning:: There is no validation of the data passed to this method. Duplicate prevention</span>
-<span class="sd">                     will only be handled when a dictionary is provided.</span>
+<span class="sd">        .. Warning:: There is no validation of the data passed to this method. Any duplicate</span>
+<span class="sd">                     indicator will be skipped.</span>
 
 <span class="sd">        **Example Data** *(required fields are highlighted)*</span>
 
@@ -922,12 +1079,14 @@
 <span class="sd">            indicator (dict | list): Dictionary or List containing indicator</span>
 <span class="sd">                data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">indicator</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator</span><span class="p">:</span>  <span class="c1"># Not extending now since we need to build submitted list</span>
             <span class="c1"># verifiy indicator is not a duplicate before adding</span>
-            <span class="k">if</span> <span class="n">indicator</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;submitted&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indicator_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -936,10 +1095,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): The indicator list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators_results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_results</span>
-        <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indicator_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -949,6 +1105,15 @@
 <span class="sd">            (integer): The length of the indicator list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indicator_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted indicators</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dictionary): Dictionary of indicator values for each status</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span>
 
 <div class="viewcode-block" id="TcExJob.process"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">indicator_batch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process all association, group and indicator data.</span>
@@ -1005,7 +1170,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.5',
+            VERSION:'0.3.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
