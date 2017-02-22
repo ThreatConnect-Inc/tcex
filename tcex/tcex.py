@@ -613,7 +613,7 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         if self._args.tc_proxy_external:
-            tcex.log.info(u'Using proxy server for external request {}:{}.'.format(
+            self.log.info(u'Using proxy server for external request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
         return self.request
 
@@ -627,7 +627,7 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         if self._args.tc_proxy_tc:
-            tcex.log.info(u'Using proxy server for TC request {}:{}.'.format(
+            self.log.info(u'Using proxy server for TC request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
         return self.request
 
