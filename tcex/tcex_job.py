@@ -598,6 +598,7 @@ class TcExJob(object):
                 if results['data']['errorCount'] > 0:
                     status['errors'] = True
                     self._tcex.exit_code(3)
+                    time.sleep(2)
 
                     poll_time = 0
                     while True:

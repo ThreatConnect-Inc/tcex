@@ -6,6 +6,11 @@ Release Notes
 0.3.x
 =====
 
+0.3.7
+------
++ Added logic around retrieving Batch Errors to handle 404.
++ Added new :py:meth:`~tcex.tcex_playbook.TcExPlaybook.exit` method for playbook apps (exit code of 3 to 1 for partial success).
+
 0.3.6
 ------
 + Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` Module.
