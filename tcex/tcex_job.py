@@ -599,16 +599,34 @@ class TcExJob(object):
                     status['errors'] = True
                     self._tcex.exit_code(3)
 
-                    resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
-                    resource.url = self._tcex._args.tc_api_path
-                    resource.errors(batch_id)
-                    error_results = resource.request()
+                    poll_time = 0
+                    while True:
+                        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
+                        resource.url = self._tcex._args.tc_api_path
+                        resource.errors(batch_id)
+                        error_results = resource.request()
+                        if poll_time >= self._tcex._args.batch_poll_interval_max:
+                            msg = 'Status check exceeded max poll time.'
+                            self._tcex.log.error(msg)
+                            self._tcex.message_tc(msg)
+                            self._tcex.exit(1)
+                        elif error_results.get('response').status_code == 200:
+                            break
+                        self._tcex.log.info('Error retreive sleep ({} seconds)'.format(self._tcex._args.batch_poll_interval))
+                        time.sleep(self._tcex._args.batch_poll_interval)
+                        poll_time += self._tcex._args.batch_poll_interval
 
-                    for error in json.loads(error_results.get('data')):
-                        print('bcs error', error)
+                    try:
+                        errors = json.loads(self._tcex.s(error_results.get('data')))
+                    except TypeError as e:
+                        err = 'Error loading Batch Error data ({})'.format(e)
+                        self._tcex.log.error(err)
+                        errors = []
+
+                    for error in errors:
                         error_reason = error.get('errorReason')
                         error_source = error.get('errorSource')
-                        if '  :  ' in error_source:  # fix issue with API response
+                        if error_source is not None and '  :  ' in error_source:  # fix issue with API response
                             error_source = error.get('errorSource').replace('  ', ' ')
                         # errorSource won't always have an indicator per cblades
                         if error_source in self._indicator_results.get('submitted', []):

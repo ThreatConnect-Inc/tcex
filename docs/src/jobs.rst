@@ -169,7 +169,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the followi
     }
 
 .. Note:: The hash value is not part of the File Occurrence body and will be stripped out before
-          the POST.  It is used to indicator which File Indicator to add the occurrence.
+          the POST.  It is used to indicate which File Indicator to add the occurrence.
 
 Sample Job Flow
 ---------------

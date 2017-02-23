@@ -161,6 +161,25 @@ class TcExPlaybook(object):
                     'Variable {0} was NOT requested by downstream app.'.format(key))
         return results
 
+    def exit(self, code=None):
+        """Playbook wrapper on TcEx exit method
+
+        Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
+        it a partial success instead.
+
+        Args:
+            code (Optional [integer]): The exit code value for the app.
+        """
+        if code is None:
+            code = self._tcex._exit_code
+            if code == 3:
+                self._tcex.log.info('Changing exit code from 3 to 0.')
+                code = 0  # playbooks doesn't support partial failure
+        elif code not in [0, 1]:
+            code = 1
+
+        self._tcex.exit(code)
+
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
 
