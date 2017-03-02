@@ -302,6 +302,10 @@ class TcExJob(object):
                     time.sleep(self._tcex._args.batch_poll_interval)
                     poll_time += self._tcex._args.batch_poll_interval
             else:
+                # TODO: move this and above duplicate code to "if halt" below after validating logic
+                self._tcex.exit_code(1)
+                # all indicator in chunk will be not_saved
+                self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
                 halt = True
 
             if halt:
