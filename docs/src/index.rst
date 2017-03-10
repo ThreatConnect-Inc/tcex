@@ -19,10 +19,12 @@ Release |version|.
    data_filter
    development_tools
    exit
+   examples
    install_json
    jobs
    logging
    message_tc
+   tcex_docs/modules
    parser
    playbook
    proxies

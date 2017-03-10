@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.3.7 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.4.0 documentation</title>
   
 
   
@@ -33,7 +33,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.3.7 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.4.0 documentation" href="../index.html"/>
+        <link rel="up" title="tcex package" href="tcex.html"/>
+        <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
+        <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.4.0
               </div>
             
           
@@ -83,16 +86,38 @@
             
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.argparser.html">tcex.argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -129,6 +154,10 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+      
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
       
     <li>tcex.tcex_resources module</li>
       <li class="wy-breadcrumbs-aside">
@@ -600,6 +629,22 @@ the actual indicator id stored in ThreatConnect.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_resources.Resource._copy">
+<code class="descname">_copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a &#8220;clean&#8221; copy of this instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A clean copy of this instance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(instance)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Resource._request_bulk">
 <code class="descname">_request_bulk</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._request_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._request_bulk" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -828,11 +873,10 @@ the actual indicator id stored in ThreatConnect.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.association_pivot">
-<code class="descname">association_pivot</code><span class="sig-paren">(</span><em>resource_api_branch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.association_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.association_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">association_pivot</code><span class="sig-paren">(</span><em>association_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.association_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.association_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on association for this resource.</p>
-<p>This method will return all <em>resources</em> (group, indicators, task,
-victims, etc) for this resource that are associated with the provided
-resource_type and value.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task, victims, etc) for this resource that are
+associated with the provided resource.</p>
 <p><strong>Example Endpoints URI&#8217;s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -870,6 +914,58 @@ resource_type and value.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_api_branch</strong> (<em>string</em>) &#8211; The resource pivot api branch including resource id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.associations">
+<code class="descname">associations</code><span class="sig-paren">(</span><em>association_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.associations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.associations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve Association for this resource of the type in association_resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task, victims, etc) for this
+resource that are associated with the provided association resource_type.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/indicator/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>association_resource</strong> (<em>Resource Instance</em>) &#8211; A resource object with option resource_id.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A copy of this resource instance cleaned and updated for associations.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(instance)</td>
 </tr>
 </tbody>
 </table>
@@ -1043,11 +1139,10 @@ resource.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.group_pivot">
-<code class="descname">group_pivot</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.group_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.group_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">group_pivot</code><span class="sig-paren">(</span><em>group_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.group_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.group_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on groups for this resource.</p>
-<p>This method will return all <em>resources</em> (indicators, tasks, victims,
-etc) for this resource that are associated with the provided resource
-id (indicator value).</p>
+<p>This method will return all <em>resources</em> (indicators, tasks, victims, etc) for this resource
+that are associated with the provided resource id (indicator value).</p>
 <p><strong>Example Endpoints URI&#8217;s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1084,11 +1179,11 @@ id (indicator value).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource pivot resource type (indicator type).</li>
-<li><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (indicator value).</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_resource</strong> (<em>Resource Instance</em>) &#8211; A resource object with optional resource_id.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A copy of this resource instance cleaned and updated for group associations.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(instance)</td>
 </tr>
 </tbody>
 </table>
@@ -1112,7 +1207,7 @@ id (indicator value).</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.indicator_pivot">
-<code class="descname">indicator_pivot</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.indicator_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.indicator_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">indicator_pivot</code><span class="sig-paren">(</span><em>indicator_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.indicator_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.indicator_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on indicators for this resource.</p>
 <p>This method will return all <em>resources</em> (groups, tasks, victims, etc)
 for this resource that are associated with the provided resource id
@@ -1389,7 +1484,7 @@ called.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.security_label_pivot">
-<code class="descname">security_label_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.security_label_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.security_label_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">security_label_pivot</code><span class="sig-paren">(</span><em>security_label_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.security_label_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.security_label_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on security labels for this resource.</p>
 <p>This method will return all <em>resources</em> (group, indicators, task,
 victims, etc) for this resource that have the provided security
@@ -1480,7 +1575,7 @@ remove the provided security label from this resource.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.tag_pivot">
-<code class="descname">tag_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.tag_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.tag_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">tag_pivot</code><span class="sig-paren">(</span><em>tag_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.tag_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.tag_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on tags for this resource.</p>
 <p>This method will return all <em>resources</em> (group, indicators, task,
 victims, etc) for this resource that have the provided tag applied.</p>
@@ -1587,7 +1682,7 @@ tag from this resource.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.task_pivot">
-<code class="descname">task_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.task_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.task_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">task_pivot</code><span class="sig-paren">(</span><em>task_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.task_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.task_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on Tasks for this resource.</p>
 <p>This method will return all <em>resources</em> (group, indicators, victims,
 etc) for this resource that are associated with the provided task id.</p>
@@ -1661,7 +1756,7 @@ etc) for this resource that are associated with the provided task id.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.victim_pivot">
-<code class="descname">victim_pivot</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.victim_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.victim_pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">victim_pivot</code><span class="sig-paren">(</span><em>victim_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.victim_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.victim_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on Victims for this resource.</p>
 <p>This method will return all <em>resources</em> (group, indicators, task,
 etc) for this resource that are associated with the provided victim id.</p>
@@ -1751,6 +1846,43 @@ the parent class.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="tcex.tcex_resources.Tag">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Tag</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Tag Class</p>
+<p>This resource class will return Tags.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Tag.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Tag.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Tag.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for tag</p>
+<p>The resource id is the tag name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The tag name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Tag.tag">
+<code class="descname">tag</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Tag.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Tag.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Tag for specific retrieval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The tag name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.tcex_resources.Task">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Task</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
@@ -1759,6 +1891,21 @@ the parent class.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Task.resource_id">
 <code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for task_id method</p>
+<p>The resource id is the task id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The task id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Task.task_id">
+<code class="descname">task_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task.task_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task.task_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the request URI to include the Task Id for specific retrieval.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1816,6 +1963,21 @@ in the parent Class.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Victim.resource_id">
 <code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Victim.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Victim.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for victim_id method</p>
+<p>The resource id is the victim id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) &#8211; The victim id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Victim.victim_id">
+<code class="descname">victim_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Victim.victim_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Victim.victim_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the request URI to include the Victim Id for specific retrieval.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1841,6 +2003,15 @@ in the parent Class.</p>
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tcex.tcex_vault.html" class="btn btn-neutral float-right" title="tcex.tcex_vault module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tcex.tcex_request.html" class="btn btn-neutral" title="tcex.tcex_request module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -1868,7 +2039,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.3.7',
+            VERSION:'0.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

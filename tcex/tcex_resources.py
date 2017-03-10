@@ -1,4 +1,5 @@
 """ standard """
+import copy
 import gzip
 import json
 import os
@@ -35,7 +36,7 @@ class Resource(object):
         self._filter_or = False
         self._name = None
         self._parsable = False
-        self._pivot = False
+        ## self._pivot = False
         self._paginate = True
         self._paginate_count = 0
         self._parent = None
@@ -60,6 +61,36 @@ class Resource(object):
 
         if len(filters) > 0:
             self._r.add_payload('filters', ','.join(filters))
+
+    def _copy(self):
+        """Return a "clean" copy of this instance.
+
+        Return:
+            (instance): A clean copy of this instance.
+        """
+        # bcs-copy
+        resource = copy.copy(self)
+        resource._http_method = 'GET'
+        resource._filters = []
+        resource._filter_or = False
+        resource._paginate = True
+        resource._paginate_count = 0
+        resource._result_count = None
+        resource._result_limit = 500
+        resource._result_start = 0
+        # can't reset headers or authorization would have to be reset
+        # self._r.reset_headers()
+        resource._r.body = None
+        owner = resource._r.payload.get('owner')
+        resource._r.reset_payload()
+        if owner is not None:
+            resource._r.add_payload('owner', owner)
+
+        # future bcs - these should not need to be reset. correct?
+        # resource._request_entity = self._api_entity
+        # resource._request_uri = self._api_uri
+
+        return resource
 
     def _request_bulk(self, response):
         """
@@ -290,19 +321,24 @@ class Resource(object):
             resource_api_branch (string): The resource pivot api branch.
             association_name (string): The name of the custom association as defined in the UI.
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = '{}/associations/{}/{}'.format(
+        ##     resource_api_branch, association_name, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = '{}/associations/{}/{}'.format(
-            resource_api_branch, association_name, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/associations/{}/{}'.format(
+            resource_api_branch, association_name, resource._request_uri)
+        return resource
 
-    def association_pivot(self, resource_api_branch):
+    def association_pivot(self, association_resource):
         """Pivot point on association for this resource.
 
-        This method will return all *resources* (group, indicators, task,
-        victims, etc) for this resource that are associated with the provided
-        resource_type and value.
+        This method will return all *resources* (group, indicators, task, victims, etc) for this resource that are
+        associated with the provided resource.
 
         **Example Endpoints URI's**
 
@@ -325,15 +361,58 @@ class Resource(object):
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## resource._request_uri = '{}/{}'.format(resource_api_branch, self._request_uri)
+        ## # bcs ^ by using request_uri a user can change pivots without having to worry about the
+        ## #       uri getting mangled, but adding id's and indicators gets overwritten.  Since
+        ## #       the uri should get reset after the request is made is should be okay to
+        ## #       use request_uri here.
+        ## return resource
 
-        self._pivot = True
-        self._request_uri = '{}/{}'.format(resource_api_branch, self._request_uri)
-        # bcs ^ by using request_uri a user can change pivots without having to worry about the
-        #       uri getting mangled, but adding id's and indicators gets overwritten.  Since
-        #       the uri should get reset after the request is made is should be okay to
-        #       use request_uri here.
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            association_resource.request_uri, resource._request_uri)
+        return resource
+
+    def associations(self, association_resource, resource_id=None):
+        """Retrieve Association for this resource of the type in association_resource.
+
+        This method will return all *resources* (group, indicators, task, victims, etc) for this
+        resource that are associated with the provided association resource_type.
+
+        **Example Endpoints URI's**
+
+        +--------------+---------------------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                            |
+        +==============+===============================================================================================================+
+        | GET          | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}                    |
+        +--------------+---------------------------------------------------------------------------------------------------------------+
+        | POST         | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
+        +--------------+---------------------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
+        +--------------+---------------------------------------------------------------------------------------------------------------+
+
+        + resourceClass - Groups/Indicators
+        + resourceType - Adversary, Incident, etc / Address, EmailAddress, etc
+        + resourceId - Group Id / Indicator Value
+
+        Args:
+            association_resource (Resource Instance): A resource object with option resource_id.
+        Return:
+            (instance): A copy of this resource instance cleaned and updated for associations.
+        """
+        # bcs-copy
+        resource = self._copy()
+        if resource_id is not None:
+            resource.resource_id(resource_id)
+        resource._request_entity = association_resource.api_entity
+        resource._request_uri = '{}/{}'.format(
+            resource._request_uri, association_resource.request_uri)
+        return resource
 
     def attributes(self, resource_id=None):
         """Attribute endpoint for this resource with optional attribute id.
@@ -367,14 +446,22 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (attribute id).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = '{}/attributes'.format(self._request_uri)
+        ## self._request_entity = 'attribute'
+        ## if resource_id is not None:
+        ##     self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
 
-        self._pivot = True
-        self._request_uri = '{}/attributes'.format(self._request_uri)
-        self._request_entity = 'attribute'
+        # bcs-copy
+        resource = self._copy()
+        resource._request_entity = 'attribute'
+        resource._request_uri = '{}/attributes'.format(resource._request_uri)
         if resource_id is not None:
-            self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+            resource._request_uri = '{}/{}'.format(resource._request_uri, resource_id)
+        return resource
 
     def authorization_method(self, method):
         """Method to create authorization header for this resource request.
@@ -529,19 +616,24 @@ class Resource(object):
             resource_id (string): The resource pivot id (file hash).
             action_name (string): The name of the action as defined by ThreatConnect.
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = '{}/{}/actions/{}/{}'.format(
+        ##     self._request_api_branch, resource_id, action_name, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = '{}/{}/actions/{}/{}'.format(
-            self._request_api_branch, resource_id, action_name, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}/actions/{}/{}'.format(
+            resource._request_api_branch, resource_id, action_name, resource._request_uri)
+        return resource
 
-    def group_pivot(self, resource_type, resource_id):
+    def group_pivot(self, group_resource):
         """Pivot point on groups for this resource.
 
-        This method will return all *resources* (indicators, tasks, victims,
-        etc) for this resource that are associated with the provided resource
-        id (indicator value).
+        This method will return all *resources* (indicators, tasks, victims, etc) for this resource
+        that are associated with the provided resource id (indicator value).
 
         **Example Endpoints URI's**
 
@@ -562,15 +654,22 @@ class Resource(object):
         +--------------+-----------------------------------------------------------------------------------------------------+
 
         Args:
-            resource_type (string): The resource pivot resource type (indicator type).
-            resource_id (integer): The resource pivot id (indicator value).
-        """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+            group_resource (Resource Instance): A resource object with optional resource_id.
+        Return:
+            (instance): A copy of this resource instance cleaned and updated for group associations.
 
-        self._pivot = True
-        self._request_uri = 'groups/{}/{}/{}'.format(
-            resource_type, resource_id, self._request_uri)
+        """
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'groups/{}/{}/{}'.format(
+        ##     resource_type, resource_id, self._request_uri)
+
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(group_resource.request_uri, resource._request_uri)
+        return resource
 
     @property
     def http_method(self):
@@ -589,7 +688,7 @@ class Resource(object):
             self._r.http_method = data
             self._http_method = data
 
-    def indicator_pivot(self, resource_type, resource_id):
+    def indicator_pivot(self, indicator_resource):
         """Pivot point on indicators for this resource.
 
         This method will return all *resources* (groups, tasks, victims, etc)
@@ -618,12 +717,18 @@ class Resource(object):
             resource_type (string): The resource pivot resource type (indicator type).
             resource_id (integer): The resource pivot id (indicator value).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'indicators/{}/{}/{}'.format(
+        ##     resource_type, resource_id, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = 'indicators/{}/{}/{}'.format(
-            resource_type, resource_id, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            indicator_resource.request_uri, resource._request_uri)
+        return resource
 
     @property
     def name(self):
@@ -731,13 +836,14 @@ class Resource(object):
         response = self._r.send(stream=self._stream)
         data, status = self._request_process(response)
 
-        # bcs - to reset or not to reset?
-        self._r.body = None
-        # self._r.reset_headers()
-        # self._r.reset_payload()
-        self._pivot = False
-        self._request_uri = self._api_uri
-        self._request_entity = self._api_entity
+        ## bcs-copy
+        ## # bcs - to reset or not to reset?
+        ## self._r.body = None
+        ## # self._r.reset_headers()
+        ## # self._r.reset_payload()
+        ## self._pivot = False
+        ## self._request_uri = self._api_uri
+        ## self._request_entity = self._api_entity
 
         return {
             'data': data,
@@ -798,7 +904,7 @@ class Resource(object):
         """
         self._result_limit = limit
 
-    def security_label_pivot(self, resource_id):
+    def security_label_pivot(self, security_label_resource):
         """Pivot point on security labels for this resource.
 
         This method will return all *resources* (group, indicators, task,
@@ -822,11 +928,17 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (security label name).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'securityLabels/{}/{}'.format(resource_id, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = 'securityLabels/{}/{}'.format(resource_id, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            security_label_resource.request_uri, resource._request_uri)
+        return resource
 
     def security_labels(self, resource_id=None):
         """Security Label endpoint for this resource with optional label name.
@@ -857,16 +969,24 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (security label name).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = '{}/securityLabels'.format(self._request_uri)
+        ## self._request_entity = 'securityLabel'
+        ## if resource_id is not None:
+        ##     self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
 
-        self._pivot = True
-        self._request_uri = '{}/securityLabels'.format(self._request_uri)
-        self._request_entity = 'securityLabel'
+        # bcs-copy
+        resource = self._copy()
+        resource._request_entity = 'securityLabel'
+        resource._request_uri = '{}/securityLabels'.format(resource._request_uri)
         if resource_id is not None:
-            self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+            resource._request_uri = '{}/{}'.format(resource._request_uri, resource_id)
+        return resource
 
-    def tag_pivot(self, resource_id):
+    def tag_pivot(self, tag_resource):
         """Pivot point on tags for this resource.
 
         This method will return all *resources* (group, indicators, task,
@@ -893,12 +1013,18 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (tag name).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'tags/{}/{}'.format(
+        ##     self._tcex.safetag(resource_id), self._request_uri)
 
-        self._pivot = True
-        self._request_uri = 'tags/{}/{}'.format(
-            self._tcex.safetag(resource_id), self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            tag_resource.request_uri, resource._request_uri)
+        return resource
 
     def tags(self, resource_id=None):
         """Tag endpoint for this resource with optional tag name.
@@ -936,17 +1062,26 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (tag name).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = '{}/tags'.format(self._request_uri)
+        ## self._request_entity = 'tag'
+        ## if resource_id is not None:
+        ##     self._request_uri = '{}/{}'.format(
+        ##         self._request_uri, self._tcex.safetag(resource_id))
 
-        self._pivot = True
-        self._request_uri = '{}/tags'.format(self._request_uri)
-        self._request_entity = 'tag'
+        # bcs-copy
+        resource = self._copy()
+        resource._request_entity = 'tag'
+        resource._request_uri = '{}/tags'.format(resource._request_uri)
         if resource_id is not None:
-            self._request_uri = '{}/{}'.format(
-                self._request_uri, self._tcex.safetag(resource_id))
+            resource._request_uri = '{}/{}'.format(
+                resource._request_uri, self._tcex.safetag(resource_id))
+        return resource
 
-    def task_pivot(self, resource_id):
+    def task_pivot(self, task_resource):
         """Pivot point on Tasks for this resource.
 
         This method will return all *resources* (group, indicators, victims,
@@ -969,12 +1104,18 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (task id).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'tasks/{}/{}'.format(
+        ##     resource_id, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = 'tasks/{}/{}'.format(
-            resource_id, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            task_resource.request_uri, resource._request_uri)
+        return resource
 
     @property
     def value_fields(self):
@@ -985,7 +1126,7 @@ class Resource(object):
         """
         return self._value_fields
 
-    def victim_pivot(self, resource_id):
+    def victim_pivot(self, victim_resource):
         """Pivot point on Victims for this resource.
 
         This method will return all *resources* (group, indicators, task,
@@ -1008,12 +1149,18 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (victim id).
         """
-        if self._pivot:
-            self._tcex.log.warn('Overriding previous pivot')
+        ## if self._pivot:
+        ##     self._tcex.log.warn('Overriding previous pivot')
+        ##
+        ## self._pivot = True
+        ## self._request_uri = 'victims/{}/{}'.format(
+        ##     resource_id, self._request_uri)
 
-        self._pivot = True
-        self._request_uri = 'victims/{}/{}'.format(
-            resource_id, self._request_uri)
+        # bcs-copy
+        resource = self._copy()
+        resource._request_uri = '{}/{}'.format(
+            victim_resource.request_uri, resource._request_uri)
+        return resource
 
     @property
     def url(self):
@@ -1051,9 +1198,10 @@ class Resource(object):
         # endpoints that support pagination will set self._result_count
         if self._result_count is not None:
             self._result_start += self._result_limit
+            self._paginate_count += len(results.get('data'))
             if self._paginate_count >= self._result_count:
                 self._paginate = False
-            self._paginate_count += len(results.get('data'))
+
         else:
             self._paginate = False
 
@@ -1734,7 +1882,56 @@ class SecurityLabel(Resource):
         Args:
             resource_id (string): The security label.
         """
+        self.label(resource_id)
+
+
+#
+# Tag
+#
+
+
+class Tag(Resource):
+    """Tag Class
+
+    This resource class will return Tags.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Tag, self).__init__(tcex)
+        self._api_branch = 'tags'
+        self._api_entity = 'tag'
+        self._api_uri = self._api_branch
+        self._name = 'Tag'
+        self._parent = 'Tag'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+        self._status_codes = {
+            'DELETE': [200],
+            'GET': [200],
+            'POST': [200],
+            'PUT': [200]
+        }
+        self._value_fields = ['name']
+
+    def tag(self, resource_id):
+        """Update the request URI to include the Tag for specific retrieval.
+
+        Args:
+            resource_id (string): The tag name.
+        """
         self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+
+    def resource_id(self, resource_id):
+        """Alias for tag
+
+        The resource id is the tag name.
+
+        Args:
+            resource_id (string): The tag name.
+        """
+        self.tag(resource_id)
+
 
 
 #
@@ -1766,7 +1963,7 @@ class Task(Resource):
         }
         self._value_fields = ['name']
 
-    def resource_id(self, resource_id):
+    def task_id(self, resource_id):
         """Update the request URI to include the Task Id for specific retrieval.
 
         Args:
@@ -1774,6 +1971,15 @@ class Task(Resource):
         """
         self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
 
+    def resource_id(self, resource_id):
+        """Alias for task_id method
+
+        The resource id is the task id.
+
+        Args:
+            resource_id (string): The task id.
+        """
+        self.task_id(resource_id)
 
 #
 # Victim
@@ -1804,13 +2010,23 @@ class Victim(Resource):
         }
         self._value_fields = ['name']
 
-    def resource_id(self, resource_id):
+    def victim_id(self, resource_id):
         """Update the request URI to include the Victim Id for specific retrieval.
 
         Args:
             resource_id (string): The victim id.
         """
         self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+
+    def resource_id(self, resource_id):
+        """Alias for victim_id method
+
+        The resource id is the victim id.
+
+        Args:
+            resource_id (string): The victim id.
+        """
+        self.victim_id(resource_id)
 
 
 #

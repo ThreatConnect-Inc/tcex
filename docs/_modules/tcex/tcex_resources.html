@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.3.7 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.4.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.3.7 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.4.0
               </div>
             
           
@@ -90,10 +90,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -147,6 +149,7 @@
             
   <h1>Source code for tcex.tcex_resources</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -183,7 +186,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter_or</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsable</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1">## self._pivot = False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
@@ -208,6 +211,27 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filters</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Resource._copy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._copy">[docs]</a>    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a &quot;clean&quot; copy of this instance.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            (instance): A clean copy of this instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># can&#39;t reset headers or authorization would have to be reset</span>
+        <span class="c1"># self._r.reset_headers()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">reset_payload</span><span class="p">()</span>
+
+        <span class="c1"># future bcs - these should not need to be reset. correct?</span>
+        <span class="c1"># resource._request_entity = self._api_entity</span>
+        <span class="c1"># resource._request_uri = self._api_uri</span>
+
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource._request_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._request_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">_request_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -438,19 +462,24 @@
 <span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
 <span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;{}/associations/{}/{}&#39;.format(</span>
+        <span class="c1">##     resource_api_branch, association_name, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
-<div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_api_branch</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on association for this resource.</span>
 
-<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
-<span class="sd">        victims, etc) for this resource that are associated with the provided</span>
-<span class="sd">        resource_type and value.</span>
+<span class="sd">        This method will return all *resources* (group, indicators, task, victims, etc) for this resource that are</span>
+<span class="sd">        associated with the provided resource.</span>
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
@@ -473,15 +502,58 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_api_branch (string): The resource pivot api branch including resource id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## resource._request_uri = &#39;{}/{}&#39;.format(resource_api_branch, self._request_uri)</span>
+        <span class="c1">## # bcs ^ by using request_uri a user can change pivots without having to worry about the</span>
+        <span class="c1">## #       uri getting mangled, but adding id&#39;s and indicators gets overwritten.  Since</span>
+        <span class="c1">## #       the uri should get reset after the request is made is should be okay to</span>
+        <span class="c1">## #       use request_uri here.</span>
+        <span class="c1">## return resource</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_api_branch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
-        <span class="c1"># bcs ^ by using request_uri a user can change pivots without having to worry about the</span>
-        <span class="c1">#       uri getting mangled, but adding id&#39;s and indicators gets overwritten.  Since</span>
-        <span class="c1">#       the uri should get reset after the request is made is should be okay to</span>
-        <span class="c1">#       use request_uri here.</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
+
+<div class="viewcode-block" id="Resource.associations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.associations">[docs]</a>    <span class="k">def</span> <span class="nf">associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve Association for this resource of the type in association_resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task, victims, etc) for this</span>
+<span class="sd">        resource that are associated with the provided association resource_type.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{pivot resourceType}/{pivot uniqueId}                                     |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{pivot resourceType}/{pivot uniqueId}                                 |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}                      |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicator/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            association_resource (Resource Instance): A resource object with option resource_id.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            (instance): A copy of this resource instance cleaned and updated for associations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">api_entity</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.attributes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Attribute endpoint for this resource with optional attribute id.</span>
@@ -515,14 +587,22 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (attribute id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;{}/attributes&#39;.format(self._request_uri)</span>
+        <span class="c1">## self._request_entity = &#39;attribute&#39;</span>
+        <span class="c1">## if resource_id is not None:</span>
+        <span class="c1">##     self._request_uri = &#39;{}/{}&#39;.format(self._request_uri, resource_id)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/attributes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;attribute&#39;</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;attribute&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/attributes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.authorization_method"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.authorization_method">[docs]</a>    <span class="k">def</span> <span class="nf">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method to create authorization header for this resource request.</span>
@@ -677,19 +757,24 @@
 <span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
 <span class="sd">            action_name (string): The name of the action as defined by ThreatConnect.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;{}/{}/actions/{}/{}&#39;.format(</span>
+        <span class="c1">##     self._request_api_branch, resource_id, action_name, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_api_branch</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_api_branch</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
-<div class="viewcode-block" id="Resource.group_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.group_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">group_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.group_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.group_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">group_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on groups for this resource.</span>
 
-<span class="sd">        This method will return all *resources* (indicators, tasks, victims,</span>
-<span class="sd">        etc) for this resource that are associated with the provided resource</span>
-<span class="sd">        id (indicator value).</span>
+<span class="sd">        This method will return all *resources* (indicators, tasks, victims, etc) for this resource</span>
+<span class="sd">        that are associated with the provided resource id (indicator value).</span>
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
@@ -710,15 +795,22 @@
 <span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_type (string): The resource pivot resource type (indicator type).</span>
-<span class="sd">            resource_id (integer): The resource pivot id (indicator value).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+<span class="sd">            group_resource (Resource Instance): A resource object with optional resource_id.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            (instance): A copy of this resource instance cleaned and updated for group associations.</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;groups/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;groups/{}/{}/{}&#39;.format(</span>
+        <span class="c1">##     resource_type, resource_id, self._request_uri)</span>
+
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">http_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -737,7 +829,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="Resource.indicator_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.indicator_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.indicator_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.indicator_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on indicators for this resource.</span>
 
 <span class="sd">        This method will return all *resources* (groups, tasks, victims, etc)</span>
@@ -766,12 +858,18 @@
 <span class="sd">            resource_type (string): The resource pivot resource type (indicator type).</span>
 <span class="sd">            resource_id (integer): The resource pivot id (indicator value).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;indicators/{}/{}/{}&#39;.format(</span>
+        <span class="c1">##     resource_type, resource_id, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;indicators/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">indicator_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -879,13 +977,14 @@
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stream</span><span class="p">)</span>
         <span class="n">data</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_process</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-        <span class="c1"># bcs - to reset or not to reset?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># self._r.reset_headers()</span>
-        <span class="c1"># self._r.reset_payload()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="c1">## bcs-copy</span>
+        <span class="c1">## # bcs - to reset or not to reset?</span>
+        <span class="c1">## self._r.body = None</span>
+        <span class="c1">## # self._r.reset_headers()</span>
+        <span class="c1">## # self._r.reset_payload()</span>
+        <span class="c1">## self._pivot = False</span>
+        <span class="c1">## self._request_uri = self._api_uri</span>
+        <span class="c1">## self._request_entity = self._api_entity</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
@@ -946,7 +1045,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result_limit</span> <span class="o">=</span> <span class="n">limit</span>
 
-<div class="viewcode-block" id="Resource.security_label_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.security_label_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">security_label_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.security_label_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.security_label_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">security_label_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">security_label_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on security labels for this resource.</span>
 
 <span class="sd">        This method will return all *resources* (group, indicators, task,</span>
@@ -970,11 +1069,17 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (security label name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;securityLabels/{}/{}&#39;.format(resource_id, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;securityLabels/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">security_label_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.security_labels"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.security_labels">[docs]</a>    <span class="k">def</span> <span class="nf">security_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Security Label endpoint for this resource with optional label name.</span>
@@ -1005,16 +1110,24 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (security label name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;{}/securityLabels&#39;.format(self._request_uri)</span>
+        <span class="c1">## self._request_entity = &#39;securityLabel&#39;</span>
+        <span class="c1">## if resource_id is not None:</span>
+        <span class="c1">##     self._request_uri = &#39;{}/{}&#39;.format(self._request_uri, resource_id)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/securityLabels&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/securityLabels&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
-<div class="viewcode-block" id="Resource.tag_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.tag_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">tag_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.tag_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.tag_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">tag_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on tags for this resource.</span>
 
 <span class="sd">        This method will return all *resources* (group, indicators, task,</span>
@@ -1041,12 +1154,18 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;tags/{}/{}&#39;.format(</span>
+        <span class="c1">##     self._tcex.safetag(resource_id), self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;tags/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">tag_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.tags"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tag endpoint for this resource with optional tag name.</span>
@@ -1084,17 +1203,26 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;{}/tags&#39;.format(self._request_uri)</span>
+        <span class="c1">## self._request_entity = &#39;tag&#39;</span>
+        <span class="c1">## if resource_id is not None:</span>
+        <span class="c1">##     self._request_uri = &#39;{}/{}&#39;.format(</span>
+        <span class="c1">##         self._request_uri, self._tcex.safetag(resource_id))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/tags&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/tags&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span></div>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
-<div class="viewcode-block" id="Resource.task_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.task_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">task_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.task_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.task_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">task_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on Tasks for this resource.</span>
 
 <span class="sd">        This method will return all *resources* (group, indicators, victims,</span>
@@ -1117,12 +1245,18 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (task id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;tasks/{}/{}&#39;.format(</span>
+        <span class="c1">##     resource_id, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;tasks/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">task_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">value_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1133,7 +1267,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span>
 
-<div class="viewcode-block" id="Resource.victim_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">victim_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.victim_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">victim_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">victim_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on Victims for this resource.</span>
 
 <span class="sd">        This method will return all *resources* (group, indicators, task,</span>
@@ -1156,12 +1290,18 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Overriding previous pivot&#39;</span><span class="p">)</span>
+        <span class="c1">## if self._pivot:</span>
+        <span class="c1">##     self._tcex.log.warn(&#39;Overriding previous pivot&#39;)</span>
+        <span class="c1">##</span>
+        <span class="c1">## self._pivot = True</span>
+        <span class="c1">## self._request_uri = &#39;victims/{}/{}&#39;.format(</span>
+        <span class="c1">##     resource_id, self._request_uri)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pivot</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;victims/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+        <span class="c1"># bcs-copy</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">victim_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1199,9 +1339,10 @@
         <span class="c1"># endpoints that support pagination will set self._result_count</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_result_start</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_limit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_count</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_paginate_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -1882,7 +2023,56 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The security label.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># Tag</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="Tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Tag">[docs]</a><span class="k">class</span> <span class="nc">Tag</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tag Class</span>
+
+<span class="sd">    This resource class will return Tags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Tag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;tags&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Tag&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Tag&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Tag.tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Tag.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Tag for specific retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The tag name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Tag.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Tag.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for tag</span>
+
+<span class="sd">        The resource id is the tag name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The tag name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+
 
 
 <span class="c1">#</span>
@@ -1914,14 +2104,23 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Task.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Task.task_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.task_id">[docs]</a>    <span class="k">def</span> <span class="nf">task_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Task Id for specific retrieval.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The task id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Task.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for task_id method</span>
+
+<span class="sd">        The resource id is the task id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The task id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
 
 <span class="c1">#</span>
 <span class="c1"># Victim</span>
@@ -1952,13 +2151,23 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Victim.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Victim.victim_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.victim_id">[docs]</a>    <span class="k">def</span> <span class="nf">victim_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Victim Id for specific retrieval.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The victim id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Victim.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Victim.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for victim_id method</span>
+
+<span class="sd">        The resource id is the victim id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The victim id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">victim_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
 
 
 <span class="c1">#</span>
@@ -2008,7 +2217,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.7',
+            VERSION:'0.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

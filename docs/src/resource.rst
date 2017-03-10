@@ -85,6 +85,10 @@ Indicator Resources
 | URL                    | :py:class:`~tcex.tcex_resources.URL`                     |
 +------------------------+----------------------------------------------------------+
 
+Examples
+~~~~~~~~
+:ref:`examples`
+
 .. Note:: Custom Indicators can be accessed by the **Type**. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made **safe** by using the :py:meth:`~tcex.tcex.TcEx.safe_rt` method.
 
 Owner Resources
@@ -95,6 +99,33 @@ Owner Resources
 +========================+==========================================================+
 | Owner                  | :py:class:`~tcex.tcex_resources.Owner`                   |
 +------------------------+----------------------------------------------------------+
+
+Security Label Resources
+------------------------
+
++------------------------+----------------------------------------------------------+
+| Resource Type          | Class                                                    |
++========================+==========================================================+
+| SecurityLabel          | :py:class:`~tcex.tcex_resources.SecurityLabel`           |
++------------------------+----------------------------------------------------------+
+
+Examples
+~~~~~~~~
+:ref:`examples`
+
+
+Tag Resources
+---------------
+
++------------------------+----------------------------------------------------------+
+| Resource Type          | Class                                                    |
++========================+==========================================================+
+| Tag                    | :py:class:`~tcex.tcex_resources.Tag`                     |
++------------------------+----------------------------------------------------------+
+
+Examples
+~~~~~~~~
+:ref:`examples`
 
 Task Resources
 --------------

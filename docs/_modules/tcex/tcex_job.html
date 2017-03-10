@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.3.7 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.4.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.3.7 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.4.0
               </div>
             
           
@@ -90,10 +90,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -450,6 +452,10 @@
                     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">)</span>
                     <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># TODO: move this and above duplicate code to &quot;if halt&quot; below after validating logic</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># all indicator in chunk will be not_saved</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">])</span>
                 <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
@@ -1189,7 +1195,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.3.7',
+            VERSION:'0.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser module &mdash; TcEx 0.3.7 documentation</title>
+  <title>tcex.argparser module &mdash; TcEx 0.4.0 documentation</title>
   
 
   
@@ -33,7 +33,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.3.7 documentation" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.4.0 documentation" href="../index.html"/>
+        <link rel="up" title="tcex package" href="tcex.html"/>
+        <link rel="next" title="tcex.tcex module" href="tcex.tcex.html"/>
+        <link rel="prev" title="tcex.api_logging_handler module" href="tcex.api_logging_handler.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.4.0
               </div>
             
           
@@ -83,16 +86,38 @@
             
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -129,6 +154,10 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+      
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
       
     <li>tcex.argparser module</li>
       <li class="wy-breadcrumbs-aside">
@@ -323,6 +352,15 @@
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="tcex.tcex module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tcex.api_logging_handler.html" class="btn btn-neutral" title="tcex.api_logging_handler module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -349,7 +387,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.3.7',
+            VERSION:'0.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
