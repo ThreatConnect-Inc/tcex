@@ -537,6 +537,50 @@ field 1, field 2, field 3 as defined in the UI).</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_resources.Indicator.indicators">
+<code class="descname">indicators</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for indicator values.</p>
+<p>Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
+values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
+indicator values.</p>
+<p>Both the <strong>summary</strong> field and the individual indicator fields (e.g. <strong>md5</strong>, <strong>sha1</strong>,
+<strong>sha256</strong>) are supported.</p>
+<p>For indicators that have only one value such as <strong>ip</strong> or <strong>hostName</strong> the generator will
+only return the one result.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resource</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="p">):</span>  <span class="c1"># the individual indicator JSON from the API</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>  <span class="c1"># md5, sha1, sha256, etc</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span>  <span class="c1"># hash or custom indicator value</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method could break for custom indicators that have &#8221; : &#8221; in the value of
+the indicator while using the summary field.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For <code class="docutils literal"><span class="pre">/v2/indicators</span></code> and <code class="docutils literal"><span class="pre">/v2/indicators/bulk/json</span></code> API endpoints only one
+hash is returned for a file Indicator even if there are multiple in the platform.
+If all hashes are required the <code class="docutils literal"><span class="pre">/v2/indicators/files</span></code> or
+<code class="docutils literal"><span class="pre">/v2/indicators/files/&lt;hash&gt;</span></code> endpoints will provide all hashes.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict</em>) &#8211; The indicator dictionary.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dict containing the indicator type and value.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Indicator.resource_id">
 <code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.resource_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for indicator method.</p>
@@ -928,8 +972,8 @@ resource that are associated with the provided association resource_type.</p>
 <p><strong>Example Endpoints URI&#8217;s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="11%" />
+<col width="89%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">HTTP Method</th>
@@ -938,30 +982,26 @@ resource that are associated with the provided association resource_type.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>GET</td>
-<td>/v2/groups/{resourceType}/{pivot resourceType}/{pivot uniqueId}</td>
-</tr>
-<tr class="row-odd"><td>GET</td>
-<td>/v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
-</tr>
-<tr class="row-even"><td>POST</td>
-<td>/v2/groups/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
-</tr>
-<tr class="row-odd"><td>GET</td>
-<td>/v2/indicators/{resourceType}/{pivot resourceType}/{pivot uniqueId}</td>
-</tr>
-<tr class="row-even"><td>GET</td>
-<td>/v2/indicators/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}</td>
 </tr>
 <tr class="row-odd"><td>POST</td>
-<td>/v2/indicator/{resourceType}/{uniqueId}/{pivot resourceType}/{pivot uniqueId}</td>
+<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
 </tr>
 </tbody>
 </table>
+<ul class="simple">
+<li>resourceClass - Groups/Indicators</li>
+<li>resourceType - Adversary, Incident, etc / Address, EmailAddress, etc</li>
+<li>resourceId - Group Id / Indicator Value</li>
+</ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>association_resource</strong> (<em>Resource Instance</em>) &#8211; A resource object with option resource_id.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>association_resource</strong> (<em>Resource Instance</em>) &#8211; A resource object with optional resource_id.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A copy of this resource instance cleaned and updated for associations.</td>
 </tr>
@@ -1253,50 +1293,6 @@ for this resource that are associated with the provided resource id
 <li><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (indicator value).</li>
 </ul>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_resources.Resource.indicators">
-<code class="descname">indicators</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.indicators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator for indicator values.</p>
-<p>Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
-values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
-indicator values.</p>
-<p>Both the <strong>summary</strong> field and the individual indicator fields (e.g. <strong>md5</strong>, <strong>sha1</strong>,
-<strong>sha256</strong>) are supported.</p>
-<p>For indicators that have only one value such as <strong>ip</strong> or <strong>hostName</strong> the generator will
-only return the one result.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resource</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="p">):</span>  <span class="c1"># the individual indicator JSON from the API</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>  <span class="c1"># md5, sha1, sha256, etc</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span>  <span class="c1"># hash or custom indicator value</span>
-</pre></div>
-</td></tr></table></div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This method could break for custom indicators that have &#8221; : &#8221; in the value of
-the indicator while using the summary field.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For <code class="docutils literal"><span class="pre">/v2/indicators</span></code> and <code class="docutils literal"><span class="pre">/v2/indicators/bulk/json</span></code> API endpoints only one
-hash is returned for a file Indicator even if there are multiple in the platform.
-If all hashes are required the <code class="docutils literal"><span class="pre">/v2/indicators/files</span></code> or
-<code class="docutils literal"><span class="pre">/v2/indicators/files/&lt;hash&gt;</span></code> endpoints will provide all hashes.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict</em>) &#8211; The indicator dictionary.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dict containing the indicator type and value.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
 </tbody>
 </table>

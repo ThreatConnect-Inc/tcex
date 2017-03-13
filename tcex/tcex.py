@@ -617,7 +617,6 @@ class TcEx(object):
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
         return self.request
 
-
     def request_tc(self):
         """Return an instance of the Request Class with Proxy Set
 
@@ -630,6 +629,17 @@ class TcEx(object):
             self.log.info(u'Using proxy server for TC request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
         return self.request
+
+    def resource(self, resource_type):
+        """Get instance of Resource Class with dynamic group.
+
+        Args:
+            resource_type: The resource type name (e.g Adversary, User Agent, etc).
+
+        Returns:
+            (instance): Instance of Resource Object child class.
+        """
+        return getattr(self.resources, self.safe_rt(resource_type))(self)
 
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory

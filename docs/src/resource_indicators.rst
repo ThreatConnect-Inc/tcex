@@ -5,27 +5,27 @@
 +========================+==========================================================+
 | Indicator Direct       | resource = tcex.resources.Indicator(tcex)                |
 +------------------------+----------------------------------------------------------+
-| Indicator Dynamic      | resource = getattr(tcex.resources, 'Indicator')(tcex)    |
+| Indicator Dynamic      | resource = tcex.resource('Indicator')                    |
 +------------------------+----------------------------------------------------------+
 | Address Direct         | resource = tcex.resources.Address(tcex)                  |
 +------------------------+----------------------------------------------------------+
-| Address Dynamic        | resource = getattr(tcex.resources, 'Address')(tcex)      |
+| Address Dynamic        | resource =  tcex.resource('Address')                     |
 +------------------------+----------------------------------------------------------+
 | EmailAddress Direct    | resource = tcex.resources.EmailAddress(tcex)             |
 +------------------------+----------------------------------------------------------+
-| EmailAddress Dynamic   | resource = getattr(tcex.resources, 'EmailAddress')(tcex) |
+| EmailAddress Dynamic   | resource = tcex.resource('EmailAddress')                 |
 +------------------------+----------------------------------------------------------+
 | File Direct            | resource = tcex.resources.File(tcex)                     |
 +------------------------+----------------------------------------------------------+
-| File Dynamic           | resource = getattr(tcex.resources, 'File')(tcex)         |
+| File Dynamic           | resource = tcex.resource('File')                         |
 +------------------------+----------------------------------------------------------+
 | Host Direct            | resource = tcex.resources.Host(tcex)                     |
 +------------------------+----------------------------------------------------------+
-| Host Dynamic           | resource = getattr(tcex.resources, 'Host')(tcex)         |
+| Host Dynamic           | resource = tcex.resource('Host')                         |
 +------------------------+----------------------------------------------------------+
 | URL Direct             | resource = tcex.resources.URL(tcex)                      |
 +------------------------+----------------------------------------------------------+
-| URL Dynamic            | resource = getattr(tcex.resources, 'URL')(tcex)          |
+| URL Dynamic            | resource = tcex.resource('URL')                          |
 +------------------------+----------------------------------------------------------+
 
 
@@ -125,7 +125,7 @@ Retrieve Specific Indicator
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'Address')(tcex)
+        resource = tcex.resource('Address')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.resource_id('1.1.1.4')  # Optional
@@ -182,7 +182,7 @@ Retrieve Filtered Indicators
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'Indicator')(tcex)
+        resource = tcex.resource('Indicator')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.add_filter('rating', '>', 1)
@@ -258,7 +258,7 @@ Indicator Associations
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'Indicator')(tcex)
+        resource = tcex.resource('Indicator')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.add_filter('rating', '>', 1)
@@ -269,7 +269,7 @@ Indicator Associations
                 for indicator_data in results.get('data', []):
                     print(indicator_data.get('summary'))
 
-                    ar = getattr(tcex.resources, 'Adversary')(tcex)  # Get Adversaries
+                    ar = tcex.resource('Adversary')  # Get Adversaries Instance
                     associations_resource = resource.associations(ar)
                     associations_results = associations_resource.request()
                     print(json.dumps(associations_results.get('data', []), indent=4))

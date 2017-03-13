@@ -1,7 +1,7 @@
 .. _resources_tags:
 
 + Direct Access: ``resource = tcex.resources.Tag(tcex)``
-+ Dynamic Access: ``resource = getattr(tcex.resources, 'Tag')(tcex)``
++ Dynamic Access: ``resource = resource = tcex.resource('Tag')``
 
 Retrieve All Tags
 =================
@@ -85,7 +85,7 @@ Retrieve Specific Tag
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'Tag')(tcex)
+        resource = tcex.resources.Tag(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.resource_id('APT')  # Optional
@@ -131,7 +131,7 @@ Retrieve Filtered Tags
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'Tag')(tcex)
+        resource = tcex.resource('Tag')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.add_filter('name', '=', 'APT')  # Optional

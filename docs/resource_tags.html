@@ -146,7 +146,7 @@
             
   <ul class="simple" id="resources-tags">
 <li>Direct Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">tcex.resources.Tag(tcex)</span></code></li>
-<li>Dynamic Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">getattr(tcex.resources,</span> <span class="pre">'Tag')(tcex)</span></code></li>
+<li>Dynamic Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">resource</span> <span class="pre">=</span> <span class="pre">tcex.resource('Tag')</span></code></li>
 </ul>
 <div class="section" id="retrieve-all-tags">
 <h1>Retrieve All Tags<a class="headerlink" href="#retrieve-all-tags" title="Permalink to this headline">¶</a></h1>
@@ -280,7 +280,7 @@
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-<span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="s1">&#39;Tag&#39;</span><span class="p">)(</span><span class="n">tcex</span><span class="p">)</span>
+<span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Tag</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>
 <span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="s1">&#39;APT&#39;</span><span class="p">)</span>  <span class="c1"># Optional</span>
@@ -348,7 +348,7 @@
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-<span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="s1">&#39;Tag&#39;</span><span class="p">)(</span><span class="n">tcex</span><span class="p">)</span>
+<span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;Tag&#39;</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>
 <span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;APT&#39;</span><span class="p">)</span>  <span class="c1"># Optional</span>

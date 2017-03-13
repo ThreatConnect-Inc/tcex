@@ -198,7 +198,7 @@
 8
 9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
 
-<span class="hll"><span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="n">tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="s1">&#39;User Agent&#39;</span><span class="p">))(</span><span class="n">tcex</span><span class="p">)</span>
+<span class="hll"><span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;User Agent&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="c1"># paginate over results</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
 </span>    <span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">])</span>

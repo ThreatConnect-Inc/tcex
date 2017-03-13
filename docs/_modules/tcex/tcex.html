@@ -767,7 +767,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span></div>
 
-
 <div class="viewcode-block" id="TcEx.request_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request_tc">[docs]</a>    <span class="k">def</span> <span class="nf">request_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of the Request Class with Proxy Set</span>
 
@@ -780,6 +779,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;Using proxy server for TC request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span></div>
+
+<div class="viewcode-block" id="TcEx.resource"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.resource">[docs]</a>    <span class="k">def</span> <span class="nf">resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of Resource Class with dynamic group.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_type: The resource type name (e.g Adversary, User Agent, etc).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (instance): Instance of Resource Object child class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">resource_type</span><span class="p">))(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.results_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc">[docs]</a>    <span class="k">def</span> <span class="nf">results_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to results_tc file in TcEX specified directory</span>

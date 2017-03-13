@@ -2,7 +2,7 @@
 
 
 + Direct Access: ``resource = tcex.resources.SecurityLabel(tcex)``
-+ Dynamic Access: ``resource = getattr(tcex.resources, 'SecurityLabel')(tcex)``
++ Dynamic Access: ``resource = resource = tcex.resource('SecurityLabel')``
 
 Retrieve All Security Labels
 ============================
@@ -79,7 +79,7 @@ Retrieve Specific Security Label
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'SecurityLabel')(tcex)
+        resource = tcex.resources.SecurityLabel(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.resource_id('TLP Green')  # Optional
@@ -126,7 +126,7 @@ Retrieve Filtered Security Labels
 
     def main():
         """ """
-        resource = getattr(tcex.resources, 'SecurityLabel')(tcex)
+        resource = tcex.resource('SecurityLabel')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
         resource.add_filter('name', '^', 'TLP')  # Optional

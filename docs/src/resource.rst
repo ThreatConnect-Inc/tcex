@@ -33,7 +33,7 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 
     tcex = TcEx()
 
-    resource = getattr(tcex.resources, tcex.safe_rt('User Agent'))(tcex)
+    resource = tcex.resource('User Agent')
     # paginate over results
     for result in resource:
         print(result['status'])

@@ -36,7 +36,6 @@ class Resource(object):
         self._filter_or = False
         self._name = None
         self._parsable = False
-        ## self._pivot = False
         self._paginate = True
         self._paginate_count = 0
         self._parent = None
@@ -47,7 +46,7 @@ class Resource(object):
         self._result_start = 0
         self._stream = False
         self._status_codes = {}
-        self._url = None
+        self._url = self._tcex._args.tc_api_path
         self._value_fields = []
 
     def _apply_filters(self):
@@ -68,7 +67,6 @@ class Resource(object):
         Return:
             (instance): A clean copy of this instance.
         """
-        # bcs-copy
         resource = copy.copy(self)
         resource._http_method = 'GET'
         resource._filters = []
@@ -78,9 +76,10 @@ class Resource(object):
         resource._result_count = None
         resource._result_limit = 500
         resource._result_start = 0
-        # can't reset headers or authorization would have to be reset
-        # self._r.reset_headers()
+        self._r.reset_headers()
         resource._r.body = None
+
+        # keep owner as that is important for pivots
         owner = resource._r.payload.get('owner')
         resource._r.reset_payload()
         if owner is not None:
@@ -321,14 +320,6 @@ class Resource(object):
             resource_api_branch (string): The resource pivot api branch.
             association_name (string): The name of the custom association as defined in the UI.
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = '{}/associations/{}/{}'.format(
-        ##     resource_api_branch, association_name, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/associations/{}/{}'.format(
             resource_api_branch, association_name, resource._request_uri)
@@ -361,24 +352,12 @@ class Resource(object):
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## resource._request_uri = '{}/{}'.format(resource_api_branch, self._request_uri)
-        ## # bcs ^ by using request_uri a user can change pivots without having to worry about the
-        ## #       uri getting mangled, but adding id's and indicators gets overwritten.  Since
-        ## #       the uri should get reset after the request is made is should be okay to
-        ## #       use request_uri here.
-        ## return resource
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             association_resource.request_uri, resource._request_uri)
         return resource
 
-    def associations(self, association_resource, resource_id=None):
+    def associations(self, association_resource):
         """Retrieve Association for this resource of the type in association_resource.
 
         This method will return all *resources* (group, indicators, task, victims, etc) for this
@@ -401,14 +380,11 @@ class Resource(object):
         + resourceId - Group Id / Indicator Value
 
         Args:
-            association_resource (Resource Instance): A resource object with option resource_id.
+            association_resource (Resource Instance): A resource object with optional resource_id.
         Return:
             (instance): A copy of this resource instance cleaned and updated for associations.
         """
-        # bcs-copy
         resource = self._copy()
-        if resource_id is not None:
-            resource.resource_id(resource_id)
         resource._request_entity = association_resource.api_entity
         resource._request_uri = '{}/{}'.format(
             resource._request_uri, association_resource.request_uri)
@@ -446,16 +422,6 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (attribute id).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = '{}/attributes'.format(self._request_uri)
-        ## self._request_entity = 'attribute'
-        ## if resource_id is not None:
-        ##     self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_entity = 'attribute'
         resource._request_uri = '{}/attributes'.format(resource._request_uri)
@@ -513,88 +479,6 @@ class Resource(object):
         """
         return self._custom
 
-    def indicators(self, indicator_data):
-        """Generator for indicator values.
-
-        Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
-        values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
-        indicator values.
-
-        Both the **summary** field and the individual indicator fields (e.g. **md5**, **sha1**,
-        **sha256**) are supported.
-
-        For indicators that have only one value such as **ip** or **hostName** the generator will
-        only return the one result.
-
-        .. code-block:: python
-            :linenos:
-            :lineno-start: 1
-
-            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API
-                print(i.get('type'))  # md5, sha1, sha256, etc
-                print(i.get('value'))  # hash or custom indicator value
-
-        .. Warning:: This method could break for custom indicators that have " : " in the value of
-                     the indicator while using the summary field.
-
-        .. Note:: For ``/v2/indicators`` and ``/v2/indicators/bulk/json`` API endpoints only one
-                  hash is returned for a file Indicator even if there are multiple in the platform.
-                  If all hashes are required the ``/v2/indicators/files`` or
-                  ``/v2/indicators/files/<hash>`` endpoints will provide all hashes.
-
-        Args:
-            indicator_data (dict): The indicator dictionary.
-
-        Returns:
-            (dictionary): A dict containing the indicator type and value.
-        """
-        indicator_list = []
-        for indicator_field in self.value_fields:
-            if indicator_field == 'summary':
-                if indicator_data.get('type') == 'File':
-                    hash_patterns = {
-                        'md5': re.compile(r'^([a-fA-F\d]{32})$'),
-                        'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
-                        'sha256': re.compile(r'^([a-fA-F\d]{64})$')
-                    }
-                    body = {}
-                    for i in indicator_data.get('summary').split(' : '):
-                        if hash_patterns['md5'].match(i):
-                            i_type = 'md5'
-                        elif hash_patterns['sha1'].match(i):
-                            i_type = 'sha1'
-                        elif hash_patterns['sha256'].match(i):
-                            i_type = 'sha256'
-
-                        data = {
-                            'type': i_type,
-                            'value': i
-                        }
-                        yield data
-                else:
-                    resource = getattr(
-                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(self._tcex)
-                    values = resource.value_fields
-
-                    index = 0
-                    for i in indicator_data.get('summary').split(' : '):
-                        # TODO: remove workaround for bug in indicatorTypes API endpoint
-                        if len(values) - 1 < index:
-                            break
-
-                        data = {
-                            'type': values[index],
-                            'value': i
-                        }
-                        index += 1
-                        yield data
-            else:
-                if indicator_data.get(indicator_field) is not None:
-                    yield {
-                        'type': indicator_field,
-                        'value': indicator_data.get(indicator_field)
-                    }
-
     def file_action(self, resource_id, action_name):
         """File action pivot for this resource.
 
@@ -616,14 +500,6 @@ class Resource(object):
             resource_id (string): The resource pivot id (file hash).
             action_name (string): The name of the action as defined by ThreatConnect.
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = '{}/{}/actions/{}/{}'.format(
-        ##     self._request_api_branch, resource_id, action_name, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}/actions/{}/{}'.format(
             resource._request_api_branch, resource_id, action_name, resource._request_uri)
@@ -659,14 +535,6 @@ class Resource(object):
             (instance): A copy of this resource instance cleaned and updated for group associations.
 
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'groups/{}/{}/{}'.format(
-        ##     resource_type, resource_id, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(group_resource.request_uri, resource._request_uri)
         return resource
@@ -717,14 +585,6 @@ class Resource(object):
             resource_type (string): The resource pivot resource type (indicator type).
             resource_id (integer): The resource pivot id (indicator value).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'indicators/{}/{}/{}'.format(
-        ##     resource_type, resource_id, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             indicator_resource.request_uri, resource._request_uri)
@@ -836,12 +696,10 @@ class Resource(object):
         response = self._r.send(stream=self._stream)
         data, status = self._request_process(response)
 
-        ## bcs-copy
         ## # bcs - to reset or not to reset?
         ## self._r.body = None
         ## # self._r.reset_headers()
         ## # self._r.reset_payload()
-        ## self._pivot = False
         ## self._request_uri = self._api_uri
         ## self._request_entity = self._api_entity
 
@@ -928,13 +786,6 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (security label name).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'securityLabels/{}/{}'.format(resource_id, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             security_label_resource.request_uri, resource._request_uri)
@@ -969,16 +820,6 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (security label name).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = '{}/securityLabels'.format(self._request_uri)
-        ## self._request_entity = 'securityLabel'
-        ## if resource_id is not None:
-        ##     self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_entity = 'securityLabel'
         resource._request_uri = '{}/securityLabels'.format(resource._request_uri)
@@ -1013,14 +854,6 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (tag name).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'tags/{}/{}'.format(
-        ##     self._tcex.safetag(resource_id), self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             tag_resource.request_uri, resource._request_uri)
@@ -1062,17 +895,6 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (tag name).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = '{}/tags'.format(self._request_uri)
-        ## self._request_entity = 'tag'
-        ## if resource_id is not None:
-        ##     self._request_uri = '{}/{}'.format(
-        ##         self._request_uri, self._tcex.safetag(resource_id))
-
-        # bcs-copy
         resource = self._copy()
         resource._request_entity = 'tag'
         resource._request_uri = '{}/tags'.format(resource._request_uri)
@@ -1104,14 +926,6 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (task id).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'tasks/{}/{}'.format(
-        ##     resource_id, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             task_resource.request_uri, resource._request_uri)
@@ -1149,14 +963,6 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (victim id).
         """
-        ## if self._pivot:
-        ##     self._tcex.log.warn('Overriding previous pivot')
-        ##
-        ## self._pivot = True
-        ## self._request_uri = 'victims/{}/{}'.format(
-        ##     resource_id, self._request_uri)
-
-        # bcs-copy
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             victim_resource.request_uri, resource._request_uri)
@@ -1334,7 +1140,8 @@ class Indicator(Resource):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            self._request_uri = '{}/{}'.format(self._request_uri, data)
+            # self._request_uri = '{}/{}'.format(self._request_uri, data)
+            self._request_uri = '{}/{}'.format(self._api_uri, data)
 
     def indicator_body(self, indicators):
         """Generate the appropriate dictionary content for POST of a **single** indicator.
@@ -1356,6 +1163,88 @@ class Indicator(Resource):
                 break
 
         return body
+
+    def indicators(self, indicator_data):
+        """Generator for indicator values.
+
+        Some indicator such as Files (hashes) and Custom Indicators can have multiple indicator
+        values (e.g. md5, sha1, sha256). This method provides a generator to iterate over all
+        indicator values.
+
+        Both the **summary** field and the individual indicator fields (e.g. **md5**, **sha1**,
+        **sha256**) are supported.
+
+        For indicators that have only one value such as **ip** or **hostName** the generator will
+        only return the one result.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API
+                print(i.get('type'))  # md5, sha1, sha256, etc
+                print(i.get('value'))  # hash or custom indicator value
+
+        .. Warning:: This method could break for custom indicators that have " : " in the value of
+                     the indicator while using the summary field.
+
+        .. Note:: For ``/v2/indicators`` and ``/v2/indicators/bulk/json`` API endpoints only one
+                  hash is returned for a file Indicator even if there are multiple in the platform.
+                  If all hashes are required the ``/v2/indicators/files`` or
+                  ``/v2/indicators/files/<hash>`` endpoints will provide all hashes.
+
+        Args:
+            indicator_data (dict): The indicator dictionary.
+
+        Returns:
+            (dictionary): A dict containing the indicator type and value.
+        """
+        indicator_list = []
+        for indicator_field in self.value_fields:
+            if indicator_field == 'summary':
+                if indicator_data.get('type') == 'File':
+                    hash_patterns = {
+                        'md5': re.compile(r'^([a-fA-F\d]{32})$'),
+                        'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
+                        'sha256': re.compile(r'^([a-fA-F\d]{64})$')
+                    }
+                    body = {}
+                    for i in indicator_data.get('summary').split(' : '):
+                        if hash_patterns['md5'].match(i):
+                            i_type = 'md5'
+                        elif hash_patterns['sha1'].match(i):
+                            i_type = 'sha1'
+                        elif hash_patterns['sha256'].match(i):
+                            i_type = 'sha256'
+
+                        data = {
+                            'type': i_type,
+                            'value': i
+                        }
+                        yield data
+                else:
+                    resource = getattr(
+                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(self._tcex)
+                    values = resource.value_fields
+
+                    index = 0
+                    for i in indicator_data.get('summary').split(' : '):
+                        # TODO: remove workaround for bug in indicatorTypes API endpoint
+                        if len(values) - 1 < index:
+                            break
+
+                        data = {
+                            'type': values[index],
+                            'value': i
+                        }
+                        index += 1
+                        yield data
+            else:
+                if indicator_data.get(indicator_field) is not None:
+                    yield {
+                        'type': indicator_field,
+                        'value': indicator_data.get(indicator_field)
+                    }
 
     def resource_id(self, data):
         """Alias for indicator method.
