@@ -10,6 +10,8 @@ Release Notes
 ------
 + Breaking change to :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take a instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.
 + Added Tag Resource class.
++ Added :py:meth:`~tcex.tcex.TcEx.resource` method to get instance of Resource instance.
++ Added :py:mod:`~tcex.tcex_resources.DataStore` class to the :py:mod:`~tcex.tcex_resources.Resource` module.
 
 0.3.x
 =====

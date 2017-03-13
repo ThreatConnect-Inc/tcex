@@ -5,6 +5,11 @@
 Examples
 =========
 
+-------------------
+Data Store Examples
+-------------------
+.. include:: resource_data_store.rst
+
 ---------------------------
 Indicator Resource Examples
 ---------------------------

@@ -299,6 +299,134 @@ the parent class.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="tcex.tcex_resources.DataStore">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">DataStore</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>DataStore Class</p>
+<p>This resource class will return DataStore.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore._request">
+<code class="descname">_request</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>db_method</em>, <em>body=None</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore._request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore._request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the API request for a Data Store CRUD operation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domain</strong> (<em>string</em>) &#8211; One of &#8216;local&#8217;, &#8216;organization&#8217;, or &#8216;system&#8217;.</li>
+<li><strong>type_name</strong> (<em>string</em>) &#8211; This is a free form index type name. The ThreatConnect API will use this resource verbatim.</li>
+<li><strong>search_command</strong> (<em>string</em>) &#8211; Search command to pass to ES.</li>
+<li><strong>db_method</strong> (<em>string</em>) &#8211; The DB method &#8216;DELETE&#8217;, &#8216;GET&#8217;, &#8216;POST&#8217;, or &#8216;PUT&#8217;</li>
+<li><strong>body</strong> (<em>dict</em>) &#8211; JSON body</li>
+<li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create entry in ThreatConnect Data Store</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An owner is only required with the domain is <strong>organization</strong>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domain</strong> (<em>string</em>) &#8211; One of &#8216;local&#8217;, &#8216;organization&#8217;, or &#8216;system&#8217;.</li>
+<li><strong>type_name</strong> (<em>string</em>) &#8211; This is a free form index type name. The ThreatConnect API will use this resource verbatim.</li>
+<li><strong>search_command</strong> (<em>string</em>) &#8211; Search command to pass to ES.</li>
+<li><strong>body</strong> (<em>dict</em>) &#8211; JSON body</li>
+<li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete entry in ThreatConnect Data Store</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An owner is only required with the domain is <strong>organization</strong>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domain</strong> (<em>string</em>) &#8211; One of &#8216;local&#8217;, &#8216;organization&#8217;, or &#8216;system&#8217;.</li>
+<li><strong>type_name</strong> (<em>string</em>) &#8211; This is a free form index type name. The ThreatConnect API will use this resource verbatim.</li>
+<li><strong>search_command</strong> (<em>string</em>) &#8211; Search command to pass to ES.</li>
+<li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read entry in ThreatConnect Data Store</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An owner is only required with the domain is <strong>organization</strong>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domain</strong> (<em>string</em>) &#8211; One of &#8216;local&#8217;, &#8216;organization&#8217;, or &#8216;system&#8217;.</li>
+<li><strong>type_name</strong> (<em>string</em>) &#8211; This is a free form index type name. The ThreatConnect API will use this resource verbatim.</li>
+<li><strong>search_command</strong> (<em>string</em>) &#8211; Search command to pass to ES.</li>
+<li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update entry in ThreatConnect Data Store</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">An owner is only required with the domain is <strong>organization</strong>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domain</strong> (<em>string</em>) &#8211; One of &#8216;local&#8217;, &#8216;organization&#8217;, or &#8216;system&#8217;.</li>
+<li><strong>type_name</strong> (<em>string</em>) &#8211; This is a free form index type name. The ThreatConnect API will use this resource verbatim.</li>
+<li><strong>search_command</strong> (<em>string</em>) &#8211; Search command to pass to ES.</li>
+<li><strong>body</strong> (<em>dict</em>) &#8211; JSON body</li>
+<li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.tcex_resources.Document">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>

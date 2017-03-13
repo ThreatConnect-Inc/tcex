@@ -1919,6 +1919,134 @@ class Victim(Resource):
 
 
 #
+# DataStore
+#
+
+
+class DataStore(object):
+    """DataStore Class
+
+    This resource class will return DataStore.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        self._tcex = tcex
+
+        # request
+        self._r = tcex.request
+        if tcex._args.tc_proxy_tc:
+            self._r.proxies = tcex.proxies
+
+        self._authorization_method = self._tcex.authorization
+        self._request_uri = 'exchange/db'
+        self._url = self._tcex._args.tc_api_path
+        self._status_codes = {
+            'DELETE': [200],
+            'GET': [200],
+            'POST': [200, 201],
+            'PUT': [200]
+        }
+
+    def _request(self, domain, type_name, search_command, db_method, body=None, owner=None):
+        """Make the API request for a Data Store CRUD operation
+
+        Args:
+            domain (string): One of 'local', 'organization', or 'system'.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            search_command (string): Search command to pass to ES.
+            db_method (string): The DB method 'DELETE', 'GET', 'POST', or 'PUT'
+            body (dict): JSON body
+            owner (string): The ThreatConnect owner.
+        """
+        self._r.add_header('DB-Method', db_method)
+        self._r.authorization_method(self._authorization_method)
+        if body is not None:
+            self._r.body = json.dumps(body)
+            self._r.content_type = 'application/json'
+        self._r.http_method = 'POST'
+        self._r.url = '{}/v2/{}/{}/{}/{}'.format(
+            self._url, self._request_uri, domain, type_name, search_command)
+        self._tcex.log.debug('Resource URL: ({})'.format(self._r.url))
+
+        if owner is not None:
+            self._r.add_payload('owner', owner)
+
+        response = self._r.send()
+
+        data = []
+        status = 'Failed'
+        if response.status_code in self._status_codes[db_method]:
+            status = 'Success'
+        if 'application/json' in response.headers['content-type'].split(';'):
+            # handle API issue where content type does not match response data type
+            try:
+                data = response.json()
+            except ValueError as e:
+                status = 'Failed'
+
+        return {
+            'data': data,
+            'response': response,
+            'status': status
+        }
+
+    def create(self, domain, type_name, search_command, body, owner=None):
+        """Create entry in ThreatConnect Data Store
+
+        .. Note:: An owner is only required with the domain is **organization**.
+
+        Args:
+            domain (string): One of 'local', 'organization', or 'system'.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            search_command (string): Search command to pass to ES.
+            body (dict): JSON body
+            owner (string): The ThreatConnect owner.
+        """
+        return self._request(domain, type_name, search_command, 'POST', body, owner)
+
+    def delete(self, domain, type_name, search_command, owner=None):
+        """Delete entry in ThreatConnect Data Store
+
+        .. Note:: An owner is only required with the domain is **organization**.
+
+        Args:
+            domain (string): One of 'local', 'organization', or 'system'.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            search_command (string): Search command to pass to ES.
+            owner (string): The ThreatConnect owner.
+        """
+        return self._request(domain, type_name, search_command, 'DELETE', None, owner)
+
+    def read(self, domain, type_name, search_command, owner=None):
+        """Read entry in ThreatConnect Data Store
+
+        .. Note:: An owner is only required with the domain is **organization**.
+
+        Args:
+            domain (string): One of 'local', 'organization', or 'system'.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            search_command (string): Search command to pass to ES.
+            owner (string): The ThreatConnect owner.
+        """
+        return self._request(domain, type_name, search_command, 'GET', None, owner)
+
+    def update(self, domain, type_name, search_command, body, owner=None):
+        """Update entry in ThreatConnect Data Store
+
+        .. Note:: An owner is only required with the domain is **organization**.
+
+        Args:
+            domain (string): One of 'local', 'organization', or 'system'.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            search_command (string): Search command to pass to ES.
+            body (dict): JSON body
+            owner (string): The ThreatConnect owner.
+        """
+        return self._request(domain, type_name, search_command, 'PUT', body, owner)
+
+
+#
 # Class Factory
 #
 

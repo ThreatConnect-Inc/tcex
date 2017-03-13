@@ -43,6 +43,26 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 
 .. Note:: For result sets that do not support pagination the ``resource.request()`` method can be called directly.
 
+Data Store Resource
+--------------------
+The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.
+
++------------------------+----------------------------------------------------------+
+| Db Method              | Method                                                   |
++========================+==========================================================+
+| Create                 | :py:meth:`~tcex.tcex_resources.DataStore.create`         |
++------------------------+----------------------------------------------------------+
+| Read                   | :py:meth:`~tcex.tcex_resources.DataStore.read`           |
++------------------------+----------------------------------------------------------+
+| Update                 | :py:meth:`~tcex.tcex_resources.DataStore.update`         |
++------------------------+----------------------------------------------------------+
+| Delete                 | :py:meth:`~tcex.tcex_resources.DataStore.delete`         |
++------------------------+----------------------------------------------------------+
+
+Examples
+~~~~~~~~
+:ref:`examples`
+
 Group Resources
 ---------------
 
@@ -112,7 +132,6 @@ Security Label Resources
 Examples
 ~~~~~~~~
 :ref:`examples`
-
 
 Tag Resources
 ---------------

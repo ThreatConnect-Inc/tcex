@@ -102,18 +102,22 @@
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-store-resource">Data Store Resource</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#group-resources">Group Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indicator-resources">Indicator Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#owner-resources">Owner Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#security-label-resources">Security Label Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#tag-resources">Tag Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#task-resources">Task Resources</a></li>
@@ -211,6 +215,39 @@
 <p class="first admonition-title">Note</p>
 <p class="last">For result sets that do not support pagination the <code class="docutils literal"><span class="pre">resource.request()</span></code> method can be called directly.</p>
 </div>
+<div class="section" id="data-store-resource">
+<h2>Data Store Resource<a class="headerlink" href="#data-store-resource" title="Permalink to this headline">¶</a></h2>
+<p>The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Db Method</th>
+<th class="head">Method</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Create</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.create" title="tcex.tcex_resources.DataStore.create"><code class="xref py py-meth docutils literal"><span class="pre">create()</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Read</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.read" title="tcex.tcex_resources.DataStore.read"><code class="xref py py-meth docutils literal"><span class="pre">read()</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Update</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.update" title="tcex.tcex_resources.DataStore.update"><code class="xref py py-meth docutils literal"><span class="pre">update()</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Delete</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.delete" title="tcex.tcex_resources.DataStore.delete"><code class="xref py py-meth docutils literal"><span class="pre">delete()</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
+</div>
+</div>
 <div class="section" id="group-resources">
 <h2>Group Resources<a class="headerlink" href="#group-resources" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
@@ -284,8 +321,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -330,8 +367,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id2">
-<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 </div>
 </div>
@@ -353,8 +390,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id3">
-<h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Examples<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 </div>
 </div>
