@@ -9,9 +9,10 @@ Release Notes
 0.4.0
 ------
 + Breaking change to :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take a instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.
-+ Added Tag Resource class.
++ Added :py:mod:`~tcex.tcex_resources.Tag` Resource class.
 + Added :py:meth:`~tcex.tcex.TcEx.resource` method to get instance of Resource instance.
-+ Added :py:mod:`~tcex.tcex_resources.DataStore` class to the :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:mod:`~tcex.tcex_resources.DataStore` Resource class to the :py:mod:`~tcex.tcex_resources.Resource` module.
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module for changes in the :py:mod:`~tcex.tcex_resources.Resource` module.
 
 0.3.x
 =====
@@ -23,7 +24,7 @@ Release Notes
 
 0.3.6
 ------
-+ Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` Module.
++ Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` module.
 + Added :py:meth:`~tcex.tcex.TcEx.request_external` and :py:meth:`~tcex.tcex.TcEx.request_tc` methods.
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with a better regex for matching variables.
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook` module with better error handling with JSON loads.
