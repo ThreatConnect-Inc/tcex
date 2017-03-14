@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.4.0 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.4.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.4.0 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.4.1 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.1
               </div>
             
           
@@ -319,6 +319,28 @@ the parent class.</p>
 <li><strong>db_method</strong> (<em>string</em>) &#8211; The DB method &#8216;DELETE&#8217;, &#8216;GET&#8217;, &#8216;POST&#8217;, or &#8216;PUT&#8217;</li>
 <li><strong>body</strong> (<em>dict</em>) &#8211; JSON body</li>
 <li><strong>owner</strong> (<em>string</em>) &#8211; The ThreatConnect owner.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.DataStore.add_payload">
+<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.add_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.add_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a key value pair to payload for this request.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For <code class="docutils literal"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) &#8211; The payload key</li>
+<li><strong>val</strong> (<em>string</em>) &#8211; The payload value</li>
 </ul>
 </td>
 </tr>
@@ -2163,7 +2185,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.4.0',
+            VERSION:'0.4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

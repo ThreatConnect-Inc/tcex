@@ -6,6 +6,10 @@ Release Notes
 0.4.x
 =====
 
+0.4.1
+------
++ Adding :py:meth:`~tcex.tcex_resources.DataStore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class.
+
 0.4.0
 ------
 + Breaking change to :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take a instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.

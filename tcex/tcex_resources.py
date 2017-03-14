@@ -1991,6 +1991,17 @@ class DataStore(object):
             'status': status
         }
 
+    def add_payload(self, key, val):
+        """Add a key value pair to payload for this request.
+
+        .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).
+
+        Args:
+            key (string): The payload key
+            val (string): The payload value
+        """
+        self._r.add_payload(key, val)
+
     def create(self, domain, type_name, search_command, body, owner=None):
         """Create entry in ThreatConnect Data Store
 

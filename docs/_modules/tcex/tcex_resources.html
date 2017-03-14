@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.4.0 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.4.1 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.4.1
               </div>
             
           
@@ -2141,6 +2141,17 @@
             <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span>
         <span class="p">}</span></div>
 
+<div class="viewcode-block" id="DataStore.add_payload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.add_payload">[docs]</a>    <span class="k">def</span> <span class="nf">add_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a key value pair to payload for this request.</span>
+
+<span class="sd">        .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The payload key</span>
+<span class="sd">            val (string): The payload value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="DataStore.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">search_command</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create entry in ThreatConnect Data Store</span>
 
@@ -2243,7 +2254,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.0',
+            VERSION:'0.4.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
