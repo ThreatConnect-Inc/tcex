@@ -81,10 +81,9 @@ class TcExJob(object):
         self._tcex.log.debug(u'Adding {} "{}" in owner {}'.format(
             resource_type, resource_name, owner))
         resource_body = {'name': resource_name}
-        resource = getattr(self._tcex.resources, resource_type)(self._tcex)
+        resource = self._tcex.resource(resource_type)
         resource.http_method = 'POST'
         resource.owner = owner
-        resource.url = self._tcex._args.tc_api_path
 
         # incident
         if data.get('eventDate') is not None:
@@ -97,18 +96,17 @@ class TcExJob(object):
             self._group_results['saved'].append(resource_name)
             self._group_results['not_saved'].remove(resource_name)
             resource_id = results['data']['id']
-            resource = getattr(self._tcex.resources, resource_type)(self._tcex)
+            resource = self._tcex.resource(resource_type)
             resource.http_method = 'POST'
-            resource.url = self._tcex._args.tc_api_path
 
             # add attributes
             for attribute in data.get('attribute', []):
                 self._tcex.log.debug('Adding attribute type ({})'.format(
                     attribute.get('type')))
                 resource.resource_id(resource_id)
-                resource.attributes()
-                resource.body = json.dumps(attribute)
-                a_results = resource.request()
+                attribute_resource = resource.attributes()
+                attribute_resource.body = json.dumps(attribute)
+                a_results = attribute_resource.request()
                 if a_results.get('status') != 'Success':
                     err = 'Failed adding attribute type {} with value {} to group {}.'
                     err = err.format(
@@ -120,8 +118,8 @@ class TcExJob(object):
             for tag in data.get('tag', []):
                 self._tcex.log.debug(u'Adding tag ({})'.format(tag))
                 resource.resource_id(resource_id)
-                resource.tags(tag.get('name'))
-                t_results = resource.request()
+                tag_resource = resource.tags(tag.get('name'))
+                t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
                     err = 'Failed adding tag {} to group {}.'.format(
                         tag.get('name'), resource_name)
@@ -144,7 +142,7 @@ class TcExJob(object):
         # POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences
         # supported format -> 2014-11-03T00:00:00-05:00
 
-        resource = getattr(self._tcex.resources, 'File')(self._tcex)
+        resource = self._tcex.resource('File')
         resource.http_method = 'POST'
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
@@ -173,17 +171,16 @@ class TcExJob(object):
             if group_id is None:
                 continue
 
-            resource = getattr(
-                self._tcex.resources, self._tcex.safe_rt(ga.get('indicator_type')))(self._tcex)
+            resource = self._tcex.resource(ga.get('indicator_type'))
             resource.http_method = 'POST'
             resource.indicator(ga.get('indicator'))
             resource.owner = owner
             resource.url = self._tcex._args.tc_api_path
 
-            association_resource = getattr(self._tcex.resources, ga.get('group_type'))(self._tcex)
-            association_resource.resource_id(group_id)
-            resource.association_pivot(association_resource.request_uri)
-            resource.request()
+            ar = self._tcex.resource(ga.get('group_type'))
+            ar.resource_id(group_id)
+            association_resource = resource.association_pivot(ar)
+            association_resource.request()
 
     def _process_groups(self, owner, duplicates=False):
         """Process groups and write to TC API
@@ -237,7 +234,7 @@ class TcExJob(object):
         Args:
             owner (string):  The owner name for the indicator to be written
         """
-        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
+        resource = self._tcex.resource('Batch')
         resource.http_method = 'POST'
         resource.url = self._tcex._args.tc_api_path
 
@@ -321,12 +318,9 @@ class TcExJob(object):
         self._indicator_results['not_saved'] = list(self._indicator_results.get('submitted', []))
         for i_data in self._indicators:
             i_value = i_data.get('summary').split(' : ')[0]  # only need the first indicator value
-            resource = getattr(self._tcex.resources, 'Indicator')(self._tcex)
+            resource = self._tcex.resource(i_data.get('type'))
 
-            body = {}
-            for i_field in resource.indicators(i_data):
-                body[i_field.get('type')] = i_field.get('value')
-
+            body = resource.entity_body(i_data.get('summary').split(' : '))
             if i_data.get('rating') is not None:
                 body['rating'] = i_data.get('rating')
             if i_data.get('confidence') is not None:
@@ -340,8 +334,6 @@ class TcExJob(object):
             if i_data.get('source') is not None:
                 body['source'] = i_data.get('source')
 
-            resource = getattr(
-                self._tcex.resources, self._tcex.safe_rt(i_data.get('type')))(self._tcex)
             resource.body = json.dumps(body)
             resource.http_method = 'POST'
             resource.owner = owner
@@ -354,7 +346,7 @@ class TcExJob(object):
                 resource.http_method = 'PUT'
                 resource.indicator(i_value)
                 i_results = resource.request()
-                resource.http_method = 'POST'
+                resource.http_method = 'POST'  # reset http method after PUT
 
             # Log error and continue
             if i_results.get('status') != 'Success':
@@ -389,9 +381,10 @@ class TcExJob(object):
                     resource.indicator(i_data.get('summary'))
                 else:
                     resource.indicator(i_value)
-                resource.attributes()  # pivot to attribute
-                resource.body = json.dumps(attribute)
-                a_results = resource.request()
+                attribute_resource = resource.attributes()  # pivot to attribute
+                attribute_resource.http_method = 'POST'
+                attribute_resource.body = json.dumps(attribute)
+                a_results = attribute_resource.request()
 
                 if a_results.get('status') != 'Success':
                     err = 'Failed adding attribute type {} with value {} to indicator {}.'
@@ -417,8 +410,9 @@ class TcExJob(object):
                     resource.indicator(i_data.get('summary'))
                 else:
                     resource.indicator(i_value)
-                resource.tags(self._tcex.safetag(tag.get('name')))
-                t_results = resource.request()
+                tag_resource = resource.tags(self._tcex.safetag(tag.get('name')))
+                tag_resource.http_method = 'POST'
+                t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
                     err = 'Failed adding tag {} to indicator {}.'.format(
                         tag.get('name'), i_data.get('summary'))
@@ -449,10 +443,11 @@ class TcExJob(object):
                     resource.indicator(i_data.get('summary'))
                 else:
                     resource.indicator(i_value)
-                association_resource = getattr(self._tcex.resources, group_type)(self._tcex)
-                association_resource.resource_id(group_id)
-                resource.association_pivot(association_resource.request_uri)
-                a_results = resource.request()
+                ar = self._tcex.resource(group_type)
+                ar.resource_id(group_id)
+                association_resource = resource.association_pivot(ar)
+                association_resource.http_method = 'POST'
+                a_results = association_resource.request()
                 if a_results.get('status') != 'Success':
                     err = 'Failed association group id {} to indicator {}.'.format(
                         group_id, i_data.get('summary'))
@@ -528,7 +523,7 @@ class TcExJob(object):
 
         status = {'success': 0, 'failure': 0, 'unprocessed': 0}
 
-        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
+        resource = self._tcex.resource('Batch')
         resource.url = self._tcex._args.tc_api_path
 
         for batch_id in self._indicator_batch_ids:
@@ -583,7 +578,7 @@ class TcExJob(object):
             'errors': False
         }
 
-        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
+        resource = self._tcex.resource('Batch')
         resource.url = self._tcex._args.tc_api_path
         resource.batch_id(batch_id)
         results = resource.request()
@@ -606,7 +601,7 @@ class TcExJob(object):
 
                     poll_time = 0
                     while True:
-                        resource = getattr(self._tcex.resources, 'Batch')(self._tcex)
+                        resource = self._tcex.resource('Batch')
                         resource.url = self._tcex._args.tc_api_path
                         resource.errors(batch_id)
                         error_results = resource.request()
@@ -814,7 +809,7 @@ class TcExJob(object):
         self._group_cache.setdefault(owner, {})
         self._group_cache[owner].setdefault(resource_type, {})
 
-        resource = getattr(self._tcex.resources, resource_type)(self._tcex)
+        resource = self._tcex.resource(resource_type)
         resource.owner = owner
         resource.url = self._tcex._args.tc_api_path
         data = []
@@ -881,7 +876,7 @@ class TcExJob(object):
             self._tcex.log.info(u'Caching groups for owner {}'.format(owner))
             self._group_cache_id.setdefault(owner, {})
 
-            resource = getattr(self._tcex.resources, 'Group')(self._tcex)
+            resource = self._tcex.resource('Group')
             resource.owner = owner
             resource.url = self._tcex._args.tc_api_path
             data = []
