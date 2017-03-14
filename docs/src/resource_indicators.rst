@@ -269,8 +269,15 @@ Indicator Associations
                 for indicator_data in results.get('data', []):
                     print(indicator_data.get('summary'))
 
+                    iocs = [x for x in resource.indicators(i)]  # get all iocs if more than 1
+                    ioc = iocs[0].get('value')  # only need the first one
+
+                    # Get new Resource Object of Indicator Type
+                    i_resource = tcex.resource(indicator_data.get('type'))
+                    i_resource.resource_id(ioc)  # set resource ID
+
                     ar = tcex.resource('Adversary')  # Get Adversaries Instance
-                    associations_resource = resource.associations(ar)
+                    associations_resource = i_resource.associations(ar)
                     associations_results = associations_resource.request()
                     print(json.dumps(associations_results.get('data', []), indent=4))
 

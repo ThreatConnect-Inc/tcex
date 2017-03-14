@@ -937,7 +937,14 @@
 33
 34
 35
-36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+36
+37
+38
+39
+40
+41
+42
+43</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
@@ -961,8 +968,15 @@
             <span class="k">for</span> <span class="n">indicator_data</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="k">print</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
 
+                <span class="n">iocs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">resource</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>  <span class="c1"># get all iocs if more than 1</span>
+                <span class="n">ioc</span> <span class="o">=</span> <span class="n">iocs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>  <span class="c1"># only need the first one</span>
+
+                <span class="c1"># Get new Resource Object of Indicator Type</span>
+                <span class="n">i_resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">))</span>
+                <span class="n">i_resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">ioc</span><span class="p">)</span>  <span class="c1"># set resource ID</span>
+
                 <span class="n">ar</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;Adversary&#39;</span><span class="p">)</span>  <span class="c1"># Get Adversaries Instance</span>
-                <span class="n">associations_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">associations</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
+                <span class="n">associations_resource</span> <span class="o">=</span> <span class="n">i_resource</span><span class="o">.</span><span class="n">associations</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
                 <span class="n">associations_results</span> <span class="o">=</span> <span class="n">associations_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">associations_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
