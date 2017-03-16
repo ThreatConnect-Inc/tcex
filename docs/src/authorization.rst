@@ -45,4 +45,4 @@ Example install.json param section::
     }
     <snipped...>
 
-For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be build immediately before the request is sent.  The :py:meth:`~tcex.tcex.TcEx.authorization_hmac` method will build the authorization string when passed a *Python Requests* prepared request.
+For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be built immediately before the request is sent.  The :py:meth:`~tcex.tcex.TcEx.authorization_hmac` method will build the authorization string when passed a *Python Requests* prepared request.
