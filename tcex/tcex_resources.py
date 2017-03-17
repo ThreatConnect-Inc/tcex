@@ -138,7 +138,8 @@ class Resource(object):
                 self._tcex.message_tc(err)
         else:
             status = 'Failure'
-            err = 'Failed Request {}: ({})'.format(self._name, response.text)
+            err = 'Failed Request {}: Status Code ({}) not in {}'.format(
+                self._name, response.status_code, self._status_codes[self._http_method])
             self._tcex.log.error(err)
 
         return data, status

@@ -184,6 +184,7 @@
 
         <span class="c1"># standard defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
@@ -279,7 +280,9 @@
 <div class="viewcode-block" id="ArgParser._standard_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_standard_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;These are the standard args passed to every TcEx App.</span>
 
+<span class="sd">        --api_default_org org        The TC API user default organization.</span>
 <span class="sd">        --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).</span>
+<span class="sd">        --tc_out_path path           The app in path.</span>
 <span class="sd">        --tc_log_path path           The app log path.</span>
 <span class="sd">        --tc_out_path path           The app out path.</span>
 <span class="sd">        --tc_temp_path path          The app temp path.</span>
@@ -296,7 +299,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--api_default_org&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect api default Org&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_api_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect api path&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_in_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect in path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_log_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect log path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>

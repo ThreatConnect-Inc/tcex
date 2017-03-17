@@ -34,6 +34,7 @@ class ArgParser(ArgumentParser):
 
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
+        self._tc_in_path = '/tmp'
         self._tc_log_path = '/tmp'
         self._tc_out_path = '/tmp'
         self._tc_temp_path = '/tmp'
@@ -129,7 +130,9 @@ class ArgParser(ArgumentParser):
     def _standard_arguments(self):
         """These are the standard args passed to every TcEx App.
 
+        --api_default_org org        The TC API user default organization.
         --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).
+        --tc_out_path path           The app in path.
         --tc_log_path path           The app log path.
         --tc_out_path path           The app out path.
         --tc_temp_path path          The app temp path.
@@ -146,7 +149,11 @@ class ArgParser(ArgumentParser):
         """
 
         self.add_argument(
+            '--api_default_org', default=None, help='ThreatConnect api default Org')
+        self.add_argument(
             '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
+        self.add_argument(
+            '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
         self.add_argument(
             '--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         self.add_argument(

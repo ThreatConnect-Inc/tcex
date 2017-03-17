@@ -2,7 +2,7 @@
 
 
 + Direct Access: ``resource = tcex.resources.SecurityLabel(tcex)``
-+ Dynamic Access: ``resource = resource = tcex.resource('SecurityLabel')``
++ Dynamic Access: ``resource = tcex.resource('SecurityLabel')``
 
 Retrieve All Security Labels
 ============================

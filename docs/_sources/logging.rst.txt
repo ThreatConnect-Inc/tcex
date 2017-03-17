@@ -16,5 +16,6 @@ The ThreatConnect |trade| TcEx App Framework has a built-in logger that will log
 
     tcex.log.debug('logging debug')
     tcex.log.info('logging info')
+    tcex.log.warning('logging warning')
     tcex.log.error('logging error')
     tcex.log.critical('logging critical')

@@ -271,7 +271,7 @@ class TcExPlaybook(object):
                     val = '""'
                 data = data.replace(var, val)
 
-        return data
+        return data.decode('string_escape')
 
     def variable_type(self, variable):
         """Get the Type from the variable string or default to String type.

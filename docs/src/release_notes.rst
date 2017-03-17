@@ -13,10 +13,12 @@ Release Notes
 + Added :py:meth:`~tcex.tcex.TcEx.safe_indicator` method to urlencode and cleanup indicator before associations, etc.
 + Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a regex instead of split for better support of custom indicators.
 + Updated :py:mod:`~tcex.tcex_job.TcExJob._process_indicators_v2` to better handle custom indicator types.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with to strip off double quote from JSON string on mixed types.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to strip off double quote from JSON string on mixed types and to decode escaped strings.
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module so that all indicator are URL encoded before adding to the URI.
 + Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method to only include items in the JSON body if not None.
 + Updated :py:meth:`~tcex.tcex_resources.Indicator.indicators` method to handle extra white spaces on the boundary.
++ Added additional standard args of ``api_default_org`` and ``tc_in_path``.
+
 
 0.4.0
 ------

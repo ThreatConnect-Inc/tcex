@@ -288,7 +288,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Failure&#39;</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request </span><span class="si">{}</span><span class="s1">: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed Request </span><span class="si">{}</span><span class="s1">: Status Code (</span><span class="si">{}</span><span class="s1">) not in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">status</span></div>
@@ -1290,8 +1291,8 @@
 <span class="sd">            data (string): The indicator value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Bulk&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
-            <span class="c1"># self._request_uri = &#39;{}/{}&#39;.format(self._request_uri, data)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+            <span class="c1"># self._request_uri = &#39;{}/{}&#39;.format(self._api_uri, data)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_indicator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Indicator.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicators</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of a **single** indicator.</span>
@@ -1308,7 +1309,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">vf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span><span class="p">:</span>
-            <span class="n">body</span><span class="p">[</span><span class="n">vf</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicators</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">indicators</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">body</span><span class="p">[</span><span class="n">vf</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indicators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">break</span>
 
@@ -1352,6 +1356,7 @@
         <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">indicator_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_fields</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">indicator_field</span> <span class="o">==</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span>
+                <span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">expand_indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;File&#39;</span><span class="p">:</span>
                     <span class="n">hash_patterns</span> <span class="o">=</span> <span class="p">{</span>
                         <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
@@ -1359,13 +1364,22 @@
                         <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
                     <span class="p">}</span>
                     <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># clean up badly formatted summary string</span>
+                        <span class="n">i_type</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="k">if</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
                             <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;md5&#39;</span>
                         <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
                             <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;sha1&#39;</span>
                         <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha256&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
                             <span class="n">i_type</span> <span class="o">=</span> <span class="s1">&#39;sha256&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot determine hash type: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
                         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
                             <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">i_type</span><span class="p">,</span>
@@ -1378,7 +1392,11 @@
                     <span class="n">values</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">value_fields</span>
 
                     <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># clean up badly formatted summary string</span>
                         <span class="c1"># TODO: remove workaround for bug in indicatorTypes API endpoint</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
                             <span class="k">break</span>
@@ -1602,17 +1620,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;URL&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
-
-<div class="viewcode-block" id="URL.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.URL.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
-
-<span class="sd">        Overload parent class method to ensure URL indicator is properly encoded.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (string): The indicator value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safeurl</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span></div>
 
 
 <span class="c1">#</span>
