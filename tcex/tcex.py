@@ -684,6 +684,48 @@ class TcEx(object):
             key, value = line.split(' = ')
             setattr(self._args, key, value)
 
+    def s(self, data, errors='strict'):
+        """Decode value using correct Python 2/3 method
+
+        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with
+        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.
+
+        Args:
+            data (any): Data to ve validated and (de)encoded
+            errors (string): What method to use when dealing with errors.
+
+        Returns:
+            (string): Return decoded data
+
+        """
+        if data is None or isinstance(data, (int, list, dict)):
+            pass  # do nothing with these types
+        elif isinstance(data, unicode):
+            try:
+                data.decode('utf-8')
+            except UnicodeEncodeError as e:  # 2to3 converts unicode to str
+                data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
+                self.log.warning('Encoding poorly encoded string ({})'.format(data))
+            except AttributeError:
+                pass  # Python 3 can't decode a str
+        else:
+            data = unicode(data, 'utf-8', errors=errors)
+        return data
+
+    def safe_indicator(self, indicator, errors='strict'):
+        """Indicator encode value for safe HTTP request
+
+        Args:
+            indicator (string): Indicator to URL Encode
+
+        Returns:
+            (string): The urlencoded string
+        """
+        if indicator is not None:
+            indicator = urllib.quote(self.s(indicator, errors=errors), safe='~')
+        return indicator
+
+
     @staticmethod
     def epoch_seconds(delta=None):
         """Get epoch seconds for now or using a time delta.
@@ -715,13 +757,17 @@ class TcEx(object):
             indicator (string): " : " delimited string
             first_indicator (boolean): Indicate whether to only include the first
                 matched indicator.
+        Returns:
+            (list): a list of indicators split on " : ".
         """
-        indicator_list = []
-        for i in indicator.split(' : '):
-            indicator_list.append(i)
+        indicator_list = [indicator]
 
-            if first_indicator:
-                break
+        iregx = re.compile(r'^(.*\b)?(?:\s+)?:(?:\s+)?(.*\b)?(?:\s+):(?:\s+)?(.*\b)?')
+
+        indicators = iregx.search(indicator)
+        if indicators is not None:
+            indicators = indicators.groups()
+            indicator_list = list(indicators)
 
         return indicator_list
 
@@ -792,32 +838,4 @@ class TcEx(object):
         """
         if data is not None and not isinstance(data, unicode):  # 2to3 converts unicode to str
             data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
-        return data
-
-    def s(self, data, errors='strict'):
-        """Decode value using correct Python 2/3 method
-
-        This method is intended to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method with
-        better logic to handle poorly encoded unicode data in Python2 and still work in Python3.
-
-        Args:
-            data (any): Data to ve validated and (de)encoded
-            errors (string): What method to use when dealing with errors.
-
-        Returns:
-            (string): Return decoded data
-
-        """
-        if data is None or isinstance(data, (int, list, dict)):
-            pass  # do nothing with these types
-        elif isinstance(data, unicode):
-            try:
-                data.decode('utf-8')
-            except UnicodeEncodeError as e:  # 2to3 converts unicode to str
-                data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
-                self.log.warning('Encoding poorly encoded string ({})'.format(data))
-            except AttributeError:
-                pass  # Python 3 can't decode a str
-        else:
-            data = unicode(data, 'utf-8', errors=errors)
         return data

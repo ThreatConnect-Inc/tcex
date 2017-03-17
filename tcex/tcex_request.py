@@ -298,7 +298,7 @@ class TcExRequest(object):
                     self._tcex.log.critical('Exiting: {0!s}'.format(e))
                     raise RuntimeError(e)
             except socket.error as e:
-                self._tcex.log.critical('Exiting: {0!s}'.format(e))
+                self._tcex.log.critical('Socket Error: {0!s}'.format(e))
                 raise RuntimeError(e)
 
         self._tcex.log.info('URL ({}): {}'.format(self._http_method, response.url))

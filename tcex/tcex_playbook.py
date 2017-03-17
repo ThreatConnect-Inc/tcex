@@ -266,7 +266,7 @@ class TcExPlaybook(object):
             data = data.strip()
             variables = re.findall(self._vars_match, str(data))
             for var in variables:
-                val = self.read_raw(var.strip('"'))
+                val = self.read_raw(var).strip('"')
                 if val is None:
                     val = '""'
                 data = data.replace(var, val)

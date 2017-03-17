@@ -234,10 +234,6 @@ class TcExJob(object):
         Args:
             owner (string):  The owner name for the indicator to be written
         """
-        resource = self._tcex.resource('Batch')
-        resource.http_method = 'POST'
-        resource.url = self._tcex._args.tc_api_path
-
         batch_job_body = {
             'action': self._tcex._args.batch_action,
             'attributeWriteType': self._tcex._args.batch_write_type,
@@ -248,6 +244,11 @@ class TcExJob(object):
         halt = False
         for chunk in self._chunk_indicators():
             self._tcex.log.info('Batch Chunk Size: {}'.format(len(chunk)))
+
+            # new batch resource for each chunk
+            resource = self._tcex.resource('Batch')
+            resource.http_method = 'POST'
+            resource.url = self._tcex._args.tc_api_path
             resource.content_type = 'application/json'
             resource.body = json.dumps(batch_job_body)
             results = resource.request()
@@ -317,10 +318,17 @@ class TcExJob(object):
         """
         self._indicator_results['not_saved'] = list(self._indicator_results.get('submitted', []))
         for i_data in self._indicators:
-            i_value = i_data.get('summary').split(' : ')[0]  # only need the first indicator value
             resource = self._tcex.resource(i_data.get('type'))
 
-            body = resource.entity_body(i_data.get('summary').split(' : '))
+            indicators = self._tcex.expand_indicators(i_data.get('summary'))
+            try:
+                i_value = [i for i in indicators if i is not None][0]
+            except IndexError as e:
+                err = 'Cannot proceed without an Indicator. ({})'.format(e)
+                self._tcex.log.error(err)
+                raise RuntimeError(e)
+
+            body = resource.entity_body(indicators)
             if i_data.get('rating') is not None:
                 body['rating'] = i_data.get('rating')
             if i_data.get('confidence') is not None:

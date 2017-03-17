@@ -1140,8 +1140,8 @@ class Indicator(Resource):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            # self._request_uri = '{}/{}'.format(self._request_uri, data)
-            self._request_uri = '{}/{}'.format(self._api_uri, data)
+            # self._request_uri = '{}/{}'.format(self._api_uri, data)
+            self._request_uri = '{}/{}'.format(self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
 
     def indicator_body(self, indicators):
         """Generate the appropriate dictionary content for POST of a **single** indicator.
@@ -1158,7 +1158,10 @@ class Indicator(Resource):
         """
         body = {}
         for vf in self._value_fields:
-            body[vf] = indicators.pop(0)
+            i = indicators.pop(0)
+            if i is not None:
+                body[vf] = i
+
             if len(indicators) == 0:
                 break
 
@@ -1202,6 +1205,7 @@ class Indicator(Resource):
         indicator_list = []
         for indicator_field in self.value_fields:
             if indicator_field == 'summary':
+                indicators = self._tcex.expand_indicators(indicator_data.get('summary'))
                 if indicator_data.get('type') == 'File':
                     hash_patterns = {
                         'md5': re.compile(r'^([a-fA-F\d]{32})$'),
@@ -1209,13 +1213,22 @@ class Indicator(Resource):
                         'sha256': re.compile(r'^([a-fA-F\d]{64})$')
                     }
                     body = {}
-                    for i in indicator_data.get('summary').split(' : '):
+                    for i in indicators:
+                        if i is None:
+                            continue
+
+                        i = i.strip()  # clean up badly formatted summary string
+                        i_type = None
                         if hash_patterns['md5'].match(i):
                             i_type = 'md5'
                         elif hash_patterns['sha1'].match(i):
                             i_type = 'sha1'
                         elif hash_patterns['sha256'].match(i):
                             i_type = 'sha256'
+                        else:
+                            msg = 'Cannot determine hash type: "{}"'.format(
+                                indicator_data.get('summary'))
+                            self._tcex.log.warning(msg)
 
                         data = {
                             'type': i_type,
@@ -1228,7 +1241,11 @@ class Indicator(Resource):
                     values = resource.value_fields
 
                     index = 0
-                    for i in indicator_data.get('summary').split(' : '):
+                    for i in indicators:
+                        if i is None:
+                            continue
+
+                        i = i.strip()  # clean up badly formatted summary string
                         # TODO: remove workaround for bug in indicatorTypes API endpoint
                         if len(values) - 1 < index:
                             break
@@ -1453,16 +1470,6 @@ class URL(Indicator):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
         self._value_fields = ['text']
-
-    def indicator(self, data):
-        """Update the request URI to include the Indicator for specific indicator retrieval.
-
-        Overload parent class method to ensure URL indicator is properly encoded.
-
-        Args:
-            data (string): The indicator value.
-        """
-        self._request_uri = '{}/{}'.format(self._api_uri, self._tcex.safeurl(data))
 
 
 #
