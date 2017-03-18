@@ -6,6 +6,10 @@ Release Notes
 0.4.x
 =====
 
+0.4.2
+------
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded vars in String and in JSON object.
+
 0.4.1
 ------
 + Adding :py:meth:`~tcex.tcex_resources.DataStore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class.
@@ -18,7 +22,6 @@ Release Notes
 + Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method to only include items in the JSON body if not None.
 + Updated :py:meth:`~tcex.tcex_resources.Indicator.indicators` method to handle extra white spaces on the boundary.
 + Added additional standard args of ``api_default_org`` and ``tc_in_path``.
-
 
 0.4.0
 ------

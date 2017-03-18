@@ -205,7 +205,6 @@ class TcExPlaybook(object):
                     'name': var.group(3),
                     'type': var.group(4),
                 }
-            # self._tcex.log.debug('data {}'.format(data))
         return data
 
     def read(self, key, array=False):
@@ -226,15 +225,14 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key = key.strip()
+            key_type = self.variable_type(key)
             if re.match(self._var_parse, key):
-                parsed_key = self.parse_variable(key)
-                variable_type = parsed_key['type']
-                if variable_type in self._read_data_type:
-                    data = self._read_data_type[variable_type](key)
+                if key_type in self._read_data_type:
+                    data = self._read_data_type[key_type](key)
                 else:
                     data = self.read_raw(key)
             else:
-                data = self.read_embedded(key)
+                data = self.read_embedded(key, key_type)
 
         # return data as a list
         if array and not isinstance(data, list):
@@ -246,7 +244,7 @@ class TcExPlaybook(object):
         self._tcex.log.debug('read data {}'.format(data))
         return data
 
-    def read_embedded(self, data):
+    def read_embedded(self, data, parent_var_type):
         """Read method for "mixed" variable type.
 
         .. Note:: The ``read()`` method will automatically determine if the variable is embedded and
@@ -266,9 +264,11 @@ class TcExPlaybook(object):
             data = data.strip()
             variables = re.findall(self._vars_match, str(data))
             for var in variables:
-                val = self.read_raw(var).strip('"')
+                val = self.read_raw(var.strip('"'))
                 if val is None:
                     val = '""'
+                elif parent_var_type in ['String']:
+                    val = val.strip('"')
                 data = data.replace(var, val)
 
         return data.decode('string_escape')
@@ -407,7 +407,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -449,7 +450,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -527,7 +529,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 # handle improperly saved string
                 try:
@@ -569,7 +572,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -611,7 +615,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -653,7 +658,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None:
-            data = self.read_embedded(self._db.read(key.strip()))
+            key_type = self.variable_type(key)
+            data = self.read_embedded(self._db.read(key.strip()), key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
