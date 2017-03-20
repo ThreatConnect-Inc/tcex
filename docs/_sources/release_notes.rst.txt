@@ -8,6 +8,10 @@ Release Notes
 
 0.4.2
 ------
++ Update to :py:mod:`~tcex.tcex_job.TcExJob` module for file hashes updates using ``v2/indicators/files``.
+
+0.4.2
+------
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent varibable type.
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module for an issue where copying the instance causing errors with request instance in Python3.
 + Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to better format error output.

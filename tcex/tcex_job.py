@@ -351,6 +351,12 @@ class TcExJob(object):
 
             # PUT file indicator since API does not work consistenly for all indiator types
             if i_data.get('type') == 'File' and i_results.get('response').status_code == 400:
+                if 'MD5' in i_results.get('response').text:
+                    i_value = body.get('md5', i_value)
+                elif 'SHA-1' in i_results.get('response').text:
+                    i_value = body.get('sha1', i_value)
+                elif 'SHA-256' in i_results.get('response').text:
+                    i_value = body.get('sha256', i_value)
                 resource.http_method = 'PUT'
                 resource.indicator(i_value)
                 i_results = resource.request()
