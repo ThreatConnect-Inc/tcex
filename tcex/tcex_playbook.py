@@ -1,5 +1,6 @@
 """ standard """
 import base64
+import codecs
 import json
 # import os
 import re
@@ -271,7 +272,8 @@ class TcExPlaybook(object):
                     val = val.strip('"')
                 data = data.replace(var, val)
 
-        return data.decode('string_escape')
+        # return data.decode('string_escape')
+        return codecs.getdecoder('unicode_escape')(data)[0]
 
     def variable_type(self, variable):
         """Get the Type from the variable string or default to String type.

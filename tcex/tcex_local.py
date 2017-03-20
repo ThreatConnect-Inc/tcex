@@ -226,7 +226,7 @@ class TcExLocal:
             if not sp.get('quiet') and not self._args.quiet:
                 print(self.to_string(out, 'ignore'))
             if len(err) != 0:
-                print('Error: {}'.format(err))
+                print(err.decode('utf-8'))
             if p.returncode != 0:
                 status_code = p.returncode
                 break
@@ -409,6 +409,7 @@ class TcExLocal:
         temp_path = os.path.join(app_path, 'temp')
         if os.access(temp_path, os.W_OK):
             shutil.rmtree(temp_path)
+        shutil.rmtree('tcex.egg-info')
 
     @staticmethod
     def to_string(data, errors='strict'):

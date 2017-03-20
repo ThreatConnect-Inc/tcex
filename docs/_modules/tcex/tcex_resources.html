@@ -218,7 +218,14 @@
 <span class="sd">            (instance): A clean copy of this instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">_http_method</span> <span class="o">=</span> <span class="s1">&#39;GET&#39;</span>
+
+        <span class="c1"># workaround for bytes/str issue in Py3 with copy of instance</span>
+        <span class="c1"># TypeError: a bytes-like object is required, not &#39;str&#39; (ssl.py)</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">request</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">proxies</span>
+
+        <span class="c1"># Reset settings</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_filter_or</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_paginate</span> <span class="o">=</span> <span class="kc">True</span>
@@ -226,14 +233,11 @@
         <span class="n">resource</span><span class="o">.</span><span class="n">_result_count</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_result_limit</span> <span class="o">=</span> <span class="mi">500</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_result_start</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">reset_headers</span><span class="p">()</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># keep owner as that is important for pivots</span>
-        <span class="n">owner</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">)</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">reset_payload</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
+        <span class="c1"># Preserve settings</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http_method</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">)</span>
 
         <span class="c1"># future bcs - these should not need to be reset. correct?</span>
         <span class="c1"># resource._request_entity = self._api_entity</span>

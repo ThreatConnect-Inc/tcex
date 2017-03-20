@@ -68,7 +68,14 @@ class Resource(object):
             (instance): A clean copy of this instance.
         """
         resource = copy.copy(self)
-        resource._http_method = 'GET'
+
+        # workaround for bytes/str issue in Py3 with copy of instance
+        # TypeError: a bytes-like object is required, not 'str' (ssl.py)
+        resource._r = self._tcex.request
+        if self._tcex._args.tc_proxy_tc:
+            resource._r.proxies = self._tcex.proxies
+
+        # Reset settings
         resource._filters = []
         resource._filter_or = False
         resource._paginate = True
@@ -76,14 +83,11 @@ class Resource(object):
         resource._result_count = None
         resource._result_limit = 500
         resource._result_start = 0
-        self._r.reset_headers()
-        resource._r.body = None
 
-        # keep owner as that is important for pivots
-        owner = resource._r.payload.get('owner')
-        resource._r.reset_payload()
-        if owner is not None:
-            resource._r.add_payload('owner', owner)
+        # Preserve settings
+        resource.http_method = self.http_method
+        if self._r.payload.get('owner') is not None:
+            resource.owner = self._r.payload.get('owner')
 
         # future bcs - these should not need to be reset. correct?
         # resource._request_entity = self._api_entity

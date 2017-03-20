@@ -150,6 +150,7 @@
   <h1>Source code for tcex.tcex_playbook</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="c1"># import os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -421,7 +422,8 @@
                     <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;string_escape&#39;</span><span class="p">)</span></div>
+        <span class="c1"># return data.decode(&#39;string_escape&#39;)</span>
+        <span class="k">return</span> <span class="n">codecs</span><span class="o">.</span><span class="n">getdecoder</span><span class="p">(</span><span class="s1">&#39;unicode_escape&#39;</span><span class="p">)(</span><span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TcExPlaybook.variable_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.variable_type">[docs]</a>    <span class="k">def</span> <span class="nf">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the Type from the variable string or default to String type.</span>
