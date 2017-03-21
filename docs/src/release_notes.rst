@@ -6,6 +6,14 @@ Release Notes
 0.4.x
 =====
 
+0.4.4
+------
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to for null values.
+
+0.4.3
+------
++ Update to TcExJob module for file hashes updates using v2/indicators/files.
+
 0.4.2
 ------
 + Update to :py:mod:`~tcex.tcex_job.TcExJob` module for file hashes updates using ``v2/indicators/files``.
