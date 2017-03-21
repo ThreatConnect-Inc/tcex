@@ -271,9 +271,9 @@ class TcExPlaybook(object):
                 elif parent_var_type in ['String']:
                     val = val.strip('"')
                 data = data.replace(var, val)
+            data = codecs.getdecoder('unicode_escape')(data)[0]
 
-        # return data.decode('string_escape')
-        return codecs.getdecoder('unicode_escape')(data)[0]
+        return data
 
     def variable_type(self, variable):
         """Get the Type from the variable string or default to String type.
