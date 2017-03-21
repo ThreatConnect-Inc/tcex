@@ -7,25 +7,25 @@ Release Notes
 =====
 
 0.4.4
-------
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to for null values.
+-----
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method for null values.
 
 0.4.3
-------
+-----
 + Update to TcExJob module for file hashes updates using v2/indicators/files.
 
 0.4.2
-------
+-----
 + Update to :py:mod:`~tcex.tcex_job.TcExJob` module for file hashes updates using ``v2/indicators/files``.
 
 0.4.2
-------
+-----
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent varibable type.
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module for an issue where copying the instance causing errors with request instance in Python3.
 + Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to better format error output.
 
 0.4.1
-------
+-----
 + Adding :py:meth:`~tcex.tcex_resources.DataStore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class.
 + Fixed issue with :py:mod:`~tcex.tcex_job.TcExJob` module where batch indicator POST with chunking would fail after first chunk.
 + Added :py:meth:`~tcex.tcex.TcEx.safe_indicator` method to urlencode and cleanup indicator before associations, etc.
@@ -38,7 +38,7 @@ Release Notes
 + Added additional standard args of ``api_default_org`` and ``tc_in_path``.
 
 0.4.0
-------
+-----
 + Breaking change to :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take a instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.
 + Added :py:mod:`~tcex.tcex_resources.Tag` Resource class.
 + Added :py:meth:`~tcex.tcex.TcEx.resource` method to get instance of Resource instance.
@@ -49,12 +49,12 @@ Release Notes
 =====
 
 0.3.7
-------
+-----
 + Added logic around retrieving Batch Errors to handle 404.
 + Added new :py:meth:`~tcex.tcex_playbook.TcExPlaybook.exit` method for playbook apps (exit code of 3 to 1 for partial success).
 
 0.3.6
-------
+-----
 + Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` module.
 + Added :py:meth:`~tcex.tcex.TcEx.request_external` and :py:meth:`~tcex.tcex.TcEx.request_tc` methods.
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with a better regex for matching variables.
@@ -62,32 +62,32 @@ Release Notes
 + Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to sleep after subprocess executes the first time.
 
 0.3.5
-------
+-----
 + Updated :py:mod:`~tcex.tcex_job.TcExJob` module to allow indicators to be added via ``/v2/indicators/<type>``.
 + Updated structure for attributes/tags adds on groups to use singular version (attribute/tag) in Jobs modules to match format used for Indicators.
 + Added custom, case_preference and parsable properties to :py:mod:`~tcex.tcex_resources.Resource` module.
 + Added logic to cleanup temporary JSON bulk file. When logging is "debug" a compressed copy of the file will remain.
 
 0.3.4
-------
+-----
 + Fixed issue in :py:mod:`~tcex.tcex_resources` module with pagination stopping before all results are retrieved.
 
 0.3.3
-------
+-----
 + Added :py:meth:`~tcex.tcex.TcEx.s` method to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method (handle bad unicode in Python2 and still support Python3).
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better handle embedded Vars.
 
 0.3.2
-------
+-----
 + Added :py:meth:`~tcex.tcex_resources.Resource.indicators` method to allow iteration over indicator values in Indicator response JSON.
 
 0.3.1
-------
+-----
 + Updated :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` method to use proper unicode method.
 + Updated :py:mod:`~tcex.tcex_playbook` create and read methods to warn when None vaule is passed.
 
 0.3.0
-------
+-----
 + Added :py:meth:`~tcex.tcex_request.TcExRequest.json` method that accepts a dictionary and automatically sets content-type and body.
 + Updated :py:meth:`~tcex.tcex.TcEx.safeurl` and :py:meth:`~tcex.tcex.TcEx.safetag` to use :py:meth:`~tcex.tcex.TcEx.to_string`.
 + Update :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` for 2/3 compatibility.
