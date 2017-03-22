@@ -8,7 +8,7 @@ Release Notes
 
 0.4.4
 -----
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method for null values.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method logic for null values and better support of mixed values.
 
 0.4.3
 -----

@@ -265,14 +265,27 @@ class TcExPlaybook(object):
             data = data.strip()
             variables = re.findall(self._vars_match, str(data))
             for var in variables:
+                # regex will capture quotes around variables, which needs to be removed
+                key_type = self.variable_type(var.strip('"'))
+
+                # read raw value so escaped characters won't be removed
                 val = self.read_raw(var.strip('"'))
+
                 if val is None:
+                    # None value should be replace with an empty string
                     val = '""'
                 elif parent_var_type in ['String']:
+                    # a parent type of String should not keep the quotes added by the JSON encoding
                     val = val.strip('"')
-                data = data.replace(var, val)
-            data = codecs.getdecoder('unicode_escape')(data)[0]
+                    # a parent type of String should have escaped characters removed
+                    val = codecs.getdecoder('unicode_escape')(val)[0]
+                ## per slack conversation with danny on 3/22 all string data should already have
+                ## quotes already since they are JSON values
+                ## elif key_type in ['String']:
+                ##     if not val.startswith('"') and not val.endswith('"'):
+                ##         val = '"{}"'.format(val)
 
+                data = data.replace(var, val)
         return data
 
     def variable_type(self, variable):
@@ -298,7 +311,7 @@ class TcExPlaybook(object):
         var_type = 'String'
         if variable is not None:
             variable = variable.strip()
-            self._tcex.log.info('Variable {0}'.format(variable))
+            # self._tcex.log.info('Variable {0}'.format(variable))
             if re.match(self._var_parse, variable):
                 var_type = re.search(self._var_parse, variable).group(4)
 
