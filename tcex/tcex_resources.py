@@ -1138,6 +1138,10 @@ class Indicator(Resource):
         """
         return self.indicator_body(data)
 
+    def false_positive(self):
+        """Report indicator False Positive"""
+        self._request_uri = '{}/falsePositive'.format(self._request_uri)
+
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
 
@@ -1418,6 +1422,9 @@ class File(Indicator):
         }
         body = {}
         for indicator in indicators:
+            if indicator is None:
+                continue
+            
             if hash_patterns['md5'].match(indicator):
                 body['md5'] = indicator
             elif hash_patterns['sha1'].match(indicator):
@@ -1516,7 +1523,7 @@ class Group(Resource):
             resource_id (string): The group id.
         """
         if self._name != 'group':
-            self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+            self._request_uri = '{}/{}'.format(self._api_uri, resource_id)
 
     def resource_id(self, resource_id):
         """Alias for group_id method
