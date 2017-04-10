@@ -208,7 +208,7 @@ class TcEx(object):
 
         if self._args.tc_token is not None and self._args.tc_log_to_api:
             # api & file logger
-            from api_logging_handler import ApiLoggingHandler
+            from .api_logging_handler import ApiLoggingHandler
             api = ApiLoggingHandler(logfile, self)
             api.set_name('api')  # not supported in python 2.6
             api.setLevel(level)
@@ -231,7 +231,7 @@ class TcEx(object):
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
         try:
-            from tcex_playbook import TcExPlaybook
+            from .tcex_playbook import TcExPlaybook
             self.playbook = TcExPlaybook(self)
         except ImportError as e:
             warn = 'Required playbook python dependency is not installed ({}).'.format(e)
@@ -460,7 +460,7 @@ class TcEx(object):
             (instance): An instance of DataFilter Class
         """
         try:
-            from tcex_data_filter import DataFilter
+            from .tcex_data_filter import DataFilter
             return DataFilter(self, data)
         except ImportError as e:
             err = 'Required Module is not installed ({}).'.format(e)
@@ -596,7 +596,7 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         try:
-            from tcex_request import TcExRequest
+            from .tcex_request import TcExRequest
             return TcExRequest(self)
         except ImportError as e:
             err = 'Required Module is not installed ({}).'.format(e)
