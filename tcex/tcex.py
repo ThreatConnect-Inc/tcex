@@ -698,19 +698,19 @@ class TcEx(object):
             (string): Return decoded data
 
         """
-        if data is None or isinstance(data, (int, list, dict)):
-            pass  # do nothing with these types
-        elif isinstance(data, unicode):
-            try:
-                data.decode('utf-8')
-            except UnicodeEncodeError as e:  # 2to3 converts unicode to str
-                data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
-                self.log.warning('Encoding poorly encoded string ({})'.format(data))
-            except AttributeError:
-                pass  # Python 3 can't decode a str
-        else:
-            data = unicode(data, 'utf-8', errors=errors)
-        return data
+        try: 
+            if data is None or isinstance(data, (int, list, dict)): 
+                pass # Do nothing with these types 
+            if isinstance(data, unicode): 
+                try: 
+                    data.decode('utf-8') 
+                except UnicodeEncodeError as e:  # 2to3 converts unicode to str 
+                    data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str 
+                    self.log.warning('Encoding poorly encoded string ({})'.format(data)) 
+            else: 
+                data = unicode(data, 'utf-8', errors=errors) 
+        except NameError: 
+            pass #Can't decode str in Python 3 
 
     def safe_indicator(self, indicator, errors='strict'):
         """Indicator encode value for safe HTTP request
