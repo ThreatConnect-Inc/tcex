@@ -409,7 +409,9 @@ class TcExLocal:
         temp_path = os.path.join(app_path, 'temp')
         if os.access(temp_path, os.W_OK):
             shutil.rmtree(temp_path)
-        shutil.rmtree('tcex.egg-info')
+        egg_path = os.path.join(app_path, app_name + '.egg-info')
+        if os.access(egg_path, os.W_OK):
+            shutil.rmtree(egg_path)
 
     @staticmethod
     def to_string(data, errors='strict'):
