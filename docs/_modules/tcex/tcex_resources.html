@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.4.4 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.4.5 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.4
+                0.4.5
               </div>
             
           
@@ -1288,6 +1288,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_body</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Indicator.false_positive"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.false_positive">[docs]</a>    <span class="k">def</span> <span class="nf">false_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Report indicator False Positive&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/falsePositive&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Indicator.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
 
@@ -1479,7 +1483,7 @@
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Bulk</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;bulk&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;bulkStatus&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Indicator&#39;</span>  <span class="c1"># bcs - should this be bulk?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
@@ -1509,6 +1513,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            ondemand (boolean): Enable on demand bulk generation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">ondemand</span><span class="p">:</span>
@@ -1568,6 +1573,9 @@
         <span class="p">}</span>
         <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indicator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
             <span class="k">if</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
                 <span class="n">body</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator</span>
             <span class="k">elif</span> <span class="n">hash_patterns</span><span class="p">[</span><span class="s1">&#39;sha1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
@@ -1666,7 +1674,7 @@
 <span class="sd">            resource_id (string): The group id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Group.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Group.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias for group_id method</span>
@@ -2266,7 +2274,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.4',
+            VERSION:'0.4.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

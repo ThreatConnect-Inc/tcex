@@ -6,6 +6,14 @@ Release Notes
 0.4.x
 =====
 
+0.4.5
+-----
++ Updated indicator_body to support missing hashes.
++ Added false_positive endpoint for indicators.
++ Merged pull requests for better native Python3 support.
++ Added Campaign to group types.
++ Increased request timeout to 300 seconds.
+
 0.4.4
 -----
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method logic for null values and better support of mixed values.
