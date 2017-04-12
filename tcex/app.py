@@ -38,8 +38,9 @@ file that provides example CLI args for the app to be run locally.  The config f
 multiple configuration for different test/use cases with the default case being named "default".
 Use the *--test* arg to pass a selected test.
 
-./app.py --run --script <script name>
-./app.py --run --script <script name> --test Test1
+./app.py --run
+./app.py --run --profile Test1
+./app.py --run --config tcex.json --group MyGroup
 """
 
 print('Python Version: {}.{}.{}'.format(
