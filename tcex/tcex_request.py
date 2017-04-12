@@ -37,7 +37,7 @@ class TcExRequest(object):
         self._retries = 4
         self._sleep = 5
         self._session = Session()
-        self._timeout = 30
+        self._timeout = 300
         self._verify_ssl = False
 
     #

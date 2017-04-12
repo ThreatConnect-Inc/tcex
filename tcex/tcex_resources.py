@@ -1333,7 +1333,7 @@ class Bulk(Indicator):
         """Initialize default class values."""
         super(Bulk, self).__init__(tcex)
         self._api_branch = 'bulk'
-        self._api_entity = 'indicator'
+        self._api_entity = 'bulkStatus'
         self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
         self._name = 'Indicator'  # bcs - should this be bulk?
         self._request_entity = self._api_entity
@@ -1363,6 +1363,7 @@ class Bulk(Indicator):
         Args:
             ondemand (boolean): Enable on demand bulk generation.
         """
+        self._api_entity = 'indicator'
         self._request_uri = '{}/{}'.format(self._api_uri, 'json')
         self._stream = True
         if ondemand:
@@ -1424,7 +1425,7 @@ class File(Indicator):
         for indicator in indicators:
             if indicator is None:
                 continue
-            
+
             if hash_patterns['md5'].match(indicator):
                 body['md5'] = indicator
             elif hash_patterns['sha1'].match(indicator):

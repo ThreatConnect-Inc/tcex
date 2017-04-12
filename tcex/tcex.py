@@ -35,7 +35,7 @@ class TcEx(object):
 
         self._exit_code = 0
         # TODO: replace group_type with dynamic values from API (bcs)
-        self.group_types = ['Adversary', 'Document', 'Email', 'Incident', 'Signature', 'Threat']
+        self.group_types = ['Adversary', 'Campaign', 'Document', 'Email', 'Incident', 'Signature', 'Threat']
         self.indicator_types = []
         self._max_message_length = 255
         # NOTE: odd issue where args is not updating properly
@@ -208,7 +208,7 @@ class TcEx(object):
 
         if self._args.tc_token is not None and self._args.tc_log_to_api:
             # api & file logger
-            from api_logging_handler import ApiLoggingHandler
+            from .api_logging_handler import ApiLoggingHandler
             api = ApiLoggingHandler(logfile, self)
             api.set_name('api')  # not supported in python 2.6
             api.setLevel(level)
@@ -231,7 +231,7 @@ class TcEx(object):
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
         try:
-            from tcex_playbook import TcExPlaybook
+            from .tcex_playbook import TcExPlaybook
             self.playbook = TcExPlaybook(self)
         except ImportError as e:
             warn = 'Required playbook python dependency is not installed ({}).'.format(e)
@@ -460,7 +460,7 @@ class TcEx(object):
             (instance): An instance of DataFilter Class
         """
         try:
-            from tcex_data_filter import DataFilter
+            from .tcex_data_filter import DataFilter
             return DataFilter(self, data)
         except ImportError as e:
             err = 'Required Module is not installed ({}).'.format(e)
@@ -596,7 +596,7 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         try:
-            from tcex_request import TcExRequest
+            from .tcex_request import TcExRequest
             return TcExRequest(self)
         except ImportError as e:
             err = 'Required Module is not installed ({}).'.format(e)
@@ -612,10 +612,12 @@ class TcEx(object):
         Returns:
             (instance): An instance of Request Class
         """
+        r = self.request
         if self._args.tc_proxy_external:
             self.log.info(u'Using proxy server for external request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
-        return self.request
+            r.proxy = self.proxy
+        return r
 
     def request_tc(self):
         """Return an instance of the Request Class with Proxy Set
@@ -625,10 +627,12 @@ class TcEx(object):
         Returns:
             (instance): An instance of Request Class
         """
+        r = self.request
         if self._args.tc_proxy_tc:
             self.log.info(u'Using proxy server for TC request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
-        return self.request
+            r.proxy = self.proxy
+        return r
 
     def resource(self, resource_type):
         """Get instance of Resource Class with dynamic group.
@@ -698,19 +702,33 @@ class TcEx(object):
             (string): Return decoded data
 
         """
-        if data is None or isinstance(data, (int, list, dict)):
-            pass  # do nothing with these types
-        elif isinstance(data, unicode):
-            try:
-                data.decode('utf-8')
-            except UnicodeEncodeError as e:  # 2to3 converts unicode to str
-                data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
-                self.log.warning('Encoding poorly encoded string ({})'.format(data))
-            except AttributeError:
-                pass  # Python 3 can't decode a str
-        else:
-            data = unicode(data, 'utf-8', errors=errors)
-        return data
+        try:
+            if data is None or isinstance(data, (int, list, dict)):
+                pass # Do nothing with these types
+            elif isinstance(data, unicode):
+                try:
+                    data.decode('utf-8')
+                except UnicodeEncodeError as e:  # 2to3 converts unicode to str
+                    data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
+                    self.log.warning('Encoding poorly encoded string ({})'.format(data))
+            else:
+                data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
+        except NameError:
+            pass # Can't decode str in Python 3
+
+        ## if data is None or isinstance(data, (int, list, dict)):
+        ##     pass  # do nothing with these types
+        ## elif isinstance(data, unicode):
+        ##     try:
+        ##         data.decode('utf-8')
+        ##     except UnicodeEncodeError as e:  # 2to3 converts unicode to str
+        ##         data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
+        ##         self.log.warning('Encoding poorly encoded string ({})'.format(data))
+        ##     except AttributeError:
+        ##         pass  # Python 3 can't decode a str
+        ## else:
+        ##     data = unicode(data, 'utf-8', errors=errors)
+        ## return data
 
     def safe_indicator(self, indicator, errors='strict'):
         """Indicator encode value for safe HTTP request
