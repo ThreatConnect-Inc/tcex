@@ -9,7 +9,7 @@
 lib*
 *.log
 log
-tc.json
+tcex.json
 app.py
 __main__.py
 

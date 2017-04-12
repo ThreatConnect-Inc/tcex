@@ -134,7 +134,7 @@ class TcExLocal:
 
         # run args
         self._parser.add_argument(
-            '--config', default='tc.json', help='The configuration file')
+            '--config', default='tcex.json', help='The configuration file')
         self._parser.add_argument(
             '--script', default=None, help='The Python script name')
         self._parser.add_argument(
