@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.4.5 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.4.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.5 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.6 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.5
+                0.4.6
               </div>
             
           
@@ -208,12 +208,12 @@
         <span class="sd">&quot;&quot;&quot;Split indicator list into smaller more manageable numbers.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span> 
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span> 
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span> 
-        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span> <span class="c1"># Python 3 uses range() instead of xrange() </span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span> 
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span> </div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span> <span class="c1"># Python 3 uses range() instead of xrange()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TcExJob._group_add"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_add">[docs]</a>    <span class="k">def</span> <span class="nf">_group_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a group to ThreatConnect</span>
@@ -1127,6 +1127,25 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unprocessed_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return indicators (unprocessed)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): The unprocessed indicator list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span>
+
+    <span class="nd">@unprocessed_indicators</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">unprocessed_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set indicators list</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (list): List of indicators</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indicator_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the current indicator list.</span>
 
@@ -1208,7 +1227,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.5',
+            VERSION:'0.4.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.4.5 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.4.6 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.5 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.6 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.5
+                0.4.6
               </div>
             
           
@@ -864,7 +864,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>  <span class="c1"># 2to3 converts unicode to str</span>
         <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-            <span class="k">pass</span> <span class="c1">#Can&#39;t decode str in Python 3</span></div>
+            <span class="k">pass</span> <span class="c1"># Can&#39;t decode str in Python 3</span>
+        <span class="k">return</span> <span class="n">data</span></div>
 
         <span class="c1">## if data is None or isinstance(data, (int, list, dict)):</span>
         <span class="c1">##     pass  # do nothing with these types</span>
@@ -1039,7 +1040,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.5',
+            VERSION:'0.4.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

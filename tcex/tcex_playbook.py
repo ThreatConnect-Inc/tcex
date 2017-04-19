@@ -370,7 +370,10 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
+            value_encoded = []
+            for v in value:
+                value_encoded.append(base64.b64encode(bytes(v)).decode('utf-8'))
+            data = self._db.create(key.strip(), json.dumps(value_encoded))
         else:
             self._tcex.log.warning('The key or value field was None.')
         return data
@@ -388,10 +391,12 @@ class TcExPlaybook(object):
         if key is not None:
             data = self._db.read(key.strip())
             if data is not None:
-                data = base64.b64decode(json.loads(data))
+                data_decoded = []
+                for d in json.loads(data):
+                    data_decoded.append(base64.b64decode(d))
         else:
             self._tcex.log.warning('The key field was None.')
-        return data
+        return data_decoded
 
     # key/value
     def create_key_value(self, key, value):
