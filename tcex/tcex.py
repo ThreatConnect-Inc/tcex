@@ -715,6 +715,7 @@ class TcEx(object):
                 data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
         except NameError:
             pass # Can't decode str in Python 3
+        return data
 
         ## if data is None or isinstance(data, (int, list, dict)):
         ##     pass  # do nothing with these types

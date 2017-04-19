@@ -977,6 +977,25 @@ class TcExJob(object):
                 self._indicators.append(i)
 
     @property
+    def unprocessed_indicators(self):
+        """ Return indicators (unprocessed)
+
+        Returns:
+            (list): The unprocessed indicator list
+        """
+        return self._indicators
+
+    @unprocessed_indicators.setter
+    def unprocessed_indicators(self, value):
+        """ Set indicators list
+
+        Args:
+            value (list): List of indicators
+
+        """
+        self._indicators = value
+
+    @property
     def indicator_data(self):
         """Return the current indicator list.
 
