@@ -58,12 +58,12 @@ class TcExJob(object):
         """Split indicator list into smaller more manageable numbers.
 
         """
-        try: 
-            for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk): 
-                yield self._indicators[i:i + self._tcex._args.batch_chunk] 
-        except NameError: # Python 3 uses range() instead of xrange() 
-            for i in range(0, len(self._indicators), self._tcex._args.batch_chunk): 
-                yield self._indicators[i:i + self._tcex._args.batch_chunk] 
+        try:
+            for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk):
+                yield self._indicators[i:i + self._tcex._args.batch_chunk]
+        except NameError: # Python 3 uses range() instead of xrange()
+            for i in range(0, len(self._indicators), self._tcex._args.batch_chunk):
+                yield self._indicators[i:i + self._tcex._args.batch_chunk]
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect
@@ -975,6 +975,25 @@ class TcExJob(object):
             if i.get('summary') not in self._indicators:
                 self._indicator_results['submitted'].append(i.get('summary'))
                 self._indicators.append(i)
+
+    @property
+    def unprocessed_indicators(self):
+        """ Return indicators (unprocessed)
+
+        Returns:
+            (list): The unprocessed indicator list
+        """
+        return self._indicators
+
+    @unprocessed_indicators.setter
+    def unprocessed_indicators(self, value):
+        """ Set indicators list
+
+        Args:
+            value (list): List of indicators
+
+        """
+        self._indicators = value
 
     @property
     def indicator_data(self):

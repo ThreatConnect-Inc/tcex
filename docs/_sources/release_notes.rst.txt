@@ -6,6 +6,11 @@ Release Notes
 0.4.x
 =====
 
+0.4.6
+-----
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.create_binary_array` method to properly handle binary array data.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` method to properly handle binary array data.
+
 0.4.5
 -----
 + Updated indicator_body to support missing hashes.
