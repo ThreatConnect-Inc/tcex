@@ -20,6 +20,7 @@ from platform import platform
 from dateutil.relativedelta import relativedelta
 
 """ custom """
+from .tcex_job import TcExJob
 
 
 class TcEx(object):
@@ -64,7 +65,7 @@ class TcEx(object):
         self._log_tc_proxy()
 
         # include jobs module
-        self._jobs()
+        # self._jobs()
 
         # include playbook module
         self._playbook()
@@ -110,7 +111,6 @@ class TcEx(object):
 
     def _jobs(self):
         """Include jobs Module"""
-        from .tcex_job import TcExJob
         self.jobs = TcExJob(self)
 
     def _log_app_version(self):
@@ -510,6 +510,10 @@ class TcEx(object):
         else:
             self.log.error('Invalid exit code')
 
+    def job(self):
+        """Return instance of Job module"""
+        return TcExJob(self)
+
     def message_tc(self, message):
         """Write data to message_tc file in TcEX specified directory.
 
@@ -711,6 +715,8 @@ class TcEx(object):
                 except UnicodeEncodeError as e:  # 2to3 converts unicode to str
                     data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
                     self.log.warning('Encoding poorly encoded string ({})'.format(data))
+                except AttributeError:
+                    pass  # Python 3 can't decode a str
             else:
                 data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
         except NameError:

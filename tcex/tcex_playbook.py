@@ -750,7 +750,7 @@ class TcExPlaybook(object):
 
     @staticmethod
     def json_to_bulk(tc_data, value_fields, resource_type, resource_type_parent):
-        """Convert ThreatConnect JSON response to a TCEntityArray
+        """Convert ThreatConnect JSON response to a Bulk Format
 
         .. Attention:: This method is subject to frequent changes
 

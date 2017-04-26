@@ -6,6 +6,10 @@ Release Notes
 0.4.x
 =====
 
+0.4.7
+-----
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.create_binary_array` method to properly handle binary array data.
+
 0.4.6
 -----
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.create_binary_array` method to properly handle binary array data.
@@ -13,8 +17,8 @@ Release Notes
 
 0.4.5
 -----
-+ Updated indicator_body to support missing hashes.
-+ Added false_positive endpoint for indicators.
++ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` to support missing hashes.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.false_positive` endpoint for indicators.
 + Merged pull requests for better native Python3 support.
 + Added Campaign to group types.
 + Increased request timeout to 300 seconds.
