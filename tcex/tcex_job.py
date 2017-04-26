@@ -836,7 +836,7 @@ class TcExJob(object):
                 data += results.get('data')
             else:
                 err = 'Failed retrieving result during pagination.'
-                self._tcex.log.err(err)
+                self._tcex.log.error(err)
                 raise RuntimeError(e)
 
         for group in data:
