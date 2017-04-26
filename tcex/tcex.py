@@ -65,7 +65,7 @@ class TcEx(object):
         self._log_tc_proxy()
 
         # include jobs module
-        # self._jobs()
+        self._jobs()
 
         # include playbook module
         self._playbook()
