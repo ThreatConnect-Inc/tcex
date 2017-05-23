@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.4.7 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.4.8 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.7 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.8 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.7
+                0.4.8
               </div>
             
           
@@ -215,7 +215,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tc_proxy</span><span class="p">()</span>
 
         <span class="c1"># include jobs module</span>
-        <span class="c1"># self._jobs()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobs</span><span class="p">()</span>
 
         <span class="c1"># include playbook module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span><span class="p">()</span>
@@ -719,13 +719,15 @@
 
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">tc_proxy_username</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+                <span class="n">tc_proxy_password</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
 
                 <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span>
+                        <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
                     <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span>
+                        <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
                 <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1046,7 +1048,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.7',
+            VERSION:'0.4.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

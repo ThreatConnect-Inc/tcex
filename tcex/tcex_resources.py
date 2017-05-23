@@ -136,6 +136,8 @@ class Resource(object):
                 data, status = self._request_process_json(response)
             elif response.headers['content-type'] == 'application/octet-stream':
                 data, status = self._request_process_octet(response)
+            elif response.headers['content-type'] == 'text/plain':
+                data, status = self._request_process_text(response)
             else:
                 err = 'Failed Request: {}'.format(response.text)
                 self._tcex.log.error(err)
@@ -237,6 +239,21 @@ class Resource(object):
 
     def _request_process_octet(self, response):
         """Handle Document download.
+
+        Return:
+            (string): The data from the download
+            (string): The status of the download
+        """
+        status = 'Failure'
+        # Handle document download
+        data = response.content
+        if len(data) != 0:
+            status = 'Success'
+
+        return data, status
+
+    def _request_process_text(self, response):
+        """Handle Signature download.
 
         Return:
             (string): The data from the download
@@ -1683,6 +1700,14 @@ class Signature(Group):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
 
+    def download(self, resource_id):
+        """Update the request URI to download the document for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/download'.format(self._request_uri)
 
 class Threat(Group):
     """Threat Resource Class
