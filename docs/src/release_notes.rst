@@ -6,6 +6,11 @@ Release Notes
 0.4.x
 =====
 
+0.4.8
+-----
++ Added :py:meth:`~tcex.tcex_resources.Signature.download` method to download signature data.
++ Added urlencoding to proxy user and password.
+
 0.4.7
 -----
 + Added :py:meth:`~tcex.tcex.TcEx.job` method to allow multiple jobs to run in an App.

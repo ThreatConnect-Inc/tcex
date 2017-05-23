@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.4.7 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.4.8 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.4.7 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.4.8 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.4.7
+                0.4.8
               </div>
             
           
@@ -927,6 +927,23 @@ the actual indicator id stored in ThreatConnect.</p>
 <dt id="tcex.tcex_resources.Resource._request_process_octet">
 <code class="descname">_request_process_octet</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._request_process_octet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._request_process_octet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle Document download.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The data from the download
+(string): The status of the download</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource._request_process_text">
+<code class="descname">_request_process_text</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource._request_process_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource._request_process_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle Signature download.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1995,6 +2012,20 @@ etc) for this resource that are associated with the provided victim id.</p>
 <p>This resource class will return groups of type Signature. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
 the parent class.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.Signature.download">
+<code class="descname">download</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Signature.download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Signature.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to download the document for this resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>integer</em>) &#8211; The group id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -2176,7 +2207,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.4.7',
+            VERSION:'0.4.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

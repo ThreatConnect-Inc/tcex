@@ -569,13 +569,15 @@ class TcEx(object):
 
             if (self._args.tc_proxy_username is not None and
                     self._args.tc_proxy_password is not None):
+                tc_proxy_username = urllib.quote(self._args.tc_proxy_username, safe='~')
+                tc_proxy_password = urllib.quote(self._args.tc_proxy_password, safe='~')
 
                 proxies = {
                     'http': 'http://{0!s}:{1!s}@{2!s}:{3!s}'.format(
-                        self._args.tc_proxy_username, self._args.tc_proxy_password,
+                        tc_proxy_username, tc_proxy_password,
                         self._args.tc_proxy_host, self._args.tc_proxy_port),
                     'https': 'https://{0!s}:{1!s}@{2!s}:{3!s}'.format(
-                        self._args.tc_proxy_username, self._args.tc_proxy_password,
+                        tc_proxy_username, tc_proxy_password,
                         self._args.tc_proxy_host, self._args.tc_proxy_port)
                 }
             else:
