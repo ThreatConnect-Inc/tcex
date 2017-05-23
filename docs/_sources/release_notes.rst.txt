@@ -6,7 +6,7 @@ Release Notes
 0.4.x
 =====
 
-0.4.8
+0.4.9
 -----
 + Added :py:meth:`~tcex.tcex_resources.Signature.download` method to download signature data.
 + Added urlencoding to proxy user and password.
