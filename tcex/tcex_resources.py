@@ -287,6 +287,17 @@ class Resource(object):
             'value': value
         })
 
+    def add_payload(self, key, val):
+        """Add a key value pair to payload for this request.
+
+        .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).
+
+        Args:
+            key (string): The payload key
+            val (string): The payload value
+        """
+        self._r.add_payload(key, val)
+
     @property
     def api_branch(self):
         """The ThreatConnect API branch for this resource.
@@ -962,6 +973,39 @@ class Resource(object):
         """
         return self._value_fields
 
+    def victims(self, victim_resource):
+        """Pivot point on Victims for this resource.
+
+        This method will return all *resources* (group, indicators, task,
+        etc) for this resource that are associated with the provided victim id.
+
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}                            |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+
+        Args:
+            resource_id (integer): The resource pivot id (victim id).
+        """
+        resource = self._copy()
+        resource._request_entity = 'victim'
+        resource._request_uri = '{}/{}'.format(
+            resource._request_uri, victim_resource.request_uri)
+        return resource
+
     def victim_pivot(self, victim_resource):
         """Pivot point on Victims for this resource.
 
@@ -988,6 +1032,65 @@ class Resource(object):
         resource = self._copy()
         resource._request_uri = '{}/{}'.format(
             victim_resource.request_uri, resource._request_uri)
+        return resource
+
+    def victim_assets(self, asset_type=None, asset_id=None):
+        """Victim Asset endpoint for this resource with optional asset type.
+
+        This method will set the resource endpoint for working with Victim Assets.
+        The HTTP GET method will return all Victim Assets associated with this
+        resource or if a asset type is provided it will return the provided asset
+        type if it has been associated. The provided asset type can be associated
+        to this resource using the HTTP POST method.  The HTTP DELETE method will
+        remove the provided tag from this resource.
+
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets                                                   |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets                                               |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}                                   |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}                                                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}                                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+
+        Args:
+            asset_type (Optional [string]): The asset type.
+            asset_id (Optional [string]): The asset id.
+        """
+        type_entity_map = {
+            'emailAddresses': 'victimEmailAddress',
+            'networkAccounts': 'victimNetworkAccount',
+            'phoneNumbers': 'victimPhone',
+            'socialNetworks': 'victimSocialNetwork',
+            'webSites': 'victimWebSite'
+        }
+        resource = self._copy()
+        resource._request_entity = 'victimAsset'
+        resource._request_uri = '{}/victimAssets'.format(resource._request_uri)
+        if asset_type is not None:
+            resource._request_entity = type_entity_map.get(asset_type, 'victimAsset')
+            resource._request_uri = '{}/{}'.format(
+                resource._request_uri, asset_type)
+            if asset_id is not None:
+                resource._request_uri = '{}/{}'.format(
+                    resource._request_uri, asset_id)
         return resource
 
     @property
@@ -1288,6 +1391,22 @@ class Indicator(Resource):
                         'type': indicator_field,
                         'value': indicator_data.get(indicator_field)
                     }
+
+    def observation(self):
+        """Retrieve indicator observation count for top 10"""
+        self._request_uri = '{}/observation'.format(self._request_uri)
+
+    def observation_count(self):
+        """Retrieve indicator observation count"""
+        self._request_uri = '{}/observationCount'.format(self._request_uri)
+
+    def observed(self, date_observed=None):
+        """Report indicator observation"""
+        if self.name != 'Indicator':
+            self._tcex.log.warning('Observed endpoint only available for "indicator" endpoint.')
+        self._request_uri = '{}/observed'.format(self._request_uri)
+        if date_observed is not None:
+            self.r.add_payload('dateObserved', date_observed)
 
     def resource_id(self, data):
         """Alias for indicator method.
@@ -1939,7 +2058,7 @@ class Victim(Resource):
         self._status_codes = {
             'DELETE': [200],
             'GET': [200],
-            'POST': [200],
+            'POST': [200, 201],
             'PUT': [200]
         }
         self._value_fields = ['name']

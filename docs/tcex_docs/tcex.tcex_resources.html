@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.4.9 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.4.10 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.4.9 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.4.10 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.4.9
+                0.4.10
               </div>
             
           
@@ -737,6 +737,24 @@ If all hashes are required the <code class="docutils literal"><span class="pre">
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_resources.Indicator.observation">
+<code class="descname">observation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.observation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.observation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve indicator observation count for top 10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Indicator.observation_count">
+<code class="descname">observation_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.observation_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.observation_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve indicator observation count</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Indicator.observed">
+<code class="descname">observed</code><span class="sig-paren">(</span><em>date_observed=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.observed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.observed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Report indicator observation</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Indicator.resource_id">
 <code class="descname">resource_id</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.resource_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for indicator method.</p>
@@ -975,6 +993,28 @@ the actual indicator id stored in ThreatConnect.</p>
 <li><strong>name</strong> (<em>string</em>) &#8211; The filter field name.</li>
 <li><strong>operator</strong> (<em>string</em>) &#8211; The filter comparison operator.</li>
 <li><strong>value</strong> (<em>string</em>) &#8211; The filter value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.add_payload">
+<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.add_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.add_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a key value pair to payload for this request.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For <code class="docutils literal"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) &#8211; The payload key</li>
+<li><strong>val</strong> (<em>string</em>) &#8211; The payload value</li>
 </ul>
 </td>
 </tr>
@@ -1924,6 +1964,74 @@ etc) for this resource that are associated with the provided task id.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_resources.Resource.victim_assets">
+<code class="descname">victim_assets</code><span class="sig-paren">(</span><em>asset_type=None</em>, <em>asset_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.victim_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.victim_assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Victim Asset endpoint for this resource with optional asset type.</p>
+<p>This method will set the resource endpoint for working with Victim Assets.
+The HTTP GET method will return all Victim Assets associated with this
+resource or if a asset type is provided it will return the provided asset
+type if it has been associated. The provided asset type can be associated
+to this resource using the HTTP POST method.  The HTTP DELETE method will
+remove the provided tag from this resource.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/victimAssets</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/victimAssets</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/victim/{uniqueId}/victimAssets/{assetType}</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>asset_type</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The asset type.</li>
+<li><strong>asset_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The asset id.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Resource.victim_pivot">
 <code class="descname">victim_pivot</code><span class="sig-paren">(</span><em>victim_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.victim_pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.victim_pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pivot point on Victims for this resource.</p>
@@ -1952,6 +2060,54 @@ etc) for this resource that are associated with the provided victim id.</p>
 </tr>
 <tr class="row-odd"><td>GET</td>
 <td>/v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>integer</em>) &#8211; The resource pivot id (victim id).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.victims">
+<code class="descname">victims</code><span class="sig-paren">(</span><em>victim_resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.victims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.victims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pivot point on Victims for this resource.</p>
+<p>This method will return all <em>resources</em> (group, indicators, task,
+etc) for this resource that are associated with the provided victim id.</p>
+<p><strong>Example Endpoints URI&#8217;s</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI&#8217;s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}</td>
+</tr>
+<tr class="row-even"><td>GET</td>
+<td>/v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims</td>
+</tr>
+<tr class="row-odd"><td>GET</td>
+<td>/v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}</td>
+</tr>
+<tr class="row-even"><td>DELETE</td>
+<td>/v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}</td>
 </tr>
 </tbody>
 </table>
@@ -2207,7 +2363,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.4.9',
+            VERSION:'0.4.10',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
