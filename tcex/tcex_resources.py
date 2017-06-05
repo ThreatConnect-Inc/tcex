@@ -1392,16 +1392,16 @@ class Indicator(Resource):
                         'value': indicator_data.get(indicator_field)
                     }
 
-    def observation(self):
-        """Retrieve indicator observation count for top 10"""
-        self._request_uri = '{}/observation'.format(self._request_uri)
+    def observations(self):
+        """Report indicator observations"""
+        self._request_uri = '{}/observations'.format(self._request_uri)
 
     def observation_count(self):
         """Retrieve indicator observation count"""
         self._request_uri = '{}/observationCount'.format(self._request_uri)
 
     def observed(self, date_observed=None):
-        """Report indicator observation"""
+        """Retrieve indicator observations count for top 10"""
         if self.name != 'Indicator':
             self._tcex.log.warning('Observed endpoint only available for "indicator" endpoint.')
         self._request_uri = '{}/observed'.format(self._request_uri)

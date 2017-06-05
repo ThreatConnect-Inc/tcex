@@ -10,7 +10,7 @@ Release Notes
 ------
 + Added :py:meth:`~tcex.tcex_resources.Resource.victims` method to :py:mod:`~tcex.tcex_resources.Resource` module.
 + Added :py:meth:`~tcex.tcex_resources.Resource.victim_assets` method to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added :py:meth:`~tcex.tcex_resources.Indicator.observation` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observations` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
 + Added :py:meth:`~tcex.tcex_resources.Indicator.observation_count` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
 + Added :py:meth:`~tcex.tcex_resources.Indicator.observed` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
 
