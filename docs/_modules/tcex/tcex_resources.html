@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.4.9 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.4.10 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.9 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.10 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.9
+                0.4.10
               </div>
             
           
@@ -211,7 +211,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;filters&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filters</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Resource._copy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._copy">[docs]</a>    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Resource.copy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a &quot;clean&quot; copy of this instance.</span>
 
 <span class="sd">        Return:</span>
@@ -437,6 +437,17 @@
             <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span>
         <span class="p">})</span></div>
 
+<div class="viewcode-block" id="Resource.add_payload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.add_payload">[docs]</a>    <span class="k">def</span> <span class="nf">add_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a key value pair to payload for this request.</span>
+
+<span class="sd">        .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The payload key</span>
+<span class="sd">            val (string): The payload value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">api_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The ThreatConnect API branch for this resource.</span>
@@ -492,7 +503,7 @@
 <span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
 <span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -524,7 +535,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_api_branch (string): The resource pivot api branch including resource id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -556,7 +567,7 @@
 <span class="sd">        Return:</span>
 <span class="sd">            (instance): A copy of this resource instance cleaned and updated for associations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">api_entity</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
@@ -594,7 +605,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (attribute id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;attribute&#39;</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/attributes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -672,7 +683,7 @@
 <span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
 <span class="sd">            action_name (string): The name of the action as defined by ThreatConnect.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">_request_api_branch</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -707,7 +718,7 @@
 <span class="sd">            (instance): A copy of this resource instance cleaned and updated for group associations.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
 
@@ -757,7 +768,7 @@
 <span class="sd">            resource_type (string): The resource pivot resource type (indicator type).</span>
 <span class="sd">            resource_id (integer): The resource pivot id (indicator value).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">indicator_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -958,7 +969,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (security label name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">security_label_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -992,7 +1003,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (security label name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/securityLabels&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1026,7 +1037,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">tag_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -1067,7 +1078,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/tags&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1098,7 +1109,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (task id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">task_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
@@ -1111,6 +1122,39 @@
 <span class="sd">            (list): The fields in the response JSON that have the key value (e.g. [&#39;md5&#39;, &#39;sha1&#39;, &#39;sha256&#39;] or [&#39;ip&#39;]).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span>
+
+<div class="viewcode-block" id="Resource.victims"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victims">[docs]</a>    <span class="k">def</span> <span class="nf">victims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">victim_resource</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pivot point on Victims for this resource.</span>
+
+<span class="sd">        This method will return all *resources* (group, indicators, task,</span>
+<span class="sd">        etc) for this resource that are associated with the provided victim id.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                                           |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}                            |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;victim&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">victim_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.victim_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">victim_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">victim_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on Victims for this resource.</span>
@@ -1135,9 +1179,68 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">victim_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resource</span></div>
+
+<div class="viewcode-block" id="Resource.victim_assets"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_assets">[docs]</a>    <span class="k">def</span> <span class="nf">victim_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asset_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Victim Asset endpoint for this resource with optional asset type.</span>
+
+<span class="sd">        This method will set the resource endpoint for working with Victim Assets.</span>
+<span class="sd">        The HTTP GET method will return all Victim Assets associated with this</span>
+<span class="sd">        resource or if a asset type is provided it will return the provided asset</span>
+<span class="sd">        type if it has been associated. The provided asset type can be associated</span>
+<span class="sd">        to this resource using the HTTP POST method.  The HTTP DELETE method will</span>
+<span class="sd">        remove the provided tag from this resource.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
+<span class="sd">        +==============+=====================================================================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets                                                   |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}                                       |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets                                               |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}                                   |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                      |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}                                                      |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}                                         |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            asset_type (Optional [string]): The asset type.</span>
+<span class="sd">            asset_id (Optional [string]): The asset id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_entity_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;emailAddresses&#39;</span><span class="p">:</span> <span class="s1">&#39;victimEmailAddress&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;networkAccounts&#39;</span><span class="p">:</span> <span class="s1">&#39;victimNetworkAccount&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;phoneNumbers&#39;</span><span class="p">:</span> <span class="s1">&#39;victimPhone&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;socialNetworks&#39;</span><span class="p">:</span> <span class="s1">&#39;victimSocialNetwork&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;webSites&#39;</span><span class="p">:</span> <span class="s1">&#39;victimWebSite&#39;</span>
+        <span class="p">}</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;victimAsset&#39;</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/victimAssets&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">asset_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="n">type_entity_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asset_type</span><span class="p">,</span> <span class="s1">&#39;victimAsset&#39;</span><span class="p">)</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
 
     <span class="nd">@property</span>
@@ -1439,6 +1542,25 @@
                         <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">indicator_field</span><span class="p">)</span>
                     <span class="p">}</span></div>
 
+<div class="viewcode-block" id="Indicator.observations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.observations">[docs]</a>    <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Report indicator observations&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;observation&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/observations&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Indicator.observation_count"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.observation_count">[docs]</a>    <span class="k">def</span> <span class="nf">observation_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve indicator observation count&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;observationCount&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/observationCount&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Indicator.observed"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.observed">[docs]</a>    <span class="k">def</span> <span class="nf">observed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_observed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve indicator observations count for top 10&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Observed endpoint only available for &quot;indicator&quot; endpoint.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/observed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">date_observed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;dateObserved&#39;</span><span class="p">,</span> <span class="n">date_observed</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Indicator.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias for indicator method.</span>
 
@@ -1602,14 +1724,16 @@
 
         <span class="k">return</span> <span class="n">body</span></div>
 
-<div class="viewcode-block" id="File.occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="p">):</span>
+<div class="viewcode-block" id="File.occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the URI to retrieve file occurrences for the provided indicator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            indicator (string): The indicator to retrieve file occurrences.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;fileOccurrence&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/fileOccurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">indicator</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/fileOccurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indicator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/fileOccurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">indicator</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
@@ -1629,7 +1753,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Host&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hostName&#39;</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hostName&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Host.resolution"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host.resolution">[docs]</a>    <span class="k">def</span> <span class="nf">resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the URI to retrieve host resolutions for the provided indicator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator (string): The indicator to retrieve resolutions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;dnsResolution&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/dnsResolutions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indicator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/dnsResolutions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">indicator</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="URL"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.URL">[docs]</a><span class="k">class</span> <span class="nc">URL</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
@@ -2089,7 +2224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
             <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
-            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
             <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
@@ -2299,7 +2434,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.9',
+            VERSION:'0.4.10',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

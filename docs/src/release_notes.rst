@@ -6,6 +6,17 @@ Release Notes
 0.4.x
 =====
 
+0.4.10
+------
++ Added :py:meth:`~tcex.tcex_resources.Resource.victims` method to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:meth:`~tcex.tcex_resources.Resource.victim_assets` method to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observations` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observation_count` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observed` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
++ Changed private ``_copy()`` method to public :py:meth:`~tcex.tcex_resources.Resource.copy` in the :py:mod:`~tcex.tcex_resources.Resource` module.
++ Updated :py:meth:`~tcex.tcex_resources.File.occurrence` method indicator parameter to be optional.
++ Added :py:meth:`~tcex.tcex_resources.Host.resolution` methods to :py:mod:`~tcex.tcex_resources.Resource` module to retrieve DNS resolutions on Host Indicators.
+
 0.4.9
 -----
 + Added :py:meth:`~tcex.tcex_resources.Signature.download` method to download signature data.

@@ -61,7 +61,7 @@ class Resource(object):
         if len(filters) > 0:
             self._r.add_payload('filters', ','.join(filters))
 
-    def _copy(self):
+    def copy(self):
         """Return a "clean" copy of this instance.
 
         Return:
@@ -287,6 +287,17 @@ class Resource(object):
             'value': value
         })
 
+    def add_payload(self, key, val):
+        """Add a key value pair to payload for this request.
+
+        .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).
+
+        Args:
+            key (string): The payload key
+            val (string): The payload value
+        """
+        self._r.add_payload(key, val)
+
     @property
     def api_branch(self):
         """The ThreatConnect API branch for this resource.
@@ -342,7 +353,7 @@ class Resource(object):
             resource_api_branch (string): The resource pivot api branch.
             association_name (string): The name of the custom association as defined in the UI.
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/associations/{}/{}'.format(
             resource_api_branch, association_name, resource._request_uri)
         return resource
@@ -374,7 +385,7 @@ class Resource(object):
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             association_resource.request_uri, resource._request_uri)
         return resource
@@ -406,7 +417,7 @@ class Resource(object):
         Return:
             (instance): A copy of this resource instance cleaned and updated for associations.
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_entity = association_resource.api_entity
         resource._request_uri = '{}/{}'.format(
             resource._request_uri, association_resource.request_uri)
@@ -444,7 +455,7 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (attribute id).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_entity = 'attribute'
         resource._request_uri = '{}/attributes'.format(resource._request_uri)
         if resource_id is not None:
@@ -522,7 +533,7 @@ class Resource(object):
             resource_id (string): The resource pivot id (file hash).
             action_name (string): The name of the action as defined by ThreatConnect.
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}/actions/{}/{}'.format(
             resource._request_api_branch, resource_id, action_name, resource._request_uri)
         return resource
@@ -557,7 +568,7 @@ class Resource(object):
             (instance): A copy of this resource instance cleaned and updated for group associations.
 
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(group_resource.request_uri, resource._request_uri)
         return resource
 
@@ -607,7 +618,7 @@ class Resource(object):
             resource_type (string): The resource pivot resource type (indicator type).
             resource_id (integer): The resource pivot id (indicator value).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             indicator_resource.request_uri, resource._request_uri)
         return resource
@@ -808,7 +819,7 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (security label name).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             security_label_resource.request_uri, resource._request_uri)
         return resource
@@ -842,7 +853,7 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (security label name).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_entity = 'securityLabel'
         resource._request_uri = '{}/securityLabels'.format(resource._request_uri)
         if resource_id is not None:
@@ -876,7 +887,7 @@ class Resource(object):
         Args:
             resource_id (string): The resource pivot id (tag name).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             tag_resource.request_uri, resource._request_uri)
         return resource
@@ -917,7 +928,7 @@ class Resource(object):
         Args:
             resource_id (Optional [string]): The resource id (tag name).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_entity = 'tag'
         resource._request_uri = '{}/tags'.format(resource._request_uri)
         if resource_id is not None:
@@ -948,7 +959,7 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (task id).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             task_resource.request_uri, resource._request_uri)
         return resource
@@ -961,6 +972,39 @@ class Resource(object):
             (list): The fields in the response JSON that have the key value (e.g. ['md5', 'sha1', 'sha256'] or ['ip']).
         """
         return self._value_fields
+
+    def victims(self, victim_resource):
+        """Pivot point on Victims for this resource.
+
+        This method will return all *resources* (group, indicators, task,
+        etc) for this resource that are associated with the provided victim id.
+
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                                           |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}                            |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+
+        Args:
+            resource_id (integer): The resource pivot id (victim id).
+        """
+        resource = self.copy()
+        resource._request_entity = 'victim'
+        resource._request_uri = '{}/{}'.format(
+            resource._request_uri, victim_resource.request_uri)
+        return resource
 
     def victim_pivot(self, victim_resource):
         """Pivot point on Victims for this resource.
@@ -985,9 +1029,68 @@ class Resource(object):
         Args:
             resource_id (integer): The resource pivot id (victim id).
         """
-        resource = self._copy()
+        resource = self.copy()
         resource._request_uri = '{}/{}'.format(
             victim_resource.request_uri, resource._request_uri)
+        return resource
+
+    def victim_assets(self, asset_type=None, asset_id=None):
+        """Victim Asset endpoint for this resource with optional asset type.
+
+        This method will set the resource endpoint for working with Victim Assets.
+        The HTTP GET method will return all Victim Assets associated with this
+        resource or if a asset type is provided it will return the provided asset
+        type if it has been associated. The provided asset type can be associated
+        to this resource using the HTTP POST method.  The HTTP DELETE method will
+        remove the provided tag from this resource.
+
+        **Example Endpoints URI's**
+
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                  |
+        +==============+=====================================================================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets                                                   |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}                                       |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets                                               |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}                                   |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}                                                      |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}                                         |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
+        +--------------+-----------------------------------------------------------------------------------------------------+
+
+        Args:
+            asset_type (Optional [string]): The asset type.
+            asset_id (Optional [string]): The asset id.
+        """
+        type_entity_map = {
+            'emailAddresses': 'victimEmailAddress',
+            'networkAccounts': 'victimNetworkAccount',
+            'phoneNumbers': 'victimPhone',
+            'socialNetworks': 'victimSocialNetwork',
+            'webSites': 'victimWebSite'
+        }
+        resource = self.copy()
+        resource._request_entity = 'victimAsset'
+        resource._request_uri = '{}/victimAssets'.format(resource._request_uri)
+        if asset_type is not None:
+            resource._request_entity = type_entity_map.get(asset_type, 'victimAsset')
+            resource._request_uri = '{}/{}'.format(
+                resource._request_uri, asset_type)
+            if asset_id is not None:
+                resource._request_uri = '{}/{}'.format(
+                    resource._request_uri, asset_id)
         return resource
 
     @property
@@ -1289,6 +1392,25 @@ class Indicator(Resource):
                         'value': indicator_data.get(indicator_field)
                     }
 
+    def observations(self):
+        """Report indicator observations"""
+        self._request_entity = 'observation'
+        self._request_uri = '{}/observations'.format(self._request_uri)
+
+    def observation_count(self):
+        """Retrieve indicator observation count"""
+        self._request_entity = 'observationCount'
+        self._request_uri = '{}/observationCount'.format(self._request_uri)
+
+    def observed(self, date_observed=None):
+        """Retrieve indicator observations count for top 10"""
+        if self.name != 'Indicator':
+            self._tcex.log.warning('Observed endpoint only available for "indicator" endpoint.')
+        else:
+            self._request_uri = '{}/observed'.format(self._request_uri)
+            if date_observed is not None:
+                self.r.add_payload('dateObserved', date_observed)
+
     def resource_id(self, data):
         """Alias for indicator method.
 
@@ -1452,14 +1574,16 @@ class File(Indicator):
 
         return body
 
-    def occurrence(self, indicator):
+    def occurrence(self, indicator=None):
         """Update the URI to retrieve file occurrences for the provided indicator.
 
         Args:
             indicator (string): The indicator to retrieve file occurrences.
         """
         self._request_entity = 'fileOccurrence'
-        self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
+        self._request_uri = '{}/fileOccurrences'.format(self._request_uri)
+        if indicator is not None:
+            self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
 
 
 class Host(Indicator):
@@ -1480,6 +1604,17 @@ class Host(Indicator):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
         self._value_fields = ['hostName']
+
+    def resolution(self, indicator=None):
+        """Update the URI to retrieve host resolutions for the provided indicator.
+
+        Args:
+            indicator (string): The indicator to retrieve resolutions.
+        """
+        self._request_entity = 'dnsResolution'
+        self._request_uri = '{}/dnsResolutions'.format(self._request_uri)
+        if indicator is not None:
+            self._request_uri = '{}/{}/dnsResolutions'.format(self._api_uri, indicator)
 
 
 class URL(Indicator):
@@ -1939,7 +2074,7 @@ class Victim(Resource):
         self._status_codes = {
             'DELETE': [200],
             'GET': [200],
-            'POST': [200],
+            'POST': [200, 201],
             'PUT': [200]
         }
         self._value_fields = ['name']
