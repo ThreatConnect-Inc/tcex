@@ -196,8 +196,10 @@ class ArgParser(ArgumentParser):
         #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level')
         # BCS - temporarily until there is some way to configure App logging level in the UI
         self.add_argument(
-            '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
+            '--logging',
+            choices=['debug', 'Debug', 'info', 'Info', 'warning', 'Warning', 'error', 'Error', 'critical', 'Critical'],
             default=None, help='Logging Level', dest='logging')
         self.add_argument(
-            '--tc_log_level', choices=['debug', 'info', 'warning', 'error', 'critical'],
+            '--tc_log_level',
+            choices=['debug', 'Debug', 'info', 'Info', 'warning', 'Warning', 'error', 'Error', 'critical', 'Critical'],
             default=None, help='Logging Level', dest='tc_log_level')
