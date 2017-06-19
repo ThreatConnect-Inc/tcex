@@ -2027,7 +2027,7 @@ class Task(Resource):
         self._status_codes = {
             'DELETE': [200],
             'GET': [200],
-            'POST': [200],
+            'POST': [200, 201],
             'PUT': [200]
         }
         self._value_fields = ['name']
