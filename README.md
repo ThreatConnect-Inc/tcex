@@ -29,7 +29,7 @@ python setup.py install --force
 
 Documentation
 --------------
-https://threatconnect-inc.github.io/tcex/
+https://docs.threatconnect.com/en/latest/tcex/tcex.html
 
 Release Notes
 --------------
