@@ -15,8 +15,6 @@ Groups
 The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 8,16
 
     {
@@ -42,8 +40,6 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
 The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property to get the status of each Group submitted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 2-5,8
 
     {
@@ -69,8 +65,6 @@ Group Associations
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 2-5
 
     {
@@ -89,8 +83,6 @@ Indicators
 The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,22
 
     {
@@ -120,8 +112,6 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
 The module provides the :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` property to get the status of each Indicator submitted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 2,5,8,14
 
     {
@@ -157,8 +147,6 @@ File Occurrence
 The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 4
 
     {
@@ -176,8 +164,6 @@ Sample Job Flow
 The key method calls are highlighted in the following code sample.
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 12,18,24,32,34-37
 
     from tcex import TcEx

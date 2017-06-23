@@ -14,8 +14,6 @@ Example Request using Proxy
 ---------------------------
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 2,3
 
     r = tcex.request

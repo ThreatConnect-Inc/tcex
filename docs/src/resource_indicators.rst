@@ -33,8 +33,6 @@ Retrieve All Indicators
 =======================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,18
 
     """ standard """
@@ -69,8 +67,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "rating": 5.0,
@@ -108,8 +104,6 @@ Retrieve Specific Indicator
 ===========================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17,19
 
     """ standard """
@@ -140,8 +134,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "rating": 5.0,
@@ -165,8 +157,6 @@ Retrieve Filtered Indicators
 ============================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17-18,20
 
     """ standard """
@@ -203,8 +193,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "rating": 5.0,
@@ -241,8 +229,6 @@ Indicator Associations
 ======================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17-18,20
 
     """ standard """
@@ -293,8 +279,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "rating": 5.0,
