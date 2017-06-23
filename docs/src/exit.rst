@@ -17,8 +17,6 @@ Some failures do not warrant an immediate exit.  In such case the :py:meth:`~tce
 **Example**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 8,12
 
     tcex = TcEx()
@@ -39,8 +37,6 @@ Immediate Exit on Failure
 Certain failures require that the App exit immediately.  In these cases calling the :py:meth:`~tcex.tcex.TcEx.exit` method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 8
 
     tcex = TcEx()

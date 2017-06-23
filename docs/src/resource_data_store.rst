@@ -7,8 +7,6 @@ Create Entry
 ============
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14-16
 
     """ standard """
@@ -37,8 +35,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "_type": "24$tcex",
@@ -57,8 +53,6 @@ Read Entry
 ==========
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14-15
 
     """ standard """
@@ -86,8 +80,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "_type": "24$tcex",
@@ -104,8 +96,6 @@ Update Entry
 ============
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14-16
 
     """ standard """
@@ -134,8 +124,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "_type": "24$tcex",
@@ -154,8 +142,6 @@ Delete Entry
 ============
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14-15
 
     """ standard """
@@ -183,8 +169,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "_type": "24$tcex",

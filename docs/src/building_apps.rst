@@ -31,8 +31,6 @@ tcex.json Format
 ----------------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
       "profiles": [{
@@ -74,8 +72,6 @@ Staging Redis Data
 In order to test using variable inputs the data must be manually added to Redis.  The code below will simulate an upstream App writing data to Redis.  This code can be saved to a script ``redis-create.py`` and added to the ``tcex.json`` as a profile.  By doing this the local Testing enviroment can be simulate a piece of a running playbook.
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
 
     """ standard """
     import os

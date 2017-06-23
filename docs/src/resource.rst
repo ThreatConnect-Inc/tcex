@@ -10,8 +10,6 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 **Direct Access**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 3-5
 
     tcex = TcEx()
@@ -27,8 +25,6 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 **Dynamic Access**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 3-5
 
     tcex = TcEx()

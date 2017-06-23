@@ -11,8 +11,6 @@ The ThreatConnect |trade| TcEx App Framework has a built-in logger that will log
 **Example Logging**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
 
     tcex.log.debug('logging debug')
     tcex.log.info('logging info')

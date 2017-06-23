@@ -7,8 +7,6 @@ Retrieve All Tags
 =================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,18
 
     """ standard """
@@ -43,8 +41,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "name": "APT",
@@ -68,8 +64,6 @@ Retrieve Specific Tag
 =====================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17,19
 
     """ standard """
@@ -101,8 +95,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "name": "APT",
@@ -114,8 +106,6 @@ Retrieve Filtered Tags
 ======================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17,19
 
     """ standard """
@@ -151,8 +141,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "name": "APT",

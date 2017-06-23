@@ -8,8 +8,6 @@ Retrieve All Security Labels
 ============================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,18
 
     """ standard """
@@ -44,8 +42,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     [{
         "dateAdded": "2017-01-04T20:07:00Z",
@@ -62,8 +58,6 @@ Retrieve Specific Security Label
 ================================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17,19
 
     """ standard """
@@ -95,8 +89,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
     {
         "dateAdded": "2017-01-04T20:07:00Z",
@@ -109,8 +101,6 @@ Retrieve Filtered Security Labels
 =================================
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 14,17,19
 
     """ standard """
@@ -146,8 +136,6 @@ Response
 --------
 
 .. code-block:: javascript
-    :linenos:
-    :lineno-start: 1
 
 
     [{

@@ -15,8 +15,6 @@ All ThreatConnect |trade| Exchange Apps should write an exit message on successf
 **Example Exit Message**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 9,14
 
     tcex = TcEx()

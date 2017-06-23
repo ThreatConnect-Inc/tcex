@@ -39,8 +39,6 @@ Custom arguments can be added to the ``argparser.ArgParser`` instance of :py:mod
 **Example**
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
     :emphasize-lines: 4-6
 
     from tcex import TcEx

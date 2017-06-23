@@ -10,8 +10,6 @@ Example Request
 ---------------
 
 .. code-block:: python
-    :linenos:
-    :lineno-start: 1
 
     r = tcex.request
     r.url = 'https://remote_api.example'
