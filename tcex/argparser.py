@@ -193,11 +193,11 @@ class ArgParser(ArgumentParser):
             help='ThreatConnect API Logging')
         # self.add_argument(
         #     '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
-        #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level')
+        #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level', type=str.lower)
         # BCS - temporarily until there is some way to configure App logging level in the UI
         self.add_argument(
             '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None, help='Logging Level', dest='logging')
+            default=None, help='Logging Level', dest='logging', type=str.lower)
         self.add_argument(
             '--tc_log_level', choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None, help='Logging Level', dest='tc_log_level')
+            default=None, help='Logging Level', dest='tc_log_level', type=str.lower)

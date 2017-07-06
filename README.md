@@ -33,7 +33,7 @@ https://docs.threatconnect.com/en/latest/tcex/tcex.html
 
 Release Notes
 --------------
-https://threatconnect-inc.github.io/tcex/release_notes.html
+https://docs.threatconnect.com/en/latest/tcex/release_notes.html
 
 Contact
 --------

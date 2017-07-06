@@ -6,6 +6,14 @@ Release Notes
 0.4.x
 =====
 
+0.4.11
+------
++ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_external` method.
++ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_tc` method.
++ Added :py:meth:`~tcex.tcex_resources.Task.assignees` method for Tasks.
++ Added :py:meth:`~tcex.tcex_resources.Task.escalatees` method for Tasks.
++ Added 201 as valid status code for Task.
+
 0.4.10
 ------
 + Added :py:meth:`~tcex.tcex_resources.Resource.victims` method to :py:mod:`~tcex.tcex_resources.Resource` module.

@@ -2027,10 +2027,46 @@ class Task(Resource):
         self._status_codes = {
             'DELETE': [200],
             'GET': [200],
-            'POST': [200],
+            'POST': [200, 201],
             'PUT': [200]
         }
         self._value_fields = ['name']
+
+    def assignees(self, assignee=None, resource_id=None):
+        """Add an assignee to a Task
+
+        GET: /v2/tasks/{uniqueId}/assignees
+        GET: /v2/tasks/{uniqueId}/assignees/{assigneeId}
+        POST: /v2/tasks/{uniqueId}/assignees/{assigneeId}
+        DELETE: /v2/tasks/{uniqueId}/assignees/{assigneeId}
+
+        Args:
+            assignee (Optional [string]): The assignee name.
+            resource_id (Optional [string]): The task ID.
+        """
+        if resource_id is not None:
+            self.resource_id(resource_id)
+        self._request_uri = '{}/assignees'.format(self._request_uri)
+        if assignee is not None:
+            self._request_uri = '{}/{}'.format(self._request_uri, assignee)
+
+    def escalatees(self, escalatee=None, resource_id=None):
+        """Add an escalatee to a Task
+
+        GET: /v2/tasks/{uniqueId}/escalatees
+        GET: /v2/tasks/{uniqueId}/escalatees/{escalateeId}
+        POST: /v2/tasks/{uniqueId}/escalatees/{escalateeId}
+        DELETE: /v2/tasks/{uniqueId}/escalatees/{escalateeId}
+
+        Args:
+            escalatee (Optional [string]): The escalatee name.
+            resource_id (Optional [string]): The task ID.
+        """
+        if resource_id is not None:
+            self.resource_id(resource_id)
+        self._request_uri = '{}/escalatees'.format(self._request_uri)
+        if escalatee is not None:
+            self._request_uri = '{}/{}'.format(self._request_uri, escalatee)
 
     def task_id(self, resource_id):
         """Update the request URI to include the Task Id for specific retrieval.
@@ -2049,6 +2085,7 @@ class Task(Resource):
             resource_id (string): The task id.
         """
         self.task_id(resource_id)
+
 
 #
 # Victim

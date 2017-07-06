@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.4.10 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.4.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.4.10 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.4.11 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.argparser module" href="tcex.argparser.html"/> 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.4.10
+                0.4.11
               </div>
             
           
@@ -323,19 +323,23 @@ via this class.</p>
 </pre></div>
 </div>
 <p><strong>HMAC Based Authorization</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">,</span>
-    <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">unix</span> <span class="n">timestamp</span><span class="o">&gt;</span>
-<span class="p">}</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="p">{</span>
+     <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">,</span>
+     <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">unix</span> <span class="n">timestamp</span><span class="o">&gt;</span>
+ <span class="p">}</span>
+
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">python</span><span class="o">-</span><span class="n">requests</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="c1">#requests.Session.prepare_request.</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) &#8211; A instance of Python Request module requests.PreparedRequest.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
 </tbody>
 </table>
@@ -345,13 +349,17 @@ via this class.</p>
 <dt id="tcex.tcex.TcEx.authorization_hmac">
 <code class="descname">authorization_hmac</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.authorization_hmac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.authorization_hmac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for handling HMAC authorization to ThreatConnect API.</p>
+<blockquote>
+<div><a class="reference external" href="http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request">http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request</a>.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) &#8211; A instance of Python Request prepped requests.PreparedRequest.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
 </tbody>
 </table>
@@ -839,7 +847,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.4.10',
+            VERSION:'0.4.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

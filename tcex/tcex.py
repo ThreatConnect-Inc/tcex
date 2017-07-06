@@ -364,6 +364,10 @@ class TcEx(object):
                 'Timestamp': <unix timestamp>
             }
 
+           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
+
+        Args:
+            request_prepped (instance): A instance of Python Request module requests.PreparedRequest.
         Returns:
             (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
         """
@@ -381,6 +385,10 @@ class TcEx(object):
     def authorization_hmac(self, request_prepped):
         """Method for handling HMAC authorization to ThreatConnect API.
 
+           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
+
+        Args:
+            request_prepped (instance): A instance of Python Request prepped requests.PreparedRequest.
         Returns:
             (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
         """
@@ -423,7 +431,6 @@ class TcEx(object):
         r = self.request
         if authorization is not None:
             r.authorization = authorization
-        # r.authorization = self.authorization()
         if owner is not None:
             r.owner = owner
         r.url = '{}/v2/indicators/bulk'.format(api_path)
@@ -622,7 +629,7 @@ class TcEx(object):
         if self._args.tc_proxy_external:
             self.log.info(u'Using proxy server for external request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
-            r.proxy = self.proxy
+            r.proxies = self.proxies
         return r
 
     def request_tc(self):
@@ -637,7 +644,7 @@ class TcEx(object):
         if self._args.tc_proxy_tc:
             self.log.info(u'Using proxy server for TC request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
-            r.proxy = self.proxy
+            r.proxies = self.proxies
         return r
 
     def resource(self, resource_type):
