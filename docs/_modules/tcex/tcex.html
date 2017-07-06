@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.4.10 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.4.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.10
+                0.4.11
               </div>
             
           
@@ -514,6 +514,10 @@
 <span class="sd">                &#39;Timestamp&#39;: &lt;unix timestamp&gt;</span>
 <span class="sd">            }</span>
 
+<span class="sd">           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request_prepped (instance): A instance of Python Request module requests.PreparedRequest.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -531,6 +535,10 @@
 <div class="viewcode-block" id="TcEx.authorization_hmac"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization_hmac">[docs]</a>    <span class="k">def</span> <span class="nf">authorization_hmac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_prepped</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method for handling HMAC authorization to ThreatConnect API.</span>
 
+<span class="sd">           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request_prepped (instance): A instance of Python Request prepped requests.PreparedRequest.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -573,7 +581,6 @@
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
         <span class="k">if</span> <span class="n">authorization</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">authorization</span> <span class="o">=</span> <span class="n">authorization</span>
-        <span class="c1"># r.authorization = self.authorization()</span>
         <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/indicators/bulk&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_path</span><span class="p">)</span>
@@ -772,7 +779,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;Using proxy server for external request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TcEx.request_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request_tc">[docs]</a>    <span class="k">def</span> <span class="nf">request_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -787,7 +794,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">u&#39;Using proxy server for TC request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 <div class="viewcode-block" id="TcEx.resource"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.resource">[docs]</a>    <span class="k">def</span> <span class="nf">resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
@@ -1048,7 +1055,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.10',
+            VERSION:'0.4.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

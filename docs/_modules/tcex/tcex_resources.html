@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.4.10 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.4.11 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.4.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.4.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4.10
+                0.4.11
               </div>
             
           
@@ -2177,10 +2177,46 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
             <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
-            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">201</span><span class="p">],</span>
             <span class="s1">&#39;PUT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Task.assignees"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.assignees">[docs]</a>    <span class="k">def</span> <span class="nf">assignees</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assignee</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add an assignee to a Task</span>
+
+<span class="sd">        GET: /v2/tasks/{uniqueId}/assignees</span>
+<span class="sd">        GET: /v2/tasks/{uniqueId}/assignees/{assigneeId}</span>
+<span class="sd">        POST: /v2/tasks/{uniqueId}/assignees/{assigneeId}</span>
+<span class="sd">        DELETE: /v2/tasks/{uniqueId}/assignees/{assigneeId}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assignee (Optional [string]): The assignee name.</span>
+<span class="sd">            resource_id (Optional [string]): The task ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/assignees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">assignee</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">assignee</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Task.escalatees"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.escalatees">[docs]</a>    <span class="k">def</span> <span class="nf">escalatees</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">escalatee</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add an escalatee to a Task</span>
+
+<span class="sd">        GET: /v2/tasks/{uniqueId}/escalatees</span>
+<span class="sd">        GET: /v2/tasks/{uniqueId}/escalatees/{escalateeId}</span>
+<span class="sd">        POST: /v2/tasks/{uniqueId}/escalatees/{escalateeId}</span>
+<span class="sd">        DELETE: /v2/tasks/{uniqueId}/escalatees/{escalateeId}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            escalatee (Optional [string]): The escalatee name.</span>
+<span class="sd">            resource_id (Optional [string]): The task ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/escalatees&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">escalatee</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">escalatee</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Task.task_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Task.task_id">[docs]</a>    <span class="k">def</span> <span class="nf">task_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Task Id for specific retrieval.</span>
@@ -2199,6 +2235,7 @@
 <span class="sd">            resource_id (string): The task id.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+
 
 <span class="c1">#</span>
 <span class="c1"># Victim</span>
@@ -2434,7 +2471,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.4.10',
+            VERSION:'0.4.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
