@@ -10,7 +10,7 @@ Release Notes
 ------
 + Added support for output variable of the same name, but different types.
 + Support for new TCKeyVaueAPI DB types in Playbook Apps.  This is a seemless change to the Apps.
-+ Updated :py:meth:`~tcex.tcex.TcEx.authentication` method to return properly formatted header when no token_expires is provided.
++ Updated :py:meth:`~tcex.tcex.TcEx.authorization` method to return properly formatted header when no token_expires is provided.
 + Added automatic Authorization to :py:meth:`~tcex.tcex.TcEx.request_tc` method.
 + Updated documentation for Request module.
 
