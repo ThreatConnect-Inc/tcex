@@ -1,0 +1,77 @@
+.. include:: <isonum.txt>
+.. _app_certification:
+
+=================
+App Certification
+=================
+An App that is submitted for certification with be evaluated by the ThreatConnect Engineering team.  All Apps must at minimum meet the defined criteria detailed here.
+
+
+General Criteria
+----------------
+
+runtime app structure
+
+playbook structure
+
+spaces app structure
+
+
+Best Practices
+* Well commented code with speed up the certification process.
+* No system command.
+* Temp Files should only be written to .......
+* Logging should be informative, but not overly chatty (all logs are sent back to the API).
+* file permissions ?????
+
+
+
+
+
+Checklist
+* The install.json should be well formed and validate using the schema at https://docs.threatconnect.com/en/latest/tcex/install_json.html.
+* Verify there are no passwords or other sensitve data stored in app.
+* Check for hard-coded paths
+* No su or sudo commands
+* No creation of environment variables.
+* All HTTP calls should use SSL connections.
+* No hidden file directories (.git, etc)
+* App has valid README
+  * Includes version
+  * system requirement*
+  * dependencies
+  * description of app functionality
+* App has valid LICENSE file
+* No files that are not required
+* no auto-update feature
+* no sending data to third-party sites
+* check for third-party libraries for known vulnerabilities
+* all network communication is encrypted
+* certificates should be validated by default
+
+
+
+
+
+Python Specific Criteria
+------------------------
+* no exe/binary files
+* avoid libraries that have use C modules
+* all required Python modules are packaged with the App.
+* Check that the Python __import__method is not used.
+* no .pyc or .pyo files are included
+* check "from package import * "
+* use os.path separater
+* Check for the use of threading, and multiprocesses. Threading must be used with discretion.
+* Check for the use of subprocess and os.exec calls
+* Use specific third-pary library version when appropriate
+
+
+
+
+Spaces Apps Criteria
+--------------------
+* no iframes
+* no redirects
+
+

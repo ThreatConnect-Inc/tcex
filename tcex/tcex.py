@@ -374,7 +374,7 @@ class TcEx(object):
         authorization = None
 
         if self._tc_token is not None:
-            authorization = 'TC-Token {0}'.format(self._tc_token)
+            authorization = {'Authorization': 'TC-Token {0}'.format(self._tc_token)}
             if self._tc_token_expires is not None:
                 authorization = self._authorization_token_renew()
         elif self._args.api_access_id is not None and self._args.api_secret_key is not None:
@@ -633,7 +633,7 @@ class TcEx(object):
         return r
 
     def request_tc(self):
-        """Return an instance of the Request Class with Proxy Set
+        """Return an instance of the Request Class with Proxy and Authorization Set
 
         See :py:mod:`~tcex.tcex.TcEx.request`
 
@@ -641,6 +641,7 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         r = self.request
+        r.authorization_method(self.authorization)
         if self._args.tc_proxy_tc:
             self.log.info(u'Using proxy server for TC request {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))

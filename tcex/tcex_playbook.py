@@ -39,7 +39,8 @@ class TcExPlaybook(object):
             'TCEntity': self.read_tc_entity,
             'TCEntityArray': self.read_tc_entity_array
         }
-        self._out_variables = {}
+        self._out_variables = {}  # dict of output variable by name
+        self._out_variables_type = {}  # dict of output variable by name-type
         self._var_parse = re.compile(
             r"""^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$""")
         self._vars_match = re.compile(
@@ -60,6 +61,9 @@ class TcExPlaybook(object):
                 self._tcex._args.tc_playbook_db_port,
                 self._tcex._args.tc_playbook_db_context
             )
+        elif self._tcex._args.tc_playbook_db_type == 'TCKeyVaueAPI':
+            from tcex_key_value import TcExKeyValue
+            self._db = TcExKeyValue(self._tcex, self._tcex._args.tc_playbook_db_context)
         else:
             err = 'Invalid DB Type: ({})'.format(self._tcex._args.tc_playbook_db_type)
             self._tcex.message_tc(err)
@@ -78,10 +82,12 @@ class TcExPlaybook(object):
             for o in variables.split(','):
                 parsed_key = self.parse_variable(o)
                 variable_name = parsed_key['name']
+                variable_type = parsed_key['type']
                 self._out_variables[variable_name] = {
-                    # 'root': parsed_key['root'],
-                    # 'job_id': parsed_key['job_id'],
-                    # 'type': parsed_key['type'],
+                    'variable': o
+                }
+                vt_key = '{}-{}'.format(variable_name, variable_type)
+                self._out_variables_type[vt_key] = {
                     'variable': o
                 }
 
@@ -130,7 +136,7 @@ class TcExPlaybook(object):
                 data = self.create_raw(key, value)
         return data
 
-    def create_output(self, key, value):
+    def create_output(self, key, value, variable_type=None):
         """Wrapper for Create method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if provided variable was requested by
@@ -139,6 +145,7 @@ class TcExPlaybook(object):
         Args:
             key (string): The variable to write to the DB.
             value (any): The data to write to the DB.
+            variable_type (string): The variable type being written
 
         Returns:
             (string): Result string of DB write
@@ -146,12 +153,20 @@ class TcExPlaybook(object):
         results = None
         if key is not None:
             key = key.strip()
-            if key in self._out_variables.keys():
+            key_type = '{}-{}'.format(key, variable_type)
+            if key_type in self._out_variables_type.keys():
                 self._tcex.log.info(
                     'Variable {0} was requested by downstream app.'.format(key))
                 if value is not None:
-                    # bcs - only for debugging or binary might cause issues
-                    # self._tcex.log.debug('variable value: {0}'.format(value))
+                    v = self._out_variables_type.get(key_type)
+                    results = self.create(v['variable'], value)
+                else:
+                    self._tcex.log.info(
+                        'Variable {0} has a none value an will not be written.'.format(key))
+            elif key in self._out_variables.keys():
+                self._tcex.log.info(
+                    'Variable {0} was requested by downstream app.'.format(key))
+                if value is not None:
                     v = self._out_variables.get(key)
                     results = self.create(v['variable'], value)
                 else:
@@ -242,7 +257,7 @@ class TcExPlaybook(object):
             else:
                 data = []
 
-        self._tcex.log.debug('read data {}'.format(data))
+        # self._tcex.log.debug('read data {}'.format(data))
         return data
 
     def read_embedded(self, data, parent_var_type):
