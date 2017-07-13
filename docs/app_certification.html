@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Proxies &mdash; TcEx 0.5.0 documentation</title>
+  <title>App Certification &mdash; TcEx 0.5.0 documentation</title>
   
 
   
@@ -33,9 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.5.0 documentation" href="index.html"/>
-        <link rel="next" title="Requests" href="request.html"/>
-        <link rel="prev" title="Playbooks" href="playbook.html"/> 
+    <link rel="top" title="TcEx 0.5.0 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -85,7 +83,7 @@
             
             
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
@@ -99,10 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Proxies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#example-request-using-proxy">Example Request using Proxy</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
@@ -137,7 +132,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Proxies</li>
+    <li>App Certification</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -149,32 +144,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="proxies">
-<span id="id1"></span><h1>Proxies<a class="headerlink" href="#proxies" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx App Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property to automatically create a dictionary with the properly formatted proxy settings used by the Python Requests module.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">When using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-meth docutils literal"><span class="pre">tcex_resources()</span></code></a> module the proxies are automatically configured.</p>
+  <div class="section" id="app-certification">
+<span id="id1"></span><h1>App Certification<a class="headerlink" href="#app-certification" title="Permalink to this headline">¶</a></h1>
+<p>An App that is submitted for certification with be evaluated by the ThreatConnect Engineering team.  All Apps must at minimum meet the defined criteria detailed here.</p>
+<div class="section" id="general-criteria">
+<h2>General Criteria<a class="headerlink" href="#general-criteria" title="Permalink to this headline">¶</a></h2>
+<p>runtime app structure</p>
+<p>playbook structure</p>
+<p>spaces app structure</p>
+<p>Best Practices
+* Well commented code with speed up the certification process.
+* No system command.
+* Temp Files should only be written to .......
+* Logging should be informative, but not overly chatty (all logs are sent back to the API).
+* file permissions ?????</p>
+<p>Checklist
+* The install.json should be well formed and validate using the schema at <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/install_json.html">https://docs.threatconnect.com/en/latest/tcex/install_json.html</a>.
+* Verify there are no passwords or other sensitve data stored in app.
+* Check for hard-coded paths
+* No su or sudo commands
+* No creation of environment variables.
+* All HTTP calls should use SSL connections.
+* No hidden file directories (.git, etc)
+* App has valid README</p>
+<blockquote>
+<div><ul class="simple">
+<li>Includes version</li>
+<li>system requirement*</li>
+<li>dependencies</li>
+<li>description of app functionality</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>App has valid LICENSE file</li>
+<li>No files that are not required</li>
+<li>no auto-update feature</li>
+<li>no sending data to third-party sites</li>
+<li>check for third-party libraries for known vulnerabilities</li>
+<li>all network communication is encrypted</li>
+<li>certificates should be validated by default</li>
+</ul>
 </div>
-<div class="admonition hint">
-<p class="first admonition-title">Hint</p>
-<p class="last">The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.proxies" title="tcex.tcex.TcEx.proxies"><code class="xref py py-const docutils literal"><span class="pre">proxies</span></code></a> property is helpful when using the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module.</p>
+<div class="section" id="python-specific-criteria">
+<h2>Python Specific Criteria<a class="headerlink" href="#python-specific-criteria" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>no exe/binary files</li>
+<li>avoid libraries that have use C modules</li>
+<li>all required Python modules are packaged with the App.</li>
+<li>Check that the Python __import__method is not used.</li>
+<li>no .pyc or .pyo files are included</li>
+<li>check &#8220;from package import * &#8220;</li>
+<li>use os.path separater</li>
+<li>Check for the use of threading, and multiprocesses. Threading must be used with discretion.</li>
+<li>Check for the use of subprocess and os.exec calls</li>
+<li>Use specific third-pary library version when appropriate</li>
+</ul>
 </div>
-<div class="section" id="example-request-using-proxy">
-<h2>Example Request using Proxy<a class="headerlink" href="#example-request-using-proxy" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
-<span class="hll"><span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
-</span><span class="hll">    <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
-</span><span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://remote_api.example&#39;</span>
-<span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;abc123&#39;</span><span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-</pre></div>
-</td></tr></table></div>
+<div class="section" id="spaces-apps-criteria">
+<h2>Spaces Apps Criteria<a class="headerlink" href="#spaces-apps-criteria" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>no iframes</li>
+<li>no redirects</li>
+</ul>
 </div>
 </div>
 
@@ -182,15 +213,6 @@
            </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="request.html" class="btn btn-neutral float-right" title="Requests" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="playbook.html" class="btn btn-neutral" title="Playbooks" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Requests &mdash; TcEx 0.4.11 documentation</title>
+  <title>Requests &mdash; TcEx 0.5.0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.4.11 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.5.0 documentation" href="index.html"/>
         <link rel="next" title="Resources" href="resource.html"/>
         <link rel="prev" title="Proxies" href="proxies.html"/> 
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4.11
+                0.5.0
               </div>
             
           
@@ -101,7 +101,8 @@
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Requests</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#example-request">Example Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#request-external">Request External</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#request-tc">Request TC</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
@@ -151,9 +152,7 @@
             
   <div class="section" id="requests">
 <span id="id1"></span><h1>Requests<a class="headerlink" href="#requests" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module to accessed using the <code class="docutils literal"><span class="pre">tcex.request</span></code> property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.</p>
-<div class="section" id="example-request">
-<h2>Example Request<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a></h2>
+<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module accessed using the <code class="docutils literal"><span class="pre">tcex.request</span></code> property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -165,6 +164,45 @@
 <span class="n">r</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;abc123&#39;</span><span class="p">)</span>
 <span class="n">r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;{&quot;data&quot;: &quot;xyz321&quot;}&#39;</span>
+<span class="n">r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="request-external">
+<h2>Request External<a class="headerlink" href="#request-external" title="Permalink to this headline">¶</a></h2>
+<p>The TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request_external" title="tcex.tcex.TcEx.request_external"><code class="xref py py-meth docutils literal"><span class="pre">request_external()</span></code></a> method that returns a TcExRequest instance with the proxy information automatically configured.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request_external</span><span class="p">()</span>
+<span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://remote_api.example&#39;</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">,</span> <span class="s1">&#39;abc123&#39;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">basic_auth</span> <span class="o">=</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="k">pass</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;{&quot;data&quot;: &quot;xyz321&quot;}&#39;</span>
+<span class="n">r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="request-tc">
+<h2>Request TC<a class="headerlink" href="#request-tc" title="Permalink to this headline">¶</a></h2>
+<p>The TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request_tc" title="tcex.tcex.TcEx.request_tc"><code class="xref py py-meth docutils literal"><span class="pre">request_tc()</span></code></a> method that returns an TcExRequest instance with the proxy and authorization information automatically configured.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request_tc</span><span class="p">()</span>
+<span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com/v2/indicators/addresses&#39;</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span> <span class="s1">&#39;Acme Corp&#39;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;{&quot;ip&quot;: &quot;1.1.1.1&quot;}&#39;</span>
 <span class="n">r</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 </pre></div>
@@ -212,7 +250,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.4.11',
+            VERSION:'0.5.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
