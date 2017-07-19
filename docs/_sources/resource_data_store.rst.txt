@@ -1,7 +1,7 @@
 .. _resources_data_store:
 
 + Direct Access: ``resource = tcex.resources.DataStore(tcex)``
-+ Dynamic Access: ``resource = resource = tcex.resource('DataStore')``
++ Dynamic Access: ``resource = tcex.resource('DataStore')``
 
 Create Entry
 ============

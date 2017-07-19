@@ -61,7 +61,7 @@ class TcExPlaybook(object):
                 self._tcex._args.tc_playbook_db_port,
                 self._tcex._args.tc_playbook_db_context
             )
-        elif self._tcex._args.tc_playbook_db_type == 'TCKeyVaueAPI':
+        elif self._tcex._args.tc_playbook_db_type == 'TCKeyValueAPI':
             from tcex_key_value import TcExKeyValue
             self._db = TcExKeyValue(self._tcex, self._tcex._args.tc_playbook_db_context)
         else:
@@ -257,7 +257,7 @@ class TcExPlaybook(object):
             else:
                 data = []
 
-        # self._tcex.log.debug('read data {}'.format(data))
+        # self._tcex.log.debug('read data {}'.format(self._tcex.s(data)))
         return data
 
     def read_embedded(self, data, parent_var_type):
