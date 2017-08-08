@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local module &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex_local module &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_playbook module" href="tcex.tcex_playbook.html"/>
         <link rel="prev" title="tcex.tcex_job module" href="tcex.tcex_job.html"/> 
@@ -45,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -64,7 +67,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -85,7 +88,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
@@ -137,8 +143,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -147,25 +155,42 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">tcex</a> &raquo;</li>
-      
+        
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-      
-    <li>tcex.tcex_local module</li>
+        
+      <li>tcex.tcex_local module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -177,7 +202,26 @@
 <dl class="class">
 <dt id="tcex.tcex_local.TcExLocal">
 <em class="property">class </em><code class="descclassname">tcex.tcex_local.</code><code class="descname">TcExLocal</code><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to support running local instance TcEx Apps</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class to support running local instance TcEx Apps</p>
+<dl class="staticmethod">
+<dt id="tcex.tcex_local.TcExLocal._exit">
+<em class="property">static </em><code class="descname">_exit</code><span class="sig-paren">(</span><em>message</em>, <em>code=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exit the script</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>message</strong> (<em>str</em>) – An exit message</li>
+<li><strong>code</strong> (<em>Optional</em><em> [</em><em>int</em><em>]</em>) – The exit status code</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_local.TcExLocal._load_config">
 <code class="descname">_load_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_local.html#TcExLocal._load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_local.TcExLocal._load_config" title="Permalink to this definition">¶</a></dt>
@@ -277,7 +321,7 @@ install.json file or files will be automatically run before packaging the app.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>any</em>) &#8211; Data to ve validated and re-encoded</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>any</em>) – Data to ve validated and re-encoded</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return validate or encoded data</td>
 </tr>
@@ -299,15 +343,18 @@ install.json file or files will be automatically run before packaging the app.</
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_playbook.html" class="btn btn-neutral float-right" title="tcex.tcex_playbook module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_playbook.html" class="btn btn-neutral float-right" title="tcex.tcex_playbook module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.tcex_job.html" class="btn btn-neutral" title="tcex.tcex_job module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex_job.html" class="btn btn-neutral" title="tcex.tcex_job module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -337,10 +384,11 @@ install.json file or files will be automatically run before packaging the app.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>

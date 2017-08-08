@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser module &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.argparser module &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex module" href="tcex.tcex.html"/>
         <link rel="prev" title="tcex.api_logging_handler module" href="tcex.api_logging_handler.html"/> 
@@ -45,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -64,7 +67,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -85,7 +88,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
@@ -137,8 +143,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -147,25 +155,42 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">tcex</a> &raquo;</li>
-      
+        
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-      
-    <li>tcex.argparser module</li>
+        
+      <li>tcex.argparser module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -191,19 +216,19 @@
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_token <var>token</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Token provided by ThreatConnect for app Authorization.</td></tr>
+<tr><td>&#160;</td><td>Token provided by ThreatConnect for app Authorization.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_token_expires <var>token_expires</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Expiration time for the passed Token.</td></tr>
+<tr><td>&#160;</td><td>Expiration time for the passed Token.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--api_access_id <var>access_id</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Access ID used for HMAC Authorization.</td></tr>
+<tr><td>&#160;</td><td>Access ID used for HMAC Authorization.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--api_secret_key <var>secret_key</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Secret Key used for HMAC Authorization.</td></tr>
+<tr><td>&#160;</td><td>Secret Key used for HMAC Authorization.</td></tr>
 </tbody>
 </table>
 </dd></dl>
@@ -219,27 +244,27 @@
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_action <var>action</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Action for the batch job [&#8216;Create&#8217;, &#8216;Delete&#8217;].</td></tr>
+<tr><td>&#160;</td><td>Action for the batch job [‘Create’, ‘Delete’].</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_chunk <var>number</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The maximum number of indicator per batch job.</td></tr>
+<tr><td>&#160;</td><td>The maximum number of indicator per batch job.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_halt_on_error</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Flag to indicate that batch job should halt on error.</td></tr>
+<tr><td>&#160;</td><td>Flag to indicate that batch job should halt on error.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_poll_interval <var>seconds</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Seconds between batch status polls.</td></tr>
+<tr><td>&#160;</td><td>Seconds between batch status polls.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_interval_max <var>seconds</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Seconds before app should time out waiting on batch job completion.</td></tr>
+<tr><td>&#160;</td><td>Seconds before app should time out waiting on batch job completion.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--batch_write_type <var>type</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Write type for Indicator attributes [&#8216;Append&#8217;, &#8216;Replace&#8217;].</td></tr>
+<tr><td>&#160;</td><td>Write type for Indicator attributes [‘Append’, ‘Replace’].</td></tr>
 </tbody>
 </table>
 </dd></dl>
@@ -256,23 +281,23 @@
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_playbook_db_type <var>type</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The DB type (currently on Redis is supported).</td></tr>
+<tr><td>&#160;</td><td>The DB type (currently on Redis is supported).</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_playbook_db_context <var>context</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The playbook context provided by TC.</td></tr>
+<tr><td>&#160;</td><td>The playbook context provided by TC.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_playbook_db_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The DB path or server name.</td></tr>
+<tr><td>&#160;</td><td>The DB path or server name.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_playbook_db_port <var>port</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The DB port when required.</td></tr>
+<tr><td>&#160;</td><td>The DB port when required.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_playbook_out_variables <var>vars</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The output variable requested by downstream apps.</td></tr>
+<tr><td>&#160;</td><td>The output variable requested by downstream apps.</td></tr>
 </tbody>
 </table>
 </dd></dl>
@@ -288,65 +313,65 @@
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--api_default_org <var>org</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The TC API user default organization.</td></tr>
+<tr><td>&#160;</td><td>The TC API user default organization.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_api_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The TC API path (e.g <a class="reference external" href="https://api.threatconnect.com">https://api.threatconnect.com</a>).</td></tr>
+<tr><td>&#160;</td><td>The TC API path (e.g <a class="reference external" href="https://api.threatconnect.com">https://api.threatconnect.com</a>).</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_out_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The app in path.</td></tr>
+<tr><td>&#160;</td><td>The app in path.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_log_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The app log path.</td></tr>
+<tr><td>&#160;</td><td>The app log path.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_out_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The app out path.</td></tr>
+<tr><td>&#160;</td><td>The app out path.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_temp_path <var>path</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The app temp path.</td></tr>
+<tr><td>&#160;</td><td>The app temp path.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_user_id <var>id</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The user id of user running the job.</td></tr>
+<tr><td>&#160;</td><td>The user id of user running the job.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_proxy_host <var>host</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The proxy host.</td></tr>
+<tr><td>&#160;</td><td>The proxy host.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_proxy_port <var>port</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The proxy port.</td></tr>
+<tr><td>&#160;</td><td>The proxy port.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_proxy_username <var>user</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The proxy username.</td></tr>
+<tr><td>&#160;</td><td>The proxy username.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_proxy_password <var>pass</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>The proxy password.</td></tr>
+<tr><td>&#160;</td><td>The proxy password.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_proxy_external</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Flag to indicate external communications requires the use of a proxy.</td></tr>
+<tr><td>&#160;</td><td>Flag to indicate external communications requires the use of a proxy.</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--tc_proxy_tc</span></kbd></td>
 <td>Flag to indicate TC communications requires the use of a proxy.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--tc_log_to_api</span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Flag to indicate that app should log to API.</td></tr>
+<tr><td>&#160;</td><td>Flag to indicate that app should log to API.</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--tc_log_level</span></kbd></td>
 <td>The logging level for the app.</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--logging <var>level</var></span></kbd></td>
 </tr>
-<tr><td>&nbsp;</td><td>Alias for <strong>tc_log_level</strong>.</td></tr>
+<tr><td>&#160;</td><td>Alias for <strong>tc_log_level</strong>.</td></tr>
 </tbody>
 </table>
 </dd></dl>
@@ -357,15 +382,18 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="tcex.tcex module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="tcex.tcex module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.api_logging_handler.html" class="btn btn-neutral" title="tcex.api_logging_handler module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.api_logging_handler.html" class="btn btn-neutral" title="tcex.api_logging_handler module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -395,10 +423,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>

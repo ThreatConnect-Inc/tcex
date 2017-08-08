@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
         <link rel="prev" title="tcex.tcex_local module" href="tcex.tcex_local.html"/> 
@@ -45,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -64,7 +67,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -85,7 +88,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
@@ -137,8 +143,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -147,25 +155,42 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">tcex</a> &raquo;</li>
-      
+        
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-      
-    <li>tcex.tcex_playbook module</li>
+        
+      <li>tcex.tcex_playbook module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -199,7 +224,7 @@ variable was requested by downstream app.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) &#8211; The variable name, not the full variable.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable name, not the full variable.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Boolean value indicator whether a match was found.</td>
 </tr>
@@ -221,8 +246,8 @@ type is provided the data will be written as RAW data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -245,8 +270,8 @@ type is provided the data will be written as RAW data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -269,8 +294,8 @@ type is provided the data will be written as RAW data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -293,8 +318,8 @@ type is provided the data will be written as RAW data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -317,8 +342,8 @@ type is provided the data will be written as RAW data.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -343,9 +368,9 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
-<li><strong>variable_type</strong> (<em>string</em>) &#8211; The variable type being written</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
+<li><strong>variable_type</strong> (<em>string</em>) – The variable type being written</li>
 </ul>
 </td>
 </tr>
@@ -368,8 +393,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -392,8 +417,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -416,8 +441,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -440,8 +465,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -464,8 +489,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to write to the DB.</li>
-<li><strong>value</strong> (<em>any</em>) &#8211; The data to write to the DB.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
+<li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
 </ul>
 </td>
 </tr>
@@ -492,8 +517,8 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>entities</strong> (<em>dictionary</em>) &#8211; TC Entity to be converted to Bulk.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) &#8211; The resource parent type of the tc_data provided.</li>
+<li><strong>entities</strong> (<em>dictionary</em>) – TC Entity to be converted to Bulk.</li>
+<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
 </ul>
 </td>
 </tr>
@@ -517,7 +542,7 @@ it a partial success instead.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em><em></em>) &#8211; The exit code value for the app.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</td>
 </tr>
 </tbody>
 </table>
@@ -531,7 +556,7 @@ it a partial success instead.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tc_entity_array</strong> (<em>dictionary</em>) &#8211; The TCEntityArray to convert</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tc_entity_array</strong> (<em>dictionary</em>) – The TCEntityArray to convert</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing arrays of indicators for each indicator type</td>
 </tr>
@@ -554,10 +579,10 @@ it a partial success instead.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tc_data</strong> (<em>dictionary</em>) &#8211; Array of data returned from TC API call.</li>
-<li><strong>value_fields</strong> (<em>list</em>) &#8211; Field names that contain the &#8220;value&#8221; data.</li>
-<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource type of the tc_data provided.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) &#8211; The resource parent type of the tc_data provided.</li>
+<li><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</li>
+<li><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</li>
+<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
 </ul>
 </td>
 </tr>
@@ -584,10 +609,10 @@ it a partial success instead.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tc_data</strong> (<em>dictionary</em>) &#8211; Array of data returned from TC API call.</li>
-<li><strong>value_fields</strong> (<em>list</em>) &#8211; Field names that contain the &#8220;value&#8221; data.</li>
-<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource type of the tc_data provided.</li>
-<li><strong>resource_type_parent</strong> (<em>string</em>) &#8211; The resource parent type of the tc_data provided.</li>
+<li><strong>tc_data</strong> (<em>dictionary</em>) – Array of data returned from TC API call.</li>
+<li><strong>value_fields</strong> (<em>list</em>) – Field names that contain the “value” data.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type of the tc_data provided.</li>
+<li><strong>resource_type_parent</strong> (<em>string</em>) – The resource parent type of the tc_data provided.</li>
 </ul>
 </td>
 </tr>
@@ -610,10 +635,10 @@ it a partial success instead.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>json_data</strong> (<em>dictionary|list</em>) &#8211; Array/List of JSON data.</li>
-<li><strong>key_field</strong> (<em>string</em>) &#8211; Field name for the key.</li>
-<li><strong>value_field</strong> (<em>string</em>) &#8211; Field name for the value or use the value of the key field.</li>
-<li><strong>array</strong> (<em>boolean</em>) &#8211; Always return array even if only on result.</li>
+<li><strong>json_data</strong> (<em>dictionary|list</em>) – Array/List of JSON data.</li>
+<li><strong>key_field</strong> (<em>string</em>) – Field name for the key.</li>
+<li><strong>value_field</strong> (<em>string</em>) – Field name for the value or use the value of the key field.</li>
+<li><strong>array</strong> (<em>boolean</em>) – Always return array even if only on result.</li>
 </ul>
 </td>
 </tr>
@@ -639,7 +664,7 @@ it a partial success instead.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) &#8211; The variable name to parse.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable name to parse.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result of parsed string.</td>
 </tr>
@@ -654,15 +679,15 @@ it a partial success instead.</p>
 <code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if a single variable is passed
-or if &#8220;mixed&#8221; data is passed and return the results from the DB. It will also
+or if “mixed” data is passed and return the results from the DB. It will also
 automatically determine the variable type to read.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</li>
-<li><strong>array</strong> (<em>boolean</em>) &#8211; Convert string/dict to Array/List before returning.</li>
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</li>
 </ul>
 </td>
 </tr>
@@ -684,7 +709,7 @@ automatically determine the variable type to read.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -702,7 +727,7 @@ automatically determine the variable type to read.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -715,7 +740,7 @@ automatically determine the variable type to read.</p>
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_embedded">
 <code class="descname">read_embedded</code><span class="sig-paren">(</span><em>data</em>, <em>parent_var_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_embedded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read method for &#8220;mixed&#8221; variable type.</p>
+<dd><p>Read method for “mixed” variable type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The <code class="docutils literal"><span class="pre">read()</span></code> method will automatically determine if the variable is embedded and
@@ -728,7 +753,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) &#8211; The data to parsed and updated from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) – The data to parsed and updated from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -746,7 +771,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -764,7 +789,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -782,7 +807,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -800,7 +825,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -818,7 +843,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -836,7 +861,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -854,7 +879,7 @@ will be returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) &#8211; The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
 </tr>
@@ -868,8 +893,8 @@ will be returned.</p>
 <dt id="tcex.tcex_playbook.TcExPlaybook.variable_type">
 <code class="descname">variable_type</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.variable_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.variable_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the Type from the variable string or default to String type.</p>
-<p>The default type is &#8220;String&#8221; for those cases when the input variable is
-contains not &#8220;DB variable&#8221; and is just a String.</p>
+<p>The default type is “String” for those cases when the input variable is
+contains not “DB variable” and is just a String.</p>
 <p><strong>Example Variable</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#App:1234:output!StringArray returns **StringArray**</span>
 </pre></div>
@@ -882,7 +907,7 @@ contains not &#8220;DB variable&#8221; and is just a String.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) &#8211; The variable to be parsed</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>string</em>) – The variable to be parsed</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The variable type.</td>
 </tr>
@@ -898,15 +923,18 @@ contains not &#8220;DB variable&#8221; and is just a String.</p>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_redis.html" class="btn btn-neutral float-right" title="tcex.tcex_redis module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_redis.html" class="btn btn-neutral float-right" title="tcex.tcex_redis module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.tcex_local.html" class="btn btn-neutral" title="tcex.tcex_local module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex_local.html" class="btn btn-neutral" title="tcex.tcex_local module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -936,10 +964,11 @@ contains not &#8220;DB variable&#8221; and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>

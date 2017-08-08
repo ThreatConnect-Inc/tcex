@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.argparser module" href="tcex.argparser.html"/> 
@@ -45,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -64,7 +67,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -85,7 +88,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
@@ -137,8 +143,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -147,25 +155,42 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">tcex</a> &raquo;</li>
-      
+        
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-      
-    <li>tcex.tcex module</li>
+        
+      <li>tcex.tcex module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -179,6 +204,12 @@
 <em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps</p>
+<dl class="method">
+<dt id="tcex.tcex.TcEx._association_types">
+<code class="descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve Custom Indicator Associations types from the ThreatConnect API.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx._authorization_token_renew">
 <code class="descname">_authorization_token_renew</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._authorization_token_renew"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._authorization_token_renew" title="Permalink to this definition">¶</a></dt>
@@ -251,7 +282,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>Optional</em><em>[</em><em>string</em><em>]</em><em></em>) &#8211; The name for the log file</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>Optional</em><em>[</em><em>string</em><em>]</em>) – The name for the log file</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
 </tr>
@@ -292,7 +323,7 @@ via this class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>list</em>) &#8211; List of unknown arguments</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>list</em>) – List of unknown arguments</td>
 </tr>
 </tbody>
 </table>
@@ -335,7 +366,7 @@ via this class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) &#8211; A instance of Python Request module requests.PreparedRequest.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) – A instance of Python Request module requests.PreparedRequest.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
 </tr>
@@ -355,7 +386,7 @@ via this class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) &#8211; A instance of Python Request prepped requests.PreparedRequest.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>instance</em>) – A instance of Python Request prepped requests.PreparedRequest.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An dictionary containing the header values for authorization to ThreatConnect.</td>
 </tr>
@@ -376,9 +407,9 @@ has successfully run for the provided owner.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>owner</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; Owner name to check.</li>
-<li><strong>api_path</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The url to the ThreatConnect API.</li>
-<li><strong>authorization</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em><em></em>) &#8211; The authorization header value.</li>
+<li><strong>owner</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – Owner name to check.</li>
+<li><strong>api_path</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The url to the ThreatConnect API.</li>
+<li><strong>authorization</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The authorization header value.</li>
 </ul>
 </td>
 </tr>
@@ -404,7 +435,7 @@ results required.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>list</em>) &#8211; The list of dictionary structure to filter.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>list</em>) – The list of dictionary structure to filter.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of DataFilter Class</td>
 </tr>
@@ -433,7 +464,7 @@ results required.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>delta</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em><em></em>) &#8211; The exit code value for the app.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>delta</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</td>
 </tr>
 </tbody>
 </table>
@@ -450,7 +481,7 @@ during the call of this method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em><em></em>) &#8211; The exit code value for the app.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</td>
 </tr>
 </tbody>
 </table>
@@ -468,7 +499,7 @@ during the call of this method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>integer</em>) &#8211; The exit code value for the app.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>integer</em>) – The exit code value for the app.</td>
 </tr>
 </tbody>
 </table>
@@ -483,13 +514,13 @@ during the call of this method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>indicator</strong> (<em>string</em>) &#8211; &#8221; : &#8221; delimited string</li>
-<li><strong>first_indicator</strong> (<em>boolean</em>) &#8211; Indicate whether to only include the first
+<li><strong>indicator</strong> (<em>string</em>) – ” : ” delimited string</li>
+<li><strong>first_indicator</strong> (<em>boolean</em>) – Indicate whether to only include the first
 matched indicator.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of indicators split on &#8221; : &#8221;.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of indicators split on ” : “.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
@@ -516,7 +547,7 @@ this limit will be truncated by this method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>string</em>) &#8211; The message to add to message_tc file</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>string</em>) – The message to add to message_tc file</td>
 </tr>
 </tbody>
 </table>
@@ -621,7 +652,7 @@ API endpoints.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_type</strong> &#8211; The resource type name (e.g Adversary, User Agent, etc).</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_type</strong> – The resource type name (e.g Adversary, User Agent, etc).</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Instance of Resource Object child class.</td>
 </tr>
@@ -642,8 +673,8 @@ method will store the values for TC to read and put into the Database.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) &#8211; The data key to be stored</li>
-<li><strong>value</strong> (<em>string</em>) &#8211; The data value to be stored</li>
+<li><strong>key</strong> (<em>string</em>) – The data key to be stored</li>
+<li><strong>value</strong> (<em>string</em>) – The data value to be stored</li>
 </ul>
 </td>
 </tr>
@@ -680,8 +711,8 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>any</em>) &#8211; Data to ve validated and (de)encoded</li>
-<li><strong>errors</strong> (<em>string</em>) &#8211; What method to use when dealing with errors.</li>
+<li><strong>data</strong> (<em>any</em>) – Data to ve validated and (de)encoded</li>
+<li><strong>errors</strong> (<em>string</em>) – What method to use when dealing with errors.</li>
 </ul>
 </td>
 </tr>
@@ -703,7 +734,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>string</em>) &#8211; Indicator to URL Encode</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>string</em>) – Indicator to URL Encode</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The urlencoded string</td>
 </tr>
@@ -724,8 +755,8 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>resource_type</strong> (<em>string</em>) &#8211; The resource type to format.</li>
-<li><strong>lower</strong> (<em>boolean</em>) &#8211; Return type in all lower case</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type to format.</li>
+<li><strong>lower</strong> (<em>boolean</em>) – Return type in all lower case</li>
 </ul>
 </td>
 </tr>
@@ -751,7 +782,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag</strong> (<em>string</em>) &#8211; The tag to be truncated</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag</strong> (<em>string</em>) – The tag to be truncated</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The truncated tag</td>
 </tr>
@@ -769,7 +800,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>string</em>) &#8211; String to URL Encode</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>string</em>) – String to URL Encode</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The urlencoded string</td>
 </tr>
@@ -788,8 +819,8 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>any</em>) &#8211; Data to ve validated and re-encoded</li>
-<li><strong>errors</strong> (<em>string</em>) &#8211; What method to use when dealing with errors.</li>
+<li><strong>data</strong> (<em>any</em>) – Data to ve validated and re-encoded</li>
+<li><strong>errors</strong> (<em>string</em>) – What method to use when dealing with errors.</li>
 </ul>
 </td>
 </tr>
@@ -809,15 +840,18 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_data_filter.html" class="btn btn-neutral float-right" title="tcex.tcex_data_filter module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_data_filter.html" class="btn btn-neutral float-right" title="tcex.tcex_data_filter module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.argparser.html" class="btn btn-neutral" title="tcex.argparser module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.argparser.html" class="btn btn-neutral" title="tcex.argparser module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -847,10 +881,11 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>

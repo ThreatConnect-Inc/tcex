@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -43,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -62,7 +65,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -83,7 +86,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
@@ -115,8 +121,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -129,19 +137,36 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      
-    <li>tcex.tcex_resources</li>
+        
+      <li>tcex.tcex_resources</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -484,28 +509,43 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
 
-<div class="viewcode-block" id="Resource.association_custom"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom">[docs]</a>    <span class="k">def</span> <span class="nf">association_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Association pivot for this resource with resource value.</span>
-
-<span class="sd">        .. Attention:: New untested method</span>
+<div class="viewcode-block" id="Resource.association_custom"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom">[docs]</a>    <span class="k">def</span> <span class="nf">association_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Custom Indicator association for this resource with resource value.</span>
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                 |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType} |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                          |</span>
+<span class="sd">        +==============+=============================================================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                         |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}         |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
 <span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource_api_branch</span><span class="p">,</span> <span class="n">association_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
+        <span class="n">association_api_branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">indicator_associations_types_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">association_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">association_api_branch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;An invalid association name (</span><span class="si">{}</span><span class="s1">) was provided.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
+        <span class="k">if</span> <span class="n">association_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/indicators&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">):</span>
@@ -1289,7 +1329,7 @@
         <span class="k">return</span> <span class="n">results</span></div>
 
     <span class="c1"># define next after __next__ for Python 2</span>
-    <span class="nb">next</span> <span class="o">=</span> <span class="n">__next__</span>
+    <span class="nb">next</span> <span class="o">=</span> <span class="fm">__next__</span>
 
 <div class="viewcode-block" id="Resource.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A printable string for this resource.</span>
@@ -1329,7 +1369,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Batch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Batch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;batch&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>  <span class="c1"># only on parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;batchId&#39;</span>
@@ -1380,7 +1420,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Indicator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Indicator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;indicators&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>  <span class="c1"># only on parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
@@ -1487,9 +1527,9 @@
                 <span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">expand_indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;File&#39;</span><span class="p">:</span>
                     <span class="n">hash_patterns</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
-                        <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
-                        <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+                        <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+                        <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
                     <span class="p">}</span>
                     <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
@@ -1583,7 +1623,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Address</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Address</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;addresses&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;address&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1620,7 +1660,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Bulk</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Bulk</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;bulk&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;bulkStatus&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1669,7 +1709,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EmailAddress</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EmailAddress</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;emailAddresses&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;emailAddress&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1689,7 +1729,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;files&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;file&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1698,17 +1738,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">,</span> <span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="File.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator_body">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="n">indicators</span><span class="p">):</span>
+<div class="viewcode-block" id="File.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator_body">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="n">indicators</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of an File indicator</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            indicators (list): A list of one or more hash value(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">hash_patterns</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{32}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
@@ -1746,7 +1786,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Host</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Host</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;hosts&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;host&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1777,7 +1817,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;urls&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;url&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1802,7 +1842,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;groups&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span>
@@ -1847,7 +1887,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;adversaries&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;adversary&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1866,7 +1906,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Campaign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Campaign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;campaigns&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;campaign&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1889,7 +1929,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            tcex (instance): Instance of TcEx Class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;document&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1929,7 +1969,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Email</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Email</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;emails&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;email&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1948,7 +1988,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Incident</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Incident</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;incidents&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;incident&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -1977,7 +2017,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Signature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Signature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;signatures&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;signature&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -2004,7 +2044,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Threat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Threat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;threats&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;threat&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -2026,7 +2066,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Owner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Owner</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;owners&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;owner&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -2069,7 +2109,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SecurityLabel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SecurityLabel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;securityLabels&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;securityLabel&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -2117,7 +2157,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Tag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Tag</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;tags&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;tag&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -2166,7 +2206,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;tasks&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;task&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -2250,7 +2290,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Victim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Victim</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;victims&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;victim&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
@@ -2433,14 +2473,17 @@
     <span class="sd">&quot;&quot;&quot;Internal method for dynamically building Custom Indicator classes.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
-        <span class="n">base_class</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">)</span>
+        <span class="n">base_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">class_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),</span> <span class="p">{</span><span class="s2">&quot;__init__&quot;</span><span class="p">:</span> <span class="n">__init__</span><span class="p">})</span>
+    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_class</span><span class="p">,),</span> <span class="p">{</span><span class="s2">&quot;__init__&quot;</span><span class="p">:</span> <span class="fm">__init__</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">newclass</span></div>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
            </div>
           </div>
           <footer>
@@ -2471,10 +2514,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>

@@ -37,7 +37,9 @@ class TcEx(object):
         self._exit_code = 0
         # TODO: replace group_type with dynamic values from API (bcs)
         self.group_types = ['Adversary', 'Campaign', 'Document', 'Email', 'Incident', 'Signature', 'Threat']
+        self.indicator_associations_types_data = {}
         self.indicator_types = []
+        self.indicator_types_data = {}
         self._max_message_length = 255
         # NOTE: odd issue where args is not updating properly
         self._tc_token = None
@@ -72,6 +74,9 @@ class TcEx(object):
 
         # include resources module
         self._resources()
+
+        # load custom indicator associations
+        self._association_types()
 
     def _authorization_token_renew(self):
         """Method for handling token authorization to ThreatConnect API.
@@ -237,6 +242,41 @@ class TcEx(object):
             warn = 'Required playbook python dependency is not installed ({}).'.format(e)
             self.log.warn(warn)
 
+    def _association_types(self):
+        """Retrieve Custom Indicator Associations types from the ThreatConnect API.
+        """
+        # Dynamically create custom indicator class
+        r = self.request
+        r.authorization_method(self.authorization)
+        if self._args.tc_proxy_tc:
+            r.proxies = self.proxies
+        r.url = '{}/v2/types/associationTypes'.format(self._args.tc_api_path)
+        response = r.send()
+
+        # check for bad status code and response that is not JSON
+        if (int(response.status_code) != 200
+            or response.headers.get('content-type') != 'application/json'):
+            warn = 'Custom Indicators Associations are not supported.'
+            self.log.warn(warn)
+            return
+
+        # validate successful API results
+        data = response.json()
+        if data.get('status') != 'Success':
+            warn = 'Bad Status: Custom Indicators Associations are not supported.'
+            self.log.warn(warn)
+            return
+
+        try:
+            # Association Type Name is not a unique value at this time, but should be.
+            for association in response.json().get('data', {}).get('associationType', []):
+                self.indicator_associations_types_data[association.get('name')] = association
+        except:
+            err = 'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
+                sys.exc_info()[0])
+            self.log.error(err)
+            raise RuntimeError(err)
+
     def _resources(self):
         """Initialize the resource module.
 
@@ -280,6 +320,7 @@ class TcEx(object):
             for entry in data:
                 name = self.safe_rt(entry['name'])
                 self.indicator_types.append(str(entry['name']))
+                self.indicator_types_data[entry.get('name')] = entry
 
                 if entry['custom'] == 'true':
                     value_fields = []
@@ -757,7 +798,7 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if indicator is not None:
-            indicator = urllib.quote(self.s(indicator, errors=errors), safe='~')
+            indicator = urllib.quote(self.s(str(indicator), errors=errors), safe='~')
         return indicator
 
 

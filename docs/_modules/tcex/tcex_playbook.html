@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -43,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -62,7 +65,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -83,7 +86,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
@@ -115,8 +121,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -129,19 +137,36 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      
-    <li>tcex.tcex_playbook</li>
+        
+      <li>tcex.tcex_playbook</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -192,9 +217,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables_type</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name-type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sd">r&quot;&quot;&quot;^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$&quot;&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sd">r&quot;&quot;&quot;(\&quot;?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)\&quot;?)&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;(\&quot;?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)\&quot;?)&quot;&quot;&quot;</span><span class="p">)</span>
 
         <span class="c1"># parse out variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_out_variable</span><span class="p">()</span>
@@ -861,8 +886,8 @@
     <span class="c1"># Static Methods</span>
     <span class="c1">#</span>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcExPlaybook.entity_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">entity_to_bulk</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.entity_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">entity_to_bulk</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert Single TC Entity to Bulk format</span>
 
 <span class="sd">        .. Attention:: This method is subject to frequent changes</span>
@@ -897,8 +922,8 @@
             <span class="k">return</span> <span class="n">bulk_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">bulk_array</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcExPlaybook.indicator_arrays"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.indicator_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_arrays</span><span class="p">(</span><span class="n">tc_entity_array</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.indicator_arrays"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.indicator_arrays">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">indicator_arrays</span><span class="p">(</span><span class="n">tc_entity_array</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert TCEntityArray to Indicator Type dictionary</span>
 
 <span class="sd">        Args:</span>
@@ -913,8 +938,8 @@
             <span class="n">type_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ea</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">type_dict</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcExPlaybook.json_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_bulk</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_bulk">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">json_to_bulk</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert ThreatConnect JSON response to a Bulk Format</span>
 
 <span class="sd">        .. Attention:: This method is subject to frequent changes</span>
@@ -959,8 +984,8 @@
 
         <span class="k">return</span> <span class="n">bulk_array</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcExPlaybook.json_to_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_entity">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_entity</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_entity">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">json_to_entity</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">value_fields</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_type_parent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert ThreatConnect JSON response to a TCEntityArray</span>
 
 <span class="sd">        .. Attention:: This method is subject to frequent changes</span>
@@ -1022,8 +1047,8 @@
 
         <span class="k">return</span> <span class="n">entity_array</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TcExPlaybook.json_to_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_key_value</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">key_field</span><span class="p">,</span> <span class="n">value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.json_to_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.json_to_key_value">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">json_to_key_value</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">key_field</span><span class="p">,</span> <span class="n">value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert JSON data to a KeyValue/KeyValueArray</span>
 
 <span class="sd">        Args:</span>
@@ -1064,6 +1089,9 @@
 </pre></div>
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
@@ -1093,10 +1121,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>

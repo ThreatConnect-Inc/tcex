@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_data_filter module &mdash; TcEx 0.5.1 documentation</title>
+  <title>tcex.tcex_data_filter module &mdash; TcEx 0.5.2 documentation</title>
   
 
+  
+  
   
   
 
@@ -33,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.1 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.5.2 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_job module" href="tcex.tcex_job.html"/>
         <link rel="prev" title="tcex.tcex module" href="tcex.tcex.html"/> 
@@ -45,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -64,7 +67,7 @@
             
             
               <div class="version">
-                0.5.1
+                0.5.2
               </div>
             
           
@@ -85,7 +88,10 @@
           
             
             
-                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
@@ -137,8 +143,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">TcEx</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+        
       </nav>
 
 
@@ -147,25 +155,42 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">tcex</a> &raquo;</li>
-      
+        
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-      
-    <li>tcex.tcex_data_filter module</li>
+        
+      <li>tcex.tcex_data_filter module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -195,7 +220,7 @@ List of Dictionaries with String values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) &#8211; A string or list of values.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of check</td>
 </tr>
@@ -214,11 +239,11 @@ List of Dictionaries with String values.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index_data</strong> (<em>dictionary</em>) &#8211; The indexed data for the provided field.</li>
-<li><strong>field</strong> (<em>string</em>) &#8211; The field to filter on.</li>
-<li><strong>filter_value</strong> (<em>string | list</em>) &#8211; The value to match.</li>
-<li><strong>filter_operator</strong> (<em>string</em>) &#8211; The operator for comparison.</li>
-<li><strong>field_converter</strong> (<em>method</em>) &#8211; A method used to convert the field before comparison.</li>
+<li><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</li>
+<li><strong>field</strong> (<em>string</em>) – The field to filter on.</li>
+<li><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</li>
+<li><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</li>
+<li><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</li>
 </ul>
 </td>
 </tr>
@@ -240,10 +265,10 @@ List of Dictionaries with String values.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>index_data</strong> (<em>dictionary</em>) &#8211; The indexed data for the provided field.</li>
-<li><strong>filter_value</strong> (<em>string</em>) &#8211; </li>
-<li><strong>filter_operator</strong> (<em>string</em>) &#8211; </li>
-<li><strong>fv_converter</strong> (<em>method</em>) &#8211; </li>
+<li><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</li>
+<li><strong>filter_value</strong> (<em>string</em>) – </li>
+<li><strong>filter_operator</strong> (<em>string</em>) – </li>
+<li><strong>fv_converter</strong> (<em>method</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -259,7 +284,7 @@ List of Dictionaries with String values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) &#8211; A string or list of values.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
 </tr>
@@ -277,7 +302,7 @@ List of Dictionaries with String values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string</em>) &#8211; A string or list of values.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string</em>) – A string or list of values.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
 </tr>
@@ -296,10 +321,10 @@ List of Dictionaries with String values.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>field</strong> (<em>string</em>) &#8211; The field to filter on.</li>
-<li><strong>filter_value</strong> (<em>string | list</em>) &#8211; The value to match.</li>
-<li><strong>filter_operator</strong> (<em>string</em>) &#8211; The operator for comparison.</li>
-<li><strong>field_converter</strong> (<em>method</em>) &#8211; A method used to convert the field before comparison.</li>
+<li><strong>field</strong> (<em>string</em>) – The field to filter on.</li>
+<li><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</li>
+<li><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</li>
+<li><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</li>
 </ul>
 </td>
 </tr>
@@ -357,15 +382,18 @@ List of Dictionaries with String values.</p>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_job.html" class="btn btn-neutral float-right" title="tcex.tcex_job module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_job.html" class="btn btn-neutral float-right" title="tcex.tcex_job module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.tcex.html" class="btn btn-neutral" title="tcex.tcex module" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex.html" class="btn btn-neutral" title="tcex.tcex module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -395,10 +423,11 @@ List of Dictionaries with String values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.1',
+            VERSION:'0.5.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../_static/jquery.js"></script>

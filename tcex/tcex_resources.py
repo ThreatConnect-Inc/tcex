@@ -334,28 +334,43 @@ class Resource(object):
         """
         return self._api_uri
 
-    def association_custom(self, resource_api_branch, association_name):
-        """Association pivot for this resource with resource value.
-
-        .. Attention:: New untested method
+    def association_custom(self, association_name, association_resource=None):
+        """Custom Indicator association for this resource with resource value.
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                 |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType} |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+-------------------------------------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                                                          |
+        +==============+=============================================================================================================+
+        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                         |
+        +--------------+-------------------------------------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}         |
+        +--------------+-------------------------------------------------------------------------------------------------------------+
+        | DELETE       | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |
+        +--------------+-------------------------------------------------------------------------------------------------------------+
+        | POST         | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |
+        +--------------+-------------------------------------------------------------------------------------------------------------+
 
         Args:
             resource_api_branch (string): The resource pivot api branch.
             association_name (string): The name of the custom association as defined in the UI.
         """
         resource = self.copy()
-        resource._request_uri = '{}/associations/{}/{}'.format(
-            resource_api_branch, association_name, resource._request_uri)
+        association_api_branch = self._tcex.indicator_associations_types_data.get(
+            association_name, {}).get('apiBranch')
+        if association_api_branch is None:
+            err = 'An invalid association name ({}) was provided.'.format(association_name)
+            self._tcex.log.error(err)
+            self._tcex.message_tc(err)
+            raise RuntimeError(err)
+
+        resource._request_entity = 'indicator'
+        if association_resource is not None:
+            resource._request_uri = '{}/associations/{}/{}'.format(
+                resource._request_uri, association_api_branch, association_resource.request_uri)
+        else:
+            resource._request_uri = '{}/associations/{}/indicators'.format(
+                resource._request_uri, association_api_branch)
         return resource
 
     def association_pivot(self, association_resource):

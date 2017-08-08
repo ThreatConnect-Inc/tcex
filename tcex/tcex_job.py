@@ -265,44 +265,45 @@ class TcExJob(object):
                 resource.batch_id(batch_id)
                 resource.body = json.dumps(chunk)
                 # results = resource.request()
-                resource.request()
+                data_results = resource.request()
 
-                # bcs - add a small delay before first status check then normal delay in loop
-                time.sleep(3)
+                if data_results['status'] == 'Success':
+                    # bcs - add a small delay before first status check then normal delay in loop
+                    time.sleep(3)
 
-                poll_time = 0
-                while True:
-                    self._tcex.log.debug('poll_time: {0}'.format(poll_time))
-                    if poll_time >= self._tcex._args.batch_poll_interval_max:
-                        msg = 'Status check exceeded max poll time.'
-                        self._tcex.log.error(msg)
-                        self._tcex.message_tc(msg)
-                        self._tcex.exit(1)
+                    poll_time = 0
+                    while True:
+                        self._tcex.log.debug('poll_time: {0}'.format(poll_time))
+                        if poll_time >= self._tcex._args.batch_poll_interval_max:
+                            msg = 'Status check exceeded max poll time.'
+                            self._tcex.log.error(msg)
+                            self._tcex.message_tc(msg)
+                            self._tcex.exit(1)
 
-                    status = self.batch_status(batch_id)
-                    if status.get('completed'):
-                        if status.get('errors'):
-                            if self._tcex.args.batch_halt_on_error:
-                                self._tcex.exit_code(1)
-                                halt = True
-                                # all indicator in chunk will be not_saved
-                                self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
-                                break
+                        status = self.batch_status(batch_id)
+                        if status.get('completed'):
+                            if status.get('errors'):
+                                if self._tcex.args.batch_halt_on_error:
+                                    self._tcex.exit_code(1)
+                                    halt = True
+                                    # all indicator in chunk will be not_saved
+                                    self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
+                                    break
+                                else:
+                                    # all indicators were saved minus failed; not_save == failed
+                                    self._indicator_results['not_saved'] = self._indicator_results.get('failed', [])
+                                    self._indicator_results['saved'].extend(
+                                        [i.get('summary') for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
+                                    self._indicators_response.extend(
+                                        [i for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
                             else:
-                                # all indicators were saved minus failed; not_save == failed
-                                self._indicator_results['not_saved'] = self._indicator_results.get('failed', [])
-                                self._indicator_results['saved'].extend(
-                                    [i.get('summary') for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
-                                self._indicators_response.extend(
-                                    [i for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
-                        else:
-                            # all indicators were saved
-                            self._indicator_results['saved'].extend([i.get('summary') for i in chunk])
-                            self._indicators_response.extend(chunk)
-                        break  # no need to check status anymore
+                                # all indicators were saved
+                                self._indicator_results['saved'].extend([i.get('summary') for i in chunk])
+                                self._indicators_response.extend(chunk)
+                            break  # no need to check status anymore
 
-                    time.sleep(self._tcex._args.batch_poll_interval)
-                    poll_time += self._tcex._args.batch_poll_interval
+                        time.sleep(self._tcex._args.batch_poll_interval)
+                        poll_time += self._tcex._args.batch_poll_interval
             else:
                 # TODO: move this and above duplicate code to "if halt" below after validating logic
                 self._tcex.exit_code(1)

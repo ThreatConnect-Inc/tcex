@@ -6,6 +6,13 @@ Release Notes
 0.5.x
 =====
 
+0.5.2
+------
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support DELETE/POST Methods.
++ Added :py:meth:`~tcex.tcex.TcEx._association_types` method to load Custom Association types from API.
++ Added ``indicator_types_data`` property with full Indicator Type data.
++ Added ``indicator_associations_types_data`` property with full Indicator Association Type data.
+
 0.5.1
 ------
 + Update to playbookdb variable name.
