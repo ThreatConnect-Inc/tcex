@@ -270,9 +270,6 @@ class Resource(object):
     def add_filter(self, name, operator, value):
         """Add ThreatConnect API Filter for this resource request.
 
-        Internal Reference:
-            https://docs.google.com/document/d/1mZx9qF9o9RqVGXd_hT6t55aqLtPyzTL2zWRVQsB3HiM
-
         External Reference:
             https://docs.threatconnect.com
 
