@@ -146,6 +146,9 @@ class TcExLocal:
         self._parser.add_argument(
             '--quiet', action='store_true', help='Suppress output')
         self._parser.add_argument(
+            '--stdout', action='store_true', help='allow output during run')
+
+        self._parser.add_argument(
             '--vault_token', default=None, help='Vault token')
         self._parser.add_argument(
             '--vault_url', default='http://localhost:8200', help='Vault URL')
@@ -218,15 +221,22 @@ class TcExLocal:
             print_command = ' '.join(command + parameters.get('masked'))
             print('Executing: {}'.format(print_command))
 
-            p = subprocess.Popen(
-                exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if sp.get('stdout') is not None or hasattr(self._extra_args, 'stdout'):
+                p = subprocess.Popen(
+                        exe_command, shell=False, stdin=subprocess.PIPE, stdout=sys.stdout, stderr=sys.stderr)
+            else:
+                p = subprocess.Popen(
+                        exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
             out, err = p.communicate()
             print('Exit Code: {}'.format(p.returncode))
 
             if not sp.get('quiet') and not self._args.quiet:
-                print(self.to_string(out, 'ignore'))
-            if len(err) != 0:
-                print(err.decode('utf-8'))
+                if out is not None:
+                    print(self.to_string(out, 'ignore'))
+            if err is not None:
+                if len(err) != 0:
+                    print(err.decode('utf-8'))
             if p.returncode != 0:
                 status_code = p.returncode
                 break
@@ -259,7 +269,10 @@ class TcExLocal:
         contents = os.listdir(app_path)
 
         # create build directory
-        tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
+        if sys.platform == 'win32':
+            tmp_path = os.path.join("c:", os.sep, 'temp', 'tcex_builds')
+        else:
+            tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
         if not os.path.isdir(tmp_path):
             os.mkdir(tmp_path)
 
@@ -272,7 +285,7 @@ class TcExLocal:
 
         # ignore unwanted files from build to ensure app packages are minimum size
         ignore_patterns = shutil.ignore_patterns(
-            '*.git*', 'lib', '*log', '*python-version', 'tc.json', '*.tcx')
+            '*.git*', 'lib', '*log', '*python-version', 'tc.json', '*.tcx', '*.zip')
         shutil.copytree(app_path, template_app_path, False, ignore_patterns)
 
         for install_json in contents:
@@ -337,6 +350,7 @@ class TcExLocal:
             zip_file_zip = '{}.zip'.format(zip_file)
             zip_file_tcx = '{}.tcx'.format(zip_file)
             shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
+            time.sleep(1)
             shutil.move(zip_file_zip, zip_file_tcx)
             self._app_packages.append(zip_file_tcx)
 
@@ -349,13 +363,14 @@ class TcExLocal:
             z = zipfile.ZipFile(collection_file, 'w')
             for app in self._app_packages:
                 z.write(app, os.path.basename(app))
-            z.close
+            z.close()
             if self._args.zip_out is not None and os.access(self._args.zip_out, os.W_OK):
                 collection_zip = os.path.join(self._args.zip_out, collection_file)
                 shutil.move(collection_file, collection_zip)
 
         # cleanup template directory
         if os.access(template_app_path, os.W_OK):
+            time.sleep(1)
             shutil.rmtree(template_app_path)
 
     @staticmethod
