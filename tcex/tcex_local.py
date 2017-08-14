@@ -272,7 +272,7 @@ class TcExLocal:
 
         # ignore unwanted files from build to ensure app packages are minimum size
         ignore_patterns = shutil.ignore_patterns(
-            '*.git*', 'lib', '*log', '*python-version', 'tc.json', '*.tcx')
+            '*.zip', '*.git*', 'lib', '*log', '*python-version', 'tc.json', '*.tcx')
         shutil.copytree(app_path, template_app_path, False, ignore_patterns)
 
         for install_json in contents:
@@ -349,7 +349,7 @@ class TcExLocal:
             z = zipfile.ZipFile(collection_file, 'w')
             for app in self._app_packages:
                 z.write(app, os.path.basename(app))
-            z.close
+            z.close()
             if self._args.zip_out is not None and os.access(self._args.zip_out, os.W_OK):
                 collection_zip = os.path.join(self._args.zip_out, collection_file)
                 shutil.move(collection_file, collection_zip)
