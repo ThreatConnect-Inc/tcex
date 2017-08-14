@@ -10,6 +10,7 @@ import subprocess
 import sys
 import time
 import zipfile
+import platform
 # from builtins import bytes
 from setuptools.command import easy_install
 
@@ -259,7 +260,10 @@ class TcExLocal:
         contents = os.listdir(app_path)
 
         # create build directory
-        tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
+        if platform == "win32":
+            tmp_path = os.path.join("c:",os.sep,'temp','tcex_builds')
+        else:
+            tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
         if not os.path.isdir(tmp_path):
             os.mkdir(tmp_path)
 
