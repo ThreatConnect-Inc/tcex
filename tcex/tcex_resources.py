@@ -361,7 +361,6 @@ class Resource(object):
         if association_api_branch is None:
             err = 'An invalid association name ({}) was provided.'.format(association_name)
             self._tcex.log.error(err)
-            self._tcex.message_tc(err)
             raise RuntimeError(err)
 
         resource._request_entity = 'indicator'

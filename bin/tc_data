@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+""" standard """
+import json
+import os
+import sys
+""" third-party """
+""" custom """
+from tcex import TcEx
+
+tcex = TcEx()
+
+tcex.parser.add_argument('--data_file', help='The file containing the data to stage.', required=True)
+tcex.parser.add_argument('--validate', action='store_true', help='Validate instead of stage.')
+args = tcex.args
+
+def main():
+    """ """
+    if os.path.isfile(args.data_file):  # double check file exist
+        # for windows (untested)
+        try:
+            f = os.fdopen(os.open(args.data_file, os.O_RDWR | os.O_BINARY | os.O_TEMPORARY), 'rb')
+        except AttributeError:
+            f = open(args.data_file, 'rb')
+        data_array = json.load(f)
+        f.close()
+
+        for ddata in data_array:
+            variable = ddata.get('variable')
+            data = ddata.get('data')
+            if args.validate:
+                tcex.log.info('Validating output variable {}'.format(variable))
+                db_data = tcex.playbook.read(variable)
+                if db_data == data:
+                    tcex.log.info('Validation was successful')
+                else:
+                    tcex.log.error('Validation failed for variable: {}'.format(variable))
+                    tcex.log.error('Validation Data: ({}) [{}]'.format(data, type(data)))
+                    tcex.log.error('DB Data: ({}) [{}]'.format(db_data, type(db_data)))
+                    sys.exit(1)
+            else:
+                tcex.log.info('Creating variable {}'.format(variable))
+                tcex.playbook.create(variable, data)
+
+    else:
+        tcex.log.error('Could not open data file ({}).'.format(args.data_file))
+
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

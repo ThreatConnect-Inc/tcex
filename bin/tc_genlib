@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+""" standard """
+import argparse
+import os
+import shutil
+import sys
+from setuptools.command import easy_install
+""" third-party """
+""" custom """
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--app_name', help='Fully qualified path of App.', required=False)
+parser.add_argument(
+    '--app_path', help='Fully qualified path of App.', required=False)
+args, extra_args = parser.parse_known_args()
+
+
+def main():
+    """ """
+    # build lib directory name from python version
+    lib_directory = 'lib_{}.{}.{}'.format(
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+
+    app_path = args.app_path
+    if app_path is None:
+        app_path = os.getcwd()
+    app_name = args.app_name
+    if app_name is None:
+        app_name = os.path.basename(app_path)
+
+    # build lib path and create if it doesn't exist
+    lib_path = os.path.join(app_path, lib_directory)
+    if not os.path.isdir(lib_path):
+        os.mkdir(lib_path)
+
+    # update environment for new path
+    os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
+
+    # install dependencies
+    stdout = sys.stdout
+    stderr = sys.stderr
+    try:
+        with open(os.path.join(app_path, '{}-libs.log'.format(app_name)), 'w') as log:
+            sys.stdout = log
+            sys.stderr = log
+            test = easy_install.main(['-axZ', '-d', lib_path, str(app_path)])
+    except SystemExit as e:
+        raise Exception(str(e))
+    finally:
+        sys.stdout = stdout
+        sys.stderr = stderr
+
+    if len(os.listdir(lib_path)) == 0:
+        raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
+            app_name))
+
+    # clean up build directory
+    build_path = os.path.join(app_path, 'build')
+    if os.access(build_path, os.W_OK):
+        shutil.rmtree(build_path)
+    # clean up temp directory
+    temp_path = os.path.join(app_path, 'temp')
+    if os.access(temp_path, os.W_OK):
+        shutil.rmtree(temp_path)
+    # clean up app egg-info
+    egg_path = os.path.join(app_path, app_name + '.egg-info')
+    if os.access(egg_path, os.W_OK):
+        shutil.rmtree(egg_path)
+    # remove app egg
+    files = os.listdir(os.path.join(app_path, lib_directory))
+    for file in files:
+        if file.startswith(app_name):
+            egg_path = os.path.join(app_path, lib_directory, file)
+            shutil.rmtree(egg_path)
+
+if __name__ == '__main__':
+    main()

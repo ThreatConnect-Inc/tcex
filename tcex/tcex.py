@@ -57,7 +57,7 @@ class TcEx(object):
             self._tc_token_expires = self._args.tc_token_expires
 
         # logger (must parse args first)
-        self.log = self._logger()
+        self.log = self._logger(self._args.tc_log_file)
 
         # Log versions
         self._log_platform()
@@ -162,7 +162,7 @@ class TcEx(object):
 
         self.log.info('TcEx Version: {}'.format(tcex_version))
 
-    def _logger(self, file_name='app.log'):
+    def _logger(self, file_name=None):
         """Create TcEx app logger instance.
 
         The logger is accessible via the ``tc.log.<level>`` call.
@@ -184,6 +184,8 @@ class TcEx(object):
         Returns:
             logger: An instance of logging
         """
+        if file_name is None:
+            file_name = 'app.log'
 
         level = logging.INFO
         log_level = {

@@ -35,6 +35,7 @@ class ArgParser(ArgumentParser):
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
         self._tc_in_path = '/tmp'
+        self._tc_log_file = 'app.log'
         self._tc_log_path = '/tmp'
         self._tc_out_path = '/tmp'
         self._tc_temp_path = '/tmp'
@@ -155,13 +156,15 @@ class ArgParser(ArgumentParser):
         self.add_argument(
             '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
         self.add_argument(
+            '--tc_log_file', default=self._tc_log_file, help='App logfile name')
+        self.add_argument(
             '--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path')
         self.add_argument(
-            '--tc_temp_path',  default=self._tc_temp_path, help='ThreatConnect temp path')
+            '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
         self.add_argument(
-            '--tc_user_id',  default=self._tc_user_id, help='User ID')
+            '--tc_user_id', default=self._tc_user_id, help='User ID')
 
         #
         # Proxy Configuration
