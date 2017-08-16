@@ -14,13 +14,13 @@ setup(
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
     install_requires=[
-        # 'hiredis==0.2.0',
-        'hvac==0.2.17',
+        'hvac==0.2.17',  # this feature will be deprecate in future release
         'inflect==0.2.5',
-        'jsonschema==2.5.1',
+        'jsonschema==2.6.0',
+        'pip',
         'python-dateutil==2.6.0',
         'redis==2.10.5',
-        'requests==2.13.0'
+        'requests==2.18.3'
     ],
     license='Apache License, Version 2',
     name='tcex',
@@ -28,7 +28,7 @@ setup(
     package_data={'': ['tcex_json_schema.json']},
     scripts=[
         'bin/tc_data',
-        'bin/tc_genlib',
+        'bin/tc_lib',
         'bin/tc_package',
         'bin/tc_run'
     ],

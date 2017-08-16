@@ -6,7 +6,7 @@ try:
     from .tcex import TcEx
 except ImportError as e:
     print('Error: {}'.format(e))
-    print('Try app.py --lib')
+    print('Try running tc_lib')
 
 from .tcex_local import TcExLocal
 from .argparser import ArgParser

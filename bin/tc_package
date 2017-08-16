@@ -3,136 +3,271 @@
 """ standard """
 import argparse
 import json
-from setuptools.command import easy_install
+import os
+import re
+import shutil
+import sys
+import traceback
+import zipfile
 """ third-party """
 from jsonschema import SchemaError, ValidationError, validate
 """ custom """
-from tcex import TcEx
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--bundle', action='store_true', help='Build a bundle file.')
 parser.add_argument(
+    '--exclude', action='append', default=[], help='File and directories to exclude from build.')
+parser.add_argument(
+    '--config', default='tcex.json', help='Build configuration file.')
+parser.add_argument(
     '--dryrun', action='store_true', help='Perform a dry run of the build.')
 parser.add_argument(
-    '--outpath', default='target', help='Location to write the outfile.')
+    '--install_json', help='The install.json file name for the App that should be built.')
+parser.add_argument(
+    '--outdir', default='target', help='Location to write the outfile.')
 parser.add_argument(
     '--validate', help='The install.json file to validate.')
+args, extra_args = parser.parse_known_args()
 
 # Load Schema
-schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
-with open(schema_file) as fh:
-    schema = json.load(fh)
+# schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
 
-def main():
+
+# TODO: Clean this up when time allows
+class TcPackage(object):
     """Package the app for deployment
 
-    This method will package the app for deployment to ThreatConnect.  It will download
-    all required dependencies and include them in the package.  Validating of the
+    This method will package the app for deployment to ThreatConnect. Validation of the
     install.json file or files will be automatically run before packaging the app.
     """
+    def __init__(self, args):
+        """ """
+        self._args = args
+        self.app_path = os.getcwd()
+        self.exit_code = 0
 
-    lib_directory = 'lib_{}.{}.{}'.format(
-        sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-    app_path = os.getcwd()
-    contents = os.listdir(app_path)
+        # defaults
+        self._app_packages = []
+        self.schema = None
+        self.schema_file = 'tcex_json_schema.json'
 
-    # create build directory
-    tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
-    if not os.path.isdir(tmp_path):
-        os.mkdir(tmp_path)
+        # color settings
+        self.DEFAULT = '\033[m'
+        self.BOLD = '\033[1m'
+        # colors
+        self.CYAN = '\033[36m'
+        self.GREEN = '\033[32m'
+        self.MAGENTA = '\033[35m'
+        self.RED = '\033[31m'
+        self.YELLOW = "\033[33m"
+        # bold colors
+        self.BOLD_CYAN = '{}{}'.format(self.BOLD, self.CYAN)
+        self.BOLD_GREEN = '{}{}'.format(self.BOLD, self.GREEN)
+        self.BOLD_MAGENTA = '{}{}'.format(self.BOLD, self.MAGENTA)
+        self.BOLD_RED = '{}{}'.format(self.BOLD, self.RED)
+        self.BOLD_YELLOW = '{}{}'.format(self.BOLD, self.YELLOW)
 
-    # copy project directory to temp location to use as template for multiple builds
-    base_name = os.path.basename(app_path)
-    template_app_path = os.path.join(tmp_path, base_name)
-    if os.access(template_app_path, os.W_OK):
-        # cleanup any previous failed builds
-        shutil.rmtree(template_app_path)
+        # load config
+        self._load_config()
 
-    # ignore unwanted files from build to ensure app packages are minimum size
-    ignore_patterns = shutil.ignore_patterns(
-        '*.git*', 'lib', '*log', '*python-version', 'tc.json', '*.tcx')
-    shutil.copytree(app_path, template_app_path, False, ignore_patterns)
+        # load schema
+        self._load_schema()
 
-    for install_json in contents:
-        if 'install.json' not in install_json:
-            continue
+    def _load_config(self):
+        """ """
+        # load config
+        if os.path.isfile(args.config):
+            with open(args.config, 'r') as fh:
+                try:
+                    self.config = json.load(fh).get('package', {})
+                except ValueError as e:
+                    print('Invalid JSON file {}({}){}.'.format(
+                        self.BOLD_RED, e, self.DEFAULT))
+                    sys.exit(1)
 
-        self.validate(install_json)
-
-        base_name = os.path.basename(app_path)
-        if install_json == 'install.json':
-            app_name = base_name
+    def _load_schema(self):
+        """Load JSON schema file"""
+        if os.path.isfile(self.schema_file):
+            with open(self.schema_file) as fh:
+                self.schema = json.load(fh)
         else:
-            app_name = install_json.split('.')[0]
+            print('{}Packager can not validate install.json without {} schema file.{}'.format(
+                self.BOLD_YELLOW, self.schema_file, self.DEFAULT))
 
-        tmp_app_path = os.path.join(tmp_path, app_name)
-        if tmp_app_path != template_app_path:
+    def package(self):
+        """Package the App for deployment in TcEx"""
+
+        #
+        # create build directory
+        #
+        tmp_path = os.path.join(self.app_path, self._args.outdir, 'build')
+        if not os.path.isdir(tmp_path):
+            os.makedirs(tmp_path)
+
+        #
+        # temp path and cleanup
+        #
+        template_app_path = os.path.join(tmp_path, 'template')
+        if os.access(template_app_path, os.W_OK):
+            # cleanup any previous failed builds
+            shutil.rmtree(template_app_path)
+        print('Building App Template: {}{}{}'.format(
+            self.BOLD_CYAN, template_app_path, self.DEFAULT))
+
+        #
+        # build exclude file/directory list
+        #
+        excludes = [
+            self._args.config,
+            self._args.outdir,
+            '*.git*',
+            '*log',
+            '*python-version',
+            'tcex.json',
+            '*install.json'
+        ]
+        excludes.extend(self._args.exclude)
+        excludes.extend(self.config.get('excludes', []))
+        patterns = ', '.join(excludes)
+        print('Excluding: {}{}{}'.format(
+            self.BOLD_CYAN, patterns, self.DEFAULT))
+
+        #
+        # copy project directory to temp location to use as template for multiple builds
+        #
+        ignore_patterns = shutil.ignore_patterns(*excludes)
+        shutil.copytree(self.app_path, template_app_path, False, ignore_patterns)
+
+        #
+        # build list of app json files
+        #
+        if self._args.install_json is not None:
+            contents = [self._args.install_json]
+        else:
+            contents = os.listdir(self.app_path)
+
+        # base name of app directory
+        base_name = os.path.basename(self.app_path)
+
+        #
+        # package app
+        #
+        for install_json in contents:
+            # skip files that are not install.json files
+            if 'install.json' not in install_json:
+                continue
+
+            # divider
+            print('-' * 100)
+
+            # TODO: need better way to get app name
+            if install_json == 'install.json':
+                app_name = base_name
+            else:
+                app_name = install_json.split('.')[0]
+
+            print('Processing: {}{}{}'.format(
+                self.BOLD_CYAN, app_name, self.DEFAULT))
+
+            #
+            # validate config
+            #
+            if self.schema is not None:
+                self.validate(install_json)
+
+            #
+            # build app directory
+            #
+            tmp_app_path = os.path.join(tmp_path, app_name)
+            if os.access(tmp_app_path, os.W_OK):
+                # cleanup any previous failed builds
+                shutil.rmtree(tmp_app_path)
             shutil.copytree(template_app_path, tmp_app_path)
 
-        lib_path = os.path.join(tmp_app_path, lib_directory)
-        if os.access(lib_path, os.W_OK):
-            shutil.rmtree(lib_path)
-        os.mkdir(lib_path)
+            # Copy install.json
+            shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
 
-        os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
-        stdout = sys.stdout
-        stderr = sys.stderr
-        try:
-            with open(os.path.join(app_path, '{}-package.log'.format(app_name)), 'w') as log:
-                sys.stdout = log
-                sys.stderr = log
-                easy_install.main(['-axZ', '-d', lib_path, str(tmp_app_path)])
-        except SystemExit as e:
-            raise Exception(str(e))
-        finally:
-            sys.stdout = stdout
-            sys.stderr = stderr
+            # zip file
+            self.zip_file(self.app_path, app_name, tmp_path)
 
-        if len(os.listdir(lib_path)) == 0:
-            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
-                app_name))
-
-        # cleanup
-        git_path = os.path.join(tmp_app_path, '.git')
-        if os.access(git_path, os.W_OK):
-            shutil.rmtree(git_path)
-        build_path = os.path.join(tmp_app_path, 'build')
-        if os.access(build_path, os.W_OK):
-            shutil.rmtree(build_path)
-
-        # rename install.json
-        if install_json != 'install.json':
-            install_json_path = os.path.join(tmp_app_path, install_json)
-            if os.access(build_path, os.W_OK):
-                shutil.rmtree(install_json_path)
-            shutil.move(install_json_path, os.path.join(tmp_app_path, 'install.json'))
-
-        # zip build directory
-        zip_file = os.path.join(app_path, app_name)
-        if self._args.zip_out is not None and os.access(self._args.zip_out, os.W_OK):
-            zip_file = os.path.join(self._args.zip_out, app_name)
-
-        zip_file_zip = '{}.zip'.format(zip_file)
-        zip_file_tcx = '{}.tcx'.format(zip_file)
-        shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
-        shutil.move(zip_file_zip, zip_file_tcx)
-        self._app_packages.append(zip_file_tcx)
-
-        # cleanup build directory
-        if install_json != 'install.json':
+            # cleanup build directory
             shutil.rmtree(tmp_app_path)
 
-    if self._args.collection and len(self._app_packages) > 0:
-        collection_file = '{}.zip'.format(base_name)
-        z = zipfile.ZipFile(collection_file, 'w')
-        for app in self._app_packages:
+        # bundle zips
+        if len(self._app_packages) > 0:
+            self.bundle(base_name)
+
+    def zip_file(self, app_path, app_name, tmp_path):
+        """ """
+        # zip build directory
+        zip_file = os.path.join(app_path, self._args.outdir, app_name)
+        zip_file_zip = '{}.zip'.format(zip_file)
+        print('Creating zip: {}{}{}'.format(
+            self.BOLD_CYAN, os.path.basename(zip_file_zip), self.DEFAULT))
+        # zip_file_tcx = '{}.tcx'.format(zip_file)
+        shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
+        # shutil.move(zip_file_zip, zip_file_tcx)
+        self._app_packages.append(zip_file_zip)
+
+    def bundle(self, base_name):
+        """ """
+        if self._args.bundle or self.config.get('bundle', False):
+            print('-' * 100)
+            if self.config.get('bundle_packages') is not None:
+                for bundle in self.config.get('bundle_packages', []):
+                    bundle_name = bundle.get('name')
+                    bundle_patterns = bundle.get('patterns')
+
+                    bundle_apps = []
+                    for app in self._app_packages:
+                        for app_pattern in bundle_patterns:
+                            p = re.compile(app_pattern, re.IGNORECASE)
+                            if p.match(app):
+                                bundle_apps.append(app)
+
+                    # bundle app in zip
+                    if len(bundle_apps) > 0:
+                        self.bundle_apps(bundle_name, bundle_apps)
+            else:
+                self.bundle_apps(base_name, self._app_packages)
+
+    def bundle_apps(self, bundle_name, bundle_apps):
+        """ """
+        bundle_file = os.path.join(self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
+        print('Creating bundle: {}{}{}'.format(
+            self.BOLD_CYAN, os.path.basename(bundle_file), self.DEFAULT))
+        z = zipfile.ZipFile(bundle_file, 'w')
+        for app in bundle_apps:
+            print('  Adding: {}{}{}'.format(
+                self.BOLD_GREEN, os.path.basename(app), self.DEFAULT))
             z.write(app, os.path.basename(app))
         z.close
-        if self._args.zip_out is not None and os.access(self._args.zip_out, os.W_OK):
-            collection_zip = os.path.join(self._args.zip_out, collection_file)
-            shutil.move(collection_file, collection_zip)
 
-    # cleanup template directory
-    if os.access(template_app_path, os.W_OK):
-        shutil.rmtree(template_app_path)
+    def validate(self, install_json):
+        """Validate install.json file for required parameters"""
+
+        # install.json validation
+        try:
+            with open(install_json) as fh:
+                data = json.loads(fh.read())
+            validate(data, self.schema)
+            print('Validating: {}{}{} {}({}){}'.format(
+                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_GREEN, 'valid', self.DEFAULT))
+        except SchemaError as e:
+            print('Validating: {}{}{} {}({}){}'.format(
+                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_RED, e, self.DEFAULT))
+        except ValidationError as e:
+            print('Validating: {}{}{} {}({}){}'.format(
+                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_RED, e, self.DEFAULT))
+
+
+if __name__ == '__main__':
+    try:
+        tcp = TcPackage(args)
+        tcp.package()
+        sys.exit(tcp.exit_code)
+    except Exception as e:
+        # TODO: Update this, possibly raise
+        print(traceback.format_exc())
+        sys.exit(1)
