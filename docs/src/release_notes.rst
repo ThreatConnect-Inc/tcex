@@ -6,6 +6,12 @@ Release Notes
 0.5.x
 =====
 
+0.5.3
+-----
++ Added new tc_data, tc_lib, tc_package, and tc_run commands for App testing and packaging (app.py will be deprecated in the future).
++ Updates to ``__main__.py`` for new lib directory structure create with pip (replaced easy_install).
++ Apps should now be built with ``requirements.txt`` instead of ``setup.py``.
+
 0.5.2
 ------
 + Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support DELETE/POST Methods.

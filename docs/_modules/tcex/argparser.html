@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser &mdash; TcEx 0.5.2 documentation</title>
+  <title>tcex.argparser &mdash; TcEx 0.5.3 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.2 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.2
+                0.5.3
               </div>
             
           
@@ -210,6 +210,7 @@
         <span class="c1"># standard defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_api_path</span> <span class="o">=</span> <span class="s1">&#39;https://api.threatconnect.com&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span> <span class="o">=</span> <span class="s1">&#39;app.log&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span> <span class="o">=</span> <span class="s1">&#39;/tmp&#39;</span>
@@ -330,13 +331,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_in_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_in_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect in path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_log_file&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_file</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;App logfile name&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_log_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect log path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_out_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_out_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect output path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--tc_temp_path&#39;</span><span class="p">,</span>  <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect temp path&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;--tc_temp_path&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_temp_path</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect temp path&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--tc_user_id&#39;</span><span class="p">,</span>  <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;User ID&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;--tc_user_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;User ID&#39;</span><span class="p">)</span>
 
         <span class="c1">#</span>
         <span class="c1"># Proxy Configuration</span>
@@ -411,7 +414,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.2',
+            VERSION:'0.5.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

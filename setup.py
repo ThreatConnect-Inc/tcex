@@ -27,10 +27,10 @@ setup(
     packages=find_packages(),
     package_data={'': ['tcex_json_schema.json']},
     scripts=[
-        'bin/tc_data',
-        'bin/tc_lib',
-        'bin/tc_package',
-        'bin/tc_run'
+        'bin/tcdata',
+        'bin/tclib',
+        'bin/tcpackage',
+        'bin/tcrun'
     ],
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,

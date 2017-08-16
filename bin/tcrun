@@ -182,7 +182,7 @@ class TcRun(object):
                 fqfp = os.path.join(self.app_path, file)
 
                 command = [
-                    'tc_data',
+                    'tcdata',
                     '--data_file',
                     file
                 ]
@@ -219,7 +219,7 @@ class TcRun(object):
                 f.flush()
 
                 command = [
-                    'tc_data',
+                    'tcdata',
                     '--data_file',
                     f.name,
                     '--validate'
