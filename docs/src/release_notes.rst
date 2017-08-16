@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.4
+-----
++ Minor update on tcdata for issue with bytes string in Python 3.
+
 0.5.3
 -----
 + Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (app.py will be deprecated in the future).
