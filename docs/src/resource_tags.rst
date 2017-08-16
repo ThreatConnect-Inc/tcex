@@ -1,7 +1,7 @@
 .. _resources_tags:
 
 + Direct Access: ``resource = tcex.resources.Tag(tcex)``
-+ Dynamic Access: ``resource = resource = tcex.resource('Tag')``
++ Dynamic Access: ``resource = tcex.resource('Tag')``
 
 Retrieve All Tags
 =================
