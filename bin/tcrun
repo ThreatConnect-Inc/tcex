@@ -195,7 +195,7 @@ class TcRun(object):
                 out, err = p.communicate()
 
                 if p.returncode != 0:
-                    print('{}Failed to stage data with for file {}{}.'.format(
+                    print('{}Failed to stage data for file {}{}.'.format(
                         self.BOLD_RED, file, self.DEFAULT))
                     sys.exit(p.returncode)
             else:

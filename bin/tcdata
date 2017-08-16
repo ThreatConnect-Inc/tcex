@@ -4,6 +4,7 @@
 import json
 import os
 import sys
+import traceback
 """ third-party """
 """ custom """
 from tcex import TcEx
@@ -21,7 +22,7 @@ def main():
         try:
             f = os.fdopen(os.open(args.data_file, os.O_RDWR | os.O_BINARY | os.O_TEMPORARY), 'rb')
         except AttributeError:
-            f = open(args.data_file, 'rb')
+            f = open(args.data_file, 'r')
         data_array = json.load(f)
         f.close()
 
@@ -35,8 +36,8 @@ def main():
                     tcex.log.info('Validation was successful')
                 else:
                     tcex.log.error('Validation failed for variable: {}'.format(variable))
-                    tcex.log.error('Validation Data: ({}) [{}]'.format(data, type(data)))
-                    tcex.log.error('DB Data: ({}) [{}]'.format(db_data, type(db_data)))
+                    tcex.log.debug('Validation Data: ({}) [{}]'.format(data, type(data)))
+                    tcex.log.debug('DB Data: ({}) [{}]'.format(db_data, type(db_data)))
                     sys.exit(1)
             else:
                 tcex.log.info('Creating variable {}'.format(variable))
@@ -49,4 +50,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        # TODO: Update this, possibly raise
+        print(traceback.format_exc())
+        sys.exit(1)

@@ -8,7 +8,7 @@ Release Notes
 
 0.5.3
 -----
-+ Added new tc_data, tc_lib, tc_package, and tc_run commands for App testing and packaging (app.py will be deprecated in the future).
++ Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (app.py will be deprecated in the future).
 + Updates to ``__main__.py`` for new lib directory structure create with pip (replaced easy_install).
 + Apps should now be built with ``requirements.txt`` instead of ``setup.py``.
 
