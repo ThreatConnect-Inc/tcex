@@ -23,8 +23,11 @@ except ImportError as e:
 
 # Load Schema
 schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
-with open(schema_file) as fh:
-    schema = json.load(fh)
+try:
+    with open(schema_file) as fh:
+        schema = json.load(fh)
+except Exception:
+    schema = None
 
 
 class TcExLocal:
@@ -279,7 +282,8 @@ class TcExLocal:
             if 'install.json' not in install_json:
                 continue
 
-            self.validate(install_json)
+            if schema is not None:
+                self.validate(install_json)
 
             base_name = os.path.basename(app_path)
             if install_json == 'install.json':

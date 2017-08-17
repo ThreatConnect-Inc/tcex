@@ -19,15 +19,15 @@ parser.add_argument(
 parser.add_argument(
     '--exclude', action='append', default=[], help='File and directories to exclude from build.')
 parser.add_argument(
-    '--config', default='tcex.json', help='Build configuration file.')
-parser.add_argument(
-    '--dryrun', action='store_true', help='Perform a dry run of the build.')
+    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)')
+# parser.add_argument(
+#     '--dryrun', action='store_true', help='Perform a dry run of the build.')
 parser.add_argument(
     '--install_json', help='The install.json file name for the App that should be built.')
 parser.add_argument(
-    '--outdir', default='target', help='Location to write the outfile.')
-parser.add_argument(
-    '--validate', help='The install.json file to validate.')
+    '--outdir', default='target', help='Location to write the outfile. (Defaul: target)')
+# parser.add_argument(
+#     '--validate', help='The install.json file to validate.')
 args, extra_args = parser.parse_known_args()
 
 # Load Schema
@@ -94,6 +94,18 @@ class TcPackage(object):
         else:
             print('{}Packager can not validate install.json without {} schema file.{}'.format(
                 self.BOLD_YELLOW, self.schema_file, self.DEFAULT))
+
+    def _load_install_json(self, file):
+        """Load install.json file"""
+        install_data = {}
+        if os.path.isfile(file):
+            with open(file) as fh:
+                install_data = json.load(fh)
+        else:
+            print('{}Could not load {} file.{}'.format(
+                self.BOLD_YELLOW, file, self.DEFAULT))
+
+        return install_data
 
     def package(self):
         """Package the App for deployment in TcEx"""
@@ -171,10 +183,19 @@ class TcPackage(object):
                 self.BOLD_CYAN, app_name, self.DEFAULT))
 
             #
-            # validate config
+            # validate install json
             #
             if self.schema is not None:
                 self.validate(install_json)
+
+            #
+            # load install json
+            #
+            ij = self._load_install_json(install_json)
+            major_version = ij.get('programVersion', '1').split('.')[0]
+            # The name of the folder in the zip is the *key* for an App. This value must
+            # remain consistent for the App to upgrade successfully.
+            app_name = '{}_v{}.0'.format(app_name, major_version)
 
             #
             # build app directory
@@ -190,13 +211,12 @@ class TcPackage(object):
 
             # zip file
             self.zip_file(self.app_path, app_name, tmp_path)
-
             # cleanup build directory
             shutil.rmtree(tmp_app_path)
 
         # bundle zips
         if len(self._app_packages) > 0:
-            self.bundle(base_name)
+            self.bundle(self.config.get('bundle_name', base_name))
 
     def zip_file(self, app_path, app_name, tmp_path):
         """ """
@@ -210,7 +230,7 @@ class TcPackage(object):
         # shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_zip)
 
-    def bundle(self, base_name):
+    def bundle(self, bundle_name):
         """ """
         if self._args.bundle or self.config.get('bundle', False):
             print('-' * 100)
@@ -230,7 +250,7 @@ class TcPackage(object):
                     if len(bundle_apps) > 0:
                         self.bundle_apps(bundle_name, bundle_apps)
             else:
-                self.bundle_apps(base_name, self._app_packages)
+                self.bundle_apps(bundle_name, self._app_packages)
 
     def bundle_apps(self, bundle_name, bundle_apps):
         """ """

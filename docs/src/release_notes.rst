@@ -6,6 +6,11 @@ Release Notes
 0.5.x
 =====
 
+0.5.5
+-----
++ Update to ``tcpackage`` to append version name to zip_file.
++ Added a **bundle_name** parameter to tcex.json file for systems where the directory name doesn't represent the App name.
+
 0.5.4
 -----
 + Minor update on tcdata for issue with bytes string in Python 3.
