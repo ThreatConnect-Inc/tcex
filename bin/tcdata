@@ -94,6 +94,8 @@ def main():
         for ddata in data_array:
             variable = ddata.get('variable')
             user_data = ddata.get('data')
+            if isinstance(user_data, int):
+                user_data = str(ddata.get('data'))
             user_operator = ddata.get('operator', 'eq')
 
             if args.validate:

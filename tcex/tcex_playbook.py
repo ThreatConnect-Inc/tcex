@@ -546,7 +546,7 @@ class TcExPlaybook(object):
         if key is not None and value is not None:
             if isinstance(value, (bool, list, int, dict)):
                 value = str(value)
-            data = self._db.create(key.strip(), json.dumps(value))
+            data = self._db.create(key.strip(), str(json.dumps(value)))
         else:
             self._tcex.log.warning('The key or value field was None.')
         return data
