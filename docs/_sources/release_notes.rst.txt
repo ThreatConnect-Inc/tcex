@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.7
+-----
++ Removing pip as a dependency.
+
 0.5.6
 -----
 + Updated ``tcdata`` to support multiple operators for validation.

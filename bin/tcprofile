@@ -113,13 +113,13 @@ def main():
             # type check
             od = OrderedDict()
             if d.get('type').endswith('Array'):
-                od['data'] = "array"
+                od['data'] = 'array'
                 od['operator'] = 'it'
-            elif d.get('type').endswith('Entity'):
-                od['data'] = "entity"
+            elif d.get('type').endswith('Entity') or d.get('type') == 'KeyValue':
+                od['data'] = 'entity'
                 od['operator'] = 'it'
             else:
-                od['data'] = "string"
+                od['data'] = 'string'
                 od['operator'] = 'it'
             od['variable'] = variable
             validations.append(od)

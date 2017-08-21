@@ -20,6 +20,7 @@ parser.add_argument(
     '--app_path', help='Fully qualified path of App.', required=False)
 parser.add_argument(
     '--config', help='Configuration file for gen lib.', required=False)
+#     '--config', default="tcex.json", help='Configuration file for gen lib.', required=False)
 args, extra_args = parser.parse_known_args()
 
 

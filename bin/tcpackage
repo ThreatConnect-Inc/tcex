@@ -167,7 +167,7 @@ class TcPackage(object):
         #
         # package app
         #
-        for install_json in contents:
+        for install_json in sorted(contents):
             # skip files that are not install.json files
             if 'install.json' not in install_json:
                 continue
