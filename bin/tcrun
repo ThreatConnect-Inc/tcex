@@ -240,13 +240,13 @@ class TcRun(object):
 
     def _create_tc_dirs(self, profile):
         """Create app directories for logs and data files."""
-        tc_log_path = profile.get('tc_log_path')
+        tc_log_path = profile.get('args', {}).get('tc_log_path')
         if tc_log_path is not None and not os.path.isdir(tc_log_path):
             os.makedirs(tc_log_path)
-        tc_out_path = profile.get('tc_out_path')
+        tc_out_path = profile.get('args', {}).get('tc_out_path')
         if tc_out_path is not None and not os.path.isdir(tc_out_path):
             os.makedirs(tc_out_path)
-        tc_tmp_path = profile.get('tc_tmp_path')
+        tc_tmp_path = profile.get('args', {}).get('tc_tmp_path')
         if tc_tmp_path is not None and not os.path.isdir(tc_tmp_path):
             os.makedirs(tc_tmp_path)
 
