@@ -133,8 +133,10 @@ class TcPackage(object):
         excludes = [
             self._args.config,
             self._args.outdir,
+            '__pycache__',
             '*.git*',
             '*log',
+            '*.pyc',
             '*python-version',
             'tcex.json',
             '*install.json'

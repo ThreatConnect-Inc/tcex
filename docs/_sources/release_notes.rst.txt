@@ -6,9 +6,16 @@ Release Notes
 0.5.x
 =====
 
+0.5.6
+-----
++ Updated ``tcdata`` to support multiple operators for validation.
++ Added ``tcprofile`` command to automatically build testing profiles from install.json.
++ Updated ``tcrun`` to create log, out, and temp directories for testing output.
++ Updated ``tcpackage`` to exclude **.pyc** files and **__pycache__** directory.
+
 0.5.5
 -----
-+ Update to ``tcpackage`` to append version name to zip_file.
++ Updated ``tcpackage`` to append version number to zip_file.
 + Added a **bundle_name** parameter to tcex.json file for systems where the directory name doesn't represent the App name.
 
 0.5.4

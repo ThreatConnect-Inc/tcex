@@ -5,7 +5,7 @@ import argparse
 import json
 import os
 import re
-import shutil
+# import shutil
 import sys
 import subprocess
 import tempfile
@@ -81,7 +81,7 @@ class TcRun(object):
             sys.exit(msg)
 
         profiles = []
-        for file in os.listdir(include_directory):
+        for file in sorted(os.listdir(include_directory)):
             if file.endswith('.json'):
                 print('Include File: {}{}{}'.format(
                     self.BOLD_CYAN, file, self.DEFAULT))
@@ -158,6 +158,7 @@ class TcRun(object):
             'api_access_id': args.get('api_access_id'),
             'api_secret_key': args.get('api_secret_key'),
             # 'logging': 'info',
+            'logging': args.get('logging'),
             'tc_api_path': args.get('tc_api_path'),
             'tc_log_file': 'data.log',
             'tc_log_path': args.get('tc_log_path'),
@@ -233,9 +234,21 @@ class TcRun(object):
                 out, err = p.communicate()
 
                 if p.returncode != 0:
-                    print('{}Failed to validate variable.{}.'.format(
+                    print('{}Failed variable validation{}.'.format(
                         self.BOLD_RED, self.DEFAULT))
                     sys.exit(p.returncode)
+
+    def _create_tc_dirs(self, profile):
+        """Create app directories for logs and data files."""
+        tc_log_path = profile.get('tc_log_path')
+        if tc_log_path is not None and not os.path.isdir(tc_log_path):
+            os.makedirs(tc_log_path)
+        tc_out_path = profile.get('tc_out_path')
+        if tc_out_path is not None and not os.path.isdir(tc_out_path):
+            os.makedirs(tc_out_path)
+        tc_tmp_path = profile.get('tc_tmp_path')
+        if tc_tmp_path is not None and not os.path.isdir(tc_tmp_path):
+            os.makedirs(tc_tmp_path)
 
     def run(self):
         """Run the App using the defined config."""
@@ -260,6 +273,9 @@ class TcRun(object):
         first = True
         reports = []
         for sp in selected_profiles:
+            # create temp directories
+            self._create_tc_dirs(sp)
+
             passed = False
             #
             # Sleep between executions
@@ -383,7 +399,7 @@ class TcRun(object):
                 passed_out = '{}{}{}'.format(self.BOLD_GREEN, 'Passed', self.DEFAULT)
             else:
                 passed_out = '{}{}{}'.format(self.BOLD_RED, 'Failed', self.DEFAULT)
-            print('{0!s:<50}{1!s:<50}'.format(profile, passed_out))
+            print('{0!s:<80}{1!s:<30}'.format(profile, passed_out))
 
 
     @staticmethod
@@ -412,7 +428,7 @@ class TcRun(object):
         Returns:
             (string): String containing parameters wrapped in double quotes
         """
-        if len(re.findall(r'[!\-\s\$]{1,}', data)) > 0:
+        if len(re.findall(r'[!\-\s\$]{1,}', str(data))) > 0:
             data = '\'{}\''.format(data)
         return data
 

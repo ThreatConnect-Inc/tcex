@@ -30,6 +30,7 @@ setup(
         'bin/tcdata',
         'bin/tclib',
         'bin/tcpackage',
+        'bin/tcprofile',
         'bin/tcrun'
     ],
     url='https://github.com/ThreatConnect-Inc/tcex',
