@@ -41,9 +41,7 @@ class TcRun(object):
         self.config = {}
         self.exit_code = 0
 
-        if sys.platform == "linux":
-            self.shell = False
-        elif sys.platform == "darwin":
+        if sys.platform in ['linux', 'linux2', 'darwin']:
             self.shell = False
         elif sys.platform == "win32":
             self.shell = True

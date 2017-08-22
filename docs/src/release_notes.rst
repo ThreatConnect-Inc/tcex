@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.10
+------
++ Added platform for docker support.
+
 0.5.9
 -----
 + Added platform check for subprocess calls.
