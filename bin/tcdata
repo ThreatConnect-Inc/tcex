@@ -43,8 +43,11 @@ def data_it(db_data, user_type):
     }
     # user_type_tuple = tuple([data_type[t] for t in user_types])
     # if isinstance(db_data, user_type_tuple):
-    if data_type.get(user_type) is not None:
-        if isinstance(db_data, data_type.get(user_type)):
+    if user_type.lower() in ['null', 'none']:
+        if db_data is None:
+            return True
+    elif data_type.get(user_type.lower()) is not None:
+        if isinstance(db_data, data_type.get(user_type.lower())):
             return True
     return False
 
