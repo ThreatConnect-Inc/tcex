@@ -102,14 +102,14 @@ def main():
                 tcex.log.info('Validating output variable {}'.format(variable))
                 # read from store
                 db_data = tcex.playbook.read(variable)
-                tcex.log.debug('Validation Data: ({}) [{}]'.format(user_data, type(user_data)))
-                tcex.log.debug('DB Data: ({}) [{}]'.format(db_data, type(db_data)))
+                tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+                tcex.log.debug('- Operator: ({}) -'.format(user_operator))
+                tcex.log.debug('<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
 
                 if user_operator in operators and operators.get(user_operator)(db_data, user_data):
                     tcex.log.info('Validation was successful')
                 else:
-                    tcex.log.error('Validation failed for variable: {}, Operator: {}'.format(
-                        variable, user_operator))
+                    tcex.log.error('Validation failed for variable: {}'.format(variable))
                     sys.exit(1)
             else:
                 tcex.log.info('Creating variable {}'.format(variable))

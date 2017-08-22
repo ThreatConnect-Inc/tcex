@@ -189,6 +189,8 @@ class TcRun(object):
                 if p.returncode != 0:
                     print('{}{}Failed to stage data for file {}.'.format(
                         c.Style.BRIGHT, c.Fore.RED, file))
+                    if err is not None and err != '':
+                        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                     sys.exit(p.returncode)
             else:
                 print('{}{}Could not find file {}.'.format(
@@ -226,6 +228,8 @@ class TcRun(object):
             if p.returncode != 0:
                 print('{}{}Failed variable validation.'.format(
                     c.Style.BRIGHT, c.Fore.RED))
+                if err is not None and err != '':
+                    print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 sys.exit(p.returncode)
 
             # cleanup temp file
@@ -323,6 +327,8 @@ class TcRun(object):
             p = subprocess.Popen(
                 exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
+            if err is not None and err != '':
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
 
             #
             # Logs
@@ -332,6 +338,15 @@ class TcRun(object):
             #     log_file = os.path.join(log_directory, log_file)
             #     print('Logs: {}{}{}'.format(
             #         self.BOLD_CYAN, log_file, self.DEFAULT))
+
+            # divider
+            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
+
+            #
+            # Script Output
+            #
+            if not sp.get('quiet') and not self._args.quiet:
+                print(self.to_string(out, 'ignore'))
 
             #
             # Exit Code
@@ -343,6 +358,8 @@ class TcRun(object):
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
+                if err is not None and err != '':
+                    print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 self.exit_code = 1
                 if args.halt_on_fail:
                     break
@@ -351,15 +368,6 @@ class TcRun(object):
             # Validate Data
             #
             self.validate_data(sp)
-
-            # divider
-            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
-
-            #
-            # Script Output
-            #
-            if not sp.get('quiet') and not self._args.quiet:
-                print(self.to_string(out, 'ignore'))
 
             #
             # Error Output
