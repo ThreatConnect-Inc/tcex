@@ -2,6 +2,7 @@
 
 """ standard """
 import argparse
+import colorama as c
 import json
 import os
 import re
@@ -52,21 +53,8 @@ class TcPackage(object):
         self.schema = None
         self.schema_file = 'tcex_json_schema.json'
 
-        # color settings
-        self.DEFAULT = '\033[m'
-        self.BOLD = '\033[1m'
-        # colors
-        self.CYAN = '\033[36m'
-        self.GREEN = '\033[32m'
-        self.MAGENTA = '\033[35m'
-        self.RED = '\033[31m'
-        self.YELLOW = "\033[33m"
-        # bold colors
-        self.BOLD_CYAN = '{}{}'.format(self.BOLD, self.CYAN)
-        self.BOLD_GREEN = '{}{}'.format(self.BOLD, self.GREEN)
-        self.BOLD_MAGENTA = '{}{}'.format(self.BOLD, self.MAGENTA)
-        self.BOLD_RED = '{}{}'.format(self.BOLD, self.RED)
-        self.BOLD_YELLOW = '{}{}'.format(self.BOLD, self.YELLOW)
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
 
         # load config
         self._load_config()
@@ -82,8 +70,7 @@ class TcPackage(object):
                 try:
                     self.config = json.load(fh).get('package', {})
                 except ValueError as e:
-                    print('Invalid JSON file {}({}){}.'.format(
-                        self.BOLD_RED, e, self.DEFAULT))
+                    print('Invalid JSON File {}{}({})'.format(c.Style.BRIGHT, c.Fore.RED, e))
                     sys.exit(1)
 
     def _load_schema(self):
@@ -92,8 +79,8 @@ class TcPackage(object):
             with open(self.schema_file) as fh:
                 self.schema = json.load(fh)
         else:
-            print('{}Packager can not validate install.json without {} schema file.{}'.format(
-                self.BOLD_YELLOW, self.schema_file, self.DEFAULT))
+            print('{}{}Packager can not validate install.json without {} schema file.'.format(
+                c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file))
 
     def _load_install_json(self, file):
         """Load install.json file"""
@@ -102,8 +89,7 @@ class TcPackage(object):
             with open(file) as fh:
                 install_data = json.load(fh)
         else:
-            print('{}Could not load {} file.{}'.format(
-                self.BOLD_YELLOW, file, self.DEFAULT))
+            print('{}{}Could not load {} file.'.format(c.Style.BRIGHT, c.Fore.YELLOW, file))
 
         return install_data
 
@@ -125,7 +111,7 @@ class TcPackage(object):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
         print('Building App Template: {}{}{}'.format(
-            self.BOLD_CYAN, template_app_path, self.DEFAULT))
+            c.Style.BRIGHT, c.Fore.CYAN, template_app_path))
 
         #
         # build exclude file/directory list
@@ -144,8 +130,7 @@ class TcPackage(object):
         excludes.extend(self._args.exclude)
         excludes.extend(self.config.get('excludes', []))
         patterns = ', '.join(excludes)
-        print('Excluding: {}{}{}'.format(
-            self.BOLD_CYAN, patterns, self.DEFAULT))
+        print('Excluding: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, patterns))
 
         #
         # copy project directory to temp location to use as template for multiple builds
@@ -173,16 +158,16 @@ class TcPackage(object):
                 continue
 
             # divider
-            print('-' * 100)
+            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
             # TODO: need better way to get app name
             if install_json == 'install.json':
                 app_name = base_name
+
             else:
                 app_name = install_json.split('.')[0]
 
-            print('Processing: {}{}{}'.format(
-                self.BOLD_CYAN, app_name, self.DEFAULT))
+            print('Processing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, app_name))
 
             #
             # validate install json
@@ -225,8 +210,8 @@ class TcPackage(object):
         # zip build directory
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
-        print('Creating zip: {}{}{}'.format(
-            self.BOLD_CYAN, os.path.basename(zip_file_zip), self.DEFAULT))
+        print('Createing zip: {}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_zip)))
         # zip_file_tcx = '{}.tcx'.format(zip_file)
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         # shutil.move(zip_file_zip, zip_file_tcx)
@@ -235,7 +220,7 @@ class TcPackage(object):
     def bundle(self, bundle_name):
         """ """
         if self._args.bundle or self.config.get('bundle', False):
-            print('-' * 100)
+            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
             if self.config.get('bundle_packages') is not None:
                 for bundle in self.config.get('bundle_packages', []):
                     bundle_name = bundle.get('name')
@@ -257,31 +242,30 @@ class TcPackage(object):
     def bundle_apps(self, bundle_name, bundle_apps):
         """ """
         bundle_file = os.path.join(self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
-        print('Creating bundle: {}{}{}'.format(
-            self.BOLD_CYAN, os.path.basename(bundle_file), self.DEFAULT))
+        print('Createing bundle: {}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
             print('  Adding: {}{}{}'.format(
-                self.BOLD_GREEN, os.path.basename(app), self.DEFAULT))
+                c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
             z.write(app, os.path.basename(app))
         z.close
 
     def validate(self, install_json):
         """Validate install.json file for required parameters"""
-
         # install.json validation
         try:
             with open(install_json) as fh:
                 data = json.loads(fh.read())
             validate(data, self.schema)
-            print('Validating: {}{}{} {}({}){}'.format(
-                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_GREEN, 'valid', self.DEFAULT))
+            print('Validating: {}{}{} {}({})'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'))
         except SchemaError as e:
-            print('Validating: {}{}{} {}({}){}'.format(
-                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_RED, e, self.DEFAULT))
+            print('Validating: {}{}{} {}({})'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
         except ValidationError as e:
-            print('Validating: {}{}{} {}({}){}'.format(
-                self.BOLD_CYAN, install_json, self.DEFAULT, self.BOLD_RED, e, self.DEFAULT))
+            print('Validating: {}{}{} {}({})'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
 
 
 if __name__ == '__main__':
@@ -291,5 +275,5 @@ if __name__ == '__main__':
         sys.exit(tcp.exit_code)
     except Exception as e:
         # TODO: Update this, possibly raise
-        print(traceback.format_exc())
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

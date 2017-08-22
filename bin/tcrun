@@ -2,6 +2,7 @@
 
 """ standard """
 import argparse
+import colorama as c
 import json
 import os
 import re
@@ -40,21 +41,8 @@ class TcRun(object):
         self.config = {}
         self.exit_code = 0
 
-        # color settings
-        self.DEFAULT = '\033[m'
-        self.BOLD = '\033[1m'
-        # colors
-        self.CYAN = '\033[36m'
-        self.GREEN = '\033[32m'
-        self.MAGENTA = '\033[35m'
-        self.RED = '\033[31m'
-        self.YELLOW = "\033[33m"
-        # bold colors
-        self.BOLD_CYAN = '{}{}'.format(self.BOLD, self.CYAN)
-        self.BOLD_GREEN = '{}{}'.format(self.BOLD, self.GREEN)
-        self.BOLD_MAGENTA = '{}{}'.format(self.BOLD, self.MAGENTA)
-        self.BOLD_RED = '{}{}'.format(self.BOLD, self.RED)
-        self.BOLD_YELLOW = '{}{}'.format(self.BOLD, self.YELLOW)
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
 
     def _load_config(self):
         """Load the configuration file."""
@@ -62,8 +50,7 @@ class TcRun(object):
             msg = 'Provided config file does not exist ({}).'.format(self._args.config)
             sys.exit(msg)
 
-        print('Configuration File: {}{}{}'.format(
-            self.BOLD_CYAN, args.config, self.DEFAULT))
+        print('Configuration File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, args.config))
         with open(self._args.config) as data_file:
             config = json.load(data_file)
 
@@ -83,15 +70,13 @@ class TcRun(object):
         profiles = []
         for file in sorted(os.listdir(include_directory)):
             if file.endswith('.json'):
-                print('Include File: {}{}{}'.format(
-                    self.BOLD_CYAN, file, self.DEFAULT))
+                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
                 config_file = os.path.join(include_directory, file)
                 with open(config_file) as data_file:
                     try:
                         profiles.extend(json.load(data_file))
                     except ValueError as e:
-                        print('Invalid JSON file {}({}){}.'.format(
-                            self.BOLD_RED, e, self.DEFAULT))
+                        print('Invalid JSON file: {}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
                         sys.exit(1)
 
         return profiles
@@ -178,8 +163,7 @@ class TcRun(object):
 
         for file in profile.get('data_files', []):
             if os.path.isfile(file):
-                print('Staging Data: {}{}{}'.format(
-                    self.BOLD_CYAN, file, self.DEFAULT))
+                print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
                 fqfp = os.path.join(self.app_path, file)
 
                 command = [
@@ -196,12 +180,12 @@ class TcRun(object):
                 out, err = p.communicate()
 
                 if p.returncode != 0:
-                    print('{}Failed to stage data for file {}{}.'.format(
-                        self.BOLD_RED, file, self.DEFAULT))
+                    print('{}{}Failed to stage data for file {}.'.format(
+                        c.Style.BRIGHT, c.Fore.RED, file))
                     sys.exit(p.returncode)
             else:
-                print('{}Could not find file {}{}.'.format(
-                    self.BOLD_RED, file, self.DEFAULT))
+                print('{}{}Could not find file {}.'.format(
+                    c.Style.BRIGHT, c.Fore.RED, file))
                 sys.exit(1)
 
     def validate_data(self, profile):
@@ -213,8 +197,7 @@ class TcRun(object):
         v_data = profile.get('validations', [])
         if v_data:
             variables = ', '.join([d.get('variable') for d in v_data])
-            print('Validating Variables: {}{}{}'.format(
-                self.BOLD_CYAN, variables, self.DEFAULT))
+            print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
             with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
                 f.write(json.dumps(v_data))
                 f.flush()
@@ -234,8 +217,8 @@ class TcRun(object):
             out, err = p.communicate()
 
             if p.returncode != 0:
-                print('{}Failed variable validation{}.'.format(
-                    self.BOLD_RED, self.DEFAULT))
+                print('{}{}Failed variable validation.'.format(
+                    c.Style.BRIGHT, c.Fore.RED))
                 sys.exit(p.returncode)
 
             # cleanup temp file
@@ -269,8 +252,7 @@ class TcRun(object):
                 selected_profiles.append(config)
 
         if len(selected_profiles) == 0:
-            print('{}No profiles selected to run.{}'.format(
-                self.BOLD_YELLOW, self.DEFAULT))
+            print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
 
         command_count = 0
         ## status_code = 0
@@ -287,18 +269,16 @@ class TcRun(object):
             if not first:
                 sleep = sp.get('sleep', self.config.get('sleep', 1))
                 time.sleep(sleep)
-                print('Sleep: {}{} seconds{}'.format(
-                    self.BOLD_CYAN, sleep, self.DEFAULT))
+                print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 first = False
 
             #
             # Profile
             #
-            print('Profile: {}{}{}'.format(
-                self.BOLD_CYAN, sp.get('profile_name'), self.DEFAULT))
+            print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
             if sp.get('description'):
                 print('Description: {}{}{}'.format(
-                    self.BOLD_MAGENTA, sp.get('description'), self.DEFAULT))
+                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('profile_name')))
             command_count += 1
 
             # get script name
@@ -328,8 +308,7 @@ class TcRun(object):
 
             # output command
             print_command = ' '.join(command + parameters.get('masked'))
-            print('Executing: {}{}{}'.format(
-                self.BOLD_GREEN, print_command, self.DEFAULT))
+            print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
 
             #
             # Run Command
@@ -352,12 +331,11 @@ class TcRun(object):
             #
             valid_exit_codes = sp.get('exit_codes', [0])
             if p.returncode in valid_exit_codes:
-                print('App Exit Code: {}{}{}'.format(
-                    self.BOLD_GREEN, p.returncode, self.DEFAULT))
+                print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, p.returncode))
                 passed = True
             else:
-                print('App Exit Code: {}{}{} (Valid Exit Codes:{}).'.format(
-                    self.BOLD_RED, p.returncode, self.DEFAULT, valid_exit_codes))
+                print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
+                    c.Style.BRIGHT, c.Fore.GREEN, p.returncode, c.Fore.RESET, valid_exit_codes))
                 self.exit_code = 1
                 if args.halt_on_fail:
                     break
@@ -368,7 +346,7 @@ class TcRun(object):
             self.validate_data(sp)
 
             # divider
-            print('{}{}{}'.format(self.BOLD, '-' * 100, self.DEFAULT))
+            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
             #
             # Script Output
@@ -395,15 +373,16 @@ class TcRun(object):
 
     def report(self, data):
         """Format and output report data."""
-        print('{}{}{}'.format(self.BOLD_CYAN, 'Reports:', self.DEFAULT))
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Reports:'))
         for d in data:
             profile = d.get('profile')
             passed = d.get('passed')
             if passed:
-                passed_out = '{}{}{}'.format(self.BOLD_GREEN, 'Passed', self.DEFAULT)
+                print('{0!s:<80}{1}{2}{3!s:<30}'.format(
+                    profile, c.Style.BRIGHT, c.Fore.CYAN, 'Passed'))
             else:
-                passed_out = '{}{}{}'.format(self.BOLD_RED, 'Failed', self.DEFAULT)
-            print('{0!s:<80}{1!s:<30}'.format(profile, passed_out))
+                print('{0!s:<80}{1}{2}{3!s:<30}'.format(
+                    profile, c.Style.BRIGHT, c.Fore.RED, 'Failed'))
 
 
     @staticmethod
@@ -444,5 +423,5 @@ if __name__ == '__main__':
         sys.exit(tcr.exit_code)
     except Exception as e:
         # TODO: Update this, possibly raise
-        print(traceback.format_exc())
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

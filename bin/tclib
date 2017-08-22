@@ -2,6 +2,7 @@
 
 """ standard """
 import argparse
+import colorama as c
 import json
 import os
 import pip
@@ -32,21 +33,8 @@ class TcLib(object):
         self.app_path = os.getcwd()
         self.exit_code = 0
 
-        # color settings
-        self.DEFAULT = '\033[m'
-        self.BOLD = '\033[1m'
-        # colors
-        self.CYAN = '\033[36m'
-        self.GREEN = '\033[32m'
-        self.MAGENTA = '\033[35m'
-        self.RED = '\033[31m'
-        self.YELLOW = "\033[33m"
-        # bold colors
-        self.BOLD_CYAN = '{}{}'.format(self.BOLD, self.CYAN)
-        self.BOLD_GREEN = '{}{}'.format(self.BOLD, self.GREEN)
-        self.BOLD_MAGENTA = '{}{}'.format(self.BOLD, self.MAGENTA)
-        self.BOLD_RED = '{}{}'.format(self.BOLD, self.RED)
-        self.BOLD_YELLOW = '{}{}'.format(self.BOLD, self.YELLOW)
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
 
     def install_libs(self, data=None):
         """Install Requred Libraries using easy install."""
@@ -65,7 +53,7 @@ class TcLib(object):
             # os.environ['HOME']
             for data in data.get('lib_versions', []):
                 print('Building Lib Dir: {}{}{}'.format(
-                    self.BOLD_CYAN, data.get('lib_dir'), self.DEFAULT))
+                    c.Style.BRIGHT, c.Fore.CYAN, data.get('lib_dir')))
                 exe_command = [
                     os.path.expanduser(data.get('python_executable')),
                     '-m',
@@ -78,14 +66,14 @@ class TcLib(object):
                     '--target',
                     os.path.join(self.app_path, data.get('lib_dir'))
                 ]
-                print('Running: {}{}{}'.format(self.BOLD_GREEN, ' '.join(exe_command), self.DEFAULT))
+                print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
                 p = subprocess.Popen(
                     exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
                 if p.returncode != 0:
-                    print('FAIL')
+                    print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
 
     ## def _easy_install(self, app_path, app_name, lib_path):
     ##     """ """
@@ -115,7 +103,7 @@ class TcLib(object):
             lib_path
         ]
         command = '{} {}'.format('pip', ' '.join(args))
-        print('Running: {}{}{}'.format(self.BOLD_GREEN, command, self.DEFAULT))
+        print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, command))
         pip.main(args)
 
     def _make_lib_dir(self, directory):
@@ -127,7 +115,7 @@ class TcLib(object):
         """ """
         lib_directory = 'lib_{}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-        print('Creating Lib Directory: {}{}{}'.format(self.BOLD_CYAN, lib_directory, self.DEFAULT))
+        print('Creating Lib Direcotry: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, lib_directory))
 
         # set defaults if no user provide values
         app_path = args.app_path
@@ -151,37 +139,6 @@ class TcLib(object):
             err = err.format(app_name)
             raise Exception(err)
 
-        # self._cleanup(app_path, app_name, lib_directory)
-
-    ## def _cleanup(self, app_path, app_name, lib_directory):
-    ##     """ """
-    ##     # cleanup app directory
-    ##     files = os.listdir(os.path.join(app_path))
-    ##     for file in files:
-    ##         remove = False
-    ##         if file.endswith('egg-info'):
-    ##             remove = True
-    ##         elif file == 'build':
-    ##             remove = True
-    ##         elif file == 'temp':
-    ##             remove = True
-    ##         elif file == '__pycache__':
-    ##             remove = True
-    ##
-    ##         if remove:
-    ##             file_path = os.path.join(app_path, file)
-    ##             print('Removing:  {}{}{}'.format(self.BOLD_CYAN, file, self.DEFAULT))
-    ##             shutil.rmtree(file_path)
-    ##
-    ##     # cleanup lib directory
-    ##     files = os.listdir(os.path.join(app_path, lib_directory))
-    ##     for file in files:
-    ##         print('file', file)
-    ##         if file.endswith('egg-info'):
-    ##             egg_path = os.path.join(app_path, lib_directory, file)
-    ##             print('Removing:  {}{}{}'.format(self.BOLD_CYAN, egg_path, self.DEFAULT))
-    ##             shutil.rmtree(egg_path)
-
 
 if __name__ == '__main__':
     try:
@@ -190,5 +147,5 @@ if __name__ == '__main__':
         sys.exit(tcl.exit_code)
     except Exception as e:
         # TODO: Update this, possibly raise
-        print(traceback.format_exc())
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)
