@@ -26,11 +26,16 @@ setup(
     packages=find_packages(),
     package_data={'': ['tcex_json_schema.json']},
     scripts=[
-        'bin/tcdata.py',
-        'bin/tclib.py',
-        'bin/tcpackage.py',
-        'bin/tcprofile.py',
-        'bin/tcrun.py'
+        'bin/tcdata',
+        'bin/tcdata.cmd',
+        'bin/tclib',
+        'bin/tclib.cmd',
+        'bin/tcpackage',
+        'bin/tcpackage.cmd',
+        'bin/tcprofile',
+        'bin/tcprofile.cmd',
+        'bin/tcrun',
+        'bin/tcrun.cmd'
     ],
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,
