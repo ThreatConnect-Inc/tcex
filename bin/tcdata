@@ -6,6 +6,9 @@ import operator
 import os
 import sys
 import traceback
+import urllib3
+# disable ssl warning message
+urllib3.disable_warnings()
 """ third-party """
 """ custom """
 from tcex import TcEx

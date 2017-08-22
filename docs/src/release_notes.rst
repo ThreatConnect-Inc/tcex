@@ -8,7 +8,7 @@ Release Notes
 
 0.5.8
 -----
-+ Removing pip as a dependency.
++ Added better support for build / test commands on Windows platform.
 
 0.5.7
 -----
