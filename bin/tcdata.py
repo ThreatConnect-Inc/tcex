@@ -69,12 +69,12 @@ def main():
     # Define common comparison operators
     operators = {
         'eq': operator.eq,
-        'ew': data_startswith,
+        'ew': data_endswith,
         'ge': operator.ge,
         'gt': operator.gt,
         'in': data_in,
         'ni': data_not_in,
-        'it': data_it,
+        'it': data_it,  # is type
         'lt': operator.lt,
         'le': operator.le,
         'ne': operator.ne,
