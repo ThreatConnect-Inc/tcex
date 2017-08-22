@@ -82,12 +82,13 @@ def main():
         'sw': data_startswith
     }
 
-    if os.path.isfile(args.data_file):  # double check file exist
+    data_file = os.path.abspath(args.data_file)
+    if os.path.isfile(data_file):  # double check file exist
         # for windows (untested)
         try:
-            f = os.fdopen(os.open(args.data_file, os.O_RDWR | os.O_BINARY | os.O_TEMPORARY), 'rb')
+            f = os.fdopen(os.open(data_file, os.O_RDWR | os.O_BINARY | os.O_TEMPORARY), 'rb')
         except AttributeError:
-            f = open(args.data_file, 'r')
+            f = open(data_file, 'r')
         data_array = json.load(f)
         f.close()
 
@@ -116,7 +117,7 @@ def main():
                 tcex.playbook.create(variable, user_data)
 
     else:
-        tcex.log.error('Could not open data file ({}).'.format(args.data_file))
+        tcex.log.error('Could not open data file ({}).'.format(data_file))
 
     sys.exit(0)
 
