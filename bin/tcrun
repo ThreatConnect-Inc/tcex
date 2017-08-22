@@ -335,7 +335,7 @@ class TcRun(object):
                 passed = True
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
-                    c.Style.BRIGHT, c.Fore.GREEN, p.returncode, c.Fore.RESET, valid_exit_codes))
+                    c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
                 self.exit_code = 1
                 if args.halt_on_fail:
                     break
