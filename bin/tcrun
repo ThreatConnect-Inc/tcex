@@ -189,7 +189,7 @@ class TcRun(object):
                 if p.returncode != 0:
                     print('{}{}Failed to stage data for file {}.'.format(
                         c.Style.BRIGHT, c.Fore.RED, file))
-                    if err is not None and err != '':
+                    if err is not None and len(err) != 0:
                         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                     sys.exit(p.returncode)
             else:
@@ -228,7 +228,7 @@ class TcRun(object):
             if p.returncode != 0:
                 print('{}{}Failed variable validation.'.format(
                     c.Style.BRIGHT, c.Fore.RED))
-                if err is not None and err != '':
+                if err is not None and len(err) != 0:
                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 sys.exit(p.returncode)
 
@@ -327,8 +327,6 @@ class TcRun(object):
             p = subprocess.Popen(
                 exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = p.communicate()
-            if err is not None and err != '':
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
 
             #
             # Logs
@@ -358,7 +356,7 @@ class TcRun(object):
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
-                if err is not None and err != '':
+                if err is not None and len(err) != 0:
                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 self.exit_code = 1
                 if args.halt_on_fail:
