@@ -41,11 +41,11 @@ class TcRun(object):
         self.config = {}
         self.exit_code = 0
 
-        if platform == "linux" or platform == "linux2":
+        if sys.platform == "linux" or platform == "linux2":
             self.shell = False
-        elif platform == "darwin":
+        elif sys.platform == "darwin":
             self.shell = False
-        elif platform == "win32":
+        elif sys.platform == "win32":
             self.shell = True
 
         # initialize colorama
