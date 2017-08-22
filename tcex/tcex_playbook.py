@@ -568,13 +568,15 @@ class TcExPlaybook(object):
                 # handle improperly saved string
                 try:
                     data = json.loads(data)
+                    if data is not None:
+                        data = str(data)
                 except ValueError as e:
                     err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
                     self._tcex.log.error(err)
                     pass
         else:
             self._tcex.log.warning('The key field was None.')
-        return str(data)
+        return data
 
     # string array
     def create_string_array(self, key, value):
