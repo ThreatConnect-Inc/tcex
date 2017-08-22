@@ -84,11 +84,7 @@ def main():
 
     data_file = os.path.abspath(args.data_file)
     if os.path.isfile(data_file):  # double check file exist
-        # for windows (untested)
-        try:
-            f = os.fdopen(os.open(data_file, os.O_RDWR | os.O_BINARY | os.O_TEMPORARY), 'rb')
-        except AttributeError:
-            f = open(data_file, 'r')
+        f = open(data_file, 'r')
         data_array = json.load(f)
         f.close()
 
