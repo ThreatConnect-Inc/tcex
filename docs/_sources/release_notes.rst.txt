@@ -9,6 +9,7 @@ Release Notes
 0.5.9
 -----
 + Added platform check for subprocess calls.
++ Added additional error logging for ``tcrun`` command.
 
 0.5.8
 -----
