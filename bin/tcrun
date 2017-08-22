@@ -197,7 +197,7 @@ class TcRun(object):
         v_data = profile.get('validations', [])
         if v_data:
             variables = ', '.join([d.get('variable') for d in v_data])
-            print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
+            print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variables))
             with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
                 f.write(json.dumps(v_data))
                 f.flush()
