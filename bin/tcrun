@@ -379,7 +379,7 @@ class TcRun(object):
             passed = d.get('passed')
             if passed:
                 print('{0!s:<80}{1}{2}{3!s:<30}'.format(
-                    profile, c.Style.BRIGHT, c.Fore.CYAN, 'Passed'))
+                    profile, c.Style.BRIGHT, c.Fore.GREEN, 'Passed'))
             else:
                 print('{0!s:<80}{1}{2}{3!s:<30}'.format(
                     profile, c.Style.BRIGHT, c.Fore.RED, 'Failed'))
