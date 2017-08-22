@@ -82,7 +82,7 @@ def main():
     config = OrderedDict()
     config['args'] = config_args
     config['description'] = ''
-    config['exit_code'] = [0]
+    config['exit_codes'] = [0]
     config['group'] = 'qa-build'
     config['profile_name'] = profile_name
     config['quiet'] = False
