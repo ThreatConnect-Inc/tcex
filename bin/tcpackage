@@ -72,6 +72,8 @@ class TcPackage(object):
                 except ValueError as e:
                     print('Invalid JSON File {}{}({})'.format(c.Style.BRIGHT, c.Fore.RED, e))
                     sys.exit(1)
+        else:
+            self.config = {}
 
     def _load_schema(self):
         """Load JSON schema file"""
