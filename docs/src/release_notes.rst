@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.8
+-----
++ Removing pip as a dependency.
+
 0.5.7
 -----
 + Removing pip as a dependency.
