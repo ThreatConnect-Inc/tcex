@@ -63,7 +63,7 @@ def main():
     profile_name = data.get('displayName', '').lower().replace(' ', '-')
     if len(profile_name) == 0:
         profile_name = args.config.replace('.install.json', '').lower()
-    print('Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, profile))
+    print('Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, profile_name))
 
     config = OrderedDict()
     config['args'] = config_args
