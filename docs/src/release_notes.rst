@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.9
+-----
++ Added platform check for subprocess calls.
+
 0.5.8
 -----
 + Added better support for build / test commands on Windows platform.
