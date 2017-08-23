@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.11
+------
++ Added supporte for Binary data type in ``tcdata`` for staging.
+
 0.5.10
 ------
 + Added platform for docker support.
