@@ -50,6 +50,7 @@ class TcPackage(object):
 
         # defaults
         self._app_packages = []
+        self.config = {}
         self.schema = None
         self.schema_file = 'tcex_json_schema.json'
 
