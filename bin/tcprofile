@@ -14,9 +14,9 @@ from random import randint
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--config', default='install.json', help='The configuration file. (default: "install.json")')
+    '--config', default='install.json', help='The install.json file name. (default: "install.json")')
 parser.add_argument(
-    '--outfile', help='File to output or append data.')
+    '--outfile', help='File to output or append profile.')
 args, extra_args = parser.parse_known_args()
 
 c.init(autoreset=True, strip=False)

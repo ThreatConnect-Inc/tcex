@@ -18,9 +18,9 @@ setup(
         'hvac==0.2.17',  # this feature will be deprecate in future release
         'inflect==0.2.5',
         'jsonschema==2.6.0',
-        'python-dateutil==2.6.0',
-        'redis==2.10.5',
-        'requests==2.18.3'
+        'python-dateutil==2.6.1',
+        'redis==2.10.6',
+        'requests==2.18.4'
     ],
     license='Apache License, Version 2',
     name='tcex',

@@ -26,7 +26,7 @@ parser.add_argument(
 parser.add_argument(
     '--install_json', help='The install.json file name for the App that should be built.')
 parser.add_argument(
-    '--outdir', default='target', help='Location to write the outfile. (Defaul: target)')
+    '--outdir', default='target', help='Directory to write the outfile. (Defaul: target)')
 # parser.add_argument(
 #     '--validate', help='The install.json file to validate.')
 args, extra_args = parser.parse_known_args()
@@ -202,8 +202,8 @@ class TcPackage(object):
             # cleanup build directory
             shutil.rmtree(tmp_app_path)
 
-        # bundle zips
-        if len(self._app_packages) > 0:
+        # bundle zips (must have more than 1 app)
+        if len(self._app_packages) > 1:
             self.bundle(self.config.get('bundle_name', base_name))
 
     def zip_file(self, app_path, app_name, tmp_path):
@@ -211,12 +211,12 @@ class TcPackage(object):
         # zip build directory
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
+        zip_file_tcx = '{}.tcx'.format(zip_file)
         print('Createing zip: {}{}{}'.format(
             c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_zip)))
-        # zip_file_tcx = '{}.tcx'.format(zip_file)
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
-        # shutil.move(zip_file_zip, zip_file_tcx)
-        self._app_packages.append(zip_file_zip)
+        shutil.move(zip_file_zip, zip_file_tcx)
+        self._app_packages.append(zip_file_tcx)
 
     def bundle(self, bundle_name):
         """ """

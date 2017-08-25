@@ -263,8 +263,6 @@ class TcRun(object):
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
 
         command_count = 0
-        ## status_code = 0
-        first = True
         reports = []
         for sp in selected_profiles:
             # create temp directories
@@ -274,11 +272,10 @@ class TcRun(object):
             #
             # Sleep between executions
             #
-            if not first:
+            if command_count > 0:
                 sleep = sp.get('sleep', self.config.get('sleep', 1))
-                time.sleep(sleep)
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
-                first = False
+                time.sleep(sleep)
 
             #
             # Profile
