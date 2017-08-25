@@ -6,17 +6,14 @@ Release Notes
 0.5.x
 =====
 
-0.5.12
+0.5.11
 ------
 + Update Building Apps section of the Documentation.
 + Updated required module versions (requests, python-dateutil, and redis).
 + Fixed issue with sleep parameter being ignored in ``tcrun``.
 + Updated ``tclib`` to automatically read **tcex.json**.
 + Updated ``tcpackage`` to output Apps zip files with **.tcx** extension.
-
-0.5.11
-------
-+ Added supporte for Binary data type in ``tcdata`` for staging.
++ Added support for Binary data type in ``tcdata`` for staging.
 
 0.5.10
 ------
