@@ -43,11 +43,12 @@ def main():
     config_args['tc_log_to_api'] = False
     config_args['tc_out_path'] = 'log'
     config_args['tc_temp_path'] = 'log'
-    config_args['tc_playbook_db_type'] = 'Redis'
-    config_args['tc_playbook_db_context'] = str(uuid4())
-    config_args['tc_playbook_db_path'] = 'localhost'
-    config_args['tc_playbook_db_port'] = '6379'
-    config_args['tc_playbook_out_variables'] = ''
+    if data.get('runtimeLevel') == 'Playbook':
+        config_args['tc_playbook_db_type'] = 'Redis'
+        config_args['tc_playbook_db_context'] = str(uuid4())
+        config_args['tc_playbook_db_path'] = 'localhost'
+        config_args['tc_playbook_db_port'] = '6379'
+        config_args['tc_playbook_out_variables'] = ''
 
     for d in data.get('params', []):
         if d.get('type') == 'Boolean':

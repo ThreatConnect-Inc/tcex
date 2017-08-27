@@ -6,6 +6,14 @@ Release Notes
 0.5.x
 =====
 
+0.5.13
+------
++ Added addtional exclude values for IDE directories.
++ Added **app_name** parameter to **tcex.json** for App built on system where App directory is not the App name.
++ Updated ``tcpackage`` to use new **app_name** if exists and default back to App directory name.
++ Updated ``tcprofile`` to only output redis variable for Playbook Apps.
++ Updated ``tclib`` to have default config value for instance where there is not **tcex.json** file.
+
 0.5.12
 ------
 + Update Building Apps section of the Documentation.

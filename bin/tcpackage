@@ -121,12 +121,15 @@ class TcPackage(object):
             self._args.config,
             self._args.outdir,
             '__pycache__',
-            '*.git*',
-            '*log',
-            '*.pyc',
-            '*python-version',
-            'tcex.json',
-            '*install.json'
+            '.c9',  # C9 IDe
+            '.git',  # git directory
+            '.gitignore',  # git ignore
+            '*.pyc',  # any pyc file
+            '.python-version',  # pyenv
+            '.vscode',  # Visual Studio Code
+            'log',  # log directory
+            'tcex.json',  # tcex framework config file
+            '*.install.json'  # additional install.json files
         ]
         excludes.extend(self._args.exclude)
         excludes.extend(self.config.get('excludes', []))
@@ -147,9 +150,6 @@ class TcPackage(object):
         else:
             contents = os.listdir(self.app_path)
 
-        # base name of app directory
-        base_name = os.path.basename(self.app_path)
-
         #
         # package app
         #
@@ -161,10 +161,9 @@ class TcPackage(object):
             # divider
             print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
-            # TODO: need better way to get app name
+            # get App Name from config, install.json prefix or directory name.
             if install_json == 'install.json':
-                app_name = base_name
-
+                app_name =  self.config.get('app_name', os.path.basename(self.app_path))
             else:
                 app_name = install_json.split('.')[0]
 
@@ -181,14 +180,16 @@ class TcPackage(object):
             #
             ij = self._load_install_json(install_json)
             major_version = ij.get('programVersion', '1').split('.')[0]
-            # The name of the folder in the zip is the *key* for an App. This value must
-            # remain consistent for the App to upgrade successfully.
-            app_name = '{}_v{}.0'.format(app_name, major_version)
+            """
+            !!! The name of the folder in the zip is the *key* for an App. This value must
+            !!! remain consistent for the App to upgrade successfully.
+            """
+            app_name_version = '{}_v{}.0'.format(app_name, major_version)
 
             #
             # build app directory
             #
-            tmp_app_path = os.path.join(tmp_path, app_name)
+            tmp_app_path = os.path.join(tmp_path, app_name_version)
             if os.access(tmp_app_path, os.W_OK):
                 # cleanup any previous failed builds
                 shutil.rmtree(tmp_app_path)
@@ -198,13 +199,13 @@ class TcPackage(object):
             shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
 
             # zip file
-            self.zip_file(self.app_path, app_name, tmp_path)
+            self.zip_file(self.app_path, app_name_version, tmp_path)
             # cleanup build directory
             shutil.rmtree(tmp_app_path)
 
         # bundle zips (must have more than 1 app)
         if len(self._app_packages) > 1:
-            self.bundle(self.config.get('bundle_name', base_name))
+            self.bundle(self.config.get('bundle_name', app_name))
 
     def zip_file(self, app_path, app_name, tmp_path):
         """ """

@@ -46,6 +46,7 @@ class TcLib(object):
         }]
 
         # load configuration
+        config_data = {}
         file_path = os.path.join(self.app_path, self._args.config)
         if os.path.isfile(file_path):
             print('Loading Config File: {}{}{}'.format(
