@@ -257,6 +257,9 @@ class TcRun(object):
             if config.get('profile_name') == self._args.profile:
                 selected_profiles.append(config)
             elif config.get('group') is not None and config.get('group') == self._args.group:
+                # this should be depricated in the future
+                selected_profiles.append(config)
+            elif self._args.group in config.get('groups', []):
                 selected_profiles.append(config)
 
         if len(selected_profiles) == 0:

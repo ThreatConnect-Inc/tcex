@@ -53,8 +53,9 @@ def main():
     for d in data.get('params', []):
         if d.get('type') == 'Boolean':
             config_args[d.get('name')] = d.get('default', False)
-        # elif d.get('type') in ['StringArray', 'TCEntityArray']':
-        #     config['args'][d.name] = []
+        else d.get('name') in ['api_secret_id', 'api_secret_key']:
+            # leave these parameters set to the value defined above
+            pass
         else:
            config_args[d.get('name')] = d.get('default', '')
 
@@ -70,7 +71,7 @@ def main():
     config['args'] = config_args
     config['description'] = ''
     config['exit_codes'] = [0]
-    config['group'] = 'qa-build'
+    config['groups'] = ['qa-build']
     config['profile_name'] = profile_name
     config['quiet'] = False
     config['script'] = data.get('programMain')
