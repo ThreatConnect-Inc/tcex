@@ -27,7 +27,7 @@ Multiple testing profiles can be defined in the **tcex.json** to help testing co
 
 .. note:: The ``tcrun`` command provides a feature that allow using environment variables in the **tcex.json** configuration file.  By prefixing the environment variable with **$env.** or **$envs.** the ``tcrun`` command will pull the value from the OS Environment variable. This feature helps facilitate quickly changing values between testing environments and/or user credentials.
 
-.. important:: To protect credentials in the **tcex.json** configuraiotn file the **$envs.** feature should be used.  This will keep the credentials out of version control and will mask them on command output.  To unmask the credentials temporarily the ``--unmask`` command can be passed to ``tcrun``.
+.. important:: To protect credentials in the **tcex.json** configuration file the **$envs.** feature should be used.  This will keep the credentials out of version control and will mask them on command output.  To unmask the credentials temporarily the ``--unmask`` command can be passed to ``tcrun``.
 
 .. code:: javascript
 
