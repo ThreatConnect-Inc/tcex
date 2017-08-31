@@ -263,7 +263,7 @@ class TcExLocal:
         contents = os.listdir(app_path)
 
         # create build directory
-        if platform == "win32":
+        if platform.system() == "Windows":
             tmp_path = os.path.join("c:",os.sep,'temp','tcex_builds')
         else:
             tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
