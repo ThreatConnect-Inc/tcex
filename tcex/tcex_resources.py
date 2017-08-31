@@ -1513,7 +1513,7 @@ class Bulk(Indicator):
         Args:
             ondemand (boolean): Enable on demand bulk generation.
         """
-        self._api_entity = 'indicator'
+        self._request_entity = 'indicator'
         self._request_uri = '{}/{}'.format(self._api_uri, 'json')
         self._stream = True
         if ondemand:

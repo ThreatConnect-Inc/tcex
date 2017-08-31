@@ -6,6 +6,12 @@ Release Notes
 0.5.x
 =====
 
+0.5.14
+------
++ Updated :py:meth:`~tcex.tcex_resources.Bulk.json` method to use proper entity value.
++ Updated ``tcprofile`` to use default env values for API creds.
++ Adding **groups** parameter to **tcex.json** so a profile can be part of multiple groups.
+
 0.5.13
 ------
 + Added addtional exclude values for IDE directories.

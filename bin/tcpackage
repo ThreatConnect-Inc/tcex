@@ -213,8 +213,8 @@ class TcPackage(object):
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
         zip_file_tcx = '{}.tcx'.format(zip_file)
-        print('Createing zip: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_zip)))
+        print('Creating zip: {}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)))
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_tcx)
@@ -244,7 +244,7 @@ class TcPackage(object):
     def bundle_apps(self, bundle_name, bundle_apps):
         """ """
         bundle_file = os.path.join(self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
-        print('Createing bundle: {}{}{}'.format(
+        print('Creating bundle: {}{}{}'.format(
             c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
