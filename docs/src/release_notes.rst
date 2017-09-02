@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.16
+------
++ Updated ``tcrun`` to not check for the program main file for Java Apps.
+
 0.5.15
 ------
 + Initial update to ``tcrun`` to support running Java Apps.

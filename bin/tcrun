@@ -422,8 +422,9 @@ class TcRun(object):
                 # for python apps append the ".py" extension to the filename
                 program_filename = '{}.py'.format(program_main)
 
-            # validate the program main file exists
-            if not os.path.isfile(program_filename):
+            # validate the program main file exists only for python.  for java apps the program main
+            # is not a file.
+            if self.program_language == 'python' and not os.path.isfile(program_filename):
                 print('{}{}Could not find program main file ({}).'.format(
                     c.Style.BRIGHT, c.Fore.RED, program_filename))
                 sys.exit(1)
