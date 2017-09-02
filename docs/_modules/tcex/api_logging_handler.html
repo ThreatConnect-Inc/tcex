@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.api_logging_handler &mdash; TcEx 0.5.14 documentation</title>
+  <title>tcex.api_logging_handler &mdash; TcEx 0.5.15 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.15 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.14
+                0.5.15
               </div>
             
           
@@ -174,11 +174,8 @@
             
   <h1>Source code for tcex.api_logging_handler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="c1"># import time</span>
 <span class="kn">from</span> <span class="nn">json</span> <span class="k">import</span> <span class="n">dumps</span>
-<span class="c1"># from logging import FileHandler, makeLogRecord</span>
 <span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">FileHandler</span>
-
 <span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
@@ -252,7 +249,7 @@
 <span class="sd">            }]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
             <span class="c1"># Make API call</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">request</span>
             <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
@@ -309,7 +306,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.14',
+            VERSION:'0.5.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

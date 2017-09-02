@@ -5,8 +5,9 @@ import argparse
 import colorama as c
 import json
 import os
+import platform
 import re
-import shutil
+# import shutil
 import sys
 import subprocess
 import tempfile
@@ -26,6 +27,8 @@ parser.add_argument(
 parser.add_argument(
     '--profile', default='default', help='The profile to be executed. (default: "default")')
 parser.add_argument(
+    '--show_commands', action='store_true', help='Show staging and validation commands.')
+parser.add_argument(
     '--quiet', action='store_true', help='Suppress output.')
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
@@ -34,15 +37,25 @@ args, extra_args = parser.parse_known_args()
 
 # TODO: Clean this up when time allows
 class TcRun(object):
-    def __init__(self, args):
+    """Run profiles for App"""
+
+    def __init__(self, arg_data):
         """ """
-        self._args = args
+        self._args = arg_data
         self.app_path = os.getcwd()
         self.config = {}
         self.exit_code = 0
+        self.sleep = 1
+        # data from install.json
+        # self.install_json = {}
+        self.display_name = None
+        self.program_language = 'python'
+        self.program_main = None
+        self.program_version = None
+        self.runtime_level = None
 
         self.shell = False
-        if sys.platform == "win32":
+        if platform.system() == 'Windows':
             self.shell = True
 
         # initialize colorama
@@ -63,6 +76,26 @@ class TcRun(object):
             config.setdefault('profiles', []).extend(self._load_config_include(directory))
 
         self.config = config
+
+    def _load_install_json(self, config_file):
+        """Load the install.json configuration file."""
+        if config_file is None:
+            return
+
+        if not os.path.isfile(config_file):
+            msg = 'Provided install.json config file does not exist ({}).'.format(config_file)
+            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.YELLOW, msg))
+
+        print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
+        with open(config_file) as config_file:
+            install_json = json.load(config_file)
+
+        self.display_name = install_json.get('displayName')
+        self.program_language = install_json.get('programLanguage').lower()
+        self.program_main = install_json.get('programMain')
+        self.program_version = install_json.get('programVersion')
+        self.runtime_level = install_json.get('runtimeLevel')
+        # self.install_json = install_json
 
     def _load_config_include(self, include_directory):
         """Load included configuration files."""
@@ -85,7 +118,14 @@ class TcRun(object):
 
         return profiles
 
-    def _parameters(self, args):
+    def parameters(self, arg_data):
+        """Wrapper around Java and Python parameter methods"""
+        if self.program_language == 'java':
+            return self.parameters_java(arg_data)
+        elif self.program_language == 'python':
+            return self.parameters_python(arg_data)
+
+    def parameters_python(self, arg_data):
         """Build CLI arguments to pass to script on the command line.
 
         This method takes the json data and covert it to CLI args for the execution
@@ -96,7 +136,7 @@ class TcRun(object):
         """
         parameters = []
         parameters_masked = []
-        for config_key, config_val in args.items():
+        for config_key, config_val in arg_data.items():
             if isinstance(config_val, bool):
                 if config_val:
                     parameters.append('--{}'.format(config_key))
@@ -112,7 +152,8 @@ class TcRun(object):
             elif isinstance(config_val, dict):
                 msg = 'Error: Dictionary types are not currently supported for field {}'
                 msg.format(config_val)
-                self._exit(msg, 1)
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, msg))
+                sys.exit(1)
             else:
                 mask = False
                 env_var = re.compile(r'^\$env\.(.*)$')
@@ -133,7 +174,7 @@ class TcRun(object):
                 parameters.append('{}'.format(config_val))
                 if mask and not self._args.unmask:
                     config_val = 'x' * len(str(config_val))
-                    parameters_masked.append('{}'.format(self.quoted(config_val)))
+                    parameters_masked.append('{}'.format(config_val))
                 else:
                     parameters_masked.append('{}'.format(self.quoted(config_val)))
         return {
@@ -141,52 +182,115 @@ class TcRun(object):
             'unmasked': parameters
         }
 
-    def data_args(self, args):
+    def parameters_java(self, arg_data):
+        """Build CLI arguments to pass to Java App on the command line.
+
+        This method takes the json data and covert it to CLI args for the execution
+        of the script.
+
+        Returns:
+            (dict): A dictionary that should be converted to CLI Args
+        """
+        parameters = []
+        parameters_masked = []
+        for config_key, config_val in arg_data.items():
+            if isinstance(config_val, bool):
+                arg = '{}{}={}'.format('-D', config_key, int(config_val))
+                parameters.append(arg)
+                parameters_masked.append(arg)
+            elif isinstance(config_val, list):
+                # TODO: support env vars in list w/masked values
+                for val in config_val:
+                    arg = '{}{}={}'.format('-D', config_key, val)
+                    arg_quoted = '{}{}={}'.format('-D', config_key, self.quoted(val))
+                    parameters.append(arg)
+                    parameters_masked.append(arg_quoted)
+            elif isinstance(config_val, dict):
+                msg = 'Error: Dictionary types are not currently supported for field {}'
+                msg.format(config_val)
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, msg))
+                sys.exit(1)
+            else:
+                mask = False
+                env_var = re.compile(r'^\$env\.(.*)$')
+                envs_var = re.compile(r'^\$envs\.(.*)$')
+
+                if env_var.match(str(config_val)):
+                    # read value from environment variable
+                    env_key = env_var.match(str(config_val)).groups()[0]
+                    config_val = os.environ.get(env_key, config_val)
+                elif envs_var.match(str(config_val)):
+                    # read secure value from environment variable
+                    env_key = envs_var.match(str(config_val)).groups()[0]
+                    config_val = os.environ.get(env_key, config_val)
+                    mask = True
+
+                arg = '{}{}={}'.format('-D', config_key, config_val)
+                arg_quoted = '{}{}={}'.format('-D', config_key, self.quoted(config_val))
+                if mask and not self._args.unmask:
+                    config_val = 'x' * len(str(config_val))
+                    arg_quoted = '{}{}={}'.format('-D', config_key, config_val)
+                else:
+                    arg_quoted = '{}{}={}'.format('-D', config_key, self.quoted(config_val))
+                parameters.append(arg)
+                parameters_masked.append(arg_quoted)
+
+        return {
+            'masked': parameters_masked,
+            'unmasked': parameters
+        }
+
+    @staticmethod
+    def data_args(arg_data):
         """Get just the args required for data services"""
         return {
-            'api_access_id': args.get('api_access_id'),
-            'api_secret_key': args.get('api_secret_key'),
+            'api_access_id': arg_data.get('api_access_id'),
+            'api_secret_key': arg_data.get('api_secret_key'),
             # 'logging': 'info',
-            'logging': args.get('logging'),
-            'tc_api_path': args.get('tc_api_path'),
+            'logging': arg_data.get('logging'),
+            'tc_api_path': arg_data.get('tc_api_path'),
             'tc_log_file': 'data.log',
-            'tc_log_path': args.get('tc_log_path'),
-            'tc_out_path': args.get('tc_out_path'),
-            'tc_playbook_db_context': args.get('tc_playbook_db_context'),
-            'tc_playbook_db_path': args.get('tc_playbook_db_path'),
-            'tc_playbook_db_port': args.get('tc_playbook_db_port'),
-            'tc_playbook_db_type': args.get('tc_playbook_db_type'),
-            'tc_temp_path': args.get('tc_temp_path')
+            'tc_log_path': arg_data.get('tc_log_path'),
+            'tc_out_path': arg_data.get('tc_out_path'),
+            'tc_playbook_db_context': arg_data.get('tc_playbook_db_context'),
+            'tc_playbook_db_path': arg_data.get('tc_playbook_db_path'),
+            'tc_playbook_db_port': arg_data.get('tc_playbook_db_port'),
+            'tc_playbook_db_type': arg_data.get('tc_playbook_db_type'),
+            'tc_temp_path': arg_data.get('tc_temp_path')
         }
 
     def stage_data(self, profile):
         """Stage any required data."""
 
-        args = self.data_args(profile.get('args'))
-        parameters = self._parameters(args)
+        arg_data = self.data_args(profile.get('args'))
+        parameters = self.parameters_python(arg_data)
 
         for file in profile.get('data_files', []):
             if os.path.isfile(file):
                 print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
-                fqfp = os.path.join(self.app_path, file)
+                # fqfp = os.path.join(self.app_path, file)
 
                 command = [
                     'tcdata',
                     '--data_file',
                     file
                 ]
-                # print_command = ' '.join(command + parameters.get('masked'))
-                # print(print_command)
-
                 exe_command = command + parameters.get('unmasked')
+
+                # display command being run
+                if self._args.show_commands:
+                    print_command = ' '.join(command + parameters.get('masked'))
+                    print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
                 p = subprocess.Popen(
-                    exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
                 if p.returncode != 0:
                     print('{}{}Failed to stage data for file {}.'.format(
                         c.Style.BRIGHT, c.Fore.RED, file))
-                    if err is not None and len(err) != 0:
+                    if err is not None and err:
                         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                     sys.exit(p.returncode)
             else:
@@ -197,13 +301,16 @@ class TcRun(object):
     def validate_data(self, profile):
         """Stage any required data."""
 
-        args = self.data_args(profile.get('args'))
-        parameters = self._parameters(args)
+        arg_data = self.data_args(profile.get('args'))
+        parameters = self.parameters_python(arg_data)
 
         v_data = profile.get('validations', [])
         if v_data:
             variables = ', '.join([d.get('variable') for d in v_data])
             print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variables))
+            # due to windows limitations the temp file can't be accessed while another program has
+            # the file opended. current logic creates the tempfile and does not delte on close. the
+            # delete is handled below.
             with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
                 f.write(json.dumps(v_data))
                 f.flush()
@@ -214,18 +321,22 @@ class TcRun(object):
                 f.name,
                 '--validate'
             ]
-            # print_command = ' '.join(command + parameters.get('masked'))
-            # print(print_command)
-
             exe_command = command + parameters.get('unmasked')
+
+            # display command being run
+            if self._args.show_commands:
+                print_command = ' '.join(command + parameters.get('masked'))
+                print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
             p = subprocess.Popen(
-                exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             out, err = p.communicate()
 
             if p.returncode != 0:
                 print('{}{}Failed variable validation.'.format(
                     c.Style.BRIGHT, c.Fore.RED))
-                if err is not None and len(err) != 0:
+                if err is not None and err:
                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 sys.exit(p.returncode)
 
@@ -233,7 +344,8 @@ class TcRun(object):
             if os.path.isfile(f.name):
                 os.remove(f.name)
 
-    def _create_tc_dirs(self, profile):
+    @staticmethod
+    def _create_tc_dirs(profile):
         """Create app directories for logs and data files."""
         tc_log_path = profile.get('args', {}).get('tc_log_path')
         if tc_log_path is not None and not os.path.isdir(tc_log_path):
@@ -247,7 +359,6 @@ class TcRun(object):
 
     def run(self):
         """Run the App using the defined config."""
-
         # load tc config
         self._load_config()
 
@@ -262,67 +373,91 @@ class TcRun(object):
             elif self._args.group in config.get('groups', []):
                 selected_profiles.append(config)
 
-        if len(selected_profiles) == 0:
+        if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+            sys.exit()
 
         command_count = 0
         reports = []
         for sp in selected_profiles:
+            # load install_json (if provided)
+            self._load_install_json(sp.get('install_json'))
+
+            # profile state tracker
+            passed = False
+
             # create temp directories
             self._create_tc_dirs(sp)
 
-            passed = False
-            #
-            # Sleep between executions
-            #
+            # use globally configured sleep time or per profile sleep time (default self.sleep)
             if command_count > 0:
-                sleep = sp.get('sleep', self.config.get('sleep', 1))
+                sleep = sp.get('sleep', self.config.get('sleep', self.sleep))
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
 
-            #
-            # Profile
-            #
+            # display the profile and description during execution
             print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
             if sp.get('description'):
                 print('Description: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('profile_name')))
+                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
             command_count += 1
-
-            # get script name
-            script = sp.get('script')
-            script_py = sp.get('script')
-            if not script_py.endswith('.py'):
-                script_py = '{}.py'.format(script_py)
-
-            if script is None or not os.path.isfile(script_py):
-                sys.exit('Could not find script ({}).'.format(script_py))
-            #
-            # Build Command
-            #
-            command = [
-                # self._args.python,
-                sys.executable,
-                '.',
-                script.replace('.py', ''),
-            ]
-            parameters = self._parameters(sp.get('args'))
-            exe_command = command + parameters.get('unmasked')
 
             #
             # Stage Data
             #
             self.stage_data(sp)
 
+            # if install.json provided use programMain, otherwise use script name from tcex.json
+            # eventually install.json should be required and script will be removed from tcex.json
+            if self.program_main is not None:
+                program_main = self.program_main.replace('.py', '')
+            elif sp.get('script') is not None:
+                program_main = sp.get('script').replace('.py', '')
+            else:
+                print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
+                sys.exit(1)
+
+            program_filename = program_main
+            if self.program_language == 'python':
+                # for python apps append the ".py" extension to the filename
+                program_filename = '{}.py'.format(program_main)
+
+            # validate the program main file exists
+            if not os.path.isfile(program_filename):
+                print('{}{}Could not find program main file ({}).'.format(
+                    c.Style.BRIGHT, c.Fore.RED, program_filename))
+                sys.exit(1)
+
+            # build command line arguments
+            parameters = self.parameters(sp.get('args'))
+
+            # build the command
+            if self.program_language == 'python':
+                command = [
+                    sys.executable,
+                    '.',
+                    program_main
+                ]
+                exe_command = command + parameters.get('unmasked')
+                print_command = ' '.join(command + parameters.get('masked'))
+            elif self.program_language == 'java':
+                command = [
+                    self.config.get('java_path', self.program_language),
+                    '-cp',
+                    sp.get('class_path', './target/*')
+                ]
+                exe_command = command + parameters.get('unmasked') + [self.program_main]
+                print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
+
             # output command
-            print_command = ' '.join(command + parameters.get('masked'))
             print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
 
             #
             # Run Command
             #
             p = subprocess.Popen(
-                exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             out, err = p.communicate()
 
             #
@@ -353,7 +488,7 @@ class TcRun(object):
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
-                if err is not None and len(err) != 0:
+                if err is not None and err:
                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
                 self.exit_code = 1
                 if args.halt_on_fail:
@@ -367,7 +502,7 @@ class TcRun(object):
             #
             # Error Output
             #
-            if len(err) != 0:
+            if err:
                 print(err.decode('utf-8'))
 
             reports.append({
@@ -378,10 +513,11 @@ class TcRun(object):
         #
         # Report
         #
-        if (reports):
+        if reports:
             self.report(reports)
 
-    def report(self, data):
+    @staticmethod
+    def report(data):
         """Format and output report data."""
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Reports:'))
         for d in data:
@@ -393,7 +529,6 @@ class TcRun(object):
             else:
                 print('{0!s:<80}{1}{2}{3!s:<30}'.format(
                     profile, c.Style.BRIGHT, c.Fore.RED, 'Failed'))
-
 
     @staticmethod
     def to_string(data, errors='strict'):
@@ -414,15 +549,19 @@ class TcRun(object):
                 data = str(data, 'utf-8', errors=errors)
         return data
 
-    @staticmethod
-    def quoted(data):
+    def quoted(self, data):
         """Quote any parameters that contain spaces or special character
 
         Returns:
             (string): String containing parameters wrapped in double quotes
         """
-        if len(re.findall(r'[!\-\s\$]{1,}', str(data))) > 0:
-            data = '\'{}\''.format(data)
+        if self.program_language == 'python':
+            quote_char = '\''
+        elif self.program_language == 'java':
+            quote_char = '\''
+
+        if re.findall(r'[!\-\s\$]{1,}', str(data)):
+            data = '{}{}{}'.format(quote_char, data, quote_char)
         return data
 
 

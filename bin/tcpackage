@@ -163,7 +163,7 @@ class TcPackage(object):
 
             # get App Name from config, install.json prefix or directory name.
             if install_json == 'install.json':
-                app_name =  self.config.get('app_name', os.path.basename(self.app_path))
+                app_name = self.config.get('app_name', os.path.basename(self.app_path))
             else:
                 app_name = install_json.split('.')[0]
 
@@ -179,12 +179,17 @@ class TcPackage(object):
             # load install json
             #
             ij = self._load_install_json(install_json)
-            major_version = ij.get('programVersion', '1').split('.')[0]
+            program_version = ij.get('programVersion', '1.0.0').split('.')
+            major_version = program_version[0]
+            try:
+                minor_version = program_version[1]
+            except IndexError:
+                minor_version = 0
             """
             !!! The name of the folder in the zip is the *key* for an App. This value must
             !!! remain consistent for the App to upgrade successfully.
             """
-            app_name_version = '{}_v{}.0'.format(app_name, major_version)
+            app_name_version = '{}_v{}.{}'.format(app_name, major_version, minor_version)
 
             #
             # build app directory
@@ -208,7 +213,7 @@ class TcPackage(object):
             self.bundle(self.config.get('bundle_name', app_name))
 
     def zip_file(self, app_path, app_name, tmp_path):
-        """ """
+        """Zip App"""
         # zip build directory
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
@@ -220,7 +225,7 @@ class TcPackage(object):
         self._app_packages.append(zip_file_tcx)
 
     def bundle(self, bundle_name):
-        """ """
+        """Bundle App"""
         if self._args.bundle or self.config.get('bundle', False):
             print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
             if self.config.get('bundle_packages') is not None:
@@ -236,14 +241,15 @@ class TcPackage(object):
                                 bundle_apps.append(app)
 
                     # bundle app in zip
-                    if len(bundle_apps) > 0:
+                    if bundle_apps:
                         self.bundle_apps(bundle_name, bundle_apps)
             else:
                 self.bundle_apps(bundle_name, self._app_packages)
 
     def bundle_apps(self, bundle_name, bundle_apps):
-        """ """
-        bundle_file = os.path.join(self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
+        """Bundle zip (tcx) file"""
+        bundle_file = os.path.join(
+            self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
         print('Creating bundle: {}{}{}'.format(
             c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
         z = zipfile.ZipFile(bundle_file, 'w')

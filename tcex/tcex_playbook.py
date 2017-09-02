@@ -279,7 +279,7 @@ class TcExPlaybook(object):
             variables = re.findall(self._vars_match, str(data))
             for var in variables:
                 # regex will capture quotes around variables, which needs to be removed
-                key_type = self.variable_type(var.strip('"'))
+                # key_type = self.variable_type(var.strip('"'))
 
                 # read raw value so escaped characters won't be removed
                 val = self.read_raw(var.strip('"'))
@@ -292,11 +292,11 @@ class TcExPlaybook(object):
                     val = val.strip('"')
                     # a parent type of String should have escaped characters removed
                     val = codecs.getdecoder('unicode_escape')(val)[0]
-                ## per slack conversation with danny on 3/22 all string data should already have
-                ## quotes already since they are JSON values
-                ## elif key_type in ['String']:
-                ##     if not val.startswith('"') and not val.endswith('"'):
-                ##         val = '"{}"'.format(val)
+                # per slack conversation with danny on 3/22 all string data should already have
+                # quotes already since they are JSON values
+                # elif key_type in ['String']:
+                #     if not val.startswith('"') and not val.endswith('"'):
+                #         val = '"{}"'.format(val)
 
                 data = data.replace(var, val)
         return data
@@ -347,7 +347,8 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
+            data = self._db.create(
+                key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
         else:
             self._tcex.log.warning('The key or value field was None.')
         return data

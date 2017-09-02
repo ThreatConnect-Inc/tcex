@@ -16,9 +16,11 @@ from tcex import TcEx
 
 tcex = TcEx()
 
-tcex.parser.add_argument('--data_file', help='The file containing the data to stage.', required=True)
+tcex.parser.add_argument(
+    '--data_file', help='The file containing the data to stage.', required=True)
 tcex.parser.add_argument('--validate', action='store_true', help='Validate instead of stage.')
 args = tcex.args
+
 
 def data_endswith(db_data, user_data):
     """Validate data ends with user data"""
@@ -26,11 +28,13 @@ def data_endswith(db_data, user_data):
         return True
     return False
 
+
 def data_in(db_data, user_data):
     """Validate data in user data"""
     if db_data in user_data:
         return True
     return False
+
 
 def data_it(db_data, user_type):
     """Validate data is Type"""
@@ -57,6 +61,7 @@ def data_it(db_data, user_type):
             return True
     return False
 
+
 def data_not_in(db_data, user_data):
     """Validate data not in user data"""
     if db_data not in user_data:
@@ -69,6 +74,7 @@ def data_not_in(db_data, user_data):
 #         return True
 #     return False
 
+
 def data_startswith(db_data, user_data):
     """Validate data starts with user data"""
     if db_data.startswith(user_data):
@@ -77,7 +83,7 @@ def data_startswith(db_data, user_data):
 
 
 def main():
-    """ """
+    """Main Logic"""
     # Define common comparison operators
     operators = {
         'eq': operator.eq,
@@ -108,25 +114,26 @@ def main():
             user_operator = ddata.get('operator', 'eq')
 
             if args.validate:
-                tcex.log.info('Validating output variable {}'.format(variable))
+                tcex.log.info(u'Validating output variable {}'.format(variable))
                 # read from store
                 db_data = tcex.playbook.read(variable)
-                tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
-                tcex.log.debug('- Operator: ({}) -'.format(user_operator))
-                tcex.log.debug('<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
+                tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+                tcex.log.debug(u'- Operator: ({}) -'.format(user_operator))
+                tcex.log.debug(
+                    u'<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
 
                 if user_operator in operators and operators.get(user_operator)(db_data, user_data):
-                    tcex.log.info('Validation was successful')
+                    tcex.log.info(u'Validation was successful')
                 else:
-                    tcex.log.error('Validation failed for variable: {}'.format(variable))
+                    tcex.log.error(u'Validation failed for variable: {}'.format(variable))
                     sys.exit(1)
             else:
                 if variable.endswith('Binary'):
                     user_data = base64.b64decode(user_data)
-                tcex.log.info('Creating variable {}'.format(variable))
+                tcex.log.info(u'Creating variable {}'.format(variable))
                 tcex.playbook.create(variable, user_data)
     else:
-        tcex.log.error('Could not open data file ({}).'.format(data_file))
+        tcex.log.error(u'Could not open data file ({}).'.format(data_file))
 
     sys.exit(0)
 
@@ -136,6 +143,5 @@ if __name__ == '__main__':
         main()
     except Exception as e:
         # TODO: Update this, possibly raise
-        print(traceback.format_exc())
-        tcex.log.error('Generic Failure ({}).'.format(traceback.format_exc()))
+        tcex.log.error(u'Generic Failure ({}).'.format(traceback.format_exc()))
         sys.exit(1)

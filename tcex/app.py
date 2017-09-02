@@ -2,7 +2,6 @@
 
 """ standard """
 import sys
-
 """ third-party """
 """ custom """
 from tcex import TcExLocal

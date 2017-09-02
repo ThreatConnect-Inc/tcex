@@ -5,7 +5,7 @@ import json
 import os
 import re
 import shutil
-import six
+# import six
 import subprocess
 import sys
 import time
@@ -203,7 +203,6 @@ class TcExLocal:
             print('Profile: {}'.format(sp.get('profile_name')))
             command_count += 1
 
-
             # get script name
             script = sp.get('script')
             if self._args.script is not None:
@@ -223,13 +222,14 @@ class TcExLocal:
             print('Executing: {}'.format(print_command))
 
             p = subprocess.Popen(
-                exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
             out, err = p.communicate()
             print('Exit Code: {}'.format(p.returncode))
 
             if not sp.get('quiet') and not self._args.quiet:
                 print(self.to_string(out, 'ignore'))
-            if len(err) != 0:
+            if err:
                 print(err.decode('utf-8'))
             if p.returncode != 0:
                 status_code = p.returncode
@@ -264,7 +264,7 @@ class TcExLocal:
 
         # create build directory
         if platform.system() == "Windows":
-            tmp_path = os.path.join("c:",os.sep,'temp','tcex_builds')
+            tmp_path = os.path.join("c:", os.sep, 'temp', 'tcex_builds')
         else:
             tmp_path = os.path.join(os.sep, 'tmp', 'tcex_builds')
         if not os.path.isdir(tmp_path):
@@ -318,9 +318,9 @@ class TcExLocal:
                 sys.stdout = stdout
                 sys.stderr = stderr
 
-            if len(os.listdir(lib_path)) == 0:
-                raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
-                    app_name))
+            if os.listdir(lib_path):
+                err = 'Encountered error running easy_install for {}.  Check log file for details.'
+                raise Exception(err.format(app_name))
 
             # cleanup
             git_path = os.path.join(tmp_app_path, '.git')
@@ -352,7 +352,7 @@ class TcExLocal:
             if install_json != 'install.json':
                 shutil.rmtree(tmp_app_path)
 
-        if self._args.collection and len(self._app_packages) > 0:
+        if self._args.collection and self._app_packages:
             collection_file = '{}.zip'.format(base_name)
             z = zipfile.ZipFile(collection_file, 'w')
             for app in self._app_packages:
@@ -385,7 +385,7 @@ class TcExLocal:
         to be used for local testing.
         """
         lib_directory = 'lib_{}.{}.{}'.format(
-                sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
         app_path = os.getcwd()
         app_name = os.path.basename(app_path)
 
@@ -407,9 +407,9 @@ class TcExLocal:
             sys.stdout = stdout
             sys.stderr = stderr
 
-        if len(os.listdir(lib_path)) == 0:
-            raise Exception('Encountered error running easy_install for {}.  Check log file for details.'.format(
-                app_name))
+        if os.listdir(lib_path):
+            err = 'Encountered error running easy_install for {}.  Check log file for details.'
+            raise Exception(err.format(app_name))
 
         build_path = os.path.join(app_path, 'build')
         if os.access(build_path, os.W_OK):

@@ -6,6 +6,7 @@ import colorama as c
 import json
 import os
 import sys
+import traceback
 from uuid import uuid4
 from collections import OrderedDict
 from random import randint
@@ -14,7 +15,8 @@ from random import randint
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--config', default='install.json', help='The install.json file name. (default: "install.json")')
+    '--config', default='install.json',
+    help='The install.json file name. (default: "install.json")')
 parser.add_argument(
     '--outfile', help='File to output or append profile.')
 args, extra_args = parser.parse_known_args()
@@ -23,7 +25,7 @@ c.init(autoreset=True, strip=False)
 
 
 def main():
-    """ """
+    """Generate a profile for an App"""
     if not os.path.isfile(args.config):
         print('{}{}Configuration file ({}) could not be found.'.format(
             c.Style.BRIGHT, c.Fore.CYAN, args.config))
@@ -53,18 +55,21 @@ def main():
     for d in data.get('params', []):
         if d.get('type') == 'Boolean':
             config_args[d.get('name')] = d.get('default', False)
-        else d.get('name') in ['api_secret_id', 'api_secret_key']:
+        elif d.get('name') in ['api_secret_id', 'api_secret_key']:
             # leave these parameters set to the value defined above
             pass
         else:
-           config_args[d.get('name')] = d.get('default', '')
+            config_args[d.get('name')] = d.get('default', '')
 
     #
     # config
     #
-    profile_name = data.get('displayName', '').lower().replace(' ', '-')
-    if len(profile_name) == 0:
-        profile_name = args.config.replace('.install.json', '').lower()
+
+    # use displayName if available, otherwise use prefix of install.json file
+    profile_name = data.get('displayName')
+    if profile_name is None:
+        profile_name = args.config.replace('.install.json', 'myprofile')
+    profile_name = profile_name.lower().replace(' ', '-')
     print('Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, profile_name))
 
     config = OrderedDict()
@@ -72,6 +77,7 @@ def main():
     config['description'] = ''
     config['exit_codes'] = [0]
     config['groups'] = ['qa-build']
+    config['install_json'] = args.config
     config['profile_name'] = profile_name
     config['quiet'] = False
     config['script'] = data.get('programMain')
@@ -82,7 +88,7 @@ def main():
     if data.get('runtimeLevel') == 'Playbook':
         validations = []
         output_variables = []
-        job_id = randint(0,9999)
+        job_id = randint(0, 9999)
         for d in data.get('playbook', {}).get('outputVariables', []):
             variable = '#App:{:04d}:{}!{}'.format(job_id, d.get('name'), d.get('type'))
             output_variables.append(variable)
@@ -144,5 +150,9 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
+    try:
+        main()
+    except Exception as e:
+        # TODO: Update this, possibly raise
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        sys.exit(1)

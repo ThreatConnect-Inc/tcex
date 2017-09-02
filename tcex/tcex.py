@@ -10,7 +10,7 @@ import os
 import re
 import sys
 import time
-import types
+# import types
 import urllib
 from .argparser import ArgParser
 from datetime import datetime
@@ -36,7 +36,15 @@ class TcEx(object):
 
         self._exit_code = 0
         # TODO: replace group_type with dynamic values from API (bcs)
-        self.group_types = ['Adversary', 'Campaign', 'Document', 'Email', 'Incident', 'Signature', 'Threat']
+        self.group_types = [
+            'Adversary',
+            'Campaign',
+            'Document',
+            'Email',
+            'Incident',
+            'Signature',
+            'Threat'
+        ]
         self.indicator_associations_types_data = {}
         self.indicator_types = []
         self.indicator_types_data = {}
@@ -84,7 +92,8 @@ class TcEx(object):
         This method will automatically renew the ThreatConnect token if it has expired.
 
         Returns:
-            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
+            (dictionary): An dictionary containing the header values for authorization to
+                          ThreatConnect.
         """
         authorization = 'TC-Token {}'.format(self._tc_token)
 
@@ -157,7 +166,8 @@ class TcEx(object):
         # Open the __init__.py file and extract the version using regex
         with open(os.path.join(module_path, '__init__.py'), 'r') as fd:
             tcex_version = re.search(
-                r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]', fd.read(),
+                r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]',
+                fd.read(),
                 re.MULTILINE).group(1)
 
         self.log.info('TcEx Version: {}'.format(tcex_version))
@@ -242,7 +252,7 @@ class TcEx(object):
             self.playbook = TcExPlaybook(self)
         except ImportError as e:
             warn = 'Required playbook python dependency is not installed ({}).'.format(e)
-            self.log.warn(warn)
+            self.log.warning(warn)
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API.
@@ -257,16 +267,16 @@ class TcEx(object):
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200
-            or response.headers.get('content-type') != 'application/json'):
+                or response.headers.get('content-type') != 'application/json'):
             warn = 'Custom Indicators Associations are not supported.'
-            self.log.warn(warn)
+            self.log.warning(warn)
             return
 
         # validate successful API results
         data = response.json()
         if data.get('status') != 'Success':
             warn = 'Bad Status: Custom Indicators Associations are not supported.'
-            self.log.warn(warn)
+            self.log.warning(warn)
             return
 
         try:
@@ -304,17 +314,17 @@ class TcEx(object):
         response = r.send()
 
         # check for bad status code and response that is not JSON
-        if (int(response.status_code) != 200
-            or response.headers.get('content-type') != 'application/json'):
+        if (int(response.status_code) != 200 or
+                response.headers.get('content-type') != 'application/json'):
             warn = 'Custom Indicators are not supported.'
-            self.log.warn(warn)
+            self.log.warning(warn)
             return
 
         # validate successful API results
         data = response.json()
         if data.get('status') != 'Success':
             warn = 'Bad Status: Custom Indicators are not supported.'
-            self.log.warn(warn)
+            self.log.warning(warn)
             return
 
         try:
@@ -333,7 +343,8 @@ class TcEx(object):
                     if entry.get('value3Label') is not None and entry.get('value3Label') != '':
                         value_fields.append(entry['value3Label'])
 
-                    # TODO: Add validate option when type is selectone??? Might be bets to let API handle validation.
+                    # TODO: Add validate option when type is selectone??? Might be bets to let API
+                    #       handle validation.
                     """
                     value3Label
                     value3Type - selectone
@@ -410,9 +421,11 @@ class TcEx(object):
            http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
 
         Args:
-            request_prepped (instance): A instance of Python Request module requests.PreparedRequest.
+            request_prepped (instance): A instance of Python Request module requests.
+                                        PreparedRequest.
         Returns:
-            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
+            (dictionary): An dictionary containing the header values for authorization to
+                          ThreatConnect.
         """
         authorization = None
 
@@ -431,15 +444,19 @@ class TcEx(object):
            http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
 
         Args:
-            request_prepped (instance): A instance of Python Request prepped requests.PreparedRequest.
+            request_prepped (instance): A instance of Python Request prepped requests.
+                                        PreparedRequest.
         Returns:
-            (dictionary): An dictionary containing the header values for authorization to ThreatConnect.
+            (dictionary): An dictionary containing the header values for authorization to
+                          ThreatConnect.
         """
         if request_prepped is not None:
             timestamp = int(time.time())
-            signature = "{0}:{1}:{2}".format(request_prepped.path_url, request_prepped.method, timestamp)
+            signature = "{0}:{1}:{2}".format(
+                request_prepped.path_url, request_prepped.method, timestamp)
             hmac_signature = hmac.new(
-                self._args.api_secret_key.strip('\'').encode(), signature.encode(), digestmod=hashlib.sha256).digest()
+                self._args.api_secret_key.strip('\'').encode(), signature.encode(),
+                digestmod=hashlib.sha256).digest()
             authorization = 'TC {0}:{1}'.format(
                 self._args.api_access_id, base64.b64encode(hmac_signature).decode())
         else:
@@ -529,7 +546,7 @@ class TcEx(object):
             code (Optional [integer]): The exit code value for the app.
         """
         if self._args.tc_token is not None and self._args.tc_log_to_api:
-            if self.log is not None and len(self.log.handlers) > 0:
+            if self.log is not None and self.log.handlers:
                 for handler in self.log.handlers:
                     if handler.get_name() == 'api':
                         handler.log_to_api()
@@ -761,34 +778,36 @@ class TcEx(object):
         """
         try:
             if data is None or isinstance(data, (int, list, dict)):
-                pass # Do nothing with these types
+                pass  # Do nothing with these types
             elif isinstance(data, unicode):
                 try:
                     data.decode('utf-8')
-                except UnicodeEncodeError as e:  # 2to3 converts unicode to str
-                    data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
+                except UnicodeEncodeError:  # 2to3 converts unicode to str
+                    # 2to3 converts unicode to str
+                    data = unicode(data.encode('utf-8').strip(), errors=errors)
                     self.log.warning('Encoding poorly encoded string ({})'.format(data))
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
                 data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
         except NameError:
-            pass # Can't decode str in Python 3
+            pass  # Can't decode str in Python 3
         return data
 
-        ## if data is None or isinstance(data, (int, list, dict)):
-        ##     pass  # do nothing with these types
-        ## elif isinstance(data, unicode):
-        ##     try:
-        ##         data.decode('utf-8')
-        ##     except UnicodeEncodeError as e:  # 2to3 converts unicode to str
-        ##         data = unicode(data.encode('utf-8').strip(), errors=errors)  # 2to3 converts unicode to str
-        ##         self.log.warning('Encoding poorly encoded string ({})'.format(data))
-        ##     except AttributeError:
-        ##         pass  # Python 3 can't decode a str
-        ## else:
-        ##     data = unicode(data, 'utf-8', errors=errors)
-        ## return data
+        # if data is None or isinstance(data, (int, list, dict)):
+        #     pass  # do nothing with these types
+        # elif isinstance(data, unicode):
+        #     try:
+        #         data.decode('utf-8')
+        #     except UnicodeEncodeError as e:  # 2to3 converts unicode to str
+        #         # 2to3 converts unicode to str
+        #         data = unicode(data.encode('utf-8').strip(), errors=errors)
+        #         self.log.warning('Encoding poorly encoded string ({})'.format(data))
+        #     except AttributeError:
+        #         pass  # Python 3 can't decode a str
+        # else:
+        #     data = unicode(data, 'utf-8', errors=errors)
+        # return data
 
     def safe_indicator(self, indicator, errors='strict'):
         """Indicator encode value for safe HTTP request
@@ -803,7 +822,6 @@ class TcEx(object):
             indicator = urllib.quote(self.s(str(indicator), errors=errors), safe='~')
         return indicator
 
-
     @staticmethod
     def epoch_seconds(delta=None):
         """Get epoch seconds for now or using a time delta.
@@ -816,7 +834,8 @@ class TcEx(object):
             {'weeks': 3}
             {'months': 4}
 
-        .. Note:: More information can be found at https://dateutil.readthedocs.io/en/stable/relativedelta.html
+        .. Note:: More information can be found at
+                  https://dateutil.readthedocs.io/en/stable/relativedelta.html
 
         Args:
             delta (Optional [integer]): The exit code value for the app.
@@ -874,7 +893,8 @@ class TcEx(object):
     def safetag(tag, errors='strict'):
         """Truncate tag to match limit (35 characters) of ThreatConnect API.
 
-        .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to new limit.
+        .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to
+                       new limit.
 
         Args:
            tag (string): The tag to be truncated

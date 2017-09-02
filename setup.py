@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 
 with open('tcex/__init__.py', 'r') as fd:
     version = re.search(
-        r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]', fd.read(), re.MULTILINE).group(1)
+        r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]',
+        fd.read(), re.MULTILINE).group(1)
 
 if not version:
     raise RuntimeError('Cannot find version information')

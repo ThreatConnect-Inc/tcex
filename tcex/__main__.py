@@ -1,8 +1,13 @@
+"""Set lib directory for current version of Python"""
 import os
 import subprocess
 import sys
 
+__version__ = '1.0.0'
+
+
 def main():
+    """Main"""
     lib_directory = None
 
     # All Python Version that will be searched
@@ -42,7 +47,10 @@ def main():
         sys.exit(1)
 
     # Use this if you want to include modules from a subfolder
-    # lib_path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))
+    # lib_path = os.path.realpath(
+    #     os.path.abspath(
+    #         os.path.join(
+    #             os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))
     lib_path = os.path.join(app_path, lib_directory)
     if 'PYTHONPATH' in os.environ:
         os.environ['PYTHONPATH'] = '{}{}{}'.format(lib_path, os.pathsep, os.environ['PYTHONPATH'])
@@ -56,6 +64,7 @@ def main():
     # Make sure to exit with the return value from the subprocess call
     ret = subprocess.call(sys.argv)
     sys.exit(ret)
+
 
 if __name__ == '__main__':
     main()

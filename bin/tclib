@@ -5,8 +5,8 @@ import argparse
 import colorama as c
 import json
 import os
-import pip
-import shutil
+# import pip
+# import shutil
 import subprocess
 import sys
 import traceback
@@ -25,8 +25,10 @@ args, extra_args = parser.parse_known_args()
 
 # TODO: Clean this up when time allows
 class TcLib(object):
+    """Install Required Modules for App"""
+
     def __init__(self, args):
-        """ """
+        """Init TcLib Module"""
         self._args = args
         self.app_path = os.getcwd()
         self.exit_code = 0
@@ -40,7 +42,7 @@ class TcLib(object):
         # default or current python version
         lib_directory = 'lib_{}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-        lib_data =[{
+        lib_data = [{
             "python_executable": sys.executable,
             "lib_dir": lib_directory
         }]
@@ -84,25 +86,25 @@ class TcLib(object):
             if p.returncode != 0:
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
 
-    def _pip_install(self, app_path, app_name, lib_path):
-        """ """
-        args = [
-            'install',
-            '-r',
-            'requirements.txt',
-            '--ignore-installed',
-            '--quiet',
-            '--target',
-            lib_path
-        ]
-        command = '{} {}'.format('pip', ' '.join(args))
-        print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, command))
-        pip.main(args)
+    # def _pip_install(self, app_path, app_name, lib_path):
+    #     """ """
+    #     args = [
+    #         'install',
+    #         '-r',
+    #         'requirements.txt',
+    #         '--ignore-installed',
+    #         '--quiet',
+    #         '--target',
+    #         lib_path
+    #     ]
+    #     command = '{} {}'.format('pip', ' '.join(args))
+    #     print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, command))
+    #     pip.main(args)
 
-    def _make_lib_dir(self, directory):
-        """ """
-        if not os.path.isdir(directory):
-            os.mkdir(directory)
+    # def _make_lib_dir(self, directory):
+    #     """ """
+    #     if not os.path.isdir(directory):
+    #         os.mkdir(directory)
 
 
 if __name__ == '__main__':
