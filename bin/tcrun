@@ -5,6 +5,7 @@ import argparse
 import colorama as c
 import json
 import os
+import platform
 import re
 # import shutil
 import sys
@@ -54,7 +55,7 @@ class TcRun(object):
         self.runtime_level = None
 
         self.shell = False
-        if sys.platform == "win32":
+        if platform.system() == 'Windows':
             self.shell = True
 
         # initialize colorama
@@ -361,9 +362,6 @@ class TcRun(object):
         # load tc config
         self._load_config()
 
-        # load install_json (if provided)
-        self._load_install_json(self.config.get('install_json'))
-
         # get all selected profiles
         selected_profiles = []
         for config in self.config.get('profiles'):
@@ -375,12 +373,16 @@ class TcRun(object):
             elif self._args.group in config.get('groups', []):
                 selected_profiles.append(config)
 
-        if selected_profiles:
+        if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+            sys.exit()
 
         command_count = 0
         reports = []
         for sp in selected_profiles:
+            # load install_json (if provided)
+            self._load_install_json(sp.get('install_json'))
+
             # profile state tracker
             passed = False
 
@@ -397,7 +399,7 @@ class TcRun(object):
             print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
             if sp.get('description'):
                 print('Description: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('profile_name')))
+                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
             command_count += 1
 
             #
@@ -440,10 +442,12 @@ class TcRun(object):
                 print_command = ' '.join(command + parameters.get('masked'))
             elif self.program_language == 'java':
                 command = [
-                    self.config.get('java_path', self.program_language)
+                    self.config.get('java_path', self.program_language),
+                    '-cp',
+                    self.config.get('class_path', './target/*')
                 ]
-                exe_command = command + parameters.get('unmasked') + self.program_main
-                print_command = ' '.join(command + parameters.get('masked') + self.program_main)
+                exe_command = command + parameters.get('unmasked') + [self.program_main]
+                print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
 
             # output command
             print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
@@ -554,7 +558,7 @@ class TcRun(object):
         if self.program_language == 'python':
             quote_char = '\''
         elif self.program_language == 'java':
-            quote_char = '"'
+            quote_char = '\''
 
         if re.findall(r'[!\-\s\$]{1,}', str(data)):
             data = '{}{}{}'.format(quote_char, data, quote_char)
