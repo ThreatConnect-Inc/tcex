@@ -64,9 +64,12 @@ def main():
     #
     # config
     #
-    profile_name = data.get('displayName', '').lower().replace(' ', '-')
-    if profile_name:
-        profile_name = args.config.replace('.install.json', '').lower()
+
+    # use displayName if available, otherwise use prefix of install.json file
+    profile_name = data.get('displayName')
+    if profile_name is None:
+        profile_name = args.config.replace('.install.json', 'myprofile')
+    profile_name = profile_name.lower().replace(' ', '-')
     print('Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, profile_name))
 
     config = OrderedDict()
