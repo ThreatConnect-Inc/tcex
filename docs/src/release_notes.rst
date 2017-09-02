@@ -9,7 +9,10 @@ Release Notes
 0.5.15
 ------
 + Initial update to ``tcrun`` to support running Java Apps.
-+ Added **install_json** parameter to tcex.json so that ``tcrun`` can load more data about the App before running.
++ Added support for **install_json** profile parameter to tcex.json. This should be included in all **tcex.json** files going forward.
++ Added support for **java_path** config parameter to tcex.json for custom java path.  Default behaviour is to use the default version of **java** from user path.
++ Added support for **class_path** profile parameter to tcex.json for custom java paths.  By default ``./target/`` will be used as the class_pass value.
++ Updated ``tcpackage`` to grab minor version from programVersion in install.json.  If no programVersion found the default version of an App is 1.0.0.
 + Cleanup for PEP8 and more.
 
 0.5.14

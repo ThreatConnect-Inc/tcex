@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_data_filter &mdash; TcEx 0.5.14 documentation</title>
+  <title>tcex.tcex_data_filter &mdash; TcEx 0.5.15 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.15 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.14
+                0.5.15
               </div>
             
           
@@ -237,7 +237,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataFilter._in"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._in">[docs]</a>    <span class="k">def</span> <span class="nf">_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
+<div class="viewcode-block" id="DataFilter._in"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._in">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_in</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field **IN** string or list.</span>
 
 <span class="sd">        Args:</span>
@@ -251,7 +252,8 @@
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">valid</span></div>
 
-<div class="viewcode-block" id="DataFilter._index_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._index_filter">[docs]</a>    <span class="k">def</span> <span class="nf">_index_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_data</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataFilter._index_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._index_filter">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_index_filter</span><span class="p">(</span><span class="n">index_data</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Post Filter</span>
 
 <span class="sd">        Args:</span>
@@ -316,7 +318,8 @@
         <span class="c1">#</span>
         <span class="c1"># return filtered_data</span>
 
-<div class="viewcode-block" id="DataFilter._ni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">[docs]</a>    <span class="k">def</span> <span class="nf">_ni</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
+<div class="viewcode-block" id="DataFilter._ni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_ni</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field **NOT IN** string or list.</span>
 
 <span class="sd">        Args:</span>
@@ -330,7 +333,8 @@
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">valid</span></div>
 
-<div class="viewcode-block" id="DataFilter._starts_with"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._starts_with">[docs]</a>    <span class="k">def</span> <span class="nf">_starts_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
+<div class="viewcode-block" id="DataFilter._starts_with"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._starts_with">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_starts_with</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field starts with provided value.</span>
 
 <span class="sd">        Args:</span>
@@ -344,7 +348,6 @@
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">valid</span></div>
 
-    <span class="c1"># def filter_data(self, field, filter_value, filter_operator, field_converter=None, set_operator=None):</span>
 <div class="viewcode-block" id="DataFilter.filter_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.filter_data">[docs]</a>    <span class="k">def</span> <span class="nf">filter_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter the data given the provided.</span>
 
@@ -415,9 +418,9 @@
             <span class="s1">&#39;NI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ni</span>  <span class="c1"># not in</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="DataFilter.results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.results">[docs]</a>    <span class="k">def</span> <span class="nf">results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DataFilter.results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.results">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">results</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Results&quot;&quot;&quot;</span>
         <span class="n">cdata</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="n">cdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -438,22 +441,19 @@
 
 
 <div class="viewcode-block" id="DataObj"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj">[docs]</a><span class="k">class</span> <span class="nc">DataObj</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Data Object&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Init Data Object&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The data value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
 <div class="viewcode-block" id="DataObj.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The data as a string&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div></div>
 </pre></div>
 
@@ -490,7 +490,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.14',
+            VERSION:'0.5.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.5.14 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.5.15 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.15 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.14
+                0.5.15
               </div>
             
           
@@ -181,7 +181,6 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
-
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
@@ -547,8 +546,8 @@
 <div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on association for this resource.</span>
 
-<span class="sd">        This method will return all *resources* (group, indicators, task, victims, etc) for this resource that are</span>
-<span class="sd">        associated with the provided resource.</span>
+<span class="sd">        This method will return all *resources* (group, indicators, task, victims, etc) for this</span>
+<span class="sd">        resource that are associated with the provided resource.</span>
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
@@ -915,12 +914,12 @@
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stream</span><span class="p">)</span>
         <span class="n">data</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_process</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-        <span class="c1">## # bcs - to reset or not to reset?</span>
-        <span class="c1">## self._r.body = None</span>
-        <span class="c1">## # self._r.reset_headers()</span>
-        <span class="c1">## # self._r.reset_payload()</span>
-        <span class="c1">## self._request_uri = self._api_uri</span>
-        <span class="c1">## self._request_entity = self._api_entity</span>
+        <span class="c1"># # bcs - to reset or not to reset?</span>
+        <span class="c1"># self._r.body = None</span>
+        <span class="c1"># # self._r.reset_headers()</span>
+        <span class="c1"># # self._r.reset_payload()</span>
+        <span class="c1"># self._request_uri = self._api_uri</span>
+        <span class="c1"># self._request_entity = self._api_entity</span>
 
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
@@ -1456,7 +1455,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Bulk&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
             <span class="c1"># self._request_uri = &#39;{}/{}&#39;.format(self._api_uri, data)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_indicator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_indicator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Indicator.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body">[docs]</a>    <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicators</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of a **single** indicator.</span>
@@ -1552,7 +1552,8 @@
                         <span class="k">yield</span> <span class="n">data</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)))(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resources</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_rt</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)))(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="p">)</span>
                     <span class="n">values</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">value_fields</span>
 
                     <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2030,6 +2031,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div></div>
 
+
 <div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Threat Resource Class</span>
 
@@ -2186,7 +2188,6 @@
 <span class="sd">            resource_id (string): The tag name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
-
 
 
 <span class="c1">#</span>
@@ -2510,7 +2511,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.14',
+            VERSION:'0.5.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

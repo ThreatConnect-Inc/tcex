@@ -444,7 +444,7 @@ class TcRun(object):
                 command = [
                     self.config.get('java_path', self.program_language),
                     '-cp',
-                    self.config.get('class_path', './target/*')
+                    sp.get('class_path', './target/*')
                 ]
                 exe_command = command + parameters.get('unmasked') + [self.program_main]
                 print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
