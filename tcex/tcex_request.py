@@ -3,18 +3,15 @@ import json
 import socket
 import time
 from base64 import b64encode
-
 """ third-party """
 from requests import (exceptions, packages, Request, Session)
-
 # disable ssl warning message
 packages.urllib3.disable_warnings()
-
 """ custom """
 
 
 class TcExRequest(object):
-    """ """
+    """Wrapper on Python Requests Module with API logging."""
 
     def __init__(self, tcex):
         """ """
@@ -131,7 +128,8 @@ class TcExRequest(object):
 
     def set_basic_auth(self, username, password):
         """Manually set basic auth in the header when normal method does not work."""
-        credentials = unicode(b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
+        credentials = unicode(
+            b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
         self.authorization = 'Basic {}'.format(credentials)
 
     @property
@@ -186,7 +184,8 @@ class TcExRequest(object):
             if self._content_type is None and data in ['POST', 'PUT']:
                 self.add_header('Content-Type', 'application/json')
         else:
-            raise AttributeError('Request Object Error: {0!s} is not a valid HTTP method.'.format(data))
+            raise AttributeError(
+                'Request Object Error: {0!s} is not a valid HTTP method.'.format(data))
 
     #
     # Send Properties
@@ -281,7 +280,9 @@ class TcExRequest(object):
             except exceptions.ReadTimeout as e:
                 self._tcex.log.error('Error: {0!s}'.format(e))
                 self._tcex.log.error('The server may be experiencing delays at the moment.')
-                self._tcex.log.info('Pausing for {0!s} seconds to give server time to catch up.'.format(self._sleep))
+                self._tcex.log.info(
+                    'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                        self._sleep))
                 time.sleep(self._sleep)
                 self._tcex.log.info('Retry {0!s} ....'.format(i))
 
@@ -291,7 +292,9 @@ class TcExRequest(object):
             except exceptions.ConnectionError as e:
                 self._tcex.log.error('Error: {0!s}'.format(e))
                 self._tcex.log.error('Connection Error. The server may be down.')
-                self._tcex.log.info('Pausing for {0!s} seconds to give server time to catch up.'.format(self._sleep))
+                self._tcex.log.info(
+                    'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                        self._sleep))
                 time.sleep(self._sleep)
                 self._tcex.log.info('Retry {0!s} ....'.format(i))
                 if i == self._retries:
@@ -335,7 +338,7 @@ class TcExRequest(object):
         #
         # headers
         #
-        if len(self.headers) > 0:
+        if self.headers:
             printable_string += '\n{0!s:40}\n'.format('Headers')
             for k, v in self.headers.items():
                 printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
@@ -343,7 +346,7 @@ class TcExRequest(object):
         #
         # payload
         #
-        if len(self.payload) > 0:
+        if self.payload:
             printable_string += '\n{0!s:40}\n'.format('Payload')
             for k, v in self.payload.items():
                 printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)

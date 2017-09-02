@@ -62,7 +62,8 @@ class DataFilter(object):
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
-    def _in(self, field, filter_value):
+    @staticmethod
+    def _in(field, filter_value):
         """Validate field **IN** string or list.
 
         Args:
@@ -76,7 +77,8 @@ class DataFilter(object):
             valid = True
         return valid
 
-    def _index_filter(self, index_data, filter_value, filter_operator, field_converter=None):
+    @staticmethod
+    def _index_filter(index_data, filter_value, filter_operator, field_converter=None):
         """Post Filter
 
         Args:
@@ -141,7 +143,8 @@ class DataFilter(object):
         #
         # return filtered_data
 
-    def _ni(self, field, filter_value):
+    @staticmethod
+    def _ni(field, filter_value):
         """Validate field **NOT IN** string or list.
 
         Args:
@@ -155,7 +158,8 @@ class DataFilter(object):
             valid = True
         return valid
 
-    def _starts_with(self, field, filter_value):
+    @staticmethod
+    def _starts_with(field, filter_value):
         """Validate field starts with provided value.
 
         Args:
@@ -169,7 +173,6 @@ class DataFilter(object):
             valid = True
         return valid
 
-    # def filter_data(self, field, filter_value, filter_operator, field_converter=None, set_operator=None):
     def filter_data(self, field, filter_value, filter_operator, field_converter=None):
         """Filter the data given the provided.
 
@@ -240,9 +243,9 @@ class DataFilter(object):
             'NI': self._ni  # not in
         }
 
-    def results(self, data):
-        """
-        """
+    @staticmethod
+    def results(data):
+        """Results"""
         cdata = []
         for r in data:
             cdata.append(r.data)
@@ -263,20 +266,17 @@ class DataFilter(object):
 
 
 class DataObj(object):
-    """ """
+    """Data Object"""
 
     def __init__(self, data):
-        """
-        """
+        """Init Data Object"""
         self._data = data
 
     @property
     def data(self):
-        """
-        """
+        """The data value"""
         return self._data
 
     def __str__(self):
-        """
-        """
+        """The data as a string"""
         return self._data

@@ -6,6 +6,12 @@ Release Notes
 0.5.x
 =====
 
+0.5.15
+------
++ Initial update to ``tcrun`` to support running Java Apps.
++ Added **install_json** parameter to tcex.json so that ``tcrun`` can load more data about the App before running.
++ Cleanup for PEP8 and more.
+
 0.5.14
 ------
 + Updated :py:meth:`~tcex.tcex_resources.Bulk.json` method to use proper entity value.

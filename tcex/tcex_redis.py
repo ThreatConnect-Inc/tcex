@@ -1,13 +1,11 @@
 """ standard """
 """ third-party """
 import redis
-
 """ custom """
 
 
 class TcExRedis(object):
-    """
-    """
+    """Create/Read Data in/from Redis"""
 
     def __init__(self, host, port, rhash):
         """ """

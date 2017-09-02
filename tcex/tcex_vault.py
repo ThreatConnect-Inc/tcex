@@ -6,13 +6,12 @@ import hvac
 
 
 class TcExVault(object):
-    """
-    """
+    """Add Value functionality to TcEx Framework"""
 
     def __init__(self, url=None, token=None, cert=None):
         """ """
         if token is None:
-            token=os.environ.get('VAULT_TOKEN')
+            token = os.environ.get('VAULT_TOKEN')
         if url is None:
             url = 'http://localhost:8200'
 

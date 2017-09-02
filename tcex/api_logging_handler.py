@@ -1,9 +1,6 @@
 """ standard """
-# import time
 from json import dumps
-# from logging import FileHandler, makeLogRecord
 from logging import FileHandler
-
 """ third-party """
 """ custom """
 
@@ -77,7 +74,7 @@ class ApiLoggingHandler(FileHandler):
             }]
 
         """
-        if len(self.entries) > 0:
+        if self.entries:
             # Make API call
             r = self._tcex.request
             r.authorization_method(self._tcex.authorization)

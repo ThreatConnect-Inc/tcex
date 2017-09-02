@@ -6,7 +6,6 @@ import os
 import re
 import shutil
 import uuid
-
 """ third party """
 """ custom """
 
@@ -372,8 +371,8 @@ class Resource(object):
     def association_pivot(self, association_resource):
         """Pivot point on association for this resource.
 
-        This method will return all *resources* (group, indicators, task, victims, etc) for this resource that are
-        associated with the provided resource.
+        This method will return all *resources* (group, indicators, task, victims, etc) for this
+        resource that are associated with the provided resource.
 
         **Example Endpoints URI's**
 
@@ -740,12 +739,12 @@ class Resource(object):
         response = self._r.send(stream=self._stream)
         data, status = self._request_process(response)
 
-        ## # bcs - to reset or not to reset?
-        ## self._r.body = None
-        ## # self._r.reset_headers()
-        ## # self._r.reset_payload()
-        ## self._request_uri = self._api_uri
-        ## self._request_entity = self._api_entity
+        # # bcs - to reset or not to reset?
+        # self._r.body = None
+        # # self._r.reset_headers()
+        # # self._r.reset_payload()
+        # self._request_uri = self._api_uri
+        # self._request_entity = self._api_entity
 
         return {
             'data': data,
@@ -1281,7 +1280,8 @@ class Indicator(Resource):
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
             # self._request_uri = '{}/{}'.format(self._api_uri, data)
-            self._request_uri = '{}/{}'.format(self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
+            self._request_uri = '{}/{}'.format(
+                self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
 
     def indicator_body(self, indicators):
         """Generate the appropriate dictionary content for POST of a **single** indicator.
@@ -1377,7 +1377,8 @@ class Indicator(Resource):
                         yield data
                 else:
                     resource = getattr(
-                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(self._tcex)
+                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(
+                            self._tcex)
                     values = resource.value_fields
 
                     index = 0
@@ -1855,6 +1856,7 @@ class Signature(Group):
         self.resource_id(str(resource_id))
         self._request_uri = '{}/download'.format(self._request_uri)
 
+
 class Threat(Group):
     """Threat Resource Class
 
@@ -2011,7 +2013,6 @@ class Tag(Resource):
             resource_id (string): The tag name.
         """
         self.tag(resource_id)
-
 
 
 #

@@ -61,7 +61,7 @@ class TcExJob(object):
         try:
             for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk):
                 yield self._indicators[i:i + self._tcex._args.batch_chunk]
-        except NameError: # Python 3 uses range() instead of xrange()
+        except NameError:  # Python 3 uses range() instead of xrange()
             for i in range(0, len(self._indicators), self._tcex._args.batch_chunk):
                 yield self._indicators[i:i + self._tcex._args.batch_chunk]
 
@@ -287,7 +287,8 @@ class TcExJob(object):
                                     self._tcex.exit_code(1)
                                     halt = True
                                     # all indicator in chunk will be not_saved
-                                    self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
+                                    self._indicator_results['not_saved'].extend(
+                                        [i.get('summary') for i in chunk])
                                     break
                                 else:
                                     # all indicators were saved minus failed; not_save == failed
@@ -298,7 +299,8 @@ class TcExJob(object):
                                         [i for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
                             else:
                                 # all indicators were saved
-                                self._indicator_results['saved'].extend([i.get('summary') for i in chunk])
+                                self._indicator_results['saved'].extend(
+                                    [i.get('summary') for i in chunk])
                                 self._indicators_response.extend(chunk)
                             break  # no need to check status anymore
 
@@ -421,7 +423,8 @@ class TcExJob(object):
                         self._tcex.exit_code(3)
                         continue
                 results_data.setdefault('attribute', []).append(a_results.get('data'))
-            if halt: break
+            if halt:
+                break
 
             for tag in i_data.get('tag', []):
                 # process attributes
@@ -447,7 +450,8 @@ class TcExJob(object):
                         self._tcex.exit_code(3)
                         continue
                 results_data.setdefault('tag', []).append(tag)
-            if halt: break
+            if halt:
+                break
 
             for group_id in i_data.get('associatedGroup', []):
                 group_type = self.group_cache_type(group_id, owner)
@@ -482,7 +486,8 @@ class TcExJob(object):
                         self._tcex.exit_code(3)
                         continue
                 results_data.setdefault('associatedGroup', []).append(group_id)
-            if halt: break
+            if halt:
+                break
 
             self._indicators_response.append(results_data)
 
@@ -838,12 +843,13 @@ class TcExJob(object):
             else:
                 err = 'Failed retrieving result during pagination.'
                 self._tcex.log.error(err)
-                raise RuntimeError(e)
+                raise RuntimeError(err)
 
         for group in data:
             self._tcex.log.debug('cache - group name: ({})'.format(group.get('name')))
             if self._group_cache.get(owner, {}).get(resource_type, {}).get(group.get('name')) is not None:
-                warn = 'A duplicate Group name was found ({}). Duplicates are not supported in cache.'
+                warn = 'A duplicate Group name was found ({}). '
+                warn += 'Duplicates are not supported in cache.'
                 warn = warn.format(group.get('name'))
                 self._tcex.log.warning(warn)
             self._group_cache[owner][resource_type][group['name']] = group['id']
@@ -898,7 +904,6 @@ class TcExJob(object):
             resource = self._tcex.resource('Group')
             resource.owner = owner
             resource.url = self._tcex._args.tc_api_path
-            data = []
             for results in resource:
                 if results['status'] == 'Success':
                     for group in results.get('data'):
@@ -906,7 +911,7 @@ class TcExJob(object):
                 else:
                     err = 'Failed retrieving result during pagination.'
                     self._tcex.log.error(err)
-                    raise RuntimeError(e)
+                    raise RuntimeError(err)
 
         return self._group_cache_id.get(owner, {}).get(group_id)
 
@@ -1031,18 +1036,18 @@ class TcExJob(object):
         Args:
             owner (string): The owner name for the data to be written
         """
-        if len(self._groups) > 0:
+        if self._groups:
             self._tcex.log.info('Processing Groups')
             self._process_groups(owner)
 
-        if len(self._indicators) > 0:
+        if self._indicators:
             self._tcex.log.info('Processing Indicators')
             self._process_indicators(owner, indicator_batch)
 
-        if len(self._file_occurrences) > 0:
+        if self._file_occurrences:
             self._tcex.log.info('Processing File Occurrences')
             self._process_file_occurrences(owner)
 
-        if len(self._group_associations) > 0:
+        if self._group_associations:
             self._tcex.log.info('Processing Group Associations')
             self._process_group_association(owner)
