@@ -6,6 +6,10 @@ Release Notes
 0.5.x
 =====
 
+0.5.17
+------
++ Updated create_output() method to fix issue when using output variables of the same name and different types.
+
 0.5.16
 ------
 + Updated ``tcrun`` to not check for the program main file for Java Apps.
