@@ -7,7 +7,6 @@ import json
 import os
 import platform
 import re
-# import shutil
 import sys
 import subprocess
 import tempfile
@@ -79,19 +78,17 @@ class TcRun(object):
 
     def _load_install_json(self, config_file):
         """Load the install.json configuration file."""
-        if config_file is None:
-            return
-
-        if not os.path.isfile(config_file):
+        install_json = {}
+        if config_file is not None and os.path.isfile(config_file):
+            print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
+            with open(config_file) as config_data:
+                install_json = json.load(config_data)
+        else:
             msg = 'Provided install.json config file does not exist ({}).'.format(config_file)
             print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.YELLOW, msg))
 
-        print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
-        with open(config_file) as config_file:
-            install_json = json.load(config_file)
-
         self.display_name = install_json.get('displayName')
-        self.program_language = install_json.get('programLanguage').lower()
+        self.program_language = install_json.get('programLanguage', 'python').lower()
         self.program_main = install_json.get('programMain')
         self.program_version = install_json.get('programVersion')
         self.runtime_level = install_json.get('runtimeLevel')
@@ -395,11 +392,6 @@ class TcRun(object):
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
 
-            # display the profile and description during execution
-            print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
-            if sp.get('description'):
-                print('Description: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
             command_count += 1
 
             #
@@ -416,6 +408,22 @@ class TcRun(object):
             else:
                 print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
                 sys.exit(1)
+
+            # Display Output with App data
+            output = 'Profile: '
+            output += '{}{}{}{} '.format(
+                c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name'), c.Style.RESET_ALL)
+            output += '[{}{}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.GREEN, program_main, c.Style.RESET_ALL)
+            if self.program_version is not None:
+                output += '{}{}{}:{}'.format(
+                    c.Style.BRIGHT, c.Fore.GREEN, self.program_version, c.Style.RESET_ALL)
+            output += ']'
+            print(output)
+            # print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
+            if sp.get('description'):
+                print('Description: {}{}{}'.format(
+                    c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
 
             program_filename = program_main
             if self.program_language == 'python':
