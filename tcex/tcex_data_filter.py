@@ -40,7 +40,7 @@ class DataFilter(object):
         if isinstance(self._data, list):
             for d in self._data:
                 if not isinstance(d, dict):
-                    err = 'Cannot build index for non Dict type.'
+                    err = u'Cannot build index for non Dict type.'
                     self._tcex.log.error(err)
                     raise RuntimeError(err)
 
@@ -53,12 +53,12 @@ class DataFilter(object):
                     # TODO: This is not Python 3 ready
                     if not isinstance(value, (float, int, long, str, unicode)):
                         # For comparison operators the value needs to be a StringType
-                        self._tcex.log.debug('Can only build index String Types.')
+                        self._tcex.log.debug(u'Can only build index String Types.')
                         continue
 
                     self._indexes.setdefault(key, {}).setdefault(value, []).append(data_obj)
         else:
-            err = 'Only *List* data type is currently supported'
+            err = u'Only *List* data type is currently supported'
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
@@ -129,7 +129,7 @@ class DataFilter(object):
         # filtered_data = []
         # for d in self._data:
         #     if not isinstance(d, dict):
-        #         self._tcex.log.debug('Can filter for non Dict type.')
+        #         self._tcex.log.debug(u'Can filter for non Dict type.')
         #
         #     for key, value in d.items():
         #         if field != key:

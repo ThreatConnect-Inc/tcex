@@ -108,7 +108,7 @@ class TcEx(object):
             try:
                 data = results.json()
                 if data['success']:
-                    self.log.info('Expired API token has been renewed.')
+                    self.log.info(u'Expired API token has been renewed.')
                     self._tc_token = str(data['apiToken'])
                     self._tc_token_expires = int(data['apiTokenExpires'])
                     authorization = 'TC-Token {}'.format(data['apiToken'])
@@ -119,7 +119,7 @@ class TcEx(object):
                 raise
             except:
                 # TODO: Limit this exception
-                self.log.error('Failure during token renewal. ({})'.format(results.text))
+                self.log.error(u'Failure during token renewal. ({})'.format(results.text))
 
         return {'Authorization': authorization}
 
@@ -136,24 +136,24 @@ class TcEx(object):
             with open(install_json, 'r') as fh:
                 app_version = json.load(fh)['programVersion']
 
-            self.log.info('App Version: {}'.format(app_version))
+            self.log.info(u'App Version: {}'.format(app_version))
         except:
             # TODO: Limit this exception
-            self.log.debug('Could not retrieve App Version')
+            self.log.debug(u'Could not retrieve App Version')
 
     def _log_platform(self):
         """Log the current Platform"""
-        self.log.info('Platform: {}'.format(platform()))
+        self.log.info(u'Platform: {}'.format(platform()))
 
     def _log_python_version(self):
         """Log the current Python Version"""
-        self.log.info('Python Version: {}.{}.{}'.format(
+        self.log.info(u'Python Version: {}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
 
     def _log_tc_proxy(self):
         """Log the current Python Version"""
         if self._args.tc_proxy_tc:
-            self.log.info('Proxy Server (TC): {}:{}.'.format(
+            self.log.info(u'Proxy Server (TC): {}:{}.'.format(
                 self._args.tc_proxy_host, self._args.tc_proxy_port))
 
     def _log_tcex_version(self):
@@ -170,7 +170,7 @@ class TcEx(object):
                 fd.read(),
                 re.MULTILINE).group(1)
 
-        self.log.info('TcEx Version: {}'.format(tcex_version))
+        self.log.info(u'TcEx Version: {}'.format(tcex_version))
 
     def _logger(self, file_name=None):
         """Create TcEx app logger instance.
@@ -251,7 +251,7 @@ class TcEx(object):
             from .tcex_playbook import TcExPlaybook
             self.playbook = TcExPlaybook(self)
         except ImportError as e:
-            warn = 'Required playbook python dependency is not installed ({}).'.format(e)
+            warn = u'Required playbook python dependency is not installed ({}).'.format(e)
             self.log.warning(warn)
 
     def _association_types(self):
@@ -268,14 +268,14 @@ class TcEx(object):
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200
                 or response.headers.get('content-type') != 'application/json'):
-            warn = 'Custom Indicators Associations are not supported.'
+            warn = u'Custom Indicators Associations are not supported.'
             self.log.warning(warn)
             return
 
         # validate successful API results
         data = response.json()
         if data.get('status') != 'Success':
-            warn = 'Bad Status: Custom Indicators Associations are not supported.'
+            warn = u'Bad Status: Custom Indicators Associations are not supported.'
             self.log.warning(warn)
             return
 
@@ -284,7 +284,7 @@ class TcEx(object):
             for association in response.json().get('data', {}).get('associationType', []):
                 self.indicator_associations_types_data[association.get('name')] = association
         except:
-            err = 'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
+            err = u'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
                 sys.exc_info()[0])
             self.log.error(err)
             raise RuntimeError(err)
@@ -316,14 +316,14 @@ class TcEx(object):
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200 or
                 response.headers.get('content-type') != 'application/json'):
-            warn = 'Custom Indicators are not supported.'
+            warn = u'Custom Indicators are not supported.'
             self.log.warning(warn)
             return
 
         # validate successful API results
         data = response.json()
         if data.get('status') != 'Success':
-            warn = 'Bad Status: Custom Indicators are not supported.'
+            warn = u'Bad Status: Custom Indicators are not supported.'
             self.log.warning(warn)
             return
 
@@ -373,7 +373,7 @@ class TcEx(object):
                     setattr(self.resources, name, resources.class_factory(
                         name, self.resources.Indicator, custom))
         except:
-            err = 'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
+            err = u'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
             self.log.error(err)
             raise RuntimeError(err)
 
@@ -384,7 +384,7 @@ class TcEx(object):
             args (list): List of unknown arguments
         """
         for u in args:
-            self.log.debug('Unsupported arg found ({0!s}).'.format(u))
+            self.log.debug(u'Unsupported arg found ({0!s}).'.format(u))
 
     @property
     def args(self):
@@ -460,7 +460,7 @@ class TcEx(object):
             authorization = 'TC {0}:{1}'.format(
                 self._args.api_access_id, base64.b64encode(hmac_signature).decode())
         else:
-            err = 'HMAC authorization requires a PreparedRequest Object'
+            err = u'HMAC authorization requires a PreparedRequest Object'
             self.log.error(err)
             raise RuntimeError(err)
 
@@ -505,7 +505,7 @@ class TcEx(object):
                             data['data']['bulkStatus']['lastRun'] is not None):
                         return True
         except:
-            err = 'Failed api request for bulk enabled check. ({})'.format(
+            err = u'Failed api request for bulk enabled check. ({})'.format(
                 sys.exc_info()[0])
             self.log.error(err)
             raise RuntimeError(err)
@@ -530,7 +530,7 @@ class TcEx(object):
             from .tcex_data_filter import DataFilter
             return DataFilter(self, data)
         except ImportError as e:
-            err = 'Required Module is not installed ({}).'.format(e)
+            err = u'Required Module is not installed ({}).'.format(e)
             self.log.error(err)
             self.message_tc(err)
             self.exit(1)
@@ -552,13 +552,13 @@ class TcEx(object):
                         handler.log_to_api()
 
         if code is None:
-            self.log.info('exit_code: {}'.format(self._exit_code))
+            self.log.info(u'exit_code: {}'.format(self._exit_code))
             sys.exit(self._exit_code)
         elif code in [0, 1, 3]:
-            self.log.info('exit_code: {}'.format(code))
+            self.log.info(u'exit_code: {}'.format(code))
             sys.exit(code)
         else:
-            self.log.error('Invalid exit code')
+            self.log.error(u'Invalid exit code')
             sys.exit(1)  # exit with error
 
     def exit_code(self, code):
@@ -575,7 +575,7 @@ class TcEx(object):
         if code is not None and code in [0, 1, 3]:
             self._exit_code = code
         else:
-            self.log.error('Invalid exit code')
+            self.log.error(u'Invalid exit code')
 
     def job(self):
         """Return instance of Job module"""
@@ -672,7 +672,7 @@ class TcEx(object):
             from .tcex_request import TcExRequest
             return TcExRequest(self)
         except ImportError as e:
-            err = 'Required Module is not installed ({}).'.format(e)
+            err = u'Required Module is not installed ({}).'.format(e)
             self.log.error(err)
             self.message_tc(err)
             self.exit(1)
@@ -785,7 +785,7 @@ class TcEx(object):
                 except UnicodeEncodeError:  # 2to3 converts unicode to str
                     # 2to3 converts unicode to str
                     data = unicode(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning('Encoding poorly encoded string ({})'.format(data))
+                    self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
@@ -802,7 +802,7 @@ class TcEx(object):
         #     except UnicodeEncodeError as e:  # 2to3 converts unicode to str
         #         # 2to3 converts unicode to str
         #         data = unicode(data.encode('utf-8').strip(), errors=errors)
-        #         self.log.warning('Encoding poorly encoded string ({})'.format(data))
+        #         self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
         #     except AttributeError:
         #         pass  # Python 3 can't decode a str
         # else:

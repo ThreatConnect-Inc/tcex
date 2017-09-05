@@ -55,7 +55,7 @@ class Resource(object):
         filters = []
         for f in self._filters:
             filters.append('{}{}{}'.format(f['name'], f['operator'], f['value']))
-        self._tcex.log.debug('filters: {}'.format(filters))
+        self._tcex.log.debug(u'filters: {}'.format(filters))
 
         if len(filters) > 0:
             self._r.add_payload('filters', ','.join(filters))
@@ -100,7 +100,7 @@ class Resource(object):
         try:
             # write bulk download to disk with unique ID
             temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
-            self._tcex.log.debug('temp json file: {}'.format(temp_file))
+            self._tcex.log.debug(u'temp json file: {}'.format(temp_file))
             with open(temp_file, 'wb') as fh:
                 for block in response.iter_content(1024):
                     fh.write(block)
@@ -113,11 +113,11 @@ class Resource(object):
                     with open(temp_file, 'rb') as f_in, gzip.open('{}.gz'.format(temp_file), 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
                 except:
-                    self._tcex.log.warning('Could not compress temporary bulk JSON file.')
+                    self._tcex.log.warning(u'Could not compress temporary bulk JSON file.')
             os.remove(temp_file)
 
         except IOError as e:
-            err = 'Failed retrieving Bulk JSON ({}).'.format(e)
+            err = u'Failed retrieving Bulk JSON ({}).'.format(e)
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
@@ -138,12 +138,12 @@ class Resource(object):
             elif response.headers['content-type'] == 'text/plain':
                 data, status = self._request_process_text(response)
             else:
-                err = 'Failed Request: {}'.format(response.text)
+                err = u'Failed Request: {}'.format(response.text)
                 self._tcex.log.error(err)
                 self._tcex.message_tc(err)
         else:
             status = 'Failure'
-            err = 'Failed Request {}: Status Code ({}) not in {}'.format(
+            err = u'Failed Request {}: Status Code ({}) not in {}'.format(
                 self._name, response.status_code, self._status_codes[self._http_method])
             self._tcex.log.error(err)
 
@@ -184,13 +184,13 @@ class Resource(object):
         except KeyError as e:
             # TODO: Remove try/except block
             status = 'Failure'
-            msg = 'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
+            msg = u'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
             self._tcex.message_tc(msg)
             self._tcex.log.error(msg)
         except ValueError as e:
             # TODO: Remove try/except block
             status = 'Failure'
-            msg = 'Error: ({})'.format(e)
+            msg = u'Error: ({})'.format(e)
             self._tcex.message_tc(msg)
             self._tcex.log.error(msg)
             # bcs = raise error
@@ -355,7 +355,7 @@ class Resource(object):
         association_api_branch = self._tcex.indicator_associations_types_data.get(
             association_name, {}).get('apiBranch')
         if association_api_branch is None:
-            err = 'An invalid association name ({}) was provided.'.format(association_name)
+            err = u'An invalid association name ({}) was provided.'.format(association_name)
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
@@ -657,7 +657,7 @@ class Resource(object):
         if data is not None:
             self._r.add_payload('owner', data)
         else:
-            self._tcex.log.warn('Provided owner was invalid. ({})'.format(data))
+            self._tcex.log.warn(u'Provided owner was invalid. ({})'.format(data))
 
     @property
     def parent(self):
@@ -676,7 +676,7 @@ class Resource(object):
         Return:
             (dictionary): Resource Data
         """
-        self._tcex.log.warning('Using deprecated method (paginate).')
+        self._tcex.log.warning(u'Using deprecated method (paginate).')
         resources = []
         self._r.add_payload('resultStart', self._result_start)
         self._r.add_payload('resultLimit', self._result_limit)
@@ -691,7 +691,7 @@ class Resource(object):
                 self._result_count = data.get('resultCount')
                 # self._result_start = self._result_limit
 
-            self._tcex.log.debug('Result Count: {}'.format(self._result_count))
+            self._tcex.log.debug(u'Result Count: {}'.format(self._result_count))
 
             while True:
                 if len(resources) >= self._result_count:
@@ -701,7 +701,7 @@ class Resource(object):
                 results = self.request()
                 resources.extend(results['data'])
 
-            self._tcex.log.debug('Resource Count: {}'.format(len(resources)))
+            self._tcex.log.debug(u'Resource Count: {}'.format(len(resources)))
 
         return resources
 
@@ -726,7 +726,7 @@ class Resource(object):
             (dictionary): Response/Results data.
         """
         if self._url is None:
-            err = 'URL must not be None Type.'
+            err = u'URL must not be None Type.'
             self._tcex.log.error(err)
             raise AttributeError(err)
 
@@ -734,7 +734,7 @@ class Resource(object):
         self._r.authorization_method(self._authorization_method)
         self._r.url = '{}/v2/{}'.format(self._url, self._request_uri)
         self._apply_filters()
-        self._tcex.log.debug('Resource URL: ({})'.format(self._r.url))
+        self._tcex.log.debug(u'Resource URL: ({})'.format(self._r.url))
 
         response = self._r.send(stream=self._stream)
         data, status = self._request_process(response)
@@ -1366,7 +1366,7 @@ class Indicator(Resource):
                         elif hash_patterns['sha256'].match(i):
                             i_type = 'sha256'
                         else:
-                            msg = 'Cannot determine hash type: "{}"'.format(
+                            msg = u'Cannot determine hash type: "{}"'.format(
                                 indicator_data.get('summary'))
                             self._tcex.log.warning(msg)
 
@@ -1417,7 +1417,7 @@ class Indicator(Resource):
     def observed(self, date_observed=None):
         """Retrieve indicator observations count for top 10"""
         if self.name != 'Indicator':
-            self._tcex.log.warning('Observed endpoint only available for "indicator" endpoint.')
+            self._tcex.log.warning(u'Observed endpoint only available for "indicator" endpoint.')
         else:
             self._request_uri = '{}/observed'.format(self._request_uri)
             if date_observed is not None:
@@ -2196,7 +2196,7 @@ class DataStore(object):
         self._r.http_method = 'POST'
         self._r.url = '{}/v2/{}/{}/{}/{}'.format(
             self._url, self._request_uri, domain, type_name, search_command)
-        self._tcex.log.debug('Resource URL: ({})'.format(self._r.url))
+        self._tcex.log.debug(u'Resource URL: ({})'.format(self._r.url))
 
         if owner is not None:
             self._r.add_payload('owner', owner)

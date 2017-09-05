@@ -105,14 +105,14 @@ class TcExJob(object):
 
             # add attributes
             for attribute in data.get('attribute', []):
-                self._tcex.log.debug('Adding attribute type ({})'.format(
+                self._tcex.log.debug(u'Adding attribute type ({})'.format(
                     attribute.get('type')))
                 resource.resource_id(resource_id)
                 attribute_resource = resource.attributes()
                 attribute_resource.body = json.dumps(attribute)
                 a_results = attribute_resource.request()
                 if a_results.get('status') != 'Success':
-                    err = 'Failed adding attribute type {} with value {} to group {}.'
+                    err = u'Failed adding attribute type {} with value {} to group {}.'
                     err = err.format(
                         attribute.get('type'), attribute.get('value'), resource_name)
                     self._tcex.log.error(err)
@@ -125,13 +125,13 @@ class TcExJob(object):
                 tag_resource = resource.tags(tag.get('name'))
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
-                    err = 'Failed adding tag {} to group {}.'.format(
+                    err = u'Failed adding tag {} to group {}.'.format(
                         tag.get('name'), resource_name)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
         else:
             self._group_results['failed'].append(resource_name)
-            err = 'Failed adding group ({})'.format(resource_name)
+            err = u'Failed adding group ({})'.format(resource_name)
             self._tcex.log.error(err)
             self._tcex.exit_code(3)
 
@@ -154,7 +154,7 @@ class TcExJob(object):
         for occurrence in self._file_occurrences:
             # remove the hash from the dictionary and add to URI
             if occurrence.get('hash') is None:
-                err = 'A hash value must be provided.'
+                err = u'A hash value must be provided.'
                 self._tcex.log.error(err)
                 return
             resource.occurrence(occurrence.pop('hash'))
@@ -207,7 +207,7 @@ class TcExJob(object):
                     self._tcex.log.info(
                         u'Creating group {} [{}]'.format(group.get('name'), group_id))
                 elif self._tcex.args.batch_halt_on_error:
-                    self._tcex.log.info('Halt on error is enabled.')
+                    self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
             else:
@@ -223,7 +223,7 @@ class TcExJob(object):
             owner (string): The owner name for the indicator to be written
             batch (boolean): Use the batch API to create indicators
         """
-        self._tcex.log.info('Processing {} indicators'.format(len(self._indicators)))
+        self._tcex.log.info(u'Processing {} indicators'.format(len(self._indicators)))
 
         if batch:
             self._process_indicators_batch(owner)
@@ -247,7 +247,7 @@ class TcExJob(object):
 
         halt = False
         for chunk in self._chunk_indicators():
-            self._tcex.log.info('Batch Chunk Size: {}'.format(len(chunk)))
+            self._tcex.log.info(u'Batch Chunk Size: {}'.format(len(chunk)))
 
             # new batch resource for each chunk
             resource = self._tcex.resource('Batch')
@@ -273,9 +273,9 @@ class TcExJob(object):
 
                     poll_time = 0
                     while True:
-                        self._tcex.log.debug('poll_time: {0}'.format(poll_time))
+                        self._tcex.log.debug(u'poll_time: {0}'.format(poll_time))
                         if poll_time >= self._tcex._args.batch_poll_interval_max:
-                            msg = 'Status check exceeded max poll time.'
+                            msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
                             self._tcex.exit(1)
@@ -314,7 +314,7 @@ class TcExJob(object):
                 halt = True
 
             if halt:
-                self._tcex.log.info('Halting on error.')
+                self._tcex.log.info(u'Halting on error.')
                 break
 
     def _process_indicators_v2(self, owner):
@@ -331,7 +331,7 @@ class TcExJob(object):
             try:
                 i_value = [i for i in indicators if i is not None][0]
             except IndexError as e:
-                err = 'Cannot proceed without an Indicator. ({})'.format(e)
+                err = u'Cannot proceed without an Indicator. ({})'.format(e)
                 self._tcex.log.error(err)
                 raise RuntimeError(e)
 
@@ -372,13 +372,13 @@ class TcExJob(object):
             # Log error and continue
             if i_results.get('status') != 'Success':
                 self._indicator_results['failed'].append(i_data.get('summary'))
-                err = 'Failed adding indicator {} type {} ({}).'.format(
+                err = u'Failed adding indicator {} type {} ({}).'.format(
                     i_data.get('summary'), i_data.get('type'), i_results.get('response').text)
                 self._tcex.log.error(err)
 
                 # halt on error check
                 if self._tcex.args.batch_halt_on_error:
-                    self._tcex.log.info('Halt on error is enabled.')
+                    self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
                 else:
@@ -408,14 +408,14 @@ class TcExJob(object):
                 a_results = attribute_resource.request()
 
                 if a_results.get('status') != 'Success':
-                    err = 'Failed adding attribute type {} with value {} to indicator {}.'
+                    err = u'Failed adding attribute type {} with value {} to indicator {}.'
                     err = err.format(
                         attribute.get('type'), attribute.get('value'), i_data.get('summary'))
                     self._tcex.log.error(err)
 
                     # halt on error check
                     if self._tcex.args.batch_halt_on_error:
-                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
                         break
@@ -436,13 +436,13 @@ class TcExJob(object):
                 tag_resource.http_method = 'POST'
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
-                    err = 'Failed adding tag {} to indicator {}.'.format(
+                    err = u'Failed adding tag {} to indicator {}.'.format(
                         tag.get('name'), i_data.get('summary'))
                     self._tcex.log.error(err)
 
                     # halt on error check
                     if self._tcex.args.batch_halt_on_error:
-                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
                         break
@@ -456,7 +456,7 @@ class TcExJob(object):
             for group_id in i_data.get('associatedGroup', []):
                 group_type = self.group_cache_type(group_id, owner)
                 if group_type is None:
-                    err = 'Could not get Group Type for Group ID {} in Owner "{}"'.format(
+                    err = u'Could not get Group Type for Group ID {} in Owner "{}"'.format(
                         group_id, owner)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
@@ -472,13 +472,13 @@ class TcExJob(object):
                 association_resource.http_method = 'POST'
                 a_results = association_resource.request()
                 if a_results.get('status') != 'Success':
-                    err = 'Failed association group id {} to indicator {}.'.format(
+                    err = u'Failed association group id {} to indicator {}.'.format(
                         group_id, i_data.get('summary'))
                     self._tcex.log.error(err)
 
                     # halt on error check
                     if self._tcex.args.batch_halt_on_error:
-                        self._tcex.log.info('Halt on error is enabled.')
+                        self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
                         break
@@ -607,15 +607,15 @@ class TcExJob(object):
         resource.batch_id(batch_id)
         results = resource.request()
 
-        self._tcex.log.info('batch id: {}'.format(batch_id))
+        self._tcex.log.info(u'batch id: {}'.format(batch_id))
         if results.get('status') == 'Success':
             if results['data']['status'] == 'Completed':
                 status['completed'] = True
 
-                status_msg = 'Batch Job completed, totals: '
-                status_msg += 'succeeded: {0}, '.format(results.get('data').get('successCount'))
-                status_msg += 'failed: {0}, '.format(results.get('data').get('errorCount'))
-                status_msg += 'unprocessed: {0}'.format(results.get('data').get('unprocessCount'))
+                status_msg = u'Batch Job completed, totals: '
+                status_msg += u'succeeded: {0}, '.format(results.get('data').get('successCount'))
+                status_msg += u'failed: {0}, '.format(results.get('data').get('errorCount'))
+                status_msg += u'unprocessed: {0}'.format(results.get('data').get('unprocessCount'))
                 self._tcex.log.info(status_msg)
 
                 if results['data']['errorCount'] > 0:
@@ -630,20 +630,20 @@ class TcExJob(object):
                         resource.errors(batch_id)
                         error_results = resource.request()
                         if poll_time >= self._tcex._args.batch_poll_interval_max:
-                            msg = 'Status check exceeded max poll time.'
+                            msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
                             self._tcex.exit(1)
                         elif error_results.get('response').status_code == 200:
                             break
-                        self._tcex.log.info('Error retreive sleep ({} seconds)'.format(self._tcex._args.batch_poll_interval))
+                        self._tcex.log.info(u'Error retreive sleep ({} seconds)'.format(self._tcex._args.batch_poll_interval))
                         time.sleep(self._tcex._args.batch_poll_interval)
                         poll_time += self._tcex._args.batch_poll_interval
 
                     try:
                         errors = json.loads(self._tcex.s(error_results.get('data')))
                     except TypeError as e:
-                        err = 'Error loading Batch Error data ({})'.format(e)
+                        err = u'Error loading Batch Error data ({})'.format(e)
                         self._tcex.log.error(err)
                         errors = []
 
@@ -658,13 +658,13 @@ class TcExJob(object):
                         for error_msg in self._batch_failures:
                             if re.findall(error_msg, error_reason):
                                 # Critical Error
-                                err = 'Batch Error: {0}'.format(error)
+                                err = u'Batch Error: {0}'.format(error)
                                 self._tcex.message_tc(err)
                                 self._tcex.log.error(err)
                                 self._tcex.exit(1)
-                        self._tcex.log.warn('Batch Error: {0}'.format(error))
+                        self._tcex.log.warn(u'Batch Error: {0}'.format(error))
             else:
-                self._tcex.log.debug('Batch Status: {}'.format(results.get('data').get('status')))
+                self._tcex.log.debug(u'Batch Status: {}'.format(results.get('data').get('status')))
 
         return status
 
@@ -708,22 +708,6 @@ class TcExJob(object):
             self._file_occurrences.extend(fo)
         elif isinstance(fo, dict):
             self._file_occurrences.append(fo)
-
-    # bcs - not rewriting this until I know what it is for.
-    # def get_batch_job(self, batch_id):
-    #     """what is this for?"""
-    #
-    #     batch_jobs = tc.batch_jobs()
-    #     batch_filter = batch_jobs.add_filter()
-    #     batch_filter.add_id(batch_id)
-
-    #     try:
-    #         batch_jobs.retrieve()
-    #     except RuntimeError as re:
-    #         self._tcex.log.error(re)
-    #         self._tcex.message_tc(re)
-
-    #     return batch_jobs
 
     def group(self, group):
         """Add group data to TcEx job.
@@ -841,15 +825,15 @@ class TcExJob(object):
             if results['status'] == 'Success':
                 data += results.get('data')
             else:
-                err = 'Failed retrieving result during pagination.'
+                err = u'Failed retrieving result during pagination.'
                 self._tcex.log.error(err)
                 raise RuntimeError(err)
 
         for group in data:
-            self._tcex.log.debug('cache - group name: ({})'.format(group.get('name')))
+            self._tcex.log.debug(u'cache - group name: ({})'.format(group.get('name')))
             if self._group_cache.get(owner, {}).get(resource_type, {}).get(group.get('name')) is not None:
-                warn = 'A duplicate Group name was found ({}). '
-                warn += 'Duplicates are not supported in cache.'
+                warn = u'A duplicate Group name was found ({}). '
+                warn += u'Duplicates are not supported in cache.'
                 warn = warn.format(group.get('name'))
                 self._tcex.log.warning(warn)
             self._group_cache[owner][resource_type][group['name']] = group['id']
@@ -909,7 +893,7 @@ class TcExJob(object):
                     for group in results.get('data'):
                         self._group_cache_id[owner][group.get('id')] = group['type']
                 else:
-                    err = 'Failed retrieving result during pagination.'
+                    err = u'Failed retrieving result during pagination.'
                     self._tcex.log.error(err)
                     raise RuntimeError(err)
 
@@ -1037,17 +1021,17 @@ class TcExJob(object):
             owner (string): The owner name for the data to be written
         """
         if self._groups:
-            self._tcex.log.info('Processing Groups')
+            self._tcex.log.info(u'Processing Groups')
             self._process_groups(owner)
 
         if self._indicators:
-            self._tcex.log.info('Processing Indicators')
+            self._tcex.log.info(u'Processing Indicators')
             self._process_indicators(owner, indicator_batch)
 
         if self._file_occurrences:
-            self._tcex.log.info('Processing File Occurrences')
+            self._tcex.log.info(u'Processing File Occurrences')
             self._process_file_occurrences(owner)
 
         if self._group_associations:
-            self._tcex.log.info('Processing Group Associations')
+            self._tcex.log.info(u'Processing Group Associations')
             self._process_group_association(owner)

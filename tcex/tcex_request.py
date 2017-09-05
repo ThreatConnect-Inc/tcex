@@ -263,7 +263,7 @@ class TcExRequest(object):
         if self._authorization_method is not None:
             self._headers.update(self._authorization_method(request_prepped))
         request_prepped.prepare_headers(self._headers)
-        # self._tcex.log.debug('Request URL: {}'.format(self._url))
+        # self._tcex.log.debug(u'Request URL: {}'.format(self._url))
 
         if self._basic_auth is not None:
             request_prepped.prepare_auth(self._basic_auth)
@@ -278,34 +278,34 @@ class TcExRequest(object):
                     verify=self._verify_ssl, stream=stream)
                 break
             except exceptions.ReadTimeout as e:
-                self._tcex.log.error('Error: {0!s}'.format(e))
-                self._tcex.log.error('The server may be experiencing delays at the moment.')
+                self._tcex.log.error(u'Error: {0!s}'.format(e))
+                self._tcex.log.error(u'The server may be experiencing delays at the moment.')
                 self._tcex.log.info(
-                    'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                    u'Pausing for {0!s} seconds to give server time to catch up.'.format(
                         self._sleep))
                 time.sleep(self._sleep)
-                self._tcex.log.info('Retry {0!s} ....'.format(i))
+                self._tcex.log.info(u'Retry {0!s} ....'.format(i))
 
                 if i == self._retries:
-                    self._tcex.log.critical('Exiting: {0!s}'.format(e))
+                    self._tcex.log.critical(u'Exiting: {0!s}'.format(e))
                     raise RuntimeError(e)
             except exceptions.ConnectionError as e:
-                self._tcex.log.error('Error: {0!s}'.format(e))
-                self._tcex.log.error('Connection Error. The server may be down.')
+                self._tcex.log.error(u'Error: {0!s}'.format(e))
+                self._tcex.log.error(u'Connection Error. The server may be down.')
                 self._tcex.log.info(
-                    'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                    u'Pausing for {0!s} seconds to give server time to catch up.'.format(
                         self._sleep))
                 time.sleep(self._sleep)
-                self._tcex.log.info('Retry {0!s} ....'.format(i))
+                self._tcex.log.info(u'Retry {0!s} ....'.format(i))
                 if i == self._retries:
-                    self._tcex.log.critical('Exiting: {0!s}'.format(e))
+                    self._tcex.log.critical(u'Exiting: {0!s}'.format(e))
                     raise RuntimeError(e)
             except socket.error as e:
-                self._tcex.log.critical('Socket Error: {0!s}'.format(e))
+                self._tcex.log.critical(u'Socket Error: {0!s}'.format(e))
                 raise RuntimeError(e)
 
-        self._tcex.log.info('URL ({}): {}'.format(self._http_method, response.url))
-        self._tcex.log.info('Status Code: {0!s}'.format(response.status_code))
+        self._tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
+        self._tcex.log.info(u'Status Code: {0!s}'.format(response.status_code))
         return response
 
     #
