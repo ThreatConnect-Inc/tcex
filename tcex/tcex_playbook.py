@@ -596,7 +596,7 @@ class TcExPlaybook(object):
                 try:
                     data = json.loads(data)
                     if data is not None:
-                        data = str(data)
+                        data = str(u'{}'.format(data).encode('utf-8').strip())
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
                     self._tcex.log.error(err)
