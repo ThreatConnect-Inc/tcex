@@ -5,8 +5,7 @@ import urllib
 
 
 class TcExKeyValue(object):
-    """
-    """
+    """Update Redis via ThreatConnect API Wrapper"""
 
     def __init__(self, tcex, rhash):
         """ """
@@ -23,6 +22,10 @@ class TcExKeyValue(object):
         self._r.url = '{}/internal/playbooks/keyValue/{}'.format(self._tcex._args.tc_api_path, key)
         response = self._r.send()
         return response.content
+
+    def delete(self, key):
+        """Delete is not supported in API Wrapper"""
+        return None
 
     def read(self, key):
         """Read data from Redis for the provided key"""

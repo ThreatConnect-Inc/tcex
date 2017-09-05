@@ -20,6 +20,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
 parser.add_argument(
+    '--clear', action='store_true', help='Clear Redis data before running.')
+parser.add_argument(
     '--halt_on_fail', action='store_true', help='Halt on any failure.')
 parser.add_argument(
     '--group', default=None, help='The group of profiles to executed.')
@@ -262,6 +264,57 @@ class TcRun(object):
             'tc_temp_path': arg_data.get('tc_temp_path')
         }
 
+    def clear_data(self, profile):
+        """Clear data from previous runs."""
+
+        arg_data = self.data_args(profile.get('args'))
+        parameters = self.parameters_python(arg_data)
+        output_variables = profile.get('tc_playbook_out_variables', '').split(',')
+
+        data = []
+        for variable in output_variables:
+            data.append({
+                'data': None,
+                'variable': variable
+            })
+
+            print('Removing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variable))
+
+        # delete is handled below.
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+            f.write(json.dumps(data))
+            f.flush()
+
+        command = [
+            'tcdata',
+            '--data_file',
+            f.name,
+            '--action',
+            'clear'
+        ]
+        exe_command = command + parameters.get('unmasked')
+
+        # display command being run
+        if self._args.show_commands:
+            print_command = ' '.join(command + parameters.get('masked'))
+            print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
+        p = subprocess.Popen(
+            exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        out, err = p.communicate()
+
+        if p.returncode != 0:
+            print('{}{}Failed removing variables'.format(
+                c.Style.BRIGHT, c.Fore.RED))
+            if err is not None and err:
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+            sys.exit(p.returncode)
+
+        # cleanup temp file
+        if os.path.isfile(f.name):
+            os.remove(f.name)
+
     def stage_data(self, profile):
         """Stage any required data."""
 
@@ -276,7 +329,9 @@ class TcRun(object):
                 command = [
                     'tcdata',
                     '--data_file',
-                    file
+                    file,
+                    '--action',
+                    'stage'
                 ]
                 exe_command = command + parameters.get('unmasked')
 
@@ -322,7 +377,8 @@ class TcRun(object):
                 'tcdata',
                 '--data_file',
                 f.name,
-                '--validate'
+                '--action',
+                'validate'
             ]
             exe_command = command + parameters.get('unmasked')
 
@@ -383,6 +439,10 @@ class TcRun(object):
         command_count = 0
         reports = []
         for sp in selected_profiles:
+            # cleanup old redis data
+            if args.clear:
+                self.clear_data(sp)
+
             # profile state tracker
             passed = False
 

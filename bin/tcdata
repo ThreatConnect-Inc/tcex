@@ -16,9 +16,11 @@ from tcex import TcEx
 
 tcex = TcEx()
 
+# supported action: clear, stage, validate
+tcex.parser.add_argument('--action', help='The action to perform.', required=True)
 tcex.parser.add_argument(
     '--data_file', help='The file containing the data to stage.', required=True)
-tcex.parser.add_argument('--validate', action='store_true', help='Validate instead of stage.')
+
 args = tcex.args
 
 
@@ -68,12 +70,6 @@ def data_not_in(db_data, user_data):
         return True
     return False
 
-# def data_not_none(db_data, user_data=None):
-#     """Validate data is not None"""
-#     if db_data is not None:
-#         return True
-#     return False
-
 
 def data_startswith(db_data, user_data):
     """Validate data starts with user data"""
@@ -96,7 +92,6 @@ def main():
         'lt': operator.lt,
         'le': operator.le,
         'ne': operator.ne,
-        # 'nn': data_not_none,
         'sw': data_startswith
     }
 
@@ -113,7 +108,9 @@ def main():
                 user_data = str(ddata.get('data'))
             user_operator = ddata.get('operator', 'eq')
 
-            if args.validate:
+            if args.action == 'clear':
+                tcex.playbook.delete(variable)
+            elif args.action == 'validate':
                 tcex.log.info(u'Validating output variable {}'.format(variable))
                 # read from store
                 db_data = tcex.playbook.read(variable)
@@ -127,11 +124,14 @@ def main():
                 else:
                     tcex.log.error(u'Validation failed for variable: {}'.format(variable))
                     sys.exit(1)
-            else:
+            elif args.action == 'stage':
                 if variable.endswith('Binary'):
                     user_data = base64.b64decode(user_data)
                 tcex.log.info(u'Creating variable {}'.format(variable))
                 tcex.playbook.create(variable, user_data)
+            else:
+                tcex.log.info(u'Invalid action provided: {}'.format(args.action))
+                sys.exit(1)
     else:
         tcex.log.error(u'Could not open data file ({}).'.format(data_file))
 

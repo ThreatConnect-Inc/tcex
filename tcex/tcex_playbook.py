@@ -184,6 +184,23 @@ class TcExPlaybook(object):
                     'Variable {} was NOT requested by downstream app.'.format(var_value))
         return results
 
+    # string
+    def delete(self, key):
+        """Delete method of CRUD operation for all data types.
+
+        Args:
+            key (string): The variable to write to the DB.
+
+        Returns:
+            (string): Result of DB write
+        """
+        data = None
+        if key is not None:
+            data = self._db.delete(key.strip())
+        else:
+            self._tcex.log.warning('The key field was None.')
+        return data
+
     def exit(self, code=None):
         """Playbook wrapper on TcEx exit method
 
@@ -583,7 +600,6 @@ class TcExPlaybook(object):
                 except ValueError as e:
                     err = 'Failed loading JSON data ({}). Error: ({})'.format(data, e)
                     self._tcex.log.error(err)
-                    pass
         else:
             self._tcex.log.warning('The key field was None.')
         return data

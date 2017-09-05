@@ -17,6 +17,10 @@ class TcExRedis(object):
         """Create key/value pair in Redis"""
         return self._r.hset(self._hash, key, value)
 
+    def delete(self, key):
+        """Delete data from Redis for the provided key"""
+        return self._r.hdel(self._hash, key)
+
     def read(self, key):
         """Read data from Redis for the provided key"""
         data = self._r.hget(self._hash, key)
