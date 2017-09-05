@@ -79,17 +79,14 @@ class TcRun(object):
     def _load_install_json(self, config_file):
         """Load the install.json configuration file."""
         install_json = {}
-        load_output = '{}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.YELLOW, config_file, c.Style.RESET_ALL)
+        load_output = 'Load install.json: {}{}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, config_file, c.Style.RESET_ALL)
         if config_file is not None and os.path.isfile(config_file):
-            # print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
             with open(config_file) as config_data:
                 install_json = json.load(config_data)
             load_output += ' {}{}(Loaded){}'.format(
                 c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         else:
-            # msg = 'Provided install.json config file does not exist ({}).'.format(config_file)
-            # print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.YELLOW, msg))
             load_output += ' {}{}(Not Found){}'.format(
                 c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
 
@@ -113,7 +110,7 @@ class TcRun(object):
         profiles = []
         for file in sorted(os.listdir(include_directory)):
             if file.endswith('.json'):
-                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
+                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
                 config_file = os.path.join(include_directory, file)
                 with open(config_file) as data_file:
                     try:
