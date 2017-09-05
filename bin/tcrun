@@ -269,7 +269,7 @@ class TcRun(object):
 
         arg_data = self.data_args(profile.get('args'))
         parameters = self.parameters_python(arg_data)
-        output_variables = profile.get('tc_playbook_out_variables', '').split(',')
+        output_variables = profile.get('args', {}).get('tc_playbook_out_variables', '').split(',')
 
         data = []
         for variable in output_variables:
@@ -277,8 +277,7 @@ class TcRun(object):
                 'data': None,
                 'variable': variable
             })
-
-            print('Removing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variable))
+            print('Removing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
 
         # delete is handled below.
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
@@ -439,15 +438,15 @@ class TcRun(object):
         command_count = 0
         reports = []
         for sp in selected_profiles:
-            # cleanup old redis data
-            if args.clear:
-                self.clear_data(sp)
+            # create temp directories
+            self._create_tc_dirs(sp)
 
             # profile state tracker
             passed = False
 
-            # create temp directories
-            self._create_tc_dirs(sp)
+            # cleanup old redis data
+            if args.clear:
+                self.clear_data(sp)
 
             # use globally configured sleep time or per profile sleep time (default self.sleep)
             if command_count > 0:
