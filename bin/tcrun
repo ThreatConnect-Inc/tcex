@@ -383,9 +383,6 @@ class TcRun(object):
         command_count = 0
         reports = []
         for sp in selected_profiles:
-            # load install_json (if provided)
-            self._load_install_json(sp.get('install_json'))
-
             # profile state tracker
             passed = False
 
@@ -402,6 +399,9 @@ class TcRun(object):
 
             # divider (add after sleep since sleep only runs after first profile)
             print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
+
+            # load install_json (if provided)
+            self._load_install_json(sp.get('install_json'))
 
             # if install.json provided use programMain, otherwise use script name from tcex.json
             # eventually install.json should be required and script will be removed from tcex.json
