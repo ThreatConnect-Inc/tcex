@@ -79,13 +79,22 @@ class TcRun(object):
     def _load_install_json(self, config_file):
         """Load the install.json configuration file."""
         install_json = {}
+        load_output = '{}{}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.YELLOW, config_file, c.Style.RESET_ALL)
         if config_file is not None and os.path.isfile(config_file):
-            print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
+            # print('install.json File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, config_file))
             with open(config_file) as config_data:
                 install_json = json.load(config_data)
+            load_output += ' {}{}(Loaded){}'.format(
+                c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         else:
-            msg = 'Provided install.json config file does not exist ({}).'.format(config_file)
-            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.YELLOW, msg))
+            # msg = 'Provided install.json config file does not exist ({}).'.format(config_file)
+            # print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.YELLOW, msg))
+            load_output += ' {}{}(Not Found){}'.format(
+                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+
+        # dispaly load status
+        print(load_output)
 
         self.display_name = install_json.get('displayName')
         self.program_language = install_json.get('programLanguage', 'python').lower()
@@ -264,7 +273,7 @@ class TcRun(object):
 
         for file in profile.get('data_files', []):
             if os.path.isfile(file):
-                print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, file))
+                print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
                 # fqfp = os.path.join(self.app_path, file)
 
                 command = [
@@ -394,10 +403,8 @@ class TcRun(object):
 
             command_count += 1
 
-            #
-            # Stage Data
-            #
-            self.stage_data(sp)
+            # divider (add after sleep since sleep only runs after first profile)
+            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
             # if install.json provided use programMain, otherwise use script name from tcex.json
             # eventually install.json should be required and script will be removed from tcex.json
@@ -422,10 +429,14 @@ class TcRun(object):
                     c.Style.BRIGHT, c.Fore.MAGENTA, self.program_version, c.Style.RESET_ALL)
             output += ']'
             print(output)
-            # print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
             if sp.get('description'):
                 print('Description: {}{}{}'.format(
                     c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
+
+            #
+            # Stage Data
+            #
+            self.stage_data(sp)
 
             program_filename = program_main
             if self.program_language == 'python':
@@ -479,9 +490,6 @@ class TcRun(object):
             #     log_file = os.path.join(log_directory, log_file)
             #     print('Logs: {}{}{}'.format(
             #         self.BOLD_CYAN, log_file, self.DEFAULT))
-
-            # divider
-            print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
             #
             # Script Output
