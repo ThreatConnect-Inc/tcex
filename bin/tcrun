@@ -414,10 +414,12 @@ class TcRun(object):
             output += '{}{}{}{} '.format(
                 c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name'), c.Style.RESET_ALL)
             output += '[{}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.GREEN, program_main, c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
             if self.program_version is not None:
-                output += '{}{}{}:{}'.format(
-                    c.Style.BRIGHT, c.Fore.GREEN, self.program_version, c.Style.RESET_ALL)
+                output += '{}:{}'.format(
+                    c.Style.BRIGHT, c.Style.RESET_ALL)
+                output += '{}{}{}{}'.format(
+                    c.Style.BRIGHT, c.Fore.MAGENTA, self.program_version, c.Style.RESET_ALL)
             output += ']'
             print(output)
             # print('Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name')))
