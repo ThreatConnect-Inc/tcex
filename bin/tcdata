@@ -115,10 +115,10 @@ def main():
                 # read from store
                 db_data = tcex.playbook.read(variable)
                 if variable.endswith('Binary') or variable.endswith('BinaryArray'):
-                    tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(
+                    tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(
                         'Excluding Binary Data Output', type(db_data)))
                 else:
-                    tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+                    tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
                 tcex.log.debug(u'- Operator: ({}) -'.format(user_operator))
                 tcex.log.debug(
                     u'<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
