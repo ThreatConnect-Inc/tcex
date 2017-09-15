@@ -48,9 +48,10 @@ class TcLib(object):
         }]
 
         # check for requirements.txt
-        if os.path.isfile('requirements.txt'):
+        if not os.path.isfile('requirements.txt'):
             print('{}{}A requirements.txt file is required to install modules.'.format(
                 c.Style.BRIGHT, c.Fore.RED))
+            sys.exit(1)
 
         # load configuration
         config_data = {}
