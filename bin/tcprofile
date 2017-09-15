@@ -37,25 +37,32 @@ def main():
     # args
     #
     config_args = OrderedDict()
+    config_args['api_default_org'] = '$env.API_DEFAULT_ORG'
     config_args['api_access_id'] = '$env.API_ACCESS_ID'
     config_args['api_secret_key'] = '$envs.API_SECRET_KEY'
-    config_args['logging'] = 'debug'
     config_args['tc_api_path'] = '$env.TC_API_PATH'
+    config_args['tc_log_level'] = 'debug'
     config_args['tc_log_path'] = 'log'
     config_args['tc_log_to_api'] = False
     config_args['tc_out_path'] = 'log'
+    config_args['tc_proxy_external'] = False
+    config_args['tc_proxy_host'] = '$env.TC_PROXY_HOST'
+    config_args['tc_proxy_port'] = '$env.TC_PROXY_PORT'
+    config_args['tc_proxy_password'] = '$envs.TC_PROXY_PASSWORD'
+    config_args['tc_proxy_tc'] = False
+    config_args['tc_proxy_username'] = '$env.TC_PROXY_USERNAME'
     config_args['tc_temp_path'] = 'log'
     if data.get('runtimeLevel') == 'Playbook':
         config_args['tc_playbook_db_type'] = 'Redis'
         config_args['tc_playbook_db_context'] = str(uuid4())
-        config_args['tc_playbook_db_path'] = 'localhost'
-        config_args['tc_playbook_db_port'] = '6379'
+        config_args['tc_playbook_db_path'] = '$env.DB_PATH'
+        config_args['tc_playbook_db_port'] = '$env.DB_PORT'
         config_args['tc_playbook_out_variables'] = ''
 
     for d in data.get('params', []):
         if d.get('type') == 'Boolean':
             config_args[d.get('name')] = d.get('default', False)
-        elif d.get('name') in ['api_secret_id', 'api_secret_key']:
+        elif d.get('name') in ['api_access_id', 'api_secret_key']:
             # leave these parameters set to the value defined above
             pass
         else:

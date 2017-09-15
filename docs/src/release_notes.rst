@@ -6,6 +6,14 @@ Release Notes
 0.5.x
 =====
 
+0.5.20
+------
++ Updated token renewal URL.
++ Updated ``tcprofile`` to include api_default_org, tc_proxy_external, tc_proxy_host, tc_proxy_port, tcp_proxy_password, tc_proxy_tc, tc_proxy_username.
++ Updated ``tcprofile`` changing tc_playbook_db_path and tc_playbook_db_port parameters to environment variables by default.
++ Updated ``tcprofile`` changing **logging** to **tc_log_level**.
++ Updated ``tclib`` to check for requirements.txt.
+
 0.5.19
 ------
 + Updates to tcex.playbook, tcrun, and tcdata to support deleting data from Redis from previous runs.

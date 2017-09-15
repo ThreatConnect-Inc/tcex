@@ -1,21 +1,25 @@
 #
 # Language Exclusions
 #
+
+__pycache__
 *.pyc
 
 #
 # Module Specific Exclusions
 #
+
+__main__.py
 lib*
 *.log
 log
+requirements.txt
 tcex.json
-app.py
-__main__.py
 
 #
 # Docs
 #
+
 docs/src/*example
 docs/src/_build
 docs/src/_static
@@ -24,12 +28,17 @@ docs/src/_templates
 #
 # IDE Exclusions
 #
+
 .c9
+.idea
 .python-version
+.settings
+.vscode
 
 #
 # Other Nonsense
 #
+
 bcs*
 test*
 threatconnect*

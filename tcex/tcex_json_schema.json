@@ -10,6 +10,37 @@
     "displayName": {
       "type": "string"
     },
+    "feeds": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "attributesFile": {
+            "type": "string"
+          },
+          "enableBulkJson": {
+            "type": "boolean"
+          },
+          "documentStorageLimitMb": {
+            "type": "integer"
+          },
+          "indicatorLimit": {
+            "type": "integer"
+          },
+          "jobFile": {
+            "type": "string"
+          },
+          "sourceCategory": {
+            "type": "string"
+          },
+          "sourceDescription": {
+            "type": "string"
+          },
+          "sourceName": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "languageVersion": {
       "type": "string"
     },
@@ -121,7 +152,10 @@
                 "type": "string"
               }
             },
-            "required": ["name", "type"],
+            "required": [
+              "name",
+              "type"
+            ],
             "type": "object"
           },
           "type": "array",

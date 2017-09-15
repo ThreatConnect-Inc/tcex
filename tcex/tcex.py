@@ -103,7 +103,7 @@ class TcEx(object):
             # Renew Token
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
-            r.url = '{}/appAuth'.format(self._args.tc_api_path.strip('api'))
+            r.url = '{}/appAuth'.format(self._args.tc_api_path)
             results = r.send()
             try:
                 data = results.json()

@@ -1,8 +1,8 @@
 .. _building_apps_testing:
 
-Apps are called from the ThreatConnect Platform using Command Line Interface Arguments or CLI Args.  To simulate being called from ThreatConnect the TcEx ``tcrun`` script provides a method for converting a JSON file to CLI Args.  Running ``tcrun`` will read the ``tcex.json`` file and parse the **default** profile in the ``profiles`` parameter array.  To specify a different file the ``--config`` argument can be passed (e.g. ``--config my_config.json``).  To run a specific profile the ``--profile`` argument can be passed (``--profile add-indicator``).  A group of commands can also be run using the ``--group`` argument (e.g. ``--group run-all``).
+Apps are called from the ThreatConnect Platform using Command Line Interface Arguments or CLI Args.  To simulate being called from ThreatConnect the TcEx ``tcrun`` command provides a method for converting a defined JSON structure to CLI Args.  Running ``tcrun`` will read the ``tcex.json`` file and parse the **args** section from the **default** profile in the ``profiles`` parameter array.  To specify a different file the ``--config`` argument can be passed (e.g. ``--config my_config.json``).  To run a specific profile the ``--profile`` argument can be passed (``--profile add-indicator``).  A group of profiles can also be run using the ``--group`` argument (e.g. ``--group run-all``).
 
-.. Note:: When testing a single profile (use case) the ``tcrun`` command would be called using that profile.  Before packaging the App calling ``tcrun`` using a group that will multiple command is typical.
+.. Note:: When testing a single profile (use case) the ``tcrun`` command would be called using that profile.  Before packaging the App calling ``tcrun`` using a group that will run multiple profiles is typical.
 
 Usage
 -----
@@ -54,20 +54,22 @@ Multiple testing profiles can be defined in the **tcex.json** to help testing co
           "slack_api_token": "$envs.SLACK_API_TOKEN",
           "slack_recipient": "@bob"
         },
-        "group": "run-all",
+        "groups": ["run-all"],
+        "install_json": "install.json",
         "quiet": false,
-        "profile_name": "send-slack-message",
-        "script": "slack"
+        "profile_name": "send-slack-message"
       }]
     }
 
-.. Note:: The **args** section should contain all the CLI Args your app requires to run. The **group** section defines which group this profile should run under and the **profile_name** is the name which can be used to run the profile.  The **script** field is the name of the actual Python script to run minus the **.py** extension.  The **quiet** field indicates whether the app should print output.
+.. Note:: The **args** section should contain all the CLI Args your app requires to run. The **groups** section defines which groups this profile should run under and the **profile_name** is the name which can be used to run the profile.  The **quiet** field indicates whether the app should print output.
 
 Profile Creation
 ----------------
-The TcEx framework provides the ``tcprofile`` command to automatically generate a profile from the install.json file.  The output of the ``tcprofile`` command will set the exit_code to 0 by default and will create 2 standard validations for each output variable.  The first validation will check to see if the output variable is **null** and the second will ensure the output variables is the correct type.  Some default values will be added to the args section, but any custom inputs will need to be populated with the appropriate data.
+The TcEx framework provides the ``tcprofile`` command to automatically generate a profile from the install.json file.  The output of the ``tcprofile`` command will set the exit_code to 0 by default, however testing failure scenarios is also possible by setting the exit code to 1. Some default values will be added to the args section, but any custom inputs will need to be populated with the appropriate data.
 
-.. note:: The ``tcprofile`` command can be run multiple times to generate several different profiles with different input variables.
+For playbook Apps the ``tcprofile`` command will also create 2 standard validations for each output variable.  The first validation will check to see if the output variable is **null** and the second will ensure the output variables is the correct type.
+
+.. note:: The ``tcprofile`` command can be run multiple times to generate several different profiles with different input and/or output variables.
 
 .. code-block:: bash
 
@@ -173,7 +175,7 @@ Profile with Data File
 
 Data Validation
 ---------------
-The ``tcrun`` command provides some basic data validation for output variables.  By defining the **validations** parameter array in the **tcex.json** file the ``tcrun`` command will pull the values from the REDIS DB and perform the provided operator on the data.
+The ``tcrun`` command provides some basic data validation for output variables.  By defining the **validations** parameter array in the **tcex.json** file the ``tcrun`` command will pull the values from the REDIS DB and perform the provided operator on the data. This action simulates a downstream App reading the data from REDIS.
 
 **Example Configuration**
 
@@ -220,7 +222,7 @@ The ``tcrun`` command provides some basic data validation for output variables. 
 
 Exit Codes
 ----------
-The ``tcrun`` command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  With exit code you can provide "bad" data to the App and ensure it exits with the proper exit code.
+The ``tcrun`` command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  Using the exit_codes parameter you can provide "bad" data to the App and ensure it exits with the proper exit code.
 
 .. code-block:: javascript
 

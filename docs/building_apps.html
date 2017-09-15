@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building Apps &mdash; TcEx 0.5.19 documentation</title>
+  <title>Building Apps &mdash; TcEx 0.5.20 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.5.19 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.5.20 documentation" href="index.html"/>
         <link rel="next" title="Data Filter" href="data_filter.html"/>
         <link rel="prev" title="Authorization (Token / HMAC)" href="authorization.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.5.19
+                0.5.20
               </div>
             
           
@@ -258,10 +258,10 @@
 </div>
 <div class="section" id="testing-apps-locally">
 <h2>Testing Apps Locally<a class="headerlink" href="#testing-apps-locally" title="Permalink to this headline">¶</a></h2>
-<p id="building-apps-testing">Apps are called from the ThreatConnect Platform using Command Line Interface Arguments or CLI Args.  To simulate being called from ThreatConnect the TcEx <code class="docutils literal"><span class="pre">tcrun</span></code> script provides a method for converting a JSON file to CLI Args.  Running <code class="docutils literal"><span class="pre">tcrun</span></code> will read the <code class="docutils literal"><span class="pre">tcex.json</span></code> file and parse the <strong>default</strong> profile in the <code class="docutils literal"><span class="pre">profiles</span></code> parameter array.  To specify a different file the <code class="docutils literal"><span class="pre">--config</span></code> argument can be passed (e.g. <code class="docutils literal"><span class="pre">--config</span> <span class="pre">my_config.json</span></code>).  To run a specific profile the <code class="docutils literal"><span class="pre">--profile</span></code> argument can be passed (<code class="docutils literal"><span class="pre">--profile</span> <span class="pre">add-indicator</span></code>).  A group of commands can also be run using the <code class="docutils literal"><span class="pre">--group</span></code> argument (e.g. <code class="docutils literal"><span class="pre">--group</span> <span class="pre">run-all</span></code>).</p>
+<p id="building-apps-testing">Apps are called from the ThreatConnect Platform using Command Line Interface Arguments or CLI Args.  To simulate being called from ThreatConnect the TcEx <code class="docutils literal"><span class="pre">tcrun</span></code> command provides a method for converting a defined JSON structure to CLI Args.  Running <code class="docutils literal"><span class="pre">tcrun</span></code> will read the <code class="docutils literal"><span class="pre">tcex.json</span></code> file and parse the <strong>args</strong> section from the <strong>default</strong> profile in the <code class="docutils literal"><span class="pre">profiles</span></code> parameter array.  To specify a different file the <code class="docutils literal"><span class="pre">--config</span></code> argument can be passed (e.g. <code class="docutils literal"><span class="pre">--config</span> <span class="pre">my_config.json</span></code>).  To run a specific profile the <code class="docutils literal"><span class="pre">--profile</span></code> argument can be passed (<code class="docutils literal"><span class="pre">--profile</span> <span class="pre">add-indicator</span></code>).  A group of profiles can also be run using the <code class="docutils literal"><span class="pre">--group</span></code> argument (e.g. <code class="docutils literal"><span class="pre">--group</span> <span class="pre">run-all</span></code>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">When testing a single profile (use case) the <code class="docutils literal"><span class="pre">tcrun</span></code> command would be called using that profile.  Before packaging the App calling <code class="docutils literal"><span class="pre">tcrun</span></code> using a group that will multiple command is typical.</p>
+<p class="last">When testing a single profile (use case) the <code class="docutils literal"><span class="pre">tcrun</span></code> command would be called using that profile.  Before packaging the App calling <code class="docutils literal"><span class="pre">tcrun</span></code> using a group that will run multiple profiles is typical.</p>
 </div>
 <div class="section" id="id2">
 <h3>Usage<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
@@ -313,25 +313,26 @@
       <span class="s2">&quot;slack_api_token&quot;</span><span class="p">:</span> <span class="s2">&quot;$envs.SLACK_API_TOKEN&quot;</span><span class="p">,</span>
       <span class="s2">&quot;slack_recipient&quot;</span><span class="p">:</span> <span class="s2">&quot;@bob&quot;</span>
     <span class="p">},</span>
-    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="s2">&quot;run-all&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;run-all&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;install_json&quot;</span><span class="p">:</span> <span class="s2">&quot;install.json&quot;</span><span class="p">,</span>
     <span class="s2">&quot;quiet&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
-    <span class="s2">&quot;profile_name&quot;</span><span class="p">:</span> <span class="s2">&quot;send-slack-message&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;script&quot;</span><span class="p">:</span> <span class="s2">&quot;slack&quot;</span>
+    <span class="s2">&quot;profile_name&quot;</span><span class="p">:</span> <span class="s2">&quot;send-slack-message&quot;</span>
   <span class="p">}]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <strong>args</strong> section should contain all the CLI Args your app requires to run. The <strong>group</strong> section defines which group this profile should run under and the <strong>profile_name</strong> is the name which can be used to run the profile.  The <strong>script</strong> field is the name of the actual Python script to run minus the <strong>.py</strong> extension.  The <strong>quiet</strong> field indicates whether the app should print output.</p>
+<p class="last">The <strong>args</strong> section should contain all the CLI Args your app requires to run. The <strong>groups</strong> section defines which groups this profile should run under and the <strong>profile_name</strong> is the name which can be used to run the profile.  The <strong>quiet</strong> field indicates whether the app should print output.</p>
 </div>
 </div>
 <div class="section" id="profile-creation">
 <h3>Profile Creation<a class="headerlink" href="#profile-creation" title="Permalink to this headline">¶</a></h3>
-<p>The TcEx framework provides the <code class="docutils literal"><span class="pre">tcprofile</span></code> command to automatically generate a profile from the install.json file.  The output of the <code class="docutils literal"><span class="pre">tcprofile</span></code> command will set the exit_code to 0 by default and will create 2 standard validations for each output variable.  The first validation will check to see if the output variable is <strong>null</strong> and the second will ensure the output variables is the correct type.  Some default values will be added to the args section, but any custom inputs will need to be populated with the appropriate data.</p>
+<p>The TcEx framework provides the <code class="docutils literal"><span class="pre">tcprofile</span></code> command to automatically generate a profile from the install.json file.  The output of the <code class="docutils literal"><span class="pre">tcprofile</span></code> command will set the exit_code to 0 by default, however testing failure scenarios is also possible by setting the exit code to 1. Some default values will be added to the args section, but any custom inputs will need to be populated with the appropriate data.</p>
+<p>For playbook Apps the <code class="docutils literal"><span class="pre">tcprofile</span></code> command will also create 2 standard validations for each output variable.  The first validation will check to see if the output variable is <strong>null</strong> and the second will ensure the output variables is the correct type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input variables.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
 </div>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--config CONFIG<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
 
@@ -437,7 +438,7 @@ optional arguments:
 </div>
 <div class="section" id="data-validation">
 <h3>Data Validation<a class="headerlink" href="#data-validation" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command provides some basic data validation for output variables.  By defining the <strong>validations</strong> parameter array in the <strong>tcex.json</strong> file the <code class="docutils literal"><span class="pre">tcrun</span></code> command will pull the values from the REDIS DB and perform the provided operator on the data.</p>
+<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command provides some basic data validation for output variables.  By defining the <strong>validations</strong> parameter array in the <strong>tcex.json</strong> file the <code class="docutils literal"><span class="pre">tcrun</span></code> command will pull the values from the REDIS DB and perform the provided operator on the data. This action simulates a downstream App reading the data from REDIS.</p>
 <p><strong>Example Configuration</strong></p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s2">&quot;validations&quot;</span><span class="o">:</span> <span class="p">[{</span>
     <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -479,7 +480,7 @@ optional arguments:
 </div>
 <div class="section" id="exit-codes">
 <h3>Exit Codes<a class="headerlink" href="#exit-codes" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  With exit code you can provide “bad” data to the App and ensure it exits with the proper exit code.</p>
+<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  Using the exit_codes parameter you can provide “bad” data to the App and ensure it exits with the proper exit code.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s2">&quot;exit_codes&quot;</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -604,7 +605,7 @@ optional arguments:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.5.19',
+            VERSION:'0.5.20',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
