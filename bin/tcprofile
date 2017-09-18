@@ -87,7 +87,7 @@ def main():
     config['install_json'] = args.config
     config['profile_name'] = profile_name
     config['quiet'] = False
-    config['script'] = data.get('programMain')
+    # config['script'] = data.get('programMain')
 
     #
     # playbook validation

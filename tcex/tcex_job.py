@@ -99,6 +99,8 @@ class TcExJob(object):
                 # attributes, fileData and tags are handled separately
                 continue
             resource_body[param] = value
+            self._tcex.log.debug(u'Adding parameter {}:{}'.format(
+                param, value))
 
         resource.body = json.dumps(resource_body)
         results = resource.request()
@@ -132,8 +134,8 @@ class TcExJob(object):
                 tag_resource = resource.tags(tag.get('name'))
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
-                    err = u'Failed adding tag {} to group {}.'.format(
-                        tag.get('name'), resource_name)
+                    err = u'Failed adding group "{}" ({})'.format(
+                        resource_name, results.get('response').text)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
 
