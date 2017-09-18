@@ -84,7 +84,7 @@ class TcExJob(object):
 
         self._tcex.log.debug(u'Adding {} "{}" in owner {}'.format(
             resource_type, resource_name, owner))
-        resource_body = {'name': resource_name}
+        resource_body = {}
         resource = self._tcex.resource(resource_type)
         resource.http_method = 'POST'
         resource.owner = owner
@@ -95,7 +95,7 @@ class TcExJob(object):
 
         # dynamically handle additional parameters
         for param, value in data.items():
-            if param in ['attribute', 'fileData', 'tag']:
+            if param in ['attribute', 'fileData', 'tag', 'type']:
                 # attributes, fileData and tags are handled separately
                 continue
             resource_body[param] = value
@@ -121,9 +121,10 @@ class TcExJob(object):
                 attribute_resource.body = json.dumps(attribute)
                 a_results = attribute_resource.request()
                 if a_results.get('status') != 'Success':
-                    err = u'Failed adding attribute type {} with value {} to group {}.'
+                    err = u'Failed adding attribute type {} with value {} to group {}. ({})'
                     err = err.format(
-                        attribute.get('type'), attribute.get('value'), resource_name)
+                        attribute.get('type'), attribute.get('value'), resource_name,
+                        a_results.get('response').text)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
 
@@ -134,14 +135,14 @@ class TcExJob(object):
                 tag_resource = resource.tags(tag.get('name'))
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
-                    err = u'Failed adding group "{}" ({})'.format(
-                        resource_name, results.get('response').text)
+                    err = u'Failed adding tag "{}" ({})'.format(
+                        tag, t_results.get('response').text)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
 
             # document upload
             if resource_type == 'Document' and data.get('fileData') is not None:
-                resource.upload(resource_id, data.get('fileData'))
+                resource.upload(resource_id, data.get('fileData').encode('utf-8'))
                 resource.http_method = 'POST'
                 u_results = resource.request()
                 if u_results['response'].status_code == 401:
@@ -152,13 +153,14 @@ class TcExJob(object):
                     u_results = resource.request()
 
                 if u_results.get('status') != 'Success':
-                    err = u'Failed uploading document {} to group {}.'.format(
-                        data.get('fileName'), resource_name)
+                    err = u'Failed uploading document {} to group {}. ({})'.format(
+                        data.get('fileName'), resource_name, u_results.get('response').text)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
         else:
             self._group_results['failed'].append(resource_name)
-            err = u'Failed adding group ({})'.format(resource_name)
+            err = u'Failed adding group "{}" ({})'.format(
+                resource_name, results.get('response').text)
             self._tcex.log.error(err)
             self._tcex.exit_code(3)
 
