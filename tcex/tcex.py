@@ -343,7 +343,7 @@ class TcEx(object):
                     if entry.get('value3Label') is not None and entry.get('value3Label') != '':
                         value_fields.append(entry['value3Label'])
 
-                    # TODO: Add validate option when type is selectone??? Might be bets to let API
+                    # TODO: Add validate option when type is select one??? Might be bets to let API
                     #       handle validation.
                     """
                     value3Label

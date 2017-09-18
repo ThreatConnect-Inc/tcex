@@ -15,6 +15,7 @@ lib*
 log
 requirements.txt
 tcex.json
+tcex.d
 
 #
 # Docs

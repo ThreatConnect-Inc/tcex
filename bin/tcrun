@@ -251,8 +251,7 @@ class TcRun(object):
         return {
             'api_access_id': arg_data.get('api_access_id'),
             'api_secret_key': arg_data.get('api_secret_key'),
-            # 'logging': 'info',
-            'logging': arg_data.get('logging'),
+            'tc_log_level': arg_data.get('tc_log_level', arg_data.get('logging', 'debug')),
             'tc_api_path': arg_data.get('tc_api_path'),
             'tc_log_file': 'data.log',
             'tc_log_path': arg_data.get('tc_log_path'),

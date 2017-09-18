@@ -6,6 +6,12 @@ Release Notes
 0.5.x
 =====
 
+0.5.21
+------
++ Updated ``tcrun`` to use new parameter for logging.
++ Added :py:meth:`~tcex.tcex.TcEx.safe_group_name` method to ensure group meet the required length.
++ Added :py:meth:`~tcex.tcex.TcEx.job` to support upload of file to Document group.
+
 0.5.20
 ------
 + Updated token renewal URL.

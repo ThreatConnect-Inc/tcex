@@ -90,8 +90,15 @@ class TcExJob(object):
         resource.owner = owner
 
         # incident
-        if data.get('eventDate') is not None:
-            resource_body['eventDate'] = data.get('eventDate')
+        # if data.get('eventDate') is not None:
+        #     resource_body['eventDate'] = data.get('eventDate')
+
+        # dynamically handle additional parameters
+        for param, value in data.items():
+            if param in ['attribute', 'fileData', 'tag']:
+                # attributes, fileData and tags are handled separately
+                continue
+            resource_body[param] = value
 
         resource.body = json.dumps(resource_body)
         results = resource.request()
@@ -127,6 +134,24 @@ class TcExJob(object):
                 if t_results.get('status') != 'Success':
                     err = u'Failed adding tag {} to group {}.'.format(
                         tag.get('name'), resource_name)
+                    self._tcex.log.error(err)
+                    self._tcex.exit_code(3)
+
+            # document upload
+            if resource_type == 'Document' and data.get('fileData') is not None:
+                resource.upload(resource_id, data.get('fileData'))
+                resource.http_method = 'POST'
+                u_results = resource.request()
+                if u_results['response'].status_code == 401:
+                    # PUT if document already exists
+                    resource = self._tcex.resource(resource_type)
+                    resource.upload(resource_id, data.get('fileData'))
+                    resource.http_method = 'PUT'
+                    u_results = resource.request()
+
+                if u_results.get('status') != 'Success':
+                    err = u'Failed uploading document {} to group {}.'.format(
+                        data.get('fileName'), resource_name)
                     self._tcex.log.error(err)
                     self._tcex.exit_code(3)
         else:
