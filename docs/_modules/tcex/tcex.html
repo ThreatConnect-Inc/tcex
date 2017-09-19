@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.5.20 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.5.21 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.20 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.21 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.20
+                0.5.21
               </div>
             
           
@@ -518,7 +518,7 @@
                     <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
                         <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;value3Label&#39;</span><span class="p">])</span>
 
-                    <span class="c1"># TODO: Add validate option when type is selectone??? Might be bets to let API</span>
+                    <span class="c1"># TODO: Add validate option when type is select one??? Might be bets to let API</span>
                     <span class="c1">#       handle validation.</span>
                     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                    value3Label</span>
@@ -1064,12 +1064,45 @@
                 <span class="n">resource_type</span> <span class="o">=</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcEx.safe_group_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_group_name">[docs]</a>    <span class="k">def</span> <span class="nf">safe_group_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">group_max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ellipsis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Truncate group name to match limit breaking on space and optionally add an ellipsis.</span>
+
+<span class="sd">        .. note:: Current the ThreatConnect group name limit is 100 characters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">           name_length (string): The raw group name to be truncated</span>
+<span class="sd">           name_value (int): The max length of the group name</span>
+<span class="sd">           ellipsis (boolean): If true the truncated name will have &#39;...&#39; appended.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The truncated group name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39; ...&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="c1"># get the maximun length of the group name</span>
+            <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
+                <span class="n">group_max_length</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ellipsis_value</span><span class="p">)</span>
+
+            <span class="c1"># split name by spaces and reset group_name</span>
+            <span class="n">group_name_array</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">group_name_array</span><span class="p">:</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+                <span class="c1"># truncate</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">group_max_length</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
+                        <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span>
+                    <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="n">group_name</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group_name</span></div>
+
 <div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Truncate tag to match limit (35 characters) of ThreatConnect API.</span>
-
-<span class="sd">        .. Attention:: Once ThreatConnect 5.0 is released this will need to be increased to</span>
-<span class="sd">                       new limit.</span>
+        <span class="sd">&quot;&quot;&quot;Truncate tag to match limit (128 characters) of ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">           tag (string): The tag to be truncated</span>
@@ -1147,7 +1180,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.20',
+            VERSION:'0.5.21',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

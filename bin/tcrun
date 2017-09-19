@@ -317,6 +317,7 @@ class TcRun(object):
         """Stage any required data."""
 
         arg_data = self.data_args(profile.get('args'))
+        data_owner = profile.get('data_owner')
         parameters = self.parameters_python(arg_data)
 
         for file in profile.get('data_files', []):
@@ -329,8 +330,11 @@ class TcRun(object):
                     '--data_file',
                     file,
                     '--action',
-                    'stage'
+                    'stage',
                 ]
+                if data_owner is not None:
+                    command.append('--data_owner')
+                    command.append(data_owner)
                 exe_command = command + parameters.get('unmasked')
 
                 # display command being run

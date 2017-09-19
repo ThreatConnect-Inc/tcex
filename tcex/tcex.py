@@ -908,15 +908,18 @@ class TcEx(object):
             if ellipsis:
                 group_max_length -= len(ellipsis_value)
 
-            for word in group_name.split(' '):
+            # split name by spaces and reset group_name
+            group_name_array = group_name.split(' ')
+            group_name = ''
+
+            for word in group_name_array:
                 word = u'{}'.format(word)
 
                 # truncate
                 if len(group_name) + len(word) >= group_max_length:
                     if ellipsis:
                         group_name = '{} ...'.format(group_name)
-                    else:
-                        group_name = group_name.lstrip(' ')
+                    group_name = group_name.lstrip(' ')
                     break
                 group_name += ' {}'.format(word)
 

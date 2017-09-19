@@ -23,6 +23,7 @@ class TcExJob(object):
         self._tcex = tcex
 
         # containers
+        self._associations = []
         self._file_occurrences = []
         self._group_cache = {}
         self._group_cache_id = {}
@@ -189,6 +190,42 @@ class TcExJob(object):
             resource.occurrence(occurrence.pop('hash'))
             resource.body = json.dumps(occurrence)
             resource.request()
+
+    def _process_association(self, owner):
+        """Process groups and write to TC API
+
+        Args:
+            owner (string):  The owner name for the indicator to be written
+        """
+        for a in self._associations:
+            self._tcex.log.info(u'creating association: resource {} association {}'.format(
+                a.get('resource_value'), a.get('association_value')))
+
+            association_type = a.get('association_type')
+            association_id = a.get('association_value')
+            resource_type = a.get('resource_type')
+            resource_id = a.get('resource_value')
+            # get group id from group name (duplicate group names not supported)
+            if resource_type in self._tcex.group_types:
+                resource_id = self.group_id(resource_id, owner, resource_type)
+            if association_type in self._tcex.group_types:
+                association_id = self.group_id(association_id, owner, association_type)
+
+            resource = self._tcex.resource(resource_type)
+            resource.http_method = 'POST'
+            resource.resource_id(resource_id)
+            resource.owner = owner
+            resource.url = self._tcex._args.tc_api_path
+
+            ar = self._tcex.resource(association_type)
+            ar.resource_id(association_id)
+            association_resource = resource.association_pivot(ar)
+            association_results = association_resource.request()
+            if association_results.get('status') != 'Success':
+                err = 'Failed adding assocation ({}).'.format(
+                    association_results.get('response').text)
+                self._tcex.log.error(err)
+                self._tcex.exit_code(3)
 
     def _process_group_association(self, owner):
         """Process groups and write to TC API
@@ -520,6 +557,46 @@ class TcExJob(object):
 
             self._indicators_response.append(results_data)
 
+    def association(self, associations):
+        """Add association data to TcEx job.
+
+        This method will add association data to the association list.
+
+        .. Warning:: There is no validation of the data passed to this method.
+
+        **Example Data** *(required fields are highlighted)*
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+            :emphasize-lines: 2-5
+
+            [{
+              'association_value': '1.1.1.1',
+              'association_type': 'Address',
+              'resource_value': 'adversary-002',
+              'resource_type': 'Adversary'
+            },{
+              'association_value': 'adversary-001',
+              'association_type': 'Adversary',
+              'resource_value': '1.1.1.1',
+              'resource_type': 'Address'
+            },{
+              'association_value': 'adversary-001',
+              'association_type': 'Adversary',
+              'resource_value': 'threat-001',
+              'resource_type': 'Threat',
+            }]
+
+        Args:
+            associations (dict | list): Dictionary or List containing
+                association data
+        """
+        if isinstance(associations, list):
+            self._associations.extend(associations)
+        elif isinstance(associations, dict):
+            self._associations.append(associations)
+
     def batch_action(self, action):
         """Set the default batch action for argument parser.
 
@@ -836,7 +913,6 @@ class TcExJob(object):
         Returns:
             (dictionary): Dictionary of group resources
         """
-
         # already cached
         if owner in self._group_cache:
             if resource_type in self._group_cache.get(owner):
@@ -851,7 +927,7 @@ class TcExJob(object):
         resource.url = self._tcex._args.tc_api_path
         data = []
         for results in resource:
-            if results['status'] == 'Success':
+            if results.get('status') == 'Success':
                 data += results.get('data')
             else:
                 err = u'Failed retrieving result during pagination.'
@@ -860,14 +936,15 @@ class TcExJob(object):
 
         for group in data:
             self._tcex.log.debug(u'cache - group name: ({})'.format(group.get('name')))
-            if self._group_cache.get(owner, {}).get(resource_type, {}).get(group.get('name')) is not None:
+            dup = self._group_cache.get(owner, {}).get(resource_type, {}).get(group.get('name'))
+            if dup is not None:
                 warn = u'A duplicate Group name was found ({}). '
                 warn += u'Duplicates are not supported in cache.'
                 warn = warn.format(group.get('name'))
                 self._tcex.log.warning(warn)
-            self._group_cache[owner][resource_type][group['name']] = group['id']
+            self._group_cache[owner][resource_type][group['name']] = group.get('id')
 
-        return self._group_cache[owner][resource_type]
+        return self._group_cache.get(owner).get(resource_type)
 
     def group_id(self, name, owner, resource_type):
         """Get the group id from the group cache.
@@ -880,17 +957,13 @@ class TcExJob(object):
         Returns:
             (integer): The ID for the provided group name and owner.
         """
-        group_id = None
-
-        if owner not in self._group_cache:
+        self._tcex.log.debug('Retrieving {} ID for group "{}" in "{}".'.format(
+            resource_type, name, owner
+        ))
+        if self._group_cache.get(owner, {}).get(resource_type) is None:
             self.group_cache(owner, resource_type)
-        elif resource_type not in self._group_cache[owner]:
-            self.group_cache(owner, resource_type)
 
-        if name in self._group_cache[owner][resource_type]:
-            group_id = self._group_cache[owner][resource_type][name]
-
-        return group_id
+        return self._group_cache.get(owner, {}).get(resource_type, {}).get(name)
 
     def group_cache_type(self, group_id, owner):
         """Get the group type for the provided group id
@@ -1064,3 +1137,7 @@ class TcExJob(object):
         if self._group_associations:
             self._tcex.log.info(u'Processing Group Associations')
             self._process_group_association(owner)
+
+        if self._associations:
+            self._tcex.log.info(u'Processing Associations')
+            self._process_association(owner)

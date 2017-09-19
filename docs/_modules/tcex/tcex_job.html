@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.5.20 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.5.21 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.20 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.21 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.20
+                0.5.21
               </div>
             
           
@@ -198,6 +198,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
         <span class="c1"># containers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_occurrences</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache_id</span> <span class="o">=</span> <span class="p">{}</span>
@@ -259,14 +260,23 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot; in owner </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">))</span>
-        <span class="n">resource_body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">resource_name</span><span class="p">}</span>
+        <span class="n">resource_body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
 
         <span class="c1"># incident</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">resource_body</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">)</span>
+        <span class="c1"># if data.get(&#39;eventDate&#39;) is not None:</span>
+        <span class="c1">#     resource_body[&#39;eventDate&#39;] = data.get(&#39;eventDate&#39;)</span>
+
+        <span class="c1"># dynamically handle additional parameters</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;fileData&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+                <span class="c1"># attributes, fileData and tags are handled separately</span>
+                <span class="k">continue</span>
+            <span class="n">resource_body</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Adding parameter </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 
         <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">resource_body</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -287,9 +297,10 @@
                 <span class="n">attribute_resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
                 <span class="n">a_results</span> <span class="o">=</span> <span class="n">attribute_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> with value </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> with value </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">. (</span><span class="si">{}</span><span class="s1">)&#39;</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">)</span>
+                        <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">,</span>
+                        <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -300,13 +311,32 @@
                 <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="n">t_results</span> <span class="o">=</span> <span class="n">tag_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">t_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding tag </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">)</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding tag &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">tag</span><span class="p">,</span> <span class="n">t_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="c1"># document upload</span>
+            <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
+                <span class="n">u_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">u_results</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
+                    <span class="c1"># PUT if document already exists</span>
+                    <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">))</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;PUT&#39;</span>
+                    <span class="n">u_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">u_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed uploading document </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">u_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding group (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding group &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource_name</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
@@ -335,6 +365,42 @@
             <span class="n">resource</span><span class="o">.</span><span class="n">occurrence</span><span class="p">(</span><span class="n">occurrence</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;hash&#39;</span><span class="p">))</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">occurrence</span><span class="p">)</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TcExJob._process_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_association">[docs]</a>    <span class="k">def</span> <span class="nf">_process_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process groups and write to TC API</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;creating association: resource </span><span class="si">{}</span><span class="s1"> association </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resource_value&#39;</span><span class="p">),</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;association_value&#39;</span><span class="p">)))</span>
+
+            <span class="n">association_type</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;association_type&#39;</span><span class="p">)</span>
+            <span class="n">association_id</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;association_value&#39;</span><span class="p">)</span>
+            <span class="n">resource_type</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resource_type&#39;</span><span class="p">)</span>
+            <span class="n">resource_id</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resource_value&#39;</span><span class="p">)</span>
+            <span class="c1"># get group id from group name (duplicate group names not supported)</span>
+            <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">:</span>
+                <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">association_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">:</span>
+                <span class="n">association_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">association_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">association_type</span><span class="p">)</span>
+
+            <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
+
+            <span class="n">ar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">association_type</span><span class="p">)</span>
+            <span class="n">ar</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">association_id</span><span class="p">)</span>
+            <span class="n">association_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">association_pivot</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
+            <span class="n">association_results</span> <span class="o">=</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">association_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding assocation (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">association_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_group_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_group_association">[docs]</a>    <span class="k">def</span> <span class="nf">_process_group_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process groups and write to TC API</span>
@@ -666,6 +732,46 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_data</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExJob.association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association">[docs]</a>    <span class="k">def</span> <span class="nf">association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">associations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add association data to TcEx job.</span>
+
+<span class="sd">        This method will add association data to the association list.</span>
+
+<span class="sd">        .. Warning:: There is no validation of the data passed to this method.</span>
+
+<span class="sd">        **Example Data** *(required fields are highlighted)*</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+<span class="sd">            :emphasize-lines: 2-5</span>
+
+<span class="sd">            [{</span>
+<span class="sd">              &#39;association_value&#39;: &#39;1.1.1.1&#39;,</span>
+<span class="sd">              &#39;association_type&#39;: &#39;Address&#39;,</span>
+<span class="sd">              &#39;resource_value&#39;: &#39;adversary-002&#39;,</span>
+<span class="sd">              &#39;resource_type&#39;: &#39;Adversary&#39;</span>
+<span class="sd">            },{</span>
+<span class="sd">              &#39;association_value&#39;: &#39;adversary-001&#39;,</span>
+<span class="sd">              &#39;association_type&#39;: &#39;Adversary&#39;,</span>
+<span class="sd">              &#39;resource_value&#39;: &#39;1.1.1.1&#39;,</span>
+<span class="sd">              &#39;resource_type&#39;: &#39;Address&#39;</span>
+<span class="sd">            },{</span>
+<span class="sd">              &#39;association_value&#39;: &#39;adversary-001&#39;,</span>
+<span class="sd">              &#39;association_type&#39;: &#39;Adversary&#39;,</span>
+<span class="sd">              &#39;resource_value&#39;: &#39;threat-001&#39;,</span>
+<span class="sd">              &#39;resource_type&#39;: &#39;Threat&#39;,</span>
+<span class="sd">            }]</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            associations (dict | list): Dictionary or List containing</span>
+<span class="sd">                association data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">associations</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">associations</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">associations</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">associations</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="TcExJob.batch_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_action">[docs]</a>    <span class="k">def</span> <span class="nf">batch_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the default batch action for argument parser.</span>
 
@@ -982,7 +1088,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Dictionary of group resources</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># already cached</span>
         <span class="k">if</span> <span class="n">owner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">):</span>
@@ -997,7 +1102,7 @@
         <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">+=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed retrieving result during pagination.&#39;</span>
@@ -1006,14 +1111,15 @@
 
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;cache - group name: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)))</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">dup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;A duplicate Group name was found (</span><span class="si">{}</span><span class="s1">). &#39;</span>
                 <span class="n">warn</span> <span class="o">+=</span> <span class="sa">u</span><span class="s1">&#39;Duplicates are not supported in cache.&#39;</span>
                 <span class="n">warn</span> <span class="o">=</span> <span class="n">warn</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob.group_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_id">[docs]</a>    <span class="k">def</span> <span class="nf">group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the group id from the group cache.</span>
@@ -1026,17 +1132,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The ID for the provided group name and owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">group_id</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">owner</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Retrieving </span><span class="si">{}</span><span class="s1"> ID for group &quot;</span><span class="si">{}</span><span class="s1">&quot; in &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resource_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span>
+        <span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">group_cache</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">resource_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">group_cache</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">]:</span>
-            <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">group_id</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob.group_cache_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_type">[docs]</a>    <span class="k">def</span> <span class="nf">group_cache_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the group type for the provided group id</span>
@@ -1209,7 +1311,11 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Processing Group Associations&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_process_group_association</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_group_association</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Processing Associations&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_process_association</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1245,7 +1351,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.20',
+            VERSION:'0.5.21',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

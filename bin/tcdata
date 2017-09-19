@@ -20,131 +20,195 @@ tcex = TcEx()
 tcex.parser.add_argument('--action', help='The action to perform.', required=True)
 tcex.parser.add_argument(
     '--data_file', help='The file containing the data to stage.', required=True)
-
+tcex.parser.add_argument(
+    '--data_owner', help='The owner for staging ThreatConnect data.', required=False)
 args = tcex.args
 
 
-def data_endswith(db_data, user_data):
-    """Validate data ends with user data"""
-    if db_data.endswith(user_data):
-        return True
-    return False
+class TcData(object):
+    """Manage testing Data"""
 
+    def __init__(self, arg_data):
+        """ """
+        self._args = arg_data
+        self.data = []
+        # Define common comparison operators
+        self._operators = {
+            'eq': operator.eq,
+            'ew': self.data_endswith,
+            'ge': operator.ge,
+            'gt': operator.gt,
+            'in': self.data_in,
+            'ni': self.data_not_in,
+            'it': self.data_it,  # is type
+            'lt': operator.lt,
+            'le': operator.le,
+            'ne': operator.ne,
+            'sw': self.data_startswith
+        }
+        self.load_data(arg_data.data_file)
 
-def data_in(db_data, user_data):
-    """Validate data in user data"""
-    if db_data in user_data:
-        return True
-    return False
-
-
-def data_it(db_data, user_type):
-    """Validate data is Type"""
-    data_type = {
-        'array': list,
-        'binary': bytes,
-        'bytes': bytes,
-        'dict': dict,
-        'entity': dict,
-        'list': list,
-        'str': str,
-        'string': str
-    }
-    # user_type_tuple = tuple([data_type[t] for t in user_types])
-    # if isinstance(db_data, user_type_tuple):
-    if user_type is None:
-        if db_data is None:
+    @staticmethod
+    def data_endswith(db_data, user_data):
+        """Validate data ends with user data"""
+        if db_data.endswith(user_data):
             return True
-    elif user_type.lower() in ['null', 'none']:
-        if db_data is None:
+        return False
+
+    @staticmethod
+    def data_in(db_data, user_data):
+        """Validate data in user data"""
+        if db_data in user_data:
             return True
-    elif data_type.get(user_type.lower()) is not None:
-        if isinstance(db_data, data_type.get(user_type.lower())):
+        return False
+
+    @staticmethod
+    def data_it(db_data, user_type):
+        """Validate data is Type"""
+        data_type = {
+            'array': list,
+            'binary': bytes,
+            'bytes': bytes,
+            'dict': dict,
+            'entity': dict,
+            'list': list,
+            'str': str,
+            'string': str
+        }
+        # user_type_tuple = tuple([data_type[t] for t in user_types])
+        # if isinstance(db_data, user_type_tuple):
+        if user_type is None:
+            if db_data is None:
+                return True
+        elif user_type.lower() in ['null', 'none']:
+            if db_data is None:
+                return True
+        elif data_type.get(user_type.lower()) is not None:
+            if isinstance(db_data, data_type.get(user_type.lower())):
+                return True
+        return False
+
+    @staticmethod
+    def data_not_in(db_data, user_data):
+        """Validate data not in user data"""
+        if db_data not in user_data:
             return True
-    return False
+        return False
 
+    @staticmethod
+    def data_startswith(db_data, user_data):
+        """Validate data starts with user data"""
+        if db_data.startswith(user_data):
+            return True
+        return False
 
-def data_not_in(db_data, user_data):
-    """Validate data not in user data"""
-    if db_data not in user_data:
-        return True
-    return False
+    def load_data(self, data_file):
+        """Load the data file"""
+        data_file = os.path.abspath(data_file)
+        if os.path.isfile(data_file):  # double check file exist
+            f = open(data_file, 'r')
+            data_array = json.load(f)
+            f.close()
+        else:
+            tcex.log.error(u'Could not open data file ({}).'.format(data_file))
+            tcex.exit(1)
+        self.data = data_array
 
+    def clear(self):
+        """Clear Data"""
+        for data in self.data:
+            if data.get('data_type') == 'redis':
+                self.redis_clear(data.get('variable'))
 
-def data_startswith(db_data, user_data):
-    """Validate data starts with user data"""
-    if db_data.startswith(user_data):
-        return True
-    return False
+    def redis_clear(self, variable):
+        """Clear Data in Redis"""
+        tcex.playbook.delete(variable)
 
+    def stage(self):
+        """Stage Data"""
+        for data in self.data:
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
+                self.redis_stage(data.get('variable'), data.get('data'))
+            elif data_type == 'threatconnect':
+                self.tc_stage(data)
 
-def main():
-    """Main Logic"""
-    # Define common comparison operators
-    operators = {
-        'eq': operator.eq,
-        'ew': data_endswith,
-        'ge': operator.ge,
-        'gt': operator.gt,
-        'in': data_in,
-        'ni': data_not_in,
-        'it': data_it,  # is type
-        'lt': operator.lt,
-        'le': operator.le,
-        'ne': operator.ne,
-        'sw': data_startswith
-    }
-
-    data_file = os.path.abspath(args.data_file)
-    if os.path.isfile(data_file):  # double check file exist
-        f = open(data_file, 'r')
-        data_array = json.load(f)
-        f.close()
-
-        for ddata in data_array:
-            variable = ddata.get('variable')
-            user_data = ddata.get('data')
-            if isinstance(user_data, int):
-                user_data = str(ddata.get('data'))
-            user_operator = ddata.get('operator', 'eq')
-
-            if args.action == 'clear':
-                tcex.playbook.delete(variable)
-            elif args.action == 'validate':
-                tcex.log.info(u'Validating output variable {}'.format(variable))
-                # read from store
-                db_data = tcex.playbook.read(variable)
-                if variable.endswith('Binary') or variable.endswith('BinaryArray'):
-                    tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(
-                        'Excluding Binary Data Output', type(db_data)))
-                else:
-                    tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
-                tcex.log.debug(u'- Operator: ({}) -'.format(user_operator))
-                tcex.log.debug(
-                    u'<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
-
-                if user_operator in operators and operators.get(user_operator)(db_data, user_data):
-                    tcex.log.info(u'Validation was successful')
-                else:
-                    tcex.log.error(u'Validation failed for variable: {}'.format(variable))
-                    sys.exit(1)
-            elif args.action == 'stage':
-                if variable.endswith('Binary'):
-                    user_data = base64.b64decode(user_data)
-                tcex.log.info(u'Creating variable {}'.format(variable))
-                tcex.playbook.create(variable, user_data)
+        # submit job when staging tc data
+        if data_type == 'threatconnect':
+            if args.data_owner is not None:
+                tcex.jobs.process(args.data_owner)
             else:
-                tcex.log.info(u'Invalid action provided: {}'.format(args.action))
-                sys.exit(1)
-    else:
-        tcex.log.error(u'Could not open data file ({}).'.format(data_file))
+                err = 'No Owner was provided to stage the data.'
+                tcex.log.error(err)
+                tcex.exit(1)
 
-    sys.exit(0)
+    def redis_stage(self, variable, data):
+        """Stage Redis Data"""
+        if isinstance(data, int):
+            data = str(data)
+        if variable.endswith('Binary'):
+            data = base64.b64decode(data)
+        tcex.log.info(u'Creating variable {}'.format(variable))
+        tcex.playbook.create(variable, data)
+
+    def tc_stage(self, data):
+        """Stage ThreatConnect Data"""
+        resource_data = data.get('data')
+        if resource_data.get('type') == 'Association':
+            resource_data.pop('type')
+            tcex.jobs.association(resource_data)
+        elif resource_data.get('type') == 'Group Association':
+            resource_data.pop('type')
+            tcex.jobs.group_association(resource_data)
+        elif resource_data.get('type') in tcex.indicator_types:
+            tcex.jobs.indicator(resource_data)
+        elif resource_data.get('type') in tcex.group_types:
+            tcex.jobs.group(resource_data)
+
+    def validate(self):
+        """Validate Data"""
+        for data in self.data:
+            if data.get('data_type') == 'redis':
+                self.redis_validate(
+                    data.get('variable'), data.get('data'), data.get('operator', 'eq'))
+
+    def redis_validate(self, variable, data, oper):
+        """Validate Data"""
+        if isinstance(data, int):
+            data = str(data)
+        tcex.log.info(u'Validating output variable {}'.format(variable))
+
+        # retrieve data from db
+        db_data = tcex.playbook.read(variable)
+        if variable.endswith('Binary') or variable.endswith('BinaryArray'):
+            tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(
+                'Excluding Binary Data Output', type(db_data)))
+        else:
+            tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+        tcex.log.debug(u'- Operator: ({}) -'.format(oper))
+        tcex.log.debug(u'<- Validation Data: ({}), Type: [{}]'.format(data, type(data)))
+
+        if oper in self._operators and self._operators.get(oper)(db_data, data):
+            tcex.log.info(u'Validation was successful')
+        else:
+            tcex.log.error(u'Validation failed for variable: {}'.format(variable))
+            tcex.exit(1)
 
 
 if __name__ == '__main__':
     try:
-        main()
+        tcd = TcData(args)
+        # tcd.run()
+        if args.action == 'clear':
+            tcd.clear()
+        elif args.action == 'stage':
+            tcd.stage()
+        elif args.action == 'validate':
+            tcd.validate()
+        else:
+            tcex.log.info(u'Invalid action provided: {}'.format(args.action))
+            tcex.exit(1)
+        tcex.exit()
     except Exception as e:
         # TODO: Update this, possibly raise
         tcex.log.error(u'Generic Failure ({}).'.format(traceback.format_exc()))
