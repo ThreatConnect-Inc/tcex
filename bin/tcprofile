@@ -19,6 +19,8 @@ parser.add_argument(
     help='The install.json file name. (default: "install.json")')
 parser.add_argument(
     '--outfile', help='File to output or append profile.')
+parser.add_argument(
+    '--update_only', action='store_true', help='Update existing profiles.')
 args, extra_args = parser.parse_known_args()
 
 c.init(autoreset=True, strip=False)
@@ -26,6 +28,28 @@ c.init(autoreset=True, strip=False)
 
 def main():
     """Generate a profile for an App"""
+    if args.update_only and args.outfile is not None:
+        if os.path.isfile(args.outfile):
+            # append
+            with open(args.outfile, 'r+') as fh:
+                try:
+                    data = json.load(fh, object_pairs_hook=OrderedDict)
+                except ValueError as e:
+                    print('{}{}Can not parse JSON data ({}).'.format(c.Style.BRIGHT, c.Fore.RED, e))
+                    sys.exit(1)
+                # update data
+                if isinstance(data, (dict)) and data.get('profiles') is not None:
+                    # update schema for existing profiles
+                    for profile in data['profiles']:
+                        update_profile(profile)
+                else:
+                    for profile in data:
+                        update_profile(profile)
+                fh.seek(0)
+                fh.write(json.dumps(data, indent=2))
+                fh.truncate()
+        sys.exit()
+
     if not os.path.isfile(args.config):
         print('{}{}Configuration file ({}) could not be found.'.format(
             c.Style.BRIGHT, c.Fore.CYAN, args.config))
@@ -87,7 +111,6 @@ def main():
     config['install_json'] = args.config
     config['profile_name'] = profile_name
     config['quiet'] = False
-    # config['script'] = data.get('programMain')
 
     #
     # playbook validation
@@ -104,9 +127,11 @@ def main():
             od = OrderedDict()
             if d.get('type').endswith('Array'):
                 od['data'] = [None, []]
+                od['data_type'] = 'redis'
                 od['operator'] = 'ni'
             else:
                 od['data'] = None
+                od['data_type'] = 'redis'
                 od['operator'] = 'ne'
             od['variable'] = variable
             validations.append(od)
@@ -115,12 +140,15 @@ def main():
             od = OrderedDict()
             if d.get('type').endswith('Array'):
                 od['data'] = 'array'
+                od['data_type'] = 'redis'
                 od['operator'] = 'it'
             elif d.get('type').endswith('Entity') or d.get('type') == 'KeyValue':
                 od['data'] = 'entity'
+                od['data_type'] = 'redis'
                 od['operator'] = 'it'
             else:
                 od['data'] = 'string'
+                od['data_type'] = 'redis'
                 od['operator'] = 'it'
             od['variable'] = variable
             validations.append(od)
@@ -140,8 +168,13 @@ def main():
                     sys.exit(1)
                 # update data
                 if isinstance(data, (dict)) and data.get('profiles') is not None:
+                    # update schema for existing profiles
+                    for profile in data['profiles']:
+                        update_profile(profile)
                     data['profiles'].append(config)
                 else:
+                    for profile in data:
+                        update_profile(profile)
                     data.append(config)
                 fh.seek(0)
                 fh.write(json.dumps(data, indent=2))
@@ -154,6 +187,26 @@ def main():
                 fh.write(json.dumps(data, indent=2))
     else:
         print(json.dumps(config, indent=2))
+
+    sys.exit()
+
+
+def update_profile(profile):
+    """Update an existing profile with new parameters or remove deprecated parameters"""
+    # warn about missing install_json parameter
+    if profile.get('install_json') is None:
+        print('{}{}Missing install_json parameter for profile {}.'.format(
+            c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')))
+
+    # cleanup
+    if (profile.get('install_json') is not None and
+            profile.get('script') is not None):
+        profile.pop('script')
+
+    # update old profiles with new "data_type" field.
+    for validation in profile.get('validations'):
+        if validation.get('data_type') is None:
+            validation['data_type'] = 'redis'
 
 
 if __name__ == '__main__':

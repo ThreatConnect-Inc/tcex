@@ -373,6 +373,8 @@ class TcExJob(object):
                         time.sleep(self._tcex._args.batch_poll_interval)
                         poll_time += self._tcex._args.batch_poll_interval
             else:
+                self._tcex.log.warning('API request failed ({}).'.format(
+                    results.get('response').text))
                 # TODO: move this and above duplicate code to "if halt" below after validating logic
                 self._tcex.exit_code(1)
                 # all indicator in chunk will be not_saved

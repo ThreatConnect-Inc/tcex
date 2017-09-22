@@ -117,7 +117,8 @@ class TcData(object):
     def clear(self):
         """Clear Data"""
         for data in self.data:
-            if data.get('data_type') == 'redis':
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
                 self.redis_clear(data.get('variable'))
 
     def redis_clear(self, variable):
@@ -142,7 +143,8 @@ class TcData(object):
                 tcex.log.error(err)
                 tcex.exit(1)
 
-    def redis_stage(self, variable, data):
+    @staticmethod
+    def redis_stage(variable, data):
         """Stage Redis Data"""
         if isinstance(data, int):
             data = str(data)
@@ -151,7 +153,8 @@ class TcData(object):
         tcex.log.info(u'Creating variable {}'.format(variable))
         tcex.playbook.create(variable, data)
 
-    def tc_stage(self, data):
+    @staticmethod
+    def tc_stage(data):
         """Stage ThreatConnect Data"""
         resource_data = data.get('data')
         if resource_data.get('type') == 'Association':
@@ -168,7 +171,8 @@ class TcData(object):
     def validate(self):
         """Validate Data"""
         for data in self.data:
-            if data.get('data_type') == 'redis':
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
                 self.redis_validate(
                     data.get('variable'), data.get('data'), data.get('operator', 'eq'))
 
@@ -200,10 +204,13 @@ if __name__ == '__main__':
         tcd = TcData(args)
         # tcd.run()
         if args.action == 'clear':
+            tcex.log.info('TcData Clear')
             tcd.clear()
         elif args.action == 'stage':
+            tcex.log.info('TcData Stage')
             tcd.stage()
         elif args.action == 'validate':
+            tcex.log.info('TcData Validate')
             tcd.validate()
         else:
             tcex.log.info(u'Invalid action provided: {}'.format(args.action))

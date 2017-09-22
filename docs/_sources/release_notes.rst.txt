@@ -6,6 +6,13 @@ Release Notes
 0.5.x
 =====
 
+0.5.22
+------
++ Updated ``tcprofile`` to support new parameters.
++ Updated ``tcdata`` to properly handle older tcex.json files.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method handle unicode error.
++ Added additional logging to TcEx Job for logging API response.
+
 0.5.21
 ------
 + Added :py:meth:`~tcex.tcex.TcEx.job` association feature to handle group->indicator and group->group associations.

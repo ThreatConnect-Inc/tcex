@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.5.21 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.5.22 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.21 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.22 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.21
+                0.5.22
               </div>
             
           
@@ -548,6 +548,8 @@
                         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">)</span>
                         <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;API request failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
                 <span class="c1"># TODO: move this and above duplicate code to &quot;if halt&quot; below after validating logic</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="c1"># all indicator in chunk will be not_saved</span>
@@ -1351,7 +1353,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.21',
+            VERSION:'0.5.22',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

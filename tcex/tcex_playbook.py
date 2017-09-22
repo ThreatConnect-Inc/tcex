@@ -302,7 +302,10 @@ class TcExPlaybook(object):
         """
         if data is not None:
             data = data.strip()
-            variables = re.findall(self._vars_match, str(data))
+            try:
+                variables = re.findall(self._vars_match, str(data))
+            except UnicodeEncodeError:
+                variables = re.findall(self._vars_match, data)
             for var in variables:
                 # regex will capture quotes around variables, which needs to be removed
                 # key_type = self.variable_type(var.strip('"'))
