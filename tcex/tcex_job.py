@@ -271,7 +271,7 @@ class TcExJob(object):
                 if group_id is not None:
                     self._group_cache[owner][group.get('type')][group.get('name')] = group_id
                     self._tcex.log.info(
-                        u'Creating group {} [{}]'.format(group.get('name'), group_id))
+                        u'Creating Group {} [{}]'.format(group.get('name'), group_id))
                 elif self._tcex.args.batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
@@ -280,7 +280,7 @@ class TcExJob(object):
                 self._group_results['cached'].append(group.get('name'))
                 self._group_results['saved'].append(group.get('name'))
                 self._group_results['not_saved'].remove(group.get('name'))
-                self._tcex.log.debug(u'Existing Group ({})'.format(group.get('name')))
+                self._tcex.log.info(u'Existing Group ({})'.format(group.get('name')))
 
     def _process_indicators(self, owner, batch):
         """Process batch indicators and write to TC API

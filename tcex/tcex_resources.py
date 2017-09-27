@@ -308,7 +308,8 @@ class Resource(object):
         """The ThreatConnect API branch base (parent branch) for this resource.
 
         Return:
-            (str): The **indicators** endpoint from ``/v2/indicators`` or ``/v2/indicators/addresses``.
+            (str): The **indicators** endpoint from ``/v2/indicators`` or
+                   ``/v2/indicators/addresses``.
         """
         return self._api_branch_base
 

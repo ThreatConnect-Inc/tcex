@@ -6,6 +6,13 @@ Release Notes
 0.5.x
 =====
 
+0.5.23
+------
++ Replace use of ``str()`` in TcEx playbook module.
++ Updated ``tcrun`` to pass data_owner for each action on ``tcdata``.
++ Updated ``tcdata`` to stage TC data via ``/v2`` instead of batch.
++ Updated ``tcdata`` write Entity out as variable.
+
 0.5.22
 ------
 + Updated ``tcprofile`` to support new parameters.

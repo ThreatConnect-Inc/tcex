@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.5.22 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.5.23 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.22 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.5.23 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.22
+                0.5.23
               </div>
             
           
@@ -478,7 +478,8 @@
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                <span class="c1"># variables = re.findall(self._vars_match, str(data))</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
                 <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
@@ -750,8 +751,10 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+                <span class="c1"># value = str(value)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="c1"># data = self._db.create(key.strip(), str(json.dumps(value)))</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -774,7 +777,10 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                        <span class="c1"># reverted the previous change where data was encoded due to issues where</span>
+                        <span class="c1"># it broke the operator method in py3 (e.g. b&#39;1&#39; ne &#39;1&#39;).</span>
+                        <span class="c1"># data = str(data)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -1150,7 +1156,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.22',
+            VERSION:'0.5.23',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

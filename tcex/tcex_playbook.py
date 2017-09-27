@@ -303,7 +303,8 @@ class TcExPlaybook(object):
         if data is not None:
             data = data.strip()
             try:
-                variables = re.findall(self._vars_match, str(data))
+                # variables = re.findall(self._vars_match, str(data))
+                variables = re.findall(self._vars_match, u'{}'.format(data))
             except UnicodeEncodeError:
                 variables = re.findall(self._vars_match, data)
             for var in variables:
@@ -575,8 +576,10 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             if isinstance(value, (bool, list, int, dict)):
-                value = str(value)
-            data = self._db.create(key.strip(), str(json.dumps(value)))
+                # value = str(value)
+                value = u'{}'.format(value)
+            # data = self._db.create(key.strip(), str(json.dumps(value)))
+            data = self._db.create(key.strip(), u'{}'.format(json.dumps(value)))
         else:
             self._tcex.log.warning(u'The key or value field was None.')
         return data
@@ -599,7 +602,10 @@ class TcExPlaybook(object):
                 try:
                     data = json.loads(data)
                     if data is not None:
-                        data = str(u'{}'.format(data).encode('utf-8').strip())
+                        # reverted the previous change where data was encoded due to issues where
+                        # it broke the operator method in py3 (e.g. b'1' ne '1').
+                        # data = str(data)
+                        data = u'{}'.format(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
                     self._tcex.log.error(err)

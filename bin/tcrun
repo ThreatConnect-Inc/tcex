@@ -267,13 +267,19 @@ class TcRun(object):
         """Clear data from previous runs."""
 
         arg_data = self.data_args(profile.get('args'))
+        data_owner = profile.get('data_owner')
         parameters = self.parameters_python(arg_data)
         output_variables = profile.get('args', {}).get('tc_playbook_out_variables', '').split(',')
+
+        #
+        # clear validation data
+        #
 
         data = []
         for variable in output_variables:
             data.append({
                 'data': None,
+                'data_type': 'redis',
                 'variable': variable
             })
             print('Removing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
@@ -290,6 +296,9 @@ class TcRun(object):
             '--action',
             'clear'
         ]
+        if data_owner is not None:
+            command.append('--data_owner')
+            command.append(data_owner)
         exe_command = command + parameters.get('unmasked')
 
         # display command being run
@@ -312,6 +321,47 @@ class TcRun(object):
         # cleanup temp file
         if os.path.isfile(f.name):
             os.remove(f.name)
+
+        #
+        # clear previously staged data
+        #
+
+        for file in profile.get('data_files', []):
+            if os.path.isfile(file):
+                print('Clearing Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
+
+                command = [
+                    'tcdata',
+                    '--data_file',
+                    file,
+                    '--action',
+                    'clear',
+                ]
+                if data_owner is not None:
+                    command.append('--data_owner')
+                    command.append(data_owner)
+                exe_command = command + parameters.get('unmasked')
+
+                # display command being run
+                if self._args.show_commands:
+                    print_command = ' '.join(command + parameters.get('masked'))
+                    print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
+                p = subprocess.Popen(
+                    exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+                out, err = p.communicate()
+
+                if p.returncode != 0:
+                    print('{}{}Failed to clear data for file {}.'.format(
+                        c.Style.BRIGHT, c.Fore.RED, file))
+                    if err is not None and err:
+                        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+                    sys.exit(p.returncode)
+            else:
+                print('{}{}Could not find file {}.'.format(
+                    c.Style.BRIGHT, c.Fore.RED, file))
+                sys.exit(1)
 
     def stage_data(self, profile):
         """Stage any required data."""
@@ -362,6 +412,7 @@ class TcRun(object):
         """Stage any required data."""
 
         arg_data = self.data_args(profile.get('args'))
+        # data_owner = profile.get('data_owner')
         parameters = self.parameters_python(arg_data)
 
         v_data = profile.get('validations', [])
@@ -382,6 +433,9 @@ class TcRun(object):
                 '--action',
                 'validate'
             ]
+            # if data_owner is not None:
+            #     command.append('--data_owner')
+            #     command.append(data_owner)
             exe_command = command + parameters.get('unmasked')
 
             # display command being run

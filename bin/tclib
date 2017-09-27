@@ -20,6 +20,8 @@ parser.add_argument(
     '--app_path', help='Fully qualified path of App.', required=False)
 parser.add_argument(
     '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json')
+parser.add_argument(
+    '--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
 args, extra_args = parser.parse_known_args()
 
 
@@ -83,6 +85,8 @@ class TcLib(object):
                 '--target',
                 os.path.join(self.app_path, data.get('lib_dir'))
             ]
+            if args.no_cache_dir:
+                exe_command.append('--no-cache-dir')
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(
                 exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
