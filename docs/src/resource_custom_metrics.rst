@@ -1,6 +1,6 @@
 .. _resources_custom_metrics:
 
-.. Note:: Available in 5.4+ version of ThreatConnect API.
+.. Note:: Available in 5.4+ version of the ThreatConnect API.
 
 + Direct Access: ``resource = tcex.resources.CustomMetric(tcex)``
 + Dynamic Access: ``resource = tcex.resource('CustomMetric')``

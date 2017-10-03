@@ -132,7 +132,11 @@ class Resource(object):
 
         if response.status_code in self._status_codes[self._http_method]:
             # Process all JSON type responses
-            if response.headers['content-type'] == 'application/json':
+            if response.status_code == 204:
+                # 204 is a no data response
+                data = None
+                status = 'Success'
+            elif response.headers['content-type'] == 'application/json':
                 data, status = self._request_process_json(response)
             elif response.headers['content-type'] == 'application/octet-stream':
                 data, status = self._request_process_octet(response)
@@ -169,7 +173,10 @@ class Resource(object):
             else:
                 response_data = response.json()
 
-            if self._api_branch == 'bulk':
+            if self._request_entity is None:
+                data = response_data
+                status = 'Success'
+            elif self._api_branch == 'bulk':
                 data, status = self._request_process_json_bulk(response_data)
             elif response_data.get('data') is None:
                 data, status = self._request_process_json_status(response_data)
@@ -2009,6 +2016,7 @@ class CustomMetric(Resource):
             resource_name (string): The metric name.
         """
         if return_value:
+            self._request_entity = None
             self._r.add_payload('returnValue', True)
         self._request_uri = '{}/{}/data'.format(self._request_uri, resource_value)
 

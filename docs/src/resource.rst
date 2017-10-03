@@ -47,6 +47,8 @@ Custom Metrics Resource
 -----------------------
 The TcEx Resource Module provides Access to the ``custommetric`` API endpoint to create configurations and add data.
 
+.. Important:: Available in 5.4+ version of the ThreatConnect API.
+
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
