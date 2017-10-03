@@ -1918,7 +1918,9 @@ class CustomMetric(Resource):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
         self._status_codes = {
-            'GET': [200, 204]
+            'GET': [200],
+            'POST': [200, 204],
+            'PUT': [200]
         }
         self._value_fields = ['customMetricConfig']
 

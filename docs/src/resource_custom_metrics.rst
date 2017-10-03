@@ -88,7 +88,7 @@ Create Metric Config
     def main():
         """ """
         resource = tcex.resource('CustomMetric')
-        resource.http_method = POST
+        resource.http_method = 'POST'
         body = {
           'name': 'My Custom Metric',
           'dataType': 'Sum',
@@ -314,12 +314,13 @@ Create Metric Data
     def main():
         """ """
         resource = tcex.resource('CustomMetric')
-        resource.http_method = POST
+        resource.http_method = 'POST'
         resource.data(3)
         body = {
           "value": 1,
           "weight": 1
         }
+        resource.body = json.dumps(body)
         results = resource.request()
         print(results.get('status_code'))
 
@@ -356,7 +357,7 @@ Create Metric Data (with returnValue)
     def main():
         """ """
         resource = tcex.resource('CustomMetric')
-        resource.http_method = POST
+        resource.http_method = 'POST'
         resource.data(3, True)
         body = {
           "name": "blue",
