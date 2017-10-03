@@ -282,14 +282,14 @@ class TcExJob(object):
             group_id = self.group_id(group_name, owner, group_type)
 
             self._tcex.log.debug(u'Processing group ({})'.format(group_name))
-            if group_action == 'Duplicate':
+            if group_action == 'duplicate':
                 group_id = self._group_add(group_type, group_name, owner, group)
                 if group_id is None and self._tcex.args.batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
-            elif group_action == 'Replace':
+            elif group_action == 'replace':
                 if group_id is not None:
                     self._group_delete(group_type, group_id)
                     self._tcex.log.info(u'Deleting Group "{}" with id: {}'.format(
@@ -300,7 +300,7 @@ class TcExJob(object):
                     self._tcex.exit_code(1)
                     break
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
-            elif group_action == 'Skip':
+            elif group_action == 'skip':
                 self._group_results['cached'].append(group_name)
                 self._group_results['saved'].append(group_name)
                 self._group_results['not_saved'].remove(group_name)
@@ -1160,7 +1160,7 @@ class TcExJob(object):
         """
         if self._groups:
             self._tcex.log.info(u'Processing Groups')
-            self._process_groups(owner, group_action)
+            self._process_groups(owner, group_action.lower())
 
         if self._indicators:
             self._tcex.log.info(u'Processing Indicators')
