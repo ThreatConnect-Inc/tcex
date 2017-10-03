@@ -180,7 +180,7 @@ class TcExJob(object):
         resource.resource_id(resource_id)
         results = resource.request()
         if results.get('status') != 'Success':
-            self._tcex.log.warning('Deleted {} with ID {} failed.'.format(
+            self._tcex.log.warning(u'Deleted {} with ID {} failed.'.format(
                 resource_type, resource_id))
 
     def _process_file_occurrences(self, owner):
@@ -991,7 +991,7 @@ class TcExJob(object):
         Returns:
             (integer): The ID for the provided group name and owner.
         """
-        self._tcex.log.debug('Retrieving {} ID for group "{}" in "{}".'.format(
+        self._tcex.log.debug(u'Retrieving {} ID for group "{}" in "{}".'.format(
             resource_type, name, owner
         ))
         if self._group_cache.get(owner, {}).get(resource_type) is None:
