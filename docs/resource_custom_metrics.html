@@ -171,7 +171,7 @@
             
   <div class="admonition note" id="resources-custom-metrics">
 <p class="first admonition-title">Note</p>
-<p class="last">Available in 5.4+ version of ThreatConnect API.</p>
+<p class="last">Available in 5.4+ version of the ThreatConnect API.</p>
 </div>
 <ul class="simple">
 <li>Direct Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">tcex.resources.CustomMetric(tcex)</span></code></li>
@@ -316,7 +316,7 @@
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
-</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">POST</span>
+</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class="hll">      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;My Custom Metric&#39;</span><span class="p">,</span>
 </span><span class="hll">      <span class="s1">&#39;dataType&#39;</span><span class="p">:</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span>
@@ -647,7 +647,8 @@ use the returnValue=true query parameter.</p>
 23
 24
 25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
@@ -661,14 +662,15 @@ use the returnValue=true query parameter.</p>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
-</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">POST</span>
+</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class="hll">      <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
 </span>      <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">1</span>
 <span class="hll">    <span class="p">}</span>
-</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-</span>    <span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status_code&#39;</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</span>    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status_code&#39;</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -726,7 +728,7 @@ use the returnValue=true query parameter.</p>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
-</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">POST</span>
+</span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class="hll">      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
