@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.5.23 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -321,6 +321,183 @@ ThreatConnect platform under System settings.</p>
 <p>This resource class will return groups of type Campaign. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
 the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.CustomMetric">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">CustomMetric</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Custom Metric Class</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI’s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/custommetrics</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>/v2/custommetrics</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;My Custom Metric&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Hourly&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;keyedValues&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;A sum of all occurrences per Indicator Source&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This resource class will return or create custom metrics.</p>
+<dl class="method">
+<dt id="tcex.tcex_resources.CustomMetric.data">
+<code class="descname">data</code><span class="sig-paren">(</span><em>resource_value</em>, <em>return_value=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric.data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for metric_name method</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI’s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>POST</td>
+<td>/v2/custommetrics/{id}|{name}/data</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>The weight value is optional.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">&quot;weight&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Keyed Example</strong></p>
+<p>The weight value is optional.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">&quot;weight&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;src1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_name</strong> (<em>string</em>) – The metric name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.CustomMetric.metric_id">
+<code class="descname">metric_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric.metric_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric.metric_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Metric Id for specific retrieval.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI’s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/custommetrics/{id}</td>
+</tr>
+<tr class="row-odd"><td>PUT</td>
+<td>/v2/custommetrics/{id}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) – The metric id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.CustomMetric.metric_name">
+<code class="descname">metric_name</code><span class="sig-paren">(</span><em>resource_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric.metric_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric.metric_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the Metric Name for specific retrieval.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI’s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>/v2/custommetrics/{name}</td>
+</tr>
+<tr class="row-odd"><td>PUT</td>
+<td>/v2/custommetrics/{name}</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_name</strong> (<em>string</em>) – The metric name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.CustomMetric.resource_id">
+<code class="descname">resource_id</code><span class="sig-paren">(</span><em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric.resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric.resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for metric_id method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>string</em>) – The metric id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_resources.CustomMetric.resource_name">
+<code class="descname">resource_name</code><span class="sig-paren">(</span><em>resource_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric.resource_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric.resource_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for metric_name method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_name</strong> (<em>string</em>) – The metric name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -2453,7 +2630,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

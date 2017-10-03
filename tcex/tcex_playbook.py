@@ -47,7 +47,7 @@ class TcExPlaybook(object):
         # parse out variable
         self._parse_out_variable()
 
-        if self._tcex._args.tc_playbook_db_type == 'Redis':
+        if self._tcex.default_args.tc_playbook_db_type == 'Redis':
             try:
                 from tcex_redis import TcExRedis
             except ImportError as e:
@@ -55,15 +55,15 @@ class TcExPlaybook(object):
                 raise
 
             self._db = TcExRedis(
-                self._tcex._args.tc_playbook_db_path,
-                self._tcex._args.tc_playbook_db_port,
-                self._tcex._args.tc_playbook_db_context
+                self._tcex.default_args.tc_playbook_db_path,
+                self._tcex.default_args.tc_playbook_db_port,
+                self._tcex.default_args.tc_playbook_db_context
             )
-        elif self._tcex._args.tc_playbook_db_type == 'TCKeyValueAPI':
+        elif self._tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
             from tcex_key_value import TcExKeyValue
-            self._db = TcExKeyValue(self._tcex, self._tcex._args.tc_playbook_db_context)
+            self._db = TcExKeyValue(self._tcex, self._tcex.default_args.tc_playbook_db_context)
         else:
-            err = u'Invalid DB Type: ({})'.format(self._tcex._args.tc_playbook_db_type)
+            err = u'Invalid DB Type: ({})'.format(self._tcex.default_args.tc_playbook_db_type)
             self._tcex.message_tc(err)
             self._tcex.log.error(err)
             self._tcex.exit(1)
@@ -75,8 +75,8 @@ class TcExPlaybook(object):
 
             #App:1234:status!String,#App:1234:status_code!String
         """
-        if self._tcex._args.tc_playbook_out_variables is not None:
-            variables = self._tcex._args.tc_playbook_out_variables.strip()
+        if self._tcex.default_args.tc_playbook_out_variables is not None:
+            variables = self._tcex.default_args.tc_playbook_out_variables.strip()
             for o in variables.split(','):
                 # parse the variable to get individual parts
                 parsed_key = self.parse_variable(o)
@@ -128,7 +128,7 @@ class TcExPlaybook(object):
             key = key.strip()
             self._tcex.log.debug(u'create variable {}'.format(key))
             # bcs - only for debugging or binary might cause issues
-            # self._tcex.log.debug(u'variable value: {0}'.format(value))
+            # self._tcex.log.debug(u'variable value: {}'.format(value))
             parsed_key = self.parse_variable(key.strip())
             variable_type = parsed_key['type']
             if variable_type in self._read_data_type:
@@ -354,7 +354,7 @@ class TcExPlaybook(object):
         var_type = 'String'
         if variable is not None:
             variable = variable.strip()
-            # self._tcex.log.info(u'Variable {0}'.format(variable))
+            # self._tcex.log.info(u'Variable {}'.format(variable))
             if re.match(self._var_parse, variable):
                 var_type = re.search(self._var_parse, variable).group(4)
 

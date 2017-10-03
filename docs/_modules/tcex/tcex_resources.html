@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.5.23 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -194,7 +194,7 @@
 
         <span class="c1"># request</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
-        <span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
 
         <span class="c1"># common</span>
@@ -220,7 +220,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_result_start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="Resource._apply_filters"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource._apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">_apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -246,7 +246,7 @@
         <span class="c1"># workaround for bytes/str issue in Py3 with copy of instance</span>
         <span class="c1"># TypeError: a bytes-like object is required, not &#39;str&#39; (ssl.py)</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">request</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="n">resource</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">proxies</span>
 
         <span class="c1"># Reset settings</span>
@@ -274,7 +274,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># write bulk download to disk with unique ID</span>
-            <span class="n">temp_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+            <span class="n">temp_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;temp json file: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">temp_file</span><span class="p">))</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="mi">1024</span><span class="p">):</span>
@@ -283,7 +284,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
 
             <span class="c1"># remove temporary json file</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">logging</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">,</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.gz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">temp_file</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
                         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
@@ -2053,6 +2054,139 @@
 
 
 <span class="c1">#</span>
+<span class="c1"># Custom Metric</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="CustomMetric"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric">[docs]</a><span class="k">class</span> <span class="nc">CustomMetric</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom Metric Class</span>
+
+<span class="sd">    +--------------+----------------------------------+</span>
+<span class="sd">    | HTTP Method  | API Endpoint URI&#39;s               |</span>
+<span class="sd">    +==============+==================================+</span>
+<span class="sd">    | GET          | /v2/custommetrics                |</span>
+<span class="sd">    +--------------+----------------------------------+</span>
+<span class="sd">    | POST         | /v2/custommetrics                |</span>
+<span class="sd">    +--------------+----------------------------------+</span>
+
+<span class="sd">    .. code-block:: javascript</span>
+
+<span class="sd">        {</span>
+<span class="sd">          &quot;name&quot;: &quot;My Custom Metric&quot;,</span>
+<span class="sd">          &quot;dataType&quot;: &quot;Sum&quot;,</span>
+<span class="sd">          &quot;interval&quot;: &quot;Hourly&quot;,</span>
+<span class="sd">          &quot;keyedValues&quot;: true,</span>
+<span class="sd">          &quot;description&quot;: &quot;A sum of all occurrences per Indicator Source&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    This resource class will return or create custom metrics.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomMetric</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;custommetrics&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;customMetricConfig&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;CustomerMetric&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;CustomerMetric&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">204</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;customMetricConfig&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CustomMetric.metric_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.metric_id">[docs]</a>    <span class="k">def</span> <span class="nf">metric_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Metric Id for specific retrieval.</span>
+
+<span class="sd">        +--------------+----------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s               |</span>
+<span class="sd">        +==============+==================================+</span>
+<span class="sd">        | GET          | /v2/custommetrics/{id}           |</span>
+<span class="sd">        +--------------+----------------------------------+</span>
+<span class="sd">        | PUT          | /v2/custommetrics/{id}           |</span>
+<span class="sd">        +--------------+----------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The metric id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CustomMetric.metric_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.metric_name">[docs]</a>    <span class="k">def</span> <span class="nf">metric_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Metric Name for specific retrieval.</span>
+
+<span class="sd">        +--------------+----------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s               |</span>
+<span class="sd">        +==============+==================================+</span>
+<span class="sd">        | GET          | /v2/custommetrics/{name}         |</span>
+<span class="sd">        +--------------+----------------------------------+</span>
+<span class="sd">        | PUT          | /v2/custommetrics/{name}         |</span>
+<span class="sd">        +--------------+----------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_name (string): The metric name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CustomMetric.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for metric_id method</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (string): The metric id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CustomMetric.resource_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.resource_name">[docs]</a>    <span class="k">def</span> <span class="nf">resource_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for metric_name method</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_name (string): The metric name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CustomMetric.data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_value</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for metric_name method</span>
+
+<span class="sd">        +--------------+------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                 |</span>
+<span class="sd">        +==============+====================================+</span>
+<span class="sd">        | POST         | /v2/custommetrics/{id}|{name}/data |</span>
+<span class="sd">        +--------------+------------------------------------+</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        The weight value is optional.</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;value&quot;: 1,</span>
+<span class="sd">              &quot;weight&quot;: 1,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        **Keyed Example**</span>
+
+<span class="sd">        The weight value is optional.</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;value&quot;: 1,</span>
+<span class="sd">              &quot;weight&quot;: 1,</span>
+<span class="sd">              &quot;name&quot;: &quot;src1&quot;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_name (string): The metric name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">return_value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;returnValue&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/data&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">resource_value</span><span class="p">)</span></div></div>
+
+
+<span class="c1">#</span>
 <span class="c1"># Owner</span>
 <span class="c1">#</span>
 
@@ -2340,12 +2474,12 @@
 
         <span class="c1"># request</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">request</span>
-        <span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">proxies</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">authorization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;exchange/db&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;DELETE&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
             <span class="s1">&#39;GET&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">],</span>
@@ -2512,7 +2646,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

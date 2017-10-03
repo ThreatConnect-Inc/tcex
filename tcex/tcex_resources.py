@@ -19,7 +19,7 @@ class Resource(object):
 
         # request
         self._r = tcex.request
-        if tcex._args.tc_proxy_tc:
+        if tcex.default_args.tc_proxy_tc:
             self._r.proxies = tcex.proxies
 
         # common
@@ -45,7 +45,7 @@ class Resource(object):
         self._result_start = 0
         self._stream = False
         self._status_codes = {}
-        self._url = self._tcex._args.tc_api_path
+        self._url = self._tcex.default_args.tc_api_path
         self._value_fields = []
 
     def _apply_filters(self):
@@ -71,7 +71,7 @@ class Resource(object):
         # workaround for bytes/str issue in Py3 with copy of instance
         # TypeError: a bytes-like object is required, not 'str' (ssl.py)
         resource._r = self._tcex.request
-        if self._tcex._args.tc_proxy_tc:
+        if self._tcex.default_args.tc_proxy_tc:
             resource._r.proxies = self._tcex.proxies
 
         # Reset settings
@@ -99,7 +99,8 @@ class Resource(object):
         """
         try:
             # write bulk download to disk with unique ID
-            temp_file = os.path.join(self._tcex._args.tc_temp_path, '{}.json'.format(uuid.uuid4()))
+            temp_file = os.path.join(self._tcex.default_args.tc_temp_path, '{}.json'.format(
+                uuid.uuid4()))
             self._tcex.log.debug(u'temp json file: {}'.format(temp_file))
             with open(temp_file, 'wb') as fh:
                 for block in response.iter_content(1024):
@@ -108,7 +109,7 @@ class Resource(object):
                 data = json.load(fh)
 
             # remove temporary json file
-            if self._tcex._args.logging == 'debug':
+            if self._tcex.default_args.logging == 'debug':
                 try:
                     with open(temp_file, 'rb') as f_in, gzip.open('{}.gz'.format(temp_file), 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
@@ -1878,6 +1879,139 @@ class Threat(Group):
 
 
 #
+# Custom Metric
+#
+
+
+class CustomMetric(Resource):
+    """Custom Metric Class
+
+    +--------------+----------------------------------+
+    | HTTP Method  | API Endpoint URI's               |
+    +==============+==================================+
+    | GET          | /v2/custommetrics                |
+    +--------------+----------------------------------+
+    | POST         | /v2/custommetrics                |
+    +--------------+----------------------------------+
+
+    .. code-block:: javascript
+
+        {
+          "name": "My Custom Metric",
+          "dataType": "Sum",
+          "interval": "Hourly",
+          "keyedValues": true,
+          "description": "A sum of all occurrences per Indicator Source"
+        }
+
+    This resource class will return or create custom metrics.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(CustomMetric, self).__init__(tcex)
+        self._api_branch = 'custommetrics'
+        self._api_entity = 'customMetricConfig'
+        self._api_uri = self._api_branch
+        self._name = 'CustomerMetric'
+        self._parent = 'CustomerMetric'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+        self._status_codes = {
+            'GET': [200, 204]
+        }
+        self._value_fields = ['customMetricConfig']
+
+    def metric_id(self, resource_id):
+        """Update the request URI to include the Metric Id for specific retrieval.
+
+        +--------------+----------------------------------+
+        | HTTP Method  | API Endpoint URI's               |
+        +==============+==================================+
+        | GET          | /v2/custommetrics/{id}           |
+        +--------------+----------------------------------+
+        | PUT          | /v2/custommetrics/{id}           |
+        +--------------+----------------------------------+
+
+        Args:
+            resource_id (string): The metric id.
+        """
+        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+
+    def metric_name(self, resource_name):
+        """Update the request URI to include the Metric Name for specific retrieval.
+
+        +--------------+----------------------------------+
+        | HTTP Method  | API Endpoint URI's               |
+        +==============+==================================+
+        | GET          | /v2/custommetrics/{name}         |
+        +--------------+----------------------------------+
+        | PUT          | /v2/custommetrics/{name}         |
+        +--------------+----------------------------------+
+
+        Args:
+            resource_name (string): The metric name.
+        """
+        self._request_uri = '{}/{}'.format(self._request_uri, resource_name)
+
+    def resource_id(self, resource_id):
+        """Alias for metric_id method
+
+        Args:
+            resource_id (string): The metric id.
+        """
+        self.metric_id(resource_id)
+
+    def resource_name(self, resource_name):
+        """Alias for metric_name method
+
+        Args:
+            resource_name (string): The metric name.
+        """
+        self.metric_name(resource_id)
+
+    def data(self, resource_value, return_value=False):
+        """Alias for metric_name method
+
+        +--------------+------------------------------------+
+        | HTTP Method  | API Endpoint URI's                 |
+        +==============+====================================+
+        | POST         | /v2/custommetrics/{id}|{name}/data |
+        +--------------+------------------------------------+
+
+        Example
+        -------
+
+        The weight value is optional.
+
+        .. code-block:: javascript
+
+            {
+              "value": 1,
+              "weight": 1,
+            }
+
+        **Keyed Example**
+
+        The weight value is optional.
+
+        .. code-block:: javascript
+
+            {
+              "value": 1,
+              "weight": 1,
+              "name": "src1"
+            }
+
+        Args:
+            resource_name (string): The metric name.
+        """
+        if return_value:
+            self._r.add_payload('returnValue', True)
+        self._request_uri = '{}/{}/data'.format(self._request_uri, resource_value)
+
+
+#
 # Owner
 #
 
@@ -2165,12 +2299,12 @@ class DataStore(object):
 
         # request
         self._r = tcex.request
-        if tcex._args.tc_proxy_tc:
+        if tcex.default_args.tc_proxy_tc:
             self._r.proxies = tcex.proxies
 
         self._authorization_method = self._tcex.authorization
         self._request_uri = 'exchange/db'
-        self._url = self._tcex._args.tc_api_path
+        self._url = self._tcex.default_args.tc_api_path
         self._status_codes = {
             'DELETE': [200],
             'GET': [200],

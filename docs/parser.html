@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parser / Args &mdash; TcEx 0.5.23 documentation</title>
+  <title>Parser / Args &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="index.html"/>
         <link rel="next" title="Playbooks" href="playbook.html"/>
         <link rel="prev" title="tcex.tcex_vault module" href="tcex_docs/tcex.tcex_vault.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -180,7 +180,7 @@
             
   <div class="section" id="parser-args">
 <span id="parser"></span><h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx App Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides the <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
 <div class="section" id="api-arguments">
 <h2>API Arguments<a class="headerlink" href="#api-arguments" title="Permalink to this headline">¶</a></h2>
 <p>Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal"><span class="pre">tc_token</span></code> argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
@@ -207,7 +207,7 @@
 </div>
 <div class="section" id="custom-argument">
 <h2>Custom Argument<a class="headerlink" href="#custom-argument" title="Permalink to this headline">¶</a></h2>
-<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a></p>
+<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></p>
 <p><strong>Example</strong></p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -272,7 +272,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -66,14 +66,14 @@ class TcData(object):
     def data_it(db_data, user_type):
         """Validate data is Type"""
         data_type = {
-            'array': list,
-            'binary': bytes,
-            'bytes': bytes,
-            'dict': dict,
-            'entity': dict,
-            'list': list,
-            'str': str,
-            'string': str
+            'array': (list),
+            'binary': (bytes),
+            'bytes': (bytes),
+            'dict': (dict),
+            'entity': (dict),
+            'list': (list),
+            'str': (str, unicode),
+            'string': (str, unicode)
         }
         # user_type_tuple = tuple([data_type[t] for t in user_types])
         # if isinstance(db_data, user_type_tuple):

@@ -185,7 +185,7 @@ class TcExRequest(object):
                 self.add_header('Content-Type', 'application/json')
         else:
             raise AttributeError(
-                'Request Object Error: {0!s} is not a valid HTTP method.'.format(data))
+                'Request Object Error: {} is not a valid HTTP method.'.format(data))
 
     #
     # Send Properties
@@ -278,34 +278,34 @@ class TcExRequest(object):
                     verify=self._verify_ssl, stream=stream)
                 break
             except exceptions.ReadTimeout as e:
-                self._tcex.log.error(u'Error: {0!s}'.format(e))
+                self._tcex.log.error(u'Error: {}'.format(e))
                 self._tcex.log.error(u'The server may be experiencing delays at the moment.')
                 self._tcex.log.info(
-                    u'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                    u'Pausing for {} seconds to give server time to catch up.'.format(
                         self._sleep))
                 time.sleep(self._sleep)
-                self._tcex.log.info(u'Retry {0!s} ....'.format(i))
+                self._tcex.log.info(u'Retry {} ....'.format(i))
 
                 if i == self._retries:
-                    self._tcex.log.critical(u'Exiting: {0!s}'.format(e))
+                    self._tcex.log.critical(u'Exiting: {}'.format(e))
                     raise RuntimeError(e)
             except exceptions.ConnectionError as e:
-                self._tcex.log.error(u'Error: {0!s}'.format(e))
+                self._tcex.log.error(u'Error: {}'.format(e))
                 self._tcex.log.error(u'Connection Error. The server may be down.')
                 self._tcex.log.info(
-                    u'Pausing for {0!s} seconds to give server time to catch up.'.format(
+                    u'Pausing for {} seconds to give server time to catch up.'.format(
                         self._sleep))
                 time.sleep(self._sleep)
-                self._tcex.log.info(u'Retry {0!s} ....'.format(i))
+                self._tcex.log.info(u'Retry {} ....'.format(i))
                 if i == self._retries:
-                    self._tcex.log.critical(u'Exiting: {0!s}'.format(e))
+                    self._tcex.log.critical(u'Exiting: {}'.format(e))
                     raise RuntimeError(e)
             except socket.error as e:
-                self._tcex.log.critical(u'Socket Error: {0!s}'.format(e))
+                self._tcex.log.critical(u'Socket Error: {}'.format(e))
                 raise RuntimeError(e)
 
         self._tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
-        self._tcex.log.info(u'Status Code: {0!s}'.format(response.status_code))
+        self._tcex.log.info(u'Status Code: {}'.format(response.status_code))
         return response
 
     #

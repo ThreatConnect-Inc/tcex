@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.5.23 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_local module" href="tcex.tcex_local.html"/>
         <link rel="prev" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/> 
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -239,6 +239,30 @@ or attributes</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_job.TcExJob._group_delete">
+<code class="descname">_group_delete</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a group from ThreatConnect</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
+<li><strong>resource_id</strong> (<em>string</em>) – The ID of the group</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID of the created resource</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_association">
 <code class="descname">_process_association</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_association" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process groups and write to TC API</p>
@@ -282,7 +306,7 @@ or attributes</li>
 
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_groups">
-<code class="descname">_process_groups</code><span class="sig-paren">(</span><em>owner</em>, <em>duplicates=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_groups" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_process_groups</code><span class="sig-paren">(</span><em>owner</em>, <em>group_action</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process groups and write to TC API</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -914,14 +938,19 @@ data</td>
 
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>owner</em>, <em>indicator_batch=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">process</code><span class="sig-paren">(</span><em>owner</em>, <em>indicator_batch=True</em>, <em>group_action='skip'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process all association, group and indicator data.</p>
 <p>Process each of the supported data types for this job.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the data to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>owner</strong> (<em>string</em>) – The owner name for the data to be written</li>
+<li><strong>indicator_batch</strong> (<em>bool</em>) – If true use the Batch Api otherwise use <cite>/v2</cite>.</li>
+<li><strong>group_action</strong> (<em>string</em>) – The action to use on group create (duplicate, replace, skip).</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -990,7 +1019,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

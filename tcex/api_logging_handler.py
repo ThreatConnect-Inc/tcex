@@ -83,9 +83,9 @@ class ApiLoggingHandler(FileHandler):
             r.body = dumps(self.entries, ensure_ascii=False)
             self.entries = []  # clear entries
             r.http_method = 'POST'
-            if self._tcex._args.tc_proxy_tc:
+            if self._tcex.default_args.tc_proxy_tc:
                 r.proxies = self._tcex.proxies
-            r.url = '{}/v2/logs/app'.format(self._tcex._args.tc_api_path)
+            r.url = '{}/v2/logs/app'.format(self._tcex.default_args.tc_api_path)
             try:
                 r.send()
                 # results = r.send()

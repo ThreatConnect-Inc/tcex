@@ -55,17 +55,17 @@ class TcEx(object):
 
         # Parser
         self._parsed = False
-        self._parser = ArgParser()
-        self._args, unknown = self._parser.parse_known_args()
+        self.parser = ArgParser()
+        self.default_args, unknown = self.parser.parse_known_args()
 
         # NOTE: odd issue where args is not updating properly
-        if self._args.tc_token is not None:
-            self._tc_token = self._args.tc_token
-        if self._args.tc_token_expires is not None:
-            self._tc_token_expires = self._args.tc_token_expires
+        if self.default_args.tc_token is not None:
+            self._tc_token = self.default_args.tc_token
+        if self.default_args.tc_token_expires is not None:
+            self._tc_token_expires = self.default_args.tc_token_expires
 
         # logger (must parse args first)
-        self.log = self._logger(self._args.tc_log_file)
+        self.log = self._logger(self.default_args.tc_log_file)
 
         # Log versions
         self._log_platform()
@@ -103,7 +103,7 @@ class TcEx(object):
             # Renew Token
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
-            r.url = '{}/appAuth'.format(self._args.tc_api_path)
+            r.url = '{}/appAuth'.format(self.default_args.tc_api_path)
             results = r.send()
             try:
                 data = results.json()
@@ -152,9 +152,9 @@ class TcEx(object):
 
     def _log_tc_proxy(self):
         """Log the current Python Version"""
-        if self._args.tc_proxy_tc:
+        if self.default_args.tc_proxy_tc:
             self.log.info(u'Proxy Server (TC): {}:{}.'.format(
-                self._args.tc_proxy_host, self._args.tc_proxy_port))
+                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
 
     def _log_tcex_version(self):
         """Log the current TcEx Version"""
@@ -206,16 +206,16 @@ class TcEx(object):
             'critical': logging.CRITICAL
         }
         name = 'tcapp'
-        # if self._args.tc_log_level.lower() in log_level.keys():
-        #     level = log_level[self._args.tc_log_level]
+        # if self.default_args.tc_log_level.lower() in log_level.keys():
+        #     level = log_level[self.default_args.tc_log_level]
 
         # BCS - temporarily until there is some way to configure App logging level in the UI
-        if self._args.logging is not None:
-            level = log_level[self._args.logging]
-        elif self._args.tc_log_level is not None:
-            level = log_level[self._args.tc_log_level]
+        if self.default_args.logging is not None:
+            level = log_level[self.default_args.logging]
+        elif self.default_args.tc_log_level is not None:
+            level = log_level[self.default_args.tc_log_level]
 
-        logfile = os.path.join(self._args.tc_log_path, file_name)
+        logfile = os.path.join(self.default_args.tc_log_path, file_name)
         log = logging.getLogger(name)
         log.setLevel(level)
 
@@ -223,7 +223,7 @@ class TcEx(object):
         tx_format += '(%(funcName)s:%(lineno)d)'
         formatter = logging.Formatter(tx_format)
 
-        if self._args.tc_token is not None and self._args.tc_log_to_api:
+        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             # api & file logger
             from .api_logging_handler import ApiLoggingHandler
             api = ApiLoggingHandler(logfile, self)
@@ -260,14 +260,14 @@ class TcEx(object):
         # Dynamically create custom indicator class
         r = self.request
         r.authorization_method(self.authorization)
-        if self._args.tc_proxy_tc:
+        if self.default_args.tc_proxy_tc:
             r.proxies = self.proxies
-        r.url = '{}/v2/types/associationTypes'.format(self._args.tc_api_path)
+        r.url = '{}/v2/types/associationTypes'.format(self.default_args.tc_api_path)
         response = r.send()
 
         # check for bad status code and response that is not JSON
-        if (int(response.status_code) != 200
-                or response.headers.get('content-type') != 'application/json'):
+        if (int(response.status_code) != 200 or
+                response.headers.get('content-type') != 'application/json'):
             warn = u'Custom Indicators Associations are not supported.'
             self.log.warning(warn)
             return
@@ -308,9 +308,9 @@ class TcEx(object):
         # Dynamically create custom indicator class
         r = self.request
         r.authorization_method(self.authorization)
-        if self._args.tc_proxy_tc:
+        if self.default_args.tc_proxy_tc:
             r.proxies = self.proxies
-        r.url = '{}/v2/types/indicatorTypes'.format(self._args.tc_api_path)
+        r.url = '{}/v2/types/indicatorTypes'.format(self.default_args.tc_api_path)
         response = r.send()
 
         # check for bad status code and response that is not JSON
@@ -343,7 +343,7 @@ class TcEx(object):
                     if entry.get('value3Label') is not None and entry.get('value3Label') != '':
                         value_fields.append(entry['value3Label'])
 
-                    # TODO: Add validate option when type is select one??? Might be bets to let API
+                    # TODO: Add validate option when type is select one??? Might be best to let API
                     #       handle validation.
                     """
                     value3Label
@@ -384,25 +384,27 @@ class TcEx(object):
             args (list): List of unknown arguments
         """
         for u in args:
-            self.log.debug(u'Unsupported arg found ({0!s}).'.format(u))
+            self.log.debug(u'Unsupported arg found ({}).'.format(u))
 
     @property
     def args(self):
         """The parsed args from argparser
+
+        .. Note:: Accessing args should only be done directly in the App.
 
         Returns:
             (namespace): ArgParser parsed arguments
         """
 
         if not self._parsed:
-            self._args, unknown = self._parser.parse_known_args()
+            self.default_args, unknown = self.parser.parse_known_args()
             self.results_tc_args()  # for local testing only
             self._parsed = True
 
             # log unknown arguments only once
             self._unknown_args(unknown)
 
-        return self._args
+        return self.default_args
 
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
@@ -430,10 +432,11 @@ class TcEx(object):
         authorization = None
 
         if self._tc_token is not None:
-            authorization = {'Authorization': 'TC-Token {0}'.format(self._tc_token)}
+            authorization = {'Authorization': 'TC-Token {}'.format(self._tc_token)}
             if self._tc_token_expires is not None:
                 authorization = self._authorization_token_renew()
-        elif self._args.api_access_id is not None and self._args.api_secret_key is not None:
+        elif (self.default_args.api_access_id is not None and
+              self.default_args.api_secret_key is not None):
             authorization = self.authorization_hmac(request_prepped)
 
         return authorization
@@ -452,13 +455,13 @@ class TcEx(object):
         """
         if request_prepped is not None:
             timestamp = int(time.time())
-            signature = "{0}:{1}:{2}".format(
+            signature = '{}:{}:{}'.format(
                 request_prepped.path_url, request_prepped.method, timestamp)
             hmac_signature = hmac.new(
-                self._args.api_secret_key.strip('\'').encode(), signature.encode(),
+                self.default_args.api_secret_key.strip('\'').encode(), signature.encode(),
                 digestmod=hashlib.sha256).digest()
-            authorization = 'TC {0}:{1}'.format(
-                self._args.api_access_id, base64.b64encode(hmac_signature).decode())
+            authorization = 'TC {}:{}'.format(
+                self.default_args.api_access_id, base64.b64encode(hmac_signature).decode())
         else:
             err = u'HMAC authorization requires a PreparedRequest Object'
             self.log.error(err)
@@ -485,7 +488,7 @@ class TcEx(object):
         """
 
         if api_path is None:
-            api_path = self._args.tc_api_path
+            api_path = self.default_args.tc_api_path
 
         # Dynamically create custom indicator class
         r = self.request
@@ -545,7 +548,7 @@ class TcEx(object):
         Args:
             code (Optional [integer]): The exit code value for the app.
         """
-        if self._args.tc_token is not None and self._args.tc_log_to_api:
+        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             if self.log is not None and self.log.handlers:
                 for handler in self.log.handlers:
                     if handler.get_name() == 'api':
@@ -591,12 +594,12 @@ class TcEx(object):
         Args:
             message (string): The message to add to message_tc file
         """
-        if os.access(self._args.tc_out_path, os.W_OK):
-            message_file = '{0!s}/message.tc'.format(self._args.tc_out_path)
+        if os.access(self.default_args.tc_out_path, os.W_OK):
+            message_file = '{}/message.tc'.format(self.default_args.tc_out_path)
         else:
             message_file = 'message.tc'
 
-        message = '{0!s}\n'.format(message)
+        message = '{}\n'.format(message)
         if self._max_message_length - len(message) > 0:
             with open(message_file, 'a') as mh:
                 mh.write(message)
@@ -606,14 +609,14 @@ class TcEx(object):
 
         self._max_message_length -= len(message)
 
-    @property
-    def parser(self):
-        """The ArgParser parser object
+    # @property
+    # def parser(self):
+    #     """The ArgParser parser object
 
-        Returns:
-            (ArgumentParser): TcEX instance of ArgParser
-        """
-        return self._parser
+    #     Returns:
+    #         (ArgumentParser): TcEX instance of ArgParser
+    #     """
+    #     return self._parser
 
     @property
     def proxies(self):
@@ -631,28 +634,28 @@ class TcEx(object):
            (dictionary): Dictionary of proxy settings
         """
         proxies = {}
-        if (self._args.tc_proxy_host is not None and
-                self._args.tc_proxy_port is not None):
+        if (self.default_args.tc_proxy_host is not None and
+                self.default_args.tc_proxy_port is not None):
 
-            if (self._args.tc_proxy_username is not None and
-                    self._args.tc_proxy_password is not None):
-                tc_proxy_username = urllib.quote(self._args.tc_proxy_username, safe='~')
-                tc_proxy_password = urllib.quote(self._args.tc_proxy_password, safe='~')
+            if (self.default_args.tc_proxy_username is not None and
+                    self.default_args.tc_proxy_password is not None):
+                tc_proxy_username = urllib.quote(self.default_args.tc_proxy_username, safe='~')
+                tc_proxy_password = urllib.quote(self.default_args.tc_proxy_password, safe='~')
 
                 proxies = {
-                    'http': 'http://{0!s}:{1!s}@{2!s}:{3!s}'.format(
+                    'http': 'http://{}:{}@{}:{}'.format(
                         tc_proxy_username, tc_proxy_password,
-                        self._args.tc_proxy_host, self._args.tc_proxy_port),
-                    'https': 'https://{0!s}:{1!s}@{2!s}:{3!s}'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
+                    'https': 'https://{}:{}@{}:{}'.format(
                         tc_proxy_username, tc_proxy_password,
-                        self._args.tc_proxy_host, self._args.tc_proxy_port)
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
                 }
             else:
                 proxies = {
-                    'http': 'http://{0!s}:{1!s}'.format(
-                        self._args.tc_proxy_host, self._args.tc_proxy_port),
-                    'https': 'https://{0!s}:{1!s}'.format(
-                        self._args.tc_proxy_host, self._args.tc_proxy_port)
+                    'http': 'http://{}:{}'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
+                    'https': 'https://{}:{}'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
                 }
 
         return proxies
@@ -686,9 +689,9 @@ class TcEx(object):
             (instance): An instance of Request Class
         """
         r = self.request
-        if self._args.tc_proxy_external:
+        if self.default_args.tc_proxy_external:
             self.log.info(u'Using proxy server for external request {}:{}.'.format(
-                self._args.tc_proxy_host, self._args.tc_proxy_port))
+                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
             r.proxies = self.proxies
         return r
 
@@ -702,9 +705,9 @@ class TcEx(object):
         """
         r = self.request
         r.authorization_method(self.authorization)
-        if self._args.tc_proxy_tc:
+        if self.default_args.tc_proxy_tc:
             self.log.info(u'Using proxy server for TC request {}:{}.'.format(
-                self._args.tc_proxy_host, self._args.tc_proxy_port))
+                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
             r.proxies = self.proxies
         return r
 
@@ -729,12 +732,12 @@ class TcEx(object):
             key (string): The data key to be stored
             value (string): The data value to be stored
         """
-        if os.access(self._args.tc_out_path, os.W_OK):
-            result_file = '{0!s}/results.tc'.format(self._args.tc_out_path)
+        if os.access(self.default_args.tc_out_path, os.W_OK):
+            result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
         else:
             result_file = 'results.tc'
 
-        results = '{0!s} = {1!s}\n'.format(key, value)
+        results = '{} = {}\n'.format(key, value)
         with open(result_file, 'a') as rh:
             rh.write(results)
 
@@ -748,8 +751,8 @@ class TcEx(object):
             (dictionary): A dictionary of values written to results_tc.
         """
         results = []
-        if os.access(self._args.tc_out_path, os.W_OK):
-            result_file = '{0!s}/results.tc'.format(self._args.tc_out_path)
+        if os.access(self.default_args.tc_out_path, os.W_OK):
+            result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
         else:
             result_file = 'results.tc'
 
@@ -760,7 +763,7 @@ class TcEx(object):
 
         for line in results:
             key, value = line.split(' = ')
-            setattr(self._args, key, value)
+            setattr(self.default_args, key, value)
 
     def s(self, data, errors='strict'):
         """Decode value using correct Python 2/3 method
@@ -889,7 +892,8 @@ class TcEx(object):
                 resource_type = resource_type.lower()
         return str(resource_type)
 
-    def safe_group_name(self, group_name, group_max_length=100, ellipsis=True):
+    @staticmethod
+    def safe_group_name(group_name, group_max_length=100, ellipsis=True):
         """Truncate group name to match limit breaking on space and optionally add an ellipsis.
 
         .. note:: Current the ThreatConnect group name limit is 100 characters.
@@ -902,12 +906,11 @@ class TcEx(object):
         Returns:
             (string): The truncated group name
         """
-        ellipsis_value = ' ...'
-        if len(group_name) > 100:
-            # get the maximun length of the group name
-            if ellipsis:
-                group_max_length -= len(ellipsis_value)
+        ellipsis_value = ''
+        if ellipsis:
+            ellipsis_value = ' ...'
 
+        if len(group_name) > group_max_length:
             # split name by spaces and reset group_name
             group_name_array = group_name.split(' ')
             group_name = ''
@@ -916,9 +919,8 @@ class TcEx(object):
                 word = u'{}'.format(word)
 
                 # truncate
-                if len(group_name) + len(word) >= group_max_length:
-                    if ellipsis:
-                        group_name = '{} ...'.format(group_name)
+                if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
+                    group_name = '{}{}'.format(group_name, ellipsis_value)
                     group_name = group_name.lstrip(' ')
                     break
                 group_name += ' {}'.format(word)

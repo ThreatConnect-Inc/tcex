@@ -304,7 +304,7 @@ class TcExLocal:
                 shutil.rmtree(lib_path)
             os.mkdir(lib_path)
 
-            os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
+            os.environ['PYTHONPATH'] = '{}'.format(lib_path)
             stdout = sys.stdout
             stderr = sys.stderr
             try:
@@ -393,7 +393,7 @@ class TcExLocal:
         if not os.path.isdir(lib_path):
             os.mkdir(lib_path)
 
-        os.environ['PYTHONPATH'] = '{0}'.format(lib_path)
+        os.environ['PYTHONPATH'] = '{}'.format(lib_path)
         stdout = sys.stdout
         stderr = sys.stderr
         try:

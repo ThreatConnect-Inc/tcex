@@ -43,6 +43,21 @@ The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect AP
 
 .. Note:: For result sets that do not support pagination the ``resource.request()`` method can be called directly.
 
+Custom Metrics Resource
+-----------------------
+The TcEx Resource Module provides Access to the ``custommetric`` API endpoint to create configurations and add data.
+
++------------------------+----------------------------------------------------------+
+| Resource Type          | Class                                                    |
++========================+==========================================================+
+| Custom Metrics         | :py:class:`~tcex.tcex_resources.CustomMetric`            |
++------------------------+----------------------------------------------------------+
+
+Examples
+~~~~~~~~
+:ref:`examples`
+
+
 Data Store Resource
 --------------------
 The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.

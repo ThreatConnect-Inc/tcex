@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Resources &mdash; TcEx 0.5.23 documentation</title>
+  <title>Resources &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="index.html"/>
         <link rel="next" title="Results TC" href="results_tc.html"/>
         <link rel="prev" title="Requests" href="request.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -108,22 +108,26 @@
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Resources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#data-store-resource">Data Store Resource</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#custom-metrics-resource">Custom Metrics Resource</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-store-resource">Data Store Resource</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#group-resources">Group Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indicator-resources">Indicator Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#owner-resources">Owner Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#security-label-resources">Security Label Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#tag-resources">Tag Resources</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#task-resources">Task Resources</a></li>
@@ -240,6 +244,30 @@
 <p class="first admonition-title">Note</p>
 <p class="last">For result sets that do not support pagination the <code class="docutils literal"><span class="pre">resource.request()</span></code> method can be called directly.</p>
 </div>
+<div class="section" id="custom-metrics-resource">
+<h2>Custom Metrics Resource<a class="headerlink" href="#custom-metrics-resource" title="Permalink to this headline">¶</a></h2>
+<p>The TcEx Resource Module provides Access to the <code class="docutils literal"><span class="pre">custommetric</span></code> API endpoint to create configurations and add data.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Resource Type</th>
+<th class="head">Class</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Custom Metrics</td>
+<td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric" title="tcex.tcex_resources.CustomMetric"><code class="xref py py-class docutils literal"><span class="pre">CustomMetric</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
+</div>
+</div>
 <div class="section" id="data-store-resource">
 <h2>Data Store Resource<a class="headerlink" href="#data-store-resource" title="Permalink to this headline">¶</a></h2>
 <p>The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.</p>
@@ -268,8 +296,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 </div>
 </div>
@@ -346,8 +374,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id2">
-<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -392,8 +420,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id3">
-<h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Examples<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 </div>
 </div>
@@ -415,8 +443,8 @@
 </tr>
 </tbody>
 </table>
-<div class="section" id="id4">
-<h3>Examples<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a></p>
 </div>
 </div>
@@ -503,7 +531,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

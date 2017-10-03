@@ -2,9 +2,7 @@
 import json
 import re
 import time
-
 """ third-party """
-
 """ custom """
 
 
@@ -60,11 +58,11 @@ class TcExJob(object):
 
         """
         try:
-            for i in xrange(0, len(self._indicators), self._tcex._args.batch_chunk):
-                yield self._indicators[i:i + self._tcex._args.batch_chunk]
+            for i in xrange(0, len(self._indicators), self._tcex.default_args.batch_chunk):
+                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
         except NameError:  # Python 3 uses range() instead of xrange()
-            for i in range(0, len(self._indicators), self._tcex._args.batch_chunk):
-                yield self._indicators[i:i + self._tcex._args.batch_chunk]
+            for i in range(0, len(self._indicators), self._tcex.default_args.batch_chunk):
+                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect
@@ -90,10 +88,6 @@ class TcExJob(object):
         resource.http_method = 'POST'
         resource.owner = owner
 
-        # incident
-        # if data.get('eventDate') is not None:
-        #     resource_body['eventDate'] = data.get('eventDate')
-
         # dynamically handle additional parameters
         for param, value in data.items():
             if param in ['attribute', 'fileData', 'tag', 'type']:
@@ -107,9 +101,12 @@ class TcExJob(object):
         results = resource.request()
 
         if results.get('status') == 'Success':
+            resource_id = results['data']['id']  # get created group ID
+            # update cache
+            self._group_cache[owner][resource_type][resource_name] = resource_id
+
             self._group_results['saved'].append(resource_name)
             self._group_results['not_saved'].remove(resource_name)
-            resource_id = results['data']['id']
             resource = self._tcex.resource(resource_type)
             resource.http_method = 'POST'
 
@@ -167,6 +164,25 @@ class TcExJob(object):
 
         return resource_id
 
+    def _group_delete(self, resource_type, resource_id):
+        """Delete a group from ThreatConnect
+
+        Args:
+            resource_type (string): String with resource [group] type
+            resource_id (string): The ID of the group
+
+        Returns:
+            (integer): The ID of the created resource
+        """
+        # self._tcex.log.debug(u'Deleting {} with ID {}.'.format(resource_type, resource_id))
+        resource = self._tcex.resource(resource_type)
+        resource.http_method = 'DELETE'
+        resource.resource_id(resource_id)
+        results = resource.request()
+        if results.get('status') != 'Success':
+            self._tcex.log.warning('Deleted {} with ID {} failed.'.format(
+                resource_type, resource_id))
+
     def _process_file_occurrences(self, owner):
         """Process file occurrences and write to TC API
 
@@ -179,7 +195,7 @@ class TcExJob(object):
         resource = self._tcex.resource('File')
         resource.http_method = 'POST'
         resource.owner = owner
-        resource.url = self._tcex._args.tc_api_path
+        resource.url = self._tcex.default_args.tc_api_path
 
         for occurrence in self._file_occurrences:
             # remove the hash from the dictionary and add to URI
@@ -215,7 +231,7 @@ class TcExJob(object):
             resource.http_method = 'POST'
             resource.resource_id(resource_id)
             resource.owner = owner
-            resource.url = self._tcex._args.tc_api_path
+            resource.url = self._tcex.default_args.tc_api_path
 
             ar = self._tcex.resource(association_type)
             ar.resource_id(association_id)
@@ -245,14 +261,14 @@ class TcExJob(object):
             resource.http_method = 'POST'
             resource.indicator(ga.get('indicator'))
             resource.owner = owner
-            resource.url = self._tcex._args.tc_api_path
+            resource.url = self._tcex.default_args.tc_api_path
 
             ar = self._tcex.resource(ga.get('group_type'))
             ar.resource_id(group_id)
             association_resource = resource.association_pivot(ar)
             association_resource.request()
 
-    def _process_groups(self, owner, duplicates=False):
+    def _process_groups(self, owner, group_action):
         """Process groups and write to TC API
 
         Args:
@@ -260,27 +276,37 @@ class TcExJob(object):
         """
         self._group_results['not_saved'] = list(self._group_results.get('submitted', []))
         for group in self._groups:
-            cache = self.group_cache(owner, group.get('type'))
+            # get group id from cache if exists
+            group_name = group.get('name')
+            group_type = group.get('type')
+            group_id = self.group_id(group_name, owner, group_type)
 
-            self._tcex.log.debug(u'Processing group ({})'.format(group.get('name')))
-            if duplicates:
-                # TODO - support duplicate group names
-                pass
-            elif group.get('name') not in cache.keys():
-                group_id = self._group_add(group.get('type'), group.get('name'), owner, group)
-                if group_id is not None:
-                    self._group_cache[owner][group.get('type')][group.get('name')] = group_id
-                    self._tcex.log.info(
-                        u'Creating Group {} [{}]'.format(group.get('name'), group_id))
-                elif self._tcex.args.batch_halt_on_error:
+            self._tcex.log.debug(u'Processing group ({})'.format(group_name))
+            if group_action == 'Duplicate':
+                group_id = self._group_add(group_type, group_name, owner, group)
+                if group_id is None and self._tcex.args.batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
+                self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
+            elif group_action == 'Replace':
+                if group_id is not None:
+                    self._group_delete(group_type, group_id)
+                    self._tcex.log.info(u'Deleting Group "{}" with id: {}'.format(
+                        group_name, group_id))
+                group_id = self._group_add(group_type, group_name, owner, group)
+                if group_id is None and self._tcex.args.batch_halt_on_error:
+                    self._tcex.log.info(u'Halt on error is enabled.')
+                    self._tcex.exit_code(1)
+                    break
+                self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
+            elif group_action == 'Skip':
+                self._group_results['cached'].append(group_name)
+                self._group_results['saved'].append(group_name)
+                self._group_results['not_saved'].remove(group_name)
+                self._tcex.log.info(u'Skipping existing Group "{}")'.format(group_name))
             else:
-                self._group_results['cached'].append(group.get('name'))
-                self._group_results['saved'].append(group.get('name'))
-                self._group_results['not_saved'].remove(group.get('name'))
-                self._tcex.log.info(u'Existing Group ({})'.format(group.get('name')))
+                self._tcex.log.info(u'Invalid group action ({})'.format(group_action))
 
     def _process_indicators(self, owner, batch):
         """Process batch indicators and write to TC API
@@ -305,9 +331,9 @@ class TcExJob(object):
             owner (string):  The owner name for the indicator to be written
         """
         batch_job_body = {
-            'action': self._tcex._args.batch_action,
-            'attributeWriteType': self._tcex._args.batch_write_type,
-            'haltOnError': self._tcex._args.batch_halt_on_error,
+            'action': self._tcex.default_args.batch_action,
+            'attributeWriteType': self._tcex.default_args.batch_write_type,
+            'haltOnError': self._tcex.default_args.batch_halt_on_error,
             'owner': owner
         }
 
@@ -318,7 +344,7 @@ class TcExJob(object):
             # new batch resource for each chunk
             resource = self._tcex.resource('Batch')
             resource.http_method = 'POST'
-            resource.url = self._tcex._args.tc_api_path
+            resource.url = self._tcex.default_args.tc_api_path
             resource.content_type = 'application/json'
             resource.body = json.dumps(batch_job_body)
             results = resource.request()
@@ -339,8 +365,8 @@ class TcExJob(object):
 
                     poll_time = 0
                     while True:
-                        self._tcex.log.debug(u'poll_time: {0}'.format(poll_time))
-                        if poll_time >= self._tcex._args.batch_poll_interval_max:
+                        self._tcex.log.debug(u'poll_time: {}'.format(poll_time))
+                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
@@ -360,9 +386,13 @@ class TcExJob(object):
                                     # all indicators were saved minus failed; not_save == failed
                                     self._indicator_results['not_saved'] = self._indicator_results.get('failed', [])
                                     self._indicator_results['saved'].extend(
-                                        [i.get('summary') for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
+                                        [i.get('summary') for i in chunk
+                                         if i.get('summary') not in self._indicator_results.get(
+                                             'failed', [])])
                                     self._indicators_response.extend(
-                                        [i for i in chunk if i.get('summary') not in self._indicator_results.get('failed', [])])
+                                        [i for i in chunk
+                                         if i.get('summary') not in self._indicator_results.get(
+                                             'failed', [])])
                             else:
                                 # all indicators were saved
                                 self._indicator_results['saved'].extend(
@@ -370,8 +400,8 @@ class TcExJob(object):
                                 self._indicators_response.extend(chunk)
                             break  # no need to check status anymore
 
-                        time.sleep(self._tcex._args.batch_poll_interval)
-                        poll_time += self._tcex._args.batch_poll_interval
+                        time.sleep(self._tcex.default_args.batch_poll_interval)
+                        poll_time += self._tcex.default_args.batch_poll_interval
             else:
                 self._tcex.log.warning('API request failed ({}).'.format(
                     results.get('response').text))
@@ -420,7 +450,7 @@ class TcExJob(object):
             resource.body = json.dumps(body)
             resource.http_method = 'POST'
             resource.owner = owner
-            resource.url = self._tcex._args.tc_api_path
+            resource.url = self._tcex.default_args.tc_api_path
 
             i_results = resource.request()
 
@@ -606,7 +636,7 @@ class TcExJob(object):
             action (string): Set batch job action
         """
         if action in ['Create', 'Delete']:
-            self._tcex._parser.set_defaults(batch_action=action)
+            self._tcex.parser.set_defaults(batch_action=action)
 
     def batch_chunk(self, chunk_size):
         """Set batch chunk_size for argument parser.
@@ -614,7 +644,7 @@ class TcExJob(object):
         Args:
             chunk_size (integer): Set batch job chunk size
         """
-        self._tcex._parser.set_defaults(batch_chunk=chunk_size)
+        self._tcex.parser.set_defaults(batch_chunk=chunk_size)
 
     def batch_halt_on_error(self, halt_on_error):
         """Set batch halt on error boolean for argument parser.
@@ -623,7 +653,7 @@ class TcExJob(object):
             halt_on_error (boolean): Boolean value for halt on error
         """
         if isinstance(halt_on_error, bool):
-            self._tcex._parser.set_defaults(batch_halt_on_error=halt_on_error)
+            self._tcex.parser.set_defaults(batch_halt_on_error=halt_on_error)
 
     def batch_indicator_success(self):
         """Check completion for all batch jobs associated with this instance.
@@ -656,7 +686,7 @@ class TcExJob(object):
         status = {'success': 0, 'failure': 0, 'unprocessed': 0}
 
         resource = self._tcex.resource('Batch')
-        resource.url = self._tcex._args.tc_api_path
+        resource.url = self._tcex.default_args.tc_api_path
 
         for batch_id in self._indicator_batch_ids:
             resource.batch_id(batch_id)
@@ -677,7 +707,7 @@ class TcExJob(object):
             interval (integer): Seconds between polling
         """
         if isinstance(interval, int):
-            self._tcex._parser.set_defaults(batch_poll_interval=interval)
+            self._tcex.parser.set_defaults(batch_poll_interval=interval)
 
     def batch_poll_interval_max(self, interval_max):
         """Set batch polling interval max for argument parser.
@@ -686,7 +716,7 @@ class TcExJob(object):
             interval_max (integer): Max seconds before timeout on batch
         """
         if isinstance(interval_max, int):
-            self._tcex._parser.set_defaults(batch_poll_interval_max=interval_max)
+            self._tcex.parser.set_defaults(batch_poll_interval_max=interval_max)
 
     def batch_status(self, batch_id):
         """Check the status of a batch job
@@ -711,7 +741,7 @@ class TcExJob(object):
         }
 
         resource = self._tcex.resource('Batch')
-        resource.url = self._tcex._args.tc_api_path
+        resource.url = self._tcex.default_args.tc_api_path
         resource.batch_id(batch_id)
         results = resource.request()
 
@@ -721,9 +751,9 @@ class TcExJob(object):
                 status['completed'] = True
 
                 status_msg = u'Batch Job completed, totals: '
-                status_msg += u'succeeded: {0}, '.format(results.get('data').get('successCount'))
-                status_msg += u'failed: {0}, '.format(results.get('data').get('errorCount'))
-                status_msg += u'unprocessed: {0}'.format(results.get('data').get('unprocessCount'))
+                status_msg += u'succeeded: {}, '.format(results.get('data').get('successCount'))
+                status_msg += u'failed: {}, '.format(results.get('data').get('errorCount'))
+                status_msg += u'unprocessed: {}'.format(results.get('data').get('unprocessCount'))
                 self._tcex.log.info(status_msg)
 
                 if results['data']['errorCount'] > 0:
@@ -734,19 +764,20 @@ class TcExJob(object):
                     poll_time = 0
                     while True:
                         resource = self._tcex.resource('Batch')
-                        resource.url = self._tcex._args.tc_api_path
+                        resource.url = self._tcex.default_args.tc_api_path
                         resource.errors(batch_id)
                         error_results = resource.request()
-                        if poll_time >= self._tcex._args.batch_poll_interval_max:
+                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
                             self._tcex.exit(1)
                         elif error_results.get('response').status_code == 200:
                             break
-                        self._tcex.log.info(u'Error retreive sleep ({} seconds)'.format(self._tcex._args.batch_poll_interval))
-                        time.sleep(self._tcex._args.batch_poll_interval)
-                        poll_time += self._tcex._args.batch_poll_interval
+                        self._tcex.log.info(u'Error retreive sleep ({} seconds)'.format(
+                            self._tcex.default_args.batch_poll_interval))
+                        time.sleep(self._tcex.default_args.batch_poll_interval)
+                        poll_time += self._tcex.default_args.batch_poll_interval
 
                     try:
                         errors = json.loads(self._tcex.s(error_results.get('data')))
@@ -758,7 +789,8 @@ class TcExJob(object):
                     for error in errors:
                         error_reason = error.get('errorReason')
                         error_source = error.get('errorSource')
-                        if error_source is not None and '  :  ' in error_source:  # fix issue with API response
+                        # fix issue with API response
+                        if error_source is not None and '  :  ' in error_source:
                             error_source = error.get('errorSource').replace('  ', ' ')
                         # errorSource won't always have an indicator per cblades
                         if error_source in self._indicator_results.get('submitted', []):
@@ -766,11 +798,11 @@ class TcExJob(object):
                         for error_msg in self._batch_failures:
                             if re.findall(error_msg, error_reason):
                                 # Critical Error
-                                err = u'Batch Error: {0}'.format(error)
+                                err = u'Batch Error: {}'.format(error)
                                 self._tcex.message_tc(err)
                                 self._tcex.log.error(err)
                                 self._tcex.exit(1)
-                        self._tcex.log.warn(u'Batch Error: {0}'.format(error))
+                        self._tcex.log.warn(u'Batch Error: {}'.format(error))
             else:
                 self._tcex.log.debug(u'Batch Status: {}'.format(results.get('data').get('status')))
 
@@ -783,7 +815,7 @@ class TcExJob(object):
             write_type (string): Type of Append or Replace
         """
         if write_type in ['Append', 'Replace']:
-            self._tcex._parser.set_defaults(batch_write_type=write_type)
+            self._tcex.parser.set_defaults(batch_write_type=write_type)
 
     def file_occurrence(self, fo):
         """
@@ -926,7 +958,7 @@ class TcExJob(object):
 
         resource = self._tcex.resource(resource_type)
         resource.owner = owner
-        resource.url = self._tcex._args.tc_api_path
+        resource.url = self._tcex.default_args.tc_api_path
         data = []
         for results in resource:
             if results.get('status') == 'Success':
@@ -991,7 +1023,7 @@ class TcExJob(object):
 
             resource = self._tcex.resource('Group')
             resource.owner = owner
-            resource.url = self._tcex._args.tc_api_path
+            resource.url = self._tcex.default_args.tc_api_path
             for results in resource:
                 if results['status'] == 'Success':
                     for group in results.get('data'):
@@ -1116,17 +1148,19 @@ class TcExJob(object):
         """
         return self._indicator_results
 
-    def process(self, owner, indicator_batch=True):
+    def process(self, owner, indicator_batch=True, group_action='skip'):
         """Process all association, group and indicator data.
 
         Process each of the supported data types for this job.
 
         Args:
             owner (string): The owner name for the data to be written
+            indicator_batch (bool): If true use the Batch Api otherwise use `/v2`.
+            group_action (string): The action to use on group create (duplicate, replace, skip).
         """
         if self._groups:
             self._tcex.log.info(u'Processing Groups')
-            self._process_groups(owner)
+            self._process_groups(owner, group_action)
 
         if self._indicators:
             self._tcex.log.info(u'Processing Indicators')

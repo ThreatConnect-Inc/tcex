@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.5.23 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.6.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.5.23 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.6.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.5.23
+                0.6.0
               </div>
             
           
@@ -230,17 +230,17 @@
 
         <span class="c1"># Parser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">ArgParser</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">ArgParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
 
         <span class="c1"># NOTE: odd issue where args is not updating properly</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token_expires</span>
 
         <span class="c1"># logger (must parse args first)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_file</span><span class="p">)</span>
 
         <span class="c1"># Log versions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_platform</span><span class="p">()</span>
@@ -278,7 +278,7 @@
             <span class="c1"># Renew Token</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
             <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;expiredToken&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/appAuth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/appAuth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -327,9 +327,9 @@
 
 <div class="viewcode-block" id="TcEx._log_tc_proxy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tc_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tc_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Python Version&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Proxy Server (TC): </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcEx._log_tcex_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_tcex_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_tcex_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current TcEx Version&quot;&quot;&quot;</span>
@@ -381,16 +381,16 @@
             <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span>
         <span class="p">}</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;tcapp&#39;</span>
-        <span class="c1"># if self._args.tc_log_level.lower() in log_level.keys():</span>
-        <span class="c1">#     level = log_level[self._args.tc_log_level]</span>
+        <span class="c1"># if self.default_args.tc_log_level.lower() in log_level.keys():</span>
+        <span class="c1">#     level = log_level[self.default_args.tc_log_level]</span>
 
         <span class="c1"># BCS - temporarily until there is some way to configure App logging level in the UI</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">logging</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="n">log_level</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">logging</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">level</span> <span class="o">=</span> <span class="n">log_level</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">log_level</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">log_level</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_level</span><span class="p">]</span>
 
-        <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="n">logfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
@@ -398,7 +398,7 @@
         <span class="n">tx_format</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">%(funcName)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">)&#39;</span>
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">tx_format</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
             <span class="c1"># api &amp; file logger</span>
             <span class="kn">from</span> <span class="nn">.api_logging_handler</span> <span class="k">import</span> <span class="n">ApiLoggingHandler</span>
             <span class="n">api</span> <span class="o">=</span> <span class="n">ApiLoggingHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -435,14 +435,14 @@
         <span class="c1"># Dynamically create custom indicator class</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
         <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/associationTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/associationTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 
         <span class="c1"># check for bad status code and response that is not JSON</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">200</span>
-                <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">200</span> <span class="ow">or</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
             <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Custom Indicators Associations are not supported.&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
             <span class="k">return</span>
@@ -483,9 +483,9 @@
         <span class="c1"># Dynamically create custom indicator class</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
         <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/indicatorTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/indicatorTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 
         <span class="c1"># check for bad status code and response that is not JSON</span>
@@ -518,7 +518,7 @@
                     <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value3Label&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
                         <span class="n">value_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;value3Label&#39;</span><span class="p">])</span>
 
-                    <span class="c1"># TODO: Add validate option when type is select one??? Might be bets to let API</span>
+                    <span class="c1"># TODO: Add validate option when type is select one??? Might be best to let API</span>
                     <span class="c1">#       handle validation.</span>
                     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                    value3Label</span>
@@ -559,25 +559,27 @@
 <span class="sd">            args (list): List of unknown arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{0!s}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The parsed args from argparser</span>
+
+<span class="sd">        .. Note:: Accessing args should only be done directly in the App.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (namespace): ArgParser parsed arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results_tc_args</span><span class="p">()</span>  <span class="c1"># for local testing only</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parsed</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># log unknown arguments only once</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unknown_args</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span>
 
 <div class="viewcode-block" id="TcEx.authorization"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization">[docs]</a>    <span class="k">def</span> <span class="nf">authorization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_prepped</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A method to handle the different methods of authenticating to the ThreatConnect API.</span>
@@ -605,10 +607,11 @@
         <span class="n">authorization</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">authorization</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;TC-Token </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)}</span>
+            <span class="n">authorization</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;TC-Token </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">authorization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authorization_token_renew</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_access_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_secret_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_access_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_secret_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">authorization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorization_hmac</span><span class="p">(</span><span class="n">request_prepped</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">authorization</span></div>
@@ -627,13 +630,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">request_prepped</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
-            <span class="n">signature</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">signature</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">request_prepped</span><span class="o">.</span><span class="n">path_url</span><span class="p">,</span> <span class="n">request_prepped</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span>
             <span class="n">hmac_signature</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_secret_key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">signature</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_secret_key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">signature</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
                 <span class="n">digestmod</span><span class="o">=</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
-            <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC </span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">api_access_id</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">hmac_signature</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">api_access_id</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">hmac_signature</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;HMAC authorization requires a PreparedRequest Object&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -660,7 +663,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">api_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">api_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_api_path</span>
+            <span class="n">api_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span>
 
         <span class="c1"># Dynamically create custom indicator class</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
@@ -720,7 +723,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            code (Optional [integer]): The exit code value for the app.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_to_api</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;api&#39;</span><span class="p">:</span>
@@ -766,12 +769,12 @@
 <span class="sd">        Args:</span>
 <span class="sd">            message (string): The message to add to message_tc file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">message_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/message.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">message_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/message.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_file</span> <span class="o">=</span> <span class="s1">&#39;message.tc&#39;</span>
 
-        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">message_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mh</span><span class="p">:</span>
                 <span class="n">mh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -781,14 +784,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_message_length</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The ArgParser parser object</span>
+    <span class="c1"># @property</span>
+    <span class="c1"># def parser(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;The ArgParser parser object</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            (ArgumentParser): TcEX instance of ArgParser</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span>
+    <span class="c1">#     Returns:</span>
+    <span class="c1">#         (ArgumentParser): TcEX instance of ArgParser</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return self._parser</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -806,28 +809,28 @@
 <span class="sd">           (dictionary): Dictionary of proxy settings</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">proxies</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
 
-            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">tc_proxy_username</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-                <span class="n">tc_proxy_password</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">tc_proxy_username</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+                <span class="n">tc_proxy_password</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
 
                 <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">@</span><span class="si">{2!s}</span><span class="s1">:</span><span class="si">{3!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">tc_proxy_password</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
                 <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{0!s}</span><span class="s1">:</span><span class="si">{1!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
+                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">),</span>
+                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">)</span>
                 <span class="p">}</span>
 
         <span class="k">return</span> <span class="n">proxies</span>
@@ -861,9 +864,9 @@
 <span class="sd">            (instance): An instance of Request Class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Using proxy server for external request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
             <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
@@ -877,9 +880,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
         <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Using proxy server for TC request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">))</span>
             <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
@@ -904,12 +907,12 @@
 <span class="sd">            key (string): The data key to be stored</span>
 <span class="sd">            value (string): The data value to be stored</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
 
-        <span class="n">results</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1"> = </span><span class="si">{1!s}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> = </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">result_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rh</span><span class="p">:</span>
             <span class="n">rh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
 
@@ -923,8 +926,8 @@
 <span class="sd">            (dictionary): A dictionary of values written to results_tc.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
-            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0!s}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/results.tc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_out_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result_file</span> <span class="o">=</span> <span class="s1">&#39;results.tc&#39;</span>
 
@@ -935,7 +938,7 @@
 
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
             <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; = &#39;</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.s"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.s">[docs]</a>    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Decode value using correct Python 2/3 method</span>
@@ -1064,7 +1067,8 @@
                 <span class="n">resource_type</span> <span class="o">=</span> <span class="n">resource_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcEx.safe_group_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_group_name">[docs]</a>    <span class="k">def</span> <span class="nf">safe_group_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">group_max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ellipsis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safe_group_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_group_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">safe_group_name</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ellipsis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Truncate group name to match limit breaking on space and optionally add an ellipsis.</span>
 
 <span class="sd">        .. note:: Current the ThreatConnect group name limit is 100 characters.</span>
@@ -1077,12 +1081,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): The truncated group name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39; ...&#39;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
-            <span class="c1"># get the maximun length of the group name</span>
-            <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
-                <span class="n">group_max_length</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ellipsis_value</span><span class="p">)</span>
+        <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
+            <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39; ...&#39;</span>
 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">group_max_length</span><span class="p">:</span>
             <span class="c1"># split name by spaces and reset group_name</span>
             <span class="n">group_name_array</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
             <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -1091,9 +1094,8 @@
                 <span class="n">word</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 
                 <span class="c1"># truncate</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">group_max_length</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
-                        <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">ellipsis_value</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">group_max_length</span><span class="p">:</span>
+                    <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">ellipsis_value</span><span class="p">)</span>
                     <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
                     <span class="k">break</span>
                 <span class="n">group_name</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
@@ -1180,7 +1182,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5.23',
+            VERSION:'0.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

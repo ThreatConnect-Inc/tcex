@@ -19,7 +19,8 @@ class TcExKeyValue(object):
         self._r.body = value
         self._r.content_type = 'application/octet-stream'
         self._r.http_method = 'PUT'
-        self._r.url = '{}/internal/playbooks/keyValue/{}'.format(self._tcex._args.tc_api_path, key)
+        self._r.url = '{}/internal/playbooks/keyValue/{}'.format(
+            self._tcex.default_args.tc_api_path, key)
         response = self._r.send()
         return response.content
 
@@ -30,7 +31,8 @@ class TcExKeyValue(object):
     def read(self, key):
         """Read data from Redis for the provided key"""
         key = urllib.quote(key, safe='~')
-        self._r.url = '{}/internal/playbooks/keyValue/{}'.format(self._tcex._args.tc_api_path, key)
+        self._r.url = '{}/internal/playbooks/keyValue/{}'.format(
+            self._tcex.default_args.tc_api_path, key)
         response = self._r.send()
 
         data = response.content

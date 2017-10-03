@@ -5,6 +5,11 @@
 Examples
 =========
 
+----------------------
+Custom Metric Examples
+----------------------
+.. include:: resource_custom_metrics.rst
+
 -------------------
 Data Store Examples
 -------------------
