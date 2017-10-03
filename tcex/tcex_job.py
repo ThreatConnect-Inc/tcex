@@ -180,8 +180,8 @@ class TcExJob(object):
         resource.resource_id(resource_id)
         results = resource.request()
         if results.get('status') != 'Success':
-            self._tcex.log.warning(u'Deleted {} with ID {} failed.'.format(
-                resource_type, resource_id))
+            self._tcex.log.warning(u'Deleted {} with ID {} failed ({}).'.format(
+                resource_type, resource_id, results.get('response').text))
 
     def _process_file_occurrences(self, owner):
         """Process file occurrences and write to TC API
