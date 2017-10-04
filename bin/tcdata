@@ -11,6 +11,7 @@ import urllib3
 # disable ssl warning message
 urllib3.disable_warnings()
 """ third-party """
+from six import string_types
 """ custom """
 from tcex import TcEx
 
@@ -72,8 +73,8 @@ class TcData(object):
             'dict': (dict),
             'entity': (dict),
             'list': (list),
-            'str': (str, unicode),
-            'string': (str, unicode)
+            'str': (string_types),
+            'string': (string_types)
         }
         # user_type_tuple = tuple([data_type[t] for t in user_types])
         # if isinstance(db_data, user_type_tuple):

@@ -21,7 +21,8 @@ setup(
         'jsonschema==2.6.0',
         'python-dateutil==2.6.1',
         'redis==2.10.6',
-        'requests==2.18.4'
+        'requests==2.18.4',
+        'six==1.11.0'
     ],
     license='Apache License, Version 2',
     name='tcex',
