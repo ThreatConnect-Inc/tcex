@@ -6,10 +6,14 @@ Release Notes
 0.6.x
 =====
 
+0.6.1
+-----
++ Updated ``tcdata`` to validate String as string_types for "is type" check using six module.
++ Added fix for code font not matching line numbers in the docs.
+
 0.6.0
 -----
 + Added :py:mod:`~tcex.tcex_resources.CustomMetric` module to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Updated ``tcdata`` to validate String as str/unicode for "is type" check.
 + Renamed ``_args`` variable in tcex.py to ``default_args``.
 + Renamed ``_parser`` variable in tcex.py to ``parser``.
 + Code cleanup (removing any Python 2.5 specific code).

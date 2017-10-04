@@ -2,6 +2,8 @@
 # pip install CommonMark==0.5.5 recommonmark
 # pip install reno
 
+# pip install -r requirements.txt
+
 # used to generate project rst files
 # sphinx-apidoc -f -e -o tcex_docs ../../tcex
 
