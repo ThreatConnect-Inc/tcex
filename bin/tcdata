@@ -5,6 +5,7 @@ import base64
 import json
 import operator
 import os
+import re
 import sys
 import traceback
 import urllib3
@@ -33,6 +34,8 @@ class TcData(object):
         """ """
         self._args = arg_data
         self.data = []
+        self._vars_match = re.compile(
+            r"""(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))(?:::)?([A-Za-z0-9_.-]+)?\"?""")
         # Define common comparison operators
         self._operators = {
             'eq': operator.eq,
@@ -148,12 +151,13 @@ class TcData(object):
         resource_type = resource_data.get('type')
 
         tcex.log.debug('resource data {}'.format(resource_data))
+        resource_ids = []
         if resource_type in tcex.indicator_types:
             # temp resource to used to get resource_id from json
             resource = tcex.resource(resource_type)
             for data in resource.indicators(resource_data):
-                if data.get('value') is not None:
-                    resource_ids = [data.get('value')]
+                if data.get('summary') is not None:
+                    resource_ids = [data.get('summary')]
                     break
         elif resource_type in tcex.group_types:
             resource_ids = self.tc_group_name_to_id(
@@ -210,70 +214,102 @@ class TcData(object):
         owner = data.get('data_owner', args.data_owner)
         resource_data = data.get('data')
         variable = data.get('variable')
-        # if resource_data.get('type') == 'Association':
-        #     resource_data.pop('type')
-        #     tcex.jobs.association(resource_data)
-        # if resource_data.get('type') == 'Group Association':
-        #     resource_data.pop('type')
-        #     tcex.jobs.group_association(resource_data)
 
         # parse resource_data
         resource_type = resource_data.pop('type')
 
-        if resource_type not in tcex.indicator_types and resource_type not in tcex.group_types:
+        if resource_type == 'Association':
+            self.tc_create_associations(resource_data)
+        elif (resource_type in tcex.indicator_types or resource_type in tcex.group_types):
+            try:
+                attributes = resource_data.pop('attribute')
+            except KeyError:
+                attributes = []
+            try:
+                security_labels = resource_data.pop('security_label')
+            except KeyError:
+                security_labels = []
+            try:
+                tags = resource_data.pop('tag')
+            except KeyError:
+                tags = []
+
+            resource = tcex.resource(resource_type)
+            resource.http_method = 'POST'
+            resource.owner = owner
+            resource.url = args.tc_api_path
+
+            # special case for Email Group Type
+            if resource_type == 'Email':
+                resource.add_payload('option', 'createVictims')
+
+            tcex.log.debug(u'body: {}'.format(resource_data))
+            resource.body = json.dumps(resource_data)
+
+            response = resource.request()
+            if response.get('status') == 'Success':
+                # add resource id
+                if resource_type in tcex.indicator_types:
+                    for data in resource.indicators(response.get('data')):
+                        if data.get('value') is not None:
+                            resource_id = data.get('value')
+                            break
+                elif resource_type in tcex.group_types:
+                    resource_id = response.get('data', {}).get('id')
+                tcex.log.debug('resource_id: {}'.format(resource_id))
+                resource.resource_id(resource_id)
+
+                entity = tcex.playbook.json_to_entity(
+                    response.get('data'), resource.value_fields, resource.name, resource.parent)
+                tcex.log.debug('Creating Entity: {}'.format(variable))
+                tcex.playbook.create_tc_entity(variable, entity[0])
+
+                # update metadata
+                for attribute_data in attributes:
+                    self.tc_create_attribute(
+                        attribute_data.get('type'), attribute_data.get('value'), resource)
+                for label_data in security_labels:
+                    self.tc_create_security_label(label_data.get('name'), resource)
+                for tag_data in tags:
+                    self.tc_create_tag(tag_data.get('name'), resource)
+
+    @staticmethod
+    def tc_create_associations(resource_data):
+        """Add Attribute to a Resource"""
+
+        # resource 1
+        entity1 = tcex.playbook.read(resource_data.get('entity1'))
+        entity1_id = entity1.get('id')
+        entity1_owner = entity1.get('ownerName')
+        entity1_type = entity1.get('type')
+        if entity1.get('type') in tcex.indicator_types:
+            entity1_id = entity1.get('value')
+
+        # resource 2
+        entity2 = tcex.playbook.read(resource_data.get('entity2'))
+        entity2_id = entity2.get('id')
+        entity2_owner = entity1.get('ownerName')
+        entity2_type = entity2.get('type')
+        if entity2.get('type') in tcex.indicator_types:
+            entity2_id = entity2.get('value')
+
+        if entity1_owner != entity2_owner:
+            tcex.log.error('Can not associate resource across owners.')
             return
 
-        try:
-            attributes = resource_data.pop('attribute')
-        except KeyError:
-            attributes = []
-        try:
-            security_labels = resource_data.pop('security_label')
-        except KeyError:
-            security_labels = []
-        try:
-            tags = resource_data.pop('tag')
-        except KeyError:
-            tags = []
+        resource1 = tcex.resource(entity1_type)
+        resource1.http_method = 'POST'
+        resource1.owner = entity1_owner
+        resource1.resource_id(entity1_id)
 
-        resource = tcex.resource(resource_type)
-        resource.http_method = 'POST'
-        resource.owner = owner
-        resource.url = args.tc_api_path
+        resource2 = tcex.resource(entity2_type)
+        resource2.resource_id(entity2_id)
 
-        # special case for Email Group Type
-        if resource_type == 'Email':
-            resource.add_payload('option', 'createVictims')
-
-        tcex.log.debug(u'body: {}'.format(resource_data))
-        resource.body = json.dumps(resource_data)
-
-        response = resource.request()
-        if response.get('status') == 'Success':
-            # add resource id
-            if resource_type in tcex.indicator_types:
-                for data in resource.indicators(response.get('data')):
-                    if data.get('value') is not None:
-                        resource_id = data.get('value')
-                        break
-            elif resource_type in tcex.group_types:
-                resource_id = response.get('data', {}).get('id')
-            tcex.log.debug('resource_id: {}'.format(resource_id))
-            resource.resource_id(resource_id)
-
-            entity = tcex.playbook.json_to_entity(
-                response.get('data'), resource.value_fields, resource.name, resource.parent)
-            tcex.log.debug('Creating Entity: {}'.format(variable))
-            tcex.playbook.create_tc_entity(variable, entity)
-
-            # update metadata
-            for attribute_data in attributes:
-                self.tc_create_attribute(
-                    attribute_data.get('type'), attribute_data.get('value'), resource)
-            for label_data in security_labels:
-                self.tc_create_security_label(label_data.get('name'), resource)
-            for tag_data in tags:
-                self.tc_create_tag(tag_data.get('name'), resource)
+        a_resource = resource1.associations(resource2)
+        response = a_resource.request()
+        if response.get('status') != 'Success':
+            tcex.log.warning(u'Failed associating "{}:{}" with "{}:{}" ({}).'.format(
+                entity1_type, entity1_id, entity2_type, entity2_id, response.get('response').text))
 
     @staticmethod
     def tc_create_attribute(attribute_type, attribute_value, resource):
@@ -299,7 +335,7 @@ class TcData(object):
     @staticmethod
     def tc_create_security_label(label, resource):
         """Add a Tag to a Resource"""
-        sl_resource = resource.security_label(label)
+        sl_resource = resource.security_labels(label)
         sl_resource.http_method = 'POST'
         sl_response = sl_resource.request()
         if sl_response.get('status') != 'Success':
@@ -342,17 +378,38 @@ class TcData(object):
         for data in self.data:
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
+                user_data = data.get('data')
+                tcex.log.debug('BCS data: {}'.format(data))
+                tcex.log.debug('BCS user_data: {}'.format(user_data))
+                # see if user provided data is a redis variable
+                if user_data is not None and re.match(self._vars_match, user_data):
+                    variable_data = self.parse_variable(user_data)
+                    variable = variable_data[0]
+                    variable_sub = variable_data[1]  # (value)
+                    user_data = tcex.playbook.read(variable)
+                    if variable_sub is not None:
+                        user_data = user_data.get(variable_sub)
+
                 self.redis_validate(
-                    data.get('variable'), data.get('data'), data.get('operator', 'eq'))
+                    data.get('variable'), user_data, data.get('operator', 'eq'))
 
     def redis_validate(self, variable, data, oper):
         """Validate Data"""
+        # convert any int to string since playbooks don't support int values
         if isinstance(data, int):
             data = str(data)
+
+        variable_data = self.parse_variable(variable)
+        # #App:0391:tc.group.name!TCEntity::value
+        variable = variable_data[0]  # (#App:0391:tc.group.name!TCEntity)
+        variable_sub = variable_data[1]  # (value)
         tcex.log.info(u'Validating output variable {}'.format(variable))
 
         # retrieve data from db
         db_data = tcex.playbook.read(variable)
+        if variable_sub is not None:
+            db_data = db_data.get(variable_sub)
+
         if variable.endswith('Binary') or variable.endswith('BinaryArray'):
             tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(
                 'Excluding Binary Data Output', type(db_data)))
@@ -366,6 +423,10 @@ class TcData(object):
         else:
             tcex.log.error(u'Validation failed for variable: {}'.format(variable))
             tcex.exit(1)
+
+    def parse_variable(self, variable_data):
+        """Parse a variable with sub data"""
+        return list(re.search(self._vars_match, variable_data).groups())
 
 
 if __name__ == '__main__':

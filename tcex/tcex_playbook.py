@@ -377,8 +377,19 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(
-                key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
+            try:
+                # py2
+                # convert to bytes as required for b64encode
+                # decode bytes for json serialization as required for json dumps
+                data = self._db.create(
+                    key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
+            except TypeError:
+                # py3
+                # set encoding on string and convert to bytes as required for b64encode
+                # decode bytes for json serialization as required for json dumps
+                data = self._db.create(
+                    key.strip(), json.dumps(
+                        base64.b64encode(bytes(value, 'utf-8')).decode('utf-8')))
         else:
             self._tcex.log.warning(u'The key or value field was None.')
         return data
@@ -416,7 +427,16 @@ class TcExPlaybook(object):
         if key is not None and value is not None:
             value_encoded = []
             for v in value:
-                value_encoded.append(base64.b64encode(bytes(v)).decode('utf-8'))
+                try:
+                    # py2
+                    # convert to bytes as required for b64encode
+                    # decode bytes for json serialization as required for json dumps
+                    value_encoded.append(base64.b64encode(bytes(v)).decode('utf-8'))
+                except TypeError:
+                    # py3
+                    # set encoding on string and convert to bytes as required for b64encode
+                    # decode bytes for json serialization as required for json dumps
+                    value_encoded.append(base64.b64encode(bytes(v, 'utf-8')).decode('utf-8'))
             data = self._db.create(key.strip(), json.dumps(value_encoded))
         else:
             self._tcex.log.warning(u'The key or value field was None.')

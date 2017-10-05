@@ -282,7 +282,7 @@ class TcRun(object):
                 'data_type': 'redis',
                 'variable': variable
             })
-            print('Removing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
+            print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
 
         # delete is handled below.
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:

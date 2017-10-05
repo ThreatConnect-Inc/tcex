@@ -47,6 +47,9 @@
     "listDelimiter": {
       "type": "string"
     },
+    "minServerVersion": {
+      "type": "string"
+    },
     "note": {
       "type": "string"
     },

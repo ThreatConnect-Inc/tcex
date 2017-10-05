@@ -6,6 +6,13 @@ Release Notes
 0.6.x
 =====
 
+0.6.2
+-----
++ Updated playbook create_binary and create_binary array for to better support Py3.
++ Update ``tcdata`` to support Security Labels in staged data.
++ Update ``tcdata`` to support adding Associations.
++ Update ``tcdata`` to support variable reference **#App:4768:tc.address!TCEntity::value** during validation.
+
 0.6.1
 -----
 + Updated ``tcdata`` to validate String as string_types for "is type" check using six module.
