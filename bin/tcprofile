@@ -142,6 +142,10 @@ def main():
                 od['data'] = 'array'
                 od['data_type'] = 'redis'
                 od['operator'] = 'it'
+            elif d.get('type').endswith('Binary'):
+                od['data'] = 'binary'
+                od['data_type'] = 'redis'
+                od['operator'] = 'it'
             elif d.get('type').endswith('Entity') or d.get('type') == 'KeyValue':
                 od['data'] = 'entity'
                 od['data_type'] = 'redis'

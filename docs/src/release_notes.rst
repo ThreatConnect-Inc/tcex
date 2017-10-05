@@ -9,6 +9,7 @@ Release Notes
 0.6.3
 -----
 + Fixed issue in ``tcdata`` when validating data is a not string type.
++ Updated ``tcprofile`` to set type check to binary on Binary data.
 
 0.6.2
 -----
