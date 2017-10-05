@@ -379,10 +379,8 @@ class TcData(object):
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
                 user_data = data.get('data')
-                tcex.log.debug('BCS data: {}'.format(data))
-                tcex.log.debug('BCS user_data: {}'.format(user_data))
                 # see if user provided data is a redis variable
-                if user_data is not None and re.match(self._vars_match, user_data):
+                if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
                     variable_data = self.parse_variable(user_data)
                     variable = variable_data[0]
                     variable_sub = variable_data[1]  # (value)

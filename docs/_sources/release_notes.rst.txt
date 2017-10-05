@@ -6,6 +6,10 @@ Release Notes
 0.6.x
 =====
 
+0.6.3
+-----
++ Fixed issue in ``tcdata`` when validating data is a not string type.
+
 0.6.2
 -----
 + Updated playbook create_binary and create_binary array for to better support Py3.
