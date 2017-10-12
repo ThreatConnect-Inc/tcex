@@ -3,6 +3,15 @@
 Release Notes
 #############
 
+0.7.x
+=====
+
+0.7.0
+-----
++ Updated the TcEx framework to only build custom indicator classes when working with custom indicators.
+
+.. Important:: Breaking change to any App that uses the Direct Access method with a Custom Indicator type.
+
 0.6.x
 =====
 

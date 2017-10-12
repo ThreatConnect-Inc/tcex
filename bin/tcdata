@@ -191,13 +191,18 @@ class TcData(object):
             elif data_type == 'redis_array':
                 tcex.log.debug('Stage Redis Array')
                 redis_array = []
-                variable = data.get('variable')
-                variable_type = tcex.playbook.variable_type(variable)
+                out_variable = data.get('variable')
+                out_variable_type = tcex.playbook.variable_type(out_variable)
                 for var in data.get('data', {}).get('variables', []):
-                    redis_array.append(tcex.playbook.read(var))
-
+                    variable_data = self.parse_variable(var)
+                    variable = variable_data[0]
+                    variable_sub = variable_data[1]  # (value)
+                    data = tcex.playbook.read(variable)
+                    if variable_sub is not None and isinstance(data, (dict)):
+                        data = data.get(variable_sub)
+                    redis_array.append(data)
                 # create merged variable
-                tcex.playbook._create_data_type[variable_type](variable, redis_array)
+                tcex.playbook._create_data_type[out_variable_type](out_variable, redis_array)
 
     @staticmethod
     def redis_stage(variable, data):
@@ -220,7 +225,7 @@ class TcData(object):
 
         if resource_type == 'Association':
             self.tc_create_associations(resource_data)
-        elif (resource_type in tcex.indicator_types or resource_type in tcex.group_types):
+        elif resource_type in tcex.indicator_types or resource_type in tcex.group_types:
             try:
                 attributes = resource_data.pop('attribute')
             except KeyError:
@@ -261,7 +266,7 @@ class TcData(object):
 
                 entity = tcex.playbook.json_to_entity(
                     response.get('data'), resource.value_fields, resource.name, resource.parent)
-                tcex.log.debug('Creating Entity: {}'.format(variable))
+                tcex.log.debug('Creating Entity: {} ({})'.format(variable, entity[0]))
                 tcex.playbook.create_tc_entity(variable, entity[0])
 
                 # update metadata
@@ -272,6 +277,8 @@ class TcData(object):
                     self.tc_create_security_label(label_data.get('name'), resource)
                 for tag_data in tags:
                     self.tc_create_tag(tag_data.get('name'), resource)
+        else:
+            tcex.log.error('Unsupported resource type {}.'.format(resource_type))
 
     @staticmethod
     def tc_create_associations(resource_data):
@@ -385,7 +392,7 @@ class TcData(object):
                     variable = variable_data[0]
                     variable_sub = variable_data[1]  # (value)
                     user_data = tcex.playbook.read(variable)
-                    if variable_sub is not None:
+                    if variable_sub is not None and isinstance(data, (dict)):
                         user_data = user_data.get(variable_sub)
 
                 self.redis_validate(
@@ -416,6 +423,13 @@ class TcData(object):
         tcex.log.debug(u'- Operator: ({}) -'.format(oper))
         tcex.log.debug(u'<- Validation Data: ({}), Type: [{}]'.format(data, type(data)))
 
+        # sort list for simple comparisons
+        if isinstance(db_data, (list)):
+            db_data = sorted(db_data)
+        if isinstance(data, (list)):
+            data = sorted(data)
+
+        # compare the data
         if oper in self._operators and self._operators.get(oper)(db_data, data):
             tcex.log.info(u'Validation was successful')
         else:

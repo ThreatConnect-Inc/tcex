@@ -45,9 +45,9 @@ class TcEx(object):
             'Signature',
             'Threat'
         ]
-        self.indicator_associations_types_data = {}
-        self.indicator_types = []
-        self.indicator_types_data = {}
+        self._indicator_associations_types_data = {}
+        self._indicator_types = []
+        self._indicator_types_data = {}
         self._max_message_length = 255
         # NOTE: odd issue where args is not updating properly
         self._tc_token = None
@@ -82,9 +82,6 @@ class TcEx(object):
 
         # include resources module
         self._resources()
-
-        # load custom indicator associations
-        self._association_types()
 
     def _authorization_token_renew(self):
         """Method for handling token authorization to ThreatConnect API.
@@ -282,14 +279,14 @@ class TcEx(object):
         try:
             # Association Type Name is not a unique value at this time, but should be.
             for association in response.json().get('data', {}).get('associationType', []):
-                self.indicator_associations_types_data[association.get('name')] = association
+                self._indicator_associations_types_data[association.get('name')] = association
         except:
             err = u'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
                 sys.exc_info()[0])
             self.log.error(err)
             raise RuntimeError(err)
 
-    def _resources(self):
+    def _resources(self, custom_indicators=False):
         """Initialize the resource module.
 
         This method will make a request to the ThreatConnect API to dynamically
@@ -298,84 +295,96 @@ class TcEx(object):
 
         .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>``.
         """
+
+        # create resource object
         self.resources = type('resources', (object,), {})
 
+        # import resource module and add all classes to resource
         from . import tcex_resources as resources
         for name, obj in inspect.getmembers(resources):
             if inspect.isclass(obj):
                 setattr(self.resources, name, getattr(resources, name))
 
-        # Dynamically create custom indicator class
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/v2/types/indicatorTypes'.format(self.default_args.tc_api_path)
-        response = r.send()
+        if custom_indicators:
+            self.log.info('Loading custom indicator types.')
 
-        # check for bad status code and response that is not JSON
-        if (int(response.status_code) != 200 or
-                response.headers.get('content-type') != 'application/json'):
-            warn = u'Custom Indicators are not supported.'
-            self.log.warning(warn)
-            return
+            # Retrieve all indicator types from the API
+            r = self.request
+            r.authorization_method(self.authorization)
+            if self.default_args.tc_proxy_tc:
+                r.proxies = self.proxies
+            r.url = '{}/v2/types/indicatorTypes'.format(self.default_args.tc_api_path)
+            response = r.send()
 
-        # validate successful API results
-        data = response.json()
-        if data.get('status') != 'Success':
-            warn = u'Bad Status: Custom Indicators are not supported.'
-            self.log.warning(warn)
-            return
+            # check for bad status code and response that is not JSON
+            if (int(response.status_code) != 200 or
+                    response.headers.get('content-type') != 'application/json'):
+                warn = u'Custom Indicators are not supported.'
+                self.log.warning(warn)
+                return
 
-        try:
-            data = response.json()['data']['indicatorType']
-            for entry in data:
-                name = self.safe_rt(entry['name'])
-                self.indicator_types.append(str(entry['name']))
-                self.indicator_types_data[entry.get('name')] = entry
+            # validate successful API results
+            data = response.json()
+            if data.get('status') != 'Success':
+                warn = u'Bad Status: Custom Indicators are not supported.'
+                self.log.warning(warn)
+                return
 
-                if entry['custom'] == 'true':
-                    value_fields = []
-                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
-                        value_fields.append(entry['value1Label'])
-                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
-                        value_fields.append(entry['value2Label'])
-                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
-                        value_fields.append(entry['value3Label'])
+            try:
+                # Dynamically create custom indicator class
+                data = response.json()['data']['indicatorType']
+                for entry in data:
+                    name = self.safe_rt(entry['name'])
+                    self._indicator_types.append(u'{}'.format(entry.get('name')))
+                    self._indicator_types_data[entry.get('name')] = entry
 
-                    # TODO: Add validate option when type is select one??? Might be best to let API
-                    #       handle validation.
-                    """
-                    value3Label
-                    value3Type - selectone
-                    value3Option - <semi-colon delimited list>
-                    """
+                    # Custom Indicator have 3 values. Only add the value if it is set.
+                    if entry['custom'] == 'true':
+                        value_fields = []
+                        if entry.get('value1Label') is not None and entry.get('value1Label') != '':
+                            value_fields.append(entry['value1Label'])
+                        if entry.get('value2Label') is not None and entry.get('value2Label') != '':
+                            value_fields.append(entry['value2Label'])
+                        if entry.get('value3Label') is not None and entry.get('value3Label') != '':
+                            value_fields.append(entry['value3Label'])
 
-                    i = self.resources.Indicator(self)
-                    custom = {
-                        '_api_branch': entry['apiBranch'],
-                        '_api_entity': entry['apiEntity'],
-                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_case_preference': entry['casePreference'],
-                        '_custom': entry['custom'],
-                        '_name': name,
-                        '_parsable': entry['parsable'],
-                        '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                        '_status_codes': {
-                            'DELETE': [200],
-                            'GET': [200],
-                            'POST': [200, 201],
-                            'PUT': [200]
-                        },
-                        '_value_fields': value_fields
-                    }
-                    setattr(self.resources, name, resources.class_factory(
-                        name, self.resources.Indicator, custom))
-        except:
-            err = u'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
-            self.log.error(err)
-            raise RuntimeError(err)
+                        # TODO: Add validate option when type is select one??? Might be best to
+                        #       let API handle validation.
+                        """
+                        value3Label
+                        value3Type - selectone
+                        value3Option - <semi-colon delimited list>
+                        """
+
+                        # get instance of Indicator Class
+                        i = self.resources.Indicator(self)
+                        custom = {
+                            '_api_branch': entry['apiBranch'],
+                            '_api_entity': entry['apiEntity'],
+                            '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                            '_case_preference': entry['casePreference'],
+                            '_custom': entry['custom'],
+                            '_name': name,
+                            '_parsable': entry['parsable'],
+                            '_request_entity': entry['apiEntity'],
+                            '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                            '_status_codes': {
+                                'DELETE': [200],
+                                'GET': [200],
+                                'POST': [200, 201],
+                                'PUT': [200]
+                            },
+                            '_value_fields': value_fields
+                        }
+                        # Call custom indicator class factory
+                        setattr(self.resources, name, resources.class_factory(
+                            name, self.resources.Indicator, custom))
+            except:
+                err = u'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
+                self.log.error(err)
+                raise RuntimeError(err)
+        # else:
+        #     self.log.info('Custom indicator types were not requested.')
 
     def _unknown_args(self, args):
         """Log argparser unknown arguments.
@@ -580,6 +589,39 @@ class TcEx(object):
         else:
             self.log.error(u'Invalid exit code')
 
+    @property
+    def indicator_associations_types_data(self):
+        """Return associations type data.
+
+        Retrieve the data from the API if it hasn't already benn retrieved.
+        """
+        if not self._indicator_associations_types_data:
+            # load custom indicator associations
+            self._association_types()
+        return self._indicator_associations_types_data
+
+    @property
+    def indicator_types(self):
+        """Return indicator types
+
+        Retrieve the data from the API if it hasn't already benn retrieved.
+        """
+        if not self._indicator_types:
+            # load custom indicator associations
+            self._resources(True)
+        return self._indicator_types
+
+    @property
+    def indicator_types_data(self):
+        """Return indicator types data
+
+        Retrieve the data from the API if it hasn't already benn retrieved.
+        """
+        if not self._indicator_types_data:
+            # load custom indicator associations
+            self._resources(True)
+        return self._indicator_types_data
+
     def job(self):
         """Return instance of Job module"""
         return TcExJob(self)
@@ -712,7 +754,7 @@ class TcEx(object):
         return r
 
     def resource(self, resource_type):
-        """Get instance of Resource Class with dynamic group.
+        """Get instance of Resource Class with dynamic type.
 
         Args:
             resource_type: The resource type name (e.g Adversary, User Agent, etc).
@@ -720,7 +762,12 @@ class TcEx(object):
         Returns:
             (instance): Instance of Resource Object child class.
         """
-        return getattr(self.resources, self.safe_rt(resource_type))(self)
+        try:
+            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
+        except AttributeError:
+            self._resources(True)
+            resource = getattr(self.resources, self.safe_rt(resource_type))(self)
+        return resource
 
     def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory

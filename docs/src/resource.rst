@@ -5,9 +5,11 @@
 Resources
 =========
 
-The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed via the ``tcex.resources`` property of the TcEx Framework.
+The ThreatConnect |trade| TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed directly via the ``tcex.resources`` property of the TcEx Framework or indirectly vi the ``tcex.resource()`` method.
 
 **Direct Access**
+
+.. Important:: The Direct Access method is not supported on Custom Indicator Types.
 
 .. code-block:: python
     :linenos:
