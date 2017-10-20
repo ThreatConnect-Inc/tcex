@@ -31,7 +31,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group` method accepts the following data st
         {
           "name": "APT"
         },{
-          "name": "Crimeware"
+          "name": "CrimeWare"
         }
       ],
       "type": "Adversary"
@@ -111,7 +111,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
         {
           "name": "APT"
         },{
-          "name": "Crimeware"
+          "name": "CrimeWare"
         }
       ],
       "type": "Address"
