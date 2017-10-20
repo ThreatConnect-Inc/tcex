@@ -208,7 +208,7 @@ The ``tcrun`` command provides some basic data validation for output variables. 
 .. code-block:: python
 
         'eq' # equal to
-        'ew' # endswitch
+        'ew' # ends with
         'ge' # greater than or equal to
         'gt' # greater than
         'in' # in array

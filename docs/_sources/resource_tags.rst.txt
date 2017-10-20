@@ -59,7 +59,7 @@ Response
         "webLink": "https://api.threatconnect.com/auth/tags/tag.xhtml?tag=China&owner=Acme+Corp"
     },
     {
-        "name": "Crimeware",
+        "name": "CrimeWare",
         "webLink": "https://api.threatconnect.com/auth/tags/tag.xhtml?tag=Crimeware&owner=Acme+Corp"
     }]
 

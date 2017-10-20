@@ -3,6 +3,17 @@
 Release Notes
 #############
 
+0.7.x
+=====
+
+0.7.0
+-----
++ Updated the TcEx framework to only build custom indicator classes when working with custom indicators.
++ Updated TcJobs module group add logic to fix issue with skipping existing groups.
++ Updated TcJobs module to handle associatedGroup passed as string or int when using **/v2**.
+
+.. Important:: Breaking change to any App that uses the Direct Access method with a Custom Indicator type.
+
 0.6.x
 =====
 
@@ -83,7 +94,7 @@ Release Notes
 ------
 + Initial update to ``tcrun`` to support running Java Apps.
 + Added support for **install_json** profile parameter to tcex.json. This should be included in all **tcex.json** files going forward.
-+ Added support for **java_path** config parameter to tcex.json for custom java path.  Default behaviour is to use the default version of **java** from user path.
++ Added support for **java_path** config parameter to tcex.json for custom java path.  Default behavior is to use the default version of **java** from user path.
 + Added support for **class_path** profile parameter to tcex.json for custom java paths.  By default ``./target/`` will be used as the class_pass value.
 + Updated ``tcpackage`` to grab minor version from programVersion in install.json.  If no programVersion found the default version of an App is 1.0.0.
 + Cleanup for PEP8 and more.
@@ -91,12 +102,12 @@ Release Notes
 0.5.14
 ------
 + Updated :py:meth:`~tcex.tcex_resources.Bulk.json` method to use proper entity value.
-+ Updated ``tcprofile`` to use default env values for API creds.
++ Updated ``tcprofile`` to use default env values for API credentials.
 + Adding **groups** parameter to **tcex.json** so a profile can be part of multiple groups.
 
 0.5.13
 ------
-+ Added addtional exclude values for IDE directories.
++ Added additional exclude values for IDE directories.
 + Added **app_name** parameter to **tcex.json** for App built on system where App directory is not the App name.
 + Updated ``tcpackage`` to use new **app_name** if exists and default back to App directory name.
 + Updated ``tcprofile`` to only output redis variable for Playbook Apps.
@@ -168,7 +179,7 @@ Release Notes
 0.5.0
 ------
 + Added support for output variable of the same name, but different types.
-+ Support for new TCKeyVaueAPI DB types in Playbook Apps.  This is a seamless change to the Apps.
++ Support for new TCKeyValueAPI DB types in Playbook Apps.  This is a seamless change to the Apps.
 + Updated :py:meth:`~tcex.tcex.TcEx.authorization` method to return properly formatted header when no token_expires is provided.
 + Added automatic Authorization to :py:meth:`~tcex.tcex.TcEx.request_tc` method.
 + Updated documentation for Request module.
@@ -232,7 +243,7 @@ Release Notes
 
 0.4.2
 -----
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent varibable type.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent variable type.
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module for an issue where copying the instance causing errors with request instance in Python3.
 + Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to better format error output.
 
@@ -296,7 +307,7 @@ Release Notes
 0.3.1
 -----
 + Updated :py:meth:`~tcex.tcex_request.TcExRequest.set_basic_auth` method to use proper unicode method.
-+ Updated :py:mod:`~tcex.tcex_playbook` create and read methods to warn when None vaule is passed.
++ Updated :py:mod:`~tcex.tcex_playbook` create and read methods to warn when None value is passed.
 
 0.3.0
 -----
@@ -442,7 +453,7 @@ Release Notes
 + Updated :py:meth:`~tcex.tcex.TcEx._resources` method to handle TC version without custom indicators.
 + Updated logging to better debug API request failures.
 + Updated package command to create lib directory with python version (e.g. lib_3.6.0)
-+ Logging the Logging Level, Python and TcEx verison for additional debugging.
++ Logging the Logging Level, Python and TcEx version for additional debugging.
 
 0.0.6
 -----

@@ -5,8 +5,7 @@ import time
 from base64 import b64encode
 """ third-party """
 from requests import (exceptions, packages, Request, Session)
-# disable ssl warning message
-packages.urllib3.disable_warnings()
+packages.urllib3.disable_warnings()  # disable ssl warning message
 """ custom """
 
 

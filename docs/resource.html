@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Resources &mdash; TcEx 0.6.3 documentation</title>
+  <title>Resources &mdash; TcEx 0.7.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.6.3 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.7.0 documentation" href="index.html"/>
         <link rel="next" title="Results TC" href="results_tc.html"/>
         <link rel="prev" title="Requests" href="request.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.6.3
+                0.7.0
               </div>
             
           
@@ -201,8 +201,12 @@
             
   <div class="section" id="resources">
 <span id="id1"></span><h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx Framework provides access to the ThreatConnect API using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> module.  The Resource Classes can be accessed via the <code class="docutils literal"><span class="pre">tcex.resources</span></code> property of the TcEx Framework.</p>
+<p>The ThreatConnect ™ TcEx Framework provides access to the ThreatConnect API using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> module.  The Resource Classes can be accessed directly via the <code class="docutils literal"><span class="pre">tcex.resources</span></code> property of the TcEx Framework or indirectly vi the <code class="docutils literal"><span class="pre">tcex.resource()</span></code> method.</p>
 <p><strong>Direct Access</strong></p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">The Direct Access method is not supported on Custom Indicator Types.</p>
+</div>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -248,7 +252,7 @@
 </div>
 <div class="section" id="custom-metrics-resource">
 <h2>Custom Metrics Resource<a class="headerlink" href="#custom-metrics-resource" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Resource Module provides Access to the <code class="docutils literal"><span class="pre">custommetric</span></code> API endpoint to create configurations and add data.</p>
+<p>The TcEx Resource Module provides Access to the <code class="docutils literal"><span class="pre">customMetric</span></code> API endpoint to create configurations and add data.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">Available in 5.4+ version of the ThreatConnect API.</p>
@@ -537,7 +541,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.6.3',
+            VERSION:'0.7.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

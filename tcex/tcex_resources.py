@@ -457,19 +457,19 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+--------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                           |
+        +==============+==============================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes              |
+        +--------------+--------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |
+        +--------------+--------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |
+        +--------------+--------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes              |
+        +--------------+--------------------------------------------------------------+
+        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |
+        +--------------+--------------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (attribute id).
@@ -540,13 +540,13 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/                                    |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                     |
+        +==============+========================================================================+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/       |
+        +--------------+------------------------------------------------------------------------+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type} |
+        +--------------+------------------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (file hash).
@@ -673,7 +673,8 @@ class Resource(object):
         """The parent object name for this resource.
 
         Return:
-            (str): The API endpoint parent value (e.g. Indicator for Address or Group for Adversary.)
+            (str): The API endpoint parent value (e.g. Indicator for Address or Group
+                   for Adversary.)
         """
         return self._parent
 
@@ -823,17 +824,17 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                                               |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}                                    |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}                                |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+----------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                   |
+        +==============+======================================================================+
+        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                |
+        +--------------+----------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------------+----------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}            |
+        +--------------+----------------------------------------------------------------------+
+        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId} |
+        +--------------+----------------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (security label name).
@@ -857,17 +858,17 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels                                                        |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+-----------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                        |
+        +==============+===========================================================+
+        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels              |
+        +--------------+-----------------------------------------------------------+
+        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |
+        +--------------+-----------------------------------------------------------+
+        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |
+        +--------------+-----------------------------------------------------------+
+        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |
+        +--------------+-----------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (security label name).
@@ -887,21 +888,21 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                                                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}                                                     |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                         |
+        +==============+============================================================+
+        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}            |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId} |
+        +--------------+------------------------------------------------------------+
+        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------------+------------------------------------------------------------+
+        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId} |
+        +--------------+------------------------------------------------------------+
 
         Args:
             resource_id (string): The resource pivot id (tag name).
@@ -924,25 +925,25 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags                                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                         |
+        +==============+============================================================+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                  |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags              |
+        +--------------+------------------------------------------------------------+
+        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |
+        +--------------+------------------------------------------------------------+
+        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |
+        +--------------+------------------------------------------------------------+
+        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |
+        +--------------+------------------------------------------------------------+
+        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |
+        +--------------+------------------------------------------------------------+
+        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |
+        +--------------+------------------------------------------------------------+
 
         Args:
             resource_id (Optional [string]): The resource id (tag name).
@@ -963,17 +964,17 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                                                        |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}                                             |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}                                                    |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}                                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+-------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                          |
+        +==============+=============================================================+
+        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                |
+        +--------------+-------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------------+-------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}            |
+        +--------------+-------------------------------------------------------------+
+        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId} |
+        +--------------+-------------------------------------------------------------+
 
         Args:
             resource_id (integer): The resource pivot id (task id).
@@ -988,7 +989,8 @@ class Resource(object):
         """The value fields for this resource.
 
         Returns:
-            (list): The fields in the response JSON that have the key value (e.g. ['md5', 'sha1', 'sha256'] or ['ip']).
+            (list): The fields in the response JSON that have the key value (e.g. ['md5',
+                   'sha1', 'sha256'] or ['ip']).
         """
         return self._value_fields
 
@@ -1000,21 +1002,21 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}                            |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+--------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                       |
+        +==============+==========================================================================+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                |
+        +--------------+--------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |
+        +--------------+--------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims            |
+        +--------------+--------------------------------------------------------------------------+
+        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId} |
+        +--------------+--------------------------------------------------------------------------+
+        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |
+        +--------------+--------------------------------------------------------------------------+
+        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |
+        +--------------+--------------------------------------------------------------------------+
 
         Args:
             resource_id (integer): The resource pivot id (victim id).
@@ -1033,17 +1035,17 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                                                      |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}                                                  |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------------+---------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                            |
+        +==============+===============================================================+
+        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                |
+        +--------------+---------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------------+---------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}            |
+        +--------------+---------------------------------------------------------------+
+        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId} |
+        +--------------+---------------------------------------------------------------+
 
         Args:
             resource_id (integer): The resource pivot id (victim id).
@@ -1333,7 +1335,8 @@ class Indicator(Resource):
             :linenos:
             :lineno-start: 1
 
-            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API
+            # the individual indicator JSON from the API
+            for i in resource.indicators(indicator_data):
                 print(i.get('type'))  # md5, sha1, sha256, etc
                 print(i.get('value'))  # hash or custom indicator value
 
@@ -1351,7 +1354,7 @@ class Indicator(Resource):
         Returns:
             (dictionary): A dict containing the indicator type and value.
         """
-        indicator_list = []
+        # indicator_list = []
         for indicator_field in self.value_fields:
             if indicator_field == 'summary':
                 indicators = self._tcex.expand_indicators(indicator_data.get('summary'))
@@ -1361,7 +1364,7 @@ class Indicator(Resource):
                         'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
                         'sha256': re.compile(r'^([a-fA-F\d]{64})$')
                     }
-                    body = {}
+                    # body = {}
                     for i in indicators:
                         if i is None:
                             continue
@@ -1896,9 +1899,9 @@ class CustomMetric(Resource):
     +--------------+----------------------------------+
     | HTTP Method  | API Endpoint URI's               |
     +==============+==================================+
-    | GET          | /v2/custommetrics                |
+    | GET          | /v2/customMetrics                |
     +--------------+----------------------------------+
-    | POST         | /v2/custommetrics                |
+    | POST         | /v2/customMetrics                |
     +--------------+----------------------------------+
 
     .. code-block:: javascript
@@ -1917,7 +1920,7 @@ class CustomMetric(Resource):
     def __init__(self, tcex):
         """Initialize default class values."""
         super(CustomMetric, self).__init__(tcex)
-        self._api_branch = 'custommetrics'
+        self._api_branch = 'customMetrics'
         self._api_entity = 'customMetricConfig'
         self._api_uri = self._api_branch
         self._name = 'CustomerMetric'
@@ -1937,9 +1940,9 @@ class CustomMetric(Resource):
         +--------------+----------------------------------+
         | HTTP Method  | API Endpoint URI's               |
         +==============+==================================+
-        | GET          | /v2/custommetrics/{id}           |
+        | GET          | /v2/customMetrics/{id}           |
         +--------------+----------------------------------+
-        | PUT          | /v2/custommetrics/{id}           |
+        | PUT          | /v2/customMetrics/{id}           |
         +--------------+----------------------------------+
 
         Args:
@@ -1953,9 +1956,9 @@ class CustomMetric(Resource):
         +--------------+----------------------------------+
         | HTTP Method  | API Endpoint URI's               |
         +==============+==================================+
-        | GET          | /v2/custommetrics/{name}         |
+        | GET          | /v2/customMetrics/{name}         |
         +--------------+----------------------------------+
-        | PUT          | /v2/custommetrics/{name}         |
+        | PUT          | /v2/customMetrics/{name}         |
         +--------------+----------------------------------+
 
         Args:
@@ -1977,7 +1980,7 @@ class CustomMetric(Resource):
         Args:
             resource_name (string): The metric name.
         """
-        self.metric_name(resource_id)
+        self.metric_name(resource_name)
 
     def data(self, resource_value, return_value=False):
         """Alias for metric_name method
@@ -1985,7 +1988,7 @@ class CustomMetric(Resource):
         +--------------+------------------------------------+
         | HTTP Method  | API Endpoint URI's                 |
         +==============+====================================+
-        | POST         | /v2/custommetrics/{id}|{name}/data |
+        | POST         | /v2/customMetrics/{id}|{name}/data |
         +--------------+------------------------------------+
 
         Example
@@ -2327,7 +2330,8 @@ class DataStore(object):
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
-            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use
+                                this resource verbatim.
             search_command (string): Search command to pass to ES.
             db_method (string): The DB method 'DELETE', 'GET', 'POST', or 'PUT'
             body (dict): JSON body
@@ -2383,7 +2387,8 @@ class DataStore(object):
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
-            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use
+                                this resource verbatim.
             search_command (string): Search command to pass to ES.
             body (dict): JSON body
             owner (string): The ThreatConnect owner.
@@ -2397,7 +2402,8 @@ class DataStore(object):
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
-            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use
+                                this resource verbatim.
             search_command (string): Search command to pass to ES.
             owner (string): The ThreatConnect owner.
         """
@@ -2410,7 +2416,8 @@ class DataStore(object):
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
-            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use
+                                this resource verbatim.
             search_command (string): Search command to pass to ES.
             owner (string): The ThreatConnect owner.
         """
@@ -2423,7 +2430,8 @@ class DataStore(object):
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
-            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.
+            type_name (string): This is a free form index type name. The ThreatConnect API will use
+                                this resource verbatim.
             search_command (string): Search command to pass to ES.
             body (dict): JSON body
             owner (string): The ThreatConnect owner.

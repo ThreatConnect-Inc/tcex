@@ -593,7 +593,7 @@ class TcEx(object):
     def indicator_associations_types_data(self):
         """Return associations type data.
 
-        Retrieve the data from the API if it hasn't already benn retrieved.
+        Retrieve the data from the API if it hasn't already been retrieved.
         """
         if not self._indicator_associations_types_data:
             # load custom indicator associations
@@ -604,7 +604,7 @@ class TcEx(object):
     def indicator_types(self):
         """Return indicator types
 
-        Retrieve the data from the API if it hasn't already benn retrieved.
+        Retrieve the data from the API if it hasn't already been retrieved.
         """
         if not self._indicator_types:
             # load custom indicator associations
@@ -615,7 +615,7 @@ class TcEx(object):
     def indicator_types_data(self):
         """Return indicator types data
 
-        Retrieve the data from the API if it hasn't already benn retrieved.
+        Retrieve the data from the API if it hasn't already been retrieved.
         """
         if not self._indicator_types_data:
             # load custom indicator associations

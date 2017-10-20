@@ -26,5 +26,5 @@ class TcExVault(object):
         return self._client.read(key)
 
     def delete(self, key):
-        """Delete data from Valut for the provided key"""
+        """Delete data from Vault for the provided key"""
         return self._client.delete(key)

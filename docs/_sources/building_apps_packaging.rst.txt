@@ -24,7 +24,7 @@ Usage
 
 Configuration Options
 ---------------------
-By default the ``tcex.json`` file will be loaded by ``tcpackage``.  The following is an example of additiona configuration that can be provided for the ``tcpackage`` command.
+By default the ``tcex.json`` file will be loaded by ``tcpackage``.  The following is an example of additional configuration that can be provided for the ``tcpackage`` command.
 
 .. code:: javascript
 

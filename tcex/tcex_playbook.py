@@ -261,6 +261,10 @@ class TcExPlaybook(object):
         Returns:
             (any): Results retrieved from DB
         """
+        # if the return type not string
+        # if isinstance(key, (int, float)):
+        #     return key
+
         self._tcex.log.debug(u'read variable {}'.format(key))
         data = None
         if key is not None:

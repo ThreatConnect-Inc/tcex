@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.6.3 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.6.3 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.6.3
+                0.7.0
               </div>
             
           
@@ -634,19 +634,19 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes                                                     |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId}                                        |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                           |</span>
+<span class="sd">        +==============+==============================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes              |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/attributes              |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
+<span class="sd">        | PUT          | /v2/groups/{resourceType}/{uniqueId}/attributes/{resourceId} |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (attribute id).</span>
@@ -717,13 +717,13 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/                                    |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                     |</span>
+<span class="sd">        +==============+========================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/       |</span>
+<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
@@ -850,7 +850,8 @@
         <span class="sd">&quot;&quot;&quot;The parent object name for this resource.</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            (str): The API endpoint parent value (e.g. Indicator for Address or Group for Adversary.)</span>
+<span class="sd">            (str): The API endpoint parent value (e.g. Indicator for Address or Group</span>
+<span class="sd">                   for Adversary.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
 
@@ -1000,17 +1001,17 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                                               |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}                                    |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId}                                |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                   |</span>
+<span class="sd">        +==============+======================================================================+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}                |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/groups/{resourceType}/{uniqueId}     |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}            |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/securityLabels/{resourceId}/indicators/{resourceType}/{uniqueId} |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (security label name).</span>
@@ -1034,17 +1035,17 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels                                                        |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId}                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+-----------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                        |</span>
+<span class="sd">        +==============+===========================================================+</span>
+<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels              |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/{resourceType}/{uniqueId}/securityLabels/{resourceId} |</span>
+<span class="sd">        +--------------+-----------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (security label name).</span>
@@ -1064,21 +1065,21 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                                                         |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}                                                     |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}                                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId}                                          |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                         |</span>
+<span class="sd">        +==============+============================================================+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}                |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}     |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}            |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/tags/{resourceId}/groups/{resourceType}/{uniqueId}     |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/tags/{resourceId}/indicators/{resourceType}/{uniqueId} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (string): The resource pivot id (tag name).</span>
@@ -1101,25 +1102,25 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags                                                       |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}                                              |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId}                                          |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                         |</span>
+<span class="sd">        +==============+============================================================+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags                  |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags              |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/groups/{resourceType}/{uniqueId}/tags/{resourceId}     |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicators/{resourceType}/{uniqueId}/tags/{resourceId} |</span>
+<span class="sd">        +--------------+------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
@@ -1140,17 +1141,17 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                                                        |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}                                             |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}                                                    |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId}                                         |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+-------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                          |</span>
+<span class="sd">        +==============+=============================================================+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}                |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/groups/{resourceType}/{uniqueId}     |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}            |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/tasks/{resourceId}/indicators/{resourceType}/{uniqueId} |</span>
+<span class="sd">        +--------------+-------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (task id).</span>
@@ -1165,7 +1166,8 @@
         <span class="sd">&quot;&quot;&quot;The value fields for this resource.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (list): The fields in the response JSON that have the key value (e.g. [&#39;md5&#39;, &#39;sha1&#39;, &#39;sha256&#39;] or [&#39;ip&#39;]).</span>
+<span class="sd">            (list): The fields in the response JSON that have the key value (e.g. [&#39;md5&#39;,</span>
+<span class="sd">                   &#39;sha1&#39;, &#39;sha256&#39;] or [&#39;ip&#39;]).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span>
 
@@ -1177,21 +1179,21 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims                                       |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId}                            |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}                                |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                       |</span>
+<span class="sd">        +==============+==========================================================================+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims                |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims            |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/{resourceId}/indicators/{resourceType}/{uniqueId}/victims/{victimId} |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/{resourceId}/groups/{resourceType}/{uniqueId}/victims/{victimId}     |</span>
+<span class="sd">        +--------------+--------------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
@@ -1210,17 +1212,17 @@
 
 <span class="sd">        **Example Endpoints URI&#39;s**</span>
 
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                                                  |</span>
-<span class="sd">        +==============+=====================================================================================================+</span>
-<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                                                      |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}                                           |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}                                                  |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId}                                       |</span>
-<span class="sd">        +--------------+-----------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        +--------------+---------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                            |</span>
+<span class="sd">        +==============+===============================================================+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}                |</span>
+<span class="sd">        +--------------+---------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/groups/{resourceType}/{uniqueId}     |</span>
+<span class="sd">        +--------------+---------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}            |</span>
+<span class="sd">        +--------------+---------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/victims/{resourceId}/indicators/{resourceType}/{uniqueId} |</span>
+<span class="sd">        +--------------+---------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_id (integer): The resource pivot id (victim id).</span>
@@ -1510,7 +1512,8 @@
 <span class="sd">            :linenos:</span>
 <span class="sd">            :lineno-start: 1</span>
 
-<span class="sd">            for i in resource.indicators(indicator_data):  # the individual indicator JSON from the API</span>
+<span class="sd">            # the individual indicator JSON from the API</span>
+<span class="sd">            for i in resource.indicators(indicator_data):</span>
 <span class="sd">                print(i.get(&#39;type&#39;))  # md5, sha1, sha256, etc</span>
 <span class="sd">                print(i.get(&#39;value&#39;))  # hash or custom indicator value</span>
 
@@ -1528,7 +1531,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): A dict containing the indicator type and value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># indicator_list = []</span>
         <span class="k">for</span> <span class="n">indicator_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_fields</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">indicator_field</span> <span class="o">==</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span>
                 <span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">expand_indicators</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
@@ -1538,7 +1541,7 @@
                         <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
                         <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
                     <span class="p">}</span>
-                    <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="c1"># body = {}</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="k">continue</span>
@@ -2073,9 +2076,9 @@
 <span class="sd">    +--------------+----------------------------------+</span>
 <span class="sd">    | HTTP Method  | API Endpoint URI&#39;s               |</span>
 <span class="sd">    +==============+==================================+</span>
-<span class="sd">    | GET          | /v2/custommetrics                |</span>
+<span class="sd">    | GET          | /v2/customMetrics                |</span>
 <span class="sd">    +--------------+----------------------------------+</span>
-<span class="sd">    | POST         | /v2/custommetrics                |</span>
+<span class="sd">    | POST         | /v2/customMetrics                |</span>
 <span class="sd">    +--------------+----------------------------------+</span>
 
 <span class="sd">    .. code-block:: javascript</span>
@@ -2094,7 +2097,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomMetric</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;custommetrics&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;customMetrics&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;customMetricConfig&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;CustomerMetric&#39;</span>
@@ -2114,9 +2117,9 @@
 <span class="sd">        +--------------+----------------------------------+</span>
 <span class="sd">        | HTTP Method  | API Endpoint URI&#39;s               |</span>
 <span class="sd">        +==============+==================================+</span>
-<span class="sd">        | GET          | /v2/custommetrics/{id}           |</span>
+<span class="sd">        | GET          | /v2/customMetrics/{id}           |</span>
 <span class="sd">        +--------------+----------------------------------+</span>
-<span class="sd">        | PUT          | /v2/custommetrics/{id}           |</span>
+<span class="sd">        | PUT          | /v2/customMetrics/{id}           |</span>
 <span class="sd">        +--------------+----------------------------------+</span>
 
 <span class="sd">        Args:</span>
@@ -2130,9 +2133,9 @@
 <span class="sd">        +--------------+----------------------------------+</span>
 <span class="sd">        | HTTP Method  | API Endpoint URI&#39;s               |</span>
 <span class="sd">        +==============+==================================+</span>
-<span class="sd">        | GET          | /v2/custommetrics/{name}         |</span>
+<span class="sd">        | GET          | /v2/customMetrics/{name}         |</span>
 <span class="sd">        +--------------+----------------------------------+</span>
-<span class="sd">        | PUT          | /v2/custommetrics/{name}         |</span>
+<span class="sd">        | PUT          | /v2/customMetrics/{name}         |</span>
 <span class="sd">        +--------------+----------------------------------+</span>
 
 <span class="sd">        Args:</span>
@@ -2154,7 +2157,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resource_name (string): The metric name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_name</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CustomMetric.data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_value</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias for metric_name method</span>
@@ -2162,7 +2165,7 @@
 <span class="sd">        +--------------+------------------------------------+</span>
 <span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                 |</span>
 <span class="sd">        +==============+====================================+</span>
-<span class="sd">        | POST         | /v2/custommetrics/{id}|{name}/data |</span>
+<span class="sd">        | POST         | /v2/customMetrics/{id}|{name}/data |</span>
 <span class="sd">        +--------------+------------------------------------+</span>
 
 <span class="sd">        Example</span>
@@ -2504,7 +2507,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (string): One of &#39;local&#39;, &#39;organization&#39;, or &#39;system&#39;.</span>
-<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.</span>
+<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
+<span class="sd">                                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
 <span class="sd">            db_method (string): The DB method &#39;DELETE&#39;, &#39;GET&#39;, &#39;POST&#39;, or &#39;PUT&#39;</span>
 <span class="sd">            body (dict): JSON body</span>
@@ -2560,7 +2564,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (string): One of &#39;local&#39;, &#39;organization&#39;, or &#39;system&#39;.</span>
-<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.</span>
+<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
+<span class="sd">                                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
 <span class="sd">            body (dict): JSON body</span>
 <span class="sd">            owner (string): The ThreatConnect owner.</span>
@@ -2574,7 +2579,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (string): One of &#39;local&#39;, &#39;organization&#39;, or &#39;system&#39;.</span>
-<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.</span>
+<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
+<span class="sd">                                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
 <span class="sd">            owner (string): The ThreatConnect owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2587,7 +2593,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (string): One of &#39;local&#39;, &#39;organization&#39;, or &#39;system&#39;.</span>
-<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.</span>
+<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
+<span class="sd">                                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
 <span class="sd">            owner (string): The ThreatConnect owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2600,7 +2607,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            domain (string): One of &#39;local&#39;, &#39;organization&#39;, or &#39;system&#39;.</span>
-<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use this resource verbatim.</span>
+<span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
+<span class="sd">                                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
 <span class="sd">            body (dict): JSON body</span>
 <span class="sd">            owner (string): The ThreatConnect owner.</span>
@@ -2658,7 +2666,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.6.3',
+            VERSION:'0.7.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -84,7 +84,7 @@ class TcExLocal:
                     parameters.append('--{}'.format(config_key))
                     parameters_masked.append('--{}'.format(config_key))
             elif isinstance(config_val, list):
-                # TODO: support env vars and vault in list w/masked vaules
+                # TODO: support env vars and vault in list w/masked values
                 for val in config_val:
                     parameters.append('--{}'.format(config_key))
                     parameters_masked.append('--{}'.format(config_key))

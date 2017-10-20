@@ -238,7 +238,7 @@ class TcExJob(object):
             association_resource = resource.association_pivot(ar)
             association_results = association_resource.request()
             if association_results.get('status') != 'Success':
-                err = 'Failed adding assocation ({}).'.format(
+                err = 'Failed adding association ({}).'.format(
                     association_results.get('response').text)
                 self._tcex.log.error(err)
                 self._tcex.exit_code(3)
@@ -301,10 +301,19 @@ class TcExJob(object):
                     break
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
             elif group_action == 'skip':
-                self._group_results['cached'].append(group_name)
-                self._group_results['saved'].append(group_name)
-                self._group_results['not_saved'].remove(group_name)
-                self._tcex.log.info(u'Skipping existing Group "{}")'.format(group_name))
+                if group_id is None:
+                    group_id = self._group_add(group_type, group_name, owner, group)
+                    if group_id is None and self._tcex.args.batch_halt_on_error:
+                        self._tcex.log.info(u'Halt on error is enabled.')
+                        self._tcex.exit_code(1)
+                        break
+                    self._tcex.log.info(u'Created Group "{}" with id: {}'.format(
+                        group_name, group_id))
+                else:
+                    # update group results tracking
+                    self._group_results['cached'].append(group_name)
+                    self._group_results['not_saved'].remove(group_name)
+                    self._tcex.log.info(u'Skipping existing Group "{}")'.format(group_name))
             else:
                 self._tcex.log.info(u'Invalid group action ({})'.format(group_action))
 
@@ -454,7 +463,7 @@ class TcExJob(object):
 
             i_results = resource.request()
 
-            # PUT file indicator since API does not work consistenly for all indiator types
+            # PUT file indicator since API does not work consistently for all indiator types
             if i_data.get('type') == 'File' and i_results.get('response').status_code == 400:
                 if 'MD5' in i_results.get('response').text:
                     i_value = body.get('md5', i_value)
@@ -774,7 +783,7 @@ class TcExJob(object):
                             self._tcex.exit(1)
                         elif error_results.get('response').status_code == 200:
                             break
-                        self._tcex.log.info(u'Error retreive sleep ({} seconds)'.format(
+                        self._tcex.log.info(u'Error retrieve sleep ({} seconds)'.format(
                             self._tcex.default_args.batch_poll_interval))
                         time.sleep(self._tcex.default_args.batch_poll_interval)
                         poll_time += self._tcex.default_args.batch_poll_interval
@@ -985,7 +994,7 @@ class TcExJob(object):
 
         Args:
             name(string): The name of the Group
-            owner (string): The TC Owner where the resouce should be found
+            owner (string): The TC Owner where the resource should be found
             resource_type (string): The resource type name
 
         Returns:
@@ -1010,12 +1019,13 @@ class TcExJob(object):
 
         Args:
             group_id (string): The group id to lookup
-            owner (string): The TC Owner where the resouce should be found
+            owner (string): The TC Owner where the resource should be found
             resource_type (string): The resource type name
 
         Returns:
             (integer): The ID for the provided group name and owner.
         """
+        group_id = int(group_id)
         if self._group_cache_id.get(owner) is None:
 
             self._tcex.log.info(u'Caching groups for owner {}'.format(owner))
@@ -1027,7 +1037,7 @@ class TcExJob(object):
             for results in resource:
                 if results['status'] == 'Success':
                     for group in results.get('data'):
-                        self._group_cache_id[owner][group.get('id')] = group['type']
+                        self._group_cache_id[owner][int(group.get('id'))] = group.get('type')
                 else:
                     err = u'Failed retrieving result during pagination.'
                     self._tcex.log.error(err)
@@ -1097,7 +1107,7 @@ class TcExJob(object):
             indicator = [indicator]
 
         for i in indicator:  # Not extending now since we need to build submitted list
-            # verifiy indicator is not a duplicate before adding
+            # verify indicator is not a duplicate before adding
             if i.get('summary') not in self._indicators:
                 self._indicator_results['submitted'].append(i.get('summary'))
                 self._indicators.append(i)

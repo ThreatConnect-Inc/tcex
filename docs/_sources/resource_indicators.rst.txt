@@ -28,6 +28,7 @@
 | URL Dynamic            | resource = tcex.resource('URL')                          |
 +------------------------+----------------------------------------------------------+
 
+.. Note:: Custom Indicator types can only be accessed via the Dynamic method.
 
 Retrieve All Indicators
 =======================

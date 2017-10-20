@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.6.3 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.7.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.6.3 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.argparser module" href="tcex.argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.6.3
+                0.7.0
               </div>
             
           
@@ -310,7 +310,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._resources">
-<code class="descname">_resources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_resources</code><span class="sig-paren">(</span><em>custom_indicators=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._resources"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._resources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the resource module.</p>
 <p>This method will make a request to the ThreatConnect API to dynamically
 build classes to support custom Indicators.  All other resources are available
@@ -551,6 +551,27 @@ matched indicator.</li>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.indicator_associations_types_data">
+<code class="descname">indicator_associations_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_associations_types_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return associations type data.</p>
+<p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.indicator_types">
+<code class="descname">indicator_types</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indicator types</p>
+<p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.indicator_types_data">
+<code class="descname">indicator_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.indicator_types_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indicator types data</p>
+<p>Retrieve the data from the API if it hasn’t already been retrieved.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx.job">
 <code class="descname">job</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.job" title="Permalink to this definition">¶</a></dt>
@@ -652,7 +673,7 @@ API endpoints.</p>
 <dl class="method">
 <dt id="tcex.tcex.TcEx.resource">
 <code class="descname">resource</code><span class="sig-paren">(</span><em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.resource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get instance of Resource Class with dynamic group.</p>
+<dd><p>Get instance of Resource Class with dynamic type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -911,7 +932,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.6.3',
+            VERSION:'0.7.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
