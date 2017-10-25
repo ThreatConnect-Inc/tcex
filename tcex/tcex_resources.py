@@ -291,7 +291,7 @@ class Resource(object):
             'value': value
         })
 
-    def add_payload(self, key, val):
+    def add_payload(self, key, val, append=False):
         """Add a key value pair to payload for this request.
 
         .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).
@@ -299,8 +299,9 @@ class Resource(object):
         Args:
             key (string): The payload key
             val (string): The payload value
+            append (bool): Indicate whether the value should be appended
         """
-        self._r.add_payload(key, val)
+        self._r.add_payload(key, val, append)
 
     @property
     def api_branch(self):

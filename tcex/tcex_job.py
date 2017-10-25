@@ -112,14 +112,14 @@ class TcExJob(object):
 
             # add attributes
             for attribute in data.get('attribute', []):
-                self._tcex.log.debug(u'Adding attribute type ({})'.format(
-                    attribute.get('type')))
+                self._tcex.log.debug(u'Adding attribute type "{}" to Group ID {}'.format(
+                    attribute.get('type'), resource_id))
                 resource.resource_id(resource_id)
                 attribute_resource = resource.attributes()
                 attribute_resource.body = json.dumps(attribute)
                 a_results = attribute_resource.request()
                 if a_results.get('status') != 'Success':
-                    err = u'Failed adding attribute type {} with value {} to group {}. ({})'
+                    err = u'Failed adding attribute type "{}" with value "{}" to group "{}". ({})'
                     err = err.format(
                         attribute.get('type'), attribute.get('value'), resource_name,
                         a_results.get('response').text)
@@ -140,7 +140,10 @@ class TcExJob(object):
 
             # document upload
             if resource_type == 'Document' and data.get('fileData') is not None:
-                resource.upload(resource_id, data.get('fileData').encode('utf-8'))
+                try:
+                    resource.upload(resource_id, data.get('fileData').encode('utf-8'))
+                except AttributeError:
+                    resource.upload(resource_id, data.get('fileData'))  # py3
                 resource.http_method = 'POST'
                 u_results = resource.request()
                 if u_results['response'].status_code == 401:
@@ -182,6 +185,35 @@ class TcExJob(object):
         if results.get('status') != 'Success':
             self._tcex.log.warning(u'Deleted {} with ID {} failed ({}).'.format(
                 resource_type, resource_id, results.get('response').text))
+
+    def _indicators_replace_stub(self, owner):
+        """Process Indicator data replacing associatedGroup stub values with the Group ID
+
+        Format of a stub ${<group name>:<group type>}
+
+        Args:
+            indicators (list): Batch Indicator Data
+            owner (string):  The owner name for the indicator to be written
+        """
+        for indicator_data in self._indicators:
+            for group_value in list(indicator_data.get('associatedGroup', [])):
+                if not str(group_value).startswith('$'):
+                    continue
+
+                # remove stub value from list
+                indicator_data['associatedGroup'].remove(group_value)
+                # extract group name and type from stub
+                group_pattern = re.compile(r'^\$\((.+):(.+)\)$')
+                group_data = re.search(group_pattern, group_value)
+                group_name = group_data.group(1)
+                group_type = group_data.group(2)
+                group_id = self.group_id(group_name, owner, group_type)
+
+                if group_id is not None:
+                    self._tcex.log.debug('Replacing stub {} with id {}.'.format(
+                        group_value, group_id))
+                    # add group id returned from stub values
+                    indicator_data['associatedGroup'].append(group_id)
 
     def _process_file_occurrences(self, owner):
         """Process file occurrences and write to TC API
@@ -250,7 +282,7 @@ class TcExJob(object):
             owner (string):  The owner name for the indicator to be written
         """
         for ga in self._group_associations:
-            self._tcex.log.info(u'creating association: group {} indicator {}'.format(
+            self._tcex.log.info(u'creating association: group "{}" indicator {}'.format(
                 ga.get('group_name'), ga.get('indicator')))
 
             group_id = self.group_id(ga.get('group_name'), owner, ga.get('group_type'))
@@ -1173,7 +1205,9 @@ class TcExJob(object):
             self._process_groups(owner, group_action.lower())
 
         if self._indicators:
+            # update indicator data replacing group stub with group ids
             self._tcex.log.info(u'Processing Indicators')
+            self._indicators_replace_stub(owner)
             self._process_indicators(owner, indicator_batch)
 
         if self._file_occurrences:

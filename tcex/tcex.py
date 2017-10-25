@@ -883,6 +883,8 @@ class TcEx(object):
             {'days': 1}
             {'weeks': 3}
             {'months': 4}
+            {'days': 1, 'weeks': 3, 'months': 4}
+
 
         .. Note:: More information can be found at
                   https://dateutil.readthedocs.io/en/stable/relativedelta.html

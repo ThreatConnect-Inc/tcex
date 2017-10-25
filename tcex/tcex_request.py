@@ -154,14 +154,18 @@ class TcExRequest(object):
         """Reset payload dictionary"""
         self._payload = {}
 
-    def add_payload(self, key, val):
+    def add_payload(self, key, val, append=False):
         """Add a key value pair to payload for this request.
 
         Args:
             key (string): The payload key
             val (string): The payload value
+            append (bool): Indicate whether the value should be appended
         """
-        self._payload[key] = val
+        if append:
+            self._payload.setdefault(key, []).append(val)
+        else:
+            self._payload[key] = val
 
     #
     # HTTP Method

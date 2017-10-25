@@ -80,7 +80,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
       "indicator_type": "Address"
     }
 
-.. Warning:: If more than on Group exist with the same name the association created using
+.. Warning:: If more than one Group exist with the same name the association created using
              :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
              to the first group found with the name.
 
