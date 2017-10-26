@@ -208,7 +208,7 @@ def update_profile(profile):
         profile.pop('script')
 
     # update old profiles with new "data_type" field.
-    for validation in profile.get('validations'):
+    for validation in profile.get('validations', []):
         if validation.get('data_type') is None:
             validation['data_type'] = 'redis'
 

@@ -2,7 +2,6 @@
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
-import inflect
 import inspect
 import json
 import logging
@@ -12,14 +11,13 @@ import sys
 import time
 # import types
 import urllib
-from .argparser import ArgParser
 from datetime import datetime
 from platform import platform
-
 """ third party """
 from dateutil.relativedelta import relativedelta
-
+import inflect
 """ custom """
+from .argparser import ArgParser
 from .tcex_job import TcExJob
 
 
@@ -95,7 +93,7 @@ class TcEx(object):
         authorization = 'TC-Token {}'.format(self._tc_token)
 
         window_padding = 15  # bcs - possible configuration option
-        current_time = int(time.time()) - window_padding
+        current_time = int(time.time()) + window_padding
         if self._tc_token_expires < current_time:
             # Renew Token
             r = self.request
@@ -959,7 +957,7 @@ class TcEx(object):
         if ellipsis:
             ellipsis_value = ' ...'
 
-        if len(group_name) > group_max_length:
+        if group_name is not None and len(group_name) > group_max_length:
             # split name by spaces and reset group_name
             group_name_array = group_name.split(' ')
             group_name = ''

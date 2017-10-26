@@ -6,6 +6,14 @@ Release Notes
 0.7.x
 =====
 
+0.7.1
+-----
++ Added stub support for associatedGroup in Batch Indicator JSON.
++ Updated the TcEx Job module to better handle Document uploads in Python 3.
++ Updated TcEx Resource module to support query parameter list in the add_payload() method.
++ Updated TcEx Request module to support query parameter list in the add_payload() method.
++ Updated ``tclib`` to remove the old lib directory before creating the lib directory.
+
 0.7.0
 -----
 + Updated the TcEx framework to only build custom indicator classes when working with custom indicators.

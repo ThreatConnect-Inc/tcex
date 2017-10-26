@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.7.0 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.7.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.0 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.1 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_local module" href="tcex.tcex_local.html"/>
         <link rel="prev" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.0
+                0.7.1
               </div>
             
           
@@ -258,6 +258,25 @@ or attributes</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob._indicators_replace_stub">
+<code class="descname">_indicators_replace_stub</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._indicators_replace_stub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._indicators_replace_stub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process Indicator data replacing associatedGroup stub values with the Group ID</p>
+<p>Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>indicators</strong> (<em>list</em>) – Batch Indicator Data</li>
+<li><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -1021,7 +1040,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.0',
+            VERSION:'0.7.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

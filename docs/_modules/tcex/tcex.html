@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.0 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.0
+                0.7.1
               </div>
             
           
@@ -179,7 +179,6 @@
 <span class="kn">import</span> <span class="nn">base64</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hmac</span>  <span class="c1"># authorization</span>
-<span class="kn">import</span> <span class="nn">inflect</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -189,14 +188,13 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="c1"># import types</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
-<span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
-
 <span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
-
+<span class="kn">import</span> <span class="nn">inflect</span>
 <span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
 
 
@@ -272,7 +270,7 @@
         <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC-Token </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
 
         <span class="n">window_padding</span> <span class="o">=</span> <span class="mi">15</span>  <span class="c1"># bcs - possible configuration option</span>
-        <span class="n">current_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">-</span> <span class="n">window_padding</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">window_padding</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">&lt;</span> <span class="n">current_time</span><span class="p">:</span>
             <span class="c1"># Renew Token</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
@@ -1060,6 +1058,8 @@
 <span class="sd">            {&#39;days&#39;: 1}</span>
 <span class="sd">            {&#39;weeks&#39;: 3}</span>
 <span class="sd">            {&#39;months&#39;: 4}</span>
+<span class="sd">            {&#39;days&#39;: 1, &#39;weeks&#39;: 3, &#39;months&#39;: 4}</span>
+
 
 <span class="sd">        .. Note:: More information can be found at</span>
 <span class="sd">                  https://dateutil.readthedocs.io/en/stable/relativedelta.html</span>
@@ -1134,7 +1134,7 @@
         <span class="k">if</span> <span class="n">ellipsis</span><span class="p">:</span>
             <span class="n">ellipsis_value</span> <span class="o">=</span> <span class="s1">&#39; ...&#39;</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">group_max_length</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">group_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">group_max_length</span><span class="p">:</span>
             <span class="c1"># split name by spaces and reset group_name</span>
             <span class="n">group_name_array</span> <span class="o">=</span> <span class="n">group_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
             <span class="n">group_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -1231,7 +1231,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.0',
+            VERSION:'0.7.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

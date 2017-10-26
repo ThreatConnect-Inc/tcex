@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.0 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.7.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.0
+                0.7.1
               </div>
             
           
@@ -289,14 +289,14 @@
 
             <span class="c1"># add attributes</span>
             <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Adding attribute type (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Adding attribute type &quot;</span><span class="si">{}</span><span class="s1">&quot; to Group ID </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">resource_id</span><span class="p">))</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
                 <span class="n">attribute_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">attributes</span><span class="p">()</span>
                 <span class="n">attribute_resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
                 <span class="n">a_results</span> <span class="o">=</span> <span class="n">attribute_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding attribute type </span><span class="si">{}</span><span class="s1"> with value </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">. (</span><span class="si">{}</span><span class="s1">)&#39;</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding attribute type &quot;</span><span class="si">{}</span><span class="s1">&quot; with value &quot;</span><span class="si">{}</span><span class="s1">&quot; to group &quot;</span><span class="si">{}</span><span class="s1">&quot;. (</span><span class="si">{}</span><span class="s1">)&#39;</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="n">err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">,</span>
                         <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
@@ -317,7 +317,10 @@
 
             <span class="c1"># document upload</span>
             <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">))</span>  <span class="c1"># py3</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
                 <span class="n">u_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">u_results</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
@@ -359,6 +362,35 @@
         <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Deleted </span><span class="si">{}</span><span class="s1"> with ID </span><span class="si">{}</span><span class="s1"> failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcExJob._indicators_replace_stub"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._indicators_replace_stub">[docs]</a>    <span class="k">def</span> <span class="nf">_indicators_replace_stub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process Indicator data replacing associatedGroup stub values with the Group ID</span>
+
+<span class="sd">        Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicators (list): Batch Indicator Data</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">indicator_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[])):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">group_value</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># remove stub value from list</span>
+                <span class="n">indicator_data</span><span class="p">[</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">group_value</span><span class="p">)</span>
+                <span class="c1"># extract group name and type from stub</span>
+                <span class="n">group_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\$\((.+):(.+)\)$&#39;</span><span class="p">)</span>
+                <span class="n">group_data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">group_pattern</span><span class="p">,</span> <span class="n">group_value</span><span class="p">)</span>
+                <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">group_type</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Replacing stub </span><span class="si">{}</span><span class="s1"> with id </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">group_value</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
+                    <span class="c1"># add group id returned from stub values</span>
+                    <span class="n">indicator_data</span><span class="p">[</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_file_occurrences"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_file_occurrences">[docs]</a>    <span class="k">def</span> <span class="nf">_process_file_occurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process file occurrences and write to TC API</span>
@@ -427,7 +459,7 @@
 <span class="sd">            owner (string):  The owner name for the indicator to be written</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">ga</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;creating association: group </span><span class="si">{}</span><span class="s1"> indicator </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;creating association: group &quot;</span><span class="si">{}</span><span class="s1">&quot; indicator </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_name&#39;</span><span class="p">),</span> <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">)))</span>
 
             <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_name&#39;</span><span class="p">),</span> <span class="n">owner</span><span class="p">,</span> <span class="n">ga</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group_type&#39;</span><span class="p">))</span>
@@ -1350,7 +1382,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_groups</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">group_action</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
+            <span class="c1"># update indicator data replacing group stub with group ids</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Processing Indicators&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_replace_stub</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_indicators</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">indicator_batch</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_occurrences</span><span class="p">:</span>
@@ -1399,7 +1433,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.0',
+            VERSION:'0.7.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

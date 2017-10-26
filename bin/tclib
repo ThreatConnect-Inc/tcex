@@ -5,8 +5,7 @@ import argparse
 import colorama as c
 import json
 import os
-# import pip
-# import shutil
+import shutil
 import subprocess
 import sys
 import traceback
@@ -39,7 +38,7 @@ class TcLib(object):
         c.init(autoreset=True, strip=False)
 
     def install_libs(self):
-        """Install Requred Libraries using easy install."""
+        """Install Required Libraries using easy install."""
         using = 'Default'
         # default or current python version
         lib_directory = 'lib_{}.{}.{}'.format(
@@ -65,12 +64,17 @@ class TcLib(object):
                 config_data = json.load(fh)
 
         # overwrite default with config data
-        if config_data.get('lib_versions') not in [None, []]:
+        if config_data.get('lib_versions'):
             lib_data = config_data.get('lib_versions')
             using = 'Config'
 
         # install all requested lib directories
         for data in lib_data:
+            lib_dir = os.path.join(self.app_path, data.get('lib_dir'))
+            if os.access(lib_dir, os.W_OK):
+                # remove lib directory from previous runs
+                shutil.rmtree(lib_dir)
+
             print('Building Lib Dir: {}{}{} ({})'.format(
                 c.Style.BRIGHT, c.Fore.CYAN, data.get('lib_dir'), using))
             exe_command = [
@@ -83,7 +87,7 @@ class TcLib(object):
                 '--ignore-installed',
                 '--quiet',
                 '--target',
-                os.path.join(self.app_path, data.get('lib_dir'))
+                lib_dir
             ]
             if args.no_cache_dir:
                 exe_command.append('--no-cache-dir')
