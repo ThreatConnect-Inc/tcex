@@ -425,9 +425,15 @@ class TcData(object):
 
         # sort list for simple comparisons
         if isinstance(db_data, (list)):
-            db_data = sorted(db_data)
+            try:
+                db_data = sorted(db_data)
+            except TypeError:
+                tcex.log.warning('Could not sort list')
         if isinstance(data, (list)):
-            data = sorted(data)
+            try:
+                data = sorted(data)
+            except TypeError:
+                tcex.log.warning('Could not sort list')
 
         # compare the data
         if oper in self._operators and self._operators.get(oper)(db_data, data):

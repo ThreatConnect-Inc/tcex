@@ -179,17 +179,22 @@ class TcPackage(object):
             # load install json
             #
             ij = self._load_install_json(install_json)
+
+            # find a usable app version
             program_version = ij.get('programVersion', '1.0.0').split('.')
             major_version = program_version[0]
             try:
                 minor_version = program_version[1]
             except IndexError:
                 minor_version = 0
+            app_version = '{}'.format(
+                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version)))
+
             """
             !!! The name of the folder in the zip is the *key* for an App. This value must
             !!! remain consistent for the App to upgrade successfully.
             """
-            app_name_version = '{}_v{}.{}'.format(app_name, major_version, minor_version)
+            app_name_version = '{}_{}'.format(app_name, app_version)
 
             #
             # build app directory
