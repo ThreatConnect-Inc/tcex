@@ -6,6 +6,11 @@ Release Notes
 0.7.x
 =====
 
+0.7.2
+-----
++ Updated ``tcdata`` command for issue on sorting list in Python 3.
++ Added update for tcex.json file to allow the App Version to be specified instead of using programVersion from install.json.
+
 0.7.1
 -----
 + Added stub support for associatedGroup in Batch Indicator JSON.
