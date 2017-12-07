@@ -371,8 +371,8 @@ class Resource(object):
 
         # handle URL difference between Custom Associations and File Actions
         custom_type = 'associations'
-        file_action = self._tcex.indicator_associations_types_data.get(
-            association_name, {}).get('fileAction')
+        file_action = self._tcex.utils.to_bool(self._tcex.indicator_associations_types_data.get(
+            association_name, {}).get('fileAction'))
         if file_action:
             custom_type = 'actions'
 

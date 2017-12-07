@@ -137,6 +137,14 @@ class TcExUtils():
         return dt
 
     @staticmethod
+    def to_bool(value):
+        """ Convert string value to bool """
+        bool_value = False
+        if str(value).lower() in ['1', 'true']:
+            bool_value = True
+        return bool_value
+
+    @staticmethod
     def unix_time_to_datetime(time_input, tz='UTC'):
         """ Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753
             to datetime.datetime type.

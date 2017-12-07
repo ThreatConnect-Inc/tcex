@@ -180,8 +180,9 @@ class TcData(object):
             # temp resource to used to get resource_id from json
             resource = tcex.resource(resource_type)
             for r_data in resource.indicators(resource_data):
-                if r_data.get('summary') is not None:
-                    resource_ids = [r_data.get('summary')]
+                # if r_data.get('summary') is not None:
+                if r_data.get('value') is not None:
+                    resource_ids = [r_data.get('value')]
                     break
         elif resource_type in tcex.group_types:
             resource_ids = self.tc_group_name_to_id(

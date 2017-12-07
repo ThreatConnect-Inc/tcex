@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.7.3 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.7.4 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.3 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.4 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.3
+                0.7.4
               </div>
             
           
@@ -314,6 +314,14 @@
 
         <span class="k">return</span> <span class="n">dt</span></div>
 
+<div class="viewcode-block" id="TcExUtils.to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert string value to bool &quot;&quot;&quot;</span>
+        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
+            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">bool_value</span></div>
+
 <div class="viewcode-block" id="TcExUtils.unix_time_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.unix_time_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</span>
@@ -367,7 +375,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.3',
+            VERSION:'0.7.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

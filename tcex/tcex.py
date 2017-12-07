@@ -110,7 +110,7 @@ class TcEx(object):
 
         try:
             # Association Type Name is not a unique value at this time, but should be.
-            for association in response.json().get('data', {}).get('associationType', []):
+            for association in data.get('data', {}).get('associationType', []):
                 self._indicator_associations_types_data[association.get('name')] = association
         except:
             err = u'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
@@ -237,7 +237,7 @@ class TcEx(object):
             'error': logging.ERROR,
             'critical': logging.CRITICAL
         }
-        name = 'tcapp'
+        name = 'tcex'
         # if self.default_args.tc_log_level.lower() in log_level.keys():
         #     level = log_level[self.default_args.tc_log_level]
 
@@ -334,12 +334,15 @@ class TcEx(object):
                 # Dynamically create custom indicator class
                 data = response.json()['data']['indicatorType']
                 for entry in data:
-                    name = self.safe_rt(entry['name'])
+                    name = self.safe_rt(entry.get('name'))
+                    # temp fix for API issue where boolean are returned as strings
+                    entry['custom'] = self.utils.to_bool(entry.get('custom'))
+                    entry['parsable'] = self.utils.to_bool(entry.get('parsable'))
                     self._indicator_types.append(u'{}'.format(entry.get('name')))
                     self._indicator_types_data[entry.get('name')] = entry
 
                     # Custom Indicator have 3 values. Only add the value if it is set.
-                    if entry['custom'] == 'true':
+                    if entry['custom']:
                         value_fields = []
                         if entry.get('value1Label') is not None and entry.get('value1Label') != '':
                             value_fields.append(entry['value1Label'])

@@ -6,9 +6,16 @@ Release Notes
 0.7.x
 =====
 
+0.7.4
+-----
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` to handle boolean values that are passed as strings.
++ Updated :py:meth:`~tcex.tcex.TcEx._resource` method to handle boolean returned as strings from the API.
++ Updated ``tcdata`` to properly delete indicators when using ``--clear`` arg.
++ Update the log module to use **tcex** instead of **tcapp**.
+
 0.7.3
 -----
-+ Added :py:mod:`~tcex.tcex_utils.TcExUtils` module with date functions to handle common data use cases.
++ Added :py:mod:`~tcex.tcex_utils.TcExUtils` module with date functions to handle common date use cases.
 + Added DeepDiff functionality to ``tcdata`` for validating unsorted dictionaries and list.
 + Updated ``tcdata`` to pull item from lists by index for easier comparison.
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read` method to allow disabling of automatically resolving embedded variables.
