@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.7.2 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.7.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.2 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.3 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.argparser module" href="tcex.argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.2
+                0.7.3
               </div>
             
           
@@ -119,6 +119,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
@@ -133,6 +134,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
 </ul>
 
             
@@ -200,7 +202,7 @@
             
   <div class="section" id="module-tcex.tcex">
 <span id="tcex-tcex-module"></span><h1>tcex.tcex module<a class="headerlink" href="#module-tcex.tcex" title="Permalink to this headline">¶</a></h1>
-<p>standard</p>
+<p>TcEx Framework</p>
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
 <em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
@@ -333,6 +335,16 @@ via this class.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx._utils">
+<code class="descname">_utils</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._utils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include Utils Module</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Utils methods can be accessed using <code class="docutils literal"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -934,7 +946,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.2',
+            VERSION:'0.7.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

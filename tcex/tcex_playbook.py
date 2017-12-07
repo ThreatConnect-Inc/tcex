@@ -8,8 +8,7 @@ import re
 
 
 class TcExPlaybook(object):
-    """Playbook methods for accessing Database
-    """
+    """Playbook methods for accessing Database"""
 
     def __init__(self, tcex):
         """Initialize class data
@@ -247,7 +246,7 @@ class TcExPlaybook(object):
                 }
         return data
 
-    def read(self, key, array=False):
+    def read(self, key, array=False, embedded=True):
         """Read method of CRUD operation for working with KeyValue DB.
 
         This method will automatically check to see if a single variable is passed
@@ -257,6 +256,7 @@ class TcExPlaybook(object):
         Args:
             key (string): The variable to read from the DB.
             array (boolean): Convert string/dict to Array/List before returning.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (any): Results retrieved from DB
@@ -272,10 +272,14 @@ class TcExPlaybook(object):
             key_type = self.variable_type(key)
             if re.match(self._var_parse, key):
                 if key_type in self._read_data_type:
-                    data = self._read_data_type[key_type](key)
+                    # handle types with embedded variable
+                    if key_type in ['Binary', 'BinaryArray']:
+                        data = self._read_data_type[key_type](key)
+                    else:
+                        data = self._read_data_type[key_type](key, embedded)
                 else:
                     data = self.read_raw(key)
-            else:
+            elif embedded:
                 data = self.read_embedded(key, key_type)
 
         # return data as a list
@@ -484,11 +488,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_key_value(self, key):
+    def read_key_value(self, key, embedded=True):
         """Read method of CRUD operation for key/value data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (dictionary): Results retrieved from DB
@@ -496,7 +501,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -527,11 +534,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_key_value_array(self, key):
+    def read_key_value_array(self, key, embedded=True):
         """Read method of CRUD operation for key/value array data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (list): Results retrieved from DB
@@ -539,7 +547,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -608,11 +618,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_string(self, key):
+    def read_string(self, key, embedded=True):
         """Read method of CRUD operation for string data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (string): Results retrieved from DB
@@ -620,7 +631,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 # handle improperly saved string
                 try:
@@ -655,11 +668,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_string_array(self, key):
+    def read_string_array(self, key, embedded=True):
         """Read method of CRUD operation for string array data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (list): Results retrieved from DB
@@ -667,7 +681,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -698,11 +714,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_tc_entity(self, key):
+    def read_tc_entity(self, key, embedded=True):
         """Read method of CRUD operation for TC entity data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (dictionary): Results retrieved from DB
@@ -710,7 +727,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -741,11 +760,12 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_tc_entity_array(self, key):
+    def read_tc_entity_array(self, key, embedded=True):
         """Read method of CRUD operation for TC entity array data.
 
         Args:
             key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
 
         Returns:
             (list): Results retrieved from DB
@@ -753,7 +773,9 @@ class TcExPlaybook(object):
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self.read_embedded(self._db.read(key.strip()), key_type)
+            data = self._db.read(key.strip())
+            if embedded:
+                data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
                     data = json.loads(data)

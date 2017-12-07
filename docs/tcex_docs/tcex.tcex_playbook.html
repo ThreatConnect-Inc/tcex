@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.7.2 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.7.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.2 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.3 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
         <link rel="prev" title="tcex.tcex_local module" href="tcex.tcex_local.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.2
+                0.7.3
               </div>
             
           
@@ -119,6 +119,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
@@ -133,6 +134,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
 </ul>
 
             
@@ -696,7 +698,7 @@ it a partial success instead.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>key</em>, <em>array=False</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for working with KeyValue DB.</p>
 <p>This method will automatically check to see if a single variable is passed
 or if “mixed” data is passed and return the results from the DB. It will also
@@ -708,6 +710,7 @@ automatically determine the variable type to read.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
 <li><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
 </ul>
 </td>
 </tr>
@@ -785,17 +788,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value">
-<code class="descname">read_key_value</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -803,17 +812,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_key_value_array">
-<code class="descname">read_key_value_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_key_value_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_key_value_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_key_value_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for key/value array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -839,17 +854,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string">
-<code class="descname">read_string</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_string</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -857,17 +878,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_string_array">
-<code class="descname">read_string_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_string_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_string_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_string_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for string array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -875,17 +902,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity">
-<code class="descname">read_tc_entity</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_tc_entity</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -893,17 +926,23 @@ will be returned.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">
-<code class="descname">read_tc_entity_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_tc_entity_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_tc_entity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for TC entity array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -984,7 +1023,7 @@ contains not “DB variable” and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.2',
+            VERSION:'0.7.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

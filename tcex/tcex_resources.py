@@ -358,24 +358,32 @@ class Resource(object):
         +--------------+-------------------------------------------------------------------------------------------------------------+
 
         Args:
-            resource_api_branch (string): The resource pivot api branch.
             association_name (string): The name of the custom association as defined in the UI.
+            association_resource (object): An instance of Resource for an Indicator or sub type.
         """
         resource = self.copy()
         association_api_branch = self._tcex.indicator_associations_types_data.get(
             association_name, {}).get('apiBranch')
         if association_api_branch is None:
-            err = u'An invalid association name ({}) was provided.'.format(association_name)
+            err = u'An invalid action/association name ({}) was provided.'.format(association_name)
             self._tcex.log.error(err)
             raise RuntimeError(err)
 
+        # handle URL difference between Custom Associations and File Actions
+        custom_type = 'associations'
+        file_action = self._tcex.indicator_associations_types_data.get(
+            association_name, {}).get('fileAction')
+        if file_action:
+            custom_type = 'actions'
+
         resource._request_entity = 'indicator'
         if association_resource is not None:
-            resource._request_uri = '{}/associations/{}/{}'.format(
-                resource._request_uri, association_api_branch, association_resource.request_uri)
+            resource._request_uri = '{}/{}/{}/{}'.format(
+                resource._request_uri, custom_type, association_api_branch,
+                association_resource.request_uri)
         else:
-            resource._request_uri = '{}/associations/{}/indicators'.format(
-                resource._request_uri, association_api_branch)
+            resource._request_uri = '{}/{}/{}/indicators'.format(
+                resource._request_uri, custom_type, association_api_branch)
         return resource
 
     def association_pivot(self, association_resource):
@@ -531,32 +539,6 @@ class Resource(object):
             (boolean): True if the Indicator is a Custom Type.
         """
         return self._custom
-
-    def file_action(self, resource_id, action_name):
-        """File action pivot for this resource.
-
-        .. Attention:: New untested method
-
-        .. Note:: Possible action_names are: drop, archive or traffic
-
-        **Example Endpoints URI's**
-
-        +--------------+------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                     |
-        +==============+========================================================================+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/       |
-        +--------------+------------------------------------------------------------------------+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type} |
-        +--------------+------------------------------------------------------------------------+
-
-        Args:
-            resource_id (string): The resource pivot id (file hash).
-            action_name (string): The name of the action as defined by ThreatConnect.
-        """
-        resource = self.copy()
-        resource._request_uri = '{}/{}/actions/{}/{}'.format(
-            resource._request_api_branch, resource_id, action_name, resource._request_uri)
-        return resource
 
     def group_pivot(self, group_resource):
         """Pivot point on groups for this resource.
@@ -1572,6 +1554,29 @@ class File(Indicator):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
         self._value_fields = ['md5', 'sha1', 'sha256']
+
+    def file_action(self, action_name, association_resource=None):
+        """File action pivot for this resource.
+
+        **Example Endpoints URI's**
+
+        +--------------+----------------------------------------------------------------------------------+
+        | HTTP Method  | API Endpoint URI's                                                               |
+        +==============+==================================================================================+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators                  |
+        +--------------+----------------------------------------------------------------------------------+
+        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}           |
+        +--------------+----------------------------------------------------------------------------------+
+        | DELETE       | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |
+        +--------------+----------------------------------------------------------------------------------+
+        | POST         | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |
+        +--------------+----------------------------------------------------------------------------------+
+
+        Args:
+            action_name (string): The name of the action as defined by ThreatConnect.
+            association_resource (object): An instance of Resource for an Indicator or sub type.
+        """
+        self.association_custom(action_name, association_resource)
 
     @staticmethod
     def indicator_body(indicators):

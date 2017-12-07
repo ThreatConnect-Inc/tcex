@@ -1,4 +1,4 @@
-""" standard """
+""" TcEx Framework """
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
@@ -9,14 +9,13 @@ import os
 import re
 import sys
 import time
-# import types
 import urllib
 from datetime import datetime
 from platform import platform
-""" third party """
+
 from dateutil.relativedelta import relativedelta
 import inflect
-""" custom """
+
 from .argparser import ArgParser
 from .tcex_job import TcExJob
 
@@ -80,6 +79,44 @@ class TcEx(object):
 
         # include resources module
         self._resources()
+
+        # include utils module
+        self._utils()
+
+    def _association_types(self):
+        """Retrieve Custom Indicator Associations types from the ThreatConnect API.
+        """
+        # Dynamically create custom indicator class
+        r = self.request
+        r.authorization_method(self.authorization)
+        if self.default_args.tc_proxy_tc:
+            r.proxies = self.proxies
+        r.url = '{}/v2/types/associationTypes'.format(self.default_args.tc_api_path)
+        response = r.send()
+
+        # check for bad status code and response that is not JSON
+        if (int(response.status_code) != 200 or
+                response.headers.get('content-type') != 'application/json'):
+            warn = u'Custom Indicators Associations are not supported.'
+            self.log.warning(warn)
+            return
+
+        # validate successful API results
+        data = response.json()
+        if data.get('status') != 'Success':
+            warn = u'Bad Status: Custom Indicators Associations are not supported.'
+            self.log.warning(warn)
+            return
+
+        try:
+            # Association Type Name is not a unique value at this time, but should be.
+            for association in response.json().get('data', {}).get('associationType', []):
+                self._indicator_associations_types_data[association.get('name')] = association
+        except:
+            err = u'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
+                sys.exc_info()[0])
+            self.log.error(err)
+            raise RuntimeError(err)
 
     def _authorization_token_renew(self):
         """Method for handling token authorization to ThreatConnect API.
@@ -246,43 +283,8 @@ class TcEx(object):
             from .tcex_playbook import TcExPlaybook
             self.playbook = TcExPlaybook(self)
         except ImportError as e:
-            warn = u'Required playbook python dependency is not installed ({}).'.format(e)
+            warn = u'Required playbook Python dependency is not installed ({}).'.format(e)
             self.log.warning(warn)
-
-    def _association_types(self):
-        """Retrieve Custom Indicator Associations types from the ThreatConnect API.
-        """
-        # Dynamically create custom indicator class
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/v2/types/associationTypes'.format(self.default_args.tc_api_path)
-        response = r.send()
-
-        # check for bad status code and response that is not JSON
-        if (int(response.status_code) != 200 or
-                response.headers.get('content-type') != 'application/json'):
-            warn = u'Custom Indicators Associations are not supported.'
-            self.log.warning(warn)
-            return
-
-        # validate successful API results
-        data = response.json()
-        if data.get('status') != 'Success':
-            warn = u'Bad Status: Custom Indicators Associations are not supported.'
-            self.log.warning(warn)
-            return
-
-        try:
-            # Association Type Name is not a unique value at this time, but should be.
-            for association in response.json().get('data', {}).get('associationType', []):
-                self._indicator_associations_types_data[association.get('name')] = association
-        except:
-            err = u'Failed retrieving Custom Indicator Associations types from API. ({})'.format(
-                sys.exc_info()[0])
-            self.log.error(err)
-            raise RuntimeError(err)
 
     def _resources(self, custom_indicators=False):
         """Initialize the resource module.
@@ -392,6 +394,18 @@ class TcEx(object):
         """
         for u in args:
             self.log.debug(u'Unsupported arg found ({}).'.format(u))
+
+    def _utils(self):
+        """Include Utils Module
+
+        .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
+        """
+        try:
+            from .tcex_utils import TcExUtils
+            self.utils = TcExUtils(self)
+        except ImportError as e:
+            warn = u'Required utils Python dependency is not installed ({}).'.format(e)
+            self.log.warning(warn)
 
     @property
     def args(self):

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.2 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.2 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.2
+                0.7.3
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
 </ul>
 
             
@@ -175,7 +176,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tcex.tcex</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot; TcEx Framework &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">base64</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>  <span class="c1"># authorization</span>
 <span class="kn">import</span> <span class="nn">hmac</span>  <span class="c1"># authorization</span>
@@ -186,14 +187,13 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="c1"># import types</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">platform</span> <span class="k">import</span> <span class="n">platform</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
 <span class="kn">import</span> <span class="nn">inflect</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
 
@@ -257,6 +257,44 @@
 
         <span class="c1"># include resources module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">()</span>
+
+        <span class="c1"># include utils module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TcEx._association_types"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._association_types">[docs]</a>    <span class="k">def</span> <span class="nf">_association_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve Custom Indicator Associations types from the ThreatConnect API.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Dynamically create custom indicator class</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/associationTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+        <span class="c1"># check for bad status code and response that is not JSON</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">200</span> <span class="ow">or</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Custom Indicators Associations are not supported.&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># validate successful API results</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Bad Status: Custom Indicators Associations are not supported.&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Association Type Name is not a unique value at this time, but should be.</span>
+            <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associationType&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_associations_types_data</span><span class="p">[</span><span class="n">association</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">association</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed retrieving Custom Indicator Associations types from API. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._authorization_token_renew"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._authorization_token_renew">[docs]</a>    <span class="k">def</span> <span class="nf">_authorization_token_renew</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Method for handling token authorization to ThreatConnect API.</span>
@@ -423,43 +461,8 @@
             <span class="kn">from</span> <span class="nn">.tcex_playbook</span> <span class="k">import</span> <span class="n">TcExPlaybook</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">playbook</span> <span class="o">=</span> <span class="n">TcExPlaybook</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required playbook python dependency is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required playbook Python dependency is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcEx._association_types"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._association_types">[docs]</a>    <span class="k">def</span> <span class="nf">_association_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieve Custom Indicator Associations types from the ThreatConnect API.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Dynamically create custom indicator class</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">authorization_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">authorization</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_tc</span><span class="p">:</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxies</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/v2/types/associationTypes&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-
-        <span class="c1"># check for bad status code and response that is not JSON</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">200</span> <span class="ow">or</span>
-                <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;application/json&#39;</span><span class="p">):</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Custom Indicators Associations are not supported.&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="c1"># validate successful API results</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Bad Status: Custom Indicators Associations are not supported.&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Association Type Name is not a unique value at this time, but should be.</span>
-            <span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associationType&#39;</span><span class="p">,</span> <span class="p">[]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_associations_types_data</span><span class="p">[</span><span class="n">association</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">association</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed retrieving Custom Indicator Associations types from API. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._resources"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources">[docs]</a>    <span class="k">def</span> <span class="nf">_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_indicators</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the resource module.</span>
@@ -569,6 +572,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported arg found (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcEx._utils"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._utils">[docs]</a>    <span class="k">def</span> <span class="nf">_utils</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include Utils Module</span>
+
+<span class="sd">        .. Note:: Utils methods can be accessed using ``tcex.utils.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required utils Python dependency is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1231,7 +1246,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.2',
+            VERSION:'0.7.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

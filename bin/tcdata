@@ -16,7 +16,15 @@ from six import string_types
 """ custom """
 from tcex import TcEx
 
+
 tcex = TcEx()
+
+# not including this library as a dependency in requirements.txt since it's only required
+# for testing.
+try:
+    from deepdiff import DeepDiff
+except ImportError:
+    tcex.log.warning('Could not import DeepDiff module.')
 
 # supported action: clear, stage, validate
 tcex.parser.add_argument('--action', help='The action to perform.', required=True)
@@ -35,9 +43,12 @@ class TcData(object):
         self._args = arg_data
         self.data = []
         self._vars_match = re.compile(
-            r"""(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))(?:::)?([A-Za-z0-9_.-]+)?\"?""")
+            r'(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))'
+            r'(?:\[)?([0-9]+)?(?:\])?'
+            r'(?:\:\:)?([A-Za-z0-9_.-]+)?\"?')
         # Define common comparison operators
         self._operators = {
+            'dd': self.deep_diff,
             'eq': operator.eq,
             'ew': self.data_endswith,
             'ge': operator.ge,
@@ -106,6 +117,19 @@ class TcData(object):
             return True
         return False
 
+    @staticmethod
+    def deep_diff(db_data, user_data):
+        """Validate data in user data"""
+        try:
+            ddiff = DeepDiff(db_data, user_data, ignore_order=True)
+        except NameError:
+            tcex.log.warning(u'Could not find DeepDiff module.')
+            return False
+        if ddiff:
+            tcex.log.info(u'Diff: {}'.format(ddiff))
+            return False
+        return True
+
     def load_data(self, data_file):
         """Load the data file"""
         data_file = os.path.abspath(data_file)
@@ -136,7 +160,7 @@ class TcData(object):
     def redis_clear(variable):
         """Clear Data in Redis"""
         if variable is not None:
-            tcex.log.debug('Clearing redis variable {}.'.format(variable))
+            tcex.log.debug(u'Clearing redis variable {}.'.format(variable))
             tcex.playbook.delete(variable)
 
     def tc_clear(self, data):
@@ -155,9 +179,9 @@ class TcData(object):
         if resource_type in tcex.indicator_types:
             # temp resource to used to get resource_id from json
             resource = tcex.resource(resource_type)
-            for data in resource.indicators(resource_data):
-                if data.get('summary') is not None:
-                    resource_ids = [data.get('summary')]
+            for r_data in resource.indicators(resource_data):
+                if r_data.get('summary') is not None:
+                    resource_ids = [r_data.get('summary')]
                     break
         elif resource_type in tcex.group_types:
             resource_ids = self.tc_group_name_to_id(
@@ -195,9 +219,12 @@ class TcData(object):
                 out_variable_type = tcex.playbook.variable_type(out_variable)
                 for var in data.get('data', {}).get('variables', []):
                     variable_data = self.parse_variable(var)
-                    variable = variable_data[0]
-                    variable_sub = variable_data[1]  # (value)
+                    variable = variable_data[0]  # variable
+                    variable_index = variable_data[1]  # value
+                    variable_sub = variable_data[2]  # value
                     data = tcex.playbook.read(variable)
+                    if variable_index is not None and isinstance(data, (list)):
+                        data = data[int(variable_index)]
                     if variable_sub is not None and isinstance(data, (dict)):
                         data = data.get(variable_sub)
                     redis_array.append(data)
@@ -255,9 +282,9 @@ class TcData(object):
             if response.get('status') == 'Success':
                 # add resource id
                 if resource_type in tcex.indicator_types:
-                    for data in resource.indicators(response.get('data')):
-                        if data.get('value') is not None:
-                            resource_id = data.get('value')
+                    for r_data in resource.indicators(response.get('data')):
+                        if r_data.get('value') is not None:
+                            resource_id = r_data.get('value')
                             break
                 elif resource_type in tcex.group_types:
                     resource_id = response.get('data', {}).get('id')
@@ -266,7 +293,7 @@ class TcData(object):
 
                 entity = tcex.playbook.json_to_entity(
                     response.get('data'), resource.value_fields, resource.name, resource.parent)
-                tcex.log.debug('Creating Entity: {} ({})'.format(variable, entity[0]))
+                tcex.log.debug(u'Creating Entity: {} ({})'.format(variable, entity[0]))
                 tcex.playbook.create_tc_entity(variable, entity[0])
 
                 # update metadata
@@ -389,10 +416,13 @@ class TcData(object):
                 # see if user provided data is a redis variable
                 if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
                     variable_data = self.parse_variable(user_data)
-                    variable = variable_data[0]
-                    variable_sub = variable_data[1]  # (value)
+                    variable = variable_data[0]  # variable
+                    variable_index = variable_data[1]  # index
+                    variable_sub = variable_data[2]  # value
                     user_data = tcex.playbook.read(variable)
-                    if variable_sub is not None and isinstance(data, (dict)):
+                    if variable_index is not None and isinstance(user_data, (list)):
+                        user_data = user_data[int(variable_index)]
+                    if variable_sub is not None and isinstance(user_data, (dict)):
                         user_data = user_data.get(variable_sub)
 
                 self.redis_validate(
@@ -405,21 +435,27 @@ class TcData(object):
             data = str(data)
 
         variable_data = self.parse_variable(variable)
-        # #App:0391:tc.group.name!TCEntity::value
-        variable = variable_data[0]  # (#App:0391:tc.group.name!TCEntity)
-        variable_sub = variable_data[1]  # (value)
+        variable = variable_data[0]  # variable
+        variable_index = variable_data[1]  # index
+        variable_sub = variable_data[2]  # value
         tcex.log.info(u'Validating output variable {}'.format(variable))
 
         # retrieve data from db
         db_data = tcex.playbook.read(variable)
+        if variable_index is not None:
+            db_data = db_data[int(variable_index)]
         if variable_sub is not None:
             db_data = db_data.get(variable_sub)
 
+        # convert any int to string since playbooks don't support int values
+        if isinstance(db_data, int):
+            db_data = str(db_data)
+
         if variable.endswith('Binary') or variable.endswith('BinaryArray'):
-            tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(
+            tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(
                 'Excluding Binary Data Output', type(db_data)))
         else:
-            tcex.log.debug('-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+            tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
         tcex.log.debug(u'- Operator: ({}) -'.format(oper))
         tcex.log.debug(u'<- Validation Data: ({}), Type: [{}]'.format(data, type(data)))
 
@@ -443,8 +479,16 @@ class TcData(object):
             tcex.exit(1)
 
     def parse_variable(self, variable_data):
-        """Parse a variable with sub data"""
-        return list(re.search(self._vars_match, variable_data).groups())
+        """Parse a variable with sub data
+
+           #App:0391:tc.group.name!TCEntityArray[0]::value
+           0 - variable (#App:0391:tc.group.name!TCEntityArray)
+           1 - index (0)
+           2 - value (value)
+        """
+        parsed_data = list(re.search(self._vars_match, variable_data).groups())
+        tcex.log.debug('Parsed Variable Data: {}'.format(parsed_data))
+        return parsed_data
 
 
 if __name__ == '__main__':

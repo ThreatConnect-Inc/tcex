@@ -28,6 +28,7 @@ Release |version|.
    resource
    results_tc
    release_notes
+   utils
 
 Overview
 --------

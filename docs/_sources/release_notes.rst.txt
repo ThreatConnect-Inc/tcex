@@ -6,6 +6,15 @@ Release Notes
 0.7.x
 =====
 
+0.7.3
+-----
++ Added :py:mod:`~tcex.tcex_utils.TcExUtils` module with date functions to handle common data use cases.
++ Added DeepDiff functionality to ``tcdata`` for validating unsorted dictionaries and list.
++ Updated ``tcdata`` to pull item from lists by index for easier comparison.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read` method to allow disabling of automatically resolving embedded variables.
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support file actions.
++ Updated :py:meth:`~tcex.tcex_resources.File.file_action` method as alias to :py:meth:`~tcex.tcex_resources.Resource.association_custom`.
+
 0.7.2
 -----
 + Updated ``tcdata`` command for issue on sorting list in Python 3.

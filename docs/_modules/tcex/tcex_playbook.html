@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.7.2 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.7.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.2 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.2
+                0.7.3
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
 </ul>
 
             
@@ -185,8 +186,7 @@
 
 
 <div class="viewcode-block" id="TcExPlaybook"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook">[docs]</a><span class="k">class</span> <span class="nc">TcExPlaybook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Playbook methods for accessing Database</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Playbook methods for accessing Database&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize class data</span>
@@ -424,7 +424,7 @@
                 <span class="p">}</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for working with KeyValue DB.</span>
 
 <span class="sd">        This method will automatically check to see if a single variable is passed</span>
@@ -434,6 +434,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
 <span class="sd">            array (boolean): Convert string/dict to Array/List before returning.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (any): Results retrieved from DB</span>
@@ -449,10 +450,14 @@
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">[</span><span class="n">key_type</span><span class="p">](</span><span class="n">key</span><span class="p">)</span>
+                    <span class="c1"># handle types with embedded variable</span>
+                    <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">[</span><span class="n">key_type</span><span class="p">](</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">[</span><span class="n">key_type</span><span class="p">](</span><span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">embedded</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
 
         <span class="c1"># return data as a list</span>
@@ -661,11 +666,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Results retrieved from DB</span>
@@ -673,7 +679,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -704,11 +712,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_key_value_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_key_value_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_key_value_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_key_value_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for key/value array data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): Results retrieved from DB</span>
@@ -716,7 +725,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -785,11 +796,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_string"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string">[docs]</a>    <span class="k">def</span> <span class="nf">read_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_string"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string">[docs]</a>    <span class="k">def</span> <span class="nf">read_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): Results retrieved from DB</span>
@@ -797,7 +809,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># handle improperly saved string</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -832,11 +846,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_string_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_string_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_string_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_string_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_string_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for string array data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): Results retrieved from DB</span>
@@ -844,7 +859,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -875,11 +892,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_tc_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_tc_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Results retrieved from DB</span>
@@ -887,7 +905,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -918,11 +938,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_tc_entity_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_tc_entity_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_tc_entity_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_tc_entity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for TC entity array data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): Results retrieved from DB</span>
@@ -930,7 +951,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1182,7 +1205,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.2',
+            VERSION:'0.7.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

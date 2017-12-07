@@ -16,13 +16,16 @@ setup(
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
     install_requires=[
         'colorama==0.3.9',
-        'hvac==0.2.17',  # this feature will be deprecate in future release
+        'hvac==0.3.0',  # this feature will be deprecate in future release
         'inflect==0.2.5',
         'jsonschema==2.6.0',
+        'parsedatetime',
         'python-dateutil==2.6.1',
+        'pytz',
         'redis==2.10.6',
         'requests==2.18.4',
-        'six==1.11.0'
+        'six==1.11.0',
+        'tzlocal'
     ],
     license='Apache License, Version 2',
     name='tcex',

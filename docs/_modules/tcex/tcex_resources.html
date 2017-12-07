@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.7.2 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.2 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.3 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.2
+                0.7.3
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
 </ul>
 
             
@@ -535,24 +536,32 @@
 <span class="sd">        +--------------+-------------------------------------------------------------------------------------------------------------+</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_api_branch (string): The resource pivot api branch.</span>
 <span class="sd">            association_name (string): The name of the custom association as defined in the UI.</span>
+<span class="sd">            association_resource (object): An instance of Resource for an Indicator or sub type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">association_api_branch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">indicator_associations_types_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">association_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">association_api_branch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;An invalid association name (</span><span class="si">{}</span><span class="s1">) was provided.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association_name</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;An invalid action/association name (</span><span class="si">{}</span><span class="s1">) was provided.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
+        <span class="c1"># handle URL difference between Custom Associations and File Actions</span>
+        <span class="n">custom_type</span> <span class="o">=</span> <span class="s1">&#39;associations&#39;</span>
+        <span class="n">file_action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">indicator_associations_types_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">association_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileAction&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_action</span><span class="p">:</span>
+            <span class="n">custom_type</span> <span class="o">=</span> <span class="s1">&#39;actions&#39;</span>
+
         <span class="n">resource</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="s1">&#39;indicator&#39;</span>
         <span class="k">if</span> <span class="n">association_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">custom_type</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">,</span>
+                <span class="n">association_resource</span><span class="o">.</span><span class="n">request_uri</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/associations/</span><span class="si">{}</span><span class="s1">/indicators&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">)</span>
+            <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/indicators&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">,</span> <span class="n">custom_type</span><span class="p">,</span> <span class="n">association_api_branch</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.association_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">association_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">):</span>
@@ -708,32 +717,6 @@
 <span class="sd">            (boolean): True if the Indicator is a Custom Type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom</span>
-
-<div class="viewcode-block" id="Resource.file_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.file_action">[docs]</a>    <span class="k">def</span> <span class="nf">file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;File action pivot for this resource.</span>
-
-<span class="sd">        .. Attention:: New untested method</span>
-
-<span class="sd">        .. Note:: Possible action_names are: drop, archive or traffic</span>
-
-<span class="sd">        **Example Endpoints URI&#39;s**</span>
-
-<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
-<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                     |</span>
-<span class="sd">        +==============+========================================================================+</span>
-<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/       |</span>
-<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
-<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type} |</span>
-<span class="sd">        +--------------+------------------------------------------------------------------------+</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            resource_id (string): The resource pivot id (file hash).</span>
-<span class="sd">            action_name (string): The name of the action as defined by ThreatConnect.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/actions/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">_request_api_branch</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="n">resource</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">resource</span></div>
 
 <div class="viewcode-block" id="Resource.group_pivot"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.group_pivot">[docs]</a>    <span class="k">def</span> <span class="nf">group_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_resource</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pivot point on groups for this resource.</span>
@@ -1750,6 +1733,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">,</span> <span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="s1">&#39;sha256&#39;</span><span class="p">]</span>
 
+<div class="viewcode-block" id="File.file_action"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.file_action">[docs]</a>    <span class="k">def</span> <span class="nf">file_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action_name</span><span class="p">,</span> <span class="n">association_resource</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;File action pivot for this resource.</span>
+
+<span class="sd">        **Example Endpoints URI&#39;s**</span>
+
+<span class="sd">        +--------------+----------------------------------------------------------------------------------+</span>
+<span class="sd">        | HTTP Method  | API Endpoint URI&#39;s                                                               |</span>
+<span class="sd">        +==============+==================================================================================+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators                  |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------------------+</span>
+<span class="sd">        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}           |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------------------+</span>
+<span class="sd">        | DELETE       | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------------------+</span>
+<span class="sd">        | POST         | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |</span>
+<span class="sd">        +--------------+----------------------------------------------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            action_name (string): The name of the action as defined by ThreatConnect.</span>
+<span class="sd">            association_resource (object): An instance of Resource for an Indicator or sub type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">association_custom</span><span class="p">(</span><span class="n">action_name</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="File.indicator_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator_body">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">indicator_body</span><span class="p">(</span><span class="n">indicators</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the appropriate dictionary content for POST of an File indicator</span>
@@ -2667,7 +2673,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.2',
+            VERSION:'0.7.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
