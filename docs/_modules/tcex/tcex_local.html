@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_local &mdash; TcEx 0.7.4 documentation</title>
+  <title>tcex.tcex_local &mdash; TcEx 0.7.5 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.4
+                0.7.5
               </div>
             
           
@@ -176,9 +176,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tcex.tcex_local</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; TcEx Framework Local Module</span>
+
+<span class="sd">.. important:: This module will be deprecated in the future.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">inflect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -192,13 +197,14 @@
 <span class="c1"># from builtins import bytes</span>
 <span class="kn">from</span> <span class="nn">setuptools.command</span> <span class="k">import</span> <span class="n">easy_install</span>
 
-<span class="sd">&quot;&quot;&quot; third-party &quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.tcex_vault</span> <span class="k">import</span> <span class="n">TcExVault</span>
+<span class="kn">import</span> <span class="nn">inflect</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">SchemaError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">validate</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Try app.py --lib or adding jsonschema to setup.py&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.tcex_vault</span> <span class="k">import</span> <span class="n">TcExVault</span>
 
 <span class="c1"># Load Schema</span>
 <span class="n">schema_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">&#39;tcex_json_schema.json&#39;</span><span class="p">)</span>
@@ -610,11 +616,7 @@
 <span class="sd">            (any): Return validate or encoded data</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO: Find better way using six or unicode_literals</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>  <span class="c1"># 2to3 converts unicode to str</span>
-            <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -678,7 +680,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.4',
+            VERSION:'0.7.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

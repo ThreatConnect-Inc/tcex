@@ -7,10 +7,17 @@ Requirements
 -------------
 
 Python requirements with known working version:
- * Requests 2.11.1 module (http://docs.python-requests.org/en/latest/).
- * hiredis 0.2.0 (https://github.com/redis/hiredis-py)
- * jsonschema 2.5.1 (https://pypi.python.org/pypi/jsonschema)
- * redis 2.10.5 (https://pypi.python.org/pypi/redis)
+ * colorama 0.3.9 (https://pypi.python.org/pypi/colorama)
+ * hvac 0.3.0 (https://pypi.python.org/pypi/hvac)
+ * inflect 0.2.5 (https://pypi.python.org/pypi/inflect)
+ * jsonschema 2.6.0 (https://pypi.python.org/pypi/jsonschema)
+ * parsedatetime 2.4 (https://pypi.python.org/pypi/parsedatetime)
+ * python-datetuil (https://pypi.python.org/pypi/python-dateutil)
+ * pytz latest (https://pypi.python.org/pypi/pytz)
+ * redis 2.10.6 (https://pypi.python.org/pypi/redis)
+ * requests 2.18.4 (http://docs.python-requests.org/en/latest)
+ * six 1.11.0 (https://pypi.python.org/pypi/six)
+ * tzlocal 1.5.1 (https://pypi.python.org/pypi/tzlocal)
 
 Installation
 -------------

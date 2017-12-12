@@ -1,4 +1,5 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Resource Module """
 import copy
 import gzip
 import json
@@ -6,8 +7,6 @@ import os
 import re
 import shutil
 import uuid
-""" third party """
-""" custom """
 
 
 class Resource(object):

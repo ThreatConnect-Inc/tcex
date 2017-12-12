@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_data_filter &mdash; TcEx 0.7.4 documentation</title>
+  <title>tcex.tcex_data_filter &mdash; TcEx 0.7.5 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.4
+                0.7.5
               </div>
             
           
@@ -176,15 +176,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tcex.tcex_data_filter</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Data Filter Module &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span>
 <span class="c1"># import json</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 <span class="c1"># import os</span>
 <span class="c1"># import types</span>
 <span class="c1"># import uuid</span>
-
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="DataFilter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter">[docs]</a><span class="k">class</span> <span class="nc">DataFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -227,9 +226,9 @@
 
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="c1"># bcs - update this</span>
-                    <span class="c1"># if not isinstance(value, (types.StringType, float, int, long)):</span>
+                    <span class="c1"># if not isinstance(value, (types.StringType, float, int)):</span>
                     <span class="c1"># TODO: This is not Python 3 ready</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">long</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unicode</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
                         <span class="c1"># For comparison operators the value needs to be a StringType</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Can only build index String Types.&#39;</span><span class="p">)</span>
                         <span class="k">continue</span>
@@ -493,7 +492,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.4',
+            VERSION:'0.7.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

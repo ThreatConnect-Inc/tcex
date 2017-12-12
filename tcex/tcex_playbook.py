@@ -1,10 +1,10 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Playbook module """
+from builtins import str
 import base64
 import codecs
 import json
 import re
-""" third-party """
-""" custom """
 
 
 class TcExPlaybook(object):
@@ -59,7 +59,7 @@ class TcExPlaybook(object):
                 self._tcex.default_args.tc_playbook_db_context
             )
         elif self._tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
-            from tcex_key_value import TcExKeyValue
+            from .tcex_key_value import TcExKeyValue
             self._db = TcExKeyValue(self._tcex, self._tcex.default_args.tc_playbook_db_context)
         else:
             err = u'Invalid DB Type: ({})'.format(self._tcex.default_args.tc_playbook_db_type)

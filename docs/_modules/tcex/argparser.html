@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.argparser &mdash; TcEx 0.7.4 documentation</title>
+  <title>tcex.argparser &mdash; TcEx 0.7.5 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.4 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.5 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.4
+                0.7.5
               </div>
             
           
@@ -176,10 +176,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for tcex.argparser</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; TcEx Common Arg Handler &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">ArgumentParser</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="ArgParser"><a class="viewcode-back" href="../../tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser">[docs]</a><span class="k">class</span> <span class="nc">ArgParser</span><span class="p">(</span><span class="n">ArgumentParser</span><span class="p">):</span>
@@ -255,7 +254,8 @@
 <span class="sd">        --batch_chunk number           The maximum number of indicator per batch job.</span>
 <span class="sd">        --batch_halt_on_error          Flag to indicate that batch job should halt on error.</span>
 <span class="sd">        --batch_poll_interval seconds  Seconds between batch status polls.</span>
-<span class="sd">        --batch_interval_max seconds   Seconds before app should time out waiting on batch job completion.</span>
+<span class="sd">        --batch_interval_max seconds   Seconds before app should time out waiting on batch job</span>
+<span class="sd">                                       completion.</span>
 <span class="sd">        --batch_write_type type        Write type for Indicator attributes [&#39;Append&#39;, &#39;Replace&#39;].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -319,7 +319,8 @@
 <span class="sd">        --tc_proxy_port port         The proxy port.</span>
 <span class="sd">        --tc_proxy_username user     The proxy username.</span>
 <span class="sd">        --tc_proxy_password pass     The proxy password.</span>
-<span class="sd">        --tc_proxy_external          Flag to indicate external communications requires the use of a proxy.</span>
+<span class="sd">        --tc_proxy_external          Flag to indicate external communications requires the use of a</span>
+<span class="sd">                                     proxy.</span>
 <span class="sd">        --tc_proxy_tc                Flag to indicate TC communications requires the use of a proxy.</span>
 <span class="sd">        --tc_log_to_api              Flag to indicate that app should log to API.</span>
 <span class="sd">        --tc_log_level               The logging level for the app.</span>
@@ -372,7 +373,8 @@
             <span class="s1">&#39;--tc_log_to_api&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_log_to_api</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Logging&#39;</span><span class="p">)</span>
         <span class="c1"># self.add_argument(</span>
-        <span class="c1">#     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;, &#39;critical&#39;],</span>
+        <span class="c1">#     &#39;--tc_log_level&#39;, &#39;--logging&#39;, choices=[&#39;debug&#39;, &#39;info&#39;, &#39;warning&#39;, &#39;error&#39;,</span>
+        <span class="c1">#     &#39;critical&#39;],</span>
         <span class="c1">#     default=self._tc_log_level, help=&#39;Logging Level&#39;, dest=&#39;tc_log_level&#39;, type=str.lower)</span>
         <span class="c1"># BCS - temporarily until there is some way to configure App logging level in the UI</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -416,7 +418,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.4',
+            VERSION:'0.7.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

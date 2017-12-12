@@ -1,8 +1,12 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Value Module
+
+.. important:: This module will be deprecated in a future release.
+
+"""
 import os
-""" third-party """
+
 import hvac
-""" custom """
 
 
 class TcExVault(object):

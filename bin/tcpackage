@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Package Module """
 import argparse
 import colorama as c
 import json
@@ -10,9 +10,13 @@ import shutil
 import sys
 import traceback
 import zipfile
-""" third-party """
+
 from jsonschema import SchemaError, ValidationError, validate
-""" custom """
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

@@ -1,7 +1,10 @@
-""" standard """
-import urllib
-""" third-party """
-""" custom """
+# -*- coding: utf-8 -*-
+""" TcEx Framework KeyValue Module """
+from builtins import str
+try:
+    from urllib import quote  # Python 2
+except ImportError:
+    from urllib.parse import quote  # Python 3
 
 
 class TcExKeyValue(object):
@@ -15,7 +18,7 @@ class TcExKeyValue(object):
 
     def create(self, key, value):
         """Create key/value pair in Redis"""
-        key = urllib.quote(key, safe='~')
+        key = quote(key, safe='~')
         self._r.body = value
         self._r.content_type = 'application/octet-stream'
         self._r.http_method = 'PUT'
@@ -30,12 +33,12 @@ class TcExKeyValue(object):
 
     def read(self, key):
         """Read data from Redis for the provided key"""
-        key = urllib.quote(key, safe='~')
+        key = quote(key, safe='~')
         self._r.url = '{}/internal/playbooks/keyValue/{}'.format(
             self._tcex.default_args.tc_api_path, key)
         response = self._r.send()
 
         data = response.content
-        if data is not None and not isinstance(data, unicode):  # 2to3 converts unicode to str
-            data = unicode(response.content, 'utf-8')  # 2to3 converts unicode to str
+        if data is not None and not isinstance(data, str):
+            data = str(response.content, 'utf-8')
         return data

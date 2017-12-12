@@ -1,12 +1,13 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Request Module """
+from builtins import str
 import json
 import socket
 import time
 from base64 import b64encode
-""" third-party """
+
 from requests import (exceptions, packages, Request, Session)
 packages.urllib3.disable_warnings()  # disable ssl warning message
-""" custom """
 
 
 class TcExRequest(object):
@@ -127,7 +128,7 @@ class TcExRequest(object):
 
     def set_basic_auth(self, username, password):
         """Manually set basic auth in the header when normal method does not work."""
-        credentials = unicode(
+        credentials = str(
             b64encode('{}:{}'.format(username, password).encode('utf-8')), 'utf-8')
         self.authorization = 'Basic {}'.format(credentials)
 

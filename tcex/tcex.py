@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 """ TcEx Framework """
+from builtins import str
 import base64  # authorization
 import hashlib  # authorization
 import hmac  # authorization
@@ -9,9 +11,12 @@ import os
 import re
 import sys
 import time
-import urllib
 from datetime import datetime
 from platform import platform
+try:
+    from urllib import quote  # Python 2
+except ImportError:
+    from urllib.parse import quote  # Python 3
 
 from dateutil.relativedelta import relativedelta
 import inflect
@@ -696,8 +701,8 @@ class TcEx(object):
 
             if (self.default_args.tc_proxy_username is not None and
                     self.default_args.tc_proxy_password is not None):
-                tc_proxy_username = urllib.quote(self.default_args.tc_proxy_username, safe='~')
-                tc_proxy_password = urllib.quote(self.default_args.tc_proxy_password, safe='~')
+                tc_proxy_username = quote(self.default_args.tc_proxy_username, safe='~')
+                tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
 
                 proxies = {
                     'http': 'http://{}:{}@{}:{}'.format(
@@ -849,12 +854,12 @@ class TcEx(object):
                     data.decode('utf-8')
                 except UnicodeEncodeError:  # 2to3 converts unicode to str
                     # 2to3 converts unicode to str
-                    data = unicode(data.encode('utf-8').strip(), errors=errors)
+                    data = str(data.encode('utf-8').strip(), errors=errors)
                     self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
-                data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
+                data = str(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
         except NameError:
             pass  # Can't decode str in Python 3
         return data
@@ -866,12 +871,12 @@ class TcEx(object):
         #         data.decode('utf-8')
         #     except UnicodeEncodeError as e:  # 2to3 converts unicode to str
         #         # 2to3 converts unicode to str
-        #         data = unicode(data.encode('utf-8').strip(), errors=errors)
+        #         data = str(data.encode('utf-8').strip(), errors=errors)
         #         self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
         #     except AttributeError:
         #         pass  # Python 3 can't decode a str
         # else:
-        #     data = unicode(data, 'utf-8', errors=errors)
+        #     data = str(data, 'utf-8', errors=errors)
         # return data
 
     def safe_indicator(self, indicator, errors='strict'):
@@ -884,7 +889,7 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if indicator is not None:
-            indicator = urllib.quote(self.s(str(indicator), errors=errors), safe='~')
+            indicator = quote(self.s(str(indicator), errors=errors), safe='~')
         return indicator
 
     @staticmethod
@@ -1018,7 +1023,7 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if url is not None:
-            url = urllib.quote(TcEx.to_string(url, errors=errors), safe='~')
+            url = quote(TcEx.to_string(url, errors=errors), safe='~')
         return url
 
     @staticmethod
@@ -1033,6 +1038,6 @@ class TcEx(object):
             (string): Return decoded data
 
         """
-        if data is not None and not isinstance(data, unicode):  # 2to3 converts unicode to str
-            data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
+        if data is not None and not isinstance(data, str):
+            data = str(data, 'utf-8', errors=errors)
         return data

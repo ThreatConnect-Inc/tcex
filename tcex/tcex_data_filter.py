@@ -1,12 +1,11 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" Data Filter Module """
+from builtins import int, str
 # import json
 import operator
 # import os
 # import types
 # import uuid
-
-""" third party """
-""" custom """
 
 
 class DataFilter(object):
@@ -49,9 +48,9 @@ class DataFilter(object):
 
                 for key, value in d.items():
                     # bcs - update this
-                    # if not isinstance(value, (types.StringType, float, int, long)):
+                    # if not isinstance(value, (types.StringType, float, int)):
                     # TODO: This is not Python 3 ready
-                    if not isinstance(value, (float, int, long, str, unicode)):
+                    if not isinstance(value, (float, int, str)):
                         # For comparison operators the value needs to be a StringType
                         self._tcex.log.debug(u'Can only build index String Types.')
                         continue

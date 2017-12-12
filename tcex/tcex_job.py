@@ -1,9 +1,8 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Job Module """
 import json
 import re
 import time
-""" third-party """
-""" custom """
 
 
 class TcExJob(object):

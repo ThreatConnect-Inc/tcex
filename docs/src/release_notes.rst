@@ -6,6 +6,13 @@ Release Notes
 0.7.x
 =====
 
+0.7.5
+-----
++ Updated all TcEx framework CLI commands to use utf-8 encoding by default.
++ Replaced usage of unicode with built-ins str (Python 2/3 compatible.
++ Replaced usage of long with built-ins int (Python 2/3 compatible).
++ Update used of urllib.quote to be Python 2/3 compatible.
+
 0.7.4
 -----
 + Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` to handle boolean values that are passed as strings.

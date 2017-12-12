@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ TcEx Utilities Class """
 from datetime import datetime
 import calendar

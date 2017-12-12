@@ -1,7 +1,8 @@
-""" standard """
-""" third-party """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Redis Module """
+from builtins import str
+
 import redis
-""" custom """
 
 
 class TcExRedis(object):
@@ -24,6 +25,6 @@ class TcExRedis(object):
     def read(self, key):
         """Read data from Redis for the provided key"""
         data = self._r.hget(self._hash, key)
-        if data is not None and not isinstance(data, unicode):  # 2to3 converts unicode to str
-            data = unicode(self._r.hget(self._hash, key), 'utf-8')  # 2to3 converts unicode to str
+        if data is not None and not isinstance(data, str):
+            data = str(self._r.hget(self._hash, key), 'utf-8')
         return data

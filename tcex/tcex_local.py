@@ -1,6 +1,11 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Framework Local Module
+
+.. important:: This module will be deprecated in the future.
+
+"""
+from builtins import str
 import argparse
-import inflect
 import json
 import os
 import re
@@ -14,13 +19,14 @@ import platform
 # from builtins import bytes
 from setuptools.command import easy_install
 
-""" third-party """
-from .tcex_vault import TcExVault
+import inflect
 try:
     from jsonschema import SchemaError, ValidationError, validate
 except ImportError as e:
     print('Error: {}'.format(e))
     print('Try app.py --lib or adding jsonschema to setup.py')
+
+from .tcex_vault import TcExVault
 
 # Load Schema
 schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tcex_json_schema.json')
@@ -432,11 +438,7 @@ class TcExLocal:
             (any): Return validate or encoded data
 
         """
-        # TODO: Find better way using six or unicode_literals
         if isinstance(data, (bytes, str)):
-            try:
-                data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
-            except NameError:
                 data = str(data, 'utf-8', errors=errors)
         return data
 

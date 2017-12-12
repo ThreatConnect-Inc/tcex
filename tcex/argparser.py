@@ -1,7 +1,6 @@
-""" standard """
+# -*- coding: utf-8 -*-
+""" TcEx Common Arg Handler """
 from argparse import ArgumentParser
-""" third party """
-""" custom """
 
 
 class ArgParser(ArgumentParser):
@@ -77,7 +76,8 @@ class ArgParser(ArgumentParser):
         --batch_chunk number           The maximum number of indicator per batch job.
         --batch_halt_on_error          Flag to indicate that batch job should halt on error.
         --batch_poll_interval seconds  Seconds between batch status polls.
-        --batch_interval_max seconds   Seconds before app should time out waiting on batch job completion.
+        --batch_interval_max seconds   Seconds before app should time out waiting on batch job
+                                       completion.
         --batch_write_type type        Write type for Indicator attributes ['Append', 'Replace'].
         """
 
@@ -141,7 +141,8 @@ class ArgParser(ArgumentParser):
         --tc_proxy_port port         The proxy port.
         --tc_proxy_username user     The proxy username.
         --tc_proxy_password pass     The proxy password.
-        --tc_proxy_external          Flag to indicate external communications requires the use of a proxy.
+        --tc_proxy_external          Flag to indicate external communications requires the use of a
+                                     proxy.
         --tc_proxy_tc                Flag to indicate TC communications requires the use of a proxy.
         --tc_log_to_api              Flag to indicate that app should log to API.
         --tc_log_level               The logging level for the app.
@@ -194,7 +195,8 @@ class ArgParser(ArgumentParser):
             '--tc_log_to_api', action='store_true', default=self._tc_log_to_api,
             help='ThreatConnect API Logging')
         # self.add_argument(
-        #     '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
+        #     '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error',
+        #     'critical'],
         #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level', type=str.lower)
         # BCS - temporarily until there is some way to configure App logging level in the UI
         self.add_argument(

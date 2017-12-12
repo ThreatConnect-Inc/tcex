@@ -4,6 +4,9 @@
     "allowOnDemand": {
       "type": "boolean"
     },
+    "allowRunAsUser": {
+      "type": "boolean"
+    },
     "apiUserTokenParam": {
       "type": "boolean"
     },
@@ -162,7 +165,7 @@
             "type": "object"
           },
           "type": "array",
-          "uniqueItems": true
+          "uniqueItems": false
         },
         "retry": {
           "additionalProperties": false,
