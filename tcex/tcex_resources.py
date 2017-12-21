@@ -2457,5 +2457,5 @@ def class_factory(name, base_class, class_dict):
         for k, v in class_dict.items():
             setattr(self, k, v)
 
-    newclass = type(name, (base_class,), {"__init__": __init__})
+    newclass = type(str(name), (base_class,), {"__init__": __init__})
     return newclass

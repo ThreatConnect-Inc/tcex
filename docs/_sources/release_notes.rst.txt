@@ -6,6 +6,10 @@ Release Notes
 0.7.x
 =====
 
+0.7.6
+-----
++ Fixed issue with _newstr_ and dynamic class generation.
+
 0.7.5
 -----
 + Updated all TcEx framework CLI commands to use utf-8 encoding by default.
