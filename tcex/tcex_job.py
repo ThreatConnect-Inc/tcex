@@ -141,6 +141,8 @@ class TcExJob(object):
             if resource_type == 'Document' and data.get('fileData') is not None:
                 try:
                     resource.upload(resource_id, data.get('fileData').encode('utf-8'))
+                except UnicodeDecodeError:
+                    resource.upload(resource_id, data.get('fileData'))  # py2 issue
                 except AttributeError:
                     resource.upload(resource_id, data.get('fileData'))  # py3
                 resource.http_method = 'POST'
