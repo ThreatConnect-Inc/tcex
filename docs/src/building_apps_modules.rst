@@ -4,6 +4,13 @@ Running ``tclib`` will download/install all required Python dependencies defined
 
 .. note:: Typically calling ``tclib`` with no arguments is the most common use case.  If building an App for distribution then using a configuration file to define the lib structure is preferable.  The alternative is to run tclib using each Python version the App should support.
 
+.. warning:: If you are using **macOS** and have Python installed via Homebrew, there is a `known bug <https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both>`__ that requires you to create a ``setup.cfg`` file in the same directory as the ``requirements.txt``. The ``setup.cfg`` file should have the following code:
+
+  .. code-block:: python
+
+    [install]
+    prefix=
+
 Usage
 -----
 
