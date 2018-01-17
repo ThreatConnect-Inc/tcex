@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.7.6 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.7.7 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.6 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.7 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.6
+                0.7.7
               </div>
             
           
@@ -184,6 +184,7 @@
 
 <span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">timezone</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="k">import</span> <span class="n">parser</span>
+<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
 <span class="kn">from</span> <span class="nn">tzlocal</span> <span class="k">import</span> <span class="n">get_localzone</span>
 <span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
 
@@ -192,14 +193,14 @@
     <span class="sd">&quot;&quot;&quot;TcEx framework utilities.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class data</span>
+        <span class="sd">&quot;&quot;&quot; Initialize class data</span>
 
 <span class="sd">        Initialize parent class for default values and logging method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
-<div class="viewcode-block" id="TcExUtils.format_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return timestamp from multiple input formats.</span>
+<div class="viewcode-block" id="TcExUtils.any_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return datetime object from multiple formats</span>
 
 <span class="sd">            Formats:</span>
 
@@ -208,17 +209,12 @@
 <span class="sd">            #. Loose Date format (e.g. 2017 12 25)</span>
 <span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
 
-<span class="sd">        .. note:: To get a unix timestamp format use the strftime format **%s**. While Python</span>
-<span class="sd">                  does not properly support this the method has functionality to handle this</span>
-<span class="sd">                  use case.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            time_input (string): The time input string (see formats above).</span>
 <span class="sd">            tz (string): The time zone for the returned data.</span>
-<span class="sd">            date_format (string): The strftime format to use, ISO by default.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (string): Formatted datetime string.</span>
+<span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
@@ -236,14 +232,6 @@
         <span class="c1"># if all attempt to convert fail raise an error</span>
         <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not format input (</span><span class="si">{}</span><span class="s1">) to datetime string.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_input</span><span class="p">))</span>
-
-        <span class="c1"># format date</span>
-        <span class="k">if</span> <span class="n">date_format</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">dt_value</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="n">date_format</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">dt_value</span></div>
 
@@ -271,6 +259,42 @@
             <span class="k">pass</span>
 
         <span class="k">return</span> <span class="n">dt</span></div>
+
+<div class="viewcode-block" id="TcExUtils.format_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return timestamp from multiple input formats.</span>
+
+<span class="sd">            Formats:</span>
+
+<span class="sd">            #. Human Input (e.g 30 days ago, last friday)</span>
+<span class="sd">            #. ISO 8601 (e.g. 2017-11-08T16:52:42Z)</span>
+<span class="sd">            #. Loose Date format (e.g. 2017 12 25)</span>
+<span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
+
+<span class="sd">        .. note:: To get a unix timestamp format use the strftime format **%s**. While Python</span>
+<span class="sd">                  does not properly support this the method has functionality to handle this</span>
+<span class="sd">                  use case.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time_input (string): The time input string (see formats above).</span>
+<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            date_format (string): The strftime format to use, ISO by default.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): Formatted datetime string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
+        <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
+
+        <span class="c1"># format date</span>
+        <span class="k">if</span> <span class="n">date_format</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">dt_value</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">date_format</span><span class="p">:</span>
+            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dt_value</span> <span class="o">=</span> <span class="n">dt_value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">dt_value</span></div>
 
 <div class="viewcode-block" id="TcExUtils.human_date_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.human_date_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
@@ -314,6 +338,50 @@
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">dt</span></div>
+
+<div class="viewcode-block" id="TcExUtils.timedelta"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculates time delta between two time expressions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time_input1 (string): The time input string (see formats above).</span>
+<span class="sd">            time_input2 (string): The time input string (see formats above).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (dict): Dict with delta values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">time_input1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input1</span><span class="p">)</span>
+        <span class="n">time_input2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input2</span><span class="p">)</span>
+
+        <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_input1</span> <span class="o">-</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># timedelta</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># relativedelta</span>
+
+        <span class="c1"># totals</span>
+        <span class="n">total_months</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">years</span> <span class="o">*</span> <span class="mi">12</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">months</span>
+        <span class="n">total_weeks</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">years</span> <span class="o">*</span> <span class="mi">52</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">weeks</span>
+        <span class="n">total_days</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">days</span>  <span class="c1"># handles leap days</span>
+        <span class="n">total_hours</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_days</span> <span class="o">*</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">hours</span>
+        <span class="n">total_minutes</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_hours</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">minutes</span>
+        <span class="n">total_seconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_minutes</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">seconds</span>
+        <span class="n">total_microseconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_seconds</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">microseconds</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;datetime_1&#39;</span><span class="p">:</span> <span class="n">time_input1</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s1">&#39;datetime_2&#39;</span><span class="p">:</span> <span class="n">time_input2</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+            <span class="s1">&#39;years&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">years</span><span class="p">,</span>
+            <span class="s1">&#39;months&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">months</span><span class="p">,</span>
+            <span class="s1">&#39;weeks&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">weeks</span><span class="p">,</span>
+            <span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">days</span><span class="p">,</span>
+            <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">hours</span><span class="p">,</span>
+            <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">minutes</span><span class="p">,</span>
+            <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span>
+            <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="n">delta</span><span class="o">.</span><span class="n">microseconds</span><span class="p">,</span>
+            <span class="s1">&#39;total_months&#39;</span><span class="p">:</span> <span class="n">total_months</span><span class="p">,</span>
+            <span class="s1">&#39;total_weeks&#39;</span><span class="p">:</span> <span class="n">total_weeks</span><span class="p">,</span>
+            <span class="s1">&#39;total_days&#39;</span><span class="p">:</span> <span class="n">total_days</span><span class="p">,</span>
+            <span class="s1">&#39;total_hours&#39;</span><span class="p">:</span> <span class="n">total_hours</span><span class="p">,</span>
+            <span class="s1">&#39;total_minutes&#39;</span><span class="p">:</span> <span class="n">total_minutes</span><span class="p">,</span>
+            <span class="s1">&#39;total_seconds&#39;</span><span class="p">:</span> <span class="n">total_seconds</span><span class="p">,</span>
+            <span class="s1">&#39;total_microseconds&#39;</span><span class="p">:</span> <span class="n">total_microseconds</span>
+        <span class="p">}</span></div>
 
 <div class="viewcode-block" id="TcExUtils.to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
@@ -376,7 +444,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.6',
+            VERSION:'0.7.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

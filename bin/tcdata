@@ -47,10 +47,14 @@ class TcData(object):
         """ """
         self._args = arg_data
         self.data = []
+        # match variable name with modifiers
         self._vars_match = re.compile(
-            r'(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+))'
-            r'(?:\[)?([0-9]+)?(?:\])?'
-            r'(?:\:\:)?([A-Za-z0-9_.-]+)?\"?')
+            r"""(\"?#(?:[A-Za-z]+)"""  # match literal (#App) with optional double quote
+            r""":(?:[0-9]+)"""   # app id (:7979)
+            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
+            r"""!(?:[A-Za-z0-9_-]+))"""  # variable type (!StringArray)
+            r"""(?:\[)?([0-9]+)?(?:\])?"""  # index ([1])
+            r"""(?:\:\:)?([A-Za-z0-9_.-]+)?\"?""")  # value (::name)
         # Define common comparison operators
         self._operators = {
             'dd': self.deep_diff,
@@ -64,6 +68,7 @@ class TcData(object):
             'lt': operator.lt,
             'le': operator.le,
             'ne': operator.ne,
+            'se': self.data_string_compare,
             'sw': self.data_startswith
         }
         self.load_data(arg_data.data_file)
@@ -119,6 +124,15 @@ class TcData(object):
     def data_startswith(db_data, user_data):
         """Validate data starts with user data"""
         if db_data.startswith(user_data):
+            return True
+        return False
+
+    @staticmethod
+    def data_string_compare(db_data, user_data):
+        """Validate string removing all white space before comparison"""
+        db_data = ''.join(db_data.split())
+        user_data = ''.join(user_data.split())
+        if operator.eq(db_data, user_data):
             return True
         return False
 

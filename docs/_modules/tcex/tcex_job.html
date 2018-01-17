@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.6 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.7.7 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.6 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.7 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.6
+                0.7.7
               </div>
             
           
@@ -319,6 +319,8 @@
             <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+                    <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">))</span>  <span class="c1"># py2 issue</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="n">resource</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">))</span>  <span class="c1"># py3</span>
                 <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
@@ -1433,7 +1435,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.6',
+            VERSION:'0.7.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.7.6 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.7.7 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.6 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.7 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.6
+                0.7.7
               </div>
             
           
@@ -756,6 +756,49 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 </tr>
 <tr class="row-odd"><td>POST</td>
 <td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="24%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">API Branch</th>
+<th class="head">Indicator Type Associated with File</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>File Archive</td>
+<td><code class="docutils literal"><span class="pre">/archive</span></code></td>
+<td>File</td>
+</tr>
+<tr class="row-odd"><td>File Drop</td>
+<td><code class="docutils literal"><span class="pre">/drop</span></code></td>
+<td>File</td>
+</tr>
+<tr class="row-even"><td>File Traffic</td>
+<td><code class="docutils literal"><span class="pre">/traffic</span></code></td>
+<td>Address, Host, URL</td>
+</tr>
+<tr class="row-odd"><td>File Mutex</td>
+<td><code class="docutils literal"><span class="pre">/mutex</span></code></td>
+<td>Mutex</td>
+</tr>
+<tr class="row-even"><td>File Registry Key</td>
+<td><code class="docutils literal"><span class="pre">/registryKey</span></code></td>
+<td>Registry Key</td>
+</tr>
+<tr class="row-odd"><td>File User Agent</td>
+<td><code class="docutils literal"><span class="pre">/userAgent</span></code></td>
+<td>User Agent</td>
+</tr>
+<tr class="row-even"><td>File DNS Query</td>
+<td><code class="docutils literal"><span class="pre">/dnsQuery</span></code></td>
+<td>Host</td>
 </tr>
 </tbody>
 </table>
@@ -2648,7 +2691,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.6',
+            VERSION:'0.7.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

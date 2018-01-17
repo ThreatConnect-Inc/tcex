@@ -1571,6 +1571,24 @@ class File(Indicator):
         | POST         | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |
         +--------------+----------------------------------------------------------------------------------+
 
+        +-------------------+------------------+-------------------------------------+
+        | Name              | API Branch       | Indicator Type Associated with File |
+        +===================+==================+=====================================+
+        | File Archive      | ``/archive``     | File                                |
+        +-------------------+------------------+-------------------------------------+
+        | File Drop         | ``/drop``        | File                                |
+        +-------------------+------------------+-------------------------------------+
+        | File Traffic      | ``/traffic``     | Address, Host, URL                  |
+        +-------------------+------------------+-------------------------------------+
+        | File Mutex        | ``/mutex``       | Mutex                               |
+        +-------------------+------------------+-------------------------------------+
+        | File Registry Key | ``/registryKey`` | Registry Key                        |
+        +-------------------+------------------+-------------------------------------+
+        | File User Agent   | ``/userAgent``   | User Agent                          |
+        +-------------------+------------------+-------------------------------------+
+        | File DNS Query    | ``/dnsQuery``    | Host                                |
+        +-------------------+------------------+-------------------------------------+
+
         Args:
             action_name (string): The name of the action as defined by ThreatConnect.
             association_resource (object): An instance of Resource for an Indicator or sub type.

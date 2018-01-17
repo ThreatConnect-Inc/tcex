@@ -6,6 +6,14 @@ Release Notes
 0.7.x
 =====
 
+0.7.7
+-----
++ Added new string comparison operator (sc) to ``tcdata`` that strips all white space before eq comparison.
++ Added new functionality to :py:mod:`~tcex.tcex_playbook.TcExPlaybook` to replace non-quoted embedded variables in Read KeyValueArrays.
++ Updated Create KeyValue/KeyValueArray methods to not JSON load when passed a String.
++ Added :py:meth:`~tcex.tcex_utils.TcExUtils.any_to_datetime` method to return datetime.datetime object.
++ Added :py:meth:`~tcex.tcex_utils.TcExUtils.timedelta` method to return delta object from two provided datetime expressions.
+
 0.7.6
 -----
 + Fixed issue with _newstr_ and dynamic class generation.

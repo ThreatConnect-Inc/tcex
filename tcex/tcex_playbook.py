@@ -38,10 +38,25 @@ class TcExPlaybook(object):
         }
         self._out_variables = {}  # dict of output variable by name
         self._out_variables_type = {}  # dict of output variable by name-type
+        # capture variable parts
         self._var_parse = re.compile(
-            r"""^#([A-Za-z]+):([\d]+):([A-Za-z0-9_.-]+)!([A-Za-z0-9_-]+)$""")
+            r"""^#([A-Za-z]+)"""  # match literal (#App)
+            r""":([0-9]+)"""   # app id (:7979)
+            r""":([A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
+            r"""!([A-Za-z0-9_-]+)$""")  # variable type (!StringArray)
+        # match embedded variables with optional double quotes
         self._vars_match = re.compile(
-            r"""(\"?#(?:[A-Za-z]+):(?:[\d]+):(?:[A-Za-z0-9_.-]+)!(?:[A-Za-z0-9_-]+)\"?)""")
+            r"""(\"?#(?:[A-Za-z]+)"""  # match literal (#App) with optional double quote
+            r""":(?:[0-9]+)"""   # app id (:7979)
+            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
+            r"""!(?:[A-Za-z0-9_-]+)\"?)""")  # variable type (!StringArray)
+        # match embedded variables without quotes (#App:7979:variable_name!StringArray)
+        self._vars_embedded = re.compile(
+            r"""(?:\:\s)[^"]?"""  # match starting colon-space *without* double quote (: )
+            r"""(#(?:[A-Za-z]+)"""  # match literal (#App)
+            r""":(?:[0-9]+)"""   # app id (:7979)
+            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
+            r"""!(?:[A-Za-z0-9_-]+)[^"]\b)""")  # variable type (!StringArray)
 
         # parse out variable
         self._parse_out_variable()
@@ -368,6 +383,24 @@ class TcExPlaybook(object):
 
         return var_type
 
+    def wrap_embedded(self, data):
+        """Wrap embedded variable in double quotes.
+
+        Args:
+            data (string): The data with embedded variables.
+
+        Returns:
+            (string): Results retrieved from DB
+        """
+        if data is not None:
+            try:
+                variables = re.findall(self._vars_embedded, u'{}'.format(data))
+            except UnicodeEncodeError:
+                variables = re.findall(self._vars_embedded, data)
+            for var in variables:
+                data = data.replace(var, '"{}"'.format(var))
+        return data
+
     #
     # db methods
     #
@@ -483,7 +516,10 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(value))
+            if isinstance(value, (dict, list)):
+                data = self._db.create(key.strip(), json.dumps(value))
+            else:
+                data = self._db.create(key.strip(), value)
         else:
             self._tcex.log.warning(u'The key or value field was None.')
         return data
@@ -504,6 +540,9 @@ class TcExPlaybook(object):
             data = self._db.read(key.strip())
             if embedded:
                 data = self.read_embedded(data, key_type)
+            else:
+                # embedded variable can come in unquoted which breaks JSON
+                data = self.wrap_embedded(data)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -529,7 +568,10 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(value))
+            if isinstance(value, (dict, list)):
+                data = self._db.create(key.strip(), json.dumps(value))
+            else:
+                data = self._db.create(key.strip(), value)
         else:
             self._tcex.log.warning(u'The key or value field was None.')
         return data
@@ -550,6 +592,9 @@ class TcExPlaybook(object):
             data = self._db.read(key.strip())
             if embedded:
                 data = self.read_embedded(data, key_type)
+            else:
+                # embedded variable can come in unquoted which breaks JSON
+                data = self.wrap_embedded(data)
             if data is not None:
                 try:
                     data = json.loads(data)
