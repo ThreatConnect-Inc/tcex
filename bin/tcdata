@@ -62,6 +62,7 @@ class TcData(object):
             'ew': self.data_endswith,
             'ge': operator.ge,
             'gt': operator.gt,
+            'kva': self.data_kva_check,
             'in': self.data_in,
             'ni': self.data_not_in,
             'it': self.data_it,  # is type
@@ -111,6 +112,15 @@ class TcData(object):
         elif data_type.get(user_type.lower()) is not None:
             if isinstance(db_data, data_type.get(user_type.lower())):
                 return True
+        return False
+
+    @staticmethod
+    def data_kva_check(db_data, user_data):
+        """Validate key/value data in KeyValueArray"""
+        for kv_data in db_data:
+            if kv_data.get('key') == user_data.get('key'):
+                if kv_data.get('value') == user_data.get('value'):
+                    return True
         return False
 
     @staticmethod

@@ -397,7 +397,7 @@ class TcExPlaybook(object):
                 variables = re.findall(self._vars_embedded, u'{}'.format(data))
             except UnicodeEncodeError:
                 variables = re.findall(self._vars_embedded, data)
-            for var in variables:
+            for var in set(variables):
                 data = data.replace(var, '"{}"'.format(var))
         return data
 
