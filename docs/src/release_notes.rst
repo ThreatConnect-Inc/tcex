@@ -6,6 +6,11 @@ Release Notes
 0.7.x
 =====
 
+0.7.8
+-----
++ Added KeyValueArray operator to ``tcdata`` which allow searching for a single key/value entry in array.
++ Update functionality to replace non-quoted embedded variable to handle duplicate variables in KeyValueArray.
+
 0.7.7
 -----
 + Added new string comparison operator (sc) to ``tcdata`` that strips all white space before eq comparison.
