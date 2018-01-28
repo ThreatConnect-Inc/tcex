@@ -31,9 +31,11 @@ parser.add_argument(
 parser.add_argument(
     '--profile', default='default', help='The profile to be executed. (default: "default")')
 parser.add_argument(
-    '--show_commands', action='store_true', help='Show staging and validation commands.')
-parser.add_argument(
     '--quiet', action='store_true', help='Suppress output.')
+parser.add_argument(
+    '--report', help='The JSON report filename.')
+parser.add_argument(
+    '--show_commands', action='store_true', help='Show staging and validation commands.')
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
 args, extra_args = parser.parse_known_args()
@@ -49,9 +51,9 @@ class TcRun(object):
         self.app_path = os.getcwd()
         self.config = {}
         self.exit_code = 0
+        self.json_report = {}
         self.sleep = 1
         # data from install.json
-        # self.install_json = {}
         self.display_name = None
         self.program_language = 'python'
         self.program_main = None
@@ -95,7 +97,7 @@ class TcRun(object):
             load_output += ' {}{}(Not Found){}'.format(
                 c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
 
-        # dispaly load status
+        # display load status
         print(load_output)
 
         self.display_name = install_json.get('displayName')
@@ -414,6 +416,7 @@ class TcRun(object):
     def validate_data(self, profile):
         """Stage any required data."""
 
+        passed = True
         arg_data = self.data_args(profile.get('args'))
         # data_owner = profile.get('data_owner')
         parameters = self.parameters_python(arg_data)
@@ -423,7 +426,7 @@ class TcRun(object):
             variables = ', '.join([d.get('variable') for d in v_data])
             print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variables))
             # due to windows limitations the temp file can't be accessed while another program has
-            # the file opended. current logic creates the tempfile and does not delte on close. the
+            # the file opened. current logic creates the tempfile and does not delete on close. the
             # delete is handled below.
             with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
                 f.write(json.dumps(v_data))
@@ -452,15 +455,19 @@ class TcRun(object):
             out, err = p.communicate()
 
             if p.returncode != 0:
+                passed = False
                 print('{}{}Failed variable validation.'.format(
                     c.Style.BRIGHT, c.Fore.RED))
                 if err is not None and err:
                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-                sys.exit(p.returncode)
+                if args.halt_on_fail:
+                    sys.exit(p.returncode)
 
             # cleanup temp file
             if os.path.isfile(f.name):
                 os.remove(f.name)
+
+        return passed
 
     @staticmethod
     def _create_tc_dirs(profile):
@@ -479,17 +486,43 @@ class TcRun(object):
         """Run the App using the defined config."""
         # load tc config
         self._load_config()
+        self.json_report = {
+            'profiles': [],
+            'run_config': {
+                'provided_group': self._args.group,
+                'provided_profile': self._args.profile,
+                'selected_profiles': []
+            }
+        }
 
         # get all selected profiles
         selected_profiles = []
         for config in self.config.get('profiles'):
-            if config.get('profile_name') == self._args.profile:
-                selected_profiles.append(config)
+            profile_name = config.get('profile_name')
+            profile_selected = False
+            report_profile = {
+                'description': config.get('description'),
+                'valid_exit_codes': config.get('exit_codes'),
+                'groups': config.get('groups', []),
+                'selected': False
+            }
+
+            if profile_name == self._args.profile:
+                profile_selected = True
             elif config.get('group') is not None and config.get('group') == self._args.group:
-                # this should be depricated in the future
-                selected_profiles.append(config)
+                profile_selected = True
             elif self._args.group in config.get('groups', []):
+                profile_selected = True
+
+            if profile_selected:
                 selected_profiles.append(config)
+                report_profile['selected'] = True
+                self.json_report['run_config']['selected_profiles'].append(profile_name)
+            else:
+                # add unselected profiles
+                self.json_report['profiles'].append({
+                    profile_name: report_profile
+                })
 
         if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
@@ -501,8 +534,9 @@ class TcRun(object):
             # create temp directories
             self._create_tc_dirs(sp)
 
-            # profile state tracker
-            passed = False
+            # status trackers
+            execution_success = False
+            validation_success = False
 
             # cleanup old redis data
             if args.clear:
@@ -617,9 +651,10 @@ class TcRun(object):
             # Exit Code
             #
             valid_exit_codes = sp.get('exit_codes', [0])
+            report_profile['exit_code'] = p.returncode
             if p.returncode in valid_exit_codes:
                 print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, p.returncode))
-                passed = True
+                execution_success = True
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
@@ -632,7 +667,8 @@ class TcRun(object):
             #
             # Validate Data
             #
-            self.validate_data(sp)
+            if execution_success:
+                validation_success = self.validate_data(sp)
 
             #
             # Error Output
@@ -640,30 +676,52 @@ class TcRun(object):
             if err:
                 print(err.decode('utf-8'))
 
+            # updated status in report
             reports.append({
                 'profile': sp.get('profile_name'),
-                'passed': passed
+                'execution_success': execution_success,
+                'validation_success': validation_success
+            })
+            # update report
+            report_profile['execution_success'] = execution_success
+            report_profile['validation_success'] = validation_success
+            self.json_report['profiles'].append({
+                sp.get('profile_name'): report_profile
             })
 
         #
-        # Report
+        # Reports
         #
+        if args.report:
+            with open(args.report, 'w') as outfile:
+                json.dump(self.json_report, outfile)
+
+        # on screen report
         if reports:
             self.report(reports)
 
     @staticmethod
     def report(data):
-        """Format and output report data."""
-        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Reports:'))
+        """Format and output report data to screen."""
+        print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
+        print('{0!s:<60}{1!s:<25}{2!s:<25}'.format('Profile:', 'Execution:', 'Validation:'))
         for d in data:
             profile = d.get('profile')
-            passed = d.get('passed')
-            if passed:
-                print('{0!s:<80}{1}{2}{3!s:<30}'.format(
-                    profile, c.Style.BRIGHT, c.Fore.GREEN, 'Passed'))
-            else:
-                print('{0!s:<80}{1}{2}{3!s:<30}'.format(
-                    profile, c.Style.BRIGHT, c.Fore.RED, 'Failed'))
+            execution_color = c.Fore.RED
+            execution_text = 'Failed'
+            if d.get('execution_success'):
+                execution_color = c.Fore.GREEN
+                execution_text = 'Passed'
+
+            validation_color = c.Fore.RED
+            validation_text = 'Failed'
+            if d.get('validation_success'):
+                validation_color = c.Fore.GREEN
+                validation_text = 'Passed'
+
+            print('{0!s:<60}{1}{2}{3!s:<25}{4}{5!s:<25}'.format(
+                profile, c.Style.BRIGHT, execution_color, execution_text, validation_color,
+                validation_text))
 
     @staticmethod
     def to_string(data, errors='strict'):

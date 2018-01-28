@@ -6,6 +6,12 @@ Release Notes
 0.7.x
 =====
 
+0.7.9
+-----
++ Major update to :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded variables.
++ Add **--report** arg to ``tcrun`` to output a JSON report of profiles and run data.
++ Added new JSON string comparison operator (jc/json compare) to ``tcdata`` to compare two json string (requires deepdiff to be installed locally).
+
 0.7.8
 -----
 + Added KeyValueArray operator to ``tcdata`` which allow searching for a single key/value entry in array.

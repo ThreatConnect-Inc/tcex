@@ -38,25 +38,26 @@ class TcExPlaybook(object):
         }
         self._out_variables = {}  # dict of output variable by name
         self._out_variables_type = {}  # dict of output variable by name-type
-        # capture variable parts
+        # capture variable parts (exactly a variable)
         self._var_parse = re.compile(
-            r"""^#([A-Za-z]+)"""  # match literal (#App)
+            r"""^#([A-Za-z]+)"""  # match literal (#App) at beginning of String
             r""":([0-9]+)"""   # app id (:7979)
             r""":([A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!([A-Za-z0-9_-]+)$""")  # variable type (!StringArray)
-        # match embedded variables with optional double quotes
+            r"""!([A-Za-z0-9_-]+)$""")  # variable type (!StringArray) at end of String
+        # match variables
         self._vars_match = re.compile(
-            r"""(\"?#(?:[A-Za-z]+)"""  # match literal (#App) with optional double quote
-            r""":(?:[0-9]+)"""   # app id (:7979)
-            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!(?:[A-Za-z0-9_-]+)\"?)""")  # variable type (!StringArray)
-        # match embedded variables without quotes (#App:7979:variable_name!StringArray)
-        self._vars_embedded = re.compile(
-            r"""(?:\:\s)[^"]?"""  # match starting colon-space *without* double quote (: )
             r"""(#(?:[A-Za-z]+)"""  # match literal (#App)
             r""":(?:[0-9]+)"""   # app id (:7979)
             r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!(?:[A-Za-z0-9_-]+)[^"]\b)""")  # variable type (!StringArray)
+            r"""!(?:[A-Za-z0-9_-]+))""")  # variable type (!StringArray)
+        # match embedded variables without quotes (#App:7979:variable_name!StringArray)
+        # https://regex101.com/r/najsiY/1
+        self._vars_keyvalue_embedded = re.compile(
+            r"""((?:\"\:\s?)[^\"]?"""  # match starting colon-space *without* double quote (: )
+            r"""#(?:[A-Za-z]+)"""  # match literal (#App)
+            r""":(?:[0-9]+)"""   # app id (:7979)
+            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
+            r"""!(?:[A-Za-z0-9_-]+)[^\"]\b)""")  # variable type (!StringArray)
 
         # parse out variable
         self._parse_out_variable()
@@ -276,10 +277,6 @@ class TcExPlaybook(object):
         Returns:
             (any): Results retrieved from DB
         """
-        # if the return type not string
-        # if isinstance(key, (int, float)):
-        #     return key
-
         self._tcex.log.debug(u'read variable {}'.format(key))
         data = None
         if key is not None:
@@ -295,6 +292,7 @@ class TcExPlaybook(object):
                 else:
                     data = self.read_raw(key)
             elif embedded:
+                # check for any embedded variables
                 data = self.read_embedded(key, key_type)
 
         # return data as a list
@@ -310,46 +308,96 @@ class TcExPlaybook(object):
     def read_embedded(self, data, parent_var_type):
         """Read method for "mixed" variable type.
 
-        .. Note:: The ``read()`` method will automatically determine if the variable is embedded and
-                  call this method.  There usually is no reason to call this method directly.
+        .. Note:: The ``read()`` method will automatically determine if the input is a variable or
+                  needs to be searched for embedded variables. There usually is no reason to call
+                  this method directly.
 
-        This method will automatically covert keys/variables embedded in a string
-        with data retrieved from DB. If there are no keys/variables the raw string
-        will be returned.
+        This method will automatically covert variables embedded in a string with data retrieved
+        from DB. If there are no keys/variables the raw string will be returned.
+
+        Examples::
+
+            DB Values
+            #App:7979:variable_name!String:
+                "embedded \\"variable\\""
+            #App:7979:two!String:
+                "two"
+            #App:7979:variable_name!StringArray:
+                ["one", "two", "three"]
+
+            Examples 1:
+                Input:  "This input has a embedded #App:7979:variable_name!String"
+
+            Examples 2:
+                Input: ["one", #App:7979:two!String, "three"]
+
+            Examples 3:
+                Input: [{
+                    "key": "embedded string",
+                    "value": "This input has a embedded #App:7979:variable_name!String"
+                }, {
+                    "key": "string array",
+                    "value": #App:7979:variable_name!StringArray
+                }, {
+                    "key": "string",
+                    "value": #App:7979:variable_name!String
+                }]
 
         Args:
             data (string): The data to parsed and updated from the DB.
+            parent_var_type (string): The parent type of the embedded variable.
 
         Returns:
             (string): Results retrieved from DB
         """
         if data is not None:
+            # self._tcex.log.debug(u'data {}'.format(data))
             data = data.strip()
             try:
-                # variables = re.findall(self._vars_match, str(data))
                 variables = re.findall(self._vars_match, u'{}'.format(data))
             except UnicodeEncodeError:
                 variables = re.findall(self._vars_match, data)
-            for var in variables:
-                # regex will capture quotes around variables, which needs to be removed
-                # key_type = self.variable_type(var.strip('"'))
 
-                # read raw value so escaped characters won't be removed
-                val = self.read_raw(var.strip('"'))
+            for var in set(variables):  # recursion over set to handle duplicates
+                # self._tcex.log.debug(u'var {}'.format(var))
+                # get the embedded variable type.
+                key_type = self.variable_type(var)
+                # self._tcex.log.debug(u'key_type {}'.format(key_type))
+
+                # val - read raw value from DB leaving escaped characters intact
+                val = self.read_raw(var)
+                # val - read recursive embedded
+                val = self.read_embedded(val, key_type)
+                # val - remove double quotes added by JSON encoding from embedded String
+                if val and val.startswith('"') and val.endswith('"'):
+                    # per slack conversation with danny on 3/22/17 all string data should already
+                    # have quotes since they are JSON values
+                    val = val[1:-1]  # ensure only first and last quote are removed
+                # self._tcex.log.debug(u'val final: {}'.format(val))
 
                 if val is None:
-                    # None value should be replace with an empty string
-                    val = '""'
+                    # replace variable reference with nothing
+                    val = ''
                 elif parent_var_type in ['String']:
-                    # a parent type of String should not keep the quotes added by the JSON encoding
-                    val = val.strip('"')
                     # a parent type of String should have escaped characters removed
+                    # convert "embedded \\\\\\"variable\\\\" TO "embedded \\"variable"
                     val = codecs.getdecoder('unicode_escape')(val)[0]
-                # per slack conversation with danny on 3/22 all string data should already have
-                # quotes already since they are JSON values
-                # elif key_type in ['String']:
-                #     if not val.startswith('"') and not val.endswith('"'):
-                #         val = '"{}"'.format(val)
+                    # self._tcex.log.debug(u'val (codec.getdecoder): {}'.format(val))
+                elif parent_var_type in ['StringArray']:
+                    if key_type in ['String']:
+                        # handle case where String may or may not be wrapped in double quotes.
+                        data = data.replace(', {}'.format(var), ', "{}"'.format(var))
+                    elif key_type in ['StringArray']:
+                        # handle case where StringArray may or may not be wrapped in double quotes.
+                        data = data.replace('"{}"'.format(var), var)
+                        if val.startswith('[') and val.endswith(']'):
+                            # remove [] from embedded StringArray
+                            val = val[1:-1]  # ensure only first and last bracket are removed
+                elif parent_var_type in ['KeyValue', 'KeyValueArray']:
+                    if key_type in ['StringArray']:
+                        if not var.startswith('"') and not var.endswith('"'):
+                            # add quotes to var so they will be removed in replace()
+                            var = '"{}"'.format(var)
 
                 data = data.replace(var, val)
         return data
@@ -383,8 +431,8 @@ class TcExPlaybook(object):
 
         return var_type
 
-    def wrap_embedded(self, data):
-        """Wrap embedded variable in double quotes.
+    def wrap_embedded_keyvalue(self, data):
+        """Wrap keyvalue embedded variable in double quotes.
 
         Args:
             data (string): The data with embedded variables.
@@ -394,11 +442,15 @@ class TcExPlaybook(object):
         """
         if data is not None:
             try:
-                variables = re.findall(self._vars_embedded, u'{}'.format(data))
+                variables = re.findall(self._vars_keyvalue_embedded, u'{}'.format(data))
             except UnicodeEncodeError:
-                variables = re.findall(self._vars_embedded, data)
-            for var in set(variables):
-                data = data.replace(var, '"{}"'.format(var))
+                variables = re.findall(self._vars_keyvalue_embedded, data)
+            for var in set(variables):  # recursion over set to handle duplicates
+                # pull (#App:1441:embedded_string!String) from (": #App:1441:embedded_string!String)
+                variable_string = re.findall(self._vars_match, var)[0]
+                # reformat to replace the correct instance only, handling the case where a variable
+                # is embedded multiple times in the same key value array.
+                data = data.replace(var, '": "{}"'.format(variable_string))
         return data
 
     #
@@ -519,6 +571,7 @@ class TcExPlaybook(object):
             if isinstance(value, (dict, list)):
                 data = self._db.create(key.strip(), json.dumps(value))
             else:
+                # used to save raw value with embedded variables
                 data = self._db.create(key.strip(), value)
         else:
             self._tcex.log.warning(u'The key or value field was None.')
@@ -538,11 +591,10 @@ class TcExPlaybook(object):
         if key is not None:
             key_type = self.variable_type(key)
             data = self._db.read(key.strip())
+            # embedded variable can be unquoted, which breaks JSON.
+            data = self.wrap_embedded_keyvalue(data)
             if embedded:
                 data = self.read_embedded(data, key_type)
-            else:
-                # embedded variable can come in unquoted which breaks JSON
-                data = self.wrap_embedded(data)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -571,6 +623,7 @@ class TcExPlaybook(object):
             if isinstance(value, (dict, list)):
                 data = self._db.create(key.strip(), json.dumps(value))
             else:
+                # used to save raw value with embedded variables
                 data = self._db.create(key.strip(), value)
         else:
             self._tcex.log.warning(u'The key or value field was None.')
@@ -590,11 +643,10 @@ class TcExPlaybook(object):
         if key is not None:
             key_type = self.variable_type(key)
             data = self._db.read(key.strip())
+            # embedded variable can be unquoted, which breaks JSON.
+            data = self.wrap_embedded_keyvalue(data)
             if embedded:
                 data = self.read_embedded(data, key_type)
-            else:
-                # embedded variable can come in unquoted which breaks JSON
-                data = self.wrap_embedded(data)
             if data is not None:
                 try:
                     data = json.loads(data)
@@ -708,7 +760,11 @@ class TcExPlaybook(object):
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(value))
+            if isinstance(value, (list)):
+                data = self._db.create(key.strip(), json.dumps(value))
+            else:
+                # used to save raw value with embedded variables
+                data = self._db.create(key.strip(), value)
         else:
             self._tcex.log.warning(u'The key or value field was None.')
         return data
@@ -774,6 +830,7 @@ class TcExPlaybook(object):
             key_type = self.variable_type(key)
             data = self._db.read(key.strip())
             if embedded:
+                # untested. this is not a current use case.
                 data = self.read_embedded(data, key_type)
             if data is not None:
                 try:
@@ -820,6 +877,7 @@ class TcExPlaybook(object):
             key_type = self.variable_type(key)
             data = self._db.read(key.strip())
             if embedded:
+                # untested. this is not a current use case.
                 data = self.read_embedded(data, key_type)
             if data is not None:
                 try:

@@ -16,6 +16,7 @@ setup(
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
     install_requires=[
         'colorama==0.3.9',
+        'future',
         'hvac==0.3.0',  # this feature will be deprecate in future release
         'inflect==0.2.5',
         'jsonschema==2.6.0',

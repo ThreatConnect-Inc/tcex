@@ -1,5 +1,5 @@
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.7.8'
+__version__ = '0.7.9'
 __license__ = 'Apache License, Version 2'
 
 try:

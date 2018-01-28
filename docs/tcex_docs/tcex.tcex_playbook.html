@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.7.8 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.7.9 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.8 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.9 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
         <link rel="prev" title="tcex.tcex_local module" href="tcex.tcex_local.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.8
+                0.7.9
               </div>
             
           
@@ -766,21 +766,55 @@ automatically determine the variable type to read.</p>
 <dd><p>Read method for “mixed” variable type.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">read()</span></code> method will automatically determine if the variable is embedded and
-call this method.  There usually is no reason to call this method directly.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">read()</span></code> method will automatically determine if the input is a variable or
+needs to be searched for embedded variables. There usually is no reason to call
+this method directly.</p>
 </div>
-<p>This method will automatically covert keys/variables embedded in a string
-with data retrieved from DB. If there are no keys/variables the raw string
-will be returned.</p>
+<p>This method will automatically covert variables embedded in a string with data retrieved
+from DB. If there are no keys/variables the raw string will be returned.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DB</span> <span class="n">Values</span>
+<span class="c1">#App:7979:variable_name!String:</span>
+    <span class="s2">&quot;embedded </span><span class="se">\&quot;</span><span class="s2">variable</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+<span class="c1">#App:7979:two!String:</span>
+    <span class="s2">&quot;two&quot;</span>
+<span class="c1">#App:7979:variable_name!StringArray:</span>
+    <span class="p">[</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="p">,</span> <span class="s2">&quot;three&quot;</span><span class="p">]</span>
+
+<span class="n">Examples</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">Input</span><span class="p">:</span>  <span class="s2">&quot;This input has a embedded #App:7979:variable_name!String&quot;</span>
+
+<span class="n">Examples</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">Input</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;one&quot;</span><span class="p">,</span> <span class="c1">#App:7979:two!String, &quot;three&quot;]</span>
+
+<span class="n">Examples</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">Input</span><span class="p">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;embedded string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;This input has a embedded #App:7979:variable_name!String&quot;</span>
+    <span class="p">},</span> <span class="p">{</span>
+        <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;string array&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="c1">#App:7979:variable_name!StringArray</span>
+    <span class="p">},</span> <span class="p">{</span>
+        <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="c1">#App:7979:variable_name!String</span>
+    <span class="p">}]</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>string</em>) – The data to parsed and updated from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>string</em>) – The data to parsed and updated from the DB.</li>
+<li><strong>parent_var_type</strong> (<em>string</em>) – The parent type of the embedded variable.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -977,9 +1011,9 @@ contains not “DB variable” and is just a String.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_playbook.TcExPlaybook.wrap_embedded">
-<code class="descname">wrap_embedded</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.wrap_embedded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.wrap_embedded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrap embedded variable in double quotes.</p>
+<dt id="tcex.tcex_playbook.TcExPlaybook.wrap_embedded_keyvalue">
+<code class="descname">wrap_embedded_keyvalue</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.wrap_embedded_keyvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.wrap_embedded_keyvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap keyvalue embedded variable in double quotes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1041,7 +1075,7 @@ contains not “DB variable” and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.8',
+            VERSION:'0.7.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
