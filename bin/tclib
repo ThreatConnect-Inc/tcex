@@ -99,7 +99,6 @@ class TcLib(object):
                 exe_command, shell=False, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             out, err = p.communicate()
-            # p.communicate()
 
             if p.returncode != 0:
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
