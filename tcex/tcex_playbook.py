@@ -38,26 +38,19 @@ class TcExPlaybook(object):
         }
         self._out_variables = {}  # dict of output variable by name
         self._out_variables_type = {}  # dict of output variable by name-type
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern += r':([\d]+)'  # app id (:7979)
+        variable_pattern += r':([A-Za-z0-9_.-]+)'  # variable name (:variable_name)
+        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
         # capture variable parts (exactly a variable)
-        self._var_parse = re.compile(
-            r"""^#([A-Za-z]+)"""  # match literal (#App) at beginning of String
-            r""":([0-9]+)"""   # app id (:7979)
-            r""":([A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!([A-Za-z0-9_-]+)$""")  # variable type (!StringArray) at end of String
-        # match variables
-        self._vars_match = re.compile(
-            r"""(#(?:[A-Za-z]+)"""  # match literal (#App)
-            r""":(?:[0-9]+)"""   # app id (:7979)
-            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!(?:[A-Za-z0-9_-]+))""")  # variable type (!StringArray)
+        self._variable_parse = re.compile(variable_pattern)
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
-        # https://regex101.com/r/najsiY/1
-        self._vars_keyvalue_embedded = re.compile(
-            r"""((?:\"\:\s?)[^\"]?"""  # match starting colon-space *without* double quote (: )
-            r"""#(?:[A-Za-z]+)"""  # match literal (#App)
-            r""":(?:[0-9]+)"""   # app id (:7979)
-            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!(?:[A-Za-z0-9_-]+)[^\"]\b)""")  # variable type (!StringArray)
+        self._vars_keyvalue_embedded = re.compile(r'(?:\"\:\s?)[^\"]?{}'.format(variable_pattern))
 
         # parse out variable
         self._parse_out_variable()
@@ -251,14 +244,13 @@ class TcExPlaybook(object):
         data = None
         if variable is not None:
             variable = variable.strip()
-            self._tcex.log.debug(u'parse variable {}'.format(variable))
-            if re.match(self._var_parse, variable):
-                var = re.search(self._var_parse, variable)
+            if re.match(self._variable_parse, variable):
+                var = re.search(self._variable_parse, variable)
                 data = {
-                    'root': var.group(1),
+                    'root': var.group(0),
                     'job_id': var.group(2),
                     'name': var.group(3),
-                    'type': var.group(4),
+                    'type': var.group(4)
                 }
         return data
 
@@ -282,7 +274,7 @@ class TcExPlaybook(object):
         if key is not None:
             key = key.strip()
             key_type = self.variable_type(key)
-            if re.match(self._var_parse, key):
+            if re.match(self._variable_parse, key):
                 if key_type in self._read_data_type:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
@@ -352,14 +344,18 @@ class TcExPlaybook(object):
         """
         if data is not None:
             # self._tcex.log.debug(u'data {}'.format(data))
-            data = data.strip()
             try:
-                variables = re.findall(self._vars_match, u'{}'.format(data))
+                data = u'{}'.format(data.strip())
             except UnicodeEncodeError:
-                variables = re.findall(self._vars_match, data)
+                data = data.strip()
+
+            # get all matching variables
+            variables = []
+            for v in re.finditer(self._variable_parse, data):
+                variables.append(v.group(0))
 
             for var in set(variables):  # recursion over set to handle duplicates
-                # self._tcex.log.debug(u'var {}'.format(var))
+                self._tcex.log.debug(u'var {}'.format(var))
                 # get the embedded variable type.
                 key_type = self.variable_type(var)
                 # self._tcex.log.debug(u'key_type {}'.format(key_type))
@@ -373,16 +369,16 @@ class TcExPlaybook(object):
                     # per slack conversation with danny on 3/22/17 all string data should already
                     # have quotes since they are JSON values
                     val = val[1:-1]  # ensure only first and last quote are removed
-                # self._tcex.log.debug(u'val final: {}'.format(val))
+                # self._tcex.log.debug(u'val (final): {}'.format(val))
 
                 if val is None:
                     # replace variable reference with nothing
                     val = ''
-                elif parent_var_type in ['String']:
-                    # a parent type of String should have escaped characters removed
-                    # convert "embedded \\\\\\"variable\\\\" TO "embedded \\"variable"
-                    val = codecs.getdecoder('unicode_escape')(val)[0]
-                    # self._tcex.log.debug(u'val (codec.getdecoder): {}'.format(val))
+                # elif parent_var_type in ['String']:
+                #     # a parent type of String should have escaped characters removed
+                #     # convert "embedded \\\\\\"variable\\\\" TO "embedded \\"variable"
+                #     val = codecs.getdecoder('unicode_escape')(val)[0]
+                #     # self._tcex.log.debug(u'val (codec.getdecoder): {}'.format(val))
                 elif parent_var_type in ['StringArray']:
                     if key_type in ['String']:
                         # handle case where String may or may not be wrapped in double quotes.
@@ -426,8 +422,8 @@ class TcExPlaybook(object):
         if variable is not None:
             variable = variable.strip()
             # self._tcex.log.info(u'Variable {}'.format(variable))
-            if re.match(self._var_parse, variable):
-                var_type = re.search(self._var_parse, variable).group(4)
+            if re.match(self._variable_parse, variable):
+                var_type = re.search(self._variable_parse, variable).group(4)
 
         return var_type
 
@@ -442,12 +438,19 @@ class TcExPlaybook(object):
         """
         if data is not None:
             try:
-                variables = re.findall(self._vars_keyvalue_embedded, u'{}'.format(data))
+                data = u'{}'.format(data)
+                # variables = re.findall(self._vars_keyvalue_embedded, u'{}'.format(data))
             except UnicodeEncodeError:
-                variables = re.findall(self._vars_keyvalue_embedded, data)
+                # variables = re.findall(self._vars_keyvalue_embedded, data)
+                pass
+
+            variables = []
+            for v in re.finditer(self._vars_keyvalue_embedded, data):
+                variables.append(v.group(0))
+
             for var in set(variables):  # recursion over set to handle duplicates
                 # pull (#App:1441:embedded_string!String) from (": #App:1441:embedded_string!String)
-                variable_string = re.findall(self._vars_match, var)[0]
+                variable_string = re.search(self._variable_parse, var).group(0)
                 # reformat to replace the correct instance only, handling the case where a variable
                 # is embedded multiple times in the same key value array.
                 data = data.replace(var, '": "{}"'.format(variable_string))

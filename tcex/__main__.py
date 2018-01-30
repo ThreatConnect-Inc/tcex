@@ -3,7 +3,7 @@ import os
 import subprocess
 import sys
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 def main():
@@ -23,8 +23,11 @@ def main():
         # ensure content starts with lib, is directory, and is readable
         if c.startswith('lib') and os.path.isdir(c) and (os.access(c, os.R_OK)):
             lib_directories.append(c)
+    # reverse sort directories
+    lib_directories.sort(reverse=True)
 
     # Find most appropriate FULL version
+    lib_directory = None
     if lib_micro_version in lib_directories:
         lib_directory = lib_micro_version
     elif lib_minor_version in lib_directories:
@@ -32,14 +35,14 @@ def main():
     elif lib_major_version in lib_directories:
         lib_directory = lib_major_version
     else:
-        # file most appropriate PARTIAL version
-        for ld in lib_directories:
-            if lib_micro_version in ld:
-                lib_directory = ld
-            elif lib_minor_version in ld:
-                lib_directory = ld
-            elif lib_major_version in ld:
-                lib_directory = ld
+        for lv in [lib_micro_version, lib_minor_version, lib_major_version]:
+            for ld in lib_directories:
+                if lv in ld:
+                    lib_directory = ld
+                    break
+            else:
+                continue
+            break
 
     # No reason to continue if no valid lib directory found
     if lib_directory is None:

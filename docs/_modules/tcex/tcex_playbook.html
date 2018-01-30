@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.7.9 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.7.10 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.9 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.10 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.9
+                0.7.10
               </div>
             
           
@@ -216,26 +216,19 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables_type</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name-type</span>
+        <span class="n">variable_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_.-]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
         <span class="c1"># capture variable parts (exactly a variable)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;^#([A-Za-z]+)&quot;&quot;&quot;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:([0-9]+)&quot;&quot;&quot;</span>   <span class="c1"># app id (:7979)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:([A-Za-z0-9_.-]+)&quot;&quot;&quot;</span>  <span class="c1"># variable name (:variable_name)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;!([A-Za-z0-9_-]+)$&quot;&quot;&quot;</span><span class="p">)</span>  <span class="c1"># variable type (!StringArray) at end of String</span>
-        <span class="c1"># match variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;(#(?:[A-Za-z]+)&quot;&quot;&quot;</span>  <span class="c1"># match literal (#App)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:(?:[0-9]+)&quot;&quot;&quot;</span>   <span class="c1"># app id (:7979)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:(?:[A-Za-z0-9_.-]+)&quot;&quot;&quot;</span>  <span class="c1"># variable name (:variable_name)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;!(?:[A-Za-z0-9_-]+))&quot;&quot;&quot;</span><span class="p">)</span>  <span class="c1"># variable type (!StringArray)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">variable_pattern</span><span class="p">)</span>
         <span class="c1"># match embedded variables without quotes (#App:7979:variable_name!StringArray)</span>
-        <span class="c1"># https://regex101.com/r/najsiY/1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;((?:\&quot;\:\s?)[^\&quot;]?&quot;&quot;&quot;</span>  <span class="c1"># match starting colon-space *without* double quote (: )</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;#(?:[A-Za-z]+)&quot;&quot;&quot;</span>  <span class="c1"># match literal (#App)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:(?:[0-9]+)&quot;&quot;&quot;</span>   <span class="c1"># app id (:7979)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:(?:[A-Za-z0-9_.-]+)&quot;&quot;&quot;</span>  <span class="c1"># variable name (:variable_name)</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot;!(?:[A-Za-z0-9_-]+)[^\&quot;]\b)&quot;&quot;&quot;</span><span class="p">)</span>  <span class="c1"># variable type (!StringArray)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:\&quot;\:\s?)[^\&quot;]?</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable_pattern</span><span class="p">))</span>
 
         <span class="c1"># parse out variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_out_variable</span><span class="p">()</span>
@@ -429,14 +422,13 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;parse variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-                <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
                     <span class="s1">&#39;job_id&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
                     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
-                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
                 <span class="p">}</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -460,7 +452,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">:</span>
                     <span class="c1"># handle types with embedded variable</span>
                     <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]:</span>
@@ -530,14 +522,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># self._tcex.log.debug(u&#39;data {}&#39;.format(data))</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="c1"># get all matching variables</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 
             <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>  <span class="c1"># recursion over set to handle duplicates</span>
-                <span class="c1"># self._tcex.log.debug(u&#39;var {}&#39;.format(var))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;var </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
                 <span class="c1"># get the embedded variable type.</span>
                 <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
                 <span class="c1"># self._tcex.log.debug(u&#39;key_type {}&#39;.format(key_type))</span>
@@ -551,16 +547,16 @@
                     <span class="c1"># per slack conversation with danny on 3/22/17 all string data should already</span>
                     <span class="c1"># have quotes since they are JSON values</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># ensure only first and last quote are removed</span>
-                <span class="c1"># self._tcex.log.debug(u&#39;val final: {}&#39;.format(val))</span>
+                <span class="c1"># self._tcex.log.debug(u&#39;val (final): {}&#39;.format(val))</span>
 
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># replace variable reference with nothing</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="k">elif</span> <span class="n">parent_var_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
-                    <span class="c1"># a parent type of String should have escaped characters removed</span>
-                    <span class="c1"># convert &quot;embedded \\\\\\&quot;variable\\\\&quot; TO &quot;embedded \\&quot;variable&quot;</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">getdecoder</span><span class="p">(</span><span class="s1">&#39;unicode_escape&#39;</span><span class="p">)(</span><span class="n">val</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="c1"># self._tcex.log.debug(u&#39;val (codec.getdecoder): {}&#39;.format(val))</span>
+                <span class="c1"># elif parent_var_type in [&#39;String&#39;]:</span>
+                <span class="c1">#     # a parent type of String should have escaped characters removed</span>
+                <span class="c1">#     # convert &quot;embedded \\\\\\&quot;variable\\\\&quot; TO &quot;embedded \\&quot;variable&quot;</span>
+                <span class="c1">#     val = codecs.getdecoder(&#39;unicode_escape&#39;)(val)[0]</span>
+                <span class="c1">#     # self._tcex.log.debug(u&#39;val (codec.getdecoder): {}&#39;.format(val))</span>
                 <span class="k">elif</span> <span class="n">parent_var_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;StringArray&#39;</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
                         <span class="c1"># handle case where String may or may not be wrapped in double quotes.</span>
@@ -604,8 +600,8 @@
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="c1"># self._tcex.log.info(u&#39;Variable {}&#39;.format(variable))</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-                <span class="n">var_type</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+                <span class="n">var_type</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">var_type</span></div>
 
@@ -620,12 +616,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="c1"># variables = re.findall(self._vars_keyvalue_embedded, u&#39;{}&#39;.format(data))</span>
             <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
-                <span class="n">variables</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="c1"># variables = re.findall(self._vars_keyvalue_embedded, data)</span>
+                <span class="k">pass</span>
+
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_keyvalue_embedded</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+                <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
             <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>  <span class="c1"># recursion over set to handle duplicates</span>
                 <span class="c1"># pull (#App:1441:embedded_string!String) from (&quot;: #App:1441:embedded_string!String)</span>
-                <span class="n">variable_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vars_match</span><span class="p">,</span> <span class="n">var</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">variable_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="c1"># reformat to replace the correct instance only, handling the case where a variable</span>
                 <span class="c1"># is embedded multiple times in the same key value array.</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;&quot;: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable_string</span><span class="p">))</span>
@@ -1308,7 +1311,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.9',
+            VERSION:'0.7.10',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
