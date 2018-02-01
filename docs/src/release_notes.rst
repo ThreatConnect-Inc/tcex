@@ -6,6 +6,16 @@ Release Notes
 0.7.x
 =====
 
+0.7.11
+------
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module to automatically handle files hashes in format "md5 : sha1 : sha256".
+
+0.7.10
+------
++ Updated **__main__.py** template with better logic to detect Python lib directory version.
++ Updates to regex patterns for variable matching in playbook module.
++ Cleanup of playbook module in handling variables.
+
 0.7.9
 -----
 + Major update to :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded variables.

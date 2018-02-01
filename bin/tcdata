@@ -477,6 +477,10 @@ class TcData(object):
                     if variable_sub is not None and isinstance(user_data, (dict)):
                         user_data = user_data.get(variable_sub)
 
+                    # convert any int to string since playbooks don't support int values
+                    if isinstance(user_data, int):
+                        user_data = str(user_data)
+
                 self.redis_validate(
                     data.get('variable'), user_data, data.get('operator', 'eq'))
 
@@ -539,7 +543,7 @@ class TcData(object):
            2 - value (value)
         """
         parsed_data = list(re.search(self._vars_match, variable_data).groups())
-        tcex.log.debug('Parsed Variable Data: {}'.format(parsed_data))
+        tcex.log.debug('Parsed Variable: {}'.format(parsed_data))
         return parsed_data
 
 

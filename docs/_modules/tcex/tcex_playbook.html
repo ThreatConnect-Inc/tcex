@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.7.10 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.7.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.10
+                0.7.11
               </div>
             
           
@@ -547,7 +547,7 @@
                     <span class="c1"># per slack conversation with danny on 3/22/17 all string data should already</span>
                     <span class="c1"># have quotes since they are JSON values</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># ensure only first and last quote are removed</span>
-                <span class="c1"># self._tcex.log.debug(u&#39;val (final): {}&#39;.format(val))</span>
+                <span class="c1"># self._tcex.log.debug(u&#39;var {}: val: {}&#39;.format(var, val))</span>
 
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># replace variable reference with nothing</span>
@@ -1311,7 +1311,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.10',
+            VERSION:'0.7.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

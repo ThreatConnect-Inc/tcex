@@ -369,7 +369,7 @@ class TcExPlaybook(object):
                     # per slack conversation with danny on 3/22/17 all string data should already
                     # have quotes since they are JSON values
                     val = val[1:-1]  # ensure only first and last quote are removed
-                # self._tcex.log.debug(u'val (final): {}'.format(val))
+                # self._tcex.log.debug(u'var {}: val: {}'.format(var, val))
 
                 if val is None:
                     # replace variable reference with nothing
