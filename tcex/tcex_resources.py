@@ -1651,7 +1651,8 @@ class File(Indicator):
             resource_id (Optional [string]): The resource id (tag name).
         """
         # handle hashes in form md5 : sha1 : sha256
-        resource_id = self.get_hash(resource_id)
+        if resource_id:
+            resource_id = self.get_hash(resource_id)
         super(File, self).attributes(resource_id)
 
     def indicator(self, data):
@@ -1681,7 +1682,8 @@ class File(Indicator):
             resource_id (Optional [string]): The resource id (tag name).
         """
         # handle hashes in form md5 : sha1 : sha256
-        resource_id = self.get_hash(resource_id)
+        if resource_id:
+            resource_id = self.get_hash(resource_id)
         super(File, self).tags(resource_id)
 
     def security_labels(self, resource_id=None):
@@ -1691,7 +1693,8 @@ class File(Indicator):
             resource_id (Optional [string]): The resource id (tag name).
         """
         # handle hashes in form md5 : sha1 : sha256
-        resource_id = self.get_hash(resource_id)
+        if resource_id:
+            resource_id = self.get_hash(resource_id)
         super(File, self).tags(resource_id)
 
 
