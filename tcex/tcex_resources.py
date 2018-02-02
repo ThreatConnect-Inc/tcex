@@ -1653,7 +1653,7 @@ class File(Indicator):
         # handle hashes in form md5 : sha1 : sha256
         if resource_id:
             resource_id = self.get_hash(resource_id)
-        super(File, self).attributes(resource_id)
+        return super(File, self).attributes(resource_id)
 
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
@@ -1684,7 +1684,7 @@ class File(Indicator):
         # handle hashes in form md5 : sha1 : sha256
         if resource_id:
             resource_id = self.get_hash(resource_id)
-        super(File, self).tags(resource_id)
+        return super(File, self).tags(resource_id)
 
     def security_labels(self, resource_id=None):
         """Security Label endpoint for this resource with optional label name.
@@ -1695,7 +1695,7 @@ class File(Indicator):
         # handle hashes in form md5 : sha1 : sha256
         if resource_id:
             resource_id = self.get_hash(resource_id)
-        super(File, self).tags(resource_id)
+        return super(File, self).tags(resource_id)
 
 
 class Host(Indicator):
