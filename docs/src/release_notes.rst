@@ -9,6 +9,8 @@ Release Notes
 0.7.11
 ------
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module to automatically handle files hashes in format "md5 : sha1 : sha256".
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module to reformat ipv6 addresses to same format as TC.
+
 
 0.7.10
 ------

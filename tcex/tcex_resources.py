@@ -2,6 +2,7 @@
 """ TcEx Framework Resource Module """
 import copy
 import gzip
+import ipaddress
 import json
 import os
 import re
@@ -1448,6 +1449,28 @@ class Address(Indicator):
         self._request_uri = self._api_uri
         self._value_fields = ['ip']
 
+    def indicator(self, data):
+        """Update the request URI to include the Indicator for specific indicator retrieval.
+
+        Overload to handle formatting of ipv6 addresses
+
+        Args:
+            data (string): The indicator value
+        """
+        ip = ipaddress.ip_address(data)
+        if ip.version == 6:
+            data = ip.exploded
+            sections = []
+            # mangle perfectly good ipv6 address to match TC format
+            for s in data.split(':'):
+                if s == '0000':
+                    s = '0'
+                else:
+                    s = s.lstrip('0')
+                sections.append(s)
+            data = ':'.join(sections)
+        super(Address, self).indicator(data)
+
 
 class Bulk(Indicator):
     """Bulk Resource Class
@@ -1665,15 +1688,15 @@ class File(Indicator):
         data = self.get_hash(data)
         super(File, self).indicator(data)
 
-    def resource_id(self, data):
-        """Alias for indicator method.
-
-        Args:
-            data (string): The indicator value.
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        data = self.get_hash(data)
-        super(File, self).resource_id(data)
+    # def resource_id(self, data):
+    #     """Alias for indicator method.
+    #
+    #    Args:
+    #        data (string): The indicator value.
+    #    """
+    #    # handle hashes in form md5 : sha1 : sha256
+    #    data = self.get_hash(data)
+    #    super(File, self).resource_id(data)
 
     def tags(self, resource_id=None):
         """Tag endpoint for this resource with optional tag name.

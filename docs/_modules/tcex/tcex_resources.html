@@ -180,6 +180,7 @@
 <span class="sd">&quot;&quot;&quot; TcEx Framework Resource Module &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">ipaddress</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -1624,7 +1625,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Address&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Address.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Address.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
+
+<span class="sd">        Overload to handle formatting of ipv6 addresses</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (string): The indicator value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ip</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">exploded</span>
+            <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># mangle perfectly good ipv6 address to match TC format</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;0000&#39;</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+                <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Address</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Bulk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Bulk">[docs]</a><span class="k">class</span> <span class="nc">Bulk</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
@@ -1829,8 +1852,9 @@
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
+            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="File.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
@@ -1842,15 +1866,15 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="File.resource_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.resource_id">[docs]</a>    <span class="k">def</span> <span class="nf">resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Alias for indicator method.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            data (string): The indicator value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+    <span class="c1"># def resource_id(self, data):</span>
+    <span class="c1">#     &quot;&quot;&quot;Alias for indicator method.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    Args:</span>
+    <span class="c1">#        data (string): The indicator value.</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
+    <span class="c1">#    # handle hashes in form md5 : sha1 : sha256</span>
+    <span class="c1">#    data = self.get_hash(data)</span>
+    <span class="c1">#    super(File, self).resource_id(data)</span>
 
 <div class="viewcode-block" id="File.tags"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tag endpoint for this resource with optional tag name.</span>
@@ -1859,8 +1883,9 @@
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
+            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="File.security_labels"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.security_labels">[docs]</a>    <span class="k">def</span> <span class="nf">security_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Security Label endpoint for this resource with optional label name.</span>
@@ -1869,8 +1894,9 @@
 <span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
+            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
