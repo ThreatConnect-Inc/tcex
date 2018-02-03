@@ -47,6 +47,8 @@ class TcExPlaybook(object):
         variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
         variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
         variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        # match full variable
+        self._variable_match = re.compile(r'^{}$'.format(variable_pattern))
         # capture variable parts (exactly a variable)
         self._variable_parse = re.compile(variable_pattern)
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
@@ -244,7 +246,7 @@ class TcExPlaybook(object):
         data = None
         if variable is not None:
             variable = variable.strip()
-            if re.match(self._variable_parse, variable):
+            if re.match(self._variable_match, variable):
                 var = re.search(self._variable_parse, variable)
                 data = {
                     'root': var.group(0),
@@ -274,7 +276,7 @@ class TcExPlaybook(object):
         if key is not None:
             key = key.strip()
             key_type = self.variable_type(key)
-            if re.match(self._variable_parse, key):
+            if re.match(self._variable_match, key):
                 if key_type in self._read_data_type:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
@@ -422,7 +424,7 @@ class TcExPlaybook(object):
         if variable is not None:
             variable = variable.strip()
             # self._tcex.log.info(u'Variable {}'.format(variable))
-            if re.match(self._variable_parse, variable):
+            if re.match(self._variable_match, variable):
                 var_type = re.search(self._variable_parse, variable).group(4)
 
         return var_type

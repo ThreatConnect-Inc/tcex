@@ -6,6 +6,10 @@ Release Notes
 0.7.x
 =====
 
+0.7.13
+------
++ Fixed issue with embedded variable matching exact variable check.
+
 0.7.12
 ------
 + Updated :py:mod:`~tcex.tcex_resources.Resource` for py2 unicode issue in ipaddress module.
