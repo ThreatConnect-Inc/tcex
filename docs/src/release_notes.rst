@@ -6,6 +6,10 @@ Release Notes
 0.7.x
 =====
 
+0.7.12
+------
++ Updated :py:mod:`~tcex.tcex_resources.Resource` for py2 unicode issue in ipaddress module.
+
 0.7.11
 ------
 + Updated :py:mod:`~tcex.tcex_resources.Resource` module to automatically handle files hashes in format "md5 : sha1 : sha256".

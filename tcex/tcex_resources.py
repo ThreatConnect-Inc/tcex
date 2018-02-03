@@ -1457,7 +1457,10 @@ class Address(Indicator):
         Args:
             data (string): The indicator value
         """
-        ip = ipaddress.ip_address(data)
+        try:
+            ip = ipaddress.ip_address(data)
+        except ValueError:
+            ip = ipaddress.ip_address(u'{}'.format(data))
         if ip.version == 6:
             data = ip.exploded
             sections = []
