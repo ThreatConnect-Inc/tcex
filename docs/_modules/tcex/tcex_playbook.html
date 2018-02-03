@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.7.12 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.7.13 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.12 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.13 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.12
+                0.7.13
               </div>
             
           
@@ -225,6 +225,8 @@
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
+        <span class="c1"># match full variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^</span><span class="si">{}</span><span class="s1">$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable_pattern</span><span class="p">))</span>
         <span class="c1"># capture variable parts (exactly a variable)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">variable_pattern</span><span class="p">)</span>
         <span class="c1"># match embedded variables without quotes (#App:7979:variable_name!StringArray)</span>
@@ -422,7 +424,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
                 <span class="n">var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;root&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
@@ -452,7 +454,7 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_data_type</span><span class="p">:</span>
                     <span class="c1"># handle types with embedded variable</span>
                     <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]:</span>
@@ -600,7 +602,7 @@
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="c1"># self._tcex.log.info(u&#39;Variable {}&#39;.format(variable))</span>
-            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_match</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
                 <span class="n">var_type</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">var_type</span></div>
@@ -1311,7 +1313,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.12',
+            VERSION:'0.7.13',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
