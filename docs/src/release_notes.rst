@@ -6,6 +6,10 @@ Release Notes
 0.7.x
 =====
 
+0.7.14
+------
++ Updated file indicator class for proper handling of attributes, tag, and labels.
+
 0.7.13
 ------
 + Fixed issue with embedded variable matching exact variable check.

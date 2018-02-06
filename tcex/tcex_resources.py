@@ -1621,13 +1621,14 @@ class File(Indicator):
         """
         self.association_custom(action_name, association_resource)
 
-    def get_hash(self, hash_string):
+    @staticmethod
+    def get_first_hash(hash_string):
         """Return first non None hash from string.
 
         md5 : sha1 : sha256
 
         Args:
-            hash_string: (Optional [string]): The resource id (tag name).
+            hash_string: (string): The string with delimited hash values.
         """
         for hs in hash_string.split(' : '):
             if hs:
@@ -1670,17 +1671,6 @@ class File(Indicator):
         if indicator is not None:
             self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
 
-    def attributes(self, resource_id=None):
-        """Attribute endpoint for this resource with optional attribute id.
-
-        Args:
-            resource_id (Optional [string]): The resource id (tag name).
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        if resource_id:
-            resource_id = self.get_hash(resource_id)
-        return super(File, self).attributes(resource_id)
-
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
 
@@ -1688,40 +1678,8 @@ class File(Indicator):
             data (string): The indicator value
         """
         # handle hashes in form md5 : sha1 : sha256
-        data = self.get_hash(data)
+        data = self.get_first_hash(data)
         super(File, self).indicator(data)
-
-    # def resource_id(self, data):
-    #     """Alias for indicator method.
-    #
-    #    Args:
-    #        data (string): The indicator value.
-    #    """
-    #    # handle hashes in form md5 : sha1 : sha256
-    #    data = self.get_hash(data)
-    #    super(File, self).resource_id(data)
-
-    def tags(self, resource_id=None):
-        """Tag endpoint for this resource with optional tag name.
-
-        Args:
-            resource_id (Optional [string]): The resource id (tag name).
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        if resource_id:
-            resource_id = self.get_hash(resource_id)
-        return super(File, self).tags(resource_id)
-
-    def security_labels(self, resource_id=None):
-        """Security Label endpoint for this resource with optional label name.
-
-        Args:
-            resource_id (Optional [string]): The resource id (tag name).
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        if resource_id:
-            resource_id = self.get_hash(resource_id)
-        return super(File, self).tags(resource_id)
 
 
 class Host(Indicator):
