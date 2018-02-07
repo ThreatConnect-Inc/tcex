@@ -6,9 +6,14 @@ Release Notes
 0.7.x
 =====
 
+0.7.14
+------
++ Updated file indicator class for proper handling of attributes, tag, and labels.
++ Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a new regex to handle more formats for file hashes and custom indicators.
+
 0.7.13
 ------
-+ Fixed issue with embedded variable matching exact variable check.
++ Fixed issue with embedded variable matching during exact variable check.
 
 0.7.12
 ------

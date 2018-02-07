@@ -919,8 +919,10 @@ class TcEx(object):
         return int(time.mktime(epoch.timetuple()))
 
     @staticmethod
-    def expand_indicators(indicator, first_indicator=True):
+    def expand_indicators(indicator, first_indicator=False):
         """Process indicators expanding file hashes/custom indicators into multiple entries
+
+        .. note:: remove first_indicator logic.
 
         Args:
             indicator (string): " : " delimited string
@@ -929,14 +931,28 @@ class TcEx(object):
         Returns:
             (list): a list of indicators split on " : ".
         """
-        indicator_list = [indicator]
+        if indicator.count(' : ') > 0:
+            # handle all multi-valued indicators types (file hashes and custom indicators)
+            indicator_list = []
 
-        iregx = re.compile(r'^(.*\b)?(?:\s+)?:(?:\s+)?(.*\b)?(?:\s+):(?:\s+)?(.*\b)?')
+            # group 1 - lazy capture everything to first <space>:<space> or end of line
+            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
+            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
+            # group 2 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead (optional <space>):<space> or end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
+            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
+            # group 3 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
+            iregx = re.compile(iregx_pattern)
 
-        indicators = iregx.search(indicator)
-        if indicators is not None:
-            indicators = indicators.groups()
-            indicator_list = list(indicators)
+            indicators = iregx.search(indicator)
+            if indicators is not None:
+                indicator_list = list(indicators.groups())
+        else:
+            # handle all single valued indicator types (address, host, etc)
+            indicator_list = [indicator]
 
         return indicator_list
 

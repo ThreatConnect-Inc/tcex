@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.13 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.14 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.13 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.13
+                0.7.14
               </div>
             
           
@@ -1097,8 +1097,10 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">epoch</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()))</span></div>
 
 <div class="viewcode-block" id="TcEx.expand_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.expand_indicators">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">expand_indicators</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="n">first_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">expand_indicators</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="n">first_indicator</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process indicators expanding file hashes/custom indicators into multiple entries</span>
+
+<span class="sd">        .. note:: remove first_indicator logic.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            indicator (string): &quot; : &quot; delimited string</span>
@@ -1107,14 +1109,28 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): a list of indicators split on &quot; : &quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">indicator</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># handle all multi-valued indicators types (file hashes and custom indicators)</span>
+            <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">iregx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(.*\b)?(?:\s+)?:(?:\s+)?(.*\b)?(?:\s+):(?:\s+)?(.*\b)?&#39;</span><span class="p">)</span>
+            <span class="c1"># group 1 - lazy capture everything to first &lt;space&gt;:&lt;space&gt; or end of line</span>
+            <span class="n">iregx_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^(.*?(?=\s\:\s|$))?&#39;</span>
+            <span class="n">iregx_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?:\s\:\s)?&#39;</span>  <span class="c1"># remove &lt;space&gt;:&lt;space&gt;</span>
+            <span class="c1"># group 2 - look behind for &lt;space&gt;:&lt;space&gt;, lazy capture everything</span>
+            <span class="c1">#           to look ahead (optional &lt;space&gt;):&lt;space&gt; or end of line</span>
+            <span class="n">iregx_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;((?&lt;=\s\:\s).*?(?=(?:\s)?\:\s|$))?&#39;</span>
+            <span class="n">iregx_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?:(?:\s)?\:\s)?&#39;</span>  <span class="c1"># remove (optional &lt;space&gt;):&lt;space&gt;</span>
+            <span class="c1"># group 3 - look behind for &lt;space&gt;:&lt;space&gt;, lazy capture everything</span>
+            <span class="c1">#           to look ahead end of line</span>
+            <span class="n">iregx_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;((?&lt;=\s\:\s).*?(?=$))?$&#39;</span>
+            <span class="n">iregx</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">iregx_pattern</span><span class="p">)</span>
 
-        <span class="n">indicators</span> <span class="o">=</span> <span class="n">iregx</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">indicators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">indicators</span> <span class="o">=</span> <span class="n">indicators</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-            <span class="n">indicator_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicators</span><span class="p">)</span>
+            <span class="n">indicators</span> <span class="o">=</span> <span class="n">iregx</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">indicator</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">indicators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">indicator_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicators</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># handle all single valued indicator types (address, host, etc)</span>
+            <span class="n">indicator_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">indicator_list</span></div>
 
@@ -1254,7 +1270,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.13',
+            VERSION:'0.7.14',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

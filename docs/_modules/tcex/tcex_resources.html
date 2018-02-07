@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.7.13 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.14 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.13 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.13
+                0.7.14
               </div>
             
           
@@ -1471,7 +1471,7 @@
         <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">vf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">indicators</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
                 <span class="n">body</span><span class="p">[</span><span class="n">vf</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indicators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1525,9 +1525,8 @@
                         <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{40}</span><span class="s1">)$&#39;</span><span class="p">),</span>
                         <span class="s1">&#39;sha256&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^([a-fA-F\d]</span><span class="si">{64}</span><span class="s1">)$&#39;</span><span class="p">)</span>
                     <span class="p">}</span>
-                    <span class="c1"># body = {}</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indicators</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="p">:</span>
                             <span class="k">continue</span>
 
                         <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># clean up badly formatted summary string</span>
@@ -1799,13 +1798,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">association_custom</span><span class="p">(</span><span class="n">action_name</span><span class="p">,</span> <span class="n">association_resource</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="File.get_hash"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.get_hash">[docs]</a>    <span class="k">def</span> <span class="nf">get_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hash_string</span><span class="p">):</span>
+<div class="viewcode-block" id="File.get_first_hash"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.get_first_hash">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_first_hash</span><span class="p">(</span><span class="n">hash_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return first non None hash from string.</span>
 
 <span class="sd">        md5 : sha1 : sha256</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            hash_string: (Optional [string]): The resource id (tag name).</span>
+<span class="sd">            hash_string: (string): The string with delimited hash values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">hs</span> <span class="ow">in</span> <span class="n">hash_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; : &#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">hs</span><span class="p">:</span>
@@ -1848,17 +1848,6 @@
         <span class="k">if</span> <span class="n">indicator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/fileOccurrences&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="n">indicator</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="File.attributes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Attribute endpoint for this resource with optional attribute id.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
-            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="File.indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.indicator">[docs]</a>    <span class="k">def</span> <span class="nf">indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the request URI to include the Indicator for specific indicator retrieval.</span>
 
@@ -1866,40 +1855,8 @@
 <span class="sd">            data (string): The indicator value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
-
-    <span class="c1"># def resource_id(self, data):</span>
-    <span class="c1">#     &quot;&quot;&quot;Alias for indicator method.</span>
-    <span class="c1">#</span>
-    <span class="c1">#    Args:</span>
-    <span class="c1">#        data (string): The indicator value.</span>
-    <span class="c1">#    &quot;&quot;&quot;</span>
-    <span class="c1">#    # handle hashes in form md5 : sha1 : sha256</span>
-    <span class="c1">#    data = self.get_hash(data)</span>
-    <span class="c1">#    super(File, self).resource_id(data)</span>
-
-<div class="viewcode-block" id="File.tags"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.tags">[docs]</a>    <span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tag endpoint for this resource with optional tag name.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
-            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="File.security_labels"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.security_labels">[docs]</a>    <span class="k">def</span> <span class="nf">security_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Security Label endpoint for this resource with optional label name.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            resource_id (Optional [string]): The resource id (tag name).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># handle hashes in form md5 : sha1 : sha256</span>
-        <span class="k">if</span> <span class="n">resource_id</span><span class="p">:</span>
-            <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span></div></div>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_hash</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
@@ -2781,7 +2738,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.13',
+            VERSION:'0.7.14',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

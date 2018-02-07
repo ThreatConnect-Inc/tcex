@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.7.13 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.7.14 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.13 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.13
+                0.7.14
               </div>
             
           
@@ -745,20 +745,6 @@ in the parent Class.</p>
 sha256). To filter on specific indicators use the <strong>indicator</strong> or
 <strong>resource_id</strong> methods provided in the parent Class.</p>
 <dl class="method">
-<dt id="tcex.tcex_resources.File.attributes">
-<code class="descname">attributes</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute endpoint for this resource with optional attribute id.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The resource id (tag name).</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex_resources.File.file_action">
 <code class="descname">file_action</code><span class="sig-paren">(</span><em>action_name</em>, <em>association_resource=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.file_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.file_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>File action pivot for this resource.</p>
@@ -845,16 +831,16 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="tcex.tcex_resources.File.get_hash">
-<code class="descname">get_hash</code><span class="sig-paren">(</span><em>hash_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.get_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.get_hash" title="Permalink to this definition">¶</a></dt>
+<dl class="staticmethod">
+<dt id="tcex.tcex_resources.File.get_first_hash">
+<em class="property">static </em><code class="descname">get_first_hash</code><span class="sig-paren">(</span><em>hash_string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.get_first_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.get_first_hash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return first non None hash from string.</p>
 <p>md5 : sha1 : sha256</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hash_string</strong> – (Optional [string]): The resource id (tag name).</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hash_string</strong> – (string): The string with delimited hash values.</td>
 </tr>
 </tbody>
 </table>
@@ -897,34 +883,6 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>string</em>) – The indicator to retrieve file occurrences.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_resources.File.security_labels">
-<code class="descname">security_labels</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.security_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.security_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Security Label endpoint for this resource with optional label name.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The resource id (tag name).</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_resources.File.tags">
-<code class="descname">tags</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File.tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File.tags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tag endpoint for this resource with optional tag name.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource_id</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The resource id (tag name).</td>
 </tr>
 </tbody>
 </table>
@@ -2777,7 +2735,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.13',
+            VERSION:'0.7.14',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

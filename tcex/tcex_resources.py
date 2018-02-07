@@ -1293,7 +1293,7 @@ class Indicator(Resource):
         body = {}
         for vf in self._value_fields:
             i = indicators.pop(0)
-            if i is not None:
+            if i:
                 body[vf] = i
 
             if len(indicators) == 0:
@@ -1347,9 +1347,8 @@ class Indicator(Resource):
                         'sha1': re.compile(r'^([a-fA-F\d]{40})$'),
                         'sha256': re.compile(r'^([a-fA-F\d]{64})$')
                     }
-                    # body = {}
                     for i in indicators:
-                        if i is None:
+                        if not i:
                             continue
 
                         i = i.strip()  # clean up badly formatted summary string
