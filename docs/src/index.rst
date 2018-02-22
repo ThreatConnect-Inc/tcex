@@ -1,8 +1,8 @@
 .. include:: <isonum.txt>
 
-===========================================
-ThreatConnect Exchange App Framework (TcEx)
-===========================================
+==================================
+ThreatConnect App Framework (TcEx)
+==================================
 
 Release |version|.
 
