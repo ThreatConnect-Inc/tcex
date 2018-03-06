@@ -56,3 +56,8 @@ threatconnect*
 # Other Nonsense
 #-------------------------------------------------
 bcs*
+
+# 'unignore' the files in the tests directory
+!tests/
+!tests/*
+tests/lib*

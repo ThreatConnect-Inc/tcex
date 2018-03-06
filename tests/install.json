@@ -1,0 +1,33 @@
+{
+  "allowOnDemand": true,
+  "displayName": "TcEx Tests",
+  "languageVersion": "3.6.x",
+  "listDelimiter": "|",
+  "note": "Test the TcEx package.",
+  "params" : [ {
+    "name" : "api_access_id",
+    "label" : "ThreatConnect API Access ID",
+    "validValues": ["${USER:TEXT}", "${ORGANIZATION:TEXT}"]
+  }, {
+    "name" : "api_secret_key",
+    "label" : "ThreatConnect API Secret Key",
+    "encrypt" : true,
+    "validValues": ["${USER:KEYCHAIN}", "${ORGANIZATION:KEYCHAIN}"]
+  }, {
+    "name" : "api_default_org",
+    "label" : "ThreatConnect Default Org Name",
+    "type": "choice",
+    "validValues": ["${OWNERS}"]
+  }, {
+    "name" : "log_level",
+    "label" : "Logging Level",
+    "default" : "Error",
+    "type": "choice",
+    "validValues": ["Debug", "Info", "Warning", "Error", "Critical"]
+  } ],
+  "programLanguage": "python",
+  "programMain": "tcex_tests",
+  "programVersion": "0.1.0",
+  "repeatingMinutes": [],
+  "runtimeLevel": "Organization"
+}
