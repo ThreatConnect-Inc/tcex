@@ -254,6 +254,7 @@ class TcExJob(object):
             association_id = a.get('association_value')
             resource_type = a.get('resource_type')
             resource_id = a.get('resource_value')
+            custom_association_name = a.get('custom_association_name')
             # get group id from group name (duplicate group names not supported)
             if resource_type in self._tcex.group_types:
                 resource_id = self.group_id(resource_id, owner, resource_type)
@@ -268,7 +269,7 @@ class TcExJob(object):
 
             ar = self._tcex.resource(association_type)
             ar.resource_id(association_id)
-            association_resource = resource.association_pivot(ar)
+            association_resource = resource.association_pivot(ar, custom_association_name)
             association_results = association_resource.request()
             if association_results.get('status') != 'Success':
                 err = 'Failed adding association ({}).'.format(

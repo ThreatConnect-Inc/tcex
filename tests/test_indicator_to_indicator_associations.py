@@ -42,7 +42,8 @@ def test_indicator_associations():
         'association_value': 'ASN1234',
         'association_type': tcex.safe_rt('ASN', lower=False),
         'resource_value': '1.2.3.4',
-        'resource_type': 'Address'
+        'resource_type': 'Address',
+        'custom_association_name': 'ASN to Address'
     })
     tcex.jobs.process(args.api_default_org)
     assert len(tcex.jobs.indicator_results['failed']) == 0
