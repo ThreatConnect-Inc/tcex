@@ -412,6 +412,7 @@ class Resource(object):
 
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
+            custom_association_name (string): The human-readable name of a custom association used to associate the two resources
         """
         if custom_association_name:
             return self.association_custom(custom_association_name, association_resource)
