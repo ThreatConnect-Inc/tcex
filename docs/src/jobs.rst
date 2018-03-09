@@ -222,5 +222,5 @@ The key method calls are highlighted in the following code sample.
 .. Note:: The Batch API call allows for Group Associations via the ``associatedGroup`` field using
           the Group Id. However, if Groups are being added in the Job the Group Id will not be known
           until after the Group is added.  The :py:meth:`~tcex.tcex_job.TcExJob.group_association`
-          method allows the Group named to be used instead of the Group Id. If the Group Id is
+          method allows the Group name to be used instead of the Group Id. If the Group Id is
           already known it can be associated using the ``associatedGroup`` field.
