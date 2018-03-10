@@ -6,6 +6,12 @@ Release Notes
 0.7.x
 =====
 
+0.7.15
+------
++ Updated jobs module to delete by name when using replace for groups.
++ Updated token renewal to log more information on failure.
++ Updated playbooks read binary array to better handle null values.
+
 0.7.14
 ------
 + Updated file indicator class for proper handling of attributes, tag, and labels.

@@ -168,15 +168,12 @@ class TcExJob(object):
 
         return resource_id
 
-    def _group_delete(self, resource_type, resource_id):
+    def _group_delete_by_id(self, resource_type, resource_id):
         """Delete a group from ThreatConnect
 
         Args:
             resource_type (string): String with resource [group] type
             resource_id (string): The ID of the group
-
-        Returns:
-            (integer): The ID of the created resource
         """
         # self._tcex.log.debug(u'Deleting {} with ID {}.'.format(resource_type, resource_id))
         resource = self._tcex.resource(resource_type)
@@ -186,6 +183,26 @@ class TcExJob(object):
         if results.get('status') != 'Success':
             self._tcex.log.warning(u'Deleted {} with ID {} failed ({}).'.format(
                 resource_type, resource_id, results.get('response').text))
+
+    def _group_delete_by_name(self, owner, resource_type, resource_name):
+        """Delete group(s) from ThreatConnect by Name
+
+        Args:
+            resource_type (string): String with resource [group] type
+            resource_name (string): The name of the group
+        """
+        resource = self._tcex.resource(resource_type)
+        resource.add_filter('name', '=', resource_name)
+        resource.owner = owner
+        for results in resource:
+            if results.get('status') != 'Success':
+                self._tcex.log.warning(u'Retrieve {} with name {} failed ({}).'.format(
+                    resource_type, resource_name, results.get('response').text))
+            else:
+                # remove group from cache
+                self.group_cache_remove(owner, resource_type, resource_name)
+                for result in results['data']:
+                    self._group_delete_by_id(resource_type, result.get('id'))
 
     def _indicators_replace_stub(self, owner):
         """Process Indicator data replacing associatedGroup stub values with the Group ID
@@ -324,14 +341,18 @@ class TcExJob(object):
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
             elif group_action == 'replace':
                 if group_id is not None:
-                    self._group_delete(group_type, group_id)
-                    self._tcex.log.info(u'Deleting Group "{}" with id: {}'.format(
-                        group_name, group_id))
+                    # delete the group from TC and group cache
+                    self._group_delete_by_name(owner, group_type, group_name)
+                    self._tcex.log.info(u'Deleting Group "{}" with name: "{}"'.format(
+                        group_type, group_name))
+
                 group_id = self._group_add(group_type, group_name, owner, group)
                 if group_id is None and self._tcex.args.batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
+                else:
+                    self.group_cache_add(group_name, owner, group_type, group_id)
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
             elif group_action == 'skip':
                 if group_id is None:
@@ -340,6 +361,8 @@ class TcExJob(object):
                         self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         break
+                    else:
+                        self.group_cache_add(group_name, owner, group_type, group_id)
                     self._tcex.log.info(u'Created Group "{}" with id: {}'.format(
                         group_name, group_id))
                 else:
@@ -1041,6 +1064,39 @@ class TcExJob(object):
 
         return self._group_cache.get(owner, {}).get(resource_type, {}).get(name)
 
+    def group_cache_add(self, name, owner, resource_type, resource_id):
+        """Add a group to the group cache.
+
+        Args:
+            name(string): The name of the Group
+            owner (string): The TC Owner where the resource should be found
+            resource_type (string): The resource type name
+
+        Returns:
+            (integer): The ID for the provided group name and owner.
+        """
+        if self._group_cache.get(owner, {}).get(resource_type, {}) is None:
+            self.group_cache(owner, resource_type)
+
+        self._group_cache[owner][resource_type][name] = resource_id
+
+    def group_cache_remove(self, name, owner, resource_type):
+        """Remove a group from the group cache.
+
+        Args:
+            name(string): The name of the Group
+            owner (string): The TC Owner where the resource should be found
+            resource_type (string): The resource type name
+
+        Returns:
+            (integer): The ID for the provided group name and owner.
+        """
+        self._tcex.log.debug(
+            u'Removing {} ID for group "{}" in "{}".'.format(
+                resource_type, name, owner))
+        if self._group_cache.get(owner, {}).get(resource_type, {}).get(name) is not None:
+            del self._group_cache[owner][resource_type][name]
+
     def group_cache_type(self, group_id, owner):
         """Get the group type for the provided group id
 
@@ -1048,7 +1104,6 @@ class TcExJob(object):
         ::
 
             Owner -> Group Id:Group Type
-
 
         Args:
             group_id (string): The group id to lookup
