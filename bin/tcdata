@@ -59,28 +59,30 @@ class TcData(object):
         # Define common comparison operators
         self._operators = {
             'dd': self.deep_diff,
-            'deep diff': self.deep_diff,
+            'deep-diff': self.deep_diff,
             'eq': operator.eq,
             'ew': self.data_endswith,
-            'ends with': self.data_endswith,
+            'ends-with': self.data_endswith,
             'ge': operator.ge,
             'gt': operator.gt,
             'jc': self.json_compare,
-            'json compare': self.json_compare,
+            'json-compare': self.json_compare,
             'kva': self.data_kva_compare,
-            'key value compare': self.data_kva_compare,
-            'in': self.data_in,
+            'key-value-compare': self.data_kva_compare,
+            'in': self.data_in_db,
+            'in-db-data': self.data_in_db,
+            'in-user-data': self.data_in_user,
             'ni': self.data_not_in,
-            'not in': self.data_not_in,
+            'not-in': self.data_not_in,
             'it': self.data_it,  # is type
-            'is type': self.data_it,
+            'is-type': self.data_it,
             'lt': operator.lt,
             'le': operator.le,
             'ne': operator.ne,
             'se': self.data_string_compare,
-            'string compare': self.data_string_compare,
+            'string-compare': self.data_string_compare,
             'sw': self.data_startswith,
-            'starts with': self.data_startswith
+            'starts-with': self.data_startswith
         }
         self.load_data(arg_data.data_file)
 
@@ -92,9 +94,16 @@ class TcData(object):
         return False
 
     @staticmethod
-    def data_in(db_data, user_data):
-        """Validate data in user data"""
+    def data_in_db(db_data, user_data):
+        """Validate db data in user data"""
         if db_data in user_data:
+            return True
+        return False
+
+    @staticmethod
+    def data_in_user(db_data, user_data):
+        """Validate user data in db data"""
+        if user_data in db_data:
             return True
         return False
 

@@ -556,9 +556,10 @@ class TcExPlaybook(object):
                 data_decoded = []
                 for d in json.loads(data):
                     data_decoded.append(base64.b64decode(d))
+                data = data_decoded
         else:
             self._tcex.log.warning(u'The key field was None.')
-        return data_decoded
+        return data
 
     # key/value
     def create_key_value(self, key, value):

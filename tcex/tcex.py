@@ -141,7 +141,13 @@ class TcEx(object):
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
             r.url = '{}/appAuth'.format(self.default_args.tc_api_path)
-            results = r.send()
+            try:
+                results = r.send()
+            except KeyError:
+                err = u'Could not renew token: {}'.format(results.text)
+                self.log.error(err)
+                raise RuntimeError(err)
+
             try:
                 data = results.json()
                 if data['success']:

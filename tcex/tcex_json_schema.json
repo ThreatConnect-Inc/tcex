@@ -73,6 +73,15 @@
           "encrypt": {
             "type": "boolean"
           },
+          "exposePlaybookKeyAs": {
+            "items": {
+              "enum": [
+                "String",
+                "StringArray"
+              ]
+            },
+            "type": "string"
+          },
           "hidden": {
             "type": "boolean"
           },
