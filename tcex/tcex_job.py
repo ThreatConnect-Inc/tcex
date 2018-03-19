@@ -1173,16 +1173,20 @@ class TcExJob(object):
               ],
               'attribute': [
                 {
-                  'type': 'Description',
-                  'value': 'Test Description'
+                  'type': 'Attribute Name',
+                  'value': 'Description'
                 }
               ],
               'confidence': 5,
-              'rating': '3',
+              'rating': 3.2,
               'summary': '1.1.1.1',
               'tag': [
-                'APT',
-                'Crimeware'
+                {
+                  'name': 'APT',
+                },
+                {
+                  'name': 'CrimeWare',
+                }
               ],
               'type': 'Address'
             }
@@ -1253,7 +1257,7 @@ class TcExJob(object):
 
         Args:
             owner (string): The owner name for the data to be written
-            indicator_batch (bool): If true use the Batch Api otherwise use `/v2`.
+            indicator_batch (bool): If true use the Batch Api otherwise use `/v2` REST API.
             group_action (string): The action to use on group create (duplicate, replace, skip).
         """
         if self._groups:
