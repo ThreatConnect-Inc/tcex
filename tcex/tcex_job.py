@@ -1181,8 +1181,12 @@ class TcExJob(object):
               'rating': '3',
               'summary': '1.1.1.1',
               'tag': [
-                'APT',
-                'Crimeware'
+                {
+                  'name': 'APT'
+                },
+                {
+                  'name': 'Crimeware'
+                }
               ],
               'type': 'Address'
             }
