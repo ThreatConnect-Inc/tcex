@@ -1098,7 +1098,7 @@ class TcExJob(object):
             del self._group_cache[owner][resource_type][name]
 
     def group_cache_type(self, group_id, owner):
-        """Get the group type for the provided group id
+        """Get the group type for the provided group id.
 
         **Cache Structure**
         ::
@@ -1144,7 +1144,7 @@ class TcExJob(object):
 
     @property
     def group_results(self):
-        """Result dictionary of failed, saved, not_saved, and submitted groups
+        """Result dictionary of failed, saved, not_saved, and submitted groups.
 
         Returns:
             (dictionary): Dictionary of group names for each status
@@ -1206,7 +1206,7 @@ class TcExJob(object):
 
     @property
     def unprocessed_indicators(self):
-        """ Return indicators (unprocessed)
+        """Return indicators (unprocessed).
 
         Returns:
             (list): The unprocessed indicator list
@@ -1215,7 +1215,7 @@ class TcExJob(object):
 
     @unprocessed_indicators.setter
     def unprocessed_indicators(self, value):
-        """ Set indicators list
+        """Set indicators list.
 
         Args:
             value (list): List of indicators
@@ -1234,7 +1234,7 @@ class TcExJob(object):
 
     @property
     def indicator_len(self):
-        """The current length of the indicator list
+        """The current length of the indicator list.
 
         Returns:
             (integer): The length of the indicator list
@@ -1243,7 +1243,7 @@ class TcExJob(object):
 
     @property
     def indicator_results(self):
-        """Result dictionary of failed, saved, not_saved, and submitted indicators
+        """Result dictionary of failed, saved, not_saved, and submitted indicators.
 
         Returns:
             (dictionary): Dictionary of indicator values for each status
@@ -1251,7 +1251,7 @@ class TcExJob(object):
         return self._indicator_results
 
     def process(self, owner, indicator_batch=True, group_action='skip'):
-        """Process all groups, indicator data, and associations
+        """Process all groups, indicator data, and associations.
 
         Process each of the supported data types for this job, in the following order (left to right):
 
