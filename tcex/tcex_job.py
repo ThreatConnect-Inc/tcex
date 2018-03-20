@@ -271,6 +271,7 @@ class TcExJob(object):
             association_id = a.get('association_value')
             resource_type = a.get('resource_type')
             resource_id = a.get('resource_value')
+            custom_association_name = a.get('custom_association_name')
             # get group id from group name (duplicate group names not supported)
             if resource_type in self._tcex.group_types:
                 resource_id = self.group_id(resource_id, owner, resource_type)
@@ -285,7 +286,10 @@ class TcExJob(object):
 
             ar = self._tcex.resource(association_type)
             ar.resource_id(association_id)
-            association_resource = resource.association_pivot(ar)
+            if custom_association_name:
+                association_resource = resource.association_custom(custom_association_name, ar)
+            else:
+                association_resource = resource.association_pivot(ar)
             association_results = association_resource.request()
             if association_results.get('status') != 'Success':
                 err = 'Failed adding association ({}).'.format(
@@ -684,6 +688,21 @@ class TcExJob(object):
               'resource_value': 'threat-001',
               'resource_type': 'Threat',
             }]
+
+        **Example Data for Creating Indicator-to-Indicator Associations** *(required fields are highlighted)*
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+            :emphasize-lines: 2-6
+
+            {
+              "association_value": "ASN1234",
+              "association_type": tcex.safe_rt("ASN"),
+              "resource_value": "1.2.3.4",
+              "resource_type": "Address",
+              "custom_association_name": "ASN to Address"
+            }
 
         Args:
             associations (dict | list): Dictionary or List containing

@@ -160,6 +160,24 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` prope
 + Saved - The Indicator was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Indicator Names.
 
+Indicator to Indicator Associations
+-----------------------------------
+The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following data structure to create custom, `Indicator to Indicator Associations <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations>`__. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-6
+
+    {
+      "association_value": "ASN1234",
+      "association_type": tcex.safe_rt("ASN"),
+      "resource_value": "1.2.3.4",
+      "resource_type": "Address",
+      "custom_association_name": "ASN to Address"
+    }
+
+The required ``custom_association_name`` key provides the name of the association you would like to use. These names can be found using the `associationTypes <https://docs.threatconnect.com/en/latest/rest_api/associations/associations.html#retrieving-available-associations>`__ API endpoint.
 
 File Occurrence
 ---------------
