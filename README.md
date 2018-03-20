@@ -42,6 +42,18 @@ Release Notes
 --------------
 https://docs.threatconnect.com/en/latest/tcex/release_notes.html
 
+Running Tests
+-------------
+
+To run the tests, run:
+
+```
+cd tests
+tcrun
+```
+
+Running the tests requires some environment variables as shown in `tests/tcex.json`.
+
 Contact
 --------
 If you have any questions, bugs, or requests please contact support@threatconnect.com

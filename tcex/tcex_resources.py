@@ -386,7 +386,7 @@ class Resource(object):
                 resource._request_uri, custom_type, association_api_branch)
         return resource
 
-    def association_pivot(self, association_resource):
+    def association_pivot(self, association_resource, custom_association_name=None):
         """Pivot point on association for this resource.
 
         This method will return all *resources* (group, indicators, task, victims, etc) for this
@@ -412,11 +412,15 @@ class Resource(object):
 
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
+            custom_association_name (string): The human-readable name of a custom association used to associate the two resources
         """
-        resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            association_resource.request_uri, resource._request_uri)
-        return resource
+        if custom_association_name:
+            return self.association_custom(custom_association_name, association_resource)
+        else:
+            resource = self.copy()
+            resource._request_uri = '{}/{}'.format(
+                association_resource.request_uri, resource._request_uri)
+            return resource
 
     def associations(self, association_resource):
         """Retrieve Association for this resource of the type in association_resource.
