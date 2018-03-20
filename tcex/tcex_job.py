@@ -689,6 +689,21 @@ class TcExJob(object):
               'resource_type': 'Threat',
             }]
 
+        **Example Data for Creating Indicator-to-Indicator Associations** *(required fields are highlighted)*
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+            :emphasize-lines: 2-6
+
+            {
+              "association_value": "ASN1234",
+              "association_type": tcex.safe_rt("ASN"),
+              "resource_value": "1.2.3.4",
+              "resource_type": "Address",
+              "custom_association_name": "ASN to Address"
+            }
+
         Args:
             associations (dict | list): Dictionary or List containing
                 association data
