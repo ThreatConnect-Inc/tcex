@@ -1251,9 +1251,11 @@ class TcExJob(object):
         return self._indicator_results
 
     def process(self, owner, indicator_batch=True, group_action='skip'):
-        """Process all association, group and indicator data.
+        """Process all groups, indicator data, and associations
 
-        Process each of the supported data types for this job.
+        Process each of the supported data types for this job, in the following order (left to right):
+
+            groups > indicators > file occurrences > group associations > associations
 
         Args:
             owner (string): The owner name for the data to be written
