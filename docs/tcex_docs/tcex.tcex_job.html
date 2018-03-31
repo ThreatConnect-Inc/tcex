@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.7.15 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.15 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_local module" href="tcex.tcex_local.html"/>
         <link rel="prev" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.15
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +128,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -243,23 +245,35 @@ or attributes</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_job.TcExJob._group_delete">
-<code class="descname">_group_delete</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_job.TcExJob._group_delete_by_id">
+<code class="descname">_group_delete_by_id</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete_by_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a group from ThreatConnect</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
 <li><strong>resource_id</strong> (<em>string</em>) – The ID of the group</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID of the created resource</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob._group_delete_by_name">
+<code class="descname">_group_delete_by_name</code><span class="sig-paren">(</span><em>owner</em>, <em>resource_type</em>, <em>resource_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete group(s) from ThreatConnect by Name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
+<li><strong>resource_name</strong> (<em>string</em>) – The name of the group</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -432,6 +446,22 @@ or attributes</li>
   <span class="s1">&#39;resource_value&#39;</span><span class="o">:</span> <span class="s1">&#39;threat-001&#39;</span><span class="p">,</span>
   <span class="s1">&#39;resource_type&#39;</span><span class="o">:</span> <span class="s1">&#39;Threat&#39;</span><span class="p">,</span>
 <span class="p">}]</span>
+</pre></div>
+</td></tr></table></div>
+<p><strong>Example Data for Creating Indicator-to-Indicator Associations</strong> <em>(required fields are highlighted)</em></p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">  <span class="s2">&quot;association_value&quot;</span><span class="o">:</span> <span class="s2">&quot;ASN1234&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;association_type&quot;</span><span class="o">:</span> <span class="nx">tcex</span><span class="p">.</span><span class="nx">safe_rt</span><span class="p">(</span><span class="s2">&quot;ASN&quot;</span><span class="p">),</span>
+</span><span class="hll">  <span class="s2">&quot;resource_value&quot;</span><span class="o">:</span> <span class="s2">&quot;1.2.3.4&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;resource_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;custom_association_name&quot;</span><span class="o">:</span> <span class="s2">&quot;ASN to Address&quot;</span>
+</span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -763,6 +793,56 @@ association data</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_job.TcExJob.group_cache_add">
+<code class="descname">group_cache_add</code><span class="sig-paren">(</span><em>name</em>, <em>owner</em>, <em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_cache_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a group to the group cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>string</em>) – The name of the Group</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID for the provided group name and owner.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_job.TcExJob.group_cache_remove">
+<code class="descname">group_cache_remove</code><span class="sig-paren">(</span><em>name</em>, <em>owner</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_cache_remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a group from the group cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>string</em>) – The name of the Group</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID for the provided group name and owner.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_job.TcExJob.group_cache_type">
 <code class="descname">group_cache_type</code><span class="sig-paren">(</span><em>group_id</em>, <em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_cache_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the group type for the provided group id</p>
@@ -878,26 +958,34 @@ indicator will be skipped.</p>
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s1">&#39;associatedGroup&#39;</span><span class="o">:</span> <span class="p">[</span>
     <span class="s1">&#39;1&#39;</span><span class="p">,</span>
     <span class="s1">&#39;8&#39;</span>
   <span class="p">],</span>
   <span class="s1">&#39;attribute&#39;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Test Description&#39;</span>
+      <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Attribute Name&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;value&#39;</span><span class="o">:</span> <span class="s1">&#39;Description&#39;</span>
     <span class="p">}</span>
   <span class="p">],</span>
   <span class="s1">&#39;confidence&#39;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
-  <span class="s1">&#39;rating&#39;</span><span class="o">:</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;rating&#39;</span><span class="o">:</span> <span class="mf">3.2</span><span class="p">,</span>
 <span class="hll">  <span class="s1">&#39;summary&#39;</span><span class="o">:</span> <span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span>
 </span>  <span class="s1">&#39;tag&#39;</span><span class="o">:</span> <span class="p">[</span>
-    <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Crimeware&#39;</span>
+    <span class="p">{</span>
+      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;APT&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="hll">    <span class="p">{</span>
+</span>      <span class="s1">&#39;name&#39;</span><span class="o">:</span> <span class="s1">&#39;CrimeWare&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
   <span class="p">],</span>
-<span class="hll">  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
-</span><span class="p">}</span>
+  <span class="s1">&#39;type&#39;</span><span class="o">:</span> <span class="s1">&#39;Address&#39;</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -970,7 +1058,7 @@ data</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>owner</strong> (<em>string</em>) – The owner name for the data to be written</li>
-<li><strong>indicator_batch</strong> (<em>bool</em>) – If true use the Batch Api otherwise use <cite>/v2</cite>.</li>
+<li><strong>indicator_batch</strong> (<em>bool</em>) – If true use the Batch Api otherwise use <cite>/v2</cite> REST API.</li>
 <li><strong>group_action</strong> (<em>string</em>) – The action to use on group create (duplicate, replace, skip).</li>
 </ul>
 </td>
@@ -1042,7 +1130,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

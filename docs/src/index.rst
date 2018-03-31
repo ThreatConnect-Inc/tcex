@@ -21,6 +21,7 @@ Release |version|.
    logging
    message_tc
    tcex_docs/modules
+   metrics
    parser
    playbook
    proxies

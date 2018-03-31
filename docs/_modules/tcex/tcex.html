@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.15 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.15 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.15
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -201,6 +202,7 @@
 
 <span class="kn">from</span> <span class="nn">.argparser</span> <span class="k">import</span> <span class="n">ArgParser</span>
 <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
+<span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="k">import</span> <span class="n">TcExMetricsV2</span>
 
 
 <div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -319,7 +321,13 @@
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
             <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;expiredToken&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
             <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/appAuth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Could not renew token: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]:</span>
@@ -824,6 +832,21 @@
         <span class="sd">&quot;&quot;&quot;Return instance of Job module&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcEx.metric"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.metric">[docs]</a>    <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of Metrics module</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name for the metric.</span>
+<span class="sd">            description: The description of the metric.</span>
+<span class="sd">            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average</span>
+<span class="sd">            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly</span>
+<span class="sd">            keyed: Indicates whether the data will have a keyed value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (instance): Instance of Metric Class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TcExMetricsV2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to message_tc file in TcEX specified directory.</span>
 
@@ -1192,7 +1215,7 @@
 
 <div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Truncate tag to match limit (128 characters) of ThreatConnect API.</span>
+        <span class="sd">&quot;&quot;&quot;URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">           tag (string): The tag to be truncated</span>
@@ -1201,7 +1224,7 @@
 <span class="sd">            (string): The truncated tag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tag</span> <span class="o">=</span> <span class="n">TcEx</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">128</span><span class="p">:</span>
                 <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[:</span><span class="mi">128</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">tag</span></div>
@@ -1270,7 +1293,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

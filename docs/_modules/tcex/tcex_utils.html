@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.7.15 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.15 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.15
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -185,7 +186,6 @@
 <span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">timezone</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="k">import</span> <span class="n">parser</span>
 <span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
-<span class="kn">from</span> <span class="nn">tzlocal</span> <span class="k">import</span> <span class="n">get_localzone</span>
 <span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
 
 
@@ -199,7 +199,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
-<div class="viewcode-block" id="TcExUtils.any_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExUtils.any_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return datetime object from multiple formats</span>
 
 <span class="sd">            Formats:</span>
@@ -247,20 +247,17 @@
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tz</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
+            <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
+            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
 
         <span class="k">return</span> <span class="n">dt</span></div>
 
-<div class="viewcode-block" id="TcExUtils.format_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExUtils.format_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return timestamp from multiple input formats.</span>
 
 <span class="sd">            Formats:</span>
@@ -297,7 +294,7 @@
         <span class="k">return</span> <span class="n">dt_value</span></div>
 
 <div class="viewcode-block" id="TcExUtils.human_date_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.human_date_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">human_date_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert human readable date (e.g. 30 days ago) to datetime.datetime using</span>
 <span class="sd">            parsedatetime module.</span>
 
@@ -324,16 +321,24 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            tz (string): The time zone for the returned datetime.</span>
+<span class="sd">            source_datetime (datetime.datetime): The reference or source datetime.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">cal</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Calendar</span><span class="p">()</span>
-        <span class="n">local_tz</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
-        <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_tz</span><span class="p">)</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
+        <span class="n">tzinfo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">src_tzname</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">source_datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">source_datetime</span><span class="o">.</span><span class="n">tzinfo</span>
+            <span class="n">src_tzname</span> <span class="o">=</span> <span class="n">source_datetime</span><span class="o">.</span><span class="n">tzname</span><span class="p">()</span>
+        <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">sourceTime</span><span class="o">=</span><span class="n">source_datetime</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># don&#39;t add tz if no tz value is passed</span>
+            <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
+            <span class="k">if</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">src_tzname</span><span class="p">:</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -383,32 +388,44 @@
             <span class="s1">&#39;total_microseconds&#39;</span><span class="p">:</span> <span class="n">total_microseconds</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="TcExUtils.to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert string value to bool &quot;&quot;&quot;</span>
-        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
-            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">bool_value</span></div>
-
 <div class="viewcode-block" id="TcExUtils.unix_time_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.unix_time_to_datetime">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</span>
 <span class="sd">            to datetime.datetime type.</span>
 
+<span class="sd">        .. note:: This method assumes UTC if not timezone is None.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            time_input (string): The time input string (see formats above).</span>
-<span class="sd">            tz (string): The time zone for the returned data.</span>
+<span class="sd">            tz (string): The time zone for the returned datetime (e.g. UTC).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">tz</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[0-9]</span><span class="si">{10}</span><span class="s1">(?:\.[0-9]{0,10})?$&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_input</span><span class="p">)):</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">),</span> <span class="n">tz</span><span class="p">)</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_input</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">))</span>
+            <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
+            <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">dt</span></div></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&gt;&gt;&gt; from pytz import timezone</span>
+<span class="sd">&gt;&gt;&gt; from datetime import datetime</span>
+<span class="sd">&gt;&gt;&gt; time_input = 1229084481</span>
+<span class="sd">&gt;&gt;&gt; dt = datetime.fromtimestamp(float(time_input), tz=timezone(&#39;UTC&#39;))</span>
+<span class="sd">&gt;&gt;&gt; dt.isoformat()</span>
+<span class="sd">&#39;2008-12-12T12:21:21+00:00&#39;</span>
+<span class="sd">&gt;&gt;&gt; tz.normalize(dt).isoformat()</span>
+<span class="sd">&#39;2008-12-12T06:21:21-06:00&#39;</span>
+<span class="sd">&gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;))</span>
+<span class="sd">datetime.datetime(2008, 12, 12, 6, 21, 21, tzinfo=&lt;DstTzInfo &#39;US/Central&#39; CST-1 day, 18:00:00 STD&gt;)</span>
+<span class="sd">&gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;)).isoformat()</span>
+<span class="sd">&#39;2008-12-12T06:21:21-06:00&#39;</span>
+<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>
@@ -444,7 +461,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.15',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -1,8 +1,8 @@
 .. include:: <isonum.txt>
 
-===========================================
-ThreatConnect Exchange App Framework (TcEx)
-===========================================
+==================================
+ThreatConnect App Framework (TcEx)
+==================================
 
 Release |version|.
 
@@ -21,6 +21,7 @@ Release |version|.
    logging
    message_tc
    tcex_docs/modules
+   metrics
    parser
    playbook
    proxies

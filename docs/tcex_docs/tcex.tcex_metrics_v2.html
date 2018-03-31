@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis module &mdash; TcEx 0.7.15 documentation</title>
+  <title>tcex.tcex_metrics_v2 module &mdash; TcEx 0.7.15 documentation</title>
   
 
   
@@ -39,8 +39,8 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="TcEx 0.7.15 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_request module" href="tcex.tcex_request.html"/>
-        <link rel="prev" title="tcex.tcex_playbook module" href="tcex.tcex_playbook.html"/> 
+        <link rel="next" title="tcex.tcex_playbook module" href="tcex.tcex_playbook.html"/>
+        <link rel="prev" title="tcex.tcex_local module" href="tcex.tcex_local.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -114,9 +114,9 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
@@ -185,7 +185,7 @@
         
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
         
-      <li>tcex.tcex_redis module</li>
+      <li>tcex.tcex_metrics_v2 module</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -202,30 +202,82 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-tcex.tcex_redis">
-<span id="tcex-tcex-redis-module"></span><h1>tcex.tcex_redis module<a class="headerlink" href="#module-tcex.tcex_redis" title="Permalink to this headline">¶</a></h1>
-<p>TcEx Framework Redis Module</p>
+  <div class="section" id="module-tcex.tcex_metrics_v2">
+<span id="tcex-tcex-metrics-v2-module"></span><h1>tcex.tcex_metrics_v2 module<a class="headerlink" href="#module-tcex.tcex_metrics_v2" title="Permalink to this headline">¶</a></h1>
+<p>TcEx Metrics Module</p>
 <dl class="class">
-<dt id="tcex.tcex_redis.TcExRedis">
-<em class="property">class </em><code class="descclassname">tcex.tcex_redis.</code><code class="descname">TcExRedis</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>rhash</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2">
+<em class="property">class </em><code class="descclassname">tcex.tcex_metrics_v2.</code><code class="descname">TcExMetricsV2</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>description</em>, <em>data_type</em>, <em>interval</em>, <em>keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_metrics_v2.html#TcExMetricsV2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Create/Read Data in/from Redis</p>
+<p>TcEx Metrics Class.</p>
 <dl class="method">
-<dt id="tcex.tcex_redis.TcExRedis.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create key/value pair in Redis</p>
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>value</em>, <em>date=None</em>, <em>return_value=False</em>, <em>key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_metrics_v2.html#TcExMetricsV2.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Metrics</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> – The value of the metric.</li>
+<li><strong>date</strong> – The optional date of the metric.</li>
+<li><strong>return_value</strong> – Tell the API to return the updates metric value.</li>
+<li><strong>key</strong> – The key value for keyed metrics.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A None value if return value was not requested or a dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(None|Dict)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_redis.TcExRedis.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete data from Redis for the provided key</p>
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed">
+<code class="descname">add_keyed</code><span class="sig-paren">(</span><em>value</em>, <em>key</em>, <em>date=None</em>, <em>return_value=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_metrics_v2.html#TcExMetricsV2.add_keyed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add keyed metrics</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> – The value of the metric.</li>
+<li><strong>key</strong> – The key value for keyed metrics.</li>
+<li><strong>date</strong> – The optional date of the metric.</li>
+<li><strong>return_value</strong> – Tell the API to return the updates metric value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A None value if return value was not requested or a dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(None|Dict)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_redis.TcExRedis.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read data from Redis for the provided key</p>
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2.metric_create">
+<code class="descname">metric_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_metrics_v2.html#TcExMetricsV2.metric_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2.metric_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the defined metric</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2.metric_find">
+<code class="descname">metric_find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_metrics_v2.html#TcExMetricsV2.metric_find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2.metric_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Report Metrics</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_metrics_v2.TcExMetricsV2.metric_resource">
+<code class="descname">metric_resource</code><a class="headerlink" href="#tcex.tcex_metrics_v2.TcExMetricsV2.metric_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return metric resource</p>
 </dd></dl>
 
 </dd></dl>
@@ -242,10 +294,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_request.html" class="btn btn-neutral float-right" title="tcex.tcex_request module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_playbook.html" class="btn btn-neutral float-right" title="tcex.tcex_playbook module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.tcex_playbook.html" class="btn btn-neutral" title="tcex.tcex_playbook module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex_local.html" class="btn btn-neutral" title="tcex.tcex_local module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

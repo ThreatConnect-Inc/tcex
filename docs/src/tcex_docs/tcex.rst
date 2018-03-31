@@ -12,6 +12,7 @@ Submodules
    tcex.tcex_data_filter
    tcex.tcex_job
    tcex.tcex_local
+   tcex.tcex_metrics_v2
    tcex.tcex_playbook
    tcex.tcex_redis
    tcex.tcex_request

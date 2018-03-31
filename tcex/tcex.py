@@ -23,6 +23,7 @@ import inflect
 
 from .argparser import ArgParser
 from .tcex_job import TcExJob
+from .tcex_metrics_v2 import TcExMetricsV2
 
 
 class TcEx(object):
@@ -652,6 +653,21 @@ class TcEx(object):
         """Return instance of Job module"""
         return TcExJob(self)
 
+    def metric(self, name, description, data_type, interval, keyed=False):
+        """Get instance of Metrics module
+
+        Args:
+            name: The name for the metric.
+            description: The description of the metric.
+            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average
+            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly
+            keyed: Indicates whether the data will have a keyed value.
+
+        Returns:
+            (instance): Instance of Metric Class
+        """
+        return TcExMetricsV2(self, name, description, data_type, interval, keyed)
+
     def message_tc(self, message):
         """Write data to message_tc file in TcEX specified directory.
 
@@ -1020,7 +1036,7 @@ class TcEx(object):
 
     @staticmethod
     def safetag(tag, errors='strict'):
-        """Truncate tag to match limit (128 characters) of ThreatConnect API.
+        """URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
            tag (string): The tag to be truncated
@@ -1029,7 +1045,7 @@ class TcEx(object):
             (string): The truncated tag
         """
         if tag is not None:
-            tag = TcEx.to_string(tag, errors=errors)
+            tag = quote(TcEx.to_string(tag.replace('^', ''), errors=errors), safe='~')
             if len(tag) > 128:
                 tag = tag[:128]
         return tag
