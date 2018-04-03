@@ -14,6 +14,7 @@ Release Notes
 + Changed modules dependency to use latest version instead of restricting to current version.
 + Added Event, Intrusion Set and Report group types in preparation for TC > 5.6.0.
 + Added metrics module to create and add metrics to ThreatConnect.
++ Added **deleted** endpoint for indicators.
 
 0.7.15
 ------

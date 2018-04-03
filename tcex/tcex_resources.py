@@ -1250,6 +1250,11 @@ class Indicator(Resource):
         }
         self._value_fields = ['summary']
 
+    def deleted(self):
+        """Update the request URI to include the deleted endpoint.
+        """
+        self._request_uri = '{}/deleted'.format(self._request_uri)
+
     def entity_body(self, data):
         """Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.
 
@@ -1272,7 +1277,6 @@ class Indicator(Resource):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            # self._request_uri = '{}/{}'.format(self._api_uri, data)
             self._request_uri = '{}/{}'.format(
                 self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
 

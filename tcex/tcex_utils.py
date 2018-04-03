@@ -216,6 +216,8 @@ class TcExUtils():
 
         .. note:: This method assumes UTC if not timezone is None.
 
+        .. note:: This method only accepts a 9-10 character time_input.
+
         Args:
             time_input (string): The time input string (see formats above).
             tz (string): The time zone for the returned datetime (e.g. UTC).
@@ -224,7 +226,7 @@ class TcExUtils():
             (datetime.datetime): Python datetime.datetime object.
         """
         dt = None
-        if re.compile(r'^[0-9]{10}(?:\.[0-9]{0,10})?$').findall(str(time_input)):
+        if re.compile(r'^[7-9]{9,10}(?:\.[0-9]{0,10})?$').findall(str(time_input)):
             dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
