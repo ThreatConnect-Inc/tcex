@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_utils module &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="Parser / Args" href="../parser.html"/>
+        <link rel="next" title="Metrics" href="../metrics.html"/>
         <link rel="prev" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/> 
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.16
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +128,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -210,7 +212,7 @@
 <p>TcEx framework utilities.</p>
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.any_to_datetime">
-<code class="descname">any_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz='UTC'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descname">any_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.any_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.any_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return datetime object from multiple formats</p>
 <blockquote>
 <div><p>Formats:</p>
@@ -267,7 +269,7 @@
 
 <dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.format_datetime">
-<code class="descname">format_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz='UTC'</em>, <em>date_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descname">format_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>date_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.format_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.format_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return timestamp from multiple input formats.</p>
 <blockquote>
 <div><p>Formats:</p>
@@ -307,7 +309,7 @@ use case.</p>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_utils.TcExUtils.human_date_to_datetime">
-<em class="property">static </em><code class="descname">human_date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz='UTC'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">human_date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Convert human readable date (e.g. 30 days ago) to datetime.datetime using</dt>
 <dd>parsedatetime module.</dd>
@@ -339,7 +341,8 @@ use case.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</li>
+<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime.</li>
+<li><strong>source_datetime</strong> (<em>datetime.datetime</em>) – The reference or source datetime.</li>
 </ul>
 </td>
 </tr>
@@ -378,25 +381,27 @@ use case.</p>
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="tcex.tcex_utils.TcExUtils.to_bool">
-<em class="property">static </em><code class="descname">to_bool</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.to_bool" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert string value to bool</p>
-</dd></dl>
-
-<dl class="staticmethod">
 <dt id="tcex.tcex_utils.TcExUtils.unix_time_to_datetime">
-<em class="property">static </em><code class="descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz='UTC'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753</dt>
 <dd>to datetime.datetime type.</dd>
 </dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method assumes UTC if not timezone is None.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method only accepts a 9-10 character time_input.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>time_input</strong> (<em>string</em>) – The time input string (see formats above).</li>
-<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned data.</li>
+<li><strong>tz</strong> (<em>string</em>) – The time zone for the returned datetime (e.g. UTC).</li>
 </ul>
 </td>
 </tr>
@@ -424,7 +429,7 @@ use case.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../parser.html" class="btn btn-neutral float-right" title="Parser / Args" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../metrics.html" class="btn btn-neutral float-right" title="Metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="tcex.tcex_vault.html" class="btn btn-neutral" title="tcex.tcex_vault module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -457,7 +462,7 @@ use case.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

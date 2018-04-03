@@ -6,6 +6,16 @@ Release Notes
 0.7.x
 =====
 
+0.7.16
+------
++ Updated utils datetime methods to not require a timezone.
++ Updated Tag class to urlencode tag value so slashes are supported.
++ Updated safetag method to strip **^** from tag values.
++ Changed modules dependency to use latest version instead of restricting to current version.
++ Added Event, Intrusion Set and Report group types in preparation for TC > 5.6.0.
++ Added metrics module to create and add metrics to ThreatConnect.
++ Added **deleted** endpoint for indicators.
+
 0.7.15
 ------
 + Updated jobs module to delete by name when using replace for groups.

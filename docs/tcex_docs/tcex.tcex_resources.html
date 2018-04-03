@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.16
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +128,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -737,6 +739,16 @@ in the parent Class.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="tcex.tcex_resources.Event">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Event Resource Class</p>
+<p>This resource class will return groups of type Event. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.tcex_resources.File">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">File</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
@@ -990,6 +1002,12 @@ indicators of all types.  For specific indicator types use the child
 class of the type required.  Custom indicator types are supported
 dynamically and are not defined here.</p>
 <dl class="method">
+<dt id="tcex.tcex_resources.Indicator.deleted">
+<code class="descname">deleted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.deleted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the request URI to include the deleted endpoint.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_resources.Indicator.entity_body">
 <code class="descname">entity_body</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.entity_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.entity_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to <a class="reference internal" href="#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal"><span class="pre">indicator_body()</span></code></a> method.</p>
@@ -1131,6 +1149,16 @@ the actual indicator id stored in ThreatConnect.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="tcex.tcex_resources.Intrustion_Set">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Intrustion_Set</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Intrustion_Set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Intrustion_Set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Intrusion Set Resource Class</p>
+<p>This resource class will return groups of type Intrusion Set. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.tcex_resources.Owner">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Owner</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
@@ -1164,6 +1192,16 @@ the actual indicator id stored in ThreatConnect.</p>
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Report">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<p>Report Resource Class</p>
+<p>This resource class will return groups of type Report. To filter on
+specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
+the parent class.</p>
 </dd></dl>
 
 <dl class="class">
@@ -2735,7 +2773,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

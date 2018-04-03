@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.16
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -346,15 +347,12 @@
 
         <span class="k">return</span> <span class="n">resource_id</span></div>
 
-<div class="viewcode-block" id="TcExJob._group_delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete">[docs]</a>    <span class="k">def</span> <span class="nf">_group_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExJob._group_delete_by_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">_group_delete_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete a group from ThreatConnect</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            resource_type (string): String with resource [group] type</span>
 <span class="sd">            resource_id (string): The ID of the group</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (integer): The ID of the created resource</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># self._tcex.log.debug(u&#39;Deleting {} with ID {}.&#39;.format(resource_type, resource_id))</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
@@ -364,6 +362,26 @@
         <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Deleted </span><span class="si">{}</span><span class="s1"> with ID </span><span class="si">{}</span><span class="s1"> failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcExJob._group_delete_by_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">_group_delete_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete group(s) from ThreatConnect by Name</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_type (string): String with resource [group] type</span>
+<span class="sd">            resource_name (string): The name of the group</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
+        <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="k">for</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Retrieve </span><span class="si">{}</span><span class="s1"> with name </span><span class="si">{}</span><span class="s1"> failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># remove group from cache</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_remove</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_delete_by_id</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExJob._indicators_replace_stub"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._indicators_replace_stub">[docs]</a>    <span class="k">def</span> <span class="nf">_indicators_replace_stub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process Indicator data replacing associatedGroup stub values with the Group ID</span>
@@ -432,6 +450,7 @@
             <span class="n">association_id</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;association_value&#39;</span><span class="p">)</span>
             <span class="n">resource_type</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resource_type&#39;</span><span class="p">)</span>
             <span class="n">resource_id</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resource_value&#39;</span><span class="p">)</span>
+            <span class="n">custom_association_name</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom_association_name&#39;</span><span class="p">)</span>
             <span class="c1"># get group id from group name (duplicate group names not supported)</span>
             <span class="k">if</span> <span class="n">resource_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">group_types</span><span class="p">:</span>
                 <span class="n">resource_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_id</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)</span>
@@ -446,7 +465,10 @@
 
             <span class="n">ar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">association_type</span><span class="p">)</span>
             <span class="n">ar</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="n">association_id</span><span class="p">)</span>
-            <span class="n">association_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">association_pivot</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">custom_association_name</span><span class="p">:</span>
+                <span class="n">association_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">association_custom</span><span class="p">(</span><span class="n">custom_association_name</span><span class="p">,</span> <span class="n">ar</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">association_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">association_pivot</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
             <span class="n">association_results</span> <span class="o">=</span> <span class="n">association_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">association_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding association (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -502,14 +524,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Created Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">group_action</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_delete</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Deleting Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
+                    <span class="c1"># delete the group from TC and group cache</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_delete_by_name</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Deleting Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with name: &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">))</span>
+
                 <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_add</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Created Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">group_action</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -518,6 +544,8 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_add</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Created Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -839,6 +867,21 @@
 <span class="sd">              &#39;resource_value&#39;: &#39;threat-001&#39;,</span>
 <span class="sd">              &#39;resource_type&#39;: &#39;Threat&#39;,</span>
 <span class="sd">            }]</span>
+
+<span class="sd">        **Example Data for Creating Indicator-to-Indicator Associations** *(required fields are highlighted)*</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :lineno-start: 1</span>
+<span class="sd">            :emphasize-lines: 2-6</span>
+
+<span class="sd">            {</span>
+<span class="sd">              &quot;association_value&quot;: &quot;ASN1234&quot;,</span>
+<span class="sd">              &quot;association_type&quot;: tcex.safe_rt(&quot;ASN&quot;),</span>
+<span class="sd">              &quot;resource_value&quot;: &quot;1.2.3.4&quot;,</span>
+<span class="sd">              &quot;resource_type&quot;: &quot;Address&quot;,</span>
+<span class="sd">              &quot;custom_association_name&quot;: &quot;ASN to Address&quot;</span>
+<span class="sd">            }</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            associations (dict | list): Dictionary or List containing</span>
@@ -1219,6 +1262,39 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExJob.group_cache_add"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_add">[docs]</a>    <span class="k">def</span> <span class="nf">group_cache_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a group to the group cache.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name(string): The name of the Group</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
+<span class="sd">            resource_type (string): The resource type name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (integer): The ID for the provided group name and owner.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">group_cache</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource_id</span></div>
+
+<div class="viewcode-block" id="TcExJob.group_cache_remove"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_remove">[docs]</a>    <span class="k">def</span> <span class="nf">group_cache_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a group from the group cache.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name(string): The name of the Group</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
+<span class="sd">            resource_type (string): The resource type name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (integer): The ID for the provided group name and owner.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">u</span><span class="s1">&#39;Removing </span><span class="si">{}</span><span class="s1"> ID for group &quot;</span><span class="si">{}</span><span class="s1">&quot; in &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">resource_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">owner</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">name</span><span class="p">]</span></div>
+
 <div class="viewcode-block" id="TcExJob.group_cache_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_type">[docs]</a>    <span class="k">def</span> <span class="nf">group_cache_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the group type for the provided group id</span>
 
@@ -1226,7 +1302,6 @@
 <span class="sd">        ::</span>
 
 <span class="sd">            Owner -&gt; Group Id:Group Type</span>
-
 
 <span class="sd">        Args:</span>
 <span class="sd">            group_id (string): The group id to lookup</span>
@@ -1296,16 +1371,20 @@
 <span class="sd">              ],</span>
 <span class="sd">              &#39;attribute&#39;: [</span>
 <span class="sd">                {</span>
-<span class="sd">                  &#39;type&#39;: &#39;Description&#39;,</span>
-<span class="sd">                  &#39;value&#39;: &#39;Test Description&#39;</span>
+<span class="sd">                  &#39;type&#39;: &#39;Attribute Name&#39;,</span>
+<span class="sd">                  &#39;value&#39;: &#39;Description&#39;</span>
 <span class="sd">                }</span>
 <span class="sd">              ],</span>
 <span class="sd">              &#39;confidence&#39;: 5,</span>
-<span class="sd">              &#39;rating&#39;: &#39;3&#39;,</span>
+<span class="sd">              &#39;rating&#39;: 3.2,</span>
 <span class="sd">              &#39;summary&#39;: &#39;1.1.1.1&#39;,</span>
 <span class="sd">              &#39;tag&#39;: [</span>
-<span class="sd">                &#39;APT&#39;,</span>
-<span class="sd">                &#39;Crimeware&#39;</span>
+<span class="sd">                {</span>
+<span class="sd">                  &#39;name&#39;: &#39;APT&#39;,</span>
+<span class="sd">                },</span>
+<span class="sd">                {</span>
+<span class="sd">                  &#39;name&#39;: &#39;CrimeWare&#39;,</span>
+<span class="sd">                }</span>
 <span class="sd">              ],</span>
 <span class="sd">              &#39;type&#39;: &#39;Address&#39;</span>
 <span class="sd">            }</span>
@@ -1376,7 +1455,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            owner (string): The owner name for the data to be written</span>
-<span class="sd">            indicator_batch (bool): If true use the Batch Api otherwise use `/v2`.</span>
+<span class="sd">            indicator_batch (bool): If true use the Batch Api otherwise use `/v2` REST API.</span>
 <span class="sd">            group_action (string): The action to use on group create (duplicate, replace, skip).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
@@ -1435,7 +1514,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

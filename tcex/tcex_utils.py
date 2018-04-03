@@ -7,7 +7,6 @@ import re
 from pytz import timezone
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
-from tzlocal import get_localzone
 import parsedatetime as pdt
 
 
@@ -21,7 +20,7 @@ class TcExUtils():
         """
         self._tcex = tcex
 
-    def any_to_datetime(self, time_input, tz='UTC'):
+    def any_to_datetime(self, time_input, tz=None):
         """ Return datetime object from multiple formats
 
             Formats:
@@ -69,20 +68,17 @@ class TcExUtils():
             (datetime.datetime): Python datetime.datetime object.
         """
         dt = None
-        if tz is not None:
-            tz = timezone(tz)
         try:
             dt = parser.parse(time_input)
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone(get_localzone().zone))
-            if tz is not None:
-                dt = dt.astimezone(tz)
+            # don't covert timezone if dt timezone already in the correct timezone
+            if tz is not None and tz != dt.tzname():
+                dt = dt.astimezone(timezone(tz))
         except ValueError:
             pass
 
         return dt
 
-    def format_datetime(self, time_input, tz='UTC', date_format=None):
+    def format_datetime(self, time_input, tz=None, date_format=None):
         """ Return timestamp from multiple input formats.
 
             Formats:
@@ -119,7 +115,7 @@ class TcExUtils():
         return dt_value
 
     @staticmethod
-    def human_date_to_datetime(time_input, tz='UTC'):
+    def human_date_to_datetime(time_input, tz=None, source_datetime=None):
         """ Convert human readable date (e.g. 30 days ago) to datetime.datetime using
             parsedatetime module.
 
@@ -146,16 +142,24 @@ class TcExUtils():
 
         Args:
             time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            tz (string): The time zone for the returned datetime.
+            source_datetime (datetime.datetime): The reference or source datetime.
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.
         """
-        dt = None
+
         cal = pdt.Calendar()
-        local_tz = timezone(get_localzone().zone)
-        dt, status = cal.parseDT(time_input, tzinfo=local_tz)
-        dt = dt.astimezone(timezone(tz))
+        tzinfo = None
+        src_tzname = None
+        if source_datetime is not None:
+            tzinfo = source_datetime.tzinfo
+            src_tzname = source_datetime.tzname()
+        dt, status = cal.parseDT(time_input, sourceTime=source_datetime, tzinfo=tzinfo)
+        if tz is not None:  # don't add tz if no tz value is passed
+            # don't covert timezone if source timezone already in the correct timezone
+            if tz != src_tzname:
+                dt = dt.astimezone(timezone(tz))
         if status == 0:
             dt = None
 
@@ -206,28 +210,42 @@ class TcExUtils():
         }
 
     @staticmethod
-    def to_bool(value):
-        """ Convert string value to bool """
-        bool_value = False
-        if str(value).lower() in ['1', 'true']:
-            bool_value = True
-        return bool_value
-
-    @staticmethod
-    def unix_time_to_datetime(time_input, tz='UTC'):
+    def unix_time_to_datetime(time_input, tz=None):
         """ Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753
             to datetime.datetime type.
 
+        .. note:: This method assumes UTC if not timezone is None.
+
+        .. note:: This method only accepts a 9-10 character time_input.
+
         Args:
             time_input (string): The time input string (see formats above).
-            tz (string): The time zone for the returned data.
+            tz (string): The time zone for the returned datetime (e.g. UTC).
 
         Returns:
             (datetime.datetime): Python datetime.datetime object.
         """
         dt = None
-        tz = timezone(tz)
-        if re.compile(r'^[0-9]{10}(?:\.[0-9]{0,10})?$').findall(str(time_input)):
-            dt = datetime.fromtimestamp(float(time_input), tz)
+        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,10})?$').findall(str(time_input)):
+            dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
+            # don't covert timezone if dt timezone already in the correct timezone
+            if tz is not None and tz != dt.tzname():
+                dt = dt.astimezone(timezone(tz))
 
         return dt
+
+
+"""
+>>> from pytz import timezone
+>>> from datetime import datetime
+>>> time_input = 1229084481
+>>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
+>>> dt.isoformat()
+'2008-12-12T12:21:21+00:00'
+>>> tz.normalize(dt).isoformat()
+'2008-12-12T06:21:21-06:00'
+>>> dt.astimezone(timezone('US/Central'))
+datetime.datetime(2008, 12, 12, 6, 21, 21, tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
+>>> dt.astimezone(timezone('US/Central')).isoformat()
+'2008-12-12T06:21:21-06:00'
+"""

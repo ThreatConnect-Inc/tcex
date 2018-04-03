@@ -59,7 +59,7 @@ The TcEx Resource Module provides Access to the ``customMetric`` API endpoint to
 
 Examples
 ~~~~~~~~
-:ref:`examples`
+:ref:`custom_metric_examples`
 
 
 Data Store Resource
@@ -80,7 +80,7 @@ The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to th
 
 Examples
 ~~~~~~~~
-:ref:`examples`
+:ref:`datastore_examples`
 
 Group Resources
 ---------------
@@ -126,7 +126,7 @@ Indicator Resources
 
 Examples
 ~~~~~~~~
-:ref:`examples`
+:ref:`indicator_examples`
 
 .. Note:: Custom Indicators can be accessed by the **Type**. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made **safe** by using the :py:meth:`~tcex.tcex.TcEx.safe_rt` method.
 
@@ -150,7 +150,7 @@ Security Label Resources
 
 Examples
 ~~~~~~~~
-:ref:`examples`
+:ref:`security_label_examples`
 
 Tag Resources
 ---------------
@@ -163,7 +163,7 @@ Tag Resources
 
 Examples
 ~~~~~~~~
-:ref:`examples`
+:ref:`tag_examples`
 
 Task Resources
 --------------

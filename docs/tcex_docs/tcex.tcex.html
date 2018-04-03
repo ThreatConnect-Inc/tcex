@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.argparser module" href="tcex.argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.16
               </div>
             
           
@@ -114,6 +114,7 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +128,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -613,6 +615,33 @@ this limit will be truncated by this method.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex.TcEx.metric">
+<code class="descname">metric</code><span class="sig-paren">(</span><em>name</em>, <em>description</em>, <em>data_type</em>, <em>interval</em>, <em>keyed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get instance of Metrics module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – The name for the metric.</li>
+<li><strong>description</strong> – The description of the metric.</li>
+<li><strong>data_type</strong> – The type of metric: Sum, Count, Min, Max, First, Last, and Average</li>
+<li><strong>interval</strong> – The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly</li>
+<li><strong>keyed</strong> – Indicates whether the data will have a keyed value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Instance of Metric Class</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(instance)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.proxies">
 <code class="descname">proxies</code><a class="headerlink" href="#tcex.tcex.TcEx.proxies" title="Permalink to this definition">¶</a></dt>
@@ -846,7 +875,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <dl class="staticmethod">
 <dt id="tcex.tcex.TcEx.safetag">
 <em class="property">static </em><code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Truncate tag to match limit (128 characters) of ThreatConnect API.</p>
+<dd><p>URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -950,7 +979,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

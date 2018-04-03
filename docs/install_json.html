@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Install JSON &mdash; TcEx 0.7.14 documentation</title>
+  <title>Install JSON &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="index.html"/>
         <link rel="next" title="Jobs" href="jobs.html"/>
         <link rel="prev" title="Examples" href="examples.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.7.16
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -410,7 +411,16 @@
 223
 224
 225
-226</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -484,6 +494,15 @@
           <span class="p">},</span>
           <span class="nt">&quot;encrypt&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;exposePlaybookKeyAs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;StringArray&quot;</span>
+              <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
           <span class="p">},</span>
           <span class="nt">&quot;hidden&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
@@ -684,7 +703,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

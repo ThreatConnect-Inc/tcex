@@ -891,8 +891,7 @@ class Resource(object):
             resource_id (string): The resource pivot id (tag name).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            tag_resource.request_uri, resource._request_uri)
+        resource._request_uri = '{}/{}'.format(tag_resource.request_uri, resource._request_uri)
         return resource
 
     def tags(self, resource_id=None):
@@ -1251,6 +1250,11 @@ class Indicator(Resource):
         }
         self._value_fields = ['summary']
 
+    def deleted(self):
+        """Update the request URI to include the deleted endpoint.
+        """
+        self._request_uri = '{}/deleted'.format(self._request_uri)
+
     def entity_body(self, data):
         """Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.
 
@@ -1273,7 +1277,6 @@ class Indicator(Resource):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            # self._request_uri = '{}/{}'.format(self._api_uri, data)
             self._request_uri = '{}/{}'.format(
                 self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
 
@@ -1883,6 +1886,25 @@ class Email(Group):
         self._request_uri = self._api_uri
 
 
+class Event(Group):
+    """Event Resource Class
+
+    This resource class will return groups of type Event. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Event, self).__init__(tcex)
+        self._api_branch = 'events'
+        self._api_entity = 'event'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Event'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+
 class Incident(Group):
     """Incident Resource Class
 
@@ -1910,6 +1932,44 @@ class Incident(Group):
             date: The event date in ISO 8601 format.
         """
         pass
+
+
+class Intrustion_Set(Group):
+    """Intrusion Set Resource Class
+
+    This resource class will return groups of type Intrusion Set. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(IntrustionSet, self).__init__(tcex)
+        self._api_branch = 'intrusionSets'
+        self._api_entity = 'intrusionSet'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Intrusion Set'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+
+class Report(Group):
+    """Report Resource Class
+
+    This resource class will return groups of type Report. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Report, self).__init__(tcex)
+        self._api_branch = 'reports'
+        self._api_entity = 'report'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Report'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
 
 
 class Signature(Group):
@@ -2000,7 +2060,7 @@ class CustomMetric(Resource):
         self._request_uri = self._api_uri
         self._status_codes = {
             'GET': [200],
-            'POST': [200, 204],
+            'POST': [200, 201, 204],
             'PUT': [200]
         }
         self._value_fields = ['customMetricConfig']
@@ -2221,7 +2281,7 @@ class Tag(Resource):
         Args:
             resource_id (string): The tag name.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = '{}/{}'.format(self._request_uri, self._tcex.safetag(resource_id))
 
     def resource_id(self, resource_id):
         """Alias for tag
