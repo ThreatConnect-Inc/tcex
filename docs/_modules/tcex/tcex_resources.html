@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.7.15 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.15 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.15
+                0.7.16
               </div>
             
           
@@ -1429,6 +1429,11 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
 
+<div class="viewcode-block" id="Indicator.deleted"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.deleted">[docs]</a>    <span class="k">def</span> <span class="nf">deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to include the deleted endpoint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/deleted&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Indicator.entity_body"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.entity_body">[docs]</a>    <span class="k">def</span> <span class="nf">entity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.</span>
 
@@ -1451,7 +1456,6 @@
 <span class="sd">            data (string): The indicator value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Bulk&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">!=</span> <span class="s1">&#39;Indicator&#39;</span><span class="p">:</span>
-            <span class="c1"># self._request_uri = &#39;{}/{}&#39;.format(self._api_uri, data)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safe_indicator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span></div>
 
@@ -2795,7 +2799,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.15',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

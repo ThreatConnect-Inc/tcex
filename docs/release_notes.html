@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Release Notes &mdash; TcEx 0.7.15 documentation</title>
+  <title>Release Notes &mdash; TcEx 0.7.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.15 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.7.16 documentation" href="index.html"/>
         <link rel="next" title="Utils" href="utils.html"/>
         <link rel="prev" title="Results TC" href="results_tc.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.15
+                0.7.16
               </div>
             
           
@@ -305,11 +305,12 @@
 <h3>0.7.16<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated utils datetime methods to not require a timezone.</li>
+<li>Updated Tag class to urlencode tag value so slashes are supported.</li>
+<li>Updated safetag method to strip <strong>^</strong> from tag values.</li>
+<li>Changed modules dependency to use latest version instead of restricting to current version.</li>
 <li>Added Event, Intrusion Set and Report group types in preparation for TC &gt; 5.6.0.</li>
 <li>Added metrics module to create and add metrics to ThreatConnect.</li>
-<li>Changed modules dependency to use latest version instead of restricting to current version.</li>
-<li>Updated Tag class to urlencode tag value so slashes are supported.</li>
-<li>Update safetag method to strip <strong>^</strong> from tag values.</li>
+<li>Added <strong>deleted</strong> endpoint for indicators.</li>
 </ul>
 </div>
 <div class="section" id="id3">
@@ -1113,7 +1114,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.15',
+            VERSION:'0.7.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -14,6 +14,7 @@ The ``tcex.metrics()`` method has required fields of name, description, data_typ
 .. code-block:: python
     :linenos:
     :lineno-start: 1
+
     metrics = tcex.metric('My Metrics', 'Metric Testing', 'Sum', 'Daily', False)
 
 Add Metrics
@@ -23,6 +24,7 @@ The ``add()`` method has a required field of value. It also accepts an option fi
 .. code-block:: python
     :linenos:
     :lineno-start: 1
+
     metrics = tcex.metric('My Metric', 'TcEx Metric Testing', 'Sum', 'Daily', False)
     metrics.add(123)
 
@@ -33,6 +35,7 @@ The ``add_keyed()`` method has a required field of value and key. It also accept
 .. code-block:: python
     :linenos:
     :lineno-start: 1
+
     metrics = tcex.metric('My Keyed Metric', 'TcEx Keyed Metric Testing', 'Sum', 'Daily', True)
     address_results = metrics.add(100, key='Address', date='2019-03-28T12:25:40Z', return_value=True)
     host_results = metrics.add(99, 'Host', '2019-03-28T12:25:40Z', True)
