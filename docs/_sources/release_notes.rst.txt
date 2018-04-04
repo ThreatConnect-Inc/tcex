@@ -6,6 +6,11 @@ Release Notes
 0.7.x
 =====
 
+0.7.17
+------
++ Update utils module for handling naive datetime in Py2.
++ Added to_bool() method back to utils module.
+
 0.7.16
 ------
 + Updated utils datetime methods to not require a timezone.
