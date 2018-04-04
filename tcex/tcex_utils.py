@@ -7,6 +7,7 @@ import re
 from pytz import timezone
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+from tzlocal import get_localzone
 import parsedatetime as pdt
 
 
@@ -56,8 +57,7 @@ class TcExUtils():
 
         return dt_value
 
-    @staticmethod
-    def date_to_datetime(time_input, tz=None):
+    def date_to_datetime(self, time_input, tz=None):
         """ Convert ISO 8601 and other date strings to datetime.datetime type.
 
         Args:
@@ -72,6 +72,10 @@ class TcExUtils():
             dt = parser.parse(time_input)
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
+                if dt.tzinfo is None:
+                    self._tcex.log.info(
+                        'Assuming local time for naive datetime {}.'.format(str(dt)))
+                    dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
                 dt = dt.astimezone(timezone(tz))
         except ValueError:
             pass
@@ -114,8 +118,7 @@ class TcExUtils():
 
         return dt_value
 
-    @staticmethod
-    def human_date_to_datetime(time_input, tz=None, source_datetime=None):
+    def human_date_to_datetime(self, time_input, tz=None, source_datetime=None):
         """ Convert human readable date (e.g. 30 days ago) to datetime.datetime using
             parsedatetime module.
 
@@ -158,6 +161,9 @@ class TcExUtils():
         dt, status = cal.parseDT(time_input, sourceTime=source_datetime, tzinfo=tzinfo)
         if tz is not None:  # don't add tz if no tz value is passed
             # don't covert timezone if source timezone already in the correct timezone
+            if dt.tzinfo is None:
+                self._tcex.log.info('Assuming local time for naive datetime {}.'.format(str(dt)))
+                dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
             if tz != src_tzname:
                 dt = dt.astimezone(timezone(tz))
         if status == 0:
@@ -210,11 +216,19 @@ class TcExUtils():
         }
 
     @staticmethod
+    def to_bool(value):
+        """ Convert string value to bool """
+        bool_value = False
+        if str(value).lower() in ['1', 'true']:
+            bool_value = True
+        return bool_value
+
+    @staticmethod
     def unix_time_to_datetime(time_input, tz=None):
         """ Convert (unix time|epoch time|posix time) in format of 1510686617 or 1510686617.298753
             to datetime.datetime type.
 
-        .. note:: This method assumes UTC if not timezone is None.
+        .. note:: This method assumes UTC for all inputs.
 
         .. note:: This method only accepts a 9-10 character time_input.
 

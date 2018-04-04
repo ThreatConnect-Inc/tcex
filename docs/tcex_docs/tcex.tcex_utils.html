@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils module &mdash; TcEx 0.7.16 documentation</title>
+  <title>tcex.tcex_utils module &mdash; TcEx 0.7.17 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.16 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.17 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="Metrics" href="../metrics.html"/>
         <link rel="prev" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.16
+                0.7.17
               </div>
             
           
@@ -243,9 +243,9 @@
 </table>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.date_to_datetime">
-<em class="property">static </em><code class="descname">date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descname">date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert ISO 8601 and other date strings to datetime.datetime type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -307,9 +307,9 @@ use case.</p>
 </table>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_utils.TcExUtils.human_date_to_datetime">
-<em class="property">static </em><code class="descname">human_date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="descname">human_date_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em>, <em>source_datetime=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.human_date_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Convert human readable date (e.g. 30 days ago) to datetime.datetime using</dt>
 <dd>parsedatetime module.</dd>
@@ -381,6 +381,12 @@ use case.</p>
 </dd></dl>
 
 <dl class="staticmethod">
+<dt id="tcex.tcex_utils.TcExUtils.to_bool">
+<em class="property">static </em><code class="descname">to_bool</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.to_bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.to_bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string value to bool</p>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="tcex.tcex_utils.TcExUtils.unix_time_to_datetime">
 <em class="property">static </em><code class="descname">unix_time_to_datetime</code><span class="sig-paren">(</span><em>time_input</em>, <em>tz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_utils.html#TcExUtils.unix_time_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -389,7 +395,7 @@ use case.</p>
 </dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This method assumes UTC if not timezone is None.</p>
+<p class="last">This method assumes UTC for all inputs.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -462,7 +468,7 @@ use case.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.16',
+            VERSION:'0.7.17',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
