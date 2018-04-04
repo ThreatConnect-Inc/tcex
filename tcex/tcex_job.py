@@ -523,7 +523,7 @@ class TcExJob(object):
 
             i_results = resource.request()
 
-            # PUT file indicator since API does not work consistently for all indiator types
+            # PUT file indicator since API does not work consistently for all indicator types
             if i_data.get('type') == 'File' and i_results.get('response').status_code == 400:
                 if 'MD5' in i_results.get('response').text:
                     i_value = body.get('md5', i_value)
