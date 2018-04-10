@@ -7,8 +7,8 @@ Submodules
 .. toctree::
 
    tcex.api_logging_handler
-   tcex.argparser
    tcex.tcex
+   tcex.tcex_argparser
    tcex.tcex_data_filter
    tcex.tcex_job
    tcex.tcex_local

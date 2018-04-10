@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.7.17 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.17 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.18 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.17
+                0.7.18
               </div>
             
           
@@ -2113,7 +2113,7 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="Intrustion_Set"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Intrustion_Set">[docs]</a><span class="k">class</span> <span class="nc">Intrustion_Set</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+<div class="viewcode-block" id="Intrusion_Set"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Intrusion_Set">[docs]</a><span class="k">class</span> <span class="nc">Intrusion_Set</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Intrusion Set Resource Class</span>
 
 <span class="sd">    This resource class will return groups of type Intrusion Set. To filter on</span>
@@ -2123,7 +2123,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">IntrustionSet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Intrusion_Set</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;intrusionSets&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;intrusionSet&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
@@ -2148,7 +2148,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_api_branch_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Report&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+
+<div class="viewcode-block" id="Report.download"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Report.download">[docs]</a>    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to download the report for this resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The group id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Report.upload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Report.upload">[docs]</a>    <span class="k">def</span> <span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the request URI to upload the a report to this resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_id (integer): The group id.</span>
+<span class="sd">            data (any): The raw data to upload.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/octet-stream&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resource_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/upload&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
@@ -2799,7 +2820,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.17',
+            VERSION:'0.7.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

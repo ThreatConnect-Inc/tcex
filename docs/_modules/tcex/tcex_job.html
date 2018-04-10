@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.17 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.7.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.17 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.18 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.17
+                0.7.18
               </div>
             
           
@@ -632,7 +632,8 @@
                                     <span class="k">break</span>
                                 <span class="k">else</span><span class="p">:</span>
                                     <span class="c1"># all indicators were saved minus failed; not_save == failed</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="p">[])</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                        <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="p">[])</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                                         <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span>
                                          <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -778,7 +779,7 @@
                     <span class="n">resource</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">i_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">resource</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">i_value</span><span class="p">)</span>
-                <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)))</span>
+                <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="n">tag_resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
                 <span class="n">t_results</span> <span class="o">=</span> <span class="n">tag_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">t_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
@@ -1296,7 +1297,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_cache</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">resource_type</span><span class="p">][</span><span class="n">name</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TcExJob.group_cache_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_type">[docs]</a>    <span class="k">def</span> <span class="nf">group_cache_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the group type for the provided group id</span>
+        <span class="sd">&quot;&quot;&quot;Get the group type for the provided group id.</span>
 
 <span class="sd">        **Cache Structure**</span>
 <span class="sd">        ::</span>
@@ -1342,7 +1343,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">group_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted groups</span>
+        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted groups.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Dictionary of group names for each status</span>
@@ -1404,7 +1405,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">unprocessed_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return indicators (unprocessed)</span>
+        <span class="sd">&quot;&quot;&quot;Return indicators (unprocessed).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): The unprocessed indicator list</span>
@@ -1413,7 +1414,7 @@
 
     <span class="nd">@unprocessed_indicators</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">unprocessed_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set indicators list</span>
+        <span class="sd">&quot;&quot;&quot;Set indicators list.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value (list): List of indicators</span>
@@ -1432,7 +1433,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indicator_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The current length of the indicator list</span>
+        <span class="sd">&quot;&quot;&quot;The current length of the indicator list.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The length of the indicator list</span>
@@ -1441,7 +1442,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">indicator_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted indicators</span>
+        <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted indicators.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dictionary): Dictionary of indicator values for each status</span>
@@ -1449,9 +1450,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span>
 
 <div class="viewcode-block" id="TcExJob.process"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">indicator_batch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">group_action</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process all association, group and indicator data.</span>
+        <span class="sd">&quot;&quot;&quot;Process all groups, indicator data, and associations.</span>
 
-<span class="sd">        Process each of the supported data types for this job.</span>
+<span class="sd">        Process each of the supported data types for this job, in the following</span>
+<span class="sd">        order (left to right):</span>
+
+<span class="sd">            groups &gt; indicators &gt; file occurrences &gt; group associations &gt; associations</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            owner (string): The owner name for the data to be written</span>
@@ -1514,7 +1518,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.17',
+            VERSION:'0.7.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

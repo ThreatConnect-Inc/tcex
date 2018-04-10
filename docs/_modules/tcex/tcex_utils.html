@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.7.17 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.7.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.17 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.18 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.17
+                0.7.18
               </div>
             
           
@@ -339,10 +339,10 @@
             <span class="n">src_tzname</span> <span class="o">=</span> <span class="n">source_datetime</span><span class="o">.</span><span class="n">tzname</span><span class="p">()</span>
         <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">sourceTime</span><span class="o">=</span><span class="n">source_datetime</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># don&#39;t add tz if no tz value is passed</span>
-            <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Assuming local time for naive datetime </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)))</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>  <span class="c1"># required for py2.x</span>
+            <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">src_tzname</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -477,7 +477,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.17',
+            VERSION:'0.7.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

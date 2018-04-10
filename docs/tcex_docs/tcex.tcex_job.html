@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.7.17 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.7.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.17 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.18 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_local module" href="tcex.tcex_local.html"/>
         <link rel="prev" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.17
+                0.7.18
               </div>
             
           
@@ -109,8 +109,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.argparser.html">tcex.argparser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_job module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
@@ -845,7 +845,7 @@ association data</td>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.group_cache_type">
 <code class="descname">group_cache_type</code><span class="sig-paren">(</span><em>group_id</em>, <em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.group_cache_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_cache_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the group type for the provided group id</p>
+<dd><p>Get the group type for the provided group id.</p>
 <p><strong>Cache Structure</strong></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Owner</span> <span class="o">-&gt;</span> <span class="n">Group</span> <span class="n">Id</span><span class="p">:</span><span class="n">Group</span> <span class="n">Type</span>
 </pre></div>
@@ -915,7 +915,7 @@ association data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.group_results">
 <code class="descname">group_results</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.group_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Result dictionary of failed, saved, not_saved, and submitted groups</p>
+<dd><p>Result dictionary of failed, saved, not_saved, and submitted groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1018,7 +1018,7 @@ data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.indicator_len">
 <code class="descname">indicator_len</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator_len" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current length of the indicator list</p>
+<dd><p>The current length of the indicator list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1034,7 +1034,7 @@ data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.indicator_results">
 <code class="descname">indicator_results</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.indicator_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Result dictionary of failed, saved, not_saved, and submitted indicators</p>
+<dd><p>Result dictionary of failed, saved, not_saved, and submitted indicators.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1050,8 +1050,11 @@ data</td>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.process">
 <code class="descname">process</code><span class="sig-paren">(</span><em>owner</em>, <em>indicator_batch=True</em>, <em>group_action='skip'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process all association, group and indicator data.</p>
-<p>Process each of the supported data types for this job.</p>
+<dd><p>Process all groups, indicator data, and associations.</p>
+<p>Process each of the supported data types for this job, in the following
+order (left to right):</p>
+<blockquote>
+<div>groups &gt; indicators &gt; file occurrences &gt; group associations &gt; associations</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1070,7 +1073,7 @@ data</td>
 <dl class="attribute">
 <dt id="tcex.tcex_job.TcExJob.unprocessed_indicators">
 <code class="descname">unprocessed_indicators</code><a class="headerlink" href="#tcex.tcex_job.TcExJob.unprocessed_indicators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return indicators (unprocessed)</p>
+<dd><p>Return indicators (unprocessed).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1130,7 +1133,7 @@ data</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.17',
+            VERSION:'0.7.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

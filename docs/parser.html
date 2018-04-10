@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parser / Args &mdash; TcEx 0.7.17 documentation</title>
+  <title>Parser / Args &mdash; TcEx 0.7.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.17 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.7.18 documentation" href="index.html"/>
         <link rel="next" title="Playbooks" href="playbook.html"/>
         <link rel="prev" title="Metrics" href="metrics.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.17
+                0.7.18
               </div>
             
           
@@ -192,22 +192,22 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments have to be configured in the <a class="reference internal" href="install_json.html#install-json"><span class="std std-ref">Install JSON</span></a> configuration file and configured in each job to be passed to the app.  The <code class="docutils literal"><span class="pre">tc_token</span></code> will automatically be passed for Apps running in the ThreatConnect Exchange Platform.</p>
 </div>
-<p>The list of API args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._api_arguments" title="tcex.argparser.ArgParser._api_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code></a> method.</p>
+<p>The list of API args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_api_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="batch-arguments">
 <h2>Batch Arguments<a class="headerlink" href="#batch-arguments" title="Permalink to this headline">¶</a></h2>
 <p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal"><span class="pre">install.json</span></code> configuration file.  These default values can also be overridden with methods provided in the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module.</p>
-<p>The list of Batch args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._batch_arguments" title="tcex.argparser.ArgParser._batch_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code></a> method.</p>
+<p>The list of Batch args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="playbook-arguments">
 <h2>Playbook Arguments<a class="headerlink" href="#playbook-arguments" title="Permalink to this headline">¶</a></h2>
 <p>Playbook Apps have a standard set of arguments. All of these argument will be passed by the ThreatConnect Exchange Platform for all Playbook apps.</p>
-<p>The list of Playbook args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._playbook_arguments" title="tcex.argparser.ArgParser._playbook_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code></a> method.</p>
+<p>The list of Playbook args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_playbook_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="standard-arguments">
 <h2>Standard Arguments<a class="headerlink" href="#standard-arguments" title="Permalink to this headline">¶</a></h2>
 <p>The ThreatConnect Platform passes all apps a set of standard arguments.  Some of these arguments are depended on App settings and others on System settings.  The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
-<p>The list of standard args can be found in the <a class="reference internal" href="tcex_docs/tcex.argparser.html#tcex.argparser.ArgParser._standard_arguments" title="tcex.argparser.ArgParser._standard_arguments"><code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code></a> method.</p>
+<p>The list of standard args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_standard_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="custom-argument">
 <h2>Custom Argument<a class="headerlink" href="#custom-argument" title="Permalink to this headline">¶</a></h2>
@@ -276,7 +276,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.17',
+            VERSION:'0.7.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
