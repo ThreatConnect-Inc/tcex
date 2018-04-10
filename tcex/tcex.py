@@ -74,6 +74,9 @@ class TcEx(object):
         # logger (must parse args first)
         self.log = self._logger(self.default_args.tc_log_file)
 
+        # inject args using secure param feature
+        self._inject_secure_params()
+
         # Log versions
         self._log_platform()
         self._log_app_version()
@@ -92,9 +95,6 @@ class TcEx(object):
 
         # include utils module
         self._utils()
-
-        # inject args using secure param feature
-        self._inject_secure_params()
 
     def _inject_secure_params(self):
         """Inject secure params retrieved from the API
@@ -124,6 +124,9 @@ class TcEx(object):
             self.log.debug('injecting arg: --{}={}'.format(arg, value))
             sys.argv.append('--{}'.format(arg))
             sys.argv.append(value)
+
+        # reset default_args now that values have been injected into sys.argv
+        self.default_args, unknown = self.parser.parse_known_args()
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API.
