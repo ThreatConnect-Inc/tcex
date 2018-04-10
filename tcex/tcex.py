@@ -64,7 +64,6 @@ class TcEx(object):
         self._parsed = False
         self.parser = TcExArgParser()
         self.default_args, unknown = self.parser.parse_known_args()
-        self._inject_secure_params()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -94,6 +93,9 @@ class TcEx(object):
         # include utils module
         self._utils()
 
+        # inject args using secure param feature
+        self._inject_secure_params()
+
     def _inject_secure_params(self):
         """Inject secure params retrieved from the API
         """
@@ -119,6 +121,7 @@ class TcEx(object):
         # inject args from API endpoint
         data = response.json()
         for arg, value in data.get('inputs', {}).items():
+            self.log.debug('injecting arg: {}={}'.format(arg, value))
             sys.argv.append(arg)
             sys.argv.append(value)
 
