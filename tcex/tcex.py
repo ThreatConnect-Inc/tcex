@@ -99,7 +99,7 @@ class TcEx(object):
     def _inject_secure_params(self):
         """Inject secure params retrieved from the API
         """
-        if not self.utils.to_bool(self.default_args.tc_secure_params):
+        if not self.default_args.tc_secure_params:
             self.log.info('Secure Params are not enabled')
             return
 

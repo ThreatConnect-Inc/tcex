@@ -13,6 +13,9 @@
     "displayName": {
       "type": "string"
     },
+    "features": {
+      "type": "array"
+    },
     "feeds": {
       "items": {
         "additionalProperties": false,

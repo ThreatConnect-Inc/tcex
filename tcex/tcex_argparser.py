@@ -36,7 +36,7 @@ class TcExArgParser(ArgumentParser):
         self._tc_log_file = 'app.log'
         self._tc_log_path = '/tmp'
         self._tc_out_path = '/tmp'
-        self._tc_secure_params = 'false'
+        self._tc_secure_params = False
         self._tc_temp_path = '/tmp'
         self._tc_user_id = None
         self._tc_log_to_api = False
@@ -166,7 +166,7 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path')
         self.add_argument(
-            '--tc_secure_params', default=self._tc_secure_params,
+            '--tc_secure_params', action='store_true', default=self._tc_secure_params,
             help='ThreatConnect Secure params enabled')
         self.add_argument(
             '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
