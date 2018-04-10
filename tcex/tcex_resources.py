@@ -1934,7 +1934,7 @@ class Incident(Group):
         pass
 
 
-class Intrustion_Set(Group):
+class Intrusion_Set(Group):
     """Intrusion Set Resource Class
 
     This resource class will return groups of type Intrusion Set. To filter on
@@ -1944,7 +1944,7 @@ class Intrustion_Set(Group):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        super(IntrustionSet, self).__init__(tcex)
+        super(Intrusion_Set, self).__init__(tcex)
         self._api_branch = 'intrusionSets'
         self._api_entity = 'intrusionSet'
         self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
@@ -1970,6 +1970,27 @@ class Report(Group):
         self._name = 'Report'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
+
+    def download(self, resource_id):
+        """Update the request URI to download the report for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/download'.format(self._request_uri)
+
+    def upload(self, resource_id, data):
+        """Update the request URI to upload the a report to this resource.
+
+        Args:
+            resource_id (integer): The group id.
+            data (any): The raw data to upload.
+        """
+        self.body = data
+        self.content_type = 'application/octet-stream'
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/upload'.format(self._request_uri)
 
 
 class Signature(Group):

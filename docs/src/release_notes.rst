@@ -6,6 +6,15 @@ Release Notes
 0.7.x
 =====
 
+0.7.18
+------
++ Updated jobs module to not call safetag method when using resource module.
++ Updated Intrusion Set class in resource module.
++ Updated group list to include new group types.
++ Added `upload()` and `download()` methods to Report class in resource module.
++ Added Task as a group type.
++ Added new secure params feature.
+
 0.7.17
 ------
 + Update utils module for handling naive datetime in Py2.

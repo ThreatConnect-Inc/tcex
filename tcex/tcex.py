@@ -21,7 +21,7 @@ except ImportError:
 from dateutil.relativedelta import relativedelta
 import inflect
 
-from .argparser import ArgParser
+from .tcex_argparser import TcExArgParser
 from .tcex_job import TcExJob
 from .tcex_metrics_v2 import TcExMetricsV2
 
@@ -44,9 +44,13 @@ class TcEx(object):
             'Campaign',
             'Document',
             'Email',
+            'Event',
             'Incident',
+            'Intrusion Set',
             'Signature',
-            'Threat'
+            'Report',
+            'Threat',
+            'Task'
         ]
         self._indicator_associations_types_data = {}
         self._indicator_types = []
@@ -58,8 +62,9 @@ class TcEx(object):
 
         # Parser
         self._parsed = False
-        self.parser = ArgParser()
+        self.parser = TcExArgParser()
         self.default_args, unknown = self.parser.parse_known_args()
+        self._inject_secure_params()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -88,6 +93,34 @@ class TcEx(object):
 
         # include utils module
         self._utils()
+
+    def _inject_secure_params(self):
+        """Inject secure params retrieved from the API
+        """
+        if not self.utils.to_bool(self.default_args.tc_secure_params):
+            self.log.info('Secure Params are not enabled')
+            return
+
+        # Retrieve secure params and inject them into sys.argv
+        r = self.request
+        r.authorization_method(self.authorization)
+        if self.default_args.tc_proxy_tc:
+            r.proxies = self.proxies
+        r.url = '{}/internal/job/execution/parameters'.format(self.default_args.tc_api_path)
+        response = r.send()
+
+        # check for bad status code and response that is not JSON
+        if (int(response.status_code) != 200 or
+                response.headers.get('content-type') != 'application/json'):
+            warn = u'Secure params could not be retrieved.'
+            self.log.warning(warn)
+            return
+
+        # inject args from API endpoint
+        data = response.json()
+        for arg, value in data.get('inputs', {}).items():
+            sys.argv.append(arg)
+            sys.argv.append(value)
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API.
@@ -161,7 +194,7 @@ class TcEx(object):
                     raise RuntimeError(err)
             except RuntimeError:
                 raise
-            except:
+            except Exception:
                 # TODO: Limit this exception
                 self.log.error(u'Failure during token renewal. ({})'.format(results.text))
 
@@ -181,7 +214,7 @@ class TcEx(object):
                 app_version = json.load(fh)['programVersion']
 
             self.log.info(u'App Version: {}'.format(app_version))
-        except:
+        except Exception:
             # TODO: Limit this exception
             self.log.debug(u'Could not retrieve App Version')
 
@@ -1045,8 +1078,10 @@ class TcEx(object):
             (string): The truncated tag
         """
         if tag is not None:
-            tag = quote(TcEx.to_string(tag.replace('^', ''), errors=errors), safe='~')
+            # handle unicode characters and url encode tag value
+            tag = quote(TcEx.to_string(tag, errors=errors), safe='~')
             if len(tag) > 128:
+                # truncate tag
                 tag = tag[:128]
         return tag
 
