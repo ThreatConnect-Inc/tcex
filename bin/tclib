@@ -103,7 +103,7 @@ class TcLib(object):
             if p.returncode != 0:
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err.decode('utf-8')))
-                sys.exit('ERROR: {}'.format(err.decode('utf-8'))
+                sys.exit('ERROR: {}'.format(err.decode('utf-8')))
 
     # def _pip_install(self, app_path, app_name, lib_path):
     #     """ """

@@ -121,8 +121,8 @@ class TcEx(object):
         # inject args from API endpoint
         data = response.json()
         for arg, value in data.get('inputs', {}).items():
-            self.log.debug('injecting arg: {}={}'.format(arg, value))
-            sys.argv.append(arg)
+            self.log.debug('injecting arg: --{}={}'.format(arg, value))
+            sys.argv.append('--{}'.format(arg))
             sys.argv.append(value)
 
     def _association_types(self):
