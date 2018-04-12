@@ -688,7 +688,6 @@ class TcRun(object):
             #
             # Validate Data
             #
-            self.json_report['run_status']['validations']['total'] += 1
             validation_result = 'fail'
             if execution_success:
                 validation_success = self.validate_data(sp)
