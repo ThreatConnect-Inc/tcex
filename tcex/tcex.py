@@ -121,9 +121,16 @@ class TcEx(object):
         # inject args from API endpoint
         data = response.json()
         for arg, value in data.get('inputs', {}).items():
-            # handle bool values (string of "true") as flags (e.g., --flag) with no value
-            if value == 'true':
+            if isinstance(value, (bool)):
+                # handle bool values as flags (e.g., --flag) with no value
+                if value:
+                    sys.argv.append('--{}'.format(arg))
+            elif value == 'true':
+                # handle bool values (string of "true") as flags (e.g., --flag) with no value
                 sys.argv.append('--{}'.format(arg))
+            elif value == 'false':
+                # boolean value as flag is not required
+                pass
             else:
                 sys.argv.append('--{}'.format(arg))
                 sys.argv.append('{}'.format(value))

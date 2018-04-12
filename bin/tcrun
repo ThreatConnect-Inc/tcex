@@ -518,11 +518,11 @@ class TcRun(object):
                 selected_profiles.append(config)
                 report_profile['selected'] = True
                 self.json_report['run_config']['selected_profiles'].append(profile_name)
-            else:
-                # add unselected profiles
-                self.json_report['profiles'].append({
-                    profile_name: report_profile
-                })
+            # else:
+            #     # add unselected profiles
+            #     self.json_report['profiles'].append({
+            #         profile_name: report_profile
+            #     })
 
         if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
