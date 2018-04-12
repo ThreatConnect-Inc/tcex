@@ -515,14 +515,17 @@ class TcRun(object):
                 profile_selected = True
 
             if profile_selected:
-                selected_profiles.append(config)
                 report_profile['selected'] = True
+                selected_profiles.append({
+                    'config': config,
+                    'report_profile': report_profile
+                })
                 self.json_report['run_config']['selected_profiles'].append(profile_name)
-            # else:
-            #     # add unselected profiles
-            #     self.json_report['profiles'].append({
-            #         profile_name: report_profile
-            #     })
+            else:
+                # add unselected profiles
+                self.json_report['profiles'].append({
+                    profile_name: report_profile
+                })
 
         if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
@@ -530,7 +533,10 @@ class TcRun(object):
 
         command_count = 0
         reports = []
-        for sp in selected_profiles:
+        for profile_data in selected_profiles:
+            sp = profile_data.get('config')
+            report_profile = profile_data.get('report_profile')
+
             # create temp directories
             self._create_tc_dirs(sp)
 
@@ -694,7 +700,7 @@ class TcRun(object):
         #
         if args.report:
             with open(args.report, 'w') as outfile:
-                json.dump(self.json_report, outfile)
+                json.dump(self.json_report, outfile, sort_keys=True)
 
         # on screen report
         if reports:
