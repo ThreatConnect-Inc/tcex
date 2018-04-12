@@ -492,6 +492,17 @@ class TcRun(object):
                 'provided_group': self._args.group,
                 'provided_profile': self._args.profile,
                 'selected_profiles': []
+            },
+            'run_status': {
+                'total': 0,
+                'executions': {
+                    'pass': 0,
+                    'fail': 0
+                },
+                'validations': {
+                    'pass': 0,
+                    'fail': 0
+                }
             }
         }
 
@@ -532,7 +543,7 @@ class TcRun(object):
             sys.exit()
 
         command_count = 0
-        reports = []
+        reports = []  # output to terminal
         for profile_data in selected_profiles:
             sp = profile_data.get('config')
             report_profile = profile_data.get('report_profile')
@@ -656,11 +667,14 @@ class TcRun(object):
             #
             # Exit Code
             #
+            self.json_report['run_status']['total'] += 1
             valid_exit_codes = sp.get('exit_codes', [0])
             report_profile['exit_code'] = p.returncode
+            execution_result = 'fail'
             if p.returncode in valid_exit_codes:
                 print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, p.returncode))
                 execution_success = True
+                execution_result = 'pass'
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
@@ -669,12 +683,18 @@ class TcRun(object):
                 self.exit_code = 1
                 if args.halt_on_fail:
                     break
+            self.json_report['run_status']['execution'][execution_result] += 1
 
             #
             # Validate Data
             #
+            self.json_report['run_status']['validations']['total'] += 1
             if execution_success:
                 validation_success = self.validate_data(sp)
+                validation_result = 'fail'
+                if validation_success:
+                    validation_result = 'pass'
+                self.json_report['run_status']['validations'][validation_result] += 1
 
             #
             # Error Output
