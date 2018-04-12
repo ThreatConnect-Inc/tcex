@@ -673,8 +673,8 @@ class TcRun(object):
             execution_result = 'fail'
             if p.returncode in valid_exit_codes:
                 print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, p.returncode))
-                execution_success = True
                 execution_result = 'pass'
+                execution_success = True
             else:
                 print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
                     c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
@@ -683,18 +683,18 @@ class TcRun(object):
                 self.exit_code = 1
                 if args.halt_on_fail:
                     break
-            self.json_report['run_status']['execution'][execution_result] += 1
+            self.json_report['run_status']['executions'][execution_result] += 1
 
             #
             # Validate Data
             #
             self.json_report['run_status']['validations']['total'] += 1
+            validation_result = 'fail'
             if execution_success:
                 validation_success = self.validate_data(sp)
-                validation_result = 'fail'
                 if validation_success:
                     validation_result = 'pass'
-                self.json_report['run_status']['validations'][validation_result] += 1
+            self.json_report['run_status']['validations'][validation_result] += 1
 
             #
             # Error Output
