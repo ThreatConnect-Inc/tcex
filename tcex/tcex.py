@@ -121,13 +121,12 @@ class TcEx(object):
         # inject args from API endpoint
         data = response.json()
         for arg, value in data.get('inputs', {}).items():
-            # handle bool values a flags (e.g., --flag) with no value
-            if isinstance(value, (bool)):
-                if value:
-                    sys.argv.append('--{}'.format(arg))
+            # handle bool values (string of "true") as flags (e.g., --flag) with no value
+            if value == 'true':
+                sys.argv.append('--{}'.format(arg))
             else:
                 sys.argv.append('--{}'.format(arg))
-                sys.argv.append(value)
+                sys.argv.append('{}'.format(value))
 
         # reset default_args now that values have been injected into sys.argv
         self.default_args, unknown = self.parser.parse_known_args()
