@@ -122,6 +122,7 @@ class TcEx(object):
         data = response.json()
         for arg, value in data.get('inputs', {}).items():
             if isinstance(value, (bool)):
+                # this is future proof in case values are changed to bool in the future
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
                     sys.argv.append('--{}'.format(arg))

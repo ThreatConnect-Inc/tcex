@@ -10,6 +10,7 @@ Release Notes
 ------
 + Updated secure params injection to treat string value of "true" as boolean/flag.
 + Updated secure params to handle unicode values in py2.
++ Updated jobs module to use batch settings from args on init only to allow programmatic override of batch settings.
 
 0.7.18
 ------

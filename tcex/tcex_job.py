@@ -19,6 +19,14 @@ class TcExJob(object):
         """
         self._tcex = tcex
 
+        # defaults batch settings
+        self._batch_action = self._tcex.default_args.batch_action
+        self._batch_chunk = self._tcex.default_args.batch_chunk
+        self._batch_halt_on_error = self._tcex.default_args.batch_halt_on_error
+        self._batch_poll_interval_max = self._tcex.default_args.batch_poll_interval_max
+        self._batch_poll_interval = self._tcex.default_args.batch_poll_interval
+        self._batch_write_type = self._tcex.default_args.batch_write_type
+
         # containers
         self._associations = []
         self._file_occurrences = []
@@ -57,11 +65,11 @@ class TcExJob(object):
 
         """
         try:
-            for i in xrange(0, len(self._indicators), self._tcex.default_args.batch_chunk):
-                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
+            for i in xrange(0, len(self._indicators), self._batch_chunk):
+                yield self._indicators[i:i + self._batch_chunk]
         except NameError:  # Python 3 uses range() instead of xrange()
-            for i in range(0, len(self._indicators), self._tcex.default_args.batch_chunk):
-                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
+            for i in range(0, len(self._indicators), self._batch_chunk):
+                yield self._indicators[i:i + self._batch_chunk]
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect
@@ -338,7 +346,7 @@ class TcExJob(object):
             self._tcex.log.debug(u'Processing group ({})'.format(group_name))
             if group_action == 'duplicate':
                 group_id = self._group_add(group_type, group_name, owner, group)
-                if group_id is None and self._tcex.args.batch_halt_on_error:
+                if group_id is None and self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
@@ -351,7 +359,7 @@ class TcExJob(object):
                         group_type, group_name))
 
                 group_id = self._group_add(group_type, group_name, owner, group)
-                if group_id is None and self._tcex.args.batch_halt_on_error:
+                if group_id is None and self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
@@ -361,7 +369,7 @@ class TcExJob(object):
             elif group_action == 'skip':
                 if group_id is None:
                     group_id = self._group_add(group_type, group_name, owner, group)
-                    if group_id is None and self._tcex.args.batch_halt_on_error:
+                    if group_id is None and self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         break
@@ -400,9 +408,9 @@ class TcExJob(object):
             owner (string):  The owner name for the indicator to be written
         """
         batch_job_body = {
-            'action': self._tcex.default_args.batch_action,
-            'attributeWriteType': self._tcex.default_args.batch_write_type,
-            'haltOnError': self._tcex.default_args.batch_halt_on_error,
+            'action': self._batch_action,
+            'attributeWriteType': self._batch_write_type,
+            'haltOnError': self._batch_halt_on_error,
             'owner': owner
         }
 
@@ -435,7 +443,7 @@ class TcExJob(object):
                     poll_time = 0
                     while True:
                         self._tcex.log.debug(u'poll_time: {}'.format(poll_time))
-                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
+                        if poll_time >= self._batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
@@ -444,7 +452,7 @@ class TcExJob(object):
                         status = self.batch_status(batch_id)
                         if status.get('completed'):
                             if status.get('errors'):
-                                if self._tcex.args.batch_halt_on_error:
+                                if self._batch_halt_on_error:
                                     self._tcex.exit_code(1)
                                     halt = True
                                     # all indicator in chunk will be not_saved
@@ -470,8 +478,8 @@ class TcExJob(object):
                                 self._indicators_response.extend(chunk)
                             break  # no need to check status anymore
 
-                        time.sleep(self._tcex.default_args.batch_poll_interval)
-                        poll_time += self._tcex.default_args.batch_poll_interval
+                        time.sleep(self._batch_poll_interval)
+                        poll_time += self._batch_poll_interval
             else:
                 self._tcex.log.warning('API request failed ({}).'.format(
                     results.get('response').text))
@@ -545,7 +553,7 @@ class TcExJob(object):
                 self._tcex.log.error(err)
 
                 # halt on error check
-                if self._tcex.args.batch_halt_on_error:
+                if self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
                     self._tcex.exit_code(1)
                     break
@@ -582,7 +590,7 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
@@ -609,7 +617,7 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
@@ -645,7 +653,7 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
                         self._tcex.exit_code(1)
                         halt = True
@@ -721,7 +729,7 @@ class TcExJob(object):
             action (string): Set batch job action
         """
         if action in ['Create', 'Delete']:
-            self._tcex.parser.set_defaults(batch_action=action)
+            self._batch_action = action
 
     def batch_chunk(self, chunk_size):
         """Set batch chunk_size for argument parser.
@@ -729,7 +737,7 @@ class TcExJob(object):
         Args:
             chunk_size (integer): Set batch job chunk size
         """
-        self._tcex.parser.set_defaults(batch_chunk=chunk_size)
+        self._batch_chunk = chunk_size
 
     def batch_halt_on_error(self, halt_on_error):
         """Set batch halt on error boolean for argument parser.
@@ -738,7 +746,7 @@ class TcExJob(object):
             halt_on_error (boolean): Boolean value for halt on error
         """
         if isinstance(halt_on_error, bool):
-            self._tcex.parser.set_defaults(batch_halt_on_error=halt_on_error)
+            self._batch_halt_on_error = halt_on_error
 
     def batch_indicator_success(self):
         """Check completion for all batch jobs associated with this instance.
@@ -792,7 +800,7 @@ class TcExJob(object):
             interval (integer): Seconds between polling
         """
         if isinstance(interval, int):
-            self._tcex.parser.set_defaults(batch_poll_interval=interval)
+            self._batch_poll_interval = interval
 
     def batch_poll_interval_max(self, interval_max):
         """Set batch polling interval max for argument parser.
@@ -801,7 +809,7 @@ class TcExJob(object):
             interval_max (integer): Max seconds before timeout on batch
         """
         if isinstance(interval_max, int):
-            self._tcex.parser.set_defaults(batch_poll_interval_max=interval_max)
+            self._batch_poll_interval_max = interval_max
 
     def batch_status(self, batch_id):
         """Check the status of a batch job
@@ -852,7 +860,7 @@ class TcExJob(object):
                         resource.url = self._tcex.default_args.tc_api_path
                         resource.errors(batch_id)
                         error_results = resource.request()
-                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
+                        if poll_time >= self._batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
@@ -860,9 +868,9 @@ class TcExJob(object):
                         elif error_results.get('response').status_code == 200:
                             break
                         self._tcex.log.info(u'Error retrieve sleep ({} seconds)'.format(
-                            self._tcex.default_args.batch_poll_interval))
-                        time.sleep(self._tcex.default_args.batch_poll_interval)
-                        poll_time += self._tcex.default_args.batch_poll_interval
+                            self._batch_poll_interval))
+                        time.sleep(self._batch_poll_interval)
+                        poll_time += self._batch_poll_interval
 
                     try:
                         errors = json.loads(self._tcex.s(error_results.get('data')))
@@ -900,7 +908,7 @@ class TcExJob(object):
             write_type (string): Type of Append or Replace
         """
         if write_type in ['Append', 'Replace']:
-            self._tcex.parser.set_defaults(batch_write_type=write_type)
+            self._batch_write_type = write_type
 
     def file_occurrence(self, fo):
         """
