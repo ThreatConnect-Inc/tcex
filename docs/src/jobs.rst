@@ -64,8 +64,8 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property 
 + Saved - The Group was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Group Names.
 
-Group Associations
-------------------
+Group to Indicator Associations
+-------------------------------
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -80,8 +80,29 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
       "indicator_type": "Address"
     }
 
-.. Warning:: If more than one Group exist with the same name the association created using
+.. Warning:: If more than one Group exist with the same name, the association created using
              :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
+             to the first group found with the name.
+
+Group to Group Associations
+---------------------------
+
+The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following data structure to create an association between two groups. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-5
+
+    {
+      "association_value": "Incident 1",
+      "association_type": "Incident",
+      "resource_value": "Pierre Despereaux",
+      "resource_type": "Adversary",
+    }
+
+.. Warning:: If more than one Group exist with the same name, the association created using
+             :py:meth:`~tcex.tcex_job.TcExJob.association` will only associate the indicator
              to the first group found with the name.
 
 Indicators
