@@ -1087,8 +1087,7 @@ class TcEx(object):
 
         return group_name
 
-    @staticmethod
-    def safetag(tag, errors='strict'):
+    def safetag(self, tag, errors='strict'):
         """URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
@@ -1099,10 +1098,14 @@ class TcEx(object):
         """
         if tag is not None:
             # handle unicode characters and url encode tag value
-            tag = quote(TcEx.to_string(tag, errors=errors), safe='~')
-            if len(tag) > 128:
-                # truncate tag
-                tag = tag[:128]
+            try:
+                tag = quote(self.to_string(tag, errors=errors), safe='~')
+                if len(tag) > 128:
+                    # truncate tag
+                    tag = tag[:128]
+            except KeyError as e:
+                warn = 'Failed converting tag to safetag ({})'.format(e)
+                self.log.warning(warn)
         return tag
 
     @staticmethod
