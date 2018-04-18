@@ -6,12 +6,19 @@ Release Notes
 0.7.x
 =====
 
+0.7.19
+------
++ Updated secure params injection to treat string value of "true" as boolean/flag.
++ Updated secure params to handle unicode values in py2.
++ Updated jobs module to use batch settings from args on init and to allow programmatic override of batch settings.
++ Updated token renewal to handle issue with newstr.
+
 0.7.18
 ------
 + Updated jobs module to not call safetag method when using resource module.
 + Updated Intrusion Set class in resource module.
 + Updated group list to include new group types.
-+ Added `upload()` and `download()` methods to Report class in resource module.
++ Added ``upload()`` and ``download()`` methods to Report class in resource module.
 + Added Task as a group type.
 + Added new secure params feature.
 

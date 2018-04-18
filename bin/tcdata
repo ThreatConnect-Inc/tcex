@@ -184,10 +184,6 @@ class TcData(object):
             db_data = json.loads(db_data)
         if isinstance(user_data, (basestring)):
             user_data = json.loads(user_data)
-
-        tcex.log.error(u'db_data: {} ({}).'.format(db_data, type(db_data)))
-        tcex.log.error(u'user_data: {} ({}).'.format(user_data, type(user_data)))
-
         return self.deep_diff(db_data, user_data)
 
     def load_data(self, data_file):

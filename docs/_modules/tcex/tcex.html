@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.18 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.18 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.19 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.18
+                0.7.19
               </div>
             
           
@@ -300,13 +300,20 @@
         <span class="c1"># inject args from API endpoint</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># handle bool values a flags (e.g., --flag) with no value</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">)):</span>
+                <span class="c1"># this is future proof in case values are changed to bool in the future</span>
+                <span class="c1"># handle bool values as flags (e.g., --flag) with no value</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
                     <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                <span class="c1"># handle bool values (string of &quot;true&quot;) as flags (e.g., --flag) with no value</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+                <span class="c1"># boolean value as flag is not required</span>
+                <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
         <span class="c1"># reset default_args now that values have been injected into sys.argv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="p">,</span> <span class="n">unknown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
@@ -367,18 +374,13 @@
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span>
             <span class="n">r</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;expiredToken&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span><span class="p">)</span>
             <span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/appAuth&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Could not renew token: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Expired API token has been renewed.&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiToken&#39;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiToken&#39;</span><span class="p">]</span>  <span class="c1"># remove str() due to newstr issue</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiTokenExpires&#39;</span><span class="p">])</span>
                     <span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;TC-Token </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;apiToken&#39;</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -1259,8 +1261,7 @@
 
         <span class="k">return</span> <span class="n">group_name</span></div>
 
-<div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.safetag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag">[docs]</a>    <span class="k">def</span> <span class="nf">safetag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
@@ -1271,10 +1272,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># handle unicode characters and url encode tag value</span>
-            <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">TcEx</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">128</span><span class="p">:</span>
-                <span class="c1"># truncate tag</span>
-                <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[:</span><span class="mi">128</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">128</span><span class="p">:</span>
+                    <span class="c1"># truncate tag</span>
+                    <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[:</span><span class="mi">128</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Failed converting tag to safetag (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tag</span></div>
 
 <div class="viewcode-block" id="TcEx.safeurl"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1341,7 +1346,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.18',
+            VERSION:'0.7.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -64,8 +64,31 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property 
 + Saved - The Group was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Group Names.
 
-Group Associations
-------------------
+Documents
+^^^^^^^^^
+
+To create a document, use the same structure described above and add ``fileName`` and ``fileData`` fields. For example, the following JSON will create a document named ``test.txt`` with the content ``This is just a test``:
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 8,9
+
+    {
+      "attribute": [
+        {
+          "type": "Description",
+          "value": "Test Description"
+        }
+      ],
+      "fileData": "This is just a test",
+      "fileName": "test.txt",
+      "name": "Test Document",
+      "type": "Document"
+    }
+
+Group to Indicator Associations
+-------------------------------
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -80,8 +103,29 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
       "indicator_type": "Address"
     }
 
-.. Warning:: If more than one Group exist with the same name the association created using
+.. Warning:: If more than one Group exist with the same name, the association created using
              :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
+             to the first group found with the name.
+
+Group to Group Associations
+---------------------------
+
+The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following data structure to create an association between two groups. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-5
+
+    {
+      "association_value": "Incident 1",
+      "association_type": "Incident",
+      "resource_value": "Pierre Despereaux",
+      "resource_type": "Adversary",
+    }
+
+.. Warning:: If more than one Group exist with the same name, the association created using
+             :py:meth:`~tcex.tcex_job.TcExJob.association` will only associate the indicator
              to the first group found with the name.
 
 Indicators

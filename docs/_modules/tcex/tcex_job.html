@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.18 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.7.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.18 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.19 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.18
+                0.7.19
               </div>
             
           
@@ -198,6 +198,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
+        <span class="c1"># defaults batch settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_chunk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_halt_on_error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_write_type</span>
+
         <span class="c1"># containers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_occurrences</span> <span class="o">=</span> <span class="p">[]</span>
@@ -236,11 +244,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c1"># Python 3 uses range() instead of xrange()</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_chunk</span><span class="p">]</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TcExJob._group_add"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_add">[docs]</a>    <span class="k">def</span> <span class="nf">_group_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a group to ThreatConnect</span>
@@ -517,7 +525,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Processing group (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">group_action</span> <span class="o">==</span> <span class="s1">&#39;duplicate&#39;</span><span class="p">:</span>
                 <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="k">break</span>
@@ -530,7 +538,7 @@
                         <span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">))</span>
 
                 <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="k">break</span>
@@ -540,7 +548,7 @@
             <span class="k">elif</span> <span class="n">group_action</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="k">break</span>
@@ -579,9 +587,9 @@
 <span class="sd">            owner (string):  The owner name for the indicator to be written</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch_job_body</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_action</span><span class="p">,</span>
-            <span class="s1">&#39;attributeWriteType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_write_type</span><span class="p">,</span>
-            <span class="s1">&#39;haltOnError&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">,</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span><span class="p">,</span>
+            <span class="s1">&#39;attributeWriteType&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span><span class="p">,</span>
+            <span class="s1">&#39;haltOnError&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">,</span>
             <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="n">owner</span>
         <span class="p">}</span>
 
@@ -614,7 +622,7 @@
                     <span class="n">poll_time</span> <span class="o">=</span> <span class="mi">0</span>
                     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;poll_time: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poll_time</span><span class="p">))</span>
-                        <span class="k">if</span> <span class="n">poll_time</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval_max</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">poll_time</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span><span class="p">:</span>
                             <span class="n">msg</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Status check exceeded max poll time.&#39;</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -623,7 +631,7 @@
                         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_status</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">):</span>
                             <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
-                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                                     <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
                                     <span class="c1"># all indicator in chunk will be not_saved</span>
@@ -649,8 +657,8 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
                             <span class="k">break</span>  <span class="c1"># no need to check status anymore</span>
 
-                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">)</span>
-                        <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span><span class="p">)</span>
+                        <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;API request failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
@@ -724,7 +732,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
                 <span class="c1"># halt on error check</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="k">break</span>
@@ -761,7 +769,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
                     <span class="c1"># halt on error check</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
@@ -788,7 +796,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
                     <span class="c1"># halt on error check</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
@@ -824,7 +832,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
                     <span class="c1"># halt on error check</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">batch_halt_on_error</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
@@ -900,7 +908,7 @@
 <span class="sd">            action (string): Set batch job action</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Create&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_action</span><span class="o">=</span><span class="n">action</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span> <span class="o">=</span> <span class="n">action</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_chunk"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_chunk">[docs]</a>    <span class="k">def</span> <span class="nf">batch_chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set batch chunk_size for argument parser.</span>
@@ -908,7 +916,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            chunk_size (integer): Set batch job chunk size</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_chunk</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="n">chunk_size</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_halt_on_error"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_halt_on_error">[docs]</a>    <span class="k">def</span> <span class="nf">batch_halt_on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set batch halt on error boolean for argument parser.</span>
@@ -917,7 +925,7 @@
 <span class="sd">            halt_on_error (boolean): Boolean value for halt on error</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_halt_on_error</span><span class="o">=</span><span class="n">halt_on_error</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span> <span class="o">=</span> <span class="n">halt_on_error</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_indicator_success"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_indicator_success">[docs]</a>    <span class="k">def</span> <span class="nf">batch_indicator_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check completion for all batch jobs associated with this instance.</span>
@@ -971,7 +979,7 @@
 <span class="sd">            interval (integer): Seconds between polling</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_poll_interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span> <span class="o">=</span> <span class="n">interval</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_poll_interval_max"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_poll_interval_max">[docs]</a>    <span class="k">def</span> <span class="nf">batch_poll_interval_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_max</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set batch polling interval max for argument parser.</span>
@@ -980,7 +988,7 @@
 <span class="sd">            interval_max (integer): Max seconds before timeout on batch</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval_max</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_poll_interval_max</span><span class="o">=</span><span class="n">interval_max</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="n">interval_max</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_status"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_status">[docs]</a>    <span class="k">def</span> <span class="nf">batch_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check the status of a batch job</span>
@@ -1031,7 +1039,7 @@
                         <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_api_path</span>
                         <span class="n">resource</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
                         <span class="n">error_results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">poll_time</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval_max</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">poll_time</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span><span class="p">:</span>
                             <span class="n">msg</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Status check exceeded max poll time.&#39;</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -1039,9 +1047,9 @@
                         <span class="k">elif</span> <span class="n">error_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                             <span class="k">break</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Error retrieve sleep (</span><span class="si">{}</span><span class="s1"> seconds)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">))</span>
-                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span><span class="p">)</span>
-                        <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">batch_poll_interval</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span><span class="p">))</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span><span class="p">)</span>
+                        <span class="n">poll_time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span>
 
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">errors</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="n">error_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)))</span>
@@ -1079,7 +1087,7 @@
 <span class="sd">            write_type (string): Type of Append or Replace</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">write_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Append&#39;</span><span class="p">,</span> <span class="s1">&#39;Replace&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">batch_write_type</span><span class="o">=</span><span class="n">write_type</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span> <span class="o">=</span> <span class="n">write_type</span></div>
 
 <div class="viewcode-block" id="TcExJob.file_occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">file_occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fo</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1518,7 +1526,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.18',
+            VERSION:'0.7.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
