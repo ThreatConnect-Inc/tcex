@@ -64,6 +64,29 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property 
 + Saved - The Group was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Group Names.
 
+Documents
+^^^^^^^^^
+
+To create a document, use the same structure described above and add ``fileName`` and ``fileData`` fields. For example, the following JSON will create a document named ``test.txt`` with the content ``This is just a test``:
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 8,9
+
+    {
+      "attribute": [
+        {
+          "type": "Description",
+          "value": "Test Description"
+        }
+      ],
+      "fileData": "This is just a test",
+      "fileName": "test.txt",
+      "name": "Test Document",
+      "type": "Document"
+    }
+
 Group to Indicator Associations
 -------------------------------
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
