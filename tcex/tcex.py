@@ -195,18 +195,13 @@ class TcEx(object):
             r = self.request
             r.add_payload('expiredToken', self._tc_token)
             r.url = '{}/appAuth'.format(self.default_args.tc_api_path)
-            try:
-                results = r.send()
-            except KeyError:
-                err = u'Could not renew token: {}'.format(results.text)
-                self.log.error(err)
-                raise RuntimeError(err)
+            results = r.send()
 
             try:
                 data = results.json()
                 if data['success']:
                     self.log.info(u'Expired API token has been renewed.')
-                    self._tc_token = str(data['apiToken'])
+                    self._tc_token = data['apiToken']  # remove str() due to newstr issue
                     self._tc_token_expires = int(data['apiTokenExpires'])
                     authorization = 'TC-Token {}'.format(data['apiToken'])
                 else:

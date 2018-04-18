@@ -49,7 +49,7 @@ class Resource(object):
         self._value_fields = []
 
     def _apply_filters(self):
-        """
+        """Apply any filters added to the resource.
         """
         # apply filters
         filters = []
@@ -2535,14 +2535,14 @@ class DataStore(object):
     def create(self, domain, type_name, search_command, body, owner=None):
         """Create entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
+        .. Note:: An owner is only required if the domain is **organization**.
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
             type_name (string): This is a free form index type name. The ThreatConnect API will use
                                 this resource verbatim.
             search_command (string): Search command to pass to ES.
-            body (dict): JSON body
+            body (dict): Python dictionary composed of JSON serialized data type.
             owner (string): The ThreatConnect owner.
         """
         return self._request(domain, type_name, search_command, 'POST', body, owner)
@@ -2550,7 +2550,7 @@ class DataStore(object):
     def delete(self, domain, type_name, search_command, owner=None):
         """Delete entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
+        .. Note:: An owner is only required if the domain is **organization**.
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
@@ -2564,7 +2564,7 @@ class DataStore(object):
     def read(self, domain, type_name, search_command, owner=None):
         """Read entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
+        .. Note:: An owner is only required if the domain is **organization**.
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
@@ -2578,7 +2578,7 @@ class DataStore(object):
     def update(self, domain, type_name, search_command, body, owner=None):
         """Update entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
+        .. Note:: An owner is only required if the domain is **organization**.
 
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
