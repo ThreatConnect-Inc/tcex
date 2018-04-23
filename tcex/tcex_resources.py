@@ -2590,6 +2590,7 @@ class DataStore(object):
         """
         return self._request(domain, type_name, search_command, 'PUT', body, owner)
 
+
 #
 # Notification
 #

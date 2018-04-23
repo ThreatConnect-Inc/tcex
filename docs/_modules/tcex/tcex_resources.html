@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.7.19 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.7.20 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.19 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.20 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.19
+                0.7.20
               </div>
             
           
@@ -2771,6 +2771,49 @@
 
 
 <span class="c1">#</span>
+<span class="c1"># Notification</span>
+<span class="c1">#</span>
+
+
+<div class="viewcode-block" id="Notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Notification">[docs]</a><span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom Notification Class</span>
+
+<span class="sd">    +--------------+----------------------------------+</span>
+<span class="sd">    | HTTP Method  | API Endpoint URI&#39;s               |</span>
+<span class="sd">    +==============+==================================+</span>
+<span class="sd">    | POST         | /v2/notifications                |</span>
+<span class="sd">    +--------------+----------------------------------+</span>
+
+<span class="sd">    .. code-block:: javascript</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &quot;notificationType&quot;: &quot;App Success&quot;,</span>
+<span class="sd">            &quot;severity&quot;: &quot;High&quot;,</span>
+<span class="sd">            &quot;message&quot;: &quot;App worked just fine.&quot;,</span>
+<span class="sd">            &quot;isOrganization&quot;: false,</span>
+<span class="sd">            &quot;recipients&quot;: &quot;opsTeam@threatconnect.com&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    This resource class will create notifications.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize default class values.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Notification</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="s1">&#39;notifications&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span> <span class="o">=</span> <span class="s1">&#39;notificationsConfig&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Notification&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="s1">&#39;Notification&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_entity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_uri</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_codes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;POST&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;notificationsConfig&#39;</span><span class="p">]</span></div>
+
+
+<span class="c1">#</span>
 <span class="c1"># Class Factory</span>
 <span class="c1">#</span>
 
@@ -2820,7 +2863,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.19',
+            VERSION:'0.7.20',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

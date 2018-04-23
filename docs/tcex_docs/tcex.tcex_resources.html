@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.7.19 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.7.20 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.19 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.7.20 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.19
+                0.7.20
               </div>
             
           
@@ -1156,6 +1156,39 @@ the actual indicator id stored in ThreatConnect.</p>
 <p>This resource class will return groups of type Intrusion Set. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
 the parent class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_resources.Notification">
+<em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Notification</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Notification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Notification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<p>Custom Notification Class</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">HTTP Method</th>
+<th class="head">API Endpoint URI’s</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>POST</td>
+<td>/v2/notifications</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;notificationType&quot;</span><span class="o">:</span> <span class="s2">&quot;App Success&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;severity&quot;</span><span class="o">:</span> <span class="s2">&quot;High&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;App worked just fine.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;isOrganization&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="s2">&quot;recipients&quot;</span><span class="o">:</span> <span class="s2">&quot;opsTeam@threatconnect.com&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This resource class will create notifications.</p>
 </dd></dl>
 
 <dl class="class">
@@ -2806,7 +2839,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.19',
+            VERSION:'0.7.20',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

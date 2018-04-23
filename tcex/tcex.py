@@ -80,7 +80,7 @@ class TcEx(object):
 
         # Log versions
         self._log_platform()
-        self._log_app_version()
+        self._log_app_data()
         self._log_python_version()
         self._log_tcex_version()
         self._log_tc_proxy()
@@ -220,19 +220,29 @@ class TcEx(object):
         """Include jobs Module"""
         self.jobs = TcExJob(self)
 
-    def _log_app_version(self):
+    def _log_app_data(self):
         """Log the current App Version"""
 
         # Best Effort
         try:
             install_json = os.path.join(os.getcwd(), 'install.json')
             with open(install_json, 'r') as fh:
-                app_version = json.load(fh)['programVersion']
+                app_data = json.load(fh)
+            app_features = ','.join(app_data.get('features', []))
+            app_min_ver = app_data.get('minServerVersion', 'N/A')
+            app_name = app_data.get('displayName')
+            app_runtime_level = app_data.get('runtimeLevel')
+            app_version = app_data.get('programVersion')
 
+            self.log.info(u'App Name: {}'.format(app_name))
+            if app_features:
+                self.log.info(u'App Features: {}'.format(app_features))
+            self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
+            self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
             self.log.info(u'App Version: {}'.format(app_version))
         except Exception:
             # TODO: Limit this exception
-            self.log.debug(u'Could not retrieve App Version')
+            self.log.debug(u'Could not retrieve App Data')
 
     def _log_platform(self):
         """Log the current Platform"""

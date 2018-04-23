@@ -6,6 +6,11 @@ Release Notes
 0.7.x
 =====
 
+0.7.20
+------
++ Updated logging to log App name and other data.
++ Added notifications module for ThreatConnect 5.6+.
+
 0.7.19
 ------
 + Updated secure params injection to treat string value of "true" as boolean/flag.

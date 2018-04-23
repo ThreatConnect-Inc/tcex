@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.7.19 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.7.20 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.19 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.7.20 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.19
+                0.7.20
               </div>
             
           
@@ -203,6 +203,7 @@
 <span class="kn">from</span> <span class="nn">.tcex_argparser</span> <span class="k">import</span> <span class="n">TcExArgParser</span>
 <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
 <span class="kn">from</span> <span class="nn">.tcex_metrics_v2</span> <span class="k">import</span> <span class="n">TcExMetricsV2</span>
+<span class="kn">from</span> <span class="nn">.tcex_notification_v2</span> <span class="k">import</span> <span class="n">TcExNotificationV2</span>
 
 
 <div class="viewcode-block" id="TcEx"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx">[docs]</a><span class="k">class</span> <span class="nc">TcEx</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -258,7 +259,7 @@
 
         <span class="c1"># Log versions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_platform</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_app_version</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_app_data</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_python_version</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tcex_version</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_tc_proxy</span><span class="p">()</span>
@@ -398,19 +399,29 @@
         <span class="sd">&quot;&quot;&quot;Include jobs Module&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span> <span class="o">=</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TcEx._log_app_version"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_app_version">[docs]</a>    <span class="k">def</span> <span class="nf">_log_app_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx._log_app_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_app_data">[docs]</a>    <span class="k">def</span> <span class="nf">_log_app_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current App Version&quot;&quot;&quot;</span>
 
         <span class="c1"># Best Effort</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">install_json</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;install.json&#39;</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">app_version</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)[</span><span class="s1">&#39;programVersion&#39;</span><span class="p">]</span>
+                <span class="n">app_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="n">app_features</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="n">app_min_ver</span> <span class="o">=</span> <span class="n">app_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minServerVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="n">app_name</span> <span class="o">=</span> <span class="n">app_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">)</span>
+            <span class="n">app_runtime_level</span> <span class="o">=</span> <span class="n">app_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtimeLevel&#39;</span><span class="p">)</span>
+            <span class="n">app_version</span> <span class="o">=</span> <span class="n">app_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">)</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Name: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_name</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">app_features</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Features: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_features</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Minimum ThreatConnect Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_min_ver</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Runtime Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_runtime_level</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;App Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_version</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="c1"># TODO: Limit this exception</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Could not retrieve App Version&#39;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Could not retrieve App Data&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx._log_platform"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._log_platform">[docs]</a>    <span class="k">def</span> <span class="nf">_log_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log the current Platform&quot;&quot;&quot;</span>
@@ -895,6 +906,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">TcExMetricsV2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcEx.notification"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.notification">[docs]</a>    <span class="k">def</span> <span class="nf">notification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of Notification module</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (instance): Instance of Notification Class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TcExNotificationV2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="TcEx.message_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc">[docs]</a>    <span class="k">def</span> <span class="nf">message_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write data to message_tc file in TcEX specified directory.</span>
 
@@ -1346,7 +1365,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.19',
+            VERSION:'0.7.20',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
