@@ -2590,6 +2590,48 @@ class DataStore(object):
         """
         return self._request(domain, type_name, search_command, 'PUT', body, owner)
 
+#
+# Notification
+#
+
+
+class Notification(Resource):
+    """Custom Notification Class
+
+    +--------------+----------------------------------+
+    | HTTP Method  | API Endpoint URI's               |
+    +==============+==================================+
+    | POST         | /v2/notifications                |
+    +--------------+----------------------------------+
+
+    .. code-block:: javascript
+
+        {
+            "notificationType": "App Success",
+            "severity": "High",
+            "message": "App worked just fine.",
+            "isOrganization": false,
+            "recipients": "opsTeam@threatconnect.com"
+        }
+
+    This resource class will create notifications.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Notification, self).__init__(tcex)
+        self._api_branch = 'notifications'
+        self._api_entity = 'notificationsConfig'
+        self._api_uri = self._api_branch
+        self._name = 'Notification'
+        self._parent = 'Notification'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+        self._status_codes = {
+            'POST': [200]
+        }
+        self._value_fields = ['notificationsConfig']
+
 
 #
 # Class Factory

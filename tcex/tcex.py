@@ -24,6 +24,7 @@ import inflect
 from .tcex_argparser import TcExArgParser
 from .tcex_job import TcExJob
 from .tcex_metrics_v2 import TcExMetricsV2
+from .tcex_notification_v2 import TcExNotificationV2
 
 
 class TcEx(object):
@@ -715,6 +716,14 @@ class TcEx(object):
             (instance): Instance of Metric Class
         """
         return TcExMetricsV2(self, name, description, data_type, interval, keyed)
+
+    def notification(self):
+        """Get instance of Notification module
+
+        Returns:
+            (instance): Instance of Notification Class
+        """
+        return TcExNotificationV2(self)
 
     def message_tc(self, message):
         """Write data to message_tc file in TcEX specified directory.
