@@ -3,6 +3,13 @@
 Release Notes
 #############
 
+0.8.x
+=====
+
+0.8.0
+------
++ Added batch module to replace the jobs module starting in ThreatConnect 5.6.
+
 0.7.x
 =====
 

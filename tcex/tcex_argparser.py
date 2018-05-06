@@ -75,7 +75,7 @@ class TcExArgParser(ArgumentParser):
 
         --batch_action action          Action for the batch job ['Create', 'Delete'].
         --batch_chunk number           The maximum number of indicator per batch job.
-        --batch_halt_on_error          Flag to indicate that batch job should halt on error.
+        --batch_halt_on_error          Flag to indicate that the batch job should halt on error.
         --batch_poll_interval seconds  Seconds between batch status polls.
         --batch_interval_max seconds   Seconds before app should time out waiting on batch job
                                        completion.

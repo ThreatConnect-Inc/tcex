@@ -73,7 +73,7 @@ class TcExUtils():
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
                 if dt.tzinfo is None:
-                    self._tcex.log.info(
+                    self._tcex.log.debug(
                         'Assuming local time for naive datetime {}.'.format(str(dt)))
                     dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
                 dt = dt.astimezone(timezone(tz))
@@ -161,7 +161,7 @@ class TcExUtils():
         dt, status = cal.parseDT(time_input, sourceTime=source_datetime, tzinfo=tzinfo)
         if tz is not None:  # don't add tz if no tz value is passed
             if dt.tzinfo is None:
-                self._tcex.log.info('Assuming local time for naive datetime {}.'.format(str(dt)))
+                self._tcex.log.debug('Assuming local time for naive datetime {}.'.format(str(dt)))
                 dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
             # don't covert timezone if source timezone already in the correct timezone
             if tz != src_tzname:

@@ -412,47 +412,49 @@ class TcEx(object):
                     self._indicator_types.append(u'{}'.format(entry.get('name')))
                     self._indicator_types_data[entry.get('name')] = entry
 
+                    if not entry['custom']:
+                        continue
+
                     # Custom Indicator have 3 values. Only add the value if it is set.
-                    if entry['custom']:
-                        value_fields = []
-                        if entry.get('value1Label') is not None and entry.get('value1Label') != '':
-                            value_fields.append(entry['value1Label'])
-                        if entry.get('value2Label') is not None and entry.get('value2Label') != '':
-                            value_fields.append(entry['value2Label'])
-                        if entry.get('value3Label') is not None and entry.get('value3Label') != '':
-                            value_fields.append(entry['value3Label'])
+                    value_fields = []
+                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
+                        value_fields.append(entry['value1Label'])
+                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
+                        value_fields.append(entry['value2Label'])
+                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
+                        value_fields.append(entry['value3Label'])
 
-                        # TODO: Add validate option when type is select one??? Might be best to
-                        #       let API handle validation.
-                        """
-                        value3Label
-                        value3Type - selectone
-                        value3Option - <semi-colon delimited list>
-                        """
+                    # TODO: Add validate option when type is select one??? Might be best to
+                    #       let API handle validation.
+                    """
+                    value3Label
+                    value3Type - selectone
+                    value3Option - <semi-colon delimited list>
+                    """
 
-                        # get instance of Indicator Class
-                        i = self.resources.Indicator(self)
-                        custom = {
-                            '_api_branch': entry['apiBranch'],
-                            '_api_entity': entry['apiEntity'],
-                            '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_case_preference': entry['casePreference'],
-                            '_custom': entry['custom'],
-                            '_name': name,
-                            '_parsable': entry['parsable'],
-                            '_request_entity': entry['apiEntity'],
-                            '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_status_codes': {
-                                'DELETE': [200],
-                                'GET': [200],
-                                'POST': [200, 201],
-                                'PUT': [200]
-                            },
-                            '_value_fields': value_fields
-                        }
-                        # Call custom indicator class factory
-                        setattr(self.resources, name, resources.class_factory(
-                            name, self.resources.Indicator, custom))
+                    # get instance of Indicator Class
+                    i = self.resources.Indicator(self)
+                    custom = {
+                        '_api_branch': entry['apiBranch'],
+                        '_api_entity': entry['apiEntity'],
+                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_case_preference': entry['casePreference'],
+                        '_custom': entry['custom'],
+                        '_name': name,
+                        '_parsable': entry['parsable'],
+                        '_request_entity': entry['apiEntity'],
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_status_codes': {
+                            'DELETE': [200],
+                            'GET': [200],
+                            'POST': [200, 201],
+                            'PUT': [200]
+                        },
+                        '_value_fields': value_fields
+                    }
+                    # Call custom indicator class factory
+                    setattr(self.resources, name, resources.class_factory(
+                        name, self.resources.Indicator, custom))
             except:
                 err = u'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
                 self.log.error(err)
@@ -566,6 +568,11 @@ class TcEx(object):
             'Authorization': authorization,
             'Timestamp': str(timestamp)
         }
+
+    def batch(self, owner, action=None, attribute_write_type=None, halt_on_error=False):
+        """Return instance of Batch"""
+        from .tcex_batch_v2 import Batch
+        return Batch(self, owner, action, attribute_write_type, halt_on_error)
 
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
         """Check if bulk indicators is enabled for owner
