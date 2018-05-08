@@ -25,6 +25,7 @@ from .tcex_argparser import TcExArgParser
 from .tcex_job import TcExJob
 from .tcex_metrics_v2 import TcExMetricsV2
 from .tcex_notification_v2 import TcExNotificationV2
+from .tcex_session import TcExSession
 
 
 class TcEx(object):
@@ -39,7 +40,6 @@ class TcEx(object):
         self.inflect = inflect.engine()
 
         self._exit_code = 0
-        # TODO: replace group_type with dynamic values from API (bcs)
         self.group_types = [
             'Adversary',
             'Campaign',
@@ -77,6 +77,9 @@ class TcEx(object):
 
         # inject args using secure param feature
         self._inject_secure_params()
+
+        # Add ThreatConnect Session
+        self.session = TcExSession(self)
 
         # Log versions
         self._log_platform()
