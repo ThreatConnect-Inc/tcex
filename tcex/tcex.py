@@ -108,12 +108,7 @@ class TcEx(object):
             return
 
         # Retrieve secure params and inject them into sys.argv
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/internal/job/execution/parameters'.format(self.default_args.tc_api_path)
-        response = r.send()
+        response = self.session.get('/internal/job/execution/parameters')
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200 or
@@ -150,12 +145,7 @@ class TcEx(object):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API.
         """
         # Dynamically create custom indicator class
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/v2/types/associationTypes'.format(self.default_args.tc_api_path)
-        response = r.send()
+        response = self.session.get('/v2/types/associationTypes')
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200 or
@@ -331,8 +321,8 @@ class TcEx(object):
 
         if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             # api & file logger
-            from .api_logging_handler import ApiLoggingHandler
-            api = ApiLoggingHandler(logfile, self)
+            from .tcex_logger import TcExLogger
+            api = TcExLogger(logfile, self)
             api.set_name('api')  # not supported in python 2.6
             api.setLevel(level)
             api.setFormatter(formatter)
@@ -381,14 +371,8 @@ class TcEx(object):
 
         if custom_indicators:
             self.log.info('Loading custom indicator types.')
-
             # Retrieve all indicator types from the API
-            r = self.request
-            r.authorization_method(self.authorization)
-            if self.default_args.tc_proxy_tc:
-                r.proxies = self.proxies
-            r.url = '{}/v2/types/indicatorTypes'.format(self.default_args.tc_api_path)
-            response = r.send()
+            response = self.session.get('/v2/types/indicatorTypes')
 
             # check for bad status code and response that is not JSON
             if (int(response.status_code) != 200 or
@@ -643,7 +627,7 @@ class TcEx(object):
             self.message_tc(err)
             self.exit(1)
 
-    def exit(self, code=None):
+    def exit(self, code=None, msg=None):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -653,6 +637,15 @@ class TcEx(object):
         Args:
             code (Optional [integer]): The exit code value for the app.
         """
+        # add exit message to message.tc file and log
+        if msg is not None:
+            if code == 0:
+                self.log.info(msg)
+            else:
+                self.log.error(msg)
+            self.message_tc(msg)
+
+        # flush log to api
         if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             if self.log is not None and self.log.handlers:
                 for handler in self.log.handlers:
@@ -857,13 +850,16 @@ class TcEx(object):
         return r
 
     def request_tc(self):
-        """Return an instance of the Request Class with Proxy and Authorization Set
+        """[Deprecated] Return an instance of the Request Class with Proxy and Authorization Set
+
+        .. Warning:: This method is deprecated and should no longer be used.
 
         See :py:mod:`~tcex.tcex.TcEx.request`
 
         Returns:
             (instance): An instance of Request Class
         """
+        self.log.warning('Using a deprecated method (request_tc).')
         r = self.request
         r.authorization_method(self.authorization)
         if self.default_args.tc_proxy_tc:

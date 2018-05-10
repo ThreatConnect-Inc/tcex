@@ -1,8 +1,5 @@
-""" standard """
-from json import dumps
+"""ThreatConnect API Logger"""
 from logging import FileHandler
-""" third-party """
-""" custom """
 
 
 def create_log_entry(record):
@@ -12,9 +9,10 @@ def create_log_entry(record):
         record (object): The log entry record.
 
     Returns:
-        (dictionary): The data to log to API
+        (dictionary): The data to log to API.
     """
     log_entry = {}
+    print('BCS record', record)
 
     if hasattr(record, 'created'):
         log_entry['timestamp'] = int(float(record.created) * 1000)
@@ -28,15 +26,15 @@ def create_log_entry(record):
     return log_entry
 
 
-class ApiLoggingHandler(FileHandler):
+class TcExLogger(FileHandler):
     """Extension of FileHandler
 
     Sends logs entries to the ThreatConnect API.
     """
 
     def __init__(self, filename, tcex, max_entries_before_flush=100):
-        super(ApiLoggingHandler, self).__init__(filename)
-        self._tcex = tcex
+        super(TcExLogger, self).__init__(filename)
+        self.tcex = tcex
         self.max_entries_before_flush = max_entries_before_flush
 
         # init entries
@@ -56,9 +54,7 @@ class ApiLoggingHandler(FileHandler):
         #       than an arbitrary amount of events?
         if len(self.entries) > self.max_entries_before_flush:
             self.log_to_api()
-            self.entries = []
-
-        super(ApiLoggingHandler, self).emit(record)
+        super(TcExLogger, self).emit(record)
 
     def log_to_api(self):
         """Best effort API logger.
@@ -76,23 +72,9 @@ class ApiLoggingHandler(FileHandler):
         """
         if self.entries:
             # Make API call
-            r = self._tcex.request
-            r.authorization_method(self._tcex.authorization)
-            # bcs - sort entry by *created*?
-            # r.body = dumps(self.entries)
-            r.body = dumps(self.entries, ensure_ascii=False)
-            self.entries = []  # clear entries
-            r.http_method = 'POST'
-            if self._tcex.default_args.tc_proxy_tc:
-                r.proxies = self._tcex.proxies
-            r.url = '{}/v2/logs/app'.format(self._tcex.default_args.tc_api_path)
             try:
-                r.send()
-                # results = r.send()
-                # if results.headers.get('content-type') == 'application/json':
-                #     data = results.json()
-                #     if data.get('status') == 'Success':
-                #         pass
-            except:
-                # best effort for now.  don't fret if logging fails
+                self.tcex.session.post('/v2/logs/app', json=self.entries)
+                self.entries = []  # clear entries
+            except Exception:
+                # best effort on api logging
                 pass

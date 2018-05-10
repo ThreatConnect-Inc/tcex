@@ -174,7 +174,7 @@ class TcExPlaybook(object):
                     results = self.create(v.get('variable'), value)
                 else:
                     self._tcex.log.info(
-                        u'Variable {} has a none value an will not be written.'.format(key))
+                        u'Variable {} has a none value and will not be written.'.format(key))
             elif self._out_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
                 v = self._out_variables.get(key)
@@ -184,7 +184,7 @@ class TcExPlaybook(object):
                     results = self.create(v.get('variable'), value)
                 else:
                     self._tcex.log.info(
-                        u'Variable {} has a none value an will not be written.'.format(
+                        u'Variable {} has a none value and will not be written.'.format(
                             v.get('variable')))
             else:
                 var_value = key
@@ -211,7 +211,7 @@ class TcExPlaybook(object):
             self._tcex.log.warning(u'The key field was None.')
         return data
 
-    def exit(self, code=None):
+    def exit(self, code=None, msg=None):
         """Playbook wrapper on TcEx exit method
 
         Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
@@ -228,7 +228,7 @@ class TcExPlaybook(object):
         elif code not in [0, 1]:
             code = 1
 
-        self._tcex.exit(code)
+        self._tcex.exit(code, msg)
 
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
