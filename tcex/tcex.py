@@ -984,7 +984,10 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if indicator is not None:
-            indicator = quote(self.s(str(indicator), errors=errors), safe='~')
+            try:
+                indicator = quote(self.s(str(indicator), errors=errors), safe='~')
+            except KeyError:
+                indicator = quote(bytes(indicator))
         return indicator
 
     @staticmethod
