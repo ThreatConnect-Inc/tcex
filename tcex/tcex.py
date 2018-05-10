@@ -987,7 +987,7 @@ class TcEx(object):
             try:
                 indicator = quote(self.s(str(indicator), errors=errors), safe='~')
             except KeyError:
-                indicator = quote(bytes(indicator))
+                indicator = quote(bytes(indicator), safe='~')
         return indicator
 
     @staticmethod
