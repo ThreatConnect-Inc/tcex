@@ -980,7 +980,7 @@ class TcEx(object):
         if indicator is not None:
             try:
                 indicator = quote(self.s(str(indicator), errors=errors), safe='~')
-            except:
+            except KeyError:
                 indicator = quote(bytes(indicator))
         return indicator
 
