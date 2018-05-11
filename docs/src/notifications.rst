@@ -18,7 +18,7 @@ The ``tcex.notification()`` method has no required fields and just creates a loc
 
 Recipients
 ==========
-The ``recipients()`` method is used when sending to a distinct set of ThreatConnect users. It requires fields of **type** and **recipients**. It also accepts an optional field for **severity**.  If no severity is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma seperated list of ThreatConnect UserIDs.
+The ``recipients()`` method is used when sending to a distinct set of ThreatConnect users. It requires fields of **type** and **recipients**. It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma seperated list of ThreatConnect UserIDs.
 
 .. code-block:: python
     :linenos:
@@ -29,7 +29,7 @@ The ``recipients()`` method is used when sending to a distinct set of ThreatConn
 
 Organization
 ============
-The ``org()`` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **severity**.  If no severity is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
+The ``org()`` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
 
 .. code-block:: python
     :linenos:
