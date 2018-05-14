@@ -2,17 +2,18 @@
 """ TcEx Metrics Module """
 import json
 
+
 class TcExMetricsV2(object):
-    """TcEx Metrics Class."""
+    """TcEx Metrics Class"""
 
     def __init__(self, tcex, name, description, data_type, interval, keyed=False):
-        """ Initialize class properties
+        """Initialize the Class properties.
 
         Args:
             name: The name for the metric.
             description: The description of the metric.
-            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average
-            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly
+            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average.
+            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
             keyed: Indicates whether the data will have a keyed value.
         """
         self._tcex = tcex
@@ -40,12 +41,11 @@ class TcExMetricsV2(object):
 
     @property
     def metric_resource(self):
-        """ Return metric resource """
+        """Return metric resource."""
         return self._tcex.resource('CustomMetric')
 
     def metric_create(self):
-        """Create the defined metric
-        """
+        """Create the defined metric."""
         resource = self.metric_resource
         resource.http_method = 'POST'
         body = {
@@ -69,7 +69,7 @@ class TcExMetricsV2(object):
             raise RuntimeError(err)
 
     def metric_find(self):
-        """Report Metrics"""
+        """Find the Metric by name."""
         resource = self.metric_resource
         for results in resource:
             if results.get('status') != 'Success':
@@ -83,11 +83,10 @@ class TcExMetricsV2(object):
                     info = 'found metric with name "{}" and Id {}.'
                     self._tcex.log.info(info.format(self._metric_name, self._metric_id))
                     return True
-
         return False
 
     def add(self, value, date=None, return_value=False, key=None):
-        """Add Metrics
+        """Add metrics data to collection.
 
         Args:
             value: The value of the metric.
@@ -132,7 +131,7 @@ class TcExMetricsV2(object):
         return response
 
     def add_keyed(self, value, key, date=None, return_value=False):
-        """Add keyed metrics
+        """Add keyed metrics data to collection.
 
         Args:
             value: The value of the metric.

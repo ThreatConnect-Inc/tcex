@@ -84,22 +84,25 @@ class Batch(object):
         # build custom indicator classes
         self._gen_indicator_class()
 
+    @property
+    def _critical_failures(self):
+        """Return Batch critical failure messages."""
+        return [
+            'Encountered an unexpected Exception while processing batch job',
+            'would exceed the number of allowed indicators'
+        ]
+
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes"""
 
         for entry in self.tcex.indicator_types_data.values():
             name = entry.get('name')
             class_name = name.replace(' ', '')
-            method_name = name.replace(' ', '_').lower()
             # temp fix for API issue where boolean are returned as strings
             entry['custom'] = self.tcex.utils.to_bool(entry.get('custom'))
 
-            print('module', dir(module))
-            print('has cidr', hasattr(module, 'CIDR'))
-
-            standard_custom = ['ASN', 'CIDR', 'Mutex', 'Registry Key', 'User Agent']
-            if not entry['custom'] or name in standard_custom:
-                # only process custom indicators
+            if class_name in globals():
+                # skip Indicator Type if a class already exists
                 continue
 
             # Custom Indicator can have 3 values. Only add the value if it is set.
@@ -118,10 +121,11 @@ class Batch(object):
             setattr(module, class_name, custom_class)
 
             # Add Custom Indicator Method
-            self._gen_indicator_method(method_name, custom_class, value_count)
+            self._gen_indicator_method(name, custom_class, value_count)
 
-    def _gen_indicator_method(self, method_name, custom_class, value_count):
+    def _gen_indicator_method(self, name, custom_class, value_count):
         """Generate Custom Indicator Methods"""
+        method_name = name.replace(' ', '_').lower()
 
         # Add Method for each Custom Indicator class
         def method_1(value1, rating=None, confidence=None, xid=True):
@@ -180,11 +184,6 @@ class Batch(object):
 
         return indicator_list
 
-    def _raise_error(self, error):
-        """Raise RuntimeError"""
-        self.tcex.log.error(error)
-        raise RuntimeError(error)
-
     @property
     def action(self):
         """Return batch action"""
@@ -233,7 +232,8 @@ class Batch(object):
             "type": "File",
             "rating": 5.00,
             "confidence": 50,
-            "summary": "53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
+            "summary": "53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580
+             : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
             "associatedGroupXid": [
                 "e336e2dd-5dfb-48cd-a33a-f8809e83e904",
             ],
@@ -399,9 +399,16 @@ class Batch(object):
             self.tcex.log.debug('Retrieve Errors URL {}'.format(r.url))
             if r.ok:
                 errors = json.loads(r.text)
+            # temporarily process errors to find "critical" errors.
+            # FR in core to return error codes.
+            for error in errors:
+                error_reason = error.get('errorReason')
+                for error_msg in self._critical_failures:
+                    if re.findall(error_msg, error_reason):
+                        self.tcex.raise_error(1500, [error_reason])
             return errors
         except Exception as e:
-            self._raise_error('Failed retrieving batch errors ({}).'.format(e))
+            self.tcex.raise_error(560, [e])
 
     def event(self, name, event_date=None, status=None, xid=True):
         """Add Event data to Batch object"""
@@ -498,24 +505,26 @@ class Batch(object):
             timeout = int(timeout)
 
         poll_time = 0
+        data = {}
         while True:
-            if poll_time > timeout:
-                self._raise_error(
-                    'Status check has reached the timeout value ({} seconds).'.format(timeout))
             try:
                 r = self.tcex.session.get('/v2/batch/{}'.format(batch_id))
-                if not r.ok:
-                    self._raise_error('Failed polling batch status ({} - {}).'.format(
-                        r.status_code, r.text))
+                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                    self.tcex.raise_error(545, [r.status_code, r.text])
                 data = r.json()
                 if data.get('status') != 'Success':
-                    self._raise_error('Failed submitting batch data ({}).'.format(r.text))
+                    self.tcex.raise_error(545, [r.status_code, r.text])
                 if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                     self.tcex.log.debug('Batch Status: {}'.format(data))
                     return data
                 time.sleep(interval)
             except Exception as e:
-                self._raise_error('Failed polling batch status ({}).'.format(e))
+                self.tcex.raise_error(540, [e])
+            # time out poll to prevent App running indefinitely
+            if poll_time >= timeout:
+                self.tcex.log.info(
+                    'Status check has reached the timeout value ({} seconds).'.format(timeout))
+                return data
             poll_time += interval
             self.tcex.log.debug('Batch poll time: {} seconds'.format(poll_time))
 
@@ -611,16 +620,17 @@ class Batch(object):
             r = self.tcex.session.post(
                 '/v2/batch/{}'.format(batch_id), headers=headers, json=self.data)
         except Exception as e:
-            self._raise_error('Failed submitting batch data ({}).'.format(e))
+            self.tcex.raise_error(1520, [e])
         if not r.ok:
-            self._raise_error('Failed submitting batch data ({} - {}).'.format(
-                r.status_code, r.text))
+            self.tcex.raise_error(1525, [r.status_code, r.text])
         # reset values
         self._groups_raw = []
         self._indicators_raw = []
 
     def submit_files(self):
         """Submit File Content for Documents and Reports to ThreatConnect API"""
+        # TODO: track file submission
+        # file_status = []
         for xid, content_data in self._files.items():
             content = content_data.get('fileContent')
             if content is None:
@@ -638,20 +648,19 @@ class Batch(object):
             headers = {'Content-Type': 'application/octet-stream'}
             try:
                 r = self.tcex.session.post(url, data=content.encode('utf-8'), headers=headers)
-                # update file if already exists
                 if r.status_code == 401:
+                    # update file if already exists
+                    self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
                     r = self.tcex.session.put(url, data=content.encode('utf-8'), headers=headers)
-                self.tcex.log.debug('{} Upload URL: {}.'.format(
-                    content_data.get('type'), r.url))
+                self.tcex.log.debug('{} Upload URL: {}.'.format(content_data.get('type'), r.url))
                 self.tcex.log.info('Status {} for file upload with xid {}.'.format(
                     r.status_code, xid))
             # except UnicodeDecodeError:
             #     r = self.tcex.session.post(url, data=content.encode('utf-8'), headers=headers)
             except Exception as e:
-                self._raise_error('Failed posting file data ({}).'.format(e))
+                self.tcex.raise_error(580, [e])
             if not r.ok:
-                self._raise_error('Failed posting file data (status code: {}, {}).'.format(
-                    r.status_code, r.text))
+                self.tcex.raise_error(585, [r.status_code, r.text])
         # reset files
         self._files = {}
 
@@ -660,13 +669,12 @@ class Batch(object):
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self._raise_error('Failed submitting batch job requests ({}).'.format(e))
-        if not r.ok:
-            self._raise_error('Failed submitting batch job requests ({} - {}).'.format(
-                r.status_code, r.text))
+            self.tcex.raise_error(1505, [e])
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.raise_error(1510, [r.status_code, r.text])
         data = r.json()
         if data.get('status') != 'Success':
-            self._raise_error('Failed submitting batch job requests ({}).'.format(r.text))
+            self.tcex.raise_error(1510, [r.status_code, r.text])
         self.tcex.log.debug('Batch Submit Data: {}'.format(data))
         return data.get('data', {}).get('batchId')
 
@@ -710,6 +718,8 @@ class Group(object):
     def __init__(self, tcex, group_type, name, xid):
         """Initialize Class Properties"""
         self.tcex = tcex
+        self._name = name
+        self._type = group_type
         self._group_data = {
             'name': name,
             'type': group_type,
@@ -723,8 +733,8 @@ class Group(object):
         """Return a valid xid"""
         if xid is True or xid is None:
             # generate a reproducible value for xid
-            xid_string = '{}-{}'.format(self._group_data.get('type'), self._group_data.get('name'))
-            hash_object = hashlib.sha256(xid_string)
+            xid_string = '{}-{}'.format(self._type, self._name)
+            hash_object = hashlib.sha256(xid_string.encode('utf-8'))
             xid = hash_object.hexdigest()
         elif xid is False:
             # generate a random value for xid
@@ -1147,6 +1157,8 @@ class Indicator(object):
     def __init__(self, tcex, indicator_type, summary, rating=None, confidence=None, xid=True):
         """Initialize Class Properties"""
         self.tcex = tcex
+        self._summary = summary
+        self._type = indicator_type
         self._indicator_data = {
             'summary': summary,
             'type': indicator_type,
@@ -1166,9 +1178,8 @@ class Indicator(object):
         """Return a valid xid"""
         if xid is True or xid is None:
             # generate a reproducible value for xid
-            xid_string = '{}-{}'.format(
-                self._indicator_data.get('type'), self._indicator_data.get('summary'))
-            hash_object = hashlib.sha256(xid_string)
+            xid_string = '{}-{}'.format(self._type, self._summary)
+            hash_object = hashlib.sha256(xid_string.encode('utf-8'))
             xid = hash_object.hexdigest()
         elif xid is False:
             # generate a random value for xid
@@ -1189,8 +1200,7 @@ class Indicator(object):
                 key = 'flag2'
         self._indicator_data[key] = value
 
-    @staticmethod
-    def build_summary(val1=None, val2=None, val3=None):
+    def build_summary(self, val1=None, val2=None, val3=None):
         """Build the Indicator summary using available values"""
         summary = []
         if val1 is not None:
@@ -1200,7 +1210,7 @@ class Indicator(object):
         if val3 is not None:
             summary.append(val3)
         if not summary:
-            raise RuntimeError('No hash values provided.')
+            self.tcex.raise_error(590)
         return ' : '.join(summary)
 
     def association(self, group_xid):

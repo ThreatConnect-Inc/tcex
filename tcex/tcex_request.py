@@ -2,20 +2,38 @@
 """ TcEx Framework Request Module """
 from builtins import str
 import json
-import socket
-import time
 from base64 import b64encode
 
-from requests import (exceptions, packages, Request, Session)
+from requests import (adapters, packages, Request, Session)
+from requests.packages.urllib3.util.retry import Retry
+
 packages.urllib3.disable_warnings()  # disable ssl warning message
+
+
+def session_retry(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None):
+    """Add retry to Requests Session
+
+    https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
+    """
+    session = session or Session()
+    retries = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    # mount all https requests
+    session.mount('https://', adapters.HTTPAdapter(max_retries=retries))
+    return session
 
 
 class TcExRequest(object):
     """Wrapper on Python Requests Module with API logging."""
 
-    def __init__(self, tcex):
-        """ """
-        self._tcex = tcex
+    def __init__(self, tcex, session=None):
+        """Initialize the Class properties."""
+        self.tcex = tcex
 
         self._authorization_method = None
         self._basic_auth = None
@@ -28,14 +46,14 @@ class TcExRequest(object):
         self._proxies = {}
         self._url = None
         self._files = None
-        self.user_agent = 'ThreatConnect'
-
-        # request properties
-        self._retries = 4
-        self._sleep = 5
-        self._session = Session()
         self._timeout = 300
         self._verify_ssl = False
+
+        # session
+        self.session = session_retry()
+        if session is not None:
+            self.session = session
+        self.session.headers.update({'User-Agent': 'TcEx'})
 
     #
     # Body
@@ -159,9 +177,9 @@ class TcExRequest(object):
         """Add a key value pair to payload for this request.
 
         Args:
-            key (string): The payload key
-            val (string): The payload value
-            append (bool): Indicate whether the value should be appended
+            key (string): The payload key.
+            val (string): The payload value.
+            append (bool): Indicate whether the value should be appended or overwritten.
         """
         if append:
             self._payload.setdefault(key, []).append(val)
@@ -219,13 +237,16 @@ class TcExRequest(object):
     @property
     def verify_ssl(self):
         """The SSL validation setting for this request."""
-        return self._verify_ssl
+        return self._verify
 
     @verify_ssl.setter
-    def verify_ssl(self, data):
-        """The SSL validation setting for this request."""
-        if isinstance(data, bool):
-            self._verify_ssl = data
+    def verify_ssl(self, verify):
+        """The SSL validation setting for this request.
+
+        Args:
+            data (string|boolean): A boolean for enable/disable or the server PEM file.
+        """
+        self._verify = verify
 
     @property
     def files(self):
@@ -267,7 +288,7 @@ class TcExRequest(object):
         if self._authorization_method is not None:
             self._headers.update(self._authorization_method(request_prepped))
         request_prepped.prepare_headers(self._headers)
-        # self._tcex.log.debug(u'Request URL: {}'.format(self._url))
+        # self.tcex.log.debug(u'Request URL: {}'.format(self._url))
 
         if self._basic_auth is not None:
             request_prepped.prepare_auth(self._basic_auth)
@@ -275,41 +296,16 @@ class TcExRequest(object):
         #
         # api request (gracefully handle temporary communications issues with the API)
         #
-        for i in range(1, self._retries + 1, 1):
-            try:
-                response = self._session.send(
-                    request_prepped, proxies=self._proxies, timeout=self._timeout,
-                    verify=self._verify_ssl, stream=stream)
-                break
-            except exceptions.ReadTimeout as e:
-                self._tcex.log.error(u'Error: {}'.format(e))
-                self._tcex.log.error(u'The server may be experiencing delays at the moment.')
-                self._tcex.log.info(
-                    u'Pausing for {} seconds to give server time to catch up.'.format(
-                        self._sleep))
-                time.sleep(self._sleep)
-                self._tcex.log.info(u'Retry {} ....'.format(i))
+        try:
+            response = self.session.send(
+                request_prepped, proxies=self._proxies, timeout=self._timeout,
+                verify=self._verify_ssl, stream=stream)
+        except Exception as e:
+            err = 'Failed making HTTP request ({}).'.format(e)
+            raise RuntimeError(err)
 
-                if i == self._retries:
-                    self._tcex.log.critical(u'Exiting: {}'.format(e))
-                    raise RuntimeError(e)
-            except exceptions.ConnectionError as e:
-                self._tcex.log.error(u'Error: {}'.format(e))
-                self._tcex.log.error(u'Connection Error. The server may be down.')
-                self._tcex.log.info(
-                    u'Pausing for {} seconds to give server time to catch up.'.format(
-                        self._sleep))
-                time.sleep(self._sleep)
-                self._tcex.log.info(u'Retry {} ....'.format(i))
-                if i == self._retries:
-                    self._tcex.log.critical(u'Exiting: {}'.format(e))
-                    raise RuntimeError(e)
-            except socket.error as e:
-                self._tcex.log.critical(u'Socket Error: {}'.format(e))
-                raise RuntimeError(e)
-
-        self._tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
-        self._tcex.log.info(u'Status Code: {}'.format(response.status_code))
+        # self.tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
+        self.tcex.log.info(u'Status Code: {}'.format(response.status_code))
         return response
 
     #

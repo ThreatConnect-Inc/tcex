@@ -10,12 +10,8 @@ class TcExArgParser(ArgumentParser):
     """
 
     def __init__(self, **kwargs):
-        """Initialize default values for common args.
-        """
+        """Initialize the Class properties."""
         super(TcExArgParser, self).__init__(**kwargs)
-
-        # api defaults
-
         # batch defaults
         self._batch_action = 'Create'
         self._batch_chunk = 25000
@@ -173,10 +169,7 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--tc_user_id', default=self._tc_user_id, help='User ID')
 
-        #
         # Proxy Configuration
-        #
-
         self.add_argument(
             '--tc_proxy_host', default=None, help='Proxy Host')
         self.add_argument(
@@ -185,7 +178,6 @@ class TcExArgParser(ArgumentParser):
             '--tc_proxy_username', default=None, help='Proxy User')
         self.add_argument(
             '--tc_proxy_password', default=None, help='Proxy Password')
-
         self.add_argument(
             '--tc_proxy_external', '--apply_proxy_ext', action='store_true', default=False,
             help='Proxy External Connections', dest='tc_proxy_external')

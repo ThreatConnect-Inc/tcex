@@ -12,7 +12,6 @@ def create_log_entry(record):
         (dictionary): The data to log to API.
     """
     log_entry = {}
-    print('BCS record', record)
 
     if hasattr(record, 'created'):
         log_entry['timestamp'] = int(float(record.created) * 1000)
@@ -27,7 +26,7 @@ def create_log_entry(record):
 
 
 class TcExLogger(FileHandler):
-    """Extension of FileHandler
+    """Extension of FileHandler.
 
     Sends logs entries to the ThreatConnect API.
     """

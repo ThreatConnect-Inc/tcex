@@ -4,10 +4,13 @@ import json
 
 
 class TcExNotificationV2(object):
-    """TcEx Notification Class."""
+    """TcEx Notification Class"""
 
     def __init__(self, tcex):
-        """ Initialize class properties
+        """ Initialize the Class properties.
+
+        Args:
+            tcex (object): An instance of TcEx.
         """
         self._tcex = tcex
         self._is_organization = False
@@ -91,5 +94,4 @@ class TcExNotificationV2(object):
             err = u'Failed to send notification ({})'.format(results.get('response').text)
             self._tcex.log.error(err)
             raise RuntimeError(err)
-
         return response

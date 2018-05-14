@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Data Filter Module """
 from builtins import int, str
-# import json
 import operator
-# import os
-# import types
-# import uuid
 
 
 class DataFilter(object):
@@ -30,12 +26,11 @@ class DataFilter(object):
         self._build_indexes()
 
     def _build_indexes(self):
-        """Build indexes from data for fast filtering of data
+        """Build indexes from data for fast filtering of data.
 
         Building indexes of data when possible.  This is only supported when dealing with a
         List of Dictionaries with String values.
         """
-
         if isinstance(self._data, list):
             for d in self._data:
                 if not isinstance(d, dict):

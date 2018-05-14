@@ -2,7 +2,7 @@
 from requests import (adapters, packages, Session)
 from requests.packages.urllib3.util.retry import Retry
 
-from tcex_auth import (TcExHmacAuth, TcExTokenAuth)
+from .tcex_auth import (TcExHmacAuth, TcExTokenAuth)
 
 # disable ssl warning message
 packages.urllib3.disable_warnings()
@@ -10,8 +10,9 @@ packages.urllib3.disable_warnings()
 
 class TcExSession(Session):
     """ThreatConnect REST API Requests Session"""
+
     def __init__(self, tcex):
-        """ """
+        """Initialize the Class properties."""
         super(TcExSession, self).__init__()
         self.tcex = tcex
         self.args = self.tcex.default_args
@@ -32,11 +33,11 @@ class TcExSession(Session):
         self.headers.update({'User-Agent': 'TcEx'})
 
     def _hmac_auth(self):
-        """Add ThreatConnect HMAC Auth to Session"""
+        """Add ThreatConnect HMAC Auth to Session."""
         return TcExHmacAuth(self.args.api_access_id, self.args.api_secret_key, self.tcex.log)
 
     def _token_auth(self):
-        """Add ThreatConnect Token Auth to Session"""
+        """Add ThreatConnect Token Auth to Session."""
         return TcExTokenAuth(
             self, self.args.tc_token, self.args.tc_token_expires, self.args.tc_api_path,
             self.tcex.log)
