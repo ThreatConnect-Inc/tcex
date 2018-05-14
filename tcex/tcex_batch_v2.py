@@ -771,7 +771,7 @@ class Group(object):
         """Add association using xid value"""
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
-    def attribute(self, attr_type, attr_value, displayed=None, source=None, formatter=None):
+    def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
         """Return instance of Attribute"""
         attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
@@ -1239,7 +1239,7 @@ class Indicator(object):
         association = {'groupXid': group_xid}
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
-    def attribute(self, attr_type, attr_value, displayed=None, source=None, formatter=None):
+    def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
         """Return instance of Attribute"""
         attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
@@ -1619,9 +1619,10 @@ class Attribute(object):
         """
         self.tcex = tcex
         self._attribute_data = {
-            'displayed': displayed,
             'type': attr_type
         }
+        if displayed:
+            self._attribute_data['displayed'] = displayed
         # format the value
         if formatter is not None:
             attr_value = formatter(attr_value)
