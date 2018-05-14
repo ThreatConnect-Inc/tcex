@@ -18,6 +18,8 @@ Release Notes
 + Removed second arg from ``expand_indicators()`` method.
 + Removed owner parameter from resource.DataStore methods.
 + Added deprecation warning for the following methods: ``bulk_enabled()``, ``job()``, ``request_tc()``, ``epoch_seconds()``, and ``to_string()``.  These methods will be removed in version 0.9.0.
++ Cleaned up code, comments and documentation.
++ Added error code/message for all RuntimeError exceptions.
 
 0.7.x
 =====

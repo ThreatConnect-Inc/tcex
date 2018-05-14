@@ -76,7 +76,8 @@ class Batch(object):
 
         # containers
         self._files = {}
-        self._groups = []
+        self._groups = set()
+        self._groups_by_id = {}
         self._groups_raw = []
         self._indicators = []
         self._indicators_raw = []
@@ -149,6 +150,15 @@ class Batch(object):
 
         method = locals()['method_{}'.format(value_count)]
         setattr(self, method_name, method)
+
+    def _group_lookup(self, xid, group_obj):
+        """magic"""
+        if not isinstance(xid, bool):
+            if self._groups_by_id.get(xid) is not None:
+                group_obj = self._groups_by_id.get(xid)
+            else:
+                self._groups_by_id[xid] = group_obj
+        return group_obj
 
     @staticmethod
     def _indicator_values(indicator):
@@ -288,7 +298,8 @@ class Batch(object):
     def adversary(self, name, xid=True):
         """Add Adversary data to Batch object"""
         group_obj = Adversary(self.tcex, name, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def asn(self, as_number, rating=None, confidence=None, xid=True):
@@ -330,7 +341,8 @@ class Batch(object):
     def campaign(self, name, first_seen=None, xid=True):
         """Add Campaign data to Batch object"""
         group_obj = Campaign(self.tcex, name, first_seen, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def cidr(self, block, rating=None, confidence=None, xid=True):
@@ -361,13 +373,15 @@ class Batch(object):
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
         """Add Document data to Batch object"""
         group_obj = Document(self.tcex, name, file_name, file_content, malware, password, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def email(self, name, subject, header, body, to_addr=None, from_addr=None, xid=True):
         """Add Email data to Batch object"""
         group_obj = Email(self.tcex, name, subject, header, body, to_addr, from_addr, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def email_address(self, address, rating=None, confidence=None, xid=True):
@@ -413,7 +427,8 @@ class Batch(object):
     def event(self, name, event_date=None, status=None, xid=True):
         """Add Event data to Batch object"""
         group_obj = Event(self.tcex, name, event_date, status, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def file(self, md5=None, sha1=None, sha256=None, size=None, rating=None, confidence=None,
@@ -427,7 +442,8 @@ class Batch(object):
         """Add Group data to Batch object"""
         group_type = group_type.replace(' ', '')
         group_obj = Group(self.tcex, group_type, name, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     @property
@@ -449,7 +465,8 @@ class Batch(object):
     def incident(self, name, event_date=None, status=None, xid=True):
         """Add Incident data to Batch object"""
         group_obj = Incident(self.tcex, name, event_date, status, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def indicator(self, indicator_type, summary, rating=None, confidence=None, xid=True):
@@ -462,7 +479,8 @@ class Batch(object):
     def intrusion_set(self, name, xid=True):
         """Add Intrusion Set data to Batch object"""
         group_obj = IntrusionSet(self.tcex, name, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def mutex(self, mutex, rating=None, confidence=None, xid=True):
@@ -559,7 +577,8 @@ class Batch(object):
     def report(self, name, file_name, file_content=None, publish_date=None, xid=True):
         """Add Report data to Batch object"""
         group_obj = Report(self.tcex, name, file_name, file_content, publish_date, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     @property
@@ -578,7 +597,8 @@ class Batch(object):
     def signature(self, name, file_name, file_type, file_text, xid=True):
         """Add Signature data to Batch object"""
         group_obj = Signature(self.tcex, name, file_name, file_type, file_text, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def submit(self, submit_data=True, poll=True, errors=False):
@@ -681,7 +701,8 @@ class Batch(object):
     def threat(self, name, xid=True):
         """Add Threat data to Batch object"""
         group_obj = Threat(self.tcex, name, xid)
-        self._groups.append(group_obj)
+        group_obj = self._group_lookup(xid, group_obj)
+        self._groups.add(group_obj)
         return group_obj
 
     def user_agent(self, text, rating=None, confidence=None, xid=True):

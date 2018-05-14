@@ -11,6 +11,7 @@ import re
 import sys
 import time
 from datetime import datetime
+from importlib import import_module
 from platform import platform
 try:
     from urllib import quote  # Python 2
