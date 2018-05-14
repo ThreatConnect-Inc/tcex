@@ -771,9 +771,9 @@ class Group(object):
         """Add association using xid value"""
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
-    def attribute(self, attr_type, attr_value, displayed=None, source=None, conversion_method=None):
+    def attribute(self, attr_type, attr_value, displayed=None, source=None, formatter=None):
         """Return instance of Attribute"""
-        attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, conversion_method)
+        attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
         return attr
 
@@ -808,9 +808,9 @@ class Group(object):
         self._labels.append(label)
         return label
 
-    def tag(self, name):
+    def tag(self, name, formatter=None):
         """Return instance of Tag"""
-        tag = Tag(self.tcex, name)
+        tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
 
@@ -1239,9 +1239,9 @@ class Indicator(object):
         association = {'groupXid': group_xid}
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
-    def attribute(self, attr_type, attr_value, displayed=None, source=None, conversion_method=None):
+    def attribute(self, attr_type, attr_value, displayed=None, source=None, formatter=None):
         """Return instance of Attribute"""
-        attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, conversion_method)
+        attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
         return attr
 
@@ -1317,9 +1317,9 @@ class Indicator(object):
         self._labels.append(label)
         return label
 
-    def tag(self, name):
+    def tag(self, name, formatter=None):
         """Return instance of Tag"""
-        tag = Tag(self.tcex, name)
+        tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
 
@@ -1831,7 +1831,7 @@ class SecurityLabel(object):
 class Tag(object):
     """ThreatConnect Batch Tag Object"""
 
-    def __init__(self, tcex, name):
+    def __init__(self, tcex, name, formatter=None):
         """Initialize Class Properties
 
         Args:
@@ -1842,6 +1842,8 @@ class Tag(object):
             name: The tag value.
         """
         self.tcex = tcex
+        if formatter is not None:
+            name = formatter(name)
         self._tag_data = {
             'name': name
         }
