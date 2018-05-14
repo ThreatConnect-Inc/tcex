@@ -2508,6 +2508,8 @@ class DataStore(object):
         status = 'Failed'
         if response.status_code in self._status_codes[db_method]:
             status = 'Success'
+        else:
+            self._tcex.log.error(u'Response Text: ({})'.format(response.text))
         if 'application/json' in response.headers['content-type'].split(';'):
             # handle API issue where content type does not match response data type
             try:

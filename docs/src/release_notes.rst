@@ -3,8 +3,23 @@
 Release Notes
 #############
 
+0.8.x
+=====
+
+0.8.0
+------
++ Added batch module to replace the jobs module starting in ThreatConnect 5.6.
++ Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
++ Rename logger module.
++ Added msg to ``exit()`` methods.
++ Update multiple methods to use tcex.session instead of tcex.request.
+
 0.7.x
 =====
+
+0.7.21
+------
++ Fixed issue with newstr when using quote() method in ``tcex.safe_indicator()``.
 
 0.7.20
 ------

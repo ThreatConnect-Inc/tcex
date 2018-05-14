@@ -6,6 +6,10 @@ Release Notes
 0.7.x
 =====
 
+0.7.21
+------
++ Fixed issue with newstr when using quote() method in ``tcex.safe_indicator()``.
+
 0.7.20
 ------
 + Updated logging to log App name and other data.

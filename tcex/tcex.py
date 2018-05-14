@@ -25,6 +25,7 @@ from .tcex_argparser import TcExArgParser
 from .tcex_job import TcExJob
 from .tcex_metrics_v2 import TcExMetricsV2
 from .tcex_notification_v2 import TcExNotificationV2
+from .tcex_session import TcExSession
 
 
 class TcEx(object):
@@ -39,7 +40,6 @@ class TcEx(object):
         self.inflect = inflect.engine()
 
         self._exit_code = 0
-        # TODO: replace group_type with dynamic values from API (bcs)
         self.group_types = [
             'Adversary',
             'Campaign',
@@ -78,6 +78,9 @@ class TcEx(object):
         # inject args using secure param feature
         self._inject_secure_params()
 
+        # Add ThreatConnect Session
+        self.session = TcExSession(self)
+
         # Log versions
         self._log_platform()
         self._log_app_data()
@@ -105,12 +108,7 @@ class TcEx(object):
             return
 
         # Retrieve secure params and inject them into sys.argv
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/internal/job/execution/parameters'.format(self.default_args.tc_api_path)
-        response = r.send()
+        response = self.session.get('/internal/job/execution/parameters')
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200 or
@@ -147,12 +145,7 @@ class TcEx(object):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API.
         """
         # Dynamically create custom indicator class
-        r = self.request
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            r.proxies = self.proxies
-        r.url = '{}/v2/types/associationTypes'.format(self.default_args.tc_api_path)
-        response = r.send()
+        response = self.session.get('/v2/types/associationTypes')
 
         # check for bad status code and response that is not JSON
         if (int(response.status_code) != 200 or
@@ -328,8 +321,8 @@ class TcEx(object):
 
         if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             # api & file logger
-            from .api_logging_handler import ApiLoggingHandler
-            api = ApiLoggingHandler(logfile, self)
+            from .tcex_logger import TcExLogger
+            api = TcExLogger(logfile, self)
             api.set_name('api')  # not supported in python 2.6
             api.setLevel(level)
             api.setFormatter(formatter)
@@ -378,14 +371,8 @@ class TcEx(object):
 
         if custom_indicators:
             self.log.info('Loading custom indicator types.')
-
             # Retrieve all indicator types from the API
-            r = self.request
-            r.authorization_method(self.authorization)
-            if self.default_args.tc_proxy_tc:
-                r.proxies = self.proxies
-            r.url = '{}/v2/types/indicatorTypes'.format(self.default_args.tc_api_path)
-            response = r.send()
+            response = self.session.get('/v2/types/indicatorTypes')
 
             # check for bad status code and response that is not JSON
             if (int(response.status_code) != 200 or
@@ -412,47 +399,49 @@ class TcEx(object):
                     self._indicator_types.append(u'{}'.format(entry.get('name')))
                     self._indicator_types_data[entry.get('name')] = entry
 
+                    if not entry['custom']:
+                        continue
+
                     # Custom Indicator have 3 values. Only add the value if it is set.
-                    if entry['custom']:
-                        value_fields = []
-                        if entry.get('value1Label') is not None and entry.get('value1Label') != '':
-                            value_fields.append(entry['value1Label'])
-                        if entry.get('value2Label') is not None and entry.get('value2Label') != '':
-                            value_fields.append(entry['value2Label'])
-                        if entry.get('value3Label') is not None and entry.get('value3Label') != '':
-                            value_fields.append(entry['value3Label'])
+                    value_fields = []
+                    if entry.get('value1Label') is not None and entry.get('value1Label') != '':
+                        value_fields.append(entry['value1Label'])
+                    if entry.get('value2Label') is not None and entry.get('value2Label') != '':
+                        value_fields.append(entry['value2Label'])
+                    if entry.get('value3Label') is not None and entry.get('value3Label') != '':
+                        value_fields.append(entry['value3Label'])
 
-                        # TODO: Add validate option when type is select one??? Might be best to
-                        #       let API handle validation.
-                        """
-                        value3Label
-                        value3Type - selectone
-                        value3Option - <semi-colon delimited list>
-                        """
+                    # TODO: Add validate option when type is select one??? Might be best to
+                    #       let API handle validation.
+                    """
+                    value3Label
+                    value3Type - selectone
+                    value3Option - <semi-colon delimited list>
+                    """
 
-                        # get instance of Indicator Class
-                        i = self.resources.Indicator(self)
-                        custom = {
-                            '_api_branch': entry['apiBranch'],
-                            '_api_entity': entry['apiEntity'],
-                            '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_case_preference': entry['casePreference'],
-                            '_custom': entry['custom'],
-                            '_name': name,
-                            '_parsable': entry['parsable'],
-                            '_request_entity': entry['apiEntity'],
-                            '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
-                            '_status_codes': {
-                                'DELETE': [200],
-                                'GET': [200],
-                                'POST': [200, 201],
-                                'PUT': [200]
-                            },
-                            '_value_fields': value_fields
-                        }
-                        # Call custom indicator class factory
-                        setattr(self.resources, name, resources.class_factory(
-                            name, self.resources.Indicator, custom))
+                    # get instance of Indicator Class
+                    i = self.resources.Indicator(self)
+                    custom = {
+                        '_api_branch': entry['apiBranch'],
+                        '_api_entity': entry['apiEntity'],
+                        '_api_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_case_preference': entry['casePreference'],
+                        '_custom': entry['custom'],
+                        '_name': name,
+                        '_parsable': entry['parsable'],
+                        '_request_entity': entry['apiEntity'],
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_status_codes': {
+                            'DELETE': [200],
+                            'GET': [200],
+                            'POST': [200, 201],
+                            'PUT': [200]
+                        },
+                        '_value_fields': value_fields
+                    }
+                    # Call custom indicator class factory
+                    setattr(self.resources, name, resources.class_factory(
+                        name, self.resources.Indicator, custom))
             except:
                 err = u'Failed retrieving indicator types from API. ({})'.format(sys.exc_info()[0])
                 self.log.error(err)
@@ -567,6 +556,11 @@ class TcEx(object):
             'Timestamp': str(timestamp)
         }
 
+    def batch(self, owner, action=None, attribute_write_type=None, halt_on_error=False):
+        """Return instance of Batch"""
+        from .tcex_batch_v2 import Batch
+        return Batch(self, owner, action, attribute_write_type, halt_on_error)
+
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
         """Check if bulk indicators is enabled for owner
 
@@ -633,7 +627,7 @@ class TcEx(object):
             self.message_tc(err)
             self.exit(1)
 
-    def exit(self, code=None):
+    def exit(self, code=None, msg=None):
         """Application exit method with proper exit code
 
         The method will run the Python standard sys.exit() with the exit code
@@ -643,6 +637,15 @@ class TcEx(object):
         Args:
             code (Optional [integer]): The exit code value for the app.
         """
+        # add exit message to message.tc file and log
+        if msg is not None:
+            if code == 0:
+                self.log.info(msg)
+            else:
+                self.log.error(msg)
+            self.message_tc(msg)
+
+        # flush log to api
         if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             if self.log is not None and self.log.handlers:
                 for handler in self.log.handlers:
@@ -847,13 +850,16 @@ class TcEx(object):
         return r
 
     def request_tc(self):
-        """Return an instance of the Request Class with Proxy and Authorization Set
+        """[Deprecated] Return an instance of the Request Class with Proxy and Authorization Set
+
+        .. Warning:: This method is deprecated and should no longer be used.
 
         See :py:mod:`~tcex.tcex.TcEx.request`
 
         Returns:
             (instance): An instance of Request Class
         """
+        self.log.warning('Using a deprecated method (request_tc).')
         r = self.request
         r.authorization_method(self.authorization)
         if self.default_args.tc_proxy_tc:
@@ -978,7 +984,10 @@ class TcEx(object):
             (string): The urlencoded string
         """
         if indicator is not None:
-            indicator = quote(self.s(str(indicator), errors=errors), safe='~')
+            try:
+                indicator = quote(self.s(str(indicator), errors=errors), safe='~')
+            except KeyError:
+                indicator = quote(bytes(indicator), safe='~')
         return indicator
 
     @staticmethod
