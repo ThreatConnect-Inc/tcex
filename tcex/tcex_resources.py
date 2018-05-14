@@ -2557,7 +2557,7 @@ class Notification(Resource):
 
         {
             "notificationType": "App Success",
-            "severity": "High",
+            "priority": "High",
             "message": "App worked just fine.",
             "isOrganization": false,
             "recipients": "opsTeam@threatconnect.com"
