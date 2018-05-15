@@ -788,7 +788,7 @@ class Group(object):
                     self._group_data['attribute'].append(attr.data)
                 else:
                     self.tcex.log.debug('Invalid attribute value ({}) for type ({}).'.format(
-                        attr.type, attr.value))
+                        attr.value, attr.type))
         # add security labels
         if self._labels:
             self._group_data['securityLabel'] = []
@@ -1271,6 +1271,9 @@ class Indicator(object):
             for attr in self._attributes:
                 if attr.valid:
                     self._indicator_data['attribute'].append(attr.data)
+                else:
+                    self.tcex.log.debug('Invalid attribute value ({}) for type ({}).'.format(
+                        attr.value, attr.type))
         # add file actions
         if self._file_actions:
             self._indicator_data.setdefault('fileAction', {})
@@ -1293,6 +1296,8 @@ class Indicator(object):
             for tag in self._tags:
                 if tag.valid:
                     self._indicator_data['tag'].append(tag.data)
+                else:
+                    self.tcex.log.debug('Invalid tag value ({}).'.format(tag.name))
         return self._indicator_data
 
     @property
