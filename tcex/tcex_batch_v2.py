@@ -784,7 +784,11 @@ class Group(object):
         if self._attributes:
             self._group_data['attribute'] = []
             for attr in self._attributes:
-                self._group_data['attribute'].append(attr.data)
+                if attr.valid:
+                    self._group_data['attribute'].append(attr.data)
+                else:
+                    self.tcex.log.debug('Invalid attribute value ({}) for type ({}).'.format(
+                        attr.type, attr.value))
         # add security labels
         if self._labels:
             self._group_data['securityLabel'] = []
@@ -794,7 +798,10 @@ class Group(object):
         if self._tags:
             self._group_data['tag'] = []
             for tag in self._tags:
-                self._group_data['tag'].append(tag.data)
+                if tag.valid:
+                    self._group_data['tag'].append(tag.data)
+                else:
+                    self.tcex.log.debug('Invalid tag value ({}).'.format(tag.name))
         return self._group_data
 
     @property
@@ -1262,7 +1269,8 @@ class Indicator(object):
         if self._attributes:
             self._indicator_data['attribute'] = []
             for attr in self._attributes:
-                self._indicator_data['attribute'].append(attr.data)
+                if attr.valid:
+                    self._indicator_data['attribute'].append(attr.data)
         # add file actions
         if self._file_actions:
             self._indicator_data.setdefault('fileAction', {})
@@ -1283,7 +1291,8 @@ class Indicator(object):
         if self._tags:
             self._indicator_data['tag'] = []
             for tag in self._tags:
-                self._indicator_data['tag'].append(tag.data)
+                if tag.valid:
+                    self._indicator_data['tag'].append(tag.data)
         return self._indicator_data
 
     @property
@@ -1630,6 +1639,10 @@ class Attribute(object):
         # add source if provided
         if source is not None:
             self._attribute_data['source'] = source
+        # is attr_value not null or ''
+        self._valid = True
+        if not attr_value:
+            self._valid = False
 
     @property
     def data(self):
@@ -1660,6 +1673,11 @@ class Attribute(object):
     def type(self):
         """Return attribute value"""
         return self._attribute_data.get('type')
+
+    @property
+    def valid(self):
+        """Return valid value"""
+        return self._valid
 
     @property
     def value(self):
@@ -1848,6 +1866,10 @@ class Tag(object):
         self._tag_data = {
             'name': name
         }
+        # is tag not null or ''
+        self._valid = True
+        if not name:
+            self._valid = False
 
     @property
     def data(self):
@@ -1858,6 +1880,11 @@ class Tag(object):
     def name(self):
         """Return Tag name"""
         return self._tag_data.get('name')
+
+    @property
+    def valid(self):
+        """Return valid data"""
+        return self._valid
 
     def __str__(self):
         """Return string represtentation of object"""
