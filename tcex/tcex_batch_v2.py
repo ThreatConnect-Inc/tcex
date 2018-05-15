@@ -156,6 +156,7 @@ class Batch(object):
         if not isinstance(xid, bool):
             if self._groups_by_id.get(xid) is not None:
                 group_obj = self._groups_by_id.get(xid)
+                group_obj.processed = True
             else:
                 self._groups_by_id[xid] = group_obj
         return group_obj
@@ -749,6 +750,8 @@ class Group(object):
         self._attributes = []
         self._labels = []
         self._tags = []
+        # processed
+        self._processed = False
 
     def _xid(self, xid):
         """Return a valid xid"""
@@ -808,6 +811,19 @@ class Group(object):
     def name(self):
         """Return Group name"""
         return self._group_data.get('name')
+
+    @property
+    def processed(self):
+        """Return processed value.
+
+        .. note:: Processed value indicates that a group with this xid has already been processed.
+        """
+        return self._processed
+
+    @processed.setter
+    def processed(self, processed):
+        """Set processed"""
+        self._processed = processed
 
     def security_label(self, name, description=None, color=None):
         """Return instance of Tag"""
