@@ -35,7 +35,7 @@ class TcEx(object):
 
     def __init__(self):
         """Initialize Class Properties."""
-        self._error_codes = TcExErrorCodes()
+        self.error_codes = TcExErrorCodes()
         # init inflect engine
         self.inflect = inflect.engine()
 
@@ -780,8 +780,8 @@ class TcEx(object):
         try:
             if message_values is None:
                 message_values = []
-            message = self._error_codes.message(code).format(*message_values)
-            self.log.error('Error code: {}, "{}"'.format(code, message))
+            message = self.error_codes.message(code).format(*message_values)
+            self.log.error('Error code: {}, {}'.format(code, message))
         except AttributeError:
             self.log.error('Incorrect error code provided ({}).'.format(code))
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')

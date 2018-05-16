@@ -411,7 +411,8 @@ class Batch(object):
             #     r = self.tcex.session.get('/v2/batch/{}/errors'.format(batch_id))
             self.tcex.log.debug('Retrieve Errors for ID {}: status code {}, errors {}'.format(
                 batch_id, r.status_code, r.text))
-            self.tcex.log.debug('Retrieve Errors URL {}'.format(r.url))
+            # self.tcex.log.debug('Retrieve Errors URL {}'.format(r.url))
+            # API does not return correct content type
             if r.ok:
                 errors = json.loads(r.text)
             # temporarily process errors to find "critical" errors.
@@ -649,7 +650,7 @@ class Batch(object):
         self._indicators_raw = []
 
     def submit_files(self):
-        """Submit File Content for Documents and Reports to ThreatConnect API"""
+        """Submit Files for Documents and Reports to ThreatConnect API"""
         # TODO: track file submission
         # file_status = []
         for xid, content_data in self._files.items():
@@ -667,23 +668,38 @@ class Batch(object):
             # Post File
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
             headers = {'Content-Type': 'application/octet-stream'}
-            try:
-                r = self.tcex.session.post(url, data=content.encode('utf-8'), headers=headers)
-                if r.status_code == 401:
-                    # update file if already exists
-                    self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
-                    r = self.tcex.session.put(url, data=content.encode('utf-8'), headers=headers)
-                self.tcex.log.debug('{} Upload URL: {}.'.format(content_data.get('type'), r.url))
-                self.tcex.log.info('Status {} for file upload with xid {}.'.format(
-                    r.status_code, xid))
-            # except UnicodeDecodeError:
-            #     r = self.tcex.session.post(url, data=content.encode('utf-8'), headers=headers)
-            except Exception as e:
-                self.tcex.raise_error(580, [e])
+            params = {'owner': self._owner}
+            r = self.submit_file_content('POST', url, content, headers, params)
+            if r.status_code == 401:
+                # use PUT method if file already exists
+                self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
+                r = self.submit_file_content('PUT', url, content, headers, params)
+            self.tcex.log.debug('{} Upload URL: {}.'.format(content_data.get('type'), r.url))
+            self.tcex.log.info('Status {} for file upload with xid {}.'.format(
+                r.status_code, xid))
             if not r.ok:
-                self.tcex.raise_error(585, [r.status_code, r.text])
+                if self._halt_on_error:
+                    self.tcex.raise_error(585, [r.status_code, r.text])
+                err = self.tcex.error_codes.message(585).format(r.status_code, r.text)
+                self.tcex.log.error(err)
         # reset files
         self._files = {}
+
+    def submit_file_content(self, method, url, data, headers, params):
+        """Submit File Content for Documents and Reports to ThreatConnect API"""
+        r = None
+        try:
+            r = self.tcex.session.request(
+                method, url, data=data.encode('utf-8'), headers=headers, params=params)
+        except UnicodeDecodeError:
+            r = self.tcex.session.post(
+                method, url, data=data, headers=headers, params=params)  # py2
+        except Exception as e:
+            if self._halt_on_error:
+                self.tcex.raise_error(580, [e])
+            err = self.tcex.error_codes.message(580).format(e)
+            self.tcex.log.error(err)
+        return r
 
     def submit_job(self):
         """Submit Batch request to ThreatConnect API"""
@@ -789,9 +805,6 @@ class Group(object):
             for attr in self._attributes:
                 if attr.valid:
                     self._group_data['attribute'].append(attr.data)
-                else:
-                    self.tcex.log.debug('Invalid attribute value ({}) for type ({}).'.format(
-                        attr.value, attr.type))
         # add security labels
         if self._labels:
             self._group_data['securityLabel'] = []
@@ -803,8 +816,6 @@ class Group(object):
             for tag in self._tags:
                 if tag.valid:
                     self._group_data['tag'].append(tag.data)
-                else:
-                    self.tcex.log.debug('Invalid tag value ({}).'.format(tag.name))
         return self._group_data
 
     @property
@@ -1287,9 +1298,6 @@ class Indicator(object):
             for attr in self._attributes:
                 if attr.valid:
                     self._indicator_data['attribute'].append(attr.data)
-                else:
-                    self.tcex.log.debug('Invalid attribute value ({}) for type ({}).'.format(
-                        attr.value, attr.type))
         # add file actions
         if self._file_actions:
             self._indicator_data.setdefault('fileAction', {})
@@ -1312,19 +1320,17 @@ class Indicator(object):
             for tag in self._tags:
                 if tag.valid:
                     self._indicator_data['tag'].append(tag.data)
-                else:
-                    self.tcex.log.debug('Invalid tag value ({}).'.format(tag.name))
         return self._indicator_data
 
     @property
-    def private(self):
-        """Return Indicator private"""
+    def private_flag(self):
+        """Return Indicator private flag"""
         return self._indicator_data.get('privateFlag')
 
-    @private.setter
-    def private(self, private):
-        """Set Indicator private"""
-        self._indicator_data['privateFlag'] = self.tcex.utils.to_bool(private)
+    @private_flag.setter
+    def private_flag(self, private_flag):
+        """Set Indicator private flag"""
+        self._indicator_data['privateFlag'] = self.tcex.utils.to_bool(private_flag)
 
     @property
     def rating(self):
@@ -1649,10 +1655,12 @@ class Attribute(object):
         """
         self.tcex = tcex
         self._attribute_data = {
+            'displayed': displayed,
             'type': attr_type
         }
-        if displayed:
-            self._attribute_data['displayed'] = displayed
+        # TODO: remove displayed from default dict and enable below code
+        # if displayed:
+        #    self._attribute_data['displayed'] = displayed
         # format the value
         if formatter is not None:
             attr_value = formatter(attr_value)
