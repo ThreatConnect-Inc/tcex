@@ -85,7 +85,7 @@ class Resource(object):
             os.remove(temp_file)
 
         except IOError as e:
-            self.tcex.raise_error(300, [e])
+            self.tcex.handle_error(300, [e])
 
         return data
 
@@ -163,7 +163,6 @@ class Resource(object):
             status = 'Failure'
             msg = u'Error: ({})'.format(e)
             self.tcex.log.error(msg)
-            # bcs = raise error
 
         return data, status
 
@@ -329,7 +328,7 @@ class Resource(object):
         association_api_branch = self.tcex.indicator_associations_types_data.get(
             association_name, {}).get('apiBranch')
         if association_api_branch is None:
-            self.tcex.raise_error(305, [association_name])
+            self.tcex.handle_error(305, [association_name])
 
         # handle URL difference between Custom Associations and File Actions
         custom_type = 'associations'
@@ -2467,7 +2466,7 @@ class DataStore(object):
         data = []
         status = 'Failed'
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.raise_error(350, [r.status_code, r.text])
+            self.tcex.handle_error(350, [r.status_code, r.text])
         data = r.json()
         status = 'Success'
 

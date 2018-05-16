@@ -16,7 +16,7 @@ class TcExMetricsV2(object):
             interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.
             keyed: Indicates whether the data will have a keyed value.
         """
-        self._tcex = tcex
+        self.tcex = tcex
         self._metric_data_type = data_type
         self._metric_description = description
         self._metric_id = None
@@ -42,7 +42,7 @@ class TcExMetricsV2(object):
     @property
     def metric_resource(self):
         """Return metric resource."""
-        return self._tcex.resource('CustomMetric')
+        return self.tcex.resource('CustomMetric')
 
     def metric_create(self):
         """Create the defined metric."""
@@ -55,17 +55,17 @@ class TcExMetricsV2(object):
             'name' : self._metric_name,
             'keyedValues' : self._metric_keyed
         }
-        self._tcex.log.debug('metric body: {}'.format(json.dumps(body)))
+        self.tcex.log.debug('metric body: {}'.format(json.dumps(body)))
         resource.body = json.dumps(body)
         results = resource.request()
 
         if results.get('status') == 'Success':
             self._metric_id = results.get('data', {}).get('id')
-            self._tcex.log.debug('metric data: {}'.format(results.get('data')))
-            self._tcex.log.debug('metric id: {}'.format(self._metric_id))
+            self.tcex.log.debug('metric data: {}'.format(results.get('data')))
+            self.tcex.log.debug('metric id: {}'.format(self._metric_id))
         else:
             err = u'Failed to add metric ({})'.format(results.get('response').text)
-            self._tcex.log.error(err)
+            self.tcex.log.error(err)
             raise RuntimeError(err)
 
     def metric_find(self):
@@ -74,14 +74,14 @@ class TcExMetricsV2(object):
         for results in resource:
             if results.get('status') != 'Success':
                 err = 'Error during while retrieving metrics.'
-                self._tcex.log.error(err)
+                self.tcex.log.error(err)
                 continue
 
             for metric in results.get('data'):
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
                     info = 'found metric with name "{}" and Id {}.'
-                    self._tcex.log.info(info.format(self._metric_name, self._metric_id))
+                    self.tcex.log.info(info.format(self._metric_name, self._metric_id))
                     return True
         return False
 
@@ -100,7 +100,7 @@ class TcExMetricsV2(object):
         response = None
         if self._metric_id is None:
             err = 'No metric ID found for "{}".'.format(self._metric_name)
-            self._tcex.log.error(err)
+            self.tcex.log.error(err)
             raise RuntimeError(err)
         resource = self.metric_resource
         resource.http_method = 'POST'
@@ -114,7 +114,7 @@ class TcExMetricsV2(object):
             body['date'] = date
         if key is not None:
             body['name'] = key
-        self._tcex.log.debug('metric data: {}'.format(json.dumps(body)))
+        self.tcex.log.debug('metric data: {}'.format(json.dumps(body)))
         resource.body = json.dumps(body)
         results = resource.request()
 
@@ -124,8 +124,8 @@ class TcExMetricsV2(object):
             pass
         else:
             err = u'Failed to add metric ({})'.format(results.get('response').text)
-            self._tcex.log.error(err)
-            self._tcex.message_tc(err)
+            self.tcex.log.error(err)
+            self.tcex.message_tc(err)
             raise RuntimeError(err)
 
         return response

@@ -106,7 +106,7 @@ class TcEx(object):
             for association in data.get('data', {}).get('associationType', []):
                 self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
-            self.raise_error(200, [e])
+            self.handle_error(200, [e])
 
     def _authorization_token_renew(self):
         """Method for handling token authorization to ThreatConnect API.
@@ -128,7 +128,7 @@ class TcEx(object):
             request.url = '{}/appAuth'.format(self.default_args.tc_api_path)
             r = request.send()
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.raise_error(210, [r.text])
+                self.handle_error(210, [r.text])
             data = r.json()
             if data['success']:
                 self.log.info(u'Expired API token has been renewed.')
@@ -136,7 +136,7 @@ class TcEx(object):
                 self._tc_token_expires = int(data['apiTokenExpires'])
                 authorization = 'TC-Token {}'.format(data['apiToken'])
             else:
-                self.raise_error(210, [r.text])
+                self.handle_error(210, [r.text])
         return {'Authorization': authorization}
 
     def _inject_secure_params(self):
@@ -385,7 +385,7 @@ class TcEx(object):
                     setattr(self.resources, name, self.resources.class_factory(
                         name, self.resources.Indicator, custom))
             except Exception as e:
-                self.raise_error(220, [e])
+                self.handle_error(220, [e])
 
     def _unknown_args(self, args):
         """Log argparser unknown arguments.
@@ -476,7 +476,7 @@ class TcEx(object):
                           ThreatConnect.
         """
         if request_prepped is None:
-            self.raise_error(215, [])
+            self.handle_error(215, [])
 
         timestamp = int(time.time())
         signature = '{}:{}:{}'.format(
@@ -633,6 +633,28 @@ class TcEx(object):
             'Task'
         ]
 
+    def handle_error(self, code, message_values=None, raise_error=True):
+        """Raise RuntimeError
+
+        Args:
+            code (integer): The error code from API or SDK.
+            message (string): The error message from API or SDK.
+        """
+        try:
+            if message_values is None:
+                message_values = []
+            message = self.error_codes.message(code).format(*message_values)
+            self.log.error('Error code: {}, {}'.format(code, message))
+        except AttributeError:
+            self.log.error('Incorrect error code provided ({}).'.format(code))
+            raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
+        except IndexError:
+            self.log.error('Incorrect message values provided for error code {} ({}).'.format(
+                code, message_values))
+            raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
+        if raise_error:
+            raise RuntimeError(code, message)
+
     @property
     def indicator_associations_types_data(self):
         """Return ThreatConnect associations type data.
@@ -770,27 +792,6 @@ class TcEx(object):
                 }
         return proxies
 
-    def raise_error(self, code, message_values=None):
-        """Raise RuntimeError
-
-        Args:
-            code (integer): The error code from API or SDK.
-            message (string): The error message from API or SDK.
-        """
-        try:
-            if message_values is None:
-                message_values = []
-            message = self.error_codes.message(code).format(*message_values)
-            self.log.error('Error code: {}, {}'.format(code, message))
-        except AttributeError:
-            self.log.error('Incorrect error code provided ({}).'.format(code))
-            raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
-        except IndexError:
-            self.log.error('Incorrect message values provided for error code {} ({}).'.format(
-                code, message_values))
-            raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
-        raise RuntimeError(code, message)
-
     def request(self, session=None):
         """Return an instance of the Request Class.
 
@@ -805,7 +806,7 @@ class TcEx(object):
             from .tcex_request import TcExRequest
             return TcExRequest(self, session)
         except ImportError as e:
-            self.raise_error(105, [e])
+            self.handle_error(105, [e])
 
     def request_external(self):
         """Return an instance of the Request Class with Proxy Set

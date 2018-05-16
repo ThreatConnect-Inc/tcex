@@ -12,7 +12,7 @@ module = __import__(__name__)
 # TODO: Add auto submit feature?
 
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_count):
-    """Internal method for dynamically building Custom Indicator Class"""
+    """Internal method for dynamically building Custom Indicator Class."""
     def init_1(self, tcex, value1, rating=None, confidence=None, xid=True):
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
@@ -22,7 +22,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
             setattr(self, k, v)
 
     def init_2(self, tcex, value1, value2, rating=None, confidence=None, xid=True):
-        """Init method for Custom Indicator Types with two values"""
+        """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, rating, confidence, xid)
         self._indicator_data['value1'] = value1
@@ -31,7 +31,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
             setattr(self, k, v)
 
     def init_3(self, tcex, value1, value2, value3, rating=None, confidence=None, xid=True):
-        """Init method for Custom Indicator Types with three values"""
+        """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, rating, confidence, xid)
         self._indicator_data['value1'] = value1
@@ -50,7 +50,7 @@ class Batch(object):
     """ThreatConnect Batch Import Module"""
 
     def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=False):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -94,7 +94,7 @@ class Batch(object):
         ]
 
     def _gen_indicator_class(self):
-        """Generate Custom Indicator Classes"""
+        """Generate Custom Indicator Classes."""
 
         for entry in self.tcex.indicator_types_data.values():
             name = entry.get('name')
@@ -152,7 +152,7 @@ class Batch(object):
         setattr(self, method_name, method)
 
     def _group_lookup(self, xid, group_obj):
-        """magic"""
+        """Return existing group object if exists."""
         if not isinstance(xid, bool):
             if self._groups_by_id.get(xid) is not None:
                 group_obj = self._groups_by_id.get(xid)
@@ -163,7 +163,7 @@ class Batch(object):
 
     @staticmethod
     def _indicator_values(indicator):
-        """Process indicators expanding file hashes/custom indicators into multiple entries
+        """Process indicators expanding file hashes/custom indicators into multiple entries.
 
         .. note:: remove first_indicator logic.
 
@@ -197,16 +197,16 @@ class Batch(object):
 
     @property
     def action(self):
-        """Return batch action"""
+        """Return batch action."""
         return self._action
 
     @action.setter
     def action(self, action):
-        """Set batch action"""
+        """Set batch action."""
         self._action = action
 
     def add_group(self, group_data):
-        """Add a group to Batch Job
+        """Add a group to Batch Job.
 
         {
             "name": "Example Incident",
@@ -237,7 +237,7 @@ class Batch(object):
         self._groups_raw.append(group_data)
 
     def add_indicator(self, indicator_data):
-        """Add an indicator to Batch Job
+        """Add an indicator to Batch Job.
 
         {
             "type": "File",
@@ -291,70 +291,70 @@ class Batch(object):
         self._indicators_raw.append(indicator_data)
 
     def address(self, ip, rating=None, confidence=None, xid=True):
-        """Add Address data to Batch object"""
+        """Add Address data to Batch object."""
         indicator_obj = Address(self.tcex, ip, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def adversary(self, name, xid=True):
-        """Add Adversary data to Batch object"""
+        """Add Adversary data to Batch object."""
         group_obj = Adversary(self.tcex, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def asn(self, as_number, rating=None, confidence=None, xid=True):
-        """Add ASN data to Batch object"""
+        """Add ASN data to Batch object."""
         indicator_obj = ASN(self.tcex, as_number, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     @property
     def attribute_write_type(self):
-        """Return batch attribute write type"""
+        """Return batch attribute write type."""
         return self._attribute_write_type
 
     @attribute_write_type.setter
     def attribute_write_type(self, attribute_write_type):
-        """Set batch attribute write type"""
+        """Set batch attribute write type."""
         self._attribute_write_type = attribute_write_type
 
     @property
     def auto_submit(self):
-        """Return batch auto submit setting"""
+        """Return batch auto submit setting."""
         return self._auto_submit
 
     @auto_submit.setter
     def auto_submit(self, auto_submit):
-        """Set batch auto submit setting"""
+        """Set batch auto submit setting."""
         self._auto_submit = self.tcex.utils.to_bool(auto_submit)
 
     @property
     def auto_submit_limit(self):
-        """Return batch auto submit limit"""
+        """Return batch auto submit limit."""
         return self._auto_submit_limit
 
     @auto_submit_limit.setter
     def auto_submit_limit(self, limit):
-        """Set batch auto submit limit"""
+        """Set batch auto submit limit."""
         self._auto_submit_limit = int(limit)
 
     def campaign(self, name, first_seen=None, xid=True):
-        """Add Campaign data to Batch object"""
+        """Add Campaign data to Batch object."""
         group_obj = Campaign(self.tcex, name, first_seen, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def cidr(self, block, rating=None, confidence=None, xid=True):
-        """Add CIDR data to Batch object"""
+        """Add CIDR data to Batch object."""
         indicator_obj = CIDR(self.tcex, block, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     @property
     def data(self):
-        """Return the batch data to be sent to the ThreatConnect API"""
+        """Return the batch data to be sent to the ThreatConnect API."""
         # process group objects
         for group_data in self._groups:
             self._groups_raw.append(group_data.data)
@@ -372,27 +372,27 @@ class Batch(object):
         }
 
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
-        """Add Document data to Batch object"""
+        """Add Document data to Batch object."""
         group_obj = Document(self.tcex, name, file_name, file_content, malware, password, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def email(self, name, subject, header, body, to_addr=None, from_addr=None, xid=True):
-        """Add Email data to Batch object"""
+        """Add Email data to Batch object."""
         group_obj = Email(self.tcex, name, subject, header, body, to_addr, from_addr, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def email_address(self, address, rating=None, confidence=None, xid=True):
-        """Add Email Address data to Batch object"""
+        """Add Email Address data to Batch object."""
         indicator_obj = EmailAddress(self.tcex, address, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
-    def errors(self, batch_id):
-        """Retrieve Batch errors to ThreatConnect API
+    def errors(self, batch_id, halt_on_error=True):
+        """Retrieve Batch errors to ThreatConnect API.
 
         [{
             "errorReason": "Incident incident-001 has an invalid status.",
@@ -421,13 +421,13 @@ class Batch(object):
                 error_reason = error.get('errorReason')
                 for error_msg in self._critical_failures:
                     if re.findall(error_msg, error_reason):
-                        self.tcex.raise_error(1500, [error_reason])
+                        self.tcex.handle_error(1500, [error_reason], halt_on_error)
             return errors
         except Exception as e:
-            self.tcex.raise_error(560, [e])
+            self.tcex.handle_error(560, [e], halt_on_error)
 
     def event(self, name, event_date=None, status=None, xid=True):
-        """Add Event data to Batch object"""
+        """Add Event data to Batch object."""
         group_obj = Event(self.tcex, name, event_date, status, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -435,13 +435,18 @@ class Batch(object):
 
     def file(self, md5=None, sha1=None, sha256=None, size=None, rating=None, confidence=None,
              xid=True):
-        """Add File data to Batch object"""
+        """Add File data to Batch object."""
         indicator_obj = File(self.tcex, md5, sha1, sha256, size, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
+    @property
+    def files(self):
+        """Return the files dictionary."""
+        return self._files
+
     def group(self, group_type, name, xid=True):
-        """Add Group data to Batch object"""
+        """Add Group data to Batch object."""
         group_type = group_type.replace(' ', '')
         group_obj = Group(self.tcex, group_type, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
@@ -450,49 +455,49 @@ class Batch(object):
 
     @property
     def halt_on_error(self):
-        """Return batch halt_on_error"""
+        """Return batch halt on error setting."""
         return self._halt_on_error
 
     @halt_on_error.setter
     def halt_on_error(self, halt_on_error):
-        """Set batch halt_on_error"""
+        """Set batch halt on error setting."""
         self._halt_on_error = halt_on_error
 
     def host(self, hostname, rating=None, confidence=None, xid=True):
-        """Add Email Address data to Batch object"""
+        """Add Email Address data to Batch object."""
         indicator_obj = Host(self.tcex, hostname, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def incident(self, name, event_date=None, status=None, xid=True):
-        """Add Incident data to Batch object"""
+        """Add Incident data to Batch object."""
         group_obj = Incident(self.tcex, name, event_date, status, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def indicator(self, indicator_type, summary, rating=None, confidence=None, xid=True):
-        """Add Indicator data to Batch object"""
+        """Add Indicator data to Batch object."""
         indicator_type = indicator_type.replace(' ', '')
         indicator_obj = Indicator(self.tcex, indicator_type, summary, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def intrusion_set(self, name, xid=True):
-        """Add Intrusion Set data to Batch object"""
+        """Add Intrusion Set data to Batch object."""
         group_obj = IntrusionSet(self.tcex, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def mutex(self, mutex, rating=None, confidence=None, xid=True):
-        """Add Mutex data to Batch object"""
+        """Add Mutex data to Batch object."""
         indicator_obj = Mutex(self.tcex, mutex, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
-    def poll(self, batch_id, interval=None, timeout=None):
-        """Poll Batch status to ThreatConnect API
+    def poll(self, batch_id, interval=None, timeout=None, halt_on_error=True):
+        """Poll Batch status to ThreatConnect API.
 
         {
             "status": "Success",
@@ -530,16 +535,18 @@ class Batch(object):
             try:
                 r = self.tcex.session.get('/v2/batch/{}'.format(batch_id))
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.tcex.raise_error(545, [r.status_code, r.text])
+                    self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
+                    return data
                 data = r.json()
                 if data.get('status') != 'Success':
-                    self.tcex.raise_error(545, [r.status_code, r.text])
+                    self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
                 if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                     self.tcex.log.debug('Batch Status: {}'.format(data))
                     return data
                 time.sleep(interval)
             except Exception as e:
-                self.tcex.raise_error(540, [e])
+                self.tcex.handle_error(540, [e], halt_on_error)
+                self.tcex.log.error(self.tcex.error_codes.message(540).format(e))
             # time out poll to prevent App running indefinitely
             if poll_time >= timeout:
                 self.tcex.log.info(
@@ -550,34 +557,34 @@ class Batch(object):
 
     @property
     def poll_interval(self):
-        """Return current poll interval value"""
+        """Return current poll interval value."""
         return self._poll_interval
 
     @poll_interval.setter
     def poll_interval(self, interval):
-        """Set the poll interval value"""
+        """Set the poll interval value."""
         self._poll_interval = int(interval)
 
     @property
     def poll_timeout(self):
-        """Return current poll timeout value"""
+        """Return current poll timeout value."""
         return self._poll_timeout
 
     @poll_timeout.setter
     def poll_timeout(self, seconds):
-        """Set the poll timeout value"""
+        """Set the poll timeout value."""
         self._poll_timeout = int(seconds)
 
     def registry_key(self, key_name, value_name, value_type, rating=None, confidence=None,
                      xid=True):
-        """Add Registry Key data to Batch object"""
+        """Add Registry Key data to Batch object."""
         indicator_obj = RegistryKey(
             self.tcex, key_name, value_name, value_type, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def report(self, name, file_name, file_content=None, publish_date=None, xid=True):
-        """Add Report data to Batch object"""
+        """Add Report data to Batch object."""
         group_obj = Report(self.tcex, name, file_name, file_content, publish_date, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -585,7 +592,7 @@ class Batch(object):
 
     @property
     def settings(self):
-        """Return batch job settings"""
+        """Return batch job settings."""
         return {
             'action': self._action,
             # not supported in v2 batch
@@ -597,42 +604,55 @@ class Batch(object):
         }
 
     def signature(self, name, file_name, file_type, file_text, xid=True):
-        """Add Signature data to Batch object"""
+        """Add Signature data to Batch object."""
         group_obj = Signature(self.tcex, name, file_name, file_type, file_text, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
-    def submit(self, submit_data=True, poll=True, errors=False):
-        """Send the batch request to ThreatConnect
+    def submit(self, submit_data=True, poll=True, errors=False, halt_on_error=True):
+        """Send the batch request to ThreatConnect.
+
+        By default this method will submit data, poll for completion, and submit the file data.
+        Errors are not retrieve automatically and need to be enabled.
+
+        If any of the submit, poll, or error methods fail the entire submit will halt at the point
+        of failure. The behavior can be changed by setting halt_on_error to False.
+
+        Each of these methods can also be called on their own for greater control of the submit
+        process.
 
         Args:
             submit_data (boolean): Submit the data after the job request.
             poll (boolean): Poll for status.
             errors (boolean): Retrieve and batch errors.
+            halt_on_error (boolean): Halt submission on any error.
         Returns:
             (dict): Batch data including batch id and batch status.
         """
         batch_data = {}
-        batch_data['batch_id'] = self.submit_job()
-        if submit_data:
-            self.submit_data(batch_data.get('batch_id'))
-            if poll:
-                # set an initial delay to allow small batch jobs to finish without a poll delay
-                time.sleep(3)
-                batch_data['batch_status'] = self.poll(batch_data.get('batch_id'))
-                # retrieve errors
-                if errors:
-                    data = batch_data.get('batch_status').get('data', {})
-                    if data.get('batchStatus', {}).get('errorCount', 0) > 0:
-                        batch_data['errors'] = self.errors(batch_data.get('batch_id'))
-        if submit_data:
-            # submit file data after batch job is complete
-            self.submit_files()
+        batch_id = self.submit_job(halt_on_error)
+        if batch_id is not None:
+            batch_data['batch_id'] = self.submit_job(halt_on_error)
+            if submit_data:
+                self.submit_data(batch_data.get('batch_id'), halt_on_error)
+                if poll:
+                    # set an initial delay to allow small batch jobs to finish without a poll delay
+                    time.sleep(3)
+                    batch_data['batch_status'] = self.poll(
+                        batch_data.get('batch_id'), halt_on_error)
+                    # retrieve errors
+                    if errors:
+                        data = batch_data.get('batch_status').get('data', {})
+                        if data.get('batchStatus', {}).get('errorCount', 0) > 0:
+                            batch_data['errors'] = self.errors(batch_data.get('batch_id'))
+            if submit_data:
+                # submit file data after batch job is complete
+                batch_data['upload_status'] = self.submit_files(False)
         return batch_data
 
-    def submit_data(self, batch_id):
-        """Submit Batch request to ThreatConnect API
+    def submit_data(self, batch_id, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
 
         Args:
             batch_id (string): The batch id of the current job.
@@ -642,20 +662,24 @@ class Batch(object):
             r = self.tcex.session.post(
                 '/v2/batch/{}'.format(batch_id), headers=headers, json=self.data)
         except Exception as e:
-            self.tcex.raise_error(1520, [e])
+            self.tcex.handle_error(1520, [e], halt_on_error)
         if not r.ok:
-            self.tcex.raise_error(1525, [r.status_code, r.text])
+            self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
         # reset values
         self._groups_raw = []
         self._indicators_raw = []
 
-    def submit_files(self):
-        """Submit Files for Documents and Reports to ThreatConnect API"""
-        # TODO: track file submission
-        # file_status = []
+    def submit_files(self, halt_on_error=True):
+        """Submit Files for Documents and Reports to ThreatConnect API."""
+        upload_status = []
         for xid, content_data in self._files.items():
+            del self._files[xid]  # win or loose remove the entry
+            status = True
+
+            # process the file content
             content = content_data.get('fileContent')
             if content is None:
+                upload_status.append({'uploaded': False, 'xid': xid})
                 self.tcex.log.warning('File content was null for xid {}.'.format(xid))
                 continue
             if callable(content):
@@ -669,49 +693,40 @@ class Batch(object):
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
             headers = {'Content-Type': 'application/octet-stream'}
             params = {'owner': self._owner}
-            r = self.submit_file_content('POST', url, content, headers, params)
+            r = self.submit_file_content('POST', url, content, headers, params, halt_on_error)
             if r.status_code == 401:
                 # use PUT method if file already exists
                 self.tcex.log.info('Received 401 status code using POST. Trying PUT to update.')
-                r = self.submit_file_content('PUT', url, content, headers, params)
+                r = self.submit_file_content('PUT', url, content, headers, params, halt_on_error)
             self.tcex.log.debug('{} Upload URL: {}.'.format(content_data.get('type'), r.url))
+            if not r.ok:
+                status = False
+                self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
             self.tcex.log.info('Status {} for file upload with xid {}.'.format(
                 r.status_code, xid))
-            if not r.ok:
-                if self._halt_on_error:
-                    self.tcex.raise_error(585, [r.status_code, r.text])
-                err = self.tcex.error_codes.message(585).format(r.status_code, r.text)
-                self.tcex.log.error(err)
-        # reset files
-        self._files = {}
+            upload_status.append({'uploaded': status, 'xid': xid})
+        return upload_status
 
-    def submit_file_content(self, method, url, data, headers, params):
-        """Submit File Content for Documents and Reports to ThreatConnect API"""
+    def submit_file_content(self, method, url, data, headers, params, halt_on_error=True):
+        """Submit File Content for Documents and Reports to ThreatConnect API."""
         r = None
         try:
-            r = self.tcex.session.request(
-                method, url, data=data.encode('utf-8'), headers=headers, params=params)
-        except UnicodeDecodeError:
-            r = self.tcex.session.post(
-                method, url, data=data, headers=headers, params=params)  # py2
+            r = self.tcex.session.request(method, url, data=data, headers=headers, params=params)
         except Exception as e:
-            if self._halt_on_error:
-                self.tcex.raise_error(580, [e])
-            err = self.tcex.error_codes.message(580).format(e)
-            self.tcex.log.error(err)
+            self.tcex.handle_error(580, [e], halt_on_error)
         return r
 
-    def submit_job(self):
-        """Submit Batch request to ThreatConnect API"""
+    def submit_job(self, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API."""
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self.tcex.raise_error(1505, [e])
+            self.tcex.handle_error(1505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.raise_error(1510, [r.status_code, r.text])
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
         data = r.json()
         if data.get('status') != 'Success':
-            self.tcex.raise_error(1510, [r.status_code, r.text])
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
         self.tcex.log.debug('Batch Submit Data: {}'.format(data))
         return data.get('data', {}).get('batchId')
 
@@ -754,7 +769,7 @@ class Group(object):
     """ThreatConnect Batch Group Object"""
 
     def __init__(self, tcex, group_type, name, xid):
-        """Initialize Class Properties"""
+        """Initialize Class Properties."""
         self.tcex = tcex
         self._name = name
         self._type = group_type
@@ -770,7 +785,7 @@ class Group(object):
         self._processed = False
 
     def _xid(self, xid):
-        """Return a valid xid"""
+        """Return a valid xid."""
         if xid is True or xid is None:
             # generate a reproducible value for xid
             xid_string = '{}-{}'.format(self._type, self._name)
@@ -783,11 +798,11 @@ class Group(object):
         return xid
 
     def add_key_value(self, key, value):
-        """Add custom field to Group object"""
+        """Add custom field to Group object."""
         self._group_data[key] = value
 
     def association(self, group_xid):
-        """Add association using xid value"""
+        """Add association using xid value."""
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
     def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
@@ -798,7 +813,7 @@ class Group(object):
 
     @property
     def data(self):
-        """Return Group data"""
+        """Return Group data."""
         # add attributes
         if self._attributes:
             self._group_data['attribute'] = []
@@ -820,7 +835,7 @@ class Group(object):
 
     @property
     def name(self):
-        """Return Group name"""
+        """Return Group name."""
         return self._group_data.get('name')
 
     @property
@@ -833,28 +848,28 @@ class Group(object):
 
     @processed.setter
     def processed(self, processed):
-        """Set processed"""
+        """Set processed."""
         self._processed = processed
 
     def security_label(self, name, description=None, color=None):
-        """Return instance of Tag"""
+        """Return instance of Tag."""
         label = SecurityLabel(self.tcex, name, description, color)
         self._labels.append(label)
         return label
 
     def tag(self, name, formatter=None):
-        """Return instance of Tag"""
+        """Return instance of Tag."""
         tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
 
     @property
     def xid(self):
-        """Return Group xid"""
+        """Return Group xid."""
         return self._group_data.get('xid')
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
 
@@ -862,7 +877,7 @@ class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
 
     def __init__(self, tcex, name, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -876,7 +891,7 @@ class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
 
     def __init__(self, tcex, name, first_seen=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -892,12 +907,12 @@ class Campaign(Group):
 
     @property
     def first_seen(self):
-        """Return Document first seen"""
+        """Return Document first seen."""
         return self._group_data.get('firstSeen')
 
     @first_seen.setter
     def first_seen(self, first_seen):
-        """Set Document first seen"""
+        """Set Document first seen."""
         self._group_data['firstSeen'] = self.tcex.utils.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
 
@@ -907,7 +922,7 @@ class Document(Group):
 
     def __init__(self, tcex, name, file_name, file_content=None, malware=False, password=None,
                  xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -919,8 +934,12 @@ class Document(Group):
         """
         super(Document, self).__init__(tcex, 'Document', name, xid)
         self._group_data['fileName'] = file_name
-        self._file_data = {'type': self._group_data.get('type')}
-        self._file_data['fileContent'] = file_content
+        # file data/content to upload
+        self._file_data = {
+            'fileContent': file_content,
+            'fileName': file_name,
+            'type': self._group_data.get('type')
+        }
         if malware:
             self._group_data['malware'] = malware
         if password is not None:
@@ -928,37 +947,37 @@ class Document(Group):
 
     @property
     def file_content(self):
-        """Return Group files"""
+        """Return Group files."""
         return self._file_data.get('fileContent')
 
     @file_content.setter
     def file_content(self, file_content):
-        """Set Document or Report file data"""
+        """Set Document or Report file data."""
         self._file_data['fileContent'] = file_content
 
     @property
     def file_data(self):
-        """Return Group files"""
+        """Return Group files."""
         return self._file_data
 
     @property
     def malware(self):
-        """Return Document malware"""
+        """Return Document malware."""
         return self._group_data.get('malware', False)
 
     @malware.setter
     def malware(self, malware):
-        """Set Document malware"""
+        """Set Document malware."""
         self._group_data['malware'] = malware
 
     @property
     def password(self):
-        """Return Document password"""
+        """Return Document password."""
         return self._group_data.get('password', False)
 
     @password.setter
     def password(self, password):
-        """Set Document password"""
+        """Set Document password."""
         self._group_data['password'] = password
 
 
@@ -966,7 +985,7 @@ class Email(Group):
     """ThreatConnect Batch Email Object"""
 
     def __init__(self, tcex, name, subject, header, body, to_addr=None, from_addr=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -989,22 +1008,22 @@ class Email(Group):
 
     @property
     def from_addr(self):
-        """Return Email to"""
+        """Return Email to."""
         return self._group_data.get('to')
 
     @from_addr.setter
     def from_addr(self, from_addr):
-        """Set Email from"""
+        """Set Email from."""
         self._group_data['from'] = from_addr
 
     @property
     def to_addr(self):
-        """Return Email to"""
+        """Return Email to."""
         return self._group_data.get('to')
 
     @to_addr.setter
     def to_addr(self, to_addr):
-        """Set Email to"""
+        """Set Email to."""
         self._group_data['to'] = to_addr
 
 
@@ -1012,7 +1031,7 @@ class Event(Group):
     """ThreatConnect Batch Event Object"""
 
     def __init__(self, tcex, name, event_date=None, status=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -1029,12 +1048,12 @@ class Event(Group):
 
     @property
     def first_seen(self):
-        """Return Document first seen"""
+        """Return Document first seen."""
         return self._group_data.get('firstSeen')
 
     @first_seen.setter
     def first_seen(self, first_seen):
-        """Set Document first seen"""
+        """Set Document first seen."""
         self._group_data['firstSeen'] = self.tcex.utils.format_datetime(
             first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
 
@@ -1043,10 +1062,10 @@ class Incident(Group):
     """ThreatConnect Batch Incident Object"""
 
     def __init__(self, tcex, name, event_date=None, status=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
             event_date (string): The date of the event (date will be auto-formatted).
@@ -1061,23 +1080,23 @@ class Incident(Group):
 
     @property
     def event_date(self):
-        """Return Incident event date"""
+        """Return Incident event date."""
         return self._group_data.get('eventDate')
 
     @event_date.setter
     def event_date(self, event_date):
-        """Set Incident event_date"""
+        """Set Incident event_date."""
         self._group_data['eventDate'] = self.tcex.utils.format_datetime(
             event_date, date_format='%Y-%m-%dT%H:%M:%SZ')
 
     @property
     def status(self):
-        """Return Incident status"""
+        """Return Incident status."""
         return self._group_data.get('status')
 
     @status.setter
     def status(self, status):
-        """Set Incident status
+        """Set Incident status.
 
         Valid Values:
         + New
@@ -1097,10 +1116,10 @@ class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
 
     def __init__(self, tcex, name, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
         """
@@ -1111,7 +1130,7 @@ class Report(Group):
     """ThreatConnect Batch Report Object"""
 
     def __init__(self, tcex, name, file_name, file_content=None, publish_date=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
@@ -1122,7 +1141,12 @@ class Report(Group):
         """
         super(Report, self).__init__(tcex, 'Report', name, xid)
         self._group_data['fileName'] = file_name
-        self._file_data = {'type': self._group_data.get('type')}
+        # file data/content to upload
+        self._file_data = {
+            'fileContent': file_content,
+            'fileName': file_name,
+            'type': self._group_data.get('type')
+        }
         self._file_data['fileContent'] = file_content
         if publish_date is not None:
             self._group_data['publishDate'] = self.tcex.utils.format_datetime(
@@ -1130,22 +1154,22 @@ class Report(Group):
 
     @property
     def file_content(self):
-        """Return Group files"""
+        """Return Group files."""
         return self._file_data.get('fileContent')
 
     @file_content.setter
     def file_content(self, file_content):
-        """Set Document or Report file data"""
+        """Set Document or Report file data."""
         self._file_data['fileContent'] = file_content
 
     @property
     def file_data(self):
-        """Return Group files"""
+        """Return Group files."""
         return self._file_data
 
     @property
     def publish_date(self):
-        """Return Report publish date"""
+        """Return Report publish date."""
         return self._group_data.get('publishDate')
 
     @publish_date.setter
@@ -1159,7 +1183,7 @@ class Signature(Group):
     """ThreatConnect Batch Signature Object"""
 
     def __init__(self, tcex, name, file_name, file_type, file_text, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Valid file_types:
         + Snort ®
@@ -1191,10 +1215,10 @@ class Threat(Group):
     """ThreatConnect Batch Threat Object"""
 
     def __init__(self, tcex, name, xid):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
         """
@@ -1210,7 +1234,7 @@ class Indicator(object):
     """ThreatConnect Batch Indicator Object"""
 
     def __init__(self, tcex, indicator_type, summary, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties"""
+        """Initialize Class Properties."""
         self.tcex = tcex
         self._summary = summary
         self._type = indicator_type
@@ -1230,7 +1254,7 @@ class Indicator(object):
         self._tags = []
 
     def _xid(self, xid):
-        """Return a valid xid"""
+        """Return a valid xid."""
         if xid is True or xid is None:
             # generate a reproducible value for xid
             xid_string = '{}-{}'.format(self._type, self._summary)
@@ -1243,7 +1267,7 @@ class Indicator(object):
         return xid
 
     def add_key_value(self, key, value):
-        """Add custom field to Indicator object"""
+        """Add custom field to Indicator object."""
 
         if self._indicator_data.get('type') == 'File':
             if key == 'size':
@@ -1256,7 +1280,7 @@ class Indicator(object):
         self._indicator_data[key] = value
 
     def build_summary(self, val1=None, val2=None, val3=None):
-        """Build the Indicator summary using available values"""
+        """Build the Indicator summary using available values."""
         summary = []
         if val1 is not None:
             summary.append(val1)
@@ -1265,33 +1289,33 @@ class Indicator(object):
         if val3 is not None:
             summary.append(val3)
         if not summary:
-            self.tcex.raise_error(590)
+            self.tcex.handle_error(590)
         return ' : '.join(summary)
 
     def association(self, group_xid):
-        """Add association using xid value"""
+        """Add association using xid value."""
         association = {'groupXid': group_xid}
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
     def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
-        """Return instance of Attribute"""
+        """Return instance of Attribute."""
         attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
         return attr
 
     @property
     def confidence(self):
-        """Return Indicator confidence"""
+        """Return Indicator confidence."""
         return self._indicator_data.get('confidence')
 
     @confidence.setter
     def confidence(self, confidence):
-        """Set Indicator confidence"""
+        """Set Indicator confidence."""
         self._indicator_data['confidence'] = int(confidence)
 
     @property
     def data(self):
-        """Return Indicator data"""
+        """Return Indicator data."""
         # add attributes
         if self._attributes:
             self._indicator_data['attribute'] = []
@@ -1324,44 +1348,44 @@ class Indicator(object):
 
     @property
     def private_flag(self):
-        """Return Indicator private flag"""
+        """Return Indicator private flag."""
         return self._indicator_data.get('privateFlag')
 
     @private_flag.setter
     def private_flag(self, private_flag):
-        """Set Indicator private flag"""
+        """Set Indicator private flag."""
         self._indicator_data['privateFlag'] = self.tcex.utils.to_bool(private_flag)
 
     @property
     def rating(self):
-        """Return Indicator rating"""
+        """Return Indicator rating."""
         return self._indicator_data.get('rating')
 
     @rating.setter
     def rating(self, rating):
-        """Set Indicator rating"""
+        """Set Indicator rating."""
         self._indicator_data['rating'] = float(rating)
 
     @property
     def summary(self):
-        """Return Indicator summary"""
+        """Return Indicator summary."""
         return self._indicator_data.get('summary')
 
     def security_label(self, name, description=None, color=None):
-        """Return instance of Tag"""
+        """Return instance of Tag."""
         label = SecurityLabel(self.tcex, name, description, color)
         self._labels.append(label)
         return label
 
     def tag(self, name, formatter=None):
-        """Return instance of Tag"""
+        """Return instance of Tag."""
         tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
 
     @property
     def xid(self):
-        """Return Group xid"""
+        """Return Group xid."""
         return self._indicator_data.get('xid')
 
     def __str__(self):
@@ -1373,10 +1397,10 @@ class Address(Indicator):
     """ThreatConnect Batch Address Object"""
 
     def __init__(self, tcex, ip, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             ip (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1386,13 +1410,13 @@ class Address(Indicator):
 
 
 class ASN(Indicator):
-    """ThreatConnect Batch ASN Object"""
+    """ThreatConnect Batch ASN Object."""
 
     def __init__(self, tcex, as_number, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             as_number (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1406,10 +1430,10 @@ class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
 
     def __init__(self, tcex, block, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             block (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1423,10 +1447,10 @@ class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
 
     def __init__(self, tcex, address, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             address (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1440,10 +1464,10 @@ class File(Indicator):
 
     def __init__(self, tcex, md5=None, sha1=None, sha256=None, size=None, rating=None,
                  confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             md5 (string): The md5 value.
             sha1 (string): The sha1 value.
             sha256 (string): The sha256 value.
@@ -1461,23 +1485,23 @@ class File(Indicator):
         # self._file_action = []
 
     def action(self, relationship):
-        """Add a File Action"""
+        """Add a File Action."""
         action_obj = FileAction(self.tcex, self._indicator_data.get('xid'), relationship)
         self._file_actions.append(action_obj)
         return action_obj
 
     @property
     def md5(self):
-        """Return Indicator md5"""
+        """Return Indicator md5."""
         return self._indicator_data.get('md5')
 
     @md5.setter
     def md5(self, md5):
-        """Set Indicator md5"""
+        """Set Indicator md5."""
         self._indicator_data['md5'] = md5
 
     def occurrence(self, file_name=None, path=None, date=None):
-        """Add a file Occurrence"""
+        """Add a file Occurrence."""
         # self._indicator_data.setdefault('fileAction', {})
         # self._indicator_data['fileAction'].setdefault('fileData', {})
         occurrence_obj = FileOccurrence(self.tcex, file_name, path, date)
@@ -1486,32 +1510,32 @@ class File(Indicator):
 
     @property
     def sha1(self):
-        """Return Indicator sha1"""
+        """Return Indicator sha1."""
         return self._indicator_data.get('sha1')
 
     @sha1.setter
     def sha1(self, sha1):
-        """Set Indicator sha1"""
+        """Set Indicator sha1."""
         self._indicator_data['sha1'] = sha1
 
     @property
     def sha256(self):
-        """Return Indicator sha256"""
+        """Return Indicator sha256."""
         return self._indicator_data.get('sha256')
 
     @sha256.setter
     def sha256(self, sha256):
-        """Set Indicator sha256"""
+        """Set Indicator sha256."""
         self._indicator_data['sha256'] = sha256
 
     @property
     def size(self):
-        """Return Indicator size"""
+        """Return Indicator size."""
         return self._indicator_data.get('intValue1')
 
     @size.setter
     def size(self, size):
-        """Set Indicator size"""
+        """Set Indicator size."""
         self._indicator_data['intValue1'] = size
 
 
@@ -1520,10 +1544,10 @@ class Host(Indicator):
 
     def __init__(self, tcex, hostname, dns_active=False, whois_active=False, rating=None,
                  confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             hostname (string): The Indicator value.
             dns_active (boolean): Enabled DNS tracking.
             whois_active (boolean): Enabled WhoIs tracking.
@@ -1539,22 +1563,22 @@ class Host(Indicator):
 
     @property
     def dns_active(self):
-        """Return Indicator dns active"""
+        """Return Indicator dns active."""
         return self._indicator_data.get('flag1')
 
     @dns_active.setter
     def dns_active(self, dns_active):
-        """Set Indicator dns active"""
+        """Set Indicator dns active."""
         self._indicator_data['flag1'] = dns_active
 
     @property
     def whois_active(self):
-        """Return Indicator whois active"""
+        """Return Indicator whois active."""
         return self._indicator_data.get('flag2')
 
     @whois_active.setter
     def whois_active(self, whois_active):
-        """Set Indicator whois active"""
+        """Set Indicator whois active."""
         self._indicator_data['flag2'] = whois_active
 
 
@@ -1562,10 +1586,10 @@ class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
 
     def __init__(self, tcex, mutex, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             mutex (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1580,10 +1604,10 @@ class RegistryKey(Indicator):
 
     def __init__(self, tcex, key_name, value_name, value_type, rating=None, confidence=None,
                  xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             key_name (string): The Registry Key name.
             value_name (string): The Registry Key value.
             value_type (string): The Registry Key value type.
@@ -1602,10 +1626,10 @@ class URL(Indicator):
     """ThreatConnect Batch URL Object"""
 
     def __init__(self, tcex, text, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             text (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1618,10 +1642,10 @@ class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
 
     def __init__(self, tcex, text, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             text (string): The Indicator value.
             rating (string): The Indicator threat rating.
             confidence (string): The Indicator threat confidence.
@@ -1640,10 +1664,10 @@ class Attribute(object):
     """ThreatConnect Batch Attribute Object"""
 
     def __init__(self, tcex, attr_type, attr_value, displayed=False, source=None, formatter=None):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
             tcex: Instance of TcEx
@@ -1675,46 +1699,46 @@ class Attribute(object):
 
     @property
     def data(self):
-        """Return Attribute data"""
+        """Return Attribute data."""
         return self._attribute_data
 
     @property
     def displayed(self):
-        """Return Attribute displayed"""
+        """Return Attribute displayed."""
         return self._attribute_data.get('displayed')
 
     @displayed.setter
     def displayed(self, displayed):
-        """Set Attribute displayed"""
+        """Set Attribute displayed."""
         self._attribute_data['displayed'] = displayed
 
     @property
     def source(self):
-        """Return Attribute source"""
+        """Return Attribute source."""
         return self._attribute_data.get('source')
 
     @source.setter
     def source(self, source):
-        """Set Attribute source"""
+        """Set Attribute source."""
         self._attribute_data['source'] = source
 
     @property
     def type(self):
-        """Return attribute value"""
+        """Return attribute value."""
         return self._attribute_data.get('type')
 
     @property
     def valid(self):
-        """Return valid value"""
+        """Return valid value."""
         return self._valid
 
     @property
     def value(self):
-        """Return attribute value"""
+        """Return attribute value."""
         return self._attribute_data.get('value')
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
 
@@ -1722,10 +1746,10 @@ class FileAction(object):
     """ThreatConnect Batch FileAction Object"""
 
     def __init__(self, tcex, parent_xid, relationship):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
             tcex: Instance of TcEx
@@ -1744,24 +1768,24 @@ class FileAction(object):
 
     @property
     def data(self):
-        """Return File Occurrence data"""
+        """Return File Occurrence data."""
         if self._children:
             for child in self._children:
                 self._action_data.setdefault('children', []).append(child.data)
         return self._action_data
 
     def action(self, relationship):
-        """Add a nested File Action"""
+        """Add a nested File Action."""
         action_obj = FileAction(self.tcex, self.xid, relationship)
         self._children.append(action_obj)
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
 
 class FileOccurrence(object):
-    """ThreatConnect Batch FileAction Object"""
+    """ThreatConnect Batch FileAction Object."""
 
     def __init__(self, tcex, file_name=None, path=None, date=None):
         """Initialize Class Properties
@@ -1784,53 +1808,53 @@ class FileOccurrence(object):
 
     @property
     def data(self):
-        """Return File Occurrence data"""
+        """Return File Occurrence data."""
         return self._occurrence_data
 
     @property
     def date(self):
-        """Return File Occurrence date"""
+        """Return File Occurrence date."""
         return self._occurrence_data.get('date')
 
     @date.setter
     def date(self, date):
-        """Set File Occurrence date"""
+        """Set File Occurrence date."""
         self._occurrence_data['date'] = self.tcex.utils.format_datetime(
             date, date_format='%Y-%m-%dT%H:%M:%SZ')
 
     @property
     def file_name(self):
-        """Return File Occurrence file name"""
+        """Return File Occurrence file name."""
         return self._occurrence_data.get('fileName')
 
     @file_name.setter
     def file_name(self, file_name):
-        """Set File Occurrence file name"""
+        """Set File Occurrence file name."""
         self._occurrence_data['fileName'] = file_name
 
     @property
     def path(self):
-        """Return File Occurrence path"""
+        """Return File Occurrence path."""
         return self._occurrence_data.get('path')
 
     @path.setter
     def path(self, path):
-        """Set File Occurrence path"""
+        """Set File Occurrence path."""
         self._occurrence_data['path'] = path
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
 
 class SecurityLabel(object):
-    """ThreatConnect Batch SecurityLabel Object"""
+    """ThreatConnect Batch SecurityLabel Object."""
 
     def __init__(self, tcex, name, description=None, color=None):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
+            tcex (TcEx Instance): Instance of TcEx.
             xid (string): The Group external id.
             name (string): The Group name.
             tcex: Instance of TcEx
@@ -1848,31 +1872,31 @@ class SecurityLabel(object):
 
     @property
     def color(self):
-        """Return Security Label color"""
+        """Return Security Label color."""
         return self._label_data.get('color')
 
     @color.setter
     def color(self, color):
-        """Set Security Label color"""
+        """Set Security Label color."""
         self._label_data['color'] = color
 
     @property
     def data(self):
-        """Return Security Label data"""
+        """Return Security Label data."""
         return self._label_data
 
     @property
     def description(self):
-        """Return Security Label description"""
+        """Return Security Label description."""
         return self._label_data.get('description')
 
     @description.setter
     def description(self, description):
-        """Set Security Label description"""
+        """Set Security Label description."""
         self._label_data['description'] = description
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
 
 
@@ -1880,14 +1904,12 @@ class Tag(object):
     """ThreatConnect Batch Tag Object"""
 
     def __init__(self, tcex, name, formatter=None):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
+            tcex (TcEx Instance): Instance of TcEx.
             name (string): The Group name.
-            tcex: Instance of TcEx
-            name: The tag value.
+            formatter (method): The method used to format the tag value.
         """
         self.tcex = tcex
         if formatter is not None:
@@ -1902,19 +1924,19 @@ class Tag(object):
 
     @property
     def data(self):
-        """Return Tag data"""
+        """Return Tag data."""
         return self._tag_data
 
     @property
     def name(self):
-        """Return Tag name"""
+        """Return Tag name."""
         return self._tag_data.get('name')
 
     @property
     def valid(self):
-        """Return valid data"""
+        """Return valid data."""
         return self._valid
 
     def __str__(self):
-        """Return string represtentation of object"""
+        """Return string represtentation of object."""
         return json.dumps(self.data, indent=4)
