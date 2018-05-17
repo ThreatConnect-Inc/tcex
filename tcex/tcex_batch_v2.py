@@ -9,7 +9,7 @@ import uuid
 # import local modules for dynamic reference
 module = __import__(__name__)
 
-# TODO: Add auto submit feature?
+# TODO: Add auto submit feature.
 
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_count):
     """Internal method for dynamically building Custom Indicator Class."""
@@ -53,14 +53,12 @@ class Batch(object):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            tcex: Instance of TcEx
-            owner: The ThreatConnect owner for Batch action.
-            action: Action for the batch job ['Create', 'Delete'].
-            attribute_write_type: Write type for Indicator attributes ['Append', 'Replace'].
-            halt_on_error: Flag to indicate that the batch job should halt on error.
+            tcex (obj): An instance of TcEx object.
+            owner (str): The ThreatConnect owner for Batch action.
+            action (str, default:Create): Action for the batch job ['Create', 'Delete'].
+            attribute_write_type (str, default:Replace): Write type for Indicator attributes
+                ['Append', 'Replace'].
+            halt_on_error (bool, default:True): If True any batch error will halt the batch job.
         """
         self.tcex = tcex
         self._owner = owner
@@ -125,7 +123,13 @@ class Batch(object):
             self._gen_indicator_method(name, custom_class, value_count)
 
     def _gen_indicator_method(self, name, custom_class, value_count):
-        """Generate Custom Indicator Methods"""
+        """Dynamically generate custom Indicator methods.
+
+        Args:
+            name (str): The name of the method.
+            custom_class (object): The class to add.
+            value_count (int): The number of value parameters to support.
+        """
         method_name = name.replace(' ', '_').lower()
 
         # Add Method for each Custom Indicator class
@@ -152,7 +156,15 @@ class Batch(object):
         setattr(self, method_name, method)
 
     def _group_lookup(self, xid, group_obj):
-        """Return existing group object if exists."""
+        """Return existing group object if exists.
+
+        Args:
+            xid (str): The xid (External ID) value for the Group.
+            group_obj (obj): An instance of the Group object.
+
+        Returns:
+            obj: The new group object or the previously stored object.
+        """
         if not isinstance(xid, bool):
             if self._groups_by_id.get(xid) is not None:
                 group_obj = self._groups_by_id.get(xid)
@@ -165,12 +177,11 @@ class Batch(object):
     def _indicator_values(indicator):
         """Process indicators expanding file hashes/custom indicators into multiple entries.
 
-        .. note:: remove first_indicator logic.
-
         Args:
-            indicator (string): " : " delimited string
+            indicator (str): " : " delimited string
+
         Returns:
-            (list): a list of indicators split on " : ".
+            list: The list of indicators split on " : ".
         """
         indicator_list = [indicator]
         if indicator.count(' : ') > 0:
@@ -226,7 +237,8 @@ class Batch(object):
         }
 
         Args:
-            group_data (dict): Full Group data including attributes, labels, tags, and associations.
+            group_data (dict): The full Group data including attributes, labels, tags, and
+                associations.
         """
         file_content = group_data.pop('fileContent', None)
         if file_content is not None:
@@ -265,8 +277,8 @@ class Batch(object):
         }
 
         Args:
-            indicator_data (dict): Full Indicator data including attributes, labels, tags,
-                                   and associations.
+            indicator_data (dict): The Full Indicator data including attributes, labels, tags,
+                and associations.
         """
         if indicator_data.get('type') not in ['Address', 'EmailAddress', 'File', 'Host', 'URL']:
             # for custom indicator types the valueX fields are required.
@@ -291,20 +303,48 @@ class Batch(object):
         self._indicators_raw.append(indicator_data)
 
     def address(self, ip, rating=None, confidence=None, xid=True):
-        """Add Address data to Batch object."""
+        """Add Address data to Batch object.
+
+        Args:
+            ip (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of Address.
+        """
         indicator_obj = Address(self.tcex, ip, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def adversary(self, name, xid=True):
-        """Add Adversary data to Batch object."""
+        """Add Adversary data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Adversary.
+        """
         group_obj = Adversary(self.tcex, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def asn(self, as_number, rating=None, confidence=None, xid=True):
-        """Add ASN data to Batch object."""
+        """Add ASN data to Batch object.
+
+        Args:
+            as_number (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of ASN.
+        """
         indicator_obj = ASN(self.tcex, as_number, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
@@ -340,14 +380,33 @@ class Batch(object):
         self._auto_submit_limit = int(limit)
 
     def campaign(self, name, first_seen=None, xid=True):
-        """Add Campaign data to Batch object."""
+        """Add Campaign data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            first_seen (str, optional): The first seen datetime expression for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Campaign.
+        """
         group_obj = Campaign(self.tcex, name, first_seen, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def cidr(self, block, rating=None, confidence=None, xid=True):
-        """Add CIDR data to Batch object."""
+        """Add CIDR data to Batch object.
+
+        Args:
+            block (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of CIDR.
+        """
         indicator_obj = CIDR(self.tcex, block, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
@@ -364,7 +423,7 @@ class Batch(object):
         for indicator in self._indicators:
             self._indicators_raw.append(indicator.data)
         # clear data from lists
-        self._groups = []
+        self._groups = set()
         self._indicators = []
         return {
             'group': self._groups_raw,
@@ -372,21 +431,58 @@ class Batch(object):
         }
 
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
-        """Add Document data to Batch object."""
+        """Add Document data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            file_name (str): The name for the attached file for this Group.
+            file_content (str;method, optional): The file contents or callback method to retrieve
+                file content.
+            malware (bool, default:False): If true the file is considered malware.
+            password (bool, optional): If malware is true a password for the zip archive is
+                required.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Document.
+        """
         group_obj = Document(self.tcex, name, file_name, file_content, malware, password, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def email(self, name, subject, header, body, to_addr=None, from_addr=None, xid=True):
-        """Add Email data to Batch object."""
+        """Add Email data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            subject (str): The subject for this Email.
+            header (str): The header for this Email.
+            body (str): The body for this Email.
+            to_addr (str, optional): The **to** address for this Email.
+            from_addr (str, optional): The **from** address for this Email.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Email.
+        """
         group_obj = Email(self.tcex, name, subject, header, body, to_addr, from_addr, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def email_address(self, address, rating=None, confidence=None, xid=True):
-        """Add Email Address data to Batch object."""
+        """Add Email Address data to Batch object.
+
+        Args:
+            address (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of EmailAddress.
+        """
         indicator_obj = EmailAddress(self.tcex, address, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
@@ -402,6 +498,9 @@ class Batch(object):
             "errorSource":"incident-002 is not valid."
         }]
 
+        Args:
+            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
         """
         errors = []
         try:
@@ -427,7 +526,17 @@ class Batch(object):
             self.tcex.handle_error(560, [e], halt_on_error)
 
     def event(self, name, event_date=None, status=None, xid=True):
-        """Add Event data to Batch object."""
+        """Add Event data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            event_date (str, optional): The event datetime expression for this Group.
+            status (str, optional): The status for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Event.
+        """
         group_obj = Event(self.tcex, name, event_date, status, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -435,18 +544,42 @@ class Batch(object):
 
     def file(self, md5=None, sha1=None, sha256=None, size=None, rating=None, confidence=None,
              xid=True):
-        """Add File data to Batch object."""
+        """Add File data to Batch object.
+
+        .. note:: A least one file hash value must be specified.
+
+        Args:
+            md5 (str, optional): The md5 value for this Indicator.
+            sha1 (str, optional): The sha1 value for this Indicator.
+            sha256 (str, optional): The sha256 value for this Indicator.
+            size (str, optional): The file size for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of File.
+        """
         indicator_obj = File(self.tcex, md5, sha1, sha256, size, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     @property
     def files(self):
-        """Return the files dictionary."""
+        """Return dictionary containing all of the file content or callbacks."""
         return self._files
 
     def group(self, group_type, name, xid=True):
-        """Add Group data to Batch object."""
+        """Add Group data to Batch object.
+
+        Args:
+            group_type (str): The ThreatConnect define Group type.
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Group.
+        """
         group_type = group_type.replace(' ', '')
         group_obj = Group(self.tcex, group_type, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
@@ -463,35 +596,88 @@ class Batch(object):
         """Set batch halt on error setting."""
         self._halt_on_error = halt_on_error
 
-    def host(self, hostname, rating=None, confidence=None, xid=True):
-        """Add Email Address data to Batch object."""
-        indicator_obj = Host(self.tcex, hostname, rating, confidence, xid)
+    def host(self, hostname, dns_active=False, whois_active=False, rating=None, confidence=None,
+             xid=True):
+        """Add Email Address data to Batch object.
+
+        Args:
+            hostname (str): The value for this Indicator.
+            dns_active (bool, default:False): If True DNS active is enabled for this indicator.
+            whois_active (bool, default:False): If True WhoIs active is enabled for this
+                indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of Host.
+        """
+        indicator_obj = Host(self.tcex, hostname, dns_active, whois_active, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def incident(self, name, event_date=None, status=None, xid=True):
-        """Add Incident data to Batch object."""
+        """Add Incident data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            event_date (str, optional): The event datetime expression for this Group.
+            status (str, optional): The status for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Incident.
+        """
         group_obj = Incident(self.tcex, name, event_date, status, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def indicator(self, indicator_type, summary, rating=None, confidence=None, xid=True):
-        """Add Indicator data to Batch object."""
+        """Add Indicator data to Batch object.
+
+        Args:
+            indicator_type (str): The ThreatConnect define Indicator type.
+            summary (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of Indicator.
+        """
         indicator_type = indicator_type.replace(' ', '')
         indicator_obj = Indicator(self.tcex, indicator_type, summary, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def intrusion_set(self, name, xid=True):
-        """Add Intrusion Set data to Batch object."""
+        """Add Intrusion Set data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of IntrusionSet.
+        """
         group_obj = IntrusionSet(self.tcex, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def mutex(self, mutex, rating=None, confidence=None, xid=True):
-        """Add Mutex data to Batch object."""
+        """Add Mutex data to Batch object.
+
+        Args:
+            mutex (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of Mutex.
+        """
         indicator_obj = Mutex(self.tcex, mutex, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
@@ -513,12 +699,13 @@ class Batch(object):
         }
 
         Args:
-            batch_id (str): The ID of the current batch job.
-            interval (int): Number of seconds to delay between each status request.
-            timeout (int): The number of seconds before the poll should timeout.
-        Returns:
-            (dict): The batch status returned from the API.
+            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
+            interval (int, optional): Number of seconds to delay between each status request.
+            timeout (int, optional): The number of seconds before the poll should timeout.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
 
+        Returns:
+            dict: The batch status returned from the ThreatConnect API.
         """
         if interval is None:
             interval = self.poll_interval
@@ -577,14 +764,38 @@ class Batch(object):
 
     def registry_key(self, key_name, value_name, value_type, rating=None, confidence=None,
                      xid=True):
-        """Add Registry Key data to Batch object."""
+        """Add Registry Key data to Batch object.
+
+        Args:
+            key_name (str): The key_name value for this Indicator.
+            value_name (str): The value_name value for this Indicator.
+            value_type (str): The value_type value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of Registry Key.
+        """
         indicator_obj = RegistryKey(
             self.tcex, key_name, value_name, value_type, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def report(self, name, file_name, file_content=None, publish_date=None, xid=True):
-        """Add Report data to Batch object."""
+        """Add Report data to Batch object.
+
+        Args:
+            name (str): The name for this Group.
+            file_name (str): The name for the attached file for this Group.
+            file_content (str;method, optional): The file contents or callback method to retrieve
+                file content.
+            publish_date (str, optional): The publish datetime expression for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Report.
+        """
         group_obj = Report(self.tcex, name, file_name, file_content, publish_date, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -604,7 +815,29 @@ class Batch(object):
         }
 
     def signature(self, name, file_name, file_type, file_text, xid=True):
-        """Add Signature data to Batch object."""
+        """Add Signature data to Batch object.
+
+        Valid file_types:
+        + Snort ®
+        + Suricata
+        + YARA
+        + ClamAV ®
+        + OpenIOC
+        + CybOX ™
+        + Bro
+        + Regex
+        + SPL - Splunk ® Search Processing Language
+
+        Args:
+            name (str): The name for this Group.
+            file_name (str): The name for the attached signature for this Group.
+            file_type (str): The signature type for this Group.
+            file_text (str): The signature content for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Signature.
+        """
         group_obj = Signature(self.tcex, name, file_name, file_type, file_text, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -623,39 +856,47 @@ class Batch(object):
         process.
 
         Args:
-            submit_data (boolean): Submit the data after the job request.
-            poll (boolean): Poll for status.
-            errors (boolean): Retrieve and batch errors.
-            halt_on_error (boolean): Halt submission on any error.
+            submit_data (bool, default:True): Submit the data after the job request.
+            poll (bool, default:True): Poll for status.
+            errors (bool, default:False): Retrieve and batch errors.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
         Returns:
-            (dict): Batch data including batch id and batch status.
+            dict: The batch data including batch id, batch status, errors (optional) and upload
+                status.
         """
+        self.tcex.log.info('Submitting {} groups.'.format(self.group_len))
+        self.tcex.log.info('Submitting {} indicators.'.format(self.indicator_len))
         batch_data = {}
-        batch_id = self.submit_job(halt_on_error)
-        if batch_id is not None:
-            batch_data['batch_id'] = self.submit_job(halt_on_error)
-            if submit_data:
-                self.submit_data(batch_data.get('batch_id'), halt_on_error)
-                if poll:
-                    # set an initial delay to allow small batch jobs to finish without a poll delay
-                    time.sleep(3)
-                    batch_data['batch_status'] = self.poll(
-                        batch_data.get('batch_id'), halt_on_error)
-                    # retrieve errors
-                    if errors:
-                        data = batch_data.get('batch_status').get('data', {})
-                        if data.get('batchStatus', {}).get('errorCount', 0) > 0:
-                            batch_data['errors'] = self.errors(batch_data.get('batch_id'))
-            if submit_data:
-                # submit file data after batch job is complete
-                batch_data['upload_status'] = self.submit_files(False)
+        if self.group_len or self.indicator_len:
+            batch_id = self.submit_job(halt_on_error)
+            if batch_id is not None:
+                batch_data['batch_id'] = self.submit_job(halt_on_error)
+                if submit_data:
+                    self.submit_data(batch_data.get('batch_id'), halt_on_error)
+                    if poll:
+                        # set an initial delay to allow small batch jobs to finish without a poll delay
+                        time.sleep(3)
+                        batch_data['batch_status'] = self.poll(
+                            batch_data.get('batch_id'), halt_on_error)
+                        # retrieve errors
+                        if errors:
+                            data = batch_data.get('batch_status').get('data', {})
+                            if data.get('batchStatus', {}).get('errorCount', 0) > 0:
+                                batch_data['errors'] = self.errors(batch_data.get('batch_id'))
+                if submit_data:
+                    # submit file data after batch job is complete
+                    batch_data['upload_status'] = self.submit_files(False)
+        else:
+            self.tcex.log.info('No entries to submit to batch.')
         return batch_data
 
     def submit_data(self, batch_id, halt_on_error=True):
-        """Submit Batch request to ThreatConnect API.
+        """Submit the batch data to ThreatConnect API for the specified batch_id.
 
         Args:
-            batch_id (string): The batch id of the current job.
+            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
         """
         headers = {'Content-Type': 'application/octet-stream'}
         try:
@@ -670,7 +911,14 @@ class Batch(object):
         self._indicators_raw = []
 
     def submit_files(self, halt_on_error=True):
-        """Submit Files for Documents and Reports to ThreatConnect API."""
+        """Submit Files for Documents and Reports to ThreatConnect API.
+
+        Args:
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
+        Returns:
+            dict: The upload status for each xid.
+        """
         upload_status = []
         for xid, content_data in self._files.items():
             del self._files[xid]  # win or loose remove the entry
@@ -708,7 +956,19 @@ class Batch(object):
         return upload_status
 
     def submit_file_content(self, method, url, data, headers, params, halt_on_error=True):
-        """Submit File Content for Documents and Reports to ThreatConnect API."""
+        """Submit File Content for Documents and Reports to ThreatConnect API.
+
+        Args:
+            method (str): The HTTP method for the request (POST, PUT).
+            url (str): The URL for the request.
+            data (str;bytes;file): The body (data) for the request.
+            headers (dict): The headers for the request.
+            params (dict): The query string parameters for the request.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
+        Returns:
+            requests.models.Response: The response from the request.
+        """
         r = None
         try:
             r = self.tcex.session.request(method, url, data=data, headers=headers, params=params)
@@ -717,7 +977,14 @@ class Batch(object):
         return r
 
     def submit_job(self, halt_on_error=True):
-        """Submit Batch request to ThreatConnect API."""
+        """Submit Batch request to ThreatConnect API.
+
+        Args:
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
+        Returns.
+            str: The ID returned from the ThreatConnect API for the current batch job.
+        """
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
@@ -731,32 +998,73 @@ class Batch(object):
         return data.get('data', {}).get('batchId')
 
     def threat(self, name, xid=True):
-        """Add Threat data to Batch object"""
+        """Add Threat data to Batch object
+
+        Args:
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
+
+        Returns:
+            obj: An instance of Threat.
+        """
         group_obj = Threat(self.tcex, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
         return group_obj
 
     def user_agent(self, text, rating=None, confidence=None, xid=True):
-        """Add User Agent data to Batch object"""
+        """Add User Agent data to Batch object
+
+        Args:
+            text (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of UserAgent.
+        """
         indicator_obj = UserAgent(self.tcex, text, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
     def url(self, text, rating=None, confidence=None, xid=True):
-        """Add URL Address data to Batch object"""
+        """Add URL Address data to Batch object.
+
+        Args:
+            text (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+
+        Returns:
+            obj: An instance of URL.
+        """
         indicator_obj = URL(self.tcex, text, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
 
+    @property
+    def file_len(self):
+        """Return the number of current indicators."""
+        return len(self._files)
+
+    @property
+    def group_len(self):
+        """Return the number of current groups."""
+        return len(self._groups) + len(self._groups_raw)
+
+    @property
+    def indicator_len(self):
+        """Return the number of current indicators."""
+        return len(self._indicators) + len(self._indicators_raw)
+
     def __len__(self):
-        """Return the number of groups and indicators"""
-        group_len = len(self._groups) + len(self._groups_raw)
-        indicator_len = len(self._indicators) + len(self._indicators_raw)
-        return group_len + indicator_len
+        """Return the number of groups and indicators."""
+        return self.group_len + self.indicator_len
 
     def __str__(self):
-        """Send the batch request to ThreatConnect"""
+        """Send the batch request to ThreatConnect."""
         return json.dumps(self.data, indent=4, sort_keys=True)
 
 
@@ -768,8 +1076,15 @@ class Batch(object):
 class Group(object):
     """ThreatConnect Batch Group Object"""
 
-    def __init__(self, tcex, group_type, name, xid):
-        """Initialize Class Properties."""
+    def __init__(self, tcex, group_type, name, xid=True):
+        """Initialize Class Properties.
+
+        Args:
+            tcex (TcEx Instance): Instance of TcEx
+            group_type (str): The ThreatConnect define Group type.
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
+        """
         self.tcex = tcex
         self._name = name
         self._type = group_type
@@ -798,15 +1113,44 @@ class Group(object):
         return xid
 
     def add_key_value(self, key, value):
-        """Add custom field to Group object."""
+        """Add custom field to Group object.
+
+        .. note:: The key must be the exact name required by the batch schema.
+
+        Example::
+
+            document = tcex.batch.group('Document', 'My Document')
+            document.add_key_value('fileName', 'something.pdf')
+
+        Args:
+            key (str): The field key to add to the JSON batch data.
+            value (str): The field value to add to the JSON batch data.
+        """
         self._group_data[key] = value
 
     def association(self, group_xid):
-        """Add association using xid value."""
+        """Add association using xid value.
+
+        Args:
+            group_xid (str): The external id of the Group to associate.
+        """
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
     def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
-        """Return instance of Attribute"""
+        """Return instance of Attribute
+
+        Args:
+            attr_type (str): The ThreatConnect defined attribute type.
+            attr_value (str): The value for this attribute.
+            displayed (bool, default:false): If True the supported attribute will be marked for
+                display.
+            source (str, optional): The source value for this attribute.
+            formatter (method, optional): A method that take a single attribute value and return a
+                single formatted value.
+
+        Returns:
+            obj: An instance of Attribute.
+        """
         attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
         return attr
@@ -852,13 +1196,34 @@ class Group(object):
         self._processed = processed
 
     def security_label(self, name, description=None, color=None):
-        """Return instance of Tag."""
+        """Return instance of SecurityLabel.
+
+        .. note:: The provided security label will be create if it doesn't exist. If the security
+            label already exists nothing will be changed.
+
+        Args:
+            name (str): The value for this security label.
+            description (str): A description for this security label.
+            color (str): A color (hex value) for this security label.
+
+        Returns:
+            obj: An instance of SecurityLabel.
+        """
         label = SecurityLabel(self.tcex, name, description, color)
         self._labels.append(label)
         return label
 
     def tag(self, name, formatter=None):
-        """Return instance of Tag."""
+        """Return instance of Tag.
+
+        Args:
+            name (str): The value for this tag.
+            formatter (method, optional): A method that take a tag value and returns a
+                formatted tag.
+
+        Returns:
+            obj: An instance of Tag.
+        """
         tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
@@ -881,8 +1246,8 @@ class Adversary(Group):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Adversary, self).__init__(tcex, 'Adversary', name, xid)
 
@@ -894,11 +1259,10 @@ class Campaign(Group):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            first_seen (string): The date of the campaign was first seen
-                                 (date will be auto-formatted).
+            tcex (obj): An instance of TcEx object.
+            name (str): The name for this Group.
+            first_seen (str, optional): The first see datetime expression for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Campaign, self).__init__(tcex, 'Campaign', name, xid)
         if first_seen is not None:
@@ -926,11 +1290,14 @@ class Document(Group):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            file_name (string): The name of the attached document.
-            file_content (bytes|method): The file content or method to call to return content.
-            malware (boolean): Indicates the attached document is malware.
+            name (str): The name for this Group.
+            file_name (str): The name for the attached file for this Group.
+            file_content (str;method, optional): The file contents or callback method to retrieve
+                file content.
+            malware (bool, default:False): If true the file is considered malware.
+            password (bool, optional): If malware is true a password for the zip archive is
+                required.
+            xid (str, optional): The external id for this Group.
         """
         super(Document, self).__init__(tcex, 'Document', name, xid)
         self._group_data['fileName'] = file_name
@@ -989,13 +1356,13 @@ class Email(Group):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            subject (string): The Email subject.
-            header (string): The Email header.
-            body (string): The Email body.
-            to_addr (string): The Email **to** address.
-            from_addr (string): The Email **from** address.
+            name (str): The name for this Group.
+            subject (str): The subject for this Email.
+            header (str): The header for this Email.
+            body (str): The body for this Email.
+            to_addr (str, optional): The **to** address for this Email.
+            from_addr (str, optional): The **from** address for this Email.
+            xid (str, optional): The external id for this Group.
         """
         super(Email, self).__init__(tcex, 'Email', name, xid)
         self._group_data['subject'] = subject
@@ -1035,9 +1402,10 @@ class Event(Group):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            event_date (string): The date of the Event (date will be auto-formatted).
+            name (str): The name for this Group.
+            event_date (str, optional): The event datetime expression for this Group.
+            status (str, optional): The status for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Event, self).__init__(tcex, 'Event', name, xid)
         if event_date is not None:
@@ -1047,15 +1415,25 @@ class Event(Group):
             self._group_data['status'] = status
 
     @property
-    def first_seen(self):
-        """Return Document first seen."""
+    def event_date(self):
+        """Return the Events "event date" value."""
         return self._group_data.get('firstSeen')
 
-    @first_seen.setter
-    def first_seen(self, first_seen):
-        """Set Document first seen."""
-        self._group_data['firstSeen'] = self.tcex.utils.format_datetime(
-            first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
+    @event_date.setter
+    def event_date(self, event_date):
+        """Set the Events "event date" value."""
+        self._group_data['eventDate'] = self.tcex.utils.format_datetime(
+            event_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+
+    @property
+    def status(self):
+        """Return the Events status value."""
+        return self._group_data.get('status')
+
+    @status.setter
+    def status(self, status):
+        """Set the Events status value."""
+        self._group_data['status'] = status
 
 
 class Incident(Group):
@@ -1065,11 +1443,11 @@ class Incident(Group):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
-            event_date (string): The date of the event (date will be auto-formatted).
-            status (string): The status of the Incident.
+            tcex (obj): An instance of TcEx object.
+            name (str): The name for this Group.
+            event_date (str, optional): The event datetime expression for this Group.
+            status (str, optional): The status for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Incident, self).__init__(tcex, 'Incident', name, xid)
         if event_date is not None:
@@ -1119,9 +1497,9 @@ class IntrusionSet(Group):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
+            tcex (obj): An instance of TcEx object.
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(IntrusionSet, self).__init__(tcex, 'Intrusion Set', name, xid)
 
@@ -1134,10 +1512,12 @@ class Report(Group):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            file_name (string): The name of the attached document.
-            publish_date (string): The date the report was published (date will be auto-formatted).
+            name (str): The name for this Group.
+            file_name (str): The name for the attached file for this Group.
+            file_content (str;method, optional): The file contents or callback method to retrieve
+                file content.
+            publish_date (str, optional): The publish datetime expression for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Report, self).__init__(tcex, 'Report', name, xid)
         self._group_data['fileName'] = file_name
@@ -1194,33 +1574,32 @@ class Signature(Group):
         + CybOX ™
         + Bro
         + Regex
-        + SPL - Splunk® Search Processing Language
+        + SPL - Splunk ® Search Processing Language
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            xid (string): The Group external id.
-            name (string): The Group name.
-            file_name (string): The Signature file name.
-            file_type (string): The Signature file type.
-            file_text (string): The Signature text.
+            name (str): The name for this Group.
+            file_name (str): The name for the attached signature for this Group.
+            file_type (str): The signature type for this Group.
+            file_text (str): The signature content for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Signature, self).__init__(tcex, 'Signature', name, xid)
         self._group_data['fileName'] = file_name
         self._group_data['fileType'] = file_type
         self._group_data['fileText'] = file_text
-        # self._group_data['signatureDateAdded'] = self.tcex.utils.date_format()
 
 
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
 
-    def __init__(self, tcex, name, xid):
+    def __init__(self, tcex, name, xid=True):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
+            tcex (obj): An instance of TcEx object.
+            name (str): The name for this Group.
+            xid (str, optional): The external id for this Group.
         """
         super(Threat, self).__init__(tcex, 'Threat', name, xid)
 
@@ -1234,7 +1613,16 @@ class Indicator(object):
     """ThreatConnect Batch Indicator Object"""
 
     def __init__(self, tcex, indicator_type, summary, rating=None, confidence=None, xid=True):
-        """Initialize Class Properties."""
+        """Initialize Class Properties.
+
+        Args:
+            tcex (obj): An instance of TcEx object.
+            indicator_type (str): The ThreatConnect define Indicator type.
+            summary (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
+        """
         self.tcex = tcex
         self._summary = summary
         self._type = indicator_type
@@ -1267,8 +1655,19 @@ class Indicator(object):
         return xid
 
     def add_key_value(self, key, value):
-        """Add custom field to Indicator object."""
+        """Add custom field to Indicator object.
 
+        .. note:: The key must be the exact name required by the batch schema.
+
+        Example::
+
+            file_hash = tcex.batch.file('File', '1d878cdc391461e392678ba3fc9f6f32')
+            file_hash.add_key_value('size', '1024')
+
+        Args:
+            key (str): The field key to add to the JSON batch data.
+            value (str): The field value to add to the JSON batch data.
+        """
         if self._indicator_data.get('type') == 'File':
             if key == 'size':
                 key = 'intValue1'
@@ -1293,12 +1692,29 @@ class Indicator(object):
         return ' : '.join(summary)
 
     def association(self, group_xid):
-        """Add association using xid value."""
+        """Add association using xid value.
+
+        Args:
+            group_xid (str): The external id of the Group to associate.
+        """
         association = {'groupXid': group_xid}
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
     def attribute(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
-        """Return instance of Attribute."""
+        """Return instance of Attribute
+
+        Args:
+            attr_type (str): The ThreatConnect defined attribute type.
+            attr_value (str): The value for this attribute.
+            displayed (bool, default:false): If True the supported attribute will be marked for
+                display.
+            source (str, optional): The source value for this attribute.
+            formatter (method, optional): A method that take a single attribute value and return a
+                single formatted value.
+
+        Returns:
+            obj: An instance of Attribute.
+        """
         attr = Attribute(self.tcex, attr_type, attr_value, displayed, source, formatter)
         self._attributes.append(attr)
         return attr
@@ -1372,13 +1788,34 @@ class Indicator(object):
         return self._indicator_data.get('summary')
 
     def security_label(self, name, description=None, color=None):
-        """Return instance of Tag."""
+        """Return instance of SecurityLabel.
+
+        .. note:: The provided security label will be create if it doesn't exist. If the security
+            label already exists nothing will be changed.
+
+        Args:
+            name (str): The value for this security label.
+            description (str): A description for this security label.
+            color (str): A color (hex value) for this security label.
+
+        Returns:
+            obj: An instance of SecurityLabel.
+        """
         label = SecurityLabel(self.tcex, name, description, color)
         self._labels.append(label)
         return label
 
     def tag(self, name, formatter=None):
-        """Return instance of Tag."""
+        """Return instance of Tag.
+
+        Args:
+            name (str): The value for this tag.
+            formatter (method, optional): A method that take a tag value and returns a
+                formatted tag.
+
+        Returns:
+            obj: An instance of Tag.
+        """
         tag = Tag(self.tcex, name, formatter)
         self._tags.append(tag)
         return tag
@@ -1400,11 +1837,11 @@ class Address(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            ip (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            ip (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(Address, self).__init__(tcex, 'Address', ip, rating, confidence, xid)
 
@@ -1416,11 +1853,11 @@ class ASN(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            as_number (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            as_number (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(ASN, self).__init__(tcex, 'ASN', as_number, rating, confidence, xid)
         self._indicator_data['value1'] = as_number
@@ -1433,11 +1870,11 @@ class CIDR(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            block (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            block (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(CIDR, self).__init__(tcex, 'CIDR', block, rating, confidence, xid)
         self._indicator_data['value1'] = block
@@ -1450,11 +1887,11 @@ class EmailAddress(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            address (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            address (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(EmailAddress, self).__init__(tcex, 'EmailAddress', address, rating, confidence, xid)
 
@@ -1467,14 +1904,14 @@ class File(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            md5 (string): The md5 value.
-            sha1 (string): The sha1 value.
-            sha256 (string): The sha256 value.
-            size (string): The size of the file.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            md5 (str, optional): The md5 value for this Indicator.
+            sha1 (str, optional): The sha1 value for this Indicator.
+            sha256 (str, optional): The sha256 value for this Indicator.
+            size (str, optional): The file size for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         self.tcex = tcex
         summary = self.build_summary(md5, sha1, sha256)  # build the indicator summary
@@ -1501,9 +1938,16 @@ class File(Indicator):
         self._indicator_data['md5'] = md5
 
     def occurrence(self, file_name=None, path=None, date=None):
-        """Add a file Occurrence."""
-        # self._indicator_data.setdefault('fileAction', {})
-        # self._indicator_data['fileAction'].setdefault('fileData', {})
+        """Add a file Occurrence.
+
+        Args:
+            file_name (str, optional): The file name for this occurrence.
+            path (str, optional): The file path for this occurrence.
+            date (str, optional): The datetime expression for this occurrence.
+
+        Returns:
+            obj: An instance of Occurrence.
+        """
         occurrence_obj = FileOccurrence(self.tcex, file_name, path, date)
         self._occurrences.append(occurrence_obj)
         return occurrence_obj
@@ -1547,13 +1991,14 @@ class Host(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            hostname (string): The Indicator value.
-            dns_active (boolean): Enabled DNS tracking.
-            whois_active (boolean): Enabled WhoIs tracking.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            hostname (str): The value for this Indicator.
+            dns_active (bool, default:False): If True DNS active is enabled for this indicator.
+            whois_active (bool, default:False): If True WhoIs active is enabled for this
+                indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(Host, self).__init__(tcex, 'Host', hostname, rating, confidence, xid)
         if dns_active:
@@ -1589,11 +2034,11 @@ class Mutex(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            mutex (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            mutex (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(Mutex, self).__init__(tcex, 'Mutex', mutex, rating, confidence, xid)
         self._indicator_data['value1'] = mutex
@@ -1607,13 +2052,13 @@ class RegistryKey(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            key_name (string): The Registry Key name.
-            value_name (string): The Registry Key value.
-            value_type (string): The Registry Key value type.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            key_name (str): The key_name value for this Indicator.
+            value_name (str): The value_name value for this Indicator.
+            value_type (str): The value_type value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         summary = self.build_summary(key_name, value_name, value_type)
         super(RegistryKey, self).__init__(tcex, 'Registry Key', summary, rating, confidence, xid)
@@ -1629,11 +2074,11 @@ class URL(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            text (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            text (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(URL, self).__init__(tcex, 'URL', text, rating, confidence, xid)
 
@@ -1645,11 +2090,11 @@ class UserAgent(Indicator):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            text (string): The Indicator value.
-            rating (string): The Indicator threat rating.
-            confidence (string): The Indicator threat confidence.
-            xid (string): The Group external id.
+            tcex (obj): An instance of TcEx object.
+            text (str): The value for this Indicator.
+            rating (str, optional): The threat rating for this Indicator.
+            confidence (str, optional): The threat confidence for this Indicator.
+            xid (str, optional): The external id for this Indicator.
         """
         super(UserAgent, self).__init__(tcex, 'User Agent', text, rating, confidence, xid)
         self._indicator_data['value1'] = text
@@ -1667,24 +2112,21 @@ class Attribute(object):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
-            tcex: Instance of TcEx
-            attr_type: The attribute type.
-            attr_value: The attribute value.
-            displayed: Boolean value indicating display status.
-            source: The attribute source.
-            formatter: A method to format the attribute value.
+            tcex (obj): An instance of TcEx object.
+            attr_type (str): The ThreatConnect defined attribute type.
+            attr_value (str): The value for this attribute.
+            displayed (bool, default:false): If True the supported attribute will be marked for
+                display.
+            source (str, optional): The source value for this attribute.
+            formatter (method, optional): A method that take a single attribute value and return a
+                single formatted value.
         """
         self.tcex = tcex
         self._attribute_data = {
-            'displayed': displayed,
             'type': attr_type
         }
-        # TODO: remove displayed from default dict and enable below code
-        # if displayed:
-        #    self._attribute_data['displayed'] = displayed
+        if displayed:
+            self._attribute_data['displayed'] = displayed
         # format the value
         if formatter is not None:
             attr_value = formatter(attr_value)
@@ -1748,14 +2190,12 @@ class FileAction(object):
     def __init__(self, tcex, parent_xid, relationship):
         """Initialize Class Properties.
 
+        .. warning:: This code is not complete and may require some update to the API.
+
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
-            tcex: Instance of TcEx
-            name: The security label value.
-            description: The security label description.
-            color: The security label color.
+            tcex (obj): An instance of TcEx object.
+            parent_xid (str): The external id of the parent Indicator.
+            relationship: ???
         """
         self.tcex = tcex
         self.xid = str(uuid.uuid4())
@@ -1792,9 +2232,9 @@ class FileOccurrence(object):
 
         Args:
             tcex (TcEx Instance): Instance of TcEx
-            file_name (string): The Occurrence file name.
-            path (string): The Occurrence file path.
-            date (string): The Occurrence date.
+            file_name (str, optional): The file name for this occurrence.
+            path (str, optional): The file path for this occurrence.
+            date (str, optional): The datetime expression for this occurrence.
         """
         self.tcex = tcex
         self._occurrence_data = {}
@@ -1854,13 +2294,10 @@ class SecurityLabel(object):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            xid (string): The Group external id.
-            name (string): The Group name.
-            tcex: Instance of TcEx
-            name: The security label value.
-            description: The security label description.
-            color: The security label color.
+            tcex (obj): An instance of TcEx object.
+            name (str): The value for this security label.
+            description (str): A description for this security label.
+            color (str): A color (hex value) for this security label.
         """
         self.tcex = tcex
         self._label_data = {'name': name}
@@ -1907,9 +2344,10 @@ class Tag(object):
         """Initialize Class Properties.
 
         Args:
-            tcex (TcEx Instance): Instance of TcEx.
-            name (string): The Group name.
-            formatter (method): The method used to format the tag value.
+            tcex (obj): An instance of TcEx object.
+            name (str): The value for this tag.
+            formatter (method, optional): A method that take a tag value and returns a
+                formatted tag.
         """
         self.tcex = tcex
         if formatter is not None:
