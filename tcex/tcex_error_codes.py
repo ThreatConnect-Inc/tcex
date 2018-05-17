@@ -31,6 +31,11 @@ class TcExErrorCodes(object):
             580: 'Failed posting file data ({}).',
             585: 'Failed posting file data. API status code: {}, API message: {}.',
             590: 'No hash values provided.',
+            # metrics
+            700: 'Failed to create metric. API status code: {}, API message: {}.',
+            705: 'Error while finding metric by name. API status code: {}, API message: {}.',
+            710: 'Failed to add metric data. API status code: {}, API message: {}.',
+            715: 'No metric ID found for "{}".',
             1500: 'Critical batch error ({}).',
             1505: 'Failed submitting batch job requests ({}).',
             1510: 'Failed submitting batch job requests. API status code: {}, API message: {}.',

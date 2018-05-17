@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """ TcEx Metrics Module """
-import json
 
 
 class TcExMetricsV2(object):
@@ -27,27 +26,8 @@ class TcExMetricsV2(object):
         if not self.metric_find():
             self.metric_create()
 
-    # @property
-    # def metric_exists(self):
-    #     """ Validate that the metric Id provided is still valid
-    #     """
-    #     if self._metric_id is not None:
-    #         resource = self.metric_resource
-    #         resource.metric_id(self._metric_id)
-    #         results = resource.request()
-    #         if results.get('response').status_code == 200:
-    #             return True
-    #     return False
-
-    @property
-    def metric_resource(self):
-        """Return metric resource."""
-        return self.tcex.resource('CustomMetric')
-
     def metric_create(self):
         """Create the defined metric."""
-        resource = self.metric_resource
-        resource.http_method = 'POST'
         body = {
             'dataType' : self._metric_data_type,
             'description' : self._metric_description,
@@ -55,34 +35,54 @@ class TcExMetricsV2(object):
             'name' : self._metric_name,
             'keyedValues' : self._metric_keyed
         }
-        self.tcex.log.debug('metric body: {}'.format(json.dumps(body)))
-        resource.body = json.dumps(body)
-        results = resource.request()
+        self.tcex.log.debug('metric body: {}'.format(body))
+        r = self.tcex.session.post('/v2/customMetrics', json=body)
 
-        if results.get('status') == 'Success':
-            self._metric_id = results.get('data', {}).get('id')
-            self.tcex.log.debug('metric data: {}'.format(results.get('data')))
-            self.tcex.log.debug('metric id: {}'.format(self._metric_id))
-        else:
-            err = u'Failed to add metric ({})'.format(results.get('response').text)
-            self.tcex.log.error(err)
-            raise RuntimeError(err)
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.handle_error(700, [r.status_code, r.text])
+
+        data = r.json()
+        self._metric_id = data.get('id')
+        self.tcex.log.debug('metric data: {}'.format(data))
 
     def metric_find(self):
-        """Find the Metric by name."""
-        resource = self.metric_resource
-        for results in resource:
-            if results.get('status') != 'Success':
-                err = 'Error during while retrieving metrics.'
-                self.tcex.log.error(err)
-                continue
+        """Find the Metric by name.
 
-            for metric in results.get('data'):
+        {
+            "status": "Success",
+            "data": {
+                "resultCount": 1,
+                "customMetricConfig": [
+                    {
+                        "id": 9,
+                        "name": "My Metric",
+                        "dataType": "Sum",
+                        "interval": "Daily",
+                        "keyedValues": false,
+                        "description": "TcEx Metric Testing"
+                    }
+                ]
+            }
+        }
+        """
+        params = {
+            'resultLimit': 50,
+            'resultStart': 0
+        }
+        while True:
+            if params.get('resultStart') >= params.get('resultLimit'):
+                break
+            r = self.tcex.session.get('/v2/customMetrics', params=params)
+            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                self.tcex.handle_error(705, [r.status_code, r.text])
+            data = r.json()
+            for metric in data.get('data', {}).get('customMetricConfig'):
                 if metric.get('name') == self._metric_name:
                     self._metric_id = metric.get('id')
                     info = 'found metric with name "{}" and Id {}.'
                     self.tcex.log.info(info.format(self._metric_name, self._metric_id))
                     return True
+            params['resultStart'] += params.get('resultLimit')
         return False
 
     def add(self, value, date=None, return_value=False, key=None):
@@ -97,38 +97,29 @@ class TcExMetricsV2(object):
         Return:
             (None|Dict): A None value if return value was not requested or a dict.
         """
-        response = None
+        data = None
         if self._metric_id is None:
-            err = 'No metric ID found for "{}".'.format(self._metric_name)
-            self.tcex.log.error(err)
-            raise RuntimeError(err)
-        resource = self.metric_resource
-        resource.http_method = 'POST'
-        if return_value:
-            resource.add_payload('returnValue', 'true')
-        resource.data(self._metric_id)
-        body = {
-            'value': value
-        }
+            self.tcex.handle_error(715, [self._metric_name])
+
+        body = {'value': value}
         if date is not None:
             body['date'] = date
         if key is not None:
             body['name'] = key
-        self.tcex.log.debug('metric data: {}'.format(json.dumps(body)))
-        resource.body = json.dumps(body)
-        results = resource.request()
-
-        if results.get('response').status_code == 200:
-            response = results.get('response').json()
-        elif results.get('response').status_code == 204:
+        self.tcex.log.debug('metric data: {}'.format(body))
+        params = {}
+        if return_value:
+            params = {'returnValue': 'true'}
+        url = '/v2/customMetrics/{}/data'.format(self._metric_id)
+        r = self.tcex.session.post(url, json=body, params=params)
+        if r.status_code == 200 and 'application/json' in r.headers.get('content-type', ''):
+            data = r.json()
+        elif r.status_code == 204:
             pass
         else:
-            err = u'Failed to add metric ({})'.format(results.get('response').text)
-            self.tcex.log.error(err)
-            self.tcex.message_tc(err)
-            raise RuntimeError(err)
+            self.tcex.handle_error(710, [r.status_code, r.text])
 
-        return response
+        return data
 
     def add_keyed(self, value, key, date=None, return_value=False):
         """Add keyed metrics data to collection.

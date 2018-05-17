@@ -60,11 +60,15 @@ class TcExArgParser(ArgumentParser):
             '--tc_token_expires', default=None,
             help='ThreatConnect API Token Expiration Time', type=int)
 
-        # TC Integrations Server  or TC main < 4.4
+        # TC Integrations Server or TC main < 4.4
         self.add_argument(
             '--api_access_id', default=None, help='ThreatConnect API Access ID', required=False)
         self.add_argument(
             '--api_secret_key', default=None, help='ThreatConnect API Secret Key', required=False)
+
+        # Validate ThreatConnect SSL certificate
+        self.add_argument(
+            '--tc_verify', action='store_true', help='Validate the ThreatConnect SSL Cert')
 
     def _batch_arguments(self):
         """Arguments specific to Batch API writes.

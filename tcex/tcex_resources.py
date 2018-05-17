@@ -718,7 +718,7 @@ class Resource(object):
             (dictionary): Response/Results data.
         """
         # self._request.authorization_method(self._authorization_method)
-        self._request.url = '/v2/{}'.format(self._request_uri)
+        self._request.url = '{}/v2/{}'.format(self.tcex.default_args.tc_api_path, self._request_uri)
         self._apply_filters()
         self.tcex.log.debug(u'Resource URL: ({})'.format(self._request.url))
 

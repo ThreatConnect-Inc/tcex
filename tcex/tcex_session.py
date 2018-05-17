@@ -25,12 +25,14 @@ class TcExSession(Session):
             self._auth_type = 'hmac'
         else:
             raise RuntimeError('No valid ThreatConnect API credentials provided.')
+        # Update User-Agent
+        self.headers.update({'User-Agent': 'TcEx'})
         # Set Proxy
         self.proxies = self.tcex.proxies
         # Add Retry
         self.retry()
-        # Update User-Agent
-        self.headers.update({'User-Agent': 'TcEx'})
+        # Verify
+        self.verify = self.args.tc_verify
 
     def _hmac_auth(self):
         """Add ThreatConnect HMAC Auth to Session."""
