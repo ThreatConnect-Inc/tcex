@@ -27,7 +27,24 @@ class TcExMetricsV2(object):
             self.metric_create()
 
     def metric_create(self):
-        """Create the defined metric."""
+        """Create the defined metric.
+
+        {
+            "status": "Success",
+            "data": {
+                "customMetricConfig": {
+                    "id": 12,
+                    "name": "Falcon Host Added Reports",
+                    "dataType": "Sum",
+                    "interval": "Daily",
+                    "keyedValues": false,
+                    "description":
+                    "CrowdStrike Falcon Host added reports daily count."
+                }
+            }
+        }
+
+        """
         body = {
             'dataType' : self._metric_data_type,
             'description' : self._metric_description,
@@ -42,7 +59,7 @@ class TcExMetricsV2(object):
             self.tcex.handle_error(700, [r.status_code, r.text])
 
         data = r.json()
-        self._metric_id = data.get('id')
+        self._metric_id = data.get('data', {}).get('customMetricConfig', {}).get('id')
         self.tcex.log.debug('metric data: {}'.format(data))
 
     def metric_find(self):
