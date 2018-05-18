@@ -10,7 +10,7 @@ class TcExNotificationV2(object):
         """ Initialize the Class properties.
 
         Args:
-            tcex (object): An instance of TcEx.
+            tcex (obj): An instance of TcEx object.
         """
         self._tcex = tcex
         self._is_organization = False
@@ -21,17 +21,19 @@ class TcExNotificationV2(object):
     def recipients(self, notification_type, recipients, priority='Low'):
         """Set vars for the passed in data. Used for one or more recipient notification.
 
-        {
-            "notificationType": notification_type,
-            "priority": priority
-            "isOrganization": false,
-            "recipients": recipients
-        }
+        .. code-block:: javascript
+
+            {
+                "notificationType": notification_type,
+                "priority": priority
+                "isOrganization": false,
+                "recipients": recipients
+            }
 
         Args:
-            notification_type (string): The notification type.
-            recipients (string): The comma delimited string of recipients.
-            priority (string): The priority: Low, Medium, High.
+            notification_type (str): The type of notification being sent.
+            recipients (str): A comma delimited string of recipients.
+            priority (str): The priority: Low, Medium, High.
         """
         self._notification_type = notification_type
         self._recipients = recipients
@@ -41,15 +43,17 @@ class TcExNotificationV2(object):
     def org(self, notification_type, priority='Low'):
         """Set vars for the passed in data. Used for org notification.
 
-        {
-            "notificationType": notification_type,
-            "priority": priority
-            "isOrganization": true
-        }
+        .. code-block:: javascript
+
+            {
+                "notificationType": notification_type,
+                "priority": priority
+                "isOrganization": true
+            }
 
         Args:
-            notification_type (string): The notification type.
-            priority (string): The priority: Low, Medium, High.
+            notification_type (str): The notification type.
+            priority (str): The priority: Low, Medium, High.
         """
         self._notification_type = notification_type
         self._recipients = None
@@ -60,7 +64,11 @@ class TcExNotificationV2(object):
         """Send our message
 
         Args:
-            message (string): The message
+            message (str): The message to be sent.
+
+        Returns:
+            requests.models.Response: The response from the request.
+
         """
         body = {
             'notificationType': self._notification_type,
