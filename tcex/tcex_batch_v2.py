@@ -877,19 +877,18 @@ class TcExBatch(object):
         if self.group_len or self.indicator_len:
             batch_id = self.submit_job(halt_on_error)
             if batch_id is not None:
-                batch_data['batch_id'] = self.submit_job(halt_on_error)
+                batch_data['batch_id'] = batch_id
                 if submit_data:
-                    self.submit_data(batch_data.get('batch_id'), halt_on_error)
+                    self.submit_data(batch_id, halt_on_error)
                     if poll:
                         # set an initial delay to allow small batch jobs to finish without a poll delay
                         time.sleep(3)
-                        batch_data['batch_status'] = self.poll(
-                            batch_data.get('batch_id'), halt_on_error)
+                        batch_data['batch_status'] = self.poll(batch_id, halt_on_error)
                         # retrieve errors
                         if errors:
                             data = batch_data.get('batch_status').get('data', {})
                             if data.get('batchStatus', {}).get('errorCount', 0) > 0:
-                                batch_data['errors'] = self.errors(batch_data.get('batch_id'))
+                                batch_data['errors'] = self.errors(batch_id)
                 if submit_data:
                     # submit file data after batch job is complete
                     batch_data['upload_status'] = self.submit_files(False)
