@@ -259,10 +259,11 @@ class TcExBatch(object):
                 "type": "File",
                 "rating": 5.00,
                 "confidence": 50,
-                "summary": "53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580
-                 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
-                "associatedGroupXid": [
-                    "e336e2dd-5dfb-48cd-a33a-f8809e83e904",
+                "summary": "53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
+                "associatedGroups": [
+                    {
+                        "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904"
+                    }
                 ],
                 "attribute": [{
                     "type": "Source",
@@ -271,7 +272,6 @@ class TcExBatch(object):
                 }],
                 "fileOccurrence": [{
                     "fileName": "drop1.exe",
-                    "path": "C:\\test\\",
                     "date": "2017-03-03T18:00:00-06:00"
                 }],
                 "tag": [{

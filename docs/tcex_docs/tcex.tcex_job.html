@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job module &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_job module &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_local module" href="tcex.tcex_local.html"/>
+        <link rel="next" title="tcex.tcex_metrics_v2 module" href="tcex.tcex_metrics_v2.html"/>
         <link rel="prev" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/> 
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -96,6 +96,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
@@ -108,13 +109,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_job module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -129,6 +131,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -209,7 +212,11 @@
 <dt id="tcex.tcex_job.TcExJob">
 <em class="property">class </em><code class="descclassname">tcex.tcex_job.</code><code class="descname">TcExJob</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Job processing functionality</p>
+<p>Job processing functionality.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This module will be deprecated in version 0.9.0.</p>
+</div>
 <p>Supports batch indicator adds and allows structured group adds.</p>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._chunk_indicators">
@@ -220,21 +227,21 @@
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._group_add">
 <code class="descname">_group_add</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_name</em>, <em>owner</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a group to ThreatConnect</p>
+<dd><p>Add a group to ThreatConnect.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
-<li><strong>resource_name</strong> (<em>string</em>) – The name of the group</li>
-<li><strong>owner</strong> (<em>string</em>) – The name of the TC owner for the group add</li>
+<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type.</li>
+<li><strong>resource_name</strong> (<em>string</em>) – The name of the group.</li>
+<li><strong>owner</strong> (<em>string</em>) – The name of the TC owner for the group add.</li>
 <li><strong>data</strong> (<em>Optional</em><em> [</em><em>dictionary</em><em>]</em>) – Any optional group parameters, tags,
-or attributes</li>
+or attributes.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID of the created resource</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The ID of the created resource.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(integer)</p>
@@ -247,14 +254,14 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._group_delete_by_id">
 <code class="descname">_group_delete_by_id</code><span class="sig-paren">(</span><em>resource_type</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete_by_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete a group from ThreatConnect</p>
+<dd><p>Delete a group from ThreatConnect.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
-<li><strong>resource_id</strong> (<em>string</em>) – The ID of the group</li>
+<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type.</li>
+<li><strong>resource_id</strong> (<em>string</em>) – The ID of the group.</li>
 </ul>
 </td>
 </tr>
@@ -265,14 +272,14 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._group_delete_by_name">
 <code class="descname">_group_delete_by_name</code><span class="sig-paren">(</span><em>owner</em>, <em>resource_type</em>, <em>resource_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._group_delete_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._group_delete_by_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete group(s) from ThreatConnect by Name</p>
+<dd><p>Delete group(s) from ThreatConnect by Name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type</li>
-<li><strong>resource_name</strong> (<em>string</em>) – The name of the group</li>
+<li><strong>resource_type</strong> (<em>string</em>) – String with resource [group] type.</li>
+<li><strong>resource_name</strong> (<em>string</em>) – The name of the group.</li>
 </ul>
 </td>
 </tr>
@@ -283,15 +290,15 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._indicators_replace_stub">
 <code class="descname">_indicators_replace_stub</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._indicators_replace_stub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._indicators_replace_stub" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process Indicator data replacing associatedGroup stub values with the Group ID</p>
-<p>Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}</p>
+<dd><p>Process Indicator data replacing associatedGroup stub values with the Group ID.</p>
+<p>Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>indicators</strong> (<em>list</em>) – Batch Indicator Data</li>
-<li><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</li>
+<li><strong>indicators</strong> (<em>list</em>) – Batch Indicator Data.</li>
+<li><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</li>
 </ul>
 </td>
 </tr>
@@ -302,12 +309,12 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_association">
 <code class="descname">_process_association</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_association" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process groups and write to TC API</p>
+<dd><p>Process groups and write to TC API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -316,12 +323,12 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_file_occurrences">
 <code class="descname">_process_file_occurrences</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_file_occurrences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_file_occurrences" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process file occurrences and write to TC API</p>
+<dd><p>Process file occurrences and write to TC API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -330,12 +337,12 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_group_association">
 <code class="descname">_process_group_association</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_group_association" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process groups and write to TC API</p>
+<dd><p>Process group associations and write to ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the associations to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -344,12 +351,12 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_groups">
 <code class="descname">_process_groups</code><span class="sig-paren">(</span><em>owner</em>, <em>group_action</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process groups and write to TC API</p>
+<dd><p>Process groups and write to ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the groups to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -358,14 +365,14 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_indicators">
 <code class="descname">_process_indicators</code><span class="sig-paren">(</span><em>owner</em>, <em>batch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process batch indicators and write to TC API</p>
+<dd><p>Process batch indicators and write to ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</li>
-<li><strong>batch</strong> (<em>boolean</em>) – Use the batch API to create indicators</li>
+<li><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</li>
+<li><strong>batch</strong> (<em>boolean</em>) – Use the batch API to create indicators.</li>
 </ul>
 </td>
 </tr>
@@ -376,7 +383,7 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_indicators_batch">
 <code class="descname">_process_indicators_batch</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_indicators_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process batch indicators and write to TC API</p>
+<dd><p>Process batch indicators and write to ThreatConnect API.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Failed attributes and/or tags will not cause a batch import to fail.</p>
@@ -385,7 +392,7 @@ or attributes</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -394,12 +401,12 @@ or attributes</li>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob._process_indicators_v2">
 <code class="descname">_process_indicators_v2</code><span class="sig-paren">(</span><em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob._process_indicators_v2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob._process_indicators_v2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process batch indicators and write to TC API</p>
+<dd><p>Process batch indicators and write to ThreatConnect API using <strong>/v2/indicators</strong>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>owner</strong> (<em>string</em>) – The owner name for the indicator to be written.</td>
 </tr>
 </tbody>
 </table>
@@ -448,7 +455,8 @@ or attributes</li>
 <span class="p">}]</span>
 </pre></div>
 </td></tr></table></div>
-<p><strong>Example Data for Creating Indicator-to-Indicator Associations</strong> <em>(required fields are highlighted)</em></p>
+<p><strong>Example Data for Creating Indicator-to-Indicator Associations</strong>
+<em>(required fields are highlighted)</em></p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -483,7 +491,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> (<em>string</em>) – Set batch job action</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> (<em>string</em>) – Set batch job action.</td>
 </tr>
 </tbody>
 </table>
@@ -497,7 +505,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk_size</strong> (<em>integer</em>) – Set batch job chunk size</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk_size</strong> (<em>integer</em>) – Set batch job chunk size.</td>
 </tr>
 </tbody>
 </table>
@@ -511,7 +519,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>halt_on_error</strong> (<em>boolean</em>) – Boolean value for halt on error</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>halt_on_error</strong> (<em>boolean</em>) – Boolean value for halt on error.</td>
 </tr>
 </tbody>
 </table>
@@ -568,7 +576,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval</strong> (<em>integer</em>) – Seconds between polling</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval</strong> (<em>integer</em>) – Seconds between polling.</td>
 </tr>
 </tbody>
 </table>
@@ -582,7 +590,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval_max</strong> (<em>integer</em>) – Max seconds before timeout on batch</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>interval_max</strong> (<em>integer</em>) – Max seconds before timeout on batch.</td>
 </tr>
 </tbody>
 </table>
@@ -591,7 +599,7 @@ association data</td>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.batch_status">
 <code class="descname">batch_status</code><span class="sig-paren">(</span><em>batch_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.batch_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.batch_status" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the status of a batch job</p>
+<dd><p>Check the status of a batch job.</p>
 <p>This method will get the status of a batch job. Any errors returned from the batch status
 will be automatically logged.</p>
 <p>Critical errors are defined in the __init__ method in the self._batch_failures dictionary.
@@ -602,7 +610,7 @@ to halt.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>int</em>) – Id of the batch job</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>batch_id</strong> (<em>int</em>) – Id of the batch job.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with status and error boolean.</td>
 </tr>
@@ -620,7 +628,7 @@ to halt.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_type</strong> (<em>string</em>) – Type of Append or Replace</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>write_type</strong> (<em>string</em>) – Type of Append or Replace.</td>
 </tr>
 </tbody>
 </table>
@@ -629,7 +637,8 @@ to halt.</p>
 <dl class="method">
 <dt id="tcex.tcex_job.TcExJob.file_occurrence">
 <code class="descname">file_occurrence</code><span class="sig-paren">(</span><em>fo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_job.html#TcExJob.file_occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_job.TcExJob.file_occurrence" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Add a file occurrence to job.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -741,7 +750,7 @@ name will be skipped.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>associations</strong> (<em>dict | list</em>) – Dictionary or List containing group
-association data</td>
+association data.</td>
 </tr>
 </tbody>
 </table>
@@ -755,7 +764,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The length of the group association list</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The length of the group association list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(integer)</td>
 </tr>
@@ -801,9 +810,9 @@ association data</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>string</em>) – The name of the Group</li>
-<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+<li><strong>name</strong> (<em>string</em>) – The name of the Group.</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name.</li>
 </ul>
 </td>
 </tr>
@@ -826,9 +835,9 @@ association data</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>string</em>) – The name of the Group</li>
-<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+<li><strong>name</strong> (<em>string</em>) – The name of the Group.</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name.</li>
 </ul>
 </td>
 </tr>
@@ -855,9 +864,9 @@ association data</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>group_id</strong> (<em>string</em>) – The group id to lookup</li>
-<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+<li><strong>group_id</strong> (<em>string</em>) – The group id to lookup.</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name.</li>
 </ul>
 </td>
 </tr>
@@ -880,9 +889,9 @@ association data</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>string</em>) – The name of the Group</li>
-<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found</li>
-<li><strong>resource_type</strong> (<em>string</em>) – The resource type name</li>
+<li><strong>name</strong> (<em>string</em>) – The name of the Group.</li>
+<li><strong>owner</strong> (<em>string</em>) – The TC Owner where the resource should be found.</li>
+<li><strong>resource_type</strong> (<em>string</em>) – The resource type name.</li>
 </ul>
 </td>
 </tr>
@@ -920,7 +929,7 @@ association data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of group names for each status</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of group names for each status.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
@@ -993,7 +1002,7 @@ indicator will be skipped.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>dict | list</em>) – Dictionary or List containing indicator
-data</td>
+data.</td>
 </tr>
 </tbody>
 </table>
@@ -1007,7 +1016,7 @@ data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The indicator list</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The indicator list.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
 </tr>
@@ -1039,7 +1048,7 @@ data</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of indicator values for each status</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of indicator values for each status.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
@@ -1060,7 +1069,7 @@ order (left to right):</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>owner</strong> (<em>string</em>) – The owner name for the data to be written</li>
+<li><strong>owner</strong> (<em>string</em>) – The owner name for the data to be written.</li>
 <li><strong>indicator_batch</strong> (<em>bool</em>) – If true use the Batch Api otherwise use <cite>/v2</cite> REST API.</li>
 <li><strong>group_action</strong> (<em>string</em>) – The action to use on group create (duplicate, replace, skip).</li>
 </ul>
@@ -1078,7 +1087,7 @@ order (left to right):</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The unprocessed indicator list</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The list of unprocessed indicator.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
 </tr>
@@ -1100,7 +1109,7 @@ order (left to right):</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.tcex_local.html" class="btn btn-neutral float-right" title="tcex.tcex_local module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex_metrics_v2.html" class="btn btn-neutral float-right" title="tcex.tcex_metrics_v2 module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="tcex.tcex_data_filter.html" class="btn btn-neutral" title="tcex.tcex_data_filter module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -1133,7 +1142,7 @@ order (left to right):</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

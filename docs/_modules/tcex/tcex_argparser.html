@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_argparser &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_argparser &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -105,6 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -189,12 +191,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize default values for common args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TcExArgParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># api defaults</span>
-
         <span class="c1"># batch defaults</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span> <span class="o">=</span> <span class="s1">&#39;Create&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="mi">25000</span>
@@ -243,18 +241,22 @@
             <span class="s1">&#39;--tc_token_expires&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Token Expiration Time&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-        <span class="c1"># TC Integrations Server  or TC main &lt; 4.4</span>
+        <span class="c1"># TC Integrations Server or TC main &lt; 4.4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--api_access_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Access ID&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s1">&#39;--api_secret_key&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Secret Key&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+            <span class="s1">&#39;--api_secret_key&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ThreatConnect API Secret Key&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Validate ThreatConnect SSL certificate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--tc_verify&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Validate the ThreatConnect SSL Cert&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExArgParser._batch_arguments"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_argparser.html#tcex.tcex_argparser.TcExArgParser._batch_arguments">[docs]</a>    <span class="k">def</span> <span class="nf">_batch_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Arguments specific to Batch API writes.</span>
 
 <span class="sd">        --batch_action action          Action for the batch job [&#39;Create&#39;, &#39;Delete&#39;].</span>
 <span class="sd">        --batch_chunk number           The maximum number of indicator per batch job.</span>
-<span class="sd">        --batch_halt_on_error          Flag to indicate that batch job should halt on error.</span>
+<span class="sd">        --batch_halt_on_error          Flag to indicate that the batch job should halt on error.</span>
 <span class="sd">        --batch_poll_interval seconds  Seconds between batch status polls.</span>
 <span class="sd">        --batch_interval_max seconds   Seconds before app should time out waiting on batch job</span>
 <span class="sd">                                       completion.</span>
@@ -352,10 +354,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_user_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tc_user_id</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;User ID&#39;</span><span class="p">)</span>
 
-        <span class="c1">#</span>
         <span class="c1"># Proxy Configuration</span>
-        <span class="c1">#</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_proxy_host&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Proxy Host&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -364,7 +363,6 @@
             <span class="s1">&#39;--tc_proxy_username&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Proxy User&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_proxy_password&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Proxy Password&#39;</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s1">&#39;--tc_proxy_external&#39;</span><span class="p">,</span> <span class="s1">&#39;--apply_proxy_ext&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Proxy External Connections&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;tc_proxy_external&#39;</span><span class="p">)</span>
@@ -426,7 +424,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

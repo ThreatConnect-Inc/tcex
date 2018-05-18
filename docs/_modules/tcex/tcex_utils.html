@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -105,6 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -178,7 +180,7 @@
             
   <h1>Source code for tcex.tcex_utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; TcEx Utilities Class &quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;TcEx Utilities Module&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -191,17 +193,19 @@
 
 
 <div class="viewcode-block" id="TcExUtils"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils">[docs]</a><span class="k">class</span> <span class="nc">TcExUtils</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;TcEx framework utilities.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;TcEx framework Utils module&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize class data</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
 
-<span class="sd">        Initialize parent class for default values and logging method.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            tcex (object): Instance of TcEx.</span>
+<span class="sd">            rhash (string): The REDIS hash.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
 <div class="viewcode-block" id="TcExUtils.any_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return datetime object from multiple formats</span>
+        <span class="sd">&quot;&quot;&quot;Return datetime object from multiple formats.</span>
 
 <span class="sd">            Formats:</span>
 
@@ -217,7 +221,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># handle timestamp (e.g. 1510686617 or 1510686617.298753)</span>
         <span class="n">dt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unix_time_to_datetime</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
 
@@ -252,7 +255,7 @@
             <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s1">&#39;Assuming local time for naive datetime </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)))</span>
                     <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>  <span class="c1"># required for py2.x</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
@@ -271,9 +274,8 @@
 <span class="sd">            #. Loose Date format (e.g. 2017 12 25)</span>
 <span class="sd">            #. Unix Time/Posix Time/Epoch Time (e.g. 1510686617 or 1510686617.298753)</span>
 
-<span class="sd">        .. note:: To get a unix timestamp format use the strftime format **%s**. While Python</span>
-<span class="sd">                  does not properly support this the method has functionality to handle this</span>
-<span class="sd">                  use case.</span>
+<span class="sd">        .. note:: To get a unix timestamp format use the strftime format **%s**. Python</span>
+<span class="sd">                  does not natively support **%s**, however this method has support.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            time_input (string): The time input string (see formats above).</span>
@@ -340,7 +342,7 @@
         <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">sourceTime</span><span class="o">=</span><span class="n">source_datetime</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># don&#39;t add tz if no tz value is passed</span>
             <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Assuming local time for naive datetime </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Assuming local time for naive datetime </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)))</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>  <span class="c1"># required for py2.x</span>
             <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">src_tzname</span><span class="p">:</span>
@@ -396,7 +398,7 @@
 
 <div class="viewcode-block" id="TcExUtils.to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert string value to bool &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert string value to bool.&quot;&quot;&quot;</span>
         <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
             <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
@@ -477,7 +479,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

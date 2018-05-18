@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_job &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_job &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -105,6 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -185,16 +187,18 @@
 
 
 <div class="viewcode-block" id="TcExJob"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob">[docs]</a><span class="k">class</span> <span class="nc">TcExJob</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Job processing functionality</span>
+    <span class="sd">&quot;&quot;&quot;Job processing functionality.</span>
+
+<span class="sd">    .. warning:: This module will be deprecated in version 0.9.0.</span>
 
 <span class="sd">    Supports batch indicator adds and allows structured group adds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize class data</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tcex (instance): An instance of TcEx class</span>
+<span class="sd">            tcex (instance): An instance of TcEx class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
 
@@ -240,9 +244,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_batch_ids</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="TcExJob._chunk_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._chunk_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">_chunk_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Split indicator list into smaller more manageable numbers.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Split indicator list into smaller more manageable numbers.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">]</span>
@@ -251,17 +253,17 @@
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TcExJob._group_add"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_add">[docs]</a>    <span class="k">def</span> <span class="nf">_group_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a group to ThreatConnect</span>
+        <span class="sd">&quot;&quot;&quot;Add a group to ThreatConnect.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_type (string): String with resource [group] type</span>
-<span class="sd">            resource_name (string): The name of the group</span>
-<span class="sd">            owner (string): The name of the TC owner for the group add</span>
+<span class="sd">            resource_type (string): String with resource [group] type.</span>
+<span class="sd">            resource_name (string): The name of the group.</span>
+<span class="sd">            owner (string): The name of the TC owner for the group add.</span>
 <span class="sd">            data (Optional [dictionary]): Any optional group parameters, tags,</span>
-<span class="sd">                or attributes</span>
+<span class="sd">                or attributes.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (integer): The ID of the created resource</span>
+<span class="sd">            (integer): The ID of the created resource.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -310,7 +312,7 @@
                         <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span> <span class="n">attribute</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">,</span>
                         <span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
 
             <span class="c1"># add tags</span>
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[]):</span>
@@ -322,7 +324,7 @@
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding tag &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">tag</span><span class="p">,</span> <span class="n">t_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
 
             <span class="c1"># document upload</span>
             <span class="k">if</span> <span class="n">resource_type</span> <span class="o">==</span> <span class="s1">&#39;Document&#39;</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileData&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -345,22 +347,22 @@
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed uploading document </span><span class="si">{}</span><span class="s1"> to group </span><span class="si">{}</span><span class="s1">. (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span> <span class="n">resource_name</span><span class="p">,</span> <span class="n">u_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
             <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed adding group &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">resource_name</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
 
         <span class="k">return</span> <span class="n">resource_id</span></div>
 
 <div class="viewcode-block" id="TcExJob._group_delete_by_id"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">_group_delete_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete a group from ThreatConnect</span>
+        <span class="sd">&quot;&quot;&quot;Delete a group from ThreatConnect.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_type (string): String with resource [group] type</span>
-<span class="sd">            resource_id (string): The ID of the group</span>
+<span class="sd">            resource_type (string): String with resource [group] type.</span>
+<span class="sd">            resource_id (string): The ID of the group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># self._tcex.log.debug(u&#39;Deleting {} with ID {}.&#39;.format(resource_type, resource_id))</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
@@ -372,11 +374,11 @@
                 <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExJob._group_delete_by_name"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">_group_delete_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">resource_type</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete group(s) from ThreatConnect by Name</span>
+        <span class="sd">&quot;&quot;&quot;Delete group(s) from ThreatConnect by Name.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            resource_type (string): String with resource [group] type</span>
-<span class="sd">            resource_name (string): The name of the group</span>
+<span class="sd">            resource_type (string): String with resource [group] type.</span>
+<span class="sd">            resource_name (string): The name of the group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="n">resource_type</span><span class="p">)</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">add_filter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">)</span>
@@ -392,13 +394,13 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_group_delete_by_id</span><span class="p">(</span><span class="n">resource_type</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExJob._indicators_replace_stub"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._indicators_replace_stub">[docs]</a>    <span class="k">def</span> <span class="nf">_indicators_replace_stub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process Indicator data replacing associatedGroup stub values with the Group ID</span>
+        <span class="sd">&quot;&quot;&quot;Process Indicator data replacing associatedGroup stub values with the Group ID.</span>
 
-<span class="sd">        Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}</span>
+<span class="sd">        Format of a stub ${&lt;group name&gt;:&lt;group type&gt;}.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            indicators (list): Batch Indicator Data</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            indicators (list): Batch Indicator Data.</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">indicator_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">group_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[])):</span>
@@ -421,10 +423,10 @@
                     <span class="n">indicator_data</span><span class="p">[</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_file_occurrences"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_file_occurrences">[docs]</a>    <span class="k">def</span> <span class="nf">_process_file_occurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process file occurrences and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process file occurrences and write to TC API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences</span>
         <span class="c1"># supported format -&gt; 2014-11-03T00:00:00-05:00</span>
@@ -445,10 +447,10 @@
             <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_association">[docs]</a>    <span class="k">def</span> <span class="nf">_process_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process groups and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process groups and write to TC API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_associations</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;creating association: resource </span><span class="si">{}</span><span class="s1"> association </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -482,13 +484,13 @@
                 <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed adding association (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">association_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_group_association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_group_association">[docs]</a>    <span class="k">def</span> <span class="nf">_process_group_association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process groups and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process group associations and write to ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string): The owner name for the associations to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">ga</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;creating association: group &quot;</span><span class="si">{}</span><span class="s1">&quot; indicator </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -510,10 +512,10 @@
             <span class="n">association_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_groups"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_groups">[docs]</a>    <span class="k">def</span> <span class="nf">_process_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_action</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process groups and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process groups and write to ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string): The owner name for the groups to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
@@ -527,7 +529,7 @@
                 <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">break</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Created Group &quot;</span><span class="si">{}</span><span class="s1">&quot; with id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">group_action</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
@@ -540,7 +542,7 @@
                 <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_add</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
@@ -550,7 +552,7 @@
                     <span class="n">group_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_add</span><span class="p">(</span><span class="n">group_type</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">group_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">group_cache_add</span><span class="p">(</span><span class="n">group_name</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
@@ -565,26 +567,25 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Invalid group action (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_action</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_indicators"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to ThreatConnect API.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string): The owner name for the indicator to be written</span>
-<span class="sd">            batch (boolean): Use the batch API to create indicators</span>
+<span class="sd">            owner (string): The owner name for the indicator to be written.</span>
+<span class="sd">            batch (boolean): Use the batch API to create indicators.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Processing </span><span class="si">{}</span><span class="s1"> indicators&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">)))</span>
-
         <span class="k">if</span> <span class="n">batch</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_indicators_batch</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_process_indicators_v2</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_indicators_batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators_batch">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to ThreatConnect API.</span>
 
 <span class="sd">        .. Note:: Failed attributes and/or tags will not cause a batch import to fail.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch_job_body</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span><span class="p">,</span>
@@ -632,7 +633,7 @@
                         <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;completed&#39;</span><span class="p">):</span>
                             <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
                                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                                     <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
                                     <span class="c1"># all indicator in chunk will be not_saved</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
@@ -663,7 +664,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;API request failed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
                 <span class="c1"># TODO: move this and above duplicate code to &quot;if halt&quot; below after validating logic</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="c1"># all indicator in chunk will be not_saved</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">])</span>
                 <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
@@ -673,10 +674,10 @@
                 <span class="k">break</span></div>
 
 <div class="viewcode-block" id="TcExJob._process_indicators_v2"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._process_indicators_v2">[docs]</a>    <span class="k">def</span> <span class="nf">_process_indicators_v2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to TC API</span>
+        <span class="sd">&quot;&quot;&quot;Process batch indicators and write to ThreatConnect API using **/v2/indicators**.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string):  The owner name for the indicator to be written</span>
+<span class="sd">            owner (string):  The owner name for the indicator to be written.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="p">[</span><span class="s1">&#39;not_saved&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="k">for</span> <span class="n">i_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span><span class="p">:</span>
@@ -734,10 +735,10 @@
                 <span class="c1"># halt on error check</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                     <span class="k">continue</span>
 
             <span class="c1"># update indicator result list</span>
@@ -771,11 +772,11 @@
                     <span class="c1"># halt on error check</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                         <span class="k">continue</span>
                 <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;attribute&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
@@ -798,11 +799,11 @@
                     <span class="c1"># halt on error check</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                         <span class="k">continue</span>
                 <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
@@ -814,7 +815,7 @@
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Could not get Group Type for Group ID </span><span class="si">{}</span><span class="s1"> in Owner &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">group_id</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                     <span class="k">continue</span>
 
                 <span class="k">if</span> <span class="n">resource</span><span class="o">.</span><span class="n">custom</span><span class="p">:</span>
@@ -834,11 +835,11 @@
                     <span class="c1"># halt on error check</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Halt on error is enabled.&#39;</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span>
                         <span class="n">halt</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                         <span class="k">continue</span>
                 <span class="n">results_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;associatedGroup&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">halt</span><span class="p">:</span>
@@ -877,7 +878,8 @@
 <span class="sd">              &#39;resource_type&#39;: &#39;Threat&#39;,</span>
 <span class="sd">            }]</span>
 
-<span class="sd">        **Example Data for Creating Indicator-to-Indicator Associations** *(required fields are highlighted)*</span>
+<span class="sd">        **Example Data for Creating Indicator-to-Indicator Associations**</span>
+<span class="sd">        *(required fields are highlighted)*</span>
 
 <span class="sd">        .. code-block:: javascript</span>
 <span class="sd">            :linenos:</span>
@@ -905,7 +907,7 @@
         <span class="sd">&quot;&quot;&quot;Set the default batch action for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            action (string): Set batch job action</span>
+<span class="sd">            action (string): Set batch job action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Create&#39;</span><span class="p">,</span> <span class="s1">&#39;Delete&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_batch_action</span> <span class="o">=</span> <span class="n">action</span></div>
@@ -914,7 +916,7 @@
         <span class="sd">&quot;&quot;&quot;Set batch chunk_size for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            chunk_size (integer): Set batch job chunk size</span>
+<span class="sd">            chunk_size (integer): Set batch job chunk size.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunk</span> <span class="o">=</span> <span class="n">chunk_size</span></div>
 
@@ -922,7 +924,7 @@
         <span class="sd">&quot;&quot;&quot;Set batch halt on error boolean for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            halt_on_error (boolean): Boolean value for halt on error</span>
+<span class="sd">            halt_on_error (boolean): Boolean value for halt on error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_batch_halt_on_error</span> <span class="o">=</span> <span class="n">halt_on_error</span></div>
@@ -976,7 +978,7 @@
         <span class="sd">&quot;&quot;&quot;Set batch polling interval for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            interval (integer): Seconds between polling</span>
+<span class="sd">            interval (integer): Seconds between polling.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval</span> <span class="o">=</span> <span class="n">interval</span></div>
@@ -985,13 +987,13 @@
         <span class="sd">&quot;&quot;&quot;Set batch polling interval max for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            interval_max (integer): Max seconds before timeout on batch</span>
+<span class="sd">            interval_max (integer): Max seconds before timeout on batch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval_max</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_batch_poll_interval_max</span> <span class="o">=</span> <span class="n">interval_max</span></div>
 
 <div class="viewcode-block" id="TcExJob.batch_status"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_status">[docs]</a>    <span class="k">def</span> <span class="nf">batch_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check the status of a batch job</span>
+        <span class="sd">&quot;&quot;&quot;Check the status of a batch job.</span>
 
 <span class="sd">        This method will get the status of a batch job. Any errors returned from the batch status</span>
 <span class="sd">        will be automatically logged.</span>
@@ -1002,7 +1004,7 @@
 <span class="sd">        to halt.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            batch_id (int): Id of the batch job</span>
+<span class="sd">            batch_id (int): Id of the batch job.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (dict): A dictionary with status and error boolean.</span>
@@ -1030,7 +1032,7 @@
 
                 <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;errorCount&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">status</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
                     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
                     <span class="n">poll_time</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1084,13 +1086,13 @@
         <span class="sd">&quot;&quot;&quot;Set batch attributes write type for argument parser.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            write_type (string): Type of Append or Replace</span>
+<span class="sd">            write_type (string): Type of Append or Replace.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">write_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Append&#39;</span><span class="p">,</span> <span class="s1">&#39;Replace&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_batch_write_type</span> <span class="o">=</span> <span class="n">write_type</span></div>
 
 <div class="viewcode-block" id="TcExJob.file_occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">file_occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fo</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Add a file occurrence to job.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fo (dictionary): The file occurrence data.</span>
@@ -1186,7 +1188,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            associations (dict | list): Dictionary or List containing group</span>
-<span class="sd">                association data</span>
+<span class="sd">                association data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">associations</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">associations</span><span class="p">)</span>
@@ -1198,7 +1200,7 @@
         <span class="sd">&quot;&quot;&quot;The current length of the group association list.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (integer): The length of the group association list</span>
+<span class="sd">            (integer): The length of the group association list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_associations</span><span class="p">)</span>
 
@@ -1256,9 +1258,9 @@
         <span class="sd">&quot;&quot;&quot;Get the group id from the group cache.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name(string): The name of the Group</span>
-<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
-<span class="sd">            resource_type (string): The resource type name</span>
+<span class="sd">            name(string): The name of the Group.</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found.</span>
+<span class="sd">            resource_type (string): The resource type name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The ID for the provided group name and owner.</span>
@@ -1275,9 +1277,9 @@
         <span class="sd">&quot;&quot;&quot;Add a group to the group cache.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name(string): The name of the Group</span>
-<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
-<span class="sd">            resource_type (string): The resource type name</span>
+<span class="sd">            name(string): The name of the Group.</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found.</span>
+<span class="sd">            resource_type (string): The resource type name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The ID for the provided group name and owner.</span>
@@ -1291,9 +1293,9 @@
         <span class="sd">&quot;&quot;&quot;Remove a group from the group cache.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name(string): The name of the Group</span>
-<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
-<span class="sd">            resource_type (string): The resource type name</span>
+<span class="sd">            name(string): The name of the Group.</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found.</span>
+<span class="sd">            resource_type (string): The resource type name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The ID for the provided group name and owner.</span>
@@ -1313,9 +1315,9 @@
 <span class="sd">            Owner -&gt; Group Id:Group Type</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            group_id (string): The group id to lookup</span>
-<span class="sd">            owner (string): The TC Owner where the resource should be found</span>
-<span class="sd">            resource_type (string): The resource type name</span>
+<span class="sd">            group_id (string): The group id to lookup.</span>
+<span class="sd">            owner (string): The TC Owner where the resource should be found.</span>
+<span class="sd">            resource_type (string): The resource type name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (integer): The ID for the provided group name and owner.</span>
@@ -1354,7 +1356,7 @@
         <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted groups.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (dictionary): Dictionary of group names for each status</span>
+<span class="sd">            (dictionary): Dictionary of group names for each status.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_results</span>
 
@@ -1400,7 +1402,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            indicator (dict | list): Dictionary or List containing indicator</span>
-<span class="sd">                data</span>
+<span class="sd">                data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">indicator</span> <span class="o">=</span> <span class="p">[</span><span class="n">indicator</span><span class="p">]</span>
@@ -1416,7 +1418,7 @@
         <span class="sd">&quot;&quot;&quot;Return indicators (unprocessed).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (list): The unprocessed indicator list</span>
+<span class="sd">            (list): The list of unprocessed indicator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators</span>
 
@@ -1435,7 +1437,7 @@
         <span class="sd">&quot;&quot;&quot;Return the current indicator list.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (list): The indicator list</span>
+<span class="sd">            (list): The indicator list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_response</span>
 
@@ -1453,7 +1455,7 @@
         <span class="sd">&quot;&quot;&quot;Result dictionary of failed, saved, not_saved, and submitted indicators.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (dictionary): Dictionary of indicator values for each status</span>
+<span class="sd">            (dictionary): Dictionary of indicator values for each status.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_results</span>
 
@@ -1466,7 +1468,7 @@
 <span class="sd">            groups &gt; indicators &gt; file occurrences &gt; group associations &gt; associations</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            owner (string): The owner name for the data to be written</span>
+<span class="sd">            owner (string): The owner name for the data to be written.</span>
 <span class="sd">            indicator_batch (bool): If true use the Batch Api otherwise use `/v2` REST API.</span>
 <span class="sd">            group_action (string): The action to use on group create (duplicate, replace, skip).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1526,7 +1528,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

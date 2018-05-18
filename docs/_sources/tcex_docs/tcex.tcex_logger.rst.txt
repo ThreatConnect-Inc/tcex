@@ -1,7 +1,7 @@
-tcex.api_logging_handler module
+tcex.tcex_logger module
 ===============================
 
-.. automodule:: tcex.api_logging_handler
+.. automodule:: tcex.tcex_logger
     :members:
     :undoc-members:
     :show-inheritance:

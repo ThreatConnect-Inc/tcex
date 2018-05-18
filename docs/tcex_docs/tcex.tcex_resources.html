@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources module &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_vault module" href="tcex.tcex_vault.html"/>
         <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -96,6 +96,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
@@ -108,13 +109,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -129,6 +131,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -529,7 +532,7 @@ the parent class.</p>
 <p>This resource class will return DataStore.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore._request">
-<code class="descname">_request</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>db_method</em>, <em>body=None</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore._request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore._request" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_request</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>db_method</em>, <em>body=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore._request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore._request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make the API request for a Data Store CRUD operation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -542,7 +545,6 @@ this resource verbatim.</li>
 <li><strong>search_command</strong> (<em>string</em>) – Search command to pass to ES.</li>
 <li><strong>db_method</strong> (<em>string</em>) – The DB method ‘DELETE’, ‘GET’, ‘POST’, or ‘PUT’</li>
 <li><strong>body</strong> (<em>dict</em>) – JSON body</li>
-<li><strong>owner</strong> (<em>string</em>) – The ThreatConnect owner.</li>
 </ul>
 </td>
 </tr>
@@ -552,7 +554,7 @@ this resource verbatim.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore.add_payload">
-<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.add_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.add_payload" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_payload</code><span class="sig-paren">(</span><em>key</em>, <em>val</em>, <em>append=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.add_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.add_payload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a key value pair to payload for this request.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -565,6 +567,7 @@ this resource verbatim.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>key</strong> (<em>string</em>) – The payload key</li>
 <li><strong>val</strong> (<em>string</em>) – The payload value</li>
+<li><strong>append</strong> (<em>bool</em>) – Indicates whether the value should be appended or overwritten.</li>
 </ul>
 </td>
 </tr>
@@ -574,12 +577,8 @@ this resource verbatim.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore.create">
-<code class="descname">create</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.create" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create entry in ThreatConnect Data Store</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">An owner is only required if the domain is <strong>organization</strong>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -590,7 +589,6 @@ this resource verbatim.</li>
 this resource verbatim.</li>
 <li><strong>search_command</strong> (<em>string</em>) – Search command to pass to ES.</li>
 <li><strong>body</strong> (<em>dict</em>) – Python dictionary composed of JSON serialized data type.</li>
-<li><strong>owner</strong> (<em>string</em>) – The ThreatConnect owner.</li>
 </ul>
 </td>
 </tr>
@@ -600,12 +598,8 @@ this resource verbatim.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.delete" title="Permalink to this definition">¶</a></dt>
+<code class="descname">delete</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete entry in ThreatConnect Data Store</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">An owner is only required if the domain is <strong>organization</strong>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -615,7 +609,6 @@ this resource verbatim.</li>
 <li><strong>type_name</strong> (<em>string</em>) – This is a free form index type name. The ThreatConnect API will use
 this resource verbatim.</li>
 <li><strong>search_command</strong> (<em>string</em>) – Search command to pass to ES.</li>
-<li><strong>owner</strong> (<em>string</em>) – The ThreatConnect owner.</li>
 </ul>
 </td>
 </tr>
@@ -625,12 +618,8 @@ this resource verbatim.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read entry in ThreatConnect Data Store</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">An owner is only required if the domain is <strong>organization</strong>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -640,7 +629,6 @@ this resource verbatim.</li>
 <li><strong>type_name</strong> (<em>string</em>) – This is a free form index type name. The ThreatConnect API will use
 this resource verbatim.</li>
 <li><strong>search_command</strong> (<em>string</em>) – Search command to pass to ES.</li>
-<li><strong>owner</strong> (<em>string</em>) – The ThreatConnect owner.</li>
 </ul>
 </td>
 </tr>
@@ -650,12 +638,8 @@ this resource verbatim.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_resources.DataStore.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em>, <em>owner=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>domain</em>, <em>type_name</em>, <em>search_command</em>, <em>body</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update entry in ThreatConnect Data Store</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">An owner is only required if the domain is <strong>organization</strong>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -666,7 +650,6 @@ this resource verbatim.</li>
 this resource verbatim.</li>
 <li><strong>search_command</strong> (<em>string</em>) – Search command to pass to ES.</li>
 <li><strong>body</strong> (<em>dict</em>) – JSON body</li>
-<li><strong>owner</strong> (<em>string</em>) – The ThreatConnect owner.</li>
 </ul>
 </td>
 </tr>
@@ -763,26 +746,29 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="85%" />
+<col width="9%" />
+<col width="91%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">Method</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>GET</td>
-<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators</td>
+<tr class="row-even"><td>{base}</td>
+<td>/v2/indicators/files/{uniqueId}/actions/{actionName}</td>
 </tr>
 <tr class="row-odd"><td>GET</td>
-<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}</td>
+<td>{base}/indicators</td>
 </tr>
-<tr class="row-even"><td>DELETE</td>
-<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator</td>
+<tr class="row-even"><td>GET</td>
+<td>{base}/indicators/{type}</td>
 </tr>
-<tr class="row-odd"><td>POST</td>
-<td>/v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator</td>
+<tr class="row-odd"><td>DELETE</td>
+<td>{base}/indicators/{type}/indicator</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>{base}/indicators/{type}/indicator</td>
 </tr>
 </tbody>
 </table>
@@ -1181,7 +1167,7 @@ the parent class.</p>
 </table>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;notificationType&quot;</span><span class="o">:</span> <span class="s2">&quot;App Success&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;severity&quot;</span><span class="o">:</span> <span class="s2">&quot;High&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;priority&quot;</span><span class="o">:</span> <span class="s2">&quot;High&quot;</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;App worked just fine.&quot;</span><span class="p">,</span>
     <span class="s2">&quot;isOrganization&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
     <span class="s2">&quot;recipients&quot;</span><span class="o">:</span> <span class="s2">&quot;opsTeam@threatconnect.com&quot;</span>
@@ -1542,26 +1528,29 @@ the parent class.</p>
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="89%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">HTTP</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>GET</td>
-<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators</td>
+<tr class="row-even"><td>{base}</td>
+<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}</td>
 </tr>
 <tr class="row-odd"><td>GET</td>
-<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}</td>
+<td>{base}/indicators</td>
 </tr>
-<tr class="row-even"><td>DELETE</td>
-<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value}</td>
+<tr class="row-even"><td>GET</td>
+<td>{base}/indicators/{indicatorType}</td>
 </tr>
-<tr class="row-odd"><td>POST</td>
-<td>/v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value}</td>
+<tr class="row-odd"><td>DELETE</td>
+<td>{base}/indicators/{indicatorType}/{value}</td>
+</tr>
+<tr class="row-even"><td>POST</td>
+<td>{base}/indicators/{indicatorType}/{value}</td>
 </tr>
 </tbody>
 </table>
@@ -1588,11 +1577,11 @@ resource that are associated with the provided resource.</p>
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">METHOD</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
@@ -1636,23 +1625,26 @@ resource that are associated with the provided association resource_type.</p>
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="89%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">Method</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>GET</td>
-<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}</td>
+<tr class="row-even"><td>{base}</td>
+<td>/v2/{resourceClass}/{resourceType}/{resourceId}</td>
 </tr>
-<tr class="row-odd"><td>POST</td>
-<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
+<tr class="row-odd"><td>GET</td>
+<td>{base}/{assoc resourceClass}/{assoc resourceType}</td>
 </tr>
-<tr class="row-even"><td>DELETE</td>
-<td>/v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
+<tr class="row-even"><td>POST</td>
+<td>{base}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
+</tr>
+<tr class="row-odd"><td>DELETE</td>
+<td>{base}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId}</td>
 </tr>
 </tbody>
 </table>
@@ -1727,20 +1719,6 @@ resource.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="tcex.tcex_resources.Resource.authorization_method">
-<code class="descname">authorization_method</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.authorization_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.authorization_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to create authorization header for this resource request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> (<em>method</em>) – The method to use to generate the authorization header(s).</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="tcex.tcex_resources.Resource.body">
 <code class="descname">body</code><a class="headerlink" href="#tcex.tcex_resources.Resource.body" title="Permalink to this definition">¶</a></dt>
@@ -1795,6 +1773,12 @@ resource.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_resources.Resource.copy_reset">
+<code class="descname">copy_reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource.copy_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource.copy_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset values after instance has been copied</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex_resources.Resource.custom">
 <code class="descname">custom</code><a class="headerlink" href="#tcex.tcex_resources.Resource.custom" title="Permalink to this definition">¶</a></dt>
@@ -1820,11 +1804,11 @@ that are associated with the provided resource id (indicator value).</p>
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="9%" />
+<col width="91%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">Method</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
@@ -1889,11 +1873,11 @@ for this resource that are associated with the provided resource id
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="9%" />
+<col width="91%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">Method</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
@@ -2357,22 +2341,6 @@ etc) for this resource that are associated with the provided task id.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tcex.tcex_resources.Resource.url">
-<code class="descname">url</code><a class="headerlink" href="#tcex.tcex_resources.Resource.url" title="Permalink to this definition">¶</a></dt>
-<dd><p>The ThreatConnect URL for this resource request.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The requested URL.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(str)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="tcex.tcex_resources.Resource.value_fields">
 <code class="descname">value_fields</code><a class="headerlink" href="#tcex.tcex_resources.Resource.value_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>The value fields for this resource.</p>
@@ -2405,11 +2373,11 @@ remove the provided tag from this resource.</p>
 <p><strong>Example Endpoints URI’s</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="88%" />
+<col width="10%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">HTTP Method</th>
+<tr class="row-odd"><th class="head">Method</th>
 <th class="head">API Endpoint URI’s</th>
 </tr>
 </thead>
@@ -2839,7 +2807,7 @@ in the parent Class.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

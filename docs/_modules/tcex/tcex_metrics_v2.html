@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_metrics_v2 &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_metrics_v2 &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -105,6 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -179,22 +181,22 @@
   <h1>Source code for tcex.tcex_metrics_v2</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot; TcEx Metrics Module &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+
 
 <div class="viewcode-block" id="TcExMetricsV2"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2">[docs]</a><span class="k">class</span> <span class="nc">TcExMetricsV2</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;TcEx Metrics Class.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;TcEx Metrics Class&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize class properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name: The name for the metric.</span>
-<span class="sd">            description: The description of the metric.</span>
-<span class="sd">            data_type: The type of metric: Sum, Count, Min, Max, First, Last, and Average</span>
-<span class="sd">            interval: The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly</span>
-<span class="sd">            keyed: Indicates whether the data will have a keyed value.</span>
+<span class="sd">            name (str): The name for the metric.</span>
+<span class="sd">            description (str): The description of the metric.</span>
+<span class="sd">            data_type (str): The type of metric: Sum, Count, Min, Max, First, Last, and Average.</span>
+<span class="sd">            interval (str): The metric interval: Hourly, Daily, Weekly, Monthly, and Yearly.</span>
+<span class="sd">            keyed (bool, default:False): Indicates whether the data will have a keyed value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric_data_type</span> <span class="o">=</span> <span class="n">data_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric_description</span> <span class="o">=</span> <span class="n">description</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span> <span class="o">=</span> <span class="kc">None</span>
@@ -205,28 +207,25 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_find</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metric_create</span><span class="p">()</span>
 
-    <span class="c1"># @property</span>
-    <span class="c1"># def metric_exists(self):</span>
-    <span class="c1">#     &quot;&quot;&quot; Validate that the metric Id provided is still valid</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     if self._metric_id is not None:</span>
-    <span class="c1">#         resource = self.metric_resource</span>
-    <span class="c1">#         resource.metric_id(self._metric_id)</span>
-    <span class="c1">#         results = resource.request()</span>
-    <span class="c1">#         if results.get(&#39;response&#39;).status_code == 200:</span>
-    <span class="c1">#             return True</span>
-    <span class="c1">#     return False</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metric_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return metric resource &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
-
 <div class="viewcode-block" id="TcExMetricsV2.metric_create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.metric_create">[docs]</a>    <span class="k">def</span> <span class="nf">metric_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the defined metric</span>
+        <span class="sd">&quot;&quot;&quot;Create the defined metric.</span>
+
+<span class="sd">        .. code-block:: javascript</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;status&quot;: &quot;Success&quot;,</span>
+<span class="sd">                &quot;data&quot;: {</span>
+<span class="sd">                    &quot;customMetricConfig&quot;: {</span>
+<span class="sd">                        &quot;id&quot;: 12,</span>
+<span class="sd">                        &quot;name&quot;: &quot;Added Reports&quot;,</span>
+<span class="sd">                        &quot;dataType&quot;: &quot;Sum&quot;,</span>
+<span class="sd">                        &quot;interval&quot;: &quot;Daily&quot;,</span>
+<span class="sd">                        &quot;keyedValues&quot;: false,</span>
+<span class="sd">                        &quot;description&quot;: &quot;Added reports daily count.&quot;</span>
+<span class="sd">                    }</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_resource</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
         <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;dataType&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_data_type</span><span class="p">,</span>
             <span class="s1">&#39;description&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_description</span><span class="p">,</span>
@@ -234,93 +233,107 @@
             <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">,</span>
             <span class="s1">&#39;keyedValues&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_keyed</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric body: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)))</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric body: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/customMetrics&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed to add metric (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">])</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;customMetricConfig&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExMetricsV2.metric_find"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.metric_find">[docs]</a>    <span class="k">def</span> <span class="nf">metric_find</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Report Metrics&quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_resource</span>
-        <span class="k">for</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">resource</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Error during while retrieving metrics.&#39;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="k">continue</span>
+        <span class="sd">&quot;&quot;&quot;Find the Metric by name.</span>
 
-            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">):</span>
+<span class="sd">        .. code-block:: javascript</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;status&quot;: &quot;Success&quot;,</span>
+<span class="sd">                &quot;data&quot;: {</span>
+<span class="sd">                    &quot;resultCount&quot;: 1,</span>
+<span class="sd">                    &quot;customMetricConfig&quot;: [</span>
+<span class="sd">                        {</span>
+<span class="sd">                            &quot;id&quot;: 9,</span>
+<span class="sd">                            &quot;name&quot;: &quot;My Metric&quot;,</span>
+<span class="sd">                            &quot;dataType&quot;: &quot;Sum&quot;,</span>
+<span class="sd">                            &quot;interval&quot;: &quot;Daily&quot;,</span>
+<span class="sd">                            &quot;keyedValues&quot;: false,</span>
+<span class="sd">                            &quot;description&quot;: &quot;TcEx Metric Testing&quot;</span>
+<span class="sd">                        }</span>
+<span class="sd">                    ]</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;resultLimit&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+            <span class="s1">&#39;resultStart&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultStart&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/v2/customMetrics&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">705</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">])</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;customMetricConfig&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
                     <span class="n">info</span> <span class="o">=</span> <span class="s1">&#39;found metric with name &quot;</span><span class="si">{}</span><span class="s1">&quot; and Id </span><span class="si">{}</span><span class="s1">.&#39;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span><span class="p">))</span>
                     <span class="k">return</span> <span class="kc">True</span>
-
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;resultStart&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;resultLimit&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExMetricsV2.add"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add Metrics</span>
+        <span class="sd">&quot;&quot;&quot;Add metrics data to collection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            value: The value of the metric.</span>
-<span class="sd">            date: The optional date of the metric.</span>
-<span class="sd">            return_value: Tell the API to return the updates metric value.</span>
-<span class="sd">            key: The key value for keyed metrics.</span>
+<span class="sd">            value (str): The value of the metric.</span>
+<span class="sd">            date (str, optional): The optional date of the metric.</span>
+<span class="sd">            return_value (bool, default:False): Tell the API to return the updates metric value.</span>
+<span class="sd">            key (str, optional): The key value for keyed metrics.</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            (None|Dict): A None value if return value was not requested or a dict.</span>
+<span class="sd">            dict: If return_value is True a dict with the current value for the time period</span>
+<span class="sd">                is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;No metric ID found for &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_resource</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
-        <span class="k">if</span> <span class="n">return_value</span><span class="p">:</span>
-            <span class="n">resource</span><span class="o">.</span><span class="n">add_payload</span><span class="p">(</span><span class="s1">&#39;returnValue&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span><span class="p">)</span>
-        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span>
-        <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">715</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_name</span><span class="p">])</span>
+
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">body</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span>
+            <span class="n">body</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">body</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)))</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">204</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;metric data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">return_value</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;returnValue&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/v2/customMetrics/</span><span class="si">{}</span><span class="s1">/data&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metric_id</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">and</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">204</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed to add metric (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;response&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">message_tc</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">710</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">response</span></div>
+        <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="TcExMetricsV2.add_keyed"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed">[docs]</a>    <span class="k">def</span> <span class="nf">add_keyed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add keyed metrics</span>
+        <span class="sd">&quot;&quot;&quot;Add keyed metrics data to collection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            value: The value of the metric.</span>
-<span class="sd">            key: The key value for keyed metrics.</span>
-<span class="sd">            date: The optional date of the metric.</span>
-<span class="sd">            return_value: Tell the API to return the updates metric value.</span>
+<span class="sd">            value (str): The value of the metric.</span>
+<span class="sd">            key (str): The key value for keyed metrics.</span>
+<span class="sd">            date (str, optional): The optional date of the metric.</span>
+<span class="sd">            return_value (bool, default:False): Tell the API to return the updates metric value.</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            (None|Dict): A None value if return value was not requested or a dict.</span>
+<span class="sd">            dict: If return_value is True a dict with the current value for the time period</span>
+<span class="sd">                is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">return_value</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div></div>
 </pre></div>
@@ -358,7 +371,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

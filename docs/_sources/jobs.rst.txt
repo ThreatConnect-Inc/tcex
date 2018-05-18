@@ -4,6 +4,9 @@
 ====
 Jobs
 ====
+
+.. important:: This module is deprecated starting with ThreatConnect 5.6 and will be removed start in version 0.9.0.
+
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
 
 Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_job.TcExJob.process` method will attempt to write the data to the ThreatConnect API.
@@ -164,7 +167,7 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
 .. note:: To create file indicators using the ``tcex.tcex_job.indicator()`` function, the ``summary`` should be a string with each file hash (md5, sha1, and/or sha256) separated by ``<space>:<space>``. For example, the following json would create a file indicator with the md5 hash ``905ad8176a569a36421bf54c04ba7f95``, sha1 hash ``a52b6986d68cdfac53aa740566cbeade4452124e`` and sha256 hash ``25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0``:
 
     .. code-block:: javascript
-    
+
         {
           "summary": "905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0",
           "type": "File"

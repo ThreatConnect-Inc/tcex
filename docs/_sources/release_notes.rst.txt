@@ -3,6 +3,24 @@
 Release Notes
 #############
 
+0.8.x
+=====
+
+0.8.0
+------
++ Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
++ Added batch module to replace the jobs module starting in ThreatConnect 5.6.
++ Added msg to ``exit()`` methods.
++ Changed ``exit_code()`` method to a property with a setter.
++ Changed ``tcex.request`` property to a method.
++ Updated multiple methods to use tcex.session instead of tcex.request.
++ Renamed logger module to be consistent with other modules.
++ Removed second arg from ``expand_indicators()`` method.
++ Removed owner parameter from resource.DataStore methods.
++ Added deprecation warning for the following methods: ``bulk_enabled()``, ``job()``, ``request_tc()``, ``epoch_seconds()``, and ``to_string()``.  These methods will be removed in version 0.9.0.
++ Cleaned up code, comments and documentation.
++ Added error code/message for all RuntimeError exceptions.
+
 0.7.x
 =====
 

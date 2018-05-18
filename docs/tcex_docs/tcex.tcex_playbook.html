@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.7.21 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.21 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
-        <link rel="prev" title="tcex.tcex_metrics_v2 module" href="tcex.tcex_metrics_v2.html"/> 
+        <link rel="prev" title="tcex.tcex_notification_v2 module" href="tcex.tcex_notification_v2.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.21
+                0.8.0
               </div>
             
           
@@ -96,6 +96,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
@@ -108,13 +109,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -129,6 +131,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -209,7 +212,7 @@
 <dt id="tcex.tcex_playbook.TcExPlaybook">
 <em class="property">class </em><code class="descclassname">tcex.tcex_playbook.</code><code class="descname">TcExPlaybook</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Playbook methods for accessing Database</p>
+<p>Playbook methods for accessing key value store.</p>
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook._parse_out_variable">
 <code class="descname">_parse_out_variable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook._parse_out_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook._parse_out_variable" title="Permalink to this definition">¶</a></dt>
@@ -257,7 +260,7 @@ type is provided the data will be written as RAW data.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -281,7 +284,7 @@ type is provided the data will be written as RAW data.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -305,7 +308,7 @@ type is provided the data will be written as RAW data.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -353,7 +356,7 @@ type is provided the data will be written as RAW data.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -376,11 +379,11 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</li>
 <li><strong>value</strong> (<em>any</em>) – The data to write to the DB.</li>
-<li><strong>variable_type</strong> (<em>string</em>) – The variable type being written</li>
+<li><strong>variable_type</strong> (<em>string</em>) – The variable type being written.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result string of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -404,7 +407,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -428,7 +431,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -452,7 +455,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -476,7 +479,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -500,7 +503,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Result of DB write.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -520,7 +523,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to write to the DB.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result of DB write</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result of DB write.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
 </tr>
@@ -531,7 +534,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.entity_to_bulk">
 <em class="property">static </em><code class="descname">entity_to_bulk</code><span class="sig-paren">(</span><em>entities</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.entity_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.entity_to_bulk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert Single TC Entity to Bulk format</p>
+<dd><p>Convert Single TC Entity to Bulk format.</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">This method is subject to frequent changes</p>
@@ -546,7 +549,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary representing TC Bulk format</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary representing TC Bulk format.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
@@ -558,7 +561,7 @@ a downstream app and if so create the data in the KeyValue DB.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.exit">
-<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.exit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em>, <em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Playbook wrapper on TcEx exit method</p>
 <p>Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
 it a partial success instead.</p>
@@ -575,14 +578,14 @@ it a partial success instead.</p>
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.indicator_arrays">
 <em class="property">static </em><code class="descname">indicator_arrays</code><span class="sig-paren">(</span><em>tc_entity_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.indicator_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert TCEntityArray to Indicator Type dictionary</p>
+<dd><p>Convert TCEntityArray to Indicator Type dictionary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tc_entity_array</strong> (<em>dictionary</em>) – The TCEntityArray to convert</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tc_entity_array</strong> (<em>dictionary</em>) – The TCEntityArray to convert.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing arrays of indicators for each indicator type</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dictionary containing arrays of indicators for each indicator type.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
 </tr>
@@ -593,7 +596,7 @@ it a partial success instead.</p>
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_bulk">
 <em class="property">static </em><code class="descname">json_to_bulk</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_bulk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert ThreatConnect JSON response to a Bulk Format</p>
+<dd><p>Convert ThreatConnect JSON response to a Bulk Format.</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
 <p class="last">This method is subject to frequent changes</p>
@@ -623,10 +626,10 @@ it a partial success instead.</p>
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_entity">
 <em class="property">static </em><code class="descname">json_to_entity</code><span class="sig-paren">(</span><em>tc_data</em>, <em>value_fields</em>, <em>resource_type</em>, <em>resource_type_parent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_entity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert ThreatConnect JSON response to a TCEntityArray</p>
+<dd><p>Convert ThreatConnect JSON response to a TCEntityArray.</p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
-<p class="last">This method is subject to frequent changes</p>
+<p class="last">This method is subject to frequent changes.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -640,7 +643,7 @@ it a partial success instead.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list representing a TCEntityArray</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list representing a TCEntityArray.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
@@ -653,7 +656,7 @@ it a partial success instead.</p>
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.json_to_key_value">
 <em class="property">static </em><code class="descname">json_to_key_value</code><span class="sig-paren">(</span><em>json_data</em>, <em>key_field</em>, <em>value_field=None</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.json_to_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.json_to_key_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert JSON data to a KeyValue/KeyValueArray</p>
+<dd><p>Convert JSON data to a KeyValue/KeyValueArray.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -736,9 +739,9 @@ automatically determine the variable type to read.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">()</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(bytes)</td>
 </tr>
 </tbody>
 </table>
@@ -754,9 +757,9 @@ automatically determine the variable type to read.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">()</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
 </tr>
 </tbody>
 </table>
@@ -836,7 +839,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
@@ -860,7 +863,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
@@ -880,9 +883,9 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">()</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
 </tr>
 </tbody>
 </table>
@@ -902,7 +905,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
@@ -926,7 +929,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
@@ -950,7 +953,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(dictionary)</p>
@@ -974,7 +977,7 @@ from DB. If there are no keys/variables the raw string will be returned.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
@@ -1047,7 +1050,7 @@ contains not “DB variable” and is just a String.</p>
         <a href="tcex.tcex_redis.html" class="btn btn-neutral float-right" title="tcex.tcex_redis module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tcex.tcex_metrics_v2.html" class="btn btn-neutral" title="tcex.tcex_metrics_v2 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex_notification_v2.html" class="btn btn-neutral" title="tcex.tcex_notification_v2 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1077,7 +1080,7 @@ contains not “DB variable” and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.21',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
