@@ -494,7 +494,7 @@ class TcEx(object):
     def batch(self, owner, action=None, attribute_write_type=None, halt_on_error=False):
         """Return instance of Batch"""
         from .tcex_batch_v2 import TcExBatch
-        return Batch(self, owner, action, attribute_write_type, halt_on_error)
+        return TcExBatch(self, owner, action, attribute_write_type, halt_on_error)
 
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
         """[Deprecated] Check if bulk indicators is enabled for owner.

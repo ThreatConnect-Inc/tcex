@@ -24,7 +24,8 @@ class TcExErrorCodes(object):
             300: 'Failed retrieving Bulk JSON ({}).',
             305: 'An invalid action/association name ({}) was provided.',
             350: 'Data Store request failed. API status code: {}, API message: {}.',
-            # batch v2 warn/error: 500-600, critical: 1500-1600
+            # batch v2 warn: 500-600
+            520: 'File Occurrences can only be added to a File. Current type: {}.',
             540: 'Failed polling batch status ({}).',
             545: 'Failed polling batch status. API status code: {}, API message: {}.',
             560: 'Failed retrieving batch errors ({}).',
@@ -36,6 +37,7 @@ class TcExErrorCodes(object):
             705: 'Error while finding metric by name. API status code: {}, API message: {}.',
             710: 'Failed to add metric data. API status code: {}, API message: {}.',
             715: 'No metric ID found for "{}".',
+            # batch v2 critical: 1500-1600
             1500: 'Critical batch error ({}).',
             1505: 'Failed submitting batch job requests ({}).',
             1510: 'Failed submitting batch job requests. API status code: {}, API message: {}.',

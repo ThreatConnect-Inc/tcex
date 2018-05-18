@@ -586,7 +586,6 @@ class TcExBatch(object):
         Returns:
             obj: An instance of Group.
         """
-        group_type = group_type.replace(' ', '')
         group_obj = Group(self.tcex, group_type, name, xid)
         group_obj = self._group_lookup(xid, group_obj)
         self._groups.add(group_obj)
@@ -652,7 +651,6 @@ class TcExBatch(object):
         Returns:
             obj: An instance of Indicator.
         """
-        indicator_type = indicator_type.replace(' ', '')
         indicator_obj = Indicator(self.tcex, indicator_type, summary, rating, confidence, xid)
         self._indicators.append(indicator_obj)
         return indicator_obj
@@ -1408,6 +1406,12 @@ class Event(Group):
     def __init__(self, tcex, name, event_date=None, status=None, xid=True):
         """Initialize Class Properties.
 
+        Valid Values:
+        + Escalated
+        + False Positive
+        + Needs Review
+        + No Further Action
+
         Args:
             tcex (TcEx Instance): Instance of TcEx
             name (str): The name for this Group.
@@ -1449,6 +1453,17 @@ class Incident(Group):
 
     def __init__(self, tcex, name, event_date=None, status=None, xid=True):
         """Initialize Class Properties.
+
+        Valid Values:
+        + Closed
+        + Containment Achieved
+        + Deleted
+        + Incident Reported
+        + Open
+        + New
+        + Rejected
+        + Restoration Achieved
+        + Stalled
 
         Args:
             tcex (obj): An instance of TcEx object.
@@ -1648,6 +1663,11 @@ class Indicator(object):
         self._labels = []
         self._occurrences = []
         self._tags = []
+        # add values for custom indicator types
+        index = 1
+        for value in self.tcex.expand_indicators(summary):
+            self._indicator_data['value{}'.format(index)] = value
+            index += 1
 
     def _xid(self, xid):
         """Return a valid xid."""
@@ -1769,6 +1789,24 @@ class Indicator(object):
                 if tag.valid:
                     self._indicator_data['tag'].append(tag.data)
         return self._indicator_data
+
+    def occurrence(self, file_name=None, path=None, date=None):
+        """Add a file Occurrence.
+
+        Args:
+            file_name (str, optional): The file name for this occurrence.
+            path (str, optional): The file path for this occurrence.
+            date (str, optional): The datetime expression for this occurrence.
+
+        Returns:
+            obj: An instance of Occurrence.
+        """
+        if self._indicator_data.get('type') != 'File':
+            self.tcex.handle_error(520, [self._indicator_data.get('type')], True)
+
+        occurrence_obj = FileOccurrence(self.tcex, file_name, path, date)
+        self._occurrences.append(occurrence_obj)
+        return occurrence_obj
 
     @property
     def private_flag(self):
@@ -1944,21 +1982,6 @@ class File(Indicator):
     def md5(self, md5):
         """Set Indicator md5."""
         self._indicator_data['md5'] = md5
-
-    def occurrence(self, file_name=None, path=None, date=None):
-        """Add a file Occurrence.
-
-        Args:
-            file_name (str, optional): The file name for this occurrence.
-            path (str, optional): The file path for this occurrence.
-            date (str, optional): The datetime expression for this occurrence.
-
-        Returns:
-            obj: An instance of Occurrence.
-        """
-        occurrence_obj = FileOccurrence(self.tcex, file_name, path, date)
-        self._occurrences.append(occurrence_obj)
-        return occurrence_obj
 
     @property
     def sha1(self):
