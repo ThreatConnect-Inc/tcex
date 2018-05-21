@@ -835,12 +835,7 @@ class TcEx(object):
             (object): An instance of Request Class
         """
         self.log.warning('This App is using a deprecated method (request_tc).')
-        r = self.request()
-        r.authorization_method(self.authorization)
-        if self.default_args.tc_proxy_tc:
-            self.log.info(u'Using proxy server for TC request {}:{}.'.format(
-                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
-            r.proxies = self.proxies
+        r = self.request(self.session)
         return r
 
     def resource(self, resource_type):
