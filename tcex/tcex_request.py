@@ -35,7 +35,6 @@ class TcExRequest(object):
         """Initialize the Class properties."""
         self.tcex = tcex
 
-        self._authorization_method = None
         self._basic_auth = None
         self._body = None
         self._content_type = None
@@ -43,11 +42,9 @@ class TcExRequest(object):
         self._http_method = 'GET'
         self._json = None
         self._payload = {}
-        self._proxies = {}
         self._url = None
         self._files = None
         self._timeout = 300
-        self._verify_ssl = False
 
         # session
         self.session = session_retry()
@@ -61,24 +58,24 @@ class TcExRequest(object):
 
     @property
     def body(self):
-        """The POST/PUT body content for this request."""
+        """Return the POST/PUT body content for this request."""
         return self._body
 
     @body.setter
     def body(self, data):
-        """The POST/PUT body content for this request."""
+        """Set the POST/PUT body content for this request."""
         if data is not None:
             self._body = data
             self.add_header('Content-Length', str(len(self._body)))
 
     @property
     def json(self):
-        """The POST/PUT body content in JSON format for this request."""
+        """Return the POST/PUT body content in JSON format for this request."""
         return self._body
 
     @json.setter
     def json(self, data):
-        """The POST/PUT body content in JSON format for this request."""
+        """Set the POST/PUT body content in JSON format for this request."""
         if data is not None:
             self._body = json.dumps(data)
             self.add_header('Content-Type', 'application/json')
@@ -89,7 +86,7 @@ class TcExRequest(object):
 
     @property
     def headers(self):
-        """The header values for this request."""
+        """Return the header values for this request."""
         return self._headers
 
     def reset_headers(self):
@@ -97,11 +94,11 @@ class TcExRequest(object):
         self._headers = {}
 
     def add_header(self, key, val):
-        """Add a key value pair to header.
+        """Add a key value pair to header for this request.
 
         Args:
-            key (string): The header key
-            val (string): The header value
+            key (str): The header key
+            val (str): The header value
         """
         self._headers[key] = str(val)
 
@@ -114,14 +111,6 @@ class TcExRequest(object):
     def authorization(self, data):
         """The "Authorization" header value for this request."""
         self.add_header('Authorization', data)
-
-    def authorization_method(self, method):
-        """Method to create Authorization header for this request.
-
-        Args:
-            method (method): The method to use to generate the authorization header(s).
-        """
-        self._authorization_method = method
 
     @property
     def basic_auth(self):
@@ -136,7 +125,7 @@ class TcExRequest(object):
     @property
     def content_type(self):
         """The Content-Type header value for this request."""
-        return self._content_type
+        return self._headers.get('Content-Type')
 
     @content_type.setter
     def content_type(self, data):
@@ -177,9 +166,10 @@ class TcExRequest(object):
         """Add a key value pair to payload for this request.
 
         Args:
-            key (string): The payload key.
-            val (string): The payload value.
-            append (bool): Indicate whether the value should be appended or overwritten.
+            key (str): The payload key.
+            val (str): The payload value.
+            append (bool, default:False): Indicate whether the value should be appended or
+                overwritten.
         """
         if append:
             self._payload.setdefault(key, []).append(val)
@@ -203,7 +193,7 @@ class TcExRequest(object):
             self._http_method = data
 
             # set content type for commit methods (best guess)
-            if self._content_type is None and data in ['POST', 'PUT']:
+            if self._headers.get('Content-Type') is None and data in ['POST', 'PUT']:
                 self.add_header('Content-Type', 'application/json')
         else:
             raise AttributeError(
@@ -215,13 +205,13 @@ class TcExRequest(object):
 
     @property
     def proxies(self):
-        """The proxy settings for this request."""
-        return self._proxies
+        """Return the proxy settings for the session."""
+        return self.session.proxies
 
     @proxies.setter
     def proxies(self, data):
-        """The proxy settings for this request."""
-        self._proxies = data
+        """Set the proxy settings for the session."""
+        self.session.proxies = data
 
     @property
     def timeout(self):
@@ -236,17 +226,17 @@ class TcExRequest(object):
 
     @property
     def verify_ssl(self):
-        """The SSL validation setting for this request."""
-        return self._verify
+        """Return the SSL validation setting for the session."""
+        return self.session.verify
 
     @verify_ssl.setter
     def verify_ssl(self, verify):
-        """The SSL validation setting for this request.
+        """Set the SSL validation setting for the session.
 
         Args:
-            data (string|boolean): A boolean for enable/disable or the server PEM file.
+            verify (str or bool): A boolean for enable/disable or the server PEM file.
         """
-        self._verify = verify
+        self.session.verify = verify
 
     @property
     def files(self):
@@ -269,37 +259,19 @@ class TcExRequest(object):
         temporary communications issues by retrying the request automatically.
 
         Args:
-            stream (boolean): Boolean to enable stream download.
+            stream (bool): Boolean to enable stream download.
 
         Returns:
-            (Requests.Response) The Request response
+            Requests.Response: The Request response
         """
-        #
-        # prepare request
-        #
-
-        api_request = Request(
-            method=self._http_method, url=self._url, data=self._body, files=self._files,
-            params=self._payload)
-
-        request_prepped = api_request.prepare()
-
-        # add authorization header returned by authorization method
-        if self._authorization_method is not None:
-            self._headers.update(self._authorization_method(request_prepped))
-        request_prepped.prepare_headers(self._headers)
-        # self.tcex.log.debug(u'Request URL: {}'.format(self._url))
-
-        if self._basic_auth is not None:
-            request_prepped.prepare_auth(self._basic_auth)
-
         #
         # api request (gracefully handle temporary communications issues with the API)
         #
         try:
-            response = self.session.send(
-                request_prepped, proxies=self._proxies, timeout=self._timeout,
-                verify=self._verify_ssl, stream=stream)
+            response = self.session.request(
+                self._http_method, self._url, auth=self._basic_auth, data=self._body,
+                files=self._files, headers=self._headers, params=self._payload, stream=stream,
+                timeout=self._timeout)
         except Exception as e:
             err = 'Failed making HTTP request ({}).'.format(e)
             raise RuntimeError(err)

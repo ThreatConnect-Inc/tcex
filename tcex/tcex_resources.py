@@ -23,6 +23,8 @@ class Resource(object):
 
         # request
         self._request = self.tcex.request(self.tcex.session)
+        # set default. can be overwritten for individual requests.
+        self._request.content_type = 'application/json'
 
         # common
         self._api_branch = None

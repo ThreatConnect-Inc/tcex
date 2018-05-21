@@ -208,7 +208,7 @@ class TcEx(object):
             self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
             self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
             self.log.info(u'App Version: {}'.format(app_version))
-        except FileNotFoundError:
+        except IOError:
             self.log.debug(u'Could not retrieve App Data.')
 
     def _log_platform(self):

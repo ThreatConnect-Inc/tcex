@@ -28,7 +28,10 @@ class TcExSession(Session):
         # Update User-Agent
         self.headers.update({'User-Agent': 'TcEx'})
         # Set Proxy
-        self.proxies = self.tcex.proxies
+        if self.args.tc_proxy_tc:
+            self.proxies = self.tcex.proxies
+            self.tcex.log.info('Using proxy host {}:{} for ThreatConnect API.'.format(
+                self.args.tc_proxy_host, self.args.tc_proxy_port))
         # Add Retry
         self.retry()
         # Verify
