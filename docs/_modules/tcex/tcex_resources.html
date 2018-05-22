@@ -204,6 +204,8 @@
 
         <span class="c1"># request</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="p">)</span>
+        <span class="c1"># set default. can be overwritten for individual requests.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
 
         <span class="c1"># common</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_api_branch</span> <span class="o">=</span> <span class="kc">None</span>

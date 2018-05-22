@@ -83,7 +83,7 @@ The third interface accept the raw data formatted as a dictionary.  This method 
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 2-11
+    :emphasize-lines: 2-18
 
     batch = tcex.batch('MyOrg')
     batch.add_group({
@@ -111,7 +111,7 @@ There are three interfaces to add Indicator Threat Intelligence data to the Batc
 
 Interface 1
 -----------
-The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.
+The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the indicator instance directly.
 
 .. code-block:: python
     :linenos:
@@ -150,7 +150,7 @@ The first interface is for type specific access.  This interface allows for pass
 
 Interface 2
 -----------
-The second more dynamic interface uses the more generic ``indicator()`` method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as **size** for an File indicator the ``add_key_value()`` method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.
+The second more dynamic interface uses the more generic ``indicator()`` method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as **size** for a File indicator the ``add_key_value()`` method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.
 
 .. code-block:: python
     :linenos:
@@ -232,7 +232,7 @@ Example of Indicator -> Group association.
 
 Submit
 ======
-There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 provide a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job, submit data and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll for status and submit the next job request.
+There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 provides a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job, submit data and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll for status and submit the next job request.
 
 Option 1
 --------

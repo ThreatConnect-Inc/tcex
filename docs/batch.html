@@ -316,14 +316,14 @@
 </span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
 </span><span class="hll">    <span class="p">],</span>
 </span><span class="hll">    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="p">[{</span>
-</span>        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
-    <span class="p">}],</span>
-    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
-        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
-    <span class="p">}]</span>
-<span class="p">})</span>
+</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
+</span><span class="hll">    <span class="p">}]</span>
+</span><span class="p">})</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -333,7 +333,7 @@
 <p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
 <div class="section" id="id2">
 <h3>Interface 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
+<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the indicator instance directly.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -385,7 +385,7 @@
 </div>
 <div class="section" id="id3">
 <h3>Interface 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <code class="docutils literal"><span class="pre">indicator()</span></code> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for an File indicator the <code class="docutils literal"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second more dynamic interface uses the more generic <code class="docutils literal"><span class="pre">indicator()</span></code> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <code class="docutils literal"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -476,7 +476,7 @@
 </div>
 <div class="section" id="submit">
 <h2>Submit<a class="headerlink" href="#submit" title="Permalink to this headline">¶</a></h2>
-<p>There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 provide a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job, submit data and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll for status and submit the next job request.</p>
+<p>There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 provides a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job, submit data and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll for status and submit the next job request.</p>
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
 <p>Submit the job and wait for completion. In the example any error messages are requested to be returned as well.</p>
