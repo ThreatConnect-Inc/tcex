@@ -6,18 +6,26 @@ Release Notes
 0.8.x
 =====
 
+0.8.1
+------
++ Update for secureParams loading order.
++ Updates to :py:mod:`~tcex.tcex_logger` module.
++ Updates to :py:mod:`~tcex.tcex` module to only import modules when required.
++ Moved :py:meth:`~tcex.tcex_utils.TcExUtils.inflect` to the Utils module.
++ Updated docs for Metrics, Notifications, and Batch.
+
 0.8.0
 ------
 + Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
 + Added batch module to replace the jobs module starting in ThreatConnect 5.6.
-+ Added msg to ``exit()`` methods.
-+ Changed ``exit_code()`` method to a property with a setter.
-+ Changed ``tcex.request`` property to a method.
-+ Updated multiple methods to use tcex.session instead of tcex.request.
++ Added msg to :py:meth:`~tcex.tcex.TcEx.exit` methods.
++ Changed :py:meth:`~tcex.tcex.TcEx.exit_code` method to a property with a setter.
++ Changed :py:meth:`~tcex.tcex.TcEx.request` property to a method.
++ Updated multiple methods to use :py:mod:`~tcex.tcex_session` instead of :py:mod:`~tcex.tcex_request`.
 + Renamed logger module to be consistent with other modules.
-+ Removed second arg from ``expand_indicators()`` method.
-+ Removed owner parameter from resource.DataStore methods.
-+ Added deprecation warning for the following methods: ``bulk_enabled()``, ``job()``, ``request_tc()``, ``epoch_seconds()``, and ``to_string()``.  These methods will be removed in version 0.9.0.
++ Removed second arg from :py:meth:`~tcex.tcex.TcEx.expand_indicators` method.
++ Removed owner parameter from :py:mod:`~tcex.tcex_resources.DataStore` module.
++ Added deprecation warning for the following methods: :py:meth:`~tcex.tcex.TcEx.bulk_enabled`, :py:meth:`~tcex.tcex.TcEx.job`, :py:meth:`~tcex.tcex.TcEx.request_tc`, :py:meth:`~tcex.tcex.TcEx.epoch_seconds`, and :py:meth:`~tcex.tcex.TcEx.to_string`.  These methods will be removed in version 0.9.0.
 + Cleaned up code, comments and documentation.
 + Added error code/message for all RuntimeError exceptions.
 
@@ -26,7 +34,7 @@ Release Notes
 
 0.7.21
 ------
-+ Fixed issue with newstr when using quote() method in ``tcex.safe_indicator()``.
++ Fixed issue with newstr when using quote() method in :py:meth:`~tcex.tcex.TcEx.safe_indicator`.
 
 0.7.20
 ------

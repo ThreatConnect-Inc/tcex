@@ -1,64 +1,17 @@
 """ThreatConnect API Logger"""
-from logging import FileHandler
+import time
+from logging import Formatter, Handler
 
 
-def create_log_entry(record):
-    """Create the API log entry.
+class TcExLogFormatter(Formatter):
+    """Logger formatter for ThreatConnect Exchange API logging."""
+    def __init__(self, task_name=None):
+        """Initialize Class properties."""
+        self.task_name = task_name
+        super(TcExLogFormatter, self).__init__()
 
-    Args:
-        record (object): The log entry record.
-
-    Returns:
-        (dictionary): The data to log to API.
-    """
-    log_entry = {}
-
-    if hasattr(record, 'created'):
-        log_entry['timestamp'] = int(float(record.created) * 1000)
-
-    if hasattr(record, 'msg'):
-        log_entry['message'] = record.msg
-
-    if hasattr(record, 'levelname'):
-        log_entry['level'] = record.levelname
-
-    return log_entry
-
-
-class TcExLogger(FileHandler):
-    """Extension of FileHandler.
-
-    Sends logs entries to the ThreatConnect API.
-    """
-
-    def __init__(self, filename, tcex, max_entries_before_flush=100):
-        super(TcExLogger, self).__init__(filename)
-        self.tcex = tcex
-        self.max_entries_before_flush = max_entries_before_flush
-
-        # init entries
-        self.entries = []
-
-    def emit(self, record):
-        """Overload of logger emit method
-
-        Args:
-            record (object): The log entry record
-        """
-        entry = create_log_entry(record)
-        self.entries.append(entry)
-
-        # if we've reached the max_entries threshold, flush the handler
-        # bcs - would doing a json.dumps and checking size for POST be safer
-        #       than an arbitrary amount of events?
-        if len(self.entries) > self.max_entries_before_flush:
-            self.log_to_api()
-        super(TcExLogger, self).emit(record)
-
-    def log_to_api(self):
-        """Best effort API logger.
-
-        Send logs to API and do nothing if the attempt fails.
+    def format(self, record):
+        """Format log record for ThreatConnect API.
 
         Example log event::
 
@@ -67,12 +20,49 @@ class TcExLogger(FileHandler):
                 "message": "Test Message",
                 "level": "DEBUG"
             }]
+        """
+        return {
+            'timestamp': int(float(record.created or time.time()) * 1000000),
+            'message': record.msg or '',
+            'level': record.levelname or 'DEBUG'
+        }
 
+
+class TcExLogHandler(Handler):
+    """Logger handler for ThreatConnect Exchange API logging."""
+
+    def __init__(self, session, flush_limit=100):
+        """Initialize Class properties.
+
+        Args:
+            session (Request.Session): The preconfigured instance of Session for ThreatConnect API.
+            flush_limit (int): The limit to flush batch logs to the API.
+        """
+        super(TcExLogHandler, self).__init__()
+        self.session = session
+        self.flush_limit = flush_limit
+        self.entries = []
+
+    def close(self):
+        """Close the logger and flush entries."""
+        self.log_to_api()
+
+    def emit(self, record):
+        """Emit the log record."""
+        self.entries.append(self.format(record))
+        if len(self.entries) > self.flush_limit:
+            self.log_to_api()
+            self.entries = []
+
+    def log_to_api(self):
+        """Best effort API logger.
+
+        Send logs to the ThreatConnect API and do nothing if the attempt fails.
         """
         if self.entries:
-            # Make API call
             try:
-                self.tcex.session.post('/v2/logs/app', json=self.entries)
+                headers = {'Content-Type': 'application/json'}
+                self.session.post('/v2/logs/app', headers=headers, json=self.entries)
                 self.entries = []  # clear entries
             except Exception:
                 # best effort on api logging

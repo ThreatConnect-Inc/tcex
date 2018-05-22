@@ -22,6 +22,7 @@ class TcExUtils():
             rhash (string): The REDIS hash.
         """
         self._tcex = tcex
+        self._inflect = None
 
     def any_to_datetime(self, time_input, tz=None):
         """Return datetime object from multiple formats.
@@ -170,6 +171,14 @@ class TcExUtils():
             dt = None
 
         return dt
+
+    @property
+    def inflect(self):
+        """Return instance of inflect."""
+        if self._inflect is None:
+            import inflect
+            self._inflect = inflect.engine()
+        return self._inflect
 
     def timedelta(self, time_input1, time_input2):
         """ Calculates time delta between two time expressions.

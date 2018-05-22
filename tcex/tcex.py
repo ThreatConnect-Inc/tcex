@@ -1,33 +1,18 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework """
 from builtins import str
-import base64  # authorization
-import hashlib  # authorization
-import hmac  # authorization
 import json
 import logging
 import os
 import re
 import sys
 import time
-from datetime import datetime
-from importlib import import_module
-from platform import platform
 try:
     from urllib import quote  # Python 2
 except ImportError:
     from urllib.parse import quote  # Python 3
 
-from dateutil.relativedelta import relativedelta
-import inflect
-
 from .tcex_argparser import TcExArgParser
-from .tcex_error_codes import TcExErrorCodes
-from .tcex_job import TcExJob
-from .tcex_metrics_v2 import TcExMetricsV2
-from .tcex_notification_v2 import TcExNotificationV2
-from .tcex_session import TcExSession
-
 
 
 class TcEx(object):
@@ -35,15 +20,20 @@ class TcEx(object):
 
     def __init__(self):
         """Initialize Class Properties."""
-        self.error_codes = TcExErrorCodes()
-        # init inflect engine
-        self.inflect = inflect.engine()
-
+        # init logger
+        self.log = self._logger(True)
+        # Property defaults
+        self._error_codes = None
         self._exit_code = 0
+        self._default_args = None
         self._indicator_associations_types_data = {}
         self._indicator_types = []
         self._indicator_types_data = {}
-        self._max_message_length = 255
+        self._jobs = None
+        self._playbook = None
+        self._session = None
+        self._utils = None
+
         # NOTE: odd issue where args is not updating properly
         self._tc_token = None
         self._tc_token_expires = None
@@ -51,7 +41,10 @@ class TcEx(object):
         # Parser
         self._parsed = False
         self.parser = TcExArgParser()
-        self.default_args, unknown = self.parser.parse_known_args()
+        # self.default_args, unknown = self.parser.parse_known_args()
+
+        # init logger
+        # self.log = self._logger()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -60,28 +53,13 @@ class TcEx(object):
             self._tc_token_expires = self.default_args.tc_token_expires
 
         # logger (must parse args first)
-        self.log = self._logger(self.default_args.tc_log_file)
-
-        # inject args using secure param feature
-        self._inject_secure_params()
-
-        # Add ThreatConnect Session
-        self.session = TcExSession(self)
+        # self.log = self._logger(self.default_args.tc_log_file)
 
         # Log system and App data
         self._log()
 
-        # [Deprecated] include jobs module
-        self._jobs()
-
-        # include playbook module
-        self._playbook()
-
         # include resources module
         self._resources()
-
-        # include utils module
-        self._utils()
 
     def _association_types(self):
         """Retrieve Custom Indicator Associations types from the ThreatConnect API."""
@@ -166,19 +144,23 @@ class TcEx(object):
                 sys.argv.append('{}'.format(value))
 
         # reset default_args now that values have been injected into sys.argv
-        self.default_args, unknown = self.parser.parse_known_args()
+        self._default_args, unknown = self.parser.parse_known_args()
         self._unknown_args(unknown)
 
-        # reset logging level
-        self.log = self._logger(self.default_args.tc_log_file)
+        # reinitialize logger with log file
+        self.log = self._logger()
 
-    def _jobs(self):
+    @property
+    def jobs(self):
         """**[Deprecated]** Include the jobs Module.
 
         .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
                      tcex.batch instead.
         """
-        self.jobs = TcExJob(self)
+        if self._jobs is None:
+            from .tcex_job import TcExJob
+            self._jobs = TcExJob(self)
+        return self._jobs
 
     def _log(self):
         """Send System and App data to logs."""
@@ -213,6 +195,7 @@ class TcEx(object):
 
     def _log_platform(self):
         """Log the current Platform."""
+        from platform import platform
         self.log.info(u'Platform: {}'.format(platform()))
 
     def _log_python_version(self):
@@ -230,7 +213,7 @@ class TcEx(object):
         """Log the current TcEx version number."""
         self.log.info(u'TcEx Version: {}'.format(__import__(__name__).__version__))
 
-    def _logger(self, file_name=None):
+    def _logger(self, stream_only=False):
         """Create TcEx app logger instance.
 
         The logger is accessible via the ``tc.log.<level>`` call.
@@ -247,15 +230,11 @@ class TcEx(object):
             tcex.log.error('logging error')
 
         Args:
-            file_name (Optional[string]): The name for the log file
+            stream_only (bool, default:False): If True only the Stream handler will be enabled.
 
         Returns:
             logger: An instance of logging
         """
-        if file_name is None:
-            file_name = 'app.log'
-
-        level = logging.INFO
         log_level = {
             'debug': logging.DEBUG,
             'info': logging.INFO,
@@ -263,52 +242,66 @@ class TcEx(object):
             'error': logging.ERROR,
             'critical': logging.CRITICAL
         }
-        name = 'tcex'
 
-        # BCS - temporarily until there is some way to configure App logging level in the UI
-        if self.default_args.logging is not None:
-            level = log_level[self.default_args.logging]
-        elif self.default_args.tc_log_level is not None:
-            level = log_level[self.default_args.tc_log_level]
+        level = logging.INFO
 
-        logfile = os.path.join(self.default_args.tc_log_path, file_name)
-        log = logging.getLogger(name)
-        log.setLevel(level)
-
+        # Formatter
         tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
         tx_format += '(%(funcName)s:%(lineno)d)'
         formatter = logging.Formatter(tx_format)
 
-        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-            # api & file logger
-            from .tcex_logger import TcExLogger
-            api = TcExLogger(logfile, self)
-            api.set_name('api')
-            api.setLevel(level)
-            api.setFormatter(formatter)
-            log.addHandler(api)
+        if stream_only:
+            log = logging.getLogger('tcex-stream')
+            # stream logger
+            sh = logging.StreamHandler()
+            sh.set_name('sh')
+            sh.setLevel(level)
+            sh.setFormatter(formatter)
+            log.addHandler(sh)
         else:
-            # file logger
-            fh = logging.FileHandler(logfile)
-            fh.set_name('fh')
-            fh.setLevel(level)
-            fh.setFormatter(formatter)
-            log.addHandler(fh)
+            log = logging.getLogger('tcex')
+            if self.default_args.logging is not None:
+                level = log_level[self.default_args.logging]
+            elif self.default_args.tc_log_level is not None:
+                level = log_level[self.default_args.tc_log_level]
 
+            # Add API logger
+            if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
+                # api & file logger
+                # from .tcex_logger import TcExLogger
+                from .tcex_logger import TcExLogHandler, TcExLogFormatter
+                # api = TcExLogger(logfile, self)
+                api = TcExLogHandler(self.session)
+                api.set_name('api')
+                api.setLevel(level)
+                # formatter = TcExLogFormatter()
+                api.setFormatter(TcExLogFormatter())
+                log.addHandler(api)
+
+            # Add file logger or stream handler
+            if self.default_args.tc_log_path:
+                logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
+                # file logger
+                fh = logging.FileHandler(logfile)
+                fh.set_name('fh')
+                fh.setLevel(level)
+                fh.setFormatter(formatter)
+                log.addHandler(fh)
+
+        log.setLevel(level)
         log.info('Logging Level: {}'.format(logging.getLevelName(level)))
         return log
 
-    def _playbook(self):
+    @property
+    def playbook(self):
         """Include the Playbook Module.
 
         .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
         """
-        try:
+        if self._playbook is None:
             from .tcex_playbook import TcExPlaybook
-            self.playbook = TcExPlaybook(self)
-        except ImportError as e:
-            warn = u'Required playbook Python dependency is not installed ({}).'.format(e)
-            self.log.warning(warn)
+            self._playbook = TcExPlaybook(self)
+        return self._playbook
 
     def _resources(self, custom_indicators=False):
         """Initialize the resource module.
@@ -320,6 +313,7 @@ class TcEx(object):
         .. Note:: Resource Classes can be accessed using ``tcex.resources.<Class>`` or using
                   tcex.resource('<resource name>').
         """
+        from importlib import import_module
         # create resource object
         self.resources = import_module('tcex.tcex_resources')
 
@@ -396,17 +390,16 @@ class TcEx(object):
         for u in args:
             self.log.debug(u'Unsupported arg found ({}).'.format(u))
 
-    def _utils(self):
+    @property
+    def utils(self):
         """Include the Utils module.
 
         .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
         """
-        try:
+        if self._utils is None:
             from .tcex_utils import TcExUtils
-            self.utils = TcExUtils(self)
-        except ImportError as e:
-            warn = u'Required utils Python dependency is not installed ({}).'.format(e)
-            self.log.warning(warn)
+            self._utils = TcExUtils(self)
+        return self._utils
 
     @property
     def args(self):
@@ -419,14 +412,14 @@ class TcEx(object):
         """
 
         if not self._parsed:
-            self.default_args, unknown = self.parser.parse_known_args()
+            self._default_args, unknown = self.parser.parse_known_args()
             self.results_tc_args()  # for local testing only
             self._parsed = True
 
             # log unknown arguments only once
             self._unknown_args(unknown)
 
-        return self.default_args
+        return self._default_args
 
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
@@ -475,6 +468,9 @@ class TcEx(object):
             (dictionary): An dictionary containing the header values for authorization to
                           ThreatConnect.
         """
+        import base64
+        import hashlib
+        import hmac
         if request_prepped is None:
             self.handle_error(215, [])
 
@@ -554,6 +550,25 @@ class TcEx(object):
             warn = u'Required Module is not installed ({}).'.format(e)
             self.log.warning(warn)
 
+    @property
+    def default_args(self):
+        """Parse args and return default args."""
+        if self._default_args is None:
+            self._default_args, unknown = self.parser.parse_known_args()
+            self._unknown_args(unknown)
+            # reinitialize logger with log file
+            self.log = self._logger()
+            self._inject_secure_params()  # inject secure params from API
+        return self._default_args
+
+    @property
+    def error_codes(self):
+        """ThreatConnect error codes."""
+        if self._error_codes is None:
+            from .tcex_error_codes import TcExErrorCodes
+            self._error_codes = TcExErrorCodes()
+        return self._error_codes
+
     def exit(self, code=None, msg=None):
         """Application exit method with proper exit code
 
@@ -573,12 +588,12 @@ class TcEx(object):
                 self.log.error(msg)
             self.message_tc(msg)
 
-        # flush logs to api
-        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-            if self.log is not None and self.log.handlers:
-                for handler in self.log.handlers:
-                    if handler.get_name() == 'api':
-                        handler.log_to_api()
+        # # flush logs to api
+        # if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
+        #     if self.log is not None and self.log.handlers:
+        #         for handler in self.log.handlers:
+        #             if handler.get_name() == 'api':
+        #                 handler.log_to_api()
 
         if code is None:
             self.log.info(u'exit_code: {}'.format(self.exit_code))
@@ -702,6 +717,7 @@ class TcEx(object):
                      tcex.batch instead.
         """
         self.log.warning('Jobs module will be deprecated in TcEx version 0.9.0.')
+        from .tcex_job import TcExJob
         return TcExJob(self)
 
     def metric(self, name, description, data_type, interval, keyed=False):
@@ -717,6 +733,7 @@ class TcEx(object):
         Returns:
             (object): An instance of the Metrics Class.
         """
+        from .tcex_metrics_v2 import TcExMetricsV2
         return TcExMetricsV2(self, name, description, data_type, interval, keyed)
 
     def notification(self):
@@ -725,9 +742,10 @@ class TcEx(object):
         Returns:
             (object): An instance of the Notification Class.
         """
+        from .tcex_notification_v2 import TcExNotificationV2
         return TcExNotificationV2(self)
 
-    def message_tc(self, message):
+    def message_tc(self, message, max_length=255):
         """Write data to message_tc file in TcEX specified directory.
 
         This method is used to set and exit message in the ThreatConnect Platform.
@@ -743,13 +761,13 @@ class TcEx(object):
             message_file = 'message.tc'
 
         message = '{}\n'.format(message)
-        if self._max_message_length - len(message) > 0:
+        if max_length - len(message) > 0:
             with open(message_file, 'a') as mh:
                 mh.write(message)
-        elif self._max_message_length > 0:
+        elif max_length > 0:
             with open(message_file, 'a') as mh:
-                mh.write(message[:self._max_message_length])
-        self._max_message_length -= len(message)
+                mh.write(message[:max_length])
+        max_length -= len(message)
 
     @property
     def proxies(self):
@@ -966,6 +984,8 @@ class TcEx(object):
         Returns:
             (int): A integer representing epoch seconds.
         """
+        from datetime import datetime
+        from dateutil.relativedelta import relativedelta
         self.log.warning('This App is using a deprecated method (epoch seconds).')
         epoch = datetime.now()
         if delta is not None:
@@ -1089,6 +1109,14 @@ class TcEx(object):
         if url is not None:
             url = quote(self.s(url, errors=errors), safe='~')
         return url
+
+    @property
+    def session(self):
+        """Return an instance of Requests Session configured for the ThreatConnect API."""
+        if self._session is None:
+            from .tcex_session import TcExSession
+            self._session = TcExSession(self)
+        return self._session
 
     def to_string(self, data, errors='strict'):
         """**[Deprecated]** Decode value using correct Python 2/3 method

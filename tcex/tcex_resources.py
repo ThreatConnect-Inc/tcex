@@ -114,8 +114,9 @@ class Resource(object):
                 self.tcex.log.error(err)
         else:
             status = 'Failure'
-            err = u'Failed Request {}: Status Code ({}) not in {}'.format(
-                self._name, response.status_code, self._status_codes[self._http_method])
+            err = u'Failed Request {}: Status Code ({}) not in {}. API Response: "{}".'.format(
+                self._name, response.status_code, self._status_codes[self._http_method],
+                response.text)
             self.tcex.log.error(err)
 
         return data, status

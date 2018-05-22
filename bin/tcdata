@@ -286,7 +286,7 @@ class TcData(object):
                         data = data.get(variable_sub)
                     redis_array.append(data)
                 # create merged variable
-                tcex.playbook._create_data_type[out_variable_type](out_variable, redis_array)
+                tcex.playbook._create_data_types[out_variable_type](out_variable, redis_array)
 
     @staticmethod
     def redis_stage(variable, data):

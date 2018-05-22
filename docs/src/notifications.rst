@@ -8,7 +8,7 @@ The ThreatConnect |trade| TcEx App Framework provides a simple interface for cre
 
 Notification Instance
 =====================
-The ``tcex.notification()`` method has no required fields and creates a local notification object.  As there are two main ways that notifications are used in ThreatConnect, there are 2 main methods and a send method.
+The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2` method has no required fields and creates a local notification object.  As there are two main ways that notifications are used in ThreatConnect, there are 2 main methods and a send method.
 
 .. code-block:: python
     :linenos:
@@ -18,7 +18,7 @@ The ``tcex.notification()`` method has no required fields and creates a local no
 
 Recipients
 ==========
-The ``recipients()`` method is used when sending to a distinct set of ThreatConnect users. It requires fields of **type** and **recipients**. It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma separated list of ThreatConnect UserIDs.
+The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.recipients` method is used when sending to a distinct set of ThreatConnect users. It requires fields of **type** and **recipients**. It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma separated list of ThreatConnect UserIDs.
 
 .. code-block:: python
     :linenos:
@@ -29,7 +29,7 @@ The ``recipients()`` method is used when sending to a distinct set of ThreatConn
 
 Organization
 ============
-The ``org()`` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
+The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.recipients` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
 
 .. code-block:: python
     :linenos:
@@ -40,7 +40,7 @@ The ``org()`` method is used when sending to the Org related to the 'user' used 
 
 Send
 ====
-The ``send()`` method is used to send the actual notification. It requires a field of **message** which is a free formed text field containing the message shown in the ThreatConnect UI.
+The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.send` method is used to send the actual notification. It requires a field of **message** which is a free formed text field containing the message shown in the ThreatConnect UI.
 
 .. code-block:: python
     :linenos:
