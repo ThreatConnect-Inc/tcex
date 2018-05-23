@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Batch &mdash; TcEx 0.8.0 documentation</title>
+  <title>Batch &mdash; TcEx 0.8.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.0 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.1 documentation" href="index.html"/>
         <link rel="next" title="Building Apps" href="building_apps.html"/>
         <link rel="prev" title="Authorization (Token / HMAC)" href="authorization.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.8.1
               </div>
             
           
@@ -204,7 +204,7 @@
             
   <div class="section" id="batch">
 <span id="id1"></span><h1>Batch<a class="headerlink" href="#batch" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch" title="tcex.tcex_batch_v2.TcExBatch"><code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code></a> module to create/update both Groups and Indicator in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.</p>
+<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch" title="tcex.tcex_batch_v2.TcExBatch"><code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code></a> module to create, delete, and update both Groups and Indicator in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.</p>
 <div class="section" id="external-id-xid">
 <h2>External ID (xid)<a class="headerlink" href="#external-id-xid" title="Permalink to this headline">¶</a></h2>
 <p>The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.</p>
@@ -269,7 +269,7 @@
 </div>
 <div class="section" id="interface-2">
 <h3>Interface 2<a class="headerlink" href="#interface-2" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <code class="docutils literal"><span class="pre">group()</span></code> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <code class="docutils literal"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.group" title="tcex.tcex_batch_v2.TcExBatch.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_key_value" title="tcex.tcex_batch_v2.Group.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -385,7 +385,7 @@
 </div>
 <div class="section" id="id3">
 <h3>Interface 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <code class="docutils literal"><span class="pre">indicator()</span></code> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <code class="docutils literal"><span class="pre">add_key_value()</span></code> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicator" title="tcex.tcex_batch_v2.TcExBatch.indicator"><code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code></a> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.add_key_value" title="tcex.tcex_batch_v2.Indicator.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -476,7 +476,7 @@
 </div>
 <div class="section" id="submit">
 <h2>Submit<a class="headerlink" href="#submit" title="Permalink to this headline">¶</a></h2>
-<p>There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 provides a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job, submit data and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll for status and submit the next job request.</p>
+<p>There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit" title="tcex.tcex_batch_v2.TcExBatch.submit"><code class="xref py py-meth docutils literal"><span class="pre">submit()</span></code></a> provides a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job using <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_job" title="tcex.tcex_batch_v2.TcExBatch.submit_job"><code class="xref py py-meth docutils literal"><span class="pre">submit_job()</span></code></a> , submit data using <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_data" title="tcex.tcex_batch_v2.TcExBatch.submit_data"><code class="xref py py-meth docutils literal"><span class="pre">submit_data()</span></code></a> and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll using <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.poll" title="tcex.tcex_batch_v2.TcExBatch.poll"><code class="xref py py-meth docutils literal"><span class="pre">poll()</span></code></a> for status and submit the next job request. If batch errors are reported in the Batch status the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.errors" title="tcex.tcex_batch_v2.TcExBatch.errors"><code class="xref py py-meth docutils literal"><span class="pre">errors()</span></code></a> method can be used to retrieve the errors.</p>
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
 <p>Submit the job and wait for completion. In the example any error messages are requested to be returned as well.</p>
@@ -575,7 +575,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.0',
+            VERSION:'0.8.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

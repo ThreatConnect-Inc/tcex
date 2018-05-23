@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Notifications &mdash; TcEx 0.8.0 documentation</title>
+  <title>Notifications &mdash; TcEx 0.8.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.0 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.1 documentation" href="index.html"/>
         <link rel="next" title="Parser / Args" href="parser.html"/>
         <link rel="prev" title="Metrics" href="metrics.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.8.1
               </div>
             
           
@@ -188,28 +188,28 @@
 <p>The ThreatConnect ™ TcEx App Framework provides a simple interface for creating Notifications within ThreatConnect.  For more information on ThreatConnect Notifications see the docs at <a class="reference external" href="https://docs.threatconnect.com">https://docs.threatconnect.com</a></p>
 <div class="section" id="notification-instance">
 <h2>Notification Instance<a class="headerlink" href="#notification-instance" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">tcex.notification()</span></code> method has no required fields and creates a local notification object.  As there are two main ways that notifications are used in ThreatConnect, there are 2 main methods and a send method.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2" title="tcex.tcex_notification_v2.TcExNotificationV2"><code class="xref py py-meth docutils literal"><span class="pre">TcExNotificationV2()</span></code></a> method has no required fields and creates a local notification object.  As there are two main ways that notifications are used in ThreatConnect, there are 2 main methods and a send method.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">notification</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">notification</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="recipients">
 <h2>Recipients<a class="headerlink" href="#recipients" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">recipients()</span></code> method is used when sending to a distinct set of ThreatConnect users. It requires fields of <strong>type</strong> and <strong>recipients</strong>. It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma separated list of ThreatConnect UserIDs.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.recipients" title="tcex.tcex_notification_v2.TcExNotificationV2.recipients"><code class="xref py py-meth docutils literal"><span class="pre">recipients()</span></code></a> method is used when sending to a distinct set of ThreatConnect users. It requires fields of <strong>type</strong> and <strong>recipients</strong>. It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI. Recipients is a comma separated list of ThreatConnect UserIDs.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">notification</span><span class="o">.</span><span class="n">recipients</span><span class="p">(</span><span class="s1">&#39;Import Success&#39;</span><span class="p">,</span> <span class="s1">&#39;devOps@mycompany.net,jsmith@mycompany.net&#39;</span><span class="p">,</span> <span class="s1">&#39;Medium&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="organization">
 <h2>Organization<a class="headerlink" href="#organization" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">org()</span></code> method is used when sending to the Org related to the ‘user’ used in connecting to ThreatConnect. It requires a <strong>type</strong> field.  It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.recipients" title="tcex.tcex_notification_v2.TcExNotificationV2.recipients"><code class="xref py py-meth docutils literal"><span class="pre">recipients()</span></code></a> method is used when sending to the Org related to the ‘user’ used in connecting to ThreatConnect. It requires a <strong>type</strong> field.  It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">notification</span><span class="o">.</span><span class="n">org</span><span class="p">(</span><span class="s1">&#39;Import Success&#39;</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="send">
 <h2>Send<a class="headerlink" href="#send" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">send()</span></code> method is used to send the actual notification. It requires a field of <strong>message</strong> which is a free formed text field containing the message shown in the ThreatConnect UI.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.send" title="tcex.tcex_notification_v2.TcExNotificationV2.send"><code class="xref py py-meth docutils literal"><span class="pre">send()</span></code></a> method is used to send the actual notification. It requires a field of <strong>message</strong> which is a free formed text field containing the message shown in the ThreatConnect UI.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="n">notification</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;Import was successful&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -259,7 +259,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.0',
+            VERSION:'0.8.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

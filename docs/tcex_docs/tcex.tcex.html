@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.8.0 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.8.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.0 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.1 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/>
         <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.8.1
               </div>
             
           
@@ -247,17 +247,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx._jobs">
-<code class="descname">_jobs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._jobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._jobs" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Include the jobs Module.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-tcex.batch instead.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex.TcEx._log">
 <code class="descname">_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send System and App data to logs.</p>
@@ -295,7 +284,7 @@ tcex.batch instead.</p>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx._logger">
-<code class="descname">_logger</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_logger</code><span class="sig-paren">(</span><em>stream_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create TcEx app logger instance.</p>
 <p>The logger is accessible via the <code class="docutils literal"><span class="pre">tc.log.&lt;level&gt;</span></code> call.</p>
 <p><strong>Logging examples</strong></p>
@@ -312,7 +301,7 @@ tcex.batch instead.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>Optional</em><em>[</em><em>string</em><em>]</em>) – The name for the log file</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<em>stream_only</em>) – False): If True only the Stream handler will be enabled.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
 </tr>
@@ -320,16 +309,6 @@ tcex.batch instead.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._playbook">
-<code class="descname">_playbook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._playbook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._playbook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Include the Playbook Module.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Playbook methods can be accessed using <code class="docutils literal"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -358,16 +337,6 @@ tcex.resource(‘&lt;resource name&gt;’).</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._utils">
-<code class="descname">_utils</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._utils" title="Permalink to this definition">¶</a></dt>
-<dd><p>Include the Utils module.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Utils methods can be accessed using <code class="docutils literal"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
-</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -510,6 +479,12 @@ results required.</p>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.default_args">
+<code class="descname">default_args</code><a class="headerlink" href="#tcex.tcex.TcEx.default_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse args and return default args.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx.epoch_seconds">
 <code class="descname">epoch_seconds</code><span class="sig-paren">(</span><em>delta=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.epoch_seconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.epoch_seconds" title="Permalink to this definition">¶</a></dt>
@@ -545,6 +520,12 @@ tcex.utils date methods instead.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.error_codes">
+<code class="descname">error_codes</code><a class="headerlink" href="#tcex.tcex.TcEx.error_codes" title="Permalink to this definition">¶</a></dt>
+<dd><p>ThreatConnect error codes.</p>
 </dd></dl>
 
 <dl class="method">
@@ -688,9 +669,20 @@ tcex.batch instead.</p>
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.jobs">
+<code class="descname">jobs</code><a class="headerlink" href="#tcex.tcex.TcEx.jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>[Deprecated]</strong> Include the jobs Module.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The job module is deprecated and will be removed in TcEx version 0.9.0. Use
+tcex.batch instead.</p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx.message_tc">
-<code class="descname">message_tc</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">message_tc</code><span class="sig-paren">(</span><em>message</em>, <em>max_length=255</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.message_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.message_tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to message_tc file in TcEX specified directory.</p>
 <p>This method is used to set and exit message in the ThreatConnect Platform.
 ThreatConnect only supports files of max_message_length.  Any data exceeding
@@ -746,6 +738,16 @@ this limit will be truncated by this method.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.playbook">
+<code class="descname">playbook</code><a class="headerlink" href="#tcex.tcex.TcEx.playbook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include the Playbook Module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Playbook methods can be accessed using <code class="docutils literal"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -1025,6 +1027,12 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.session">
+<code class="descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx.to_string">
 <code class="descname">to_string</code><span class="sig-paren">(</span><em>data</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.to_string" title="Permalink to this definition">¶</a></dt>
@@ -1051,6 +1059,16 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.utils">
+<code class="descname">utils</code><a class="headerlink" href="#tcex.tcex.TcEx.utils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include the Utils module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Utils methods can be accessed using <code class="docutils literal"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -1100,7 +1118,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.0',
+            VERSION:'0.8.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

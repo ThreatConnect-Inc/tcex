@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_logger &mdash; TcEx 0.8.0 documentation</title>
+  <title>tcex.tcex_logger &mdash; TcEx 0.8.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.0 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.1 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.8.1
               </div>
             
           
@@ -180,66 +180,19 @@
             
   <h1>Source code for tcex.tcex_logger</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;ThreatConnect API Logger&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">FileHandler</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="k">import</span> <span class="n">Formatter</span><span class="p">,</span> <span class="n">Handler</span>
 
 
-<div class="viewcode-block" id="create_log_entry"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.create_log_entry">[docs]</a><span class="k">def</span> <span class="nf">create_log_entry</span><span class="p">(</span><span class="n">record</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create the API log entry.</span>
+<div class="viewcode-block" id="TcExLogFormatter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogFormatter">[docs]</a><span class="k">class</span> <span class="nc">TcExLogFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logger formatter for ThreatConnect Exchange API logging.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_name</span> <span class="o">=</span> <span class="n">task_name</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExLogFormatter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        record (object): The log entry record.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        (dictionary): The data to log to API.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log_entry</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;created&#39;</span><span class="p">):</span>
-        <span class="n">log_entry</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">created</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;msg&#39;</span><span class="p">):</span>
-        <span class="n">log_entry</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">msg</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;levelname&#39;</span><span class="p">):</span>
-        <span class="n">log_entry</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span>
-
-    <span class="k">return</span> <span class="n">log_entry</span></div>
-
-
-<div class="viewcode-block" id="TcExLogger"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogger">[docs]</a><span class="k">class</span> <span class="nc">TcExLogger</span><span class="p">(</span><span class="n">FileHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extension of FileHandler.</span>
-
-<span class="sd">    Sends logs entries to the ThreatConnect API.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">max_entries_before_flush</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TcExLogger</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_entries_before_flush</span> <span class="o">=</span> <span class="n">max_entries_before_flush</span>
-
-        <span class="c1"># init entries</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
-
-<div class="viewcode-block" id="TcExLogger.emit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogger.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Overload of logger emit method</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            record (object): The log entry record</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">entry</span> <span class="o">=</span> <span class="n">create_log_entry</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
-
-        <span class="c1"># if we&#39;ve reached the max_entries threshold, flush the handler</span>
-        <span class="c1"># bcs - would doing a json.dumps and checking size for POST be safer</span>
-        <span class="c1">#       than an arbitrary amount of events?</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_entries_before_flush</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log_to_api</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TcExLogger</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcExLogger.log_to_api"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogger.log_to_api">[docs]</a>    <span class="k">def</span> <span class="nf">log_to_api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Best effort API logger.</span>
-
-<span class="sd">        Send logs to API and do nothing if the attempt fails.</span>
+<div class="viewcode-block" id="TcExLogFormatter.format"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogFormatter.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Format log record for ThreatConnect API.</span>
 
 <span class="sd">        Example log event::</span>
 
@@ -248,12 +201,49 @@
 <span class="sd">                &quot;message&quot;: &quot;Test Message&quot;,</span>
 <span class="sd">                &quot;level&quot;: &quot;DEBUG&quot;</span>
 <span class="sd">            }]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">created</span> <span class="ow">or</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">),</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">msg</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span> <span class="ow">or</span> <span class="s1">&#39;DEBUG&#39;</span>
+        <span class="p">}</span></div></div>
 
+
+<div class="viewcode-block" id="TcExLogHandler"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogHandler">[docs]</a><span class="k">class</span> <span class="nc">TcExLogHandler</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logger handler for ThreatConnect Exchange API logging.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">flush_limit</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session (Request.Session): The preconfigured instance of Session for ThreatConnect API.</span>
+<span class="sd">            flush_limit (int): The limit to flush batch logs to the API.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExLogHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush_limit</span> <span class="o">=</span> <span class="n">flush_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="TcExLogHandler.close"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogHandler.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the logger and flush entries.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_to_api</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TcExLogHandler.emit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogHandler.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Emit the log record.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flush_limit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_to_api</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="TcExLogHandler.log_to_api"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_logger.html#tcex.tcex_logger.TcExLogHandler.log_to_api">[docs]</a>    <span class="k">def</span> <span class="nf">log_to_api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Best effort API logger.</span>
+
+<span class="sd">        Send logs to the ThreatConnect API and do nothing if the attempt fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
-            <span class="c1"># Make API call</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/logs/app&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/logs/app&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># clear entries</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># best effort on api logging</span>
@@ -293,7 +283,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.0',
+            VERSION:'0.8.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
