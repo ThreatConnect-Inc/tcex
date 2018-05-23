@@ -120,8 +120,9 @@ class TcEx(object):
     def _inject_secure_params(self):
         """Inject secure params retrieved from the API."""
         if not self.default_args.tc_secure_params:
-            self.log.info('Secure Params are not enabled')
+            self.log.info('Secure Params are *NOT* enabled')
             return
+        self.log.info('Secure Params are enabled')
 
         # Retrieve secure params and inject them into sys.argv
         r = self.session.get('/internal/job/execution/parameters')
@@ -135,20 +136,28 @@ class TcEx(object):
         # inject args from API endpoint
         data = r.json()
         for arg, value in data.get('inputs', {}).items():
+            arg = '--{}'.format(arg)
+            if arg in sys.argv:
+                # arg already passed on the command line
+                continue
+
             if isinstance(value, (bool)):
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
-                    sys.argv.append('--{}'.format(arg))
+                    sys.argv.append(arg)
+            elif value == 'true':
+                # handle bool values (string of "true") as flags (e.g., --flag) with no value
+                sys.argv.append(arg)
+            elif value == 'false':
+                # boolean value as flag is not required
+                pass
             else:
-                sys.argv.append('--{}'.format(arg))
+                sys.argv.append(arg)
                 sys.argv.append('{}'.format(value))
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
         self._unknown_args(unknown)
-
-        # reinitialize logger with log file
-        self.log = self._logger()
 
     @property
     def jobs(self):
@@ -556,9 +565,9 @@ class TcEx(object):
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
             self._unknown_args(unknown)
-            # reinitialize logger with log file
-            self.log = self._logger()
             self._inject_secure_params()  # inject secure params from API
+            # reinitialize logger with new log level and api settings
+            self.log = self._logger()
         return self._default_args
 
     @property
