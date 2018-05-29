@@ -83,7 +83,7 @@ class TcExPlaybook(object):
         """Regex pattern to match and parse a playbook variable."""
         variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
         variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_.-]+)'  # variable name (:variable_name)
+        variable_pattern += r':([A-Za-z0-9_.-\[\]]+)'  # variable name (:variable_name)
         variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
         variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
         variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type

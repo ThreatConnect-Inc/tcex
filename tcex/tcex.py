@@ -159,6 +159,9 @@ class TcEx(object):
         self._default_args, unknown = self.parser.parse_known_args()
         self._unknown_args(unknown)
 
+        # reinitialize logger with new log level and api settings
+        self.log = self._logger()
+
     @property
     def jobs(self):
         """**[Deprecated]** Include the jobs Module.
@@ -274,28 +277,31 @@ class TcEx(object):
             elif self.default_args.tc_log_level is not None:
                 level = log_level[self.default_args.tc_log_level]
 
-            # Add API logger
-            if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-                # api & file logger
-                # from .tcex_logger import TcExLogger
-                from .tcex_logger import TcExLogHandler, TcExLogFormatter
-                # api = TcExLogger(logfile, self)
-                api = TcExLogHandler(self.session)
-                api.set_name('api')
-                api.setLevel(level)
-                # formatter = TcExLogFormatter()
-                api.setFormatter(TcExLogFormatter())
-                log.addHandler(api)
+            if not log.handlers:
+                # Add API logger
+                if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
+                    # api & file logger
+                    from .tcex_logger import TcExLogHandler, TcExLogFormatter
+                    # api = TcExLogger(logfile, self)
+                    api = TcExLogHandler(self.session)
+                    api.set_name('api')
+                    # api.setLevel(level)
+                    api.setLevel(logging.DEBUG)
+                    # formatter = TcExLogFormatter()
+                    api.setFormatter(TcExLogFormatter())
+                    log.addHandler(api)
 
-            # Add file logger or stream handler
-            if self.default_args.tc_log_path:
-                logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
-                # file logger
-                fh = logging.FileHandler(logfile)
-                fh.set_name('fh')
-                fh.setLevel(level)
-                fh.setFormatter(formatter)
-                log.addHandler(fh)
+                # Add file logger or stream handler
+                if self.default_args.tc_log_path:
+                    logfile = os.path.join(
+                        self.default_args.tc_log_path, self.default_args.tc_log_file)
+                    # file logger
+                    fh = logging.FileHandler(logfile)
+                    fh.set_name('fh')
+                    # fh.setLevel(level)
+                    fh.setLevel(logging.DEBUG)
+                    fh.setFormatter(formatter)
+                    log.addHandler(fh)
 
         log.setLevel(level)
         log.info('Logging Level: {}'.format(logging.getLevelName(level)))
@@ -397,7 +403,7 @@ class TcEx(object):
             args (list): List of unknown arguments
         """
         for u in args:
-            self.log.debug(u'Unsupported arg found ({}).'.format(u))
+            self.log.warning(u'Unsupported arg found ({}).'.format(u))
 
     @property
     def utils(self):
@@ -565,9 +571,9 @@ class TcEx(object):
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
             self._unknown_args(unknown)
-            self._inject_secure_params()  # inject secure params from API
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
+            self._inject_secure_params()  # inject secure params from API
         return self._default_args
 
     @property

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.8.1 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.8.2 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.1 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.2 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.1
+                0.8.2
               </div>
             
           
@@ -264,7 +264,7 @@
         <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
         <span class="n">variable_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_.-]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_.-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
         <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
@@ -1319,7 +1319,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.1',
+            VERSION:'0.8.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

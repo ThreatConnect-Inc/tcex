@@ -11,13 +11,13 @@ module = __import__(__name__)
 
 # TODO: Add auto submit feature.
 
-def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_count):
+def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
     """Internal method for dynamically building Custom Indicator Class."""
+    value_count = len(value_fields)
     def init_1(self, tcex, value1, rating=None, confidence=None, xid=True):
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, rating, confidence, xid)
-        self._indicator_data['value1'] = value1
         for k, v in class_dict.items():
             setattr(self, k, v)
 
@@ -25,8 +25,6 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
         """Init method for Custom Indicator Types with two values."""
         summary = self.build_summary(value1, value2)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, rating, confidence, xid)
-        self._indicator_data['value1'] = value1
-        self._indicator_data['value2'] = value2
         for k, v in class_dict.items():
             setattr(self, k, v)
 
@@ -34,9 +32,6 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
         """Init method for Custom Indicator Types with three values."""
         summary = self.build_summary(value1, value2, value3)  # build the indicator summary
         base_class.__init__(self, tcex, indicator_type, summary, rating, confidence, xid)
-        self._indicator_data['value1'] = value1
-        self._indicator_data['value2'] = value2
-        self._indicator_data['value3'] = value3
         for k, v in class_dict.items():
             setattr(self, k, v)
 
@@ -116,7 +111,7 @@ class TcExBatch(object):
 
             class_data = {}
             # Add Class for each Custom Indicator type to this module
-            custom_class = custom_indicator_class_factory(name, Indicator, class_data, value_count)
+            custom_class = custom_indicator_class_factory(name, Indicator, class_data, value_fields)
             setattr(module, class_name, custom_class)
 
             # Add Custom Indicator Method
@@ -1662,11 +1657,6 @@ class Indicator(object):
         self._labels = []
         self._occurrences = []
         self._tags = []
-        # add values for custom indicator types
-        index = 1
-        for value in self.tcex.expand_indicators(summary):
-            self._indicator_data['value{}'.format(index)] = value
-            index += 1
 
     def _xid(self, xid):
         """Return a valid xid."""
@@ -1905,7 +1895,6 @@ class ASN(Indicator):
             xid (str, optional): The external id for this Indicator.
         """
         super(ASN, self).__init__(tcex, 'ASN', as_number, rating, confidence, xid)
-        self._indicator_data['value1'] = as_number
 
 
 class CIDR(Indicator):
@@ -1922,7 +1911,6 @@ class CIDR(Indicator):
             xid (str, optional): The external id for this Indicator.
         """
         super(CIDR, self).__init__(tcex, 'CIDR', block, rating, confidence, xid)
-        self._indicator_data['value1'] = block
 
 
 class EmailAddress(Indicator):
@@ -2071,7 +2059,6 @@ class Mutex(Indicator):
             xid (str, optional): The external id for this Indicator.
         """
         super(Mutex, self).__init__(tcex, 'Mutex', mutex, rating, confidence, xid)
-        self._indicator_data['value1'] = mutex
 
 
 class RegistryKey(Indicator):
@@ -2092,9 +2079,6 @@ class RegistryKey(Indicator):
         """
         summary = self.build_summary(key_name, value_name, value_type)
         super(RegistryKey, self).__init__(tcex, 'Registry Key', summary, rating, confidence, xid)
-        self._indicator_data['value1'] = key_name
-        self._indicator_data['value2'] = value_name
-        self._indicator_data['value3'] = value_type
 
 
 class URL(Indicator):
@@ -2127,7 +2111,6 @@ class UserAgent(Indicator):
             xid (str, optional): The external id for this Indicator.
         """
         super(UserAgent, self).__init__(tcex, 'User Agent', text, rating, confidence, xid)
-        self._indicator_data['value1'] = text
 
 
 #

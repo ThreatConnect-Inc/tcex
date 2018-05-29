@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/Users/bsummers/.pyenv/versions/3.6.2/bin/python3.6
 # -*- coding: utf-8 -*-
 """ TcEx Data Module """
 import base64
+import collections
 import json
 import operator
 import os
@@ -25,12 +26,15 @@ if sys.version_info[0] == 2:
 
 tcex = TcEx()
 
-# not including this library as a dependency in requirements.txt since it's only required
-# for testing.
+# not including these libraries as a dependencies since they are only required for local testing.
 try:
     from deepdiff import DeepDiff
 except ImportError:
-    tcex.log.warning('Could not import DeepDiff module.')
+    tcex.exit(1, 'Could not import DeepDiff module (try "pip install deepdiff".')
+try:
+    import jmespath
+except ImportError:
+    tcex.exit(1, 'Could not import jmespath module (try "pip install jmespath".')
 
 # supported action: clear, stage, validate
 tcex.parser.add_argument('--action', help='The action to perform.', required=True)
@@ -50,12 +54,16 @@ class TcData(object):
         self.data = []
         # match variable name with modifiers
         self._vars_match = re.compile(
-            r"""(\"?#(?:[A-Za-z]+)"""  # match literal (#App) with optional double quote
-            r""":(?:[0-9]+)"""   # app id (:7979)
-            r""":(?:[A-Za-z0-9_.-]+)"""  # variable name (:variable_name)
-            r"""!(?:[A-Za-z0-9_-]+))"""  # variable type (!StringArray)
-            r"""(?:\[)?([0-9]+)?(?:\])?"""  # index ([1])
-            r"""(?:\:\:)?([A-Za-z0-9_.-]+)?\"?""")  # value (::name)
+            r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_.-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )
         # Define common comparison operators
         self._operators = {
             'dd': self.deep_diff,
@@ -85,6 +93,20 @@ class TcData(object):
             'starts-with': self.data_startswith
         }
         self.load_data(arg_data.data_file)
+
+    def clear(self):
+        """Clear Data"""
+        for data in self.data:
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
+                tcex.log.debug('Clear Redis Data')
+                self.redis_clear(data.get('variable'))
+            elif data_type == 'threatconnect':
+                tcex.log.debug('Clear ThreatConnect Data')
+                self.tc_clear(data)
+            elif data_type == 'redis_array':
+                tcex.log.debug('Clear Redis Array')
+                self.redis_clear(data.get('variable'))
 
     @staticmethod
     def data_endswith(db_data, user_data):
@@ -198,19 +220,18 @@ class TcData(object):
             tcex.exit(1)
         self.data = data_array
 
-    def clear(self):
-        """Clear Data"""
-        for data in self.data:
-            data_type = data.get('data_type', 'redis')  # default to redis for older data files
-            if data_type == 'redis':
-                tcex.log.debug('Clear Redis Data')
-                self.redis_clear(data.get('variable'))
-            elif data_type == 'threatconnect':
-                tcex.log.debug('Clear ThreatConnect Data')
-                self.tc_clear(data)
-            elif data_type == 'redis_array':
-                tcex.log.debug('Clear Redis Array')
-                self.redis_clear(data.get('variable'))
+    @staticmethod
+    def path_data(data, path):
+        """Get data from a dictionary/list using jmesPath."""
+        if isinstance(data, string_types):
+            # try to convert string into list/dict before using expression
+            try:
+                json.loads(data)
+            except Exception as e:
+                tcex.exit(1, 'String value ({}) could not JSON serialized ({}).'.format(data, e))
+        # get updated user data using jmespath expression
+        expression = jmespath.compile(path)
+        return expression.search(data, jmespath.Options(dict_cls=collections.OrderedDict))
 
     @staticmethod
     def redis_clear(variable):
@@ -218,6 +239,71 @@ class TcData(object):
         if variable is not None:
             tcex.log.debug(u'Clearing redis variable {}.'.format(variable))
             tcex.playbook.delete(variable)
+
+    @staticmethod
+    def redis_stage(variable, data):
+        """Stage Redis Data"""
+        if isinstance(data, int):
+            data = str(data)
+        if variable.endswith('Binary'):
+            data = base64.b64decode(data)
+        tcex.log.info(u'Creating variable {}'.format(variable))
+        tcex.playbook.create(variable, data)
+
+    def redis_validate(self, db_data, user_data, oper):
+        """Validate Data"""
+        # convert any int to string since playbooks don't support int values
+        if isinstance(db_data, int):
+            db_data = str(db_data)
+        if isinstance(user_data, int):
+            user_data = str(user_data)
+
+        tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+        tcex.log.debug(u'- Operator: ({}) -'.format(oper))
+        tcex.log.debug(u'<- Validation Data: ({}), Type: [{}]'.format(user_data, type(user_data)))
+
+        # sort list for simple comparisons
+        if isinstance(db_data, (list)):
+            try:
+                db_data = sorted(db_data)
+            except TypeError:
+                tcex.log.warning('Could not sort list')
+        if isinstance(user_data, (list)):
+            try:
+                user_data = sorted(user_data)
+            except TypeError:
+                tcex.log.warning('Could not sort list')
+
+        # compare the data
+        if oper in self._operators and self._operators.get(oper)(db_data, user_data):
+            tcex.log.info(u'Validation was successful')
+        else:
+            tcex.exit(1, u'Validation failed')
+
+    def stage(self):
+        """Stage Data"""
+        for data in self.data:
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
+                tcex.log.debug('Stage Redis Data')
+                self.redis_stage(data.get('variable'), data.get('data'))
+            elif data_type == 'threatconnect':
+                tcex.log.debug('Stage ThreatConnect Data')
+                self.tc_stage(data)
+            elif data_type == 'redis_array':
+                tcex.log.debug('Stage Redis Array')
+                redis_array = []
+                out_variable = data.get('variable')
+                out_variable_type = tcex.playbook.variable_type(out_variable)
+                for var in data.get('data', {}).get('variables', []):
+                    variable = var.get('value')
+                    path = var.get('path')
+                    data = tcex.playbook.read(variable)
+                    if path is not None:
+                        data = self.path_data(data, path)
+                    redis_array.append(data)
+                # create merged variable
+                tcex.playbook._create_data_types[out_variable_type](out_variable, redis_array)
 
     def tc_clear(self, data):
         """Clear Data in ThreatConnect"""
@@ -236,7 +322,6 @@ class TcData(object):
             # temp resource to used to get resource_id from json
             resource = tcex.resource(resource_type)
             for r_data in resource.indicators(resource_data):
-                # if r_data.get('summary') is not None:
                 if r_data.get('value') is not None:
                     resource_ids = [r_data.get('value')]
                     break
@@ -258,111 +343,6 @@ class TcData(object):
                 warn = u'Failed deleting resource type "{}" with value "{}" ({}).'
                 tcex.log.warning(warn.format(
                     resource_type, resource_id, response.get('response').text))
-
-    def stage(self):
-        """Stage Data"""
-        for data in self.data:
-            data_type = data.get('data_type', 'redis')  # default to redis for older data files
-            if data_type == 'redis':
-                tcex.log.debug('Stage Redis Data')
-                self.redis_stage(data.get('variable'), data.get('data'))
-            elif data_type == 'threatconnect':
-                tcex.log.debug('Stage ThreatConnect Data')
-                self.tc_stage(data)
-            elif data_type == 'redis_array':
-                tcex.log.debug('Stage Redis Array')
-                redis_array = []
-                out_variable = data.get('variable')
-                out_variable_type = tcex.playbook.variable_type(out_variable)
-                for var in data.get('data', {}).get('variables', []):
-                    variable_data = self.parse_variable(var)
-                    variable = variable_data[0]  # variable
-                    variable_index = variable_data[1]  # value
-                    variable_sub = variable_data[2]  # value
-                    data = tcex.playbook.read(variable)
-                    if variable_index is not None and isinstance(data, (list)):
-                        data = data[int(variable_index)]
-                    if variable_sub is not None and isinstance(data, (dict)):
-                        data = data.get(variable_sub)
-                    redis_array.append(data)
-                # create merged variable
-                tcex.playbook._create_data_types[out_variable_type](out_variable, redis_array)
-
-    @staticmethod
-    def redis_stage(variable, data):
-        """Stage Redis Data"""
-        if isinstance(data, int):
-            data = str(data)
-        if variable.endswith('Binary'):
-            data = base64.b64decode(data)
-        tcex.log.info(u'Creating variable {}'.format(variable))
-        tcex.playbook.create(variable, data)
-
-    def tc_stage(self, data):
-        """Stage ThreatConnect Data"""
-        owner = data.get('data_owner', args.data_owner)
-        resource_data = data.get('data')
-        variable = data.get('variable')
-
-        # parse resource_data
-        resource_type = resource_data.pop('type')
-
-        if resource_type == 'Association':
-            self.tc_create_associations(resource_data)
-        elif resource_type in tcex.indicator_types or resource_type in tcex.group_types:
-            try:
-                attributes = resource_data.pop('attribute')
-            except KeyError:
-                attributes = []
-            try:
-                security_labels = resource_data.pop('security_label')
-            except KeyError:
-                security_labels = []
-            try:
-                tags = resource_data.pop('tag')
-            except KeyError:
-                tags = []
-
-            resource = tcex.resource(resource_type)
-            resource.http_method = 'POST'
-            resource.owner = owner
-            resource.url = args.tc_api_path
-
-            # special case for Email Group Type
-            if resource_type == 'Email':
-                resource.add_payload('option', 'createVictims')
-
-            tcex.log.debug(u'body: {}'.format(resource_data))
-            resource.body = json.dumps(resource_data)
-
-            response = resource.request()
-            if response.get('status') == 'Success':
-                # add resource id
-                if resource_type in tcex.indicator_types:
-                    for r_data in resource.indicators(response.get('data')):
-                        if r_data.get('value') is not None:
-                            resource_id = r_data.get('value')
-                            break
-                elif resource_type in tcex.group_types:
-                    resource_id = response.get('data', {}).get('id')
-                tcex.log.debug('resource_id: {}'.format(resource_id))
-                resource.resource_id(resource_id)
-
-                entity = tcex.playbook.json_to_entity(
-                    response.get('data'), resource.value_fields, resource.name, resource.parent)
-                tcex.log.debug(u'Creating Entity: {} ({})'.format(variable, entity[0]))
-                tcex.playbook.create_tc_entity(variable, entity[0])
-
-                # update metadata
-                for attribute_data in attributes:
-                    self.tc_create_attribute(
-                        attribute_data.get('type'), attribute_data.get('value'), resource)
-                for label_data in security_labels:
-                    self.tc_create_security_label(label_data.get('name'), resource)
-                for tag_data in tags:
-                    self.tc_create_tag(tag_data.get('name'), resource)
-        else:
-            tcex.log.error('Unsupported resource type {}.'.format(resource_type))
 
     @staticmethod
     def tc_create_associations(resource_data):
@@ -434,6 +414,16 @@ class TcData(object):
                 label, sl_response.get('response').text))
 
     @staticmethod
+    def tc_create_tag(tag, resource):
+        """Add a Tag to a Resource"""
+        tag_resource = resource.tags(tcex.safetag(tag))
+        tag_resource.http_method = 'POST'
+        t_response = tag_resource.request()
+        if t_response.get('status') != 'Success':
+            tcex.log.warning(u'Failed adding tag "{}" ({}).'.format(
+                tag, t_response.get('response').text))
+
+    @staticmethod
     def tc_group_name_to_id(name, resource_type, owner):
         """Covert Group Name to Group Ids"""
         tcex.log.debug(u'coverting {} to ids'.format(name))
@@ -454,102 +444,100 @@ class TcData(object):
 
         return resource_ids
 
-    @staticmethod
-    def tc_create_tag(tag, resource):
-        """Add a Tag to a Resource"""
-        tag_resource = resource.tags(tcex.safetag(tag))
-        tag_resource.http_method = 'POST'
-        t_response = tag_resource.request()
-        if t_response.get('status') != 'Success':
-            tcex.log.warning(u'Failed adding tag "{}" ({}).'.format(
-                tag, t_response.get('response').text))
+    def tc_stage(self, data):
+        """Stage ThreatConnect Data"""
+        owner = data.get('data_owner', args.data_owner)
+        resource_data = data.get('data')
+        variable = data.get('variable')
+
+        # parse resource_data
+        resource_type = resource_data.pop('type')
+
+        if resource_type == 'Association':
+            self.tc_create_associations(resource_data)
+        elif resource_type in tcex.indicator_types or resource_type in tcex.group_types:
+            try:
+                attributes = resource_data.pop('attribute')
+            except KeyError:
+                attributes = []
+            try:
+                security_labels = resource_data.pop('security_label')
+            except KeyError:
+                security_labels = []
+            try:
+                tags = resource_data.pop('tag')
+            except KeyError:
+                tags = []
+
+            resource = tcex.resource(resource_type)
+            resource.http_method = 'POST'
+            resource.owner = owner
+            resource.url = args.tc_api_path
+
+            # special case for Email Group Type
+            if resource_type == 'Email':
+                resource.add_payload('option', 'createVictims')
+
+            tcex.log.debug(u'body: {}'.format(resource_data))
+            resource.body = json.dumps(resource_data)
+
+            response = resource.request()
+            if response.get('status') == 'Success':
+                # add resource id
+                if resource_type in tcex.indicator_types:
+                    for r_data in resource.indicators(response.get('data')):
+                        if r_data.get('value') is not None:
+                            resource_id = r_data.get('value')
+                            break
+                elif resource_type in tcex.group_types:
+                    resource_id = response.get('data', {}).get('id')
+                tcex.log.debug('resource_id: {}'.format(resource_id))
+                resource.resource_id(resource_id)
+
+                entity = tcex.playbook.json_to_entity(
+                    response.get('data'), resource.value_fields, resource.name, resource.parent)
+                tcex.log.debug(u'Creating Entity: {} ({})'.format(variable, entity[0]))
+                tcex.playbook.create_tc_entity(variable, entity[0])
+
+                # update metadata
+                for attribute_data in attributes:
+                    self.tc_create_attribute(
+                        attribute_data.get('type'), attribute_data.get('value'), resource)
+                for label_data in security_labels:
+                    self.tc_create_security_label(label_data.get('name'), resource)
+                for tag_data in tags:
+                    self.tc_create_tag(tag_data.get('name'), resource)
+        else:
+            tcex.log.error('Unsupported resource type {}.'.format(resource_type))
 
     def validate(self):
         """Validate Data"""
         for data in self.data:
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
+                # get user variable or data
                 user_data = data.get('data')
-                # see if user provided data is a redis variable
+                user_data_path = data.get('data_path')  # jmespath expression
                 if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
-                    variable_data = self.parse_variable(user_data)
-                    variable = variable_data[0]  # variable
-                    variable_index = variable_data[1]  # index
-                    variable_sub = variable_data[2]  # value
-                    user_data = tcex.playbook.read(variable)
-                    if variable_index is not None and isinstance(user_data, (list)):
-                        user_data = user_data[int(variable_index)]
-                    if variable_sub is not None and isinstance(user_data, (dict)):
-                        user_data = user_data.get(variable_sub)
+                    # if user_data reference a redis variable retrieve the data
+                    user_data = tcex.playbook.read(user_data)
+                if user_data_path is not None:
+                    user_data = self.path_data(user_data, user_data_path)
 
-                    # convert any int to string since playbooks don't support int values
-                    if isinstance(user_data, int):
-                        user_data = str(user_data)
+                # get db variable/data
+                variable = data.get('variable')
+                db_data = tcex.playbook.read(variable)
+                db_data_path = data.get('variable_path')
+                if db_data_path is not None:
+                    db_data = self.path_data(db_data, db_data_path)
 
-                self.redis_validate(
-                    data.get('variable'), user_data, data.get('operator', 'eq'))
-
-    def redis_validate(self, variable, data, oper):
-        """Validate Data"""
-        # convert any int to string since playbooks don't support int values
-        if isinstance(data, int):
-            data = str(data)
-
-        variable_data = self.parse_variable(variable)
-        variable = variable_data[0]  # variable
-        variable_index = variable_data[1]  # index
-        variable_sub = variable_data[2]  # value
-        tcex.log.info(u'Validating output variable {}'.format(variable))
-
-        # retrieve data from db
-        db_data = tcex.playbook.read(variable)
-        if variable_index is not None:
-            db_data = db_data[int(variable_index)]
-        if variable_sub is not None:
-            db_data = db_data.get(variable_sub)
-
-        # convert any int to string since playbooks don't support int values
-        if isinstance(db_data, int):
-            db_data = str(db_data)
-
-        if variable.endswith('Binary') or variable.endswith('BinaryArray'):
-            tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(
-                'Excluding Binary Data Output', type(db_data)))
-        else:
-            tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
-        tcex.log.debug(u'- Operator: ({}) -'.format(oper))
-        tcex.log.debug(u'<- Validation Data: ({}), Type: [{}]'.format(data, type(data)))
-
-        # sort list for simple comparisons
-        if isinstance(db_data, (list)):
-            try:
-                db_data = sorted(db_data)
-            except TypeError:
-                tcex.log.warning('Could not sort list')
-        if isinstance(data, (list)):
-            try:
-                data = sorted(data)
-            except TypeError:
-                tcex.log.warning('Could not sort list')
-
-        # compare the data
-        if oper in self._operators and self._operators.get(oper)(db_data, data):
-            tcex.log.info(u'Validation was successful')
-        else:
-            tcex.log.error(u'Validation failed for variable: {}'.format(variable))
-            tcex.exit(1)
-
-    def parse_variable(self, variable_data):
-        """Parse a variable with sub data
-
-           #App:0391:tc.group.name!TCEntityArray[0]::value
-           0 - variable (#App:0391:tc.group.name!TCEntityArray)
-           1 - index (0)
-           2 - value (value)
-        """
-        parsed_data = list(re.search(self._vars_match, variable_data).groups())
-        tcex.log.debug('Parsed Variable: {}'.format(parsed_data))
-        return parsed_data
+                # validate if possible
+                if variable.endswith('Binary') or variable.endswith('BinaryArray'):
+                    tcex.log.debug(u'-> DB Data: ({}), Type: [{}]'.format(
+                        'Excluding Binary Data Output', type(db_data)))
+                else:
+                    self.redis_validate(
+                        db_data, user_data, data.get('operator', 'eq'))
 
 
 if __name__ == '__main__':
@@ -571,5 +559,4 @@ if __name__ == '__main__':
         tcex.exit()
     except Exception as e:
         # TODO: Update this, possibly raise
-        tcex.log.error(u'Generic Failure ({}).'.format(traceback.format_exc()))
-        sys.exit(1)
+        tcex.exit(1, u'Generic Failure ({}).'.format(traceback.format_exc()))

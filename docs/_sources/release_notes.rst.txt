@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.2
+------
++ Update for tcdata module for local testing.
++ Updates for changes in Batch V2 API.
+
 0.8.1
 ------
 + Update for secureParams loading order.
