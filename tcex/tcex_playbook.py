@@ -131,7 +131,7 @@ class TcExPlaybook(object):
                         msg_type = json.loads(message.get('data')).get('type', 'terminate')
 
                         if msg_type == 'execute':
-                            # break an let playbook run
+                            # break and let playbook run
                             break
                         elif msg_type == 'terminate':
                             self.tcex.exit(0, 'Received AOT terminate message.')
