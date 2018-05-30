@@ -173,7 +173,8 @@ class TcExArgParser(ArgumentParser):
             '--tc_secure_params', action='store_true', default=self._tc_secure_params,
             help='ThreatConnect Secure params enabled')
         self.add_argument(
-            '--tc_terminate_seconds', default=None, help='ThreatConnect AOT terminate seconds')
+            '--tc_terminate_seconds', default=None, help='ThreatConnect AOT terminate seconds',
+            type=int)
         self.add_argument(
             '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
         self.add_argument(
