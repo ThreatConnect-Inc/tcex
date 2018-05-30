@@ -130,10 +130,7 @@ class TcExPlaybook(object):
                     if message is not None and message.get('type') == 'message':
                         msg_type = json.loads(message.get('data')).get('type', 'terminate')
 
-                        # check timeout
-                        if int(time.time()) - s_start > self.tcex.default_args.tc_terminate_seconds:
-                            self.tcex.exit(0, 'AOT subscription timeout reached.')
-                        elif msg_type == 'execute':
+                        if msg_type == 'execute':
                             # break an let playbook run
                             break
                         elif msg_type == 'terminate':
@@ -141,6 +138,10 @@ class TcExPlaybook(object):
                         else:
                             self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
                                 msg_type))
+
+                    # check timeout
+                    if int(time.time()) - s_start > self.tcex.default_args.tc_terminate_seconds:
+                        self.tcex.exit(0, 'AOT subscription timeout reached.')
                     time.sleep(.001)
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
