@@ -156,6 +156,10 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--api_default_org', default=None, help='ThreatConnect api default Org')
         self.add_argument(
+            '--tc_action_channel', default=None, help='ThreatConnect AOT action channel')
+        self.add_argument(
+            '--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled')
+        self.add_argument(
             '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
         self.add_argument(
             '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
@@ -168,6 +172,8 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--tc_secure_params', action='store_true', default=self._tc_secure_params,
             help='ThreatConnect Secure params enabled')
+        self.add_argument(
+            '--tc_terminate_seconds', default=None, help='ThreatConnect AOT terminate seconds')
         self.add_argument(
             '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
         self.add_argument(

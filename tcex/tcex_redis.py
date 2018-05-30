@@ -17,7 +17,7 @@ class TcExRedis(object):
             rhash (string): The rhash value.
         """
         self._hash = rhash
-        self._r = redis.StrictRedis(host=host, port=port)
+        self.r = redis.StrictRedis(host=host, port=port)
 
     def create(self, key, value):
         """Create key/value pair in Redis.
@@ -29,7 +29,7 @@ class TcExRedis(object):
         Returns:
             (string): The response from Redis.
         """
-        return self._r.hset(self._hash, key, value)
+        return self.r.hset(self._hash, key, value)
 
     def delete(self, key):
         """Delete data from Redis for the provided key.
@@ -40,7 +40,7 @@ class TcExRedis(object):
         Returns:
             (string): The response from Redis.
         """
-        return self._r.hdel(self._hash, key)
+        return self.r.hdel(self._hash, key)
 
     def read(self, key):
         """Read data from Redis for the provided key.
@@ -51,7 +51,7 @@ class TcExRedis(object):
         Returns:
             (any): The response data from Redis.
         """
-        data = self._r.hget(self._hash, key)
+        data = self.r.hget(self._hash, key)
         if data is not None and not isinstance(data, str):
-            data = str(self._r.hget(self._hash, key), 'utf-8')
+            data = str(self.r.hget(self._hash, key), 'utf-8')
         return data

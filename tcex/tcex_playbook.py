@@ -4,6 +4,7 @@
 import base64
 import json
 import re
+import time
 
 
 class TcExPlaybook(object):
@@ -115,6 +116,34 @@ class TcExPlaybook(object):
                 self._out_variables_type[vt_key] = {
                     'variable': o
                 }
+
+    def aot_subscribe(self):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                p = self._db.r.pubsub(ignore_subscribe_messages=True)
+                p.subscribe(self.tcex.default_args.tc_action_channel)
+
+                s_start = int(time.time())
+                while True:
+                    message = p.get_message()
+                    if message is not None and message.get('type') == 'message':
+                        msg_type = json.loads(message.get('data')).get('type', 'terminate')
+
+                        # check timeout
+                        if int(time.time()) - s_start > self.tcex.default_args.tc_terminate_seconds:
+                            self.tcex.exit(0, 'AOT subscription timeout reached.')
+                        elif msg_type == 'execute':
+                            # break an let playbook run
+                            break
+                        elif msg_type == 'terminate':
+                            self.tcex.exit(0, 'Received AOT terminate message.')
+                        else:
+                            self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
+                                msg_type))
+                    time.sleep(.001)
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 
     def check_output_variable(self, variable):
         """Check to see if output variable was requested by downstream app.

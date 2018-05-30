@@ -41,19 +41,12 @@ class TcEx(object):
         # Parser
         self._parsed = False
         self.parser = TcExArgParser()
-        # self.default_args, unknown = self.parser.parse_known_args()
-
-        # init logger
-        # self.log = self._logger()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
             self._tc_token = self.default_args.tc_token
         if self.default_args.tc_token_expires is not None:
             self._tc_token_expires = self.default_args.tc_token_expires
-
-        # logger (must parse args first)
-        # self.log = self._logger(self.default_args.tc_log_file)
 
         # Log system and App data
         self._log()
@@ -573,7 +566,11 @@ class TcEx(object):
             self._unknown_args(unknown)
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
-            self._inject_secure_params()  # inject secure params from API
+            if self._default_args.tc_aot_enabled:
+                # subscribe to AOT channel
+                self.playbook.aot_subscribe()
+            # inject secure params from API
+            self._inject_secure_params()
         return self._default_args
 
     @property
