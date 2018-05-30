@@ -53,12 +53,11 @@ class TcExSession(Session):
             url = '{}{}'.format(self.args.tc_api_path, url)
         return super(TcExSession, self).request(method, url, **kwargs)
 
-    def retry(self, retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None):
+    def retry(self, retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504)):
         """Add retry to Requests Session
 
         https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#urllib3.util.retry.Retry
         """
-        session = session or Session()
         retries = Retry(
             total=retries,
             read=retries,

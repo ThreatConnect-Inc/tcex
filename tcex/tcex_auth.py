@@ -40,9 +40,6 @@ class TcExHmacAuth(TcExAuth):
         super(TcExHmacAuth, self).__init__(logger)
         self._access_id = access_id
         self._secret_key = secret_key
-        self.log = self._logger
-        if logger is not None:
-            self.log = logger
 
     def __call__(self, r):
         """Override of parent __call__ method."""
@@ -66,9 +63,6 @@ class TcExTokenAuth(TcExAuth):
         self._token_expiration = int(token_expiration)
         self._token_url = token_url
         self._session = session  # use same value as session for verify
-        self.log = self._logger
-        if logger is not None:
-            self.log = logger
 
     def _renew_token(self):
         """Renew expired ThreatConnect Token."""
