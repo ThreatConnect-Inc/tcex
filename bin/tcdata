@@ -56,7 +56,7 @@ class TcData(object):
         self._vars_match = re.compile(
             r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
             r':([\d]+)'  # app id (:7979)
-            r':([A-Za-z0-9_.-\[\]]+)'  # variable name (:variable_name)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
             r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
             r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
             r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
