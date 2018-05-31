@@ -567,8 +567,8 @@ class TcEx(object):
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
             if self._default_args.tc_aot_enabled:
-                # subscribe to AOT channel
-                self.playbook.aot_subscribe()
+                # pop to AOT message
+                self.playbook.aot_blpop()
             # inject secure params from API
             self._inject_secure_params()
         return self._default_args

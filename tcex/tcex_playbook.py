@@ -117,32 +117,24 @@ class TcExPlaybook(object):
                     'variable': o
                 }
 
-    def aot_subscribe(self):
+    def aot_blpop(self):
         """Subscribe to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
             try:
-                p = self._db.r.pubsub(ignore_subscribe_messages=True)
-                p.subscribe(self.tcex.default_args.tc_action_channel)
+                msg_type = self._db.r.blpop(
+                    self.tcex.default_args.tc_action_channel,
+                    timeout=self.tcex.default_args.tc_terminate_seconds)
 
-                s_start = int(time.time())
-                while True:
-                    message = p.get_message()
-                    if message is not None and message.get('type') == 'message':
-                        msg_type = json.loads(message.get('data')).get('type', 'terminate')
+                if msg_type is None:
+                    self.tcex.exit(0, 'AOT subscription timeout reached.')
 
-                        if msg_type == 'execute':
-                            # break and let playbook run
-                            break
-                        elif msg_type == 'terminate':
-                            self.tcex.exit(0, 'Received AOT terminate message.')
-                        else:
-                            self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
-                                msg_type))
-
-                    # check timeout
-                    if int(time.time()) - s_start > self.tcex.default_args.tc_terminate_seconds:
-                        self.tcex.exit(0, 'AOT subscription timeout reached.')
-                    time.sleep(.001)
+                msg_type = msg_type[1]
+                if msg_type == 'terminate':
+                    self.tcex.exit(0, 'Received AOT terminate message.')
+                else:
+                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
+                        msg_type))
+                    self.aot_blpop()
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 
