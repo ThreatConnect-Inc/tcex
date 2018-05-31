@@ -30,11 +30,11 @@ tcex = TcEx()
 try:
     from deepdiff import DeepDiff
 except ImportError:
-    tcex.exit(1, 'Could not import DeepDiff module (try "pip install deepdiff".')
+    tcex.exit(1, 'Could not import DeepDiff module (try "pip install deepdiff").')
 try:
     import jmespath
 except ImportError:
-    tcex.exit(1, 'Could not import jmespath module (try "pip install jmespath".')
+    tcex.exit(1, 'Could not import jmespath module (try "pip install jmespath").')
 
 # supported action: clear, stage, validate
 tcex.parser.add_argument('--action', help='The action to perform.', required=True)
