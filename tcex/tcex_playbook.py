@@ -129,7 +129,9 @@ class TcExPlaybook(object):
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
 
                 msg_type = msg_type[1]
-                if msg_type == 'terminate':
+                if msg_type == 'execute':
+                    pass
+                elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
                     self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
