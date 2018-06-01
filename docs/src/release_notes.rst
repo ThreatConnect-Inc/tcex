@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.3
+------
++ Updated regex for playbook variables.
+
 0.8.2
 ------
 + Update for tcdata module for local testing.
