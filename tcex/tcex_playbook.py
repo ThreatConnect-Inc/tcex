@@ -128,7 +128,7 @@ class TcExPlaybook(object):
                 if msg_type is None:
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
 
-                msg_type = msg_type[1]
+                msg_type = json.loads(msg_type[1]).get('type', 'terminate')
                 if msg_type == 'execute':
                     pass
                 elif msg_type == 'terminate':
