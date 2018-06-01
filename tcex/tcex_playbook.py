@@ -140,6 +140,14 @@ class TcExPlaybook(object):
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 
+    def aot_rpush(self, exit_code):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self._db.r.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT exit push ({}).'.format(e))
+
     def check_output_variable(self, variable):
         """Check to see if output variable was requested by downstream app.
 

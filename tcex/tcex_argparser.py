@@ -162,6 +162,8 @@ class TcExArgParser(ArgumentParser):
         self.add_argument(
             '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
         self.add_argument(
+            '--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
+        self.add_argument(
             '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
         self.add_argument(
             '--tc_log_file', default=self._tc_log_file, help='App logfile name')

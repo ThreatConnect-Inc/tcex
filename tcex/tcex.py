@@ -600,22 +600,20 @@ class TcEx(object):
                 self.log.error(msg)
             self.message_tc(msg)
 
-        # # flush logs to api
-        # if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-        #     if self.log is not None and self.log.handlers:
-        #         for handler in self.log.handlers:
-        #             if handler.get_name() == 'api':
-        #                 handler.log_to_api()
-
         if code is None:
-            self.log.info(u'exit_code: {}'.format(self.exit_code))
-            sys.exit(self.exit_code)
+            code = self.exit_code
         elif code in [0, 1, 3]:
-            self.log.info(u'exit_code: {}'.format(code))
-            sys.exit(code)
+            pass
         else:
             self.log.error(u'Invalid exit code')
-            sys.exit(1)  # exit with error
+            code = 1
+
+        if self._default_args.tc_aot_enabled:
+            # push exit message
+            self.playbook.aot_rpush(code)
+
+        self.log.info(u'exit_code: {}'.format(code))
+        sys.exit(code)
 
     @property
     def exit_code(self):
