@@ -5,7 +5,7 @@
 Jobs
 ====
 
-.. important:: This module is deprecated starting with ThreatConnect 5.6 and will be removed start in version 0.9.0.
+.. important:: This module is being deprecated and will be removed in a future release.  Please use the new Batch module as a replacement.
 
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
 

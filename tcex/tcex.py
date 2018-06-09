@@ -264,6 +264,7 @@ class TcEx(object):
 
         if stream_only:
             log = logging.getLogger('tcex-stream')
+            log.setLevel(level)
             # stream logger
             sh = logging.StreamHandler()
             sh.set_name('sh')
@@ -272,6 +273,7 @@ class TcEx(object):
             log.addHandler(sh)
         else:
             log = logging.getLogger('tcex')
+            log.setLevel(level)
             if self.default_args.logging is not None:
                 level = log_level[self.default_args.logging]
             elif self.default_args.tc_log_level is not None:
@@ -303,8 +305,7 @@ class TcEx(object):
                     fh.setFormatter(formatter)
                     log.addHandler(fh)
 
-        log.setLevel(level)
-        log.info('Logging Level: {}'.format(logging.getLevelName(level)))
+            log.info('Logging Level: {}'.format(logging.getLevelName(level)))
         return log
 
     @property

@@ -876,7 +876,8 @@ class TcExBatch(object):
                 if submit_data:
                     self.submit_data(batch_id, halt_on_error)
                     if poll:
-                        # set an initial delay to allow small batch jobs to finish without a poll delay
+                        # set an initial delay to allow small batch jobs to finish without a poll
+                        # delay
                         time.sleep(3)
                         batch_data['batch_status'] = self.poll(batch_id, halt_on_error)
                         # retrieve errors
@@ -988,6 +989,32 @@ class TcExBatch(object):
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
+            self.tcex.handle_error(1505, [e], halt_on_error)
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        data = r.json()
+        if data.get('status') != 'Success':
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        self.tcex.log.debug('Batch Submit Data: {}'.format(data))
+        return data.get('data', {}).get('batchId')
+
+    def submit_job_and_upload(self, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
+
+        Args:
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
+        Returns.
+            str: The ID returned from the ThreatConnect API for the current batch job.
+        """
+        try:
+            files = [
+                {'config': json.dumps(self.settings)},
+                {'content': json.dumps(self.data)}
+            ]
+            r = self.tcex.session.post('/v2/batch/createAndUpload', files=files)
+        except Exception as e:
+            self.tcex.log.error('BCS : {}'.format(e))
             self.tcex.handle_error(1505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
