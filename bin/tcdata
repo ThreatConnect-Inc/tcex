@@ -247,6 +247,13 @@ class TcData(object):
             data = str(data)
         if variable.endswith('Binary'):
             data = base64.b64decode(data)
+        elif variable.endswith('BinaryArray'):
+           # loop through each entry
+           decoded_data = []
+           for one_doc in data:
+               one_doc_decoded = base64.b64decode(one_doc)
+               decoded_data.append(one_doc_decoded)
+           data = decoded_data
         tcex.log.info(u'Creating variable {}'.format(variable))
         tcex.playbook.create(variable, data)
 

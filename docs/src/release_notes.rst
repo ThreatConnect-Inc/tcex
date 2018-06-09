@@ -6,6 +6,12 @@ Release Notes
 0.8.x
 =====
 
+0.8.4
+------
++ Update to handle binary array in tcdata.
++ Update to support environment variables in tcex.json file for tclib command.
++ Added initial functionality for v2 Batch create and save.
+
 0.8.3
 ------
 + Updated regex for playbook variables.
