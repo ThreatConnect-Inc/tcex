@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """ TcEx Library Builder """
 import argparse
-import colorama as c
 import json
 import os
 import re
@@ -10,6 +9,8 @@ import shutil
 import subprocess
 import sys
 import traceback
+
+import colorama as c
 
 # Python 2 unicode
 if sys.version_info[0] == 2:

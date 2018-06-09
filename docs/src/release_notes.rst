@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.5
+------
++ Update to tcdata for playbook variable creation during staging testing data.
+
 0.8.4
 ------
 + Update to handle binary array in tcdata.
