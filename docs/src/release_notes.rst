@@ -8,7 +8,8 @@ Release Notes
 
 0.8.5
 ------
-+ Update to tcdata for playbook variable creation during staging testing data.
++ Updated tcdata for playbook variable creation during staging testing data.
++ Updated tcex logging for level and removal of stream logger once API logger is initialized.
 
 0.8.4
 ------

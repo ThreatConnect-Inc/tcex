@@ -272,12 +272,17 @@ class TcEx(object):
             sh.setFormatter(formatter)
             log.addHandler(sh)
         else:
+            log = logging.getLogger('tcex-stream')
+            # remove stream handler
+            for handler in self.log.handlers:
+                if handler.get_name() == 'sh':
+                    log.removeHandler(handler)
             log = logging.getLogger('tcex')
-            log.setLevel(level)
             if self.default_args.logging is not None:
                 level = log_level[self.default_args.logging]
             elif self.default_args.tc_log_level is not None:
                 level = log_level[self.default_args.tc_log_level]
+            log.setLevel(level)
 
             if not log.handlers:
                 # Add API logger
