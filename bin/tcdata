@@ -248,12 +248,12 @@ class TcData(object):
         if variable.endswith('Binary'):
             data = base64.b64decode(data)
         elif variable.endswith('BinaryArray'):
-           # loop through each entry
-           decoded_data = []
-           for one_doc in data:
-               one_doc_decoded = base64.b64decode(one_doc)
-               decoded_data.append(one_doc_decoded)
-           data = decoded_data
+            # loop through each entry
+            decoded_data = []
+            for one_doc in data:
+                one_doc_decoded = base64.b64decode(one_doc)
+                decoded_data.append(one_doc_decoded)
+            data = decoded_data
         tcex.log.info(u'Creating variable {}'.format(variable))
         tcex.playbook.create(variable, data)
 
@@ -310,7 +310,7 @@ class TcData(object):
                         data = self.path_data(data, path)
                     redis_array.append(data)
                 # create merged variable
-                tcex.playbook._create_data_types[out_variable_type](out_variable, redis_array)
+                tcex.playbook.create_data_types[out_variable_type](out_variable, redis_array)
 
     def tc_clear(self, data):
         """Clear Data in ThreatConnect"""

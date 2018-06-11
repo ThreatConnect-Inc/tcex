@@ -5,7 +5,7 @@
 Batch
 =====
 
-.. important:: The Batch module required ThreatConnect 5.6 or higher.
+.. important:: The Batch module requires ThreatConnect 5.6 or higher.
 
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module to create, delete, and update both Groups and Indicator in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.
 
