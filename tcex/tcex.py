@@ -284,34 +284,39 @@ class TcEx(object):
                 level = log_level[self.default_args.tc_log_level]
             log.setLevel(level)
 
-            if not log.handlers:
-                # Add API logger
+            # add api handler if not already added
+            if 'api' not in [h.get_name() for h in self.log.handlers]:
                 if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-                    # api & file logger
-                    from .tcex_logger import TcExLogHandler, TcExLogFormatter
-                    # api = TcExLogger(logfile, self)
-                    api = TcExLogHandler(self.session)
-                    api.set_name('api')
-                    # api.setLevel(level)
-                    api.setLevel(logging.DEBUG)
-                    # formatter = TcExLogFormatter()
-                    api.setFormatter(TcExLogFormatter())
-                    log.addHandler(api)
+                    log.addHandler(self._logger_api)
 
-                # Add file logger or stream handler
+            # add file handler if not already added
+            if 'fh' not in [h.get_name() for h in self.log.handlers]:
                 if self.default_args.tc_log_path:
-                    logfile = os.path.join(
-                        self.default_args.tc_log_path, self.default_args.tc_log_file)
-                    # file logger
-                    fh = logging.FileHandler(logfile)
-                    fh.set_name('fh')
-                    # fh.setLevel(level)
-                    fh.setLevel(logging.DEBUG)
+                    fh = self._logger_fh()
                     fh.setFormatter(formatter)
                     log.addHandler(fh)
 
             log.info('Logging Level: {}'.format(logging.getLevelName(level)))
         return log
+
+    @property
+    def _logger_api(self):
+        """Return API logger."""
+        from .tcex_logger import TcExLogHandler, TcExLogFormatter
+        api = TcExLogHandler(self.session)
+        api.set_name('api')
+        api.setLevel(logging.DEBUG)
+        api.setFormatter(TcExLogFormatter())
+        return api
+
+    @property
+    def _logger_fh(self):
+        """Return File Handle logger."""
+        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
+        fh = logging.FileHandler(logfile)
+        fh.set_name('fh')
+        fh.setLevel(logging.DEBUG)
+        return fh
 
     @property
     def playbook(self):

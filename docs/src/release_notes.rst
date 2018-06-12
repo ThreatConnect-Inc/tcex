@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.6
+------
++ Fixed issue with logging not working when secure params is enabled.
+
 0.8.5
 ------
 + Updated tcdata for playbook variable creation during staging testing data.
