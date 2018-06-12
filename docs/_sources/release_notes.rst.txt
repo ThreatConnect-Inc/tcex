@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.6
+------
++ Fixed issue with API logging not working when secure params is enabled.
++ Fixed issue with API logging timestamp precision.
+
 0.8.5
 ------
 + Updated tcdata for playbook variable creation during staging testing data.
