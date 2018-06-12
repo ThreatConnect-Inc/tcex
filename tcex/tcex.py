@@ -292,7 +292,7 @@ class TcEx(object):
             # add file handler if not already added
             if 'fh' not in [h.get_name() for h in self.log.handlers]:
                 if self.default_args.tc_log_path:
-                    fh = self._logger_fh()
+                    fh = self._logger_fh
                     fh.setFormatter(formatter)
                     log.addHandler(fh)
 
