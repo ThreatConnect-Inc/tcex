@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.7
+------
++ Updated secure params injection to handle pipe delimited multiple choice values.
+
 0.8.6
 ------
 + Fixed issue with API logging not working when secure params is enabled.

@@ -145,6 +145,12 @@ class TcEx(object):
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
                     sys.argv.append(arg)
+            elif '|' in value:
+                # handle multiple choice values
+                for mcv in value.split('|'):
+                    sys.argv.append(arg)
+                    sys.argv.append('{}'.format(mcv))
+
             elif value == 'true':
                 # handle bool values (string of "true") as flags (e.g., --flag) with no value
                 sys.argv.append(arg)
@@ -157,7 +163,7 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-        self._unknown_args(unknown)
+        # self._unknown_args(unknown)
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -301,7 +307,7 @@ class TcEx(object):
 
     @property
     def _logger_api(self):
-        """Return API logger."""
+        """Return API logging handler."""
         from .tcex_logger import TcExLogHandler, TcExLogFormatter
         api = TcExLogHandler(self.session)
         api.set_name('api')
@@ -311,7 +317,7 @@ class TcEx(object):
 
     @property
     def _logger_fh(self):
-        """Return File Handle logger."""
+        """Return File logging handler."""
         logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
         fh = logging.FileHandler(logfile)
         fh.set_name('fh')

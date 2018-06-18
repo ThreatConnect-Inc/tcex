@@ -1,7 +1,8 @@
 """TcEx Framework"""
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.8.6'
+__version__ = '0.8.7'
 __license__ = 'Apache License, Version 2'
+name = 'tcex'
 
 try:
     from .tcex import TcEx
