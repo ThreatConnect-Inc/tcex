@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.7 documentation</title>
+  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.8 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.7 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.8 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.7
+                0.8.8
               </div>
             
           
@@ -1835,9 +1835,12 @@ file content.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_batch_v2.TcExBatch.submit">
-<code class="descname">submit</code><span class="sig-paren">(</span><em>submit_data=True</em>, <em>poll=True</em>, <em>errors=False</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send the batch request to ThreatConnect.</p>
-<p>By default this method will submit data, poll for completion, and submit the file data.
+<code class="descname">submit</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<p>By default this method will submit the job request and data and if the size of the data
+is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
+the request synchronously and return the batch status.  If the size of the batch is greater
+than the value set the batch job will be queued.
 Errors are not retrieve automatically and need to be enabled.</p>
 <p>If any of the submit, poll, or error methods fail the entire submit will halt at the point
 of failure. The behavior can be changed by setting halt_on_error to False.</p>
@@ -1847,45 +1850,30 @@ process.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): Submit the data after the job request.</li>
-<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Poll for status.</li>
-<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – False): Retrieve and batch errors.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): Poll for status.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Retrieve any batch errors (only if poll is True).</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Send any document or report attachments to the API.</li>
 <li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If True any exception will raise an error.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>The batch data including batch id, batch status, errors (optional) and upload</dt>
-<dd><p class="first last">status.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_batch_v2.TcExBatch.submit_data">
-<code class="descname">submit_data</code><span class="sig-paren">(</span><em>batch_id</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit the batch data to ThreatConnect API for the specified batch_id.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>batch_id</strong> (<em>str</em>) – The ID returned from the ThreatConnect API for the current batch job.</li>
-<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload">
+<code class="descname">submit_create_and_upload</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_create_and_upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -1932,42 +1920,6 @@ process.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_batch_v2.TcExBatch.submit_job">
-<code class="descname">submit_job</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_job" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit Batch request to ThreatConnect API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns.</dt>
-<dd>str: The ID returned from the ThreatConnect API for the current batch job.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex_batch_v2.TcExBatch.submit_job_and_upload">
-<code class="descname">submit_job_and_upload</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_job_and_upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_job_and_upload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit Batch request to ThreatConnect API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns.</dt>
-<dd>str: The ID returned from the ThreatConnect API for the current batch job.</dd>
-</dl>
 </dd></dl>
 
 <dl class="method">
@@ -2120,7 +2072,7 @@ process.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.7',
+            VERSION:'0.8.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
