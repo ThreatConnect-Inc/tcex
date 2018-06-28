@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.8
+------
++ Updated :py:meth:`~tcex.tcex.TcEx.exit` methods to treat exit code of 3 as non-failure.
++ Updates for v2 Batch createAndUpload.
+
 0.8.7
 ------
 + Updated secure params injection to handle pipe delimited multiple choice values.
@@ -24,7 +29,7 @@ Release Notes
 ------
 + Update to handle binary array in tcdata.
 + Update to support environment variables in tcex.json file for tclib command.
-+ Added initial functionality for v2 Batch create and save.
++ Added initial functionality for v2 Batch create and upload.
 
 0.8.3
 ------

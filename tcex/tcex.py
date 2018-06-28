@@ -614,7 +614,7 @@ class TcEx(object):
         """
         # add exit message to message.tc file and log
         if msg is not None:
-            if code == 0 or (code is None and self.exit_code == 0):
+            if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
                 self.log.info(msg)
             else:
                 self.log.error(msg)

@@ -844,10 +844,13 @@ class TcExBatch(object):
         self._groups.add(group_obj)
         return group_obj
 
-    def submit(self, submit_data=True, poll=True, errors=False, halt_on_error=True):
-        """Send the batch request to ThreatConnect.
+    def submit(self, poll=True, errors=True, process_files=True, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
 
-        By default this method will submit data, poll for completion, and submit the file data.
+        By default this method will submit the job request and data and if the size of the data
+        is below the value **synchronousBatchSaveLimit** set in System Setting it will process
+        the request synchronously and return the batch status.  If the size of the batch is greater
+        than the value set the batch job will be queued.
         Errors are not retrieve automatically and need to be enabled.
 
         If any of the submit, poll, or error methods fail the entire submit will halt at the point
@@ -857,59 +860,59 @@ class TcExBatch(object):
         process.
 
         Args:
-            submit_data (bool, default:True): Submit the data after the job request.
             poll (bool, default:True): Poll for status.
-            errors (bool, default:False): Retrieve and batch errors.
+            errors (bool, default:True): Retrieve any batch errors (only if poll is True).
+            process_files (bool, default:True): Send any document or report attachments to the API.
             halt_on_error (bool, default:True): If True any exception will raise an error.
 
-        Returns:
-            dict: The batch data including batch id, batch status, errors (optional) and upload
-                status.
+        Returns.
+            dict: The Batch Status from the ThreatConnect API.
         """
-        self.tcex.log.info('Submitting {} groups.'.format(self.group_len))
-        self.tcex.log.info('Submitting {} indicators.'.format(self.indicator_len))
-        batch_data = {}
-        if self.group_len or self.indicator_len:
-            batch_id = self.submit_job(halt_on_error)
-            if batch_id is not None:
-                batch_data['batch_id'] = batch_id
-                if submit_data:
-                    self.submit_data(batch_id, halt_on_error)
-                    if poll:
-                        # set an initial delay to allow small batch jobs to finish without a poll
-                        # delay
-                        time.sleep(3)
-                        batch_data['batch_status'] = self.poll(batch_id, halt_on_error)
-                        # retrieve errors
-                        if errors:
-                            data = batch_data.get('batch_status').get('data', {})
-                            if data.get('batchStatus', {}).get('errorCount', 0) > 0:
-                                batch_data['errors'] = self.errors(batch_id)
-                if submit_data:
-                    # submit file data after batch job is complete
-                    batch_data['upload_status'] = self.submit_files(False)
-        else:
-            self.tcex.log.info('No entries to submit to batch.')
+        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus')
+
+        batch_id = batch_data.get('id')
+        if batch_id is not None:
+            # job hit queue
+            if poll:
+                # poll for status
+                batch_data = self.poll(
+                    batch_id, halt_on_error=halt_on_error).get('data', {}).get('batchStatus')
+                if errors:
+                    # retrieve errors
+                    error_groups = batch_data.get('errorGroupCount', 0)
+                    error_indicators = batch_data.get('errorIndicatorCount', 0)
+                    if error_groups > 0 or error_indicators > 0:
+                        batch_data['errors'] = self.errors(batch_id)
+            else:
+                # can't process files if status is unknown (polling must be enabled)
+                process_files = False
+
+        if process_files:
+            # submit file data after batch job is complete
+            batch_data['uploadStatus'] = self.submit_files(halt_on_error)
+
         return batch_data
 
-    def submit_data(self, batch_id, halt_on_error=True):
-        """Submit the batch data to ThreatConnect API for the specified batch_id.
+    def submit_create_and_upload(self, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
 
-        Args:
-            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
-            halt_on_error (bool, default:True): If True any exception will raise an error.
+        Returns.
+            dict: The Batch Status from the ThreatConnect API.
         """
-        headers = {'Content-Type': 'application/octet-stream'}
         try:
-            r = self.tcex.session.post(
-                '/v2/batch/{}'.format(batch_id), headers=headers, json=self.data)
+            files = (
+                ('config', json.dumps(self.settings)),
+                ('content', json.dumps(self.data))
+            )
+            params = {
+                'includeAdditional': 'true'
+            }
+            r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
         except Exception as e:
-            self.tcex.handle_error(1520, [e], halt_on_error)
-        if not r.ok:
-            self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
-        # reset values
-        self._groups_raw = []
-        self._indicators_raw = []
+            self.tcex.handle_error(1505, [e], halt_on_error)
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        return r.json()
 
     def submit_files(self, halt_on_error=True):
         """Submit Files for Documents and Reports to ThreatConnect API.
@@ -976,53 +979,6 @@ class TcExBatch(object):
         except Exception as e:
             self.tcex.handle_error(580, [e], halt_on_error)
         return r
-
-    def submit_job(self, halt_on_error=True):
-        """Submit Batch request to ThreatConnect API.
-
-        Args:
-            halt_on_error (bool, default:True): If True any exception will raise an error.
-
-        Returns.
-            str: The ID returned from the ThreatConnect API for the current batch job.
-        """
-        try:
-            r = self.tcex.session.post('/v2/batch', json=self.settings)
-        except Exception as e:
-            self.tcex.handle_error(1505, [e], halt_on_error)
-        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
-        data = r.json()
-        if data.get('status') != 'Success':
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
-        self.tcex.log.debug('Batch Submit Data: {}'.format(data))
-        return data.get('data', {}).get('batchId')
-
-    def submit_job_and_upload(self, halt_on_error=True):
-        """Submit Batch request to ThreatConnect API.
-
-        Args:
-            halt_on_error (bool, default:True): If True any exception will raise an error.
-
-        Returns.
-            str: The ID returned from the ThreatConnect API for the current batch job.
-        """
-        try:
-            files = [
-                {'config': json.dumps(self.settings)},
-                {'content': json.dumps(self.data)}
-            ]
-            r = self.tcex.session.post('/v2/batch/createAndUpload', files=files)
-        except Exception as e:
-            self.tcex.log.error('BCS : {}'.format(e))
-            self.tcex.handle_error(1505, [e], halt_on_error)
-        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
-        data = r.json()
-        if data.get('status') != 'Success':
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
-        self.tcex.log.debug('Batch Submit Data: {}'.format(data))
-        return data.get('data', {}).get('batchId')
 
     def threat(self, name, xid=True):
         """Add Threat data to Batch object

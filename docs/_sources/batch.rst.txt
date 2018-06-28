@@ -234,7 +234,9 @@ Example of Indicator -> Group association.
 
 Submit
 ======
-There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit` provides a simple interface that will perform all the individual step by default (e.g., request batch job, submit data, poll for status, and submit files).  If enabled it will also retrieve any batch errors.  However, handling errors using option 1 is limited.  In Option 2 each step is done individually and allows for greater control of the submit process.  You can request a batch job using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_job` , submit data using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_data` and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.poll` for status and submit the next job request. If batch errors are reported in the Batch status the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.errors` method can be used to retrieve the errors.
+There are two options for submitting the batch job, both with an option to halt_on_error.  Option 1 :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit` provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files). However, handling errors using option 1 is limited. In Option 2 each step is done individually and allows for greater control of the submit process. You can create and upload a batch job using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload` and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.poll` for status and then when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.errors` method can be used to retrieve the errors.
+
+.. note:: The setting **synchronousBatchSaveLimit** in the ThreatConnect UI -> System Settings controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value the batch data will be processed synchronously and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit` method provides logic for handling this so the developer is not required to check if the job was queued.
 
 Option 1
 --------
@@ -245,34 +247,34 @@ Submit the job and wait for completion. In the example any error messages are re
     :lineno-start: 1
     :emphasize-lines: 1
 
-    batch_data = batch.submit(errors=True)
+    batch_data = batch.submit()
     errors = batch_data.get('errors')
     if errors:
         tcex.exit(1, 'Errors during Batch: {}'.format(errors))
 
 Option 2
 --------
-Call each step in submitting the batch job manually.
+Call each step in submitting the batch job manually. A check for batch_id will indicate whether the job was processed asynchronously.
 
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 2,5,8,13,17
+    :emphasize-lines: 2,5-14,17
 
-    # submit batch job request
-    batch_id = batch.submit_job()
+    # submit batch job create and upload request
+    batch_data = batch.submit_create_and_upload().get('data').get('batchStatus')
 
-    # submit the batch data
-    batch.submit_data(batch_id)
+    # check if job requires polling
+    batch_id = batch_data.get('id')
+    if batch_id is not None:
+        # poll for batch status
+        batch_status = batch.poll(batch_id)
 
-    # poll for batch status
-    batch_status = batch.poll(batch_id)
-
-    # check for errors
-    if batch_status.get('data', {}).get('batchStatus', {}).get('errorCount', 0) > 0:
-        # retrieve errors
-        errors = batch.errors(batch_id)
-        print(errors)
+        # check for errors
+        if batch_status.get('data', {}).get('batchStatus', {}).get('errorCount', 0) > 0:
+            # retrieve errors
+            errors = batch.errors(batch_id)
+            print(errors)
 
     # submit any documents or reports
     upload_status = batch.submit_files()
