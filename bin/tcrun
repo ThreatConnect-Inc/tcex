@@ -11,7 +11,6 @@ import platform
 import re
 import sys
 import subprocess
-import tempfile
 import time
 import traceback
 
@@ -43,8 +42,8 @@ parser.add_argument(
     '--quiet', action='store_true', help='Suppress output.')
 parser.add_argument(
     '--report', help='The JSON report filename.')
-parser.add_argument(
-    '--show_commands', action='store_true', help='Show staging and validation commands.')
+# parser.add_argument(
+#     '--show_commands', action='store_true', help='Show staging and validation commands.')
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
 parser.add_argument(
@@ -56,17 +55,17 @@ args, extra_args = parser.parse_known_args()
 class TcRun(object):
     """Run profiles for App"""
 
-    def __init__(self, arg_data):
+    def __init__(self, _args):
         """ """
-        self._args = arg_data
+        self._args = _args
         self._config = None
         self._install_json = None
         self._profile = {}
+        self.reports = Reports()
         self.tcex = None
 
         # logger
         self.log = self._logger()
-
 
         self.app_path = os.getcwd()
         self.exit_code = 0
@@ -103,7 +102,6 @@ class TcRun(object):
                     except ValueError as e:
                         print('Invalid JSON file: {}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
                         sys.exit(1)
-
         return profiles
 
     def _logger(self):
@@ -159,7 +157,8 @@ class TcRun(object):
                 msg = 'Provided config file does not exist ({}).'.format(self._args.config)
                 sys.exit(msg)
 
-            print('Configuration File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, args.config))
+            print('Configuration File: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
             with open(self._args.config) as data_file:
                 self._config = json.load(data_file)
 
@@ -237,24 +236,7 @@ class TcRun(object):
             'tc_temp_path'
         ]
 
-    @property
-    def profile(self):
-        """Return the current profile."""
-        return self._profile
-
-    @profile.setter
-    def profile(self, profile):
-        """Set the current profile."""
-        self._profile = profile
-        # retrieve language from install.json or assume Python
-        lang = self.profile.get('install_json', {}).get('programLanguage', 'PYTHON')
-        # load instance of ArgBuilder
-        profile_args = ArgBuilder(lang, profile.get('args'))
-        # attach instance to current profile
-        self._profile['profile_args'] = profile_args
-        self.load_tcex(profile)
-
-    def load_tcex(self, profile):
+    def load_tcex(self):
         """Inject required TcEx CLI Args."""
         sys.argv = [sys.argv[1]]  # reset sys.argv
         for arg, value in self.profile.get('profile_args', {}).data.items():
@@ -318,7 +300,7 @@ class TcRun(object):
                 path = clear_data.get('path')
                 if clear_data.get('type') in self.tcex.group_types:
                     name = self.tcex.playbook.read(clear_data.get('name'))
-                    print('name', name)
+                    # json path name
                     name = self.path_data(name, path)
                     if name is not None:
                         print('Deleting ThreatConnect Group: {}{}{}'.format(
@@ -442,7 +424,7 @@ class TcRun(object):
                     # TODO: should None value be appended?
                     redis_array.append(data)
                 self.stage_redis(out_variable, redis_array)
-                print(redis_array)
+                # print(redis_array)
 
     @property
     def staging_data(self):
@@ -465,7 +447,7 @@ class TcRun(object):
             data = str(data)
         if variable.endswith('Binary'):
             data = base64.b64decode(data)
-        self.log.info(u'Creating variable {}'.format(variable))
+        self.log.info(u'[stage] Creating variable {}'.format(variable))
         self.tcex.playbook.create(variable, data)
 
     def stage_tc(self, owner, staging_data):
@@ -492,213 +474,11 @@ class TcRun(object):
                     # tcentity uses value as the name
                     data['value'] = data.pop('summary')
                 self.stage_redis(variable, data)
-        print(batch)
+        # print(batch)
         # submit batch
-        batch_results = batch.submit(errors=True)
+        batch_results = batch.submit()
         for error in batch_results.get('errors', []):
             self.log.error(error)
-
-
-    # def clear_data(self, profile):
-    #     """Clear data from previous runs."""
-
-    #     arg_data = self.data_args(profile.get('args'))
-    #     data_owner = profile.get('data_owner')
-    #     parameters = self.parameters_python(arg_data)
-    #     output_variables = profile.get('args', {}).get('tc_playbook_out_variables', '').split(',')
-
-    #     #
-    #     # clear validation data
-    #     #
-
-    #     data = []
-    #     for variable in output_variables:
-    #         data.append({
-    #             'data': None,
-    #             'data_type': 'redis',
-    #             'variable': variable
-    #         })
-    #         print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
-
-    #     # delete is handled below.
-    #     with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-    #         f.write(json.dumps(data))
-    #         f.flush()
-
-    #     command = [
-    #         'tcdata',
-    #         '--data_file',
-    #         f.name,
-    #         '--action',
-    #         'clear'
-    #     ]
-    #     if data_owner is not None:
-    #         command.append('--data_owner')
-    #         command.append(data_owner)
-    #     exe_command = command + parameters.get('unmasked')
-
-    #     # display command being run
-    #     if self._args.show_commands:
-    #         print_command = ' '.join(command + parameters.get('masked'))
-    #         print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-    #     p = subprocess.Popen(
-    #         exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-    #         stderr=subprocess.PIPE)
-    #     out, err = p.communicate()
-
-    #     if p.returncode != 0:
-    #         print('{}{}Failed removing variables'.format(
-    #             c.Style.BRIGHT, c.Fore.RED))
-    #         if err is not None and err:
-    #             print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-    #         sys.exit(p.returncode)
-
-    #     # cleanup temp file
-    #     if os.path.isfile(f.name):
-    #         os.remove(f.name)
-
-    #     #
-    #     # clear previously staged data
-    #     #
-
-    #     for file in profile.get('data_files', []):
-    #         if os.path.isfile(file):
-    #             print('Clearing Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
-
-    #             command = [
-    #                 'tcdata',
-    #                 '--data_file',
-    #                 file,
-    #                 '--action',
-    #                 'clear',
-    #             ]
-    #             if data_owner is not None:
-    #                 command.append('--data_owner')
-    #                 command.append(data_owner)
-    #             exe_command = command + parameters.get('unmasked')
-
-    #             # display command being run
-    #             if self._args.show_commands:
-    #                 print_command = ' '.join(command + parameters.get('masked'))
-    #                 print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-    #             p = subprocess.Popen(
-    #                 exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-    #                 stderr=subprocess.PIPE)
-    #             out, err = p.communicate()
-
-    #             if p.returncode != 0:
-    #                 print('{}{}Failed to clear data for file {}.'.format(
-    #                     c.Style.BRIGHT, c.Fore.RED, file))
-    #                 if err is not None and err:
-    #                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-    #                 sys.exit(p.returncode)
-    #         else:
-    #             print('{}{}Could not find file {}.'.format(
-    #                 c.Style.BRIGHT, c.Fore.RED, file))
-    #             sys.exit(1)
-
-    # def stage_data(self, profile):
-    #     """Stage any required data."""
-
-    #     arg_data = self.data_args(profile.get('args'))
-    #     data_owner = profile.get('data_owner')
-    #     parameters = self.parameters_python(arg_data)
-
-    #     for file in profile.get('data_files', []):
-    #         if os.path.isfile(file):
-    #             print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
-    #             # fqfp = os.path.join(self.app_path, file)
-
-    #             command = [
-    #                 'tcdata',
-    #                 '--data_file',
-    #                 file,
-    #                 '--action',
-    #                 'stage',
-    #             ]
-    #             if data_owner is not None:
-    #                 command.append('--data_owner')
-    #                 command.append(data_owner)
-    #             exe_command = command + parameters.get('unmasked')
-
-    #             # display command being run
-    #             if self._args.show_commands:
-    #                 print_command = ' '.join(command + parameters.get('masked'))
-    #                 print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-    #             p = subprocess.Popen(
-    #                 exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-    #                 stderr=subprocess.PIPE)
-    #             out, err = p.communicate()
-
-    #             if p.returncode != 0:
-    #                 print('{}{}Failed to stage data for file {}.'.format(
-    #                     c.Style.BRIGHT, c.Fore.RED, file))
-    #                 if err is not None and err:
-    #                     print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-    #                 sys.exit(p.returncode)
-    #         else:
-    #             print('{}{}Could not find file {}.'.format(
-    #                 c.Style.BRIGHT, c.Fore.RED, file))
-    #             sys.exit(1)
-
-    # def validate_data(self, profile):
-    #     """Stage any required data."""
-
-    #     passed = True
-    #     arg_data = self.data_args(profile.get('args'))
-    #     # data_owner = profile.get('data_owner')
-    #     parameters = self.parameters_python(arg_data)
-
-    #     v_data = profile.get('validations', [])
-    #     if v_data:
-    #         variables = ', '.join([d.get('variable') for d in v_data])
-    #         print('Validating Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, variables))
-    #         # due to windows limitations the temp file can't be accessed while another program has
-    #         # the file opened. current logic creates the tempfile and does not delete on close. the
-    #         # delete is handled below.
-    #         with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-    #             f.write(json.dumps(v_data))
-    #             f.flush()
-
-    #         command = [
-    #             'tcdata',
-    #             '--data_file',
-    #             f.name,
-    #             '--action',
-    #             'validate'
-    #         ]
-    #         # if data_owner is not None:
-    #         #     command.append('--data_owner')
-    #         #     command.append(data_owner)
-    #         exe_command = command + parameters.get('unmasked')
-
-    #         # display command being run
-    #         if self._args.show_commands:
-    #             print_command = ' '.join(command + parameters.get('masked'))
-    #             print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-    #         p = subprocess.Popen(
-    #             exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-    #             stderr=subprocess.PIPE)
-    #         out, err = p.communicate()
-
-    #         if p.returncode != 0:
-    #             passed = False
-    #             print('{}{}Failed variable validation.'.format(
-    #                 c.Style.BRIGHT, c.Fore.RED))
-    #             if err is not None and err:
-    #                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-    #             if args.halt_on_fail:
-    #                 sys.exit(p.returncode)
-
-    #         # cleanup temp file
-    #         if os.path.isfile(f.name):
-    #             os.remove(f.name)
-
-    #     return passed
 
     @staticmethod
     def _create_tc_dirs(profile):
@@ -714,18 +494,32 @@ class TcRun(object):
             os.makedirs(tc_tmp_path)
 
     @property
+    def profile(self):
+        """Return the current profile."""
+        return self._profile
+
+    @profile.setter
+    def profile(self, profile):
+        """Set the current profile."""
+        # retrieve language from install.json or assume Python
+        lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
+        # load instance of ArgBuilder
+        profile_args = ArgBuilder(lang, profile.get('args'))
+        # set current profile
+        self._profile = profile
+        # attach instance to current profile
+        self._profile['profile_args'] = profile_args
+        # load tcex module after current profile is set
+        self.load_tcex()
+
+    @property
     def profiles(self):
         """Return all selected profiles."""
         selected_profiles = []
         for config in self.config.get('profiles'):
+
             profile_selected = False
             profile_name = config.get('profile_name')
-            # report_profile = {
-            #     'description': config.get('description'),
-            #     'valid_exit_codes': config.get('exit_codes'),
-            #     'groups': config.get('groups', []),
-            #     'selected': False
-            # }
 
             if profile_name == self._args.profile:
                 profile_selected = True
@@ -735,27 +529,131 @@ class TcRun(object):
                 profile_selected = True
 
             if profile_selected:
-                # report_profile['selected'] = True
                 install_json_filename = config.get('install_json')
                 ij = {}
                 if install_json_filename is not None:
                     ij = self.load_install_json(install_json_filename)
                 config['install_json'] = ij
                 selected_profiles.append(config)
-                #     'config': config,
-                    # 'report_profile': report_profile
-                # })
-                # self.json_report['run_config']['selected_profiles'].append(profile_name)
-            # else:
-            #     # add unselected profiles
-            #     self.json_report['profiles'].append({
-            #         profile_name: report_profile
-            #     })
+
+            report = self.reports.add_profile(config, profile_selected)
 
         if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
 
         return selected_profiles
+
+    def run(self):
+        """Run the App using the current profile.
+
+        The current profile has the install_json and args pre-loaded.
+        """
+        install_json = self.profile.get('install_json')
+        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
+        # select report for current profile
+        self.reports.profile(self.profile.get('profile_name'))
+
+        print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
+
+        if install_json.get('programMain') is not None:
+            program_main = install_json.get('programMain').replace('.py', '')
+        elif self.profile.get('script') is not None:
+            program_main = self.profile.get('script').replace('.py', '')
+        else:
+            print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
+            sys.exit(1)
+
+        self.run_display_profile(program_main)
+        self.run_display_description()
+        self.run_validate_program_main(program_main)
+
+        # build the command
+        if program_language == 'python':
+            command = [
+                sys.executable,
+                '.',
+                program_main
+            ]
+        elif program_language == 'java':
+            command = [
+                self.config.get('java_path', program_language),
+                '-cp',
+                sp.get('class_path', './target/*')
+            ]
+            # exe_command = command + parameters.get('unmasked') + [self.program_main]
+            # print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
+
+        exe_command = command + self.profile.get('profile_args').standard
+        print_command = ' '.join(command + self.profile.get('profile_args').masked)
+        self.log.info('[run] Running command {}'.format(print_command))
+
+        # output command
+        print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
+        # Run Command
+        p = subprocess.Popen(
+            exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        out, err = p.communicate()
+
+        # Exit Code
+        self.run_exit_code(p.returncode, out, err)
+
+    def run_display_profile(self, program_main):
+        """Print profile name with programMain."""
+        install_json = self.profile.get('install_json')
+
+        output = 'Profile: '
+        output += '{}{}{}{} '.format(
+            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL)
+        output += '[{}{}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
+        if self.program_version is not None:
+            output += '{}:{}'.format(
+                c.Style.BRIGHT, c.Style.RESET_ALL)
+            output += '{}{}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.MAGENTA, install.get('programVersion'), c.Style.RESET_ALL)
+        output += ']'
+        print(output)
+
+    def run_display_description(self):
+        """Print profile name with programMain."""
+        # display description if available
+        if self.profile.get('description'):
+            print('Description: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')))
+
+    def run_exit_code(self, returncode, out, err):
+        """Handle the exit code for the current run."""
+        if not self.profile.get('quiet') and not self._args.quiet:
+            print('App Output:')
+            for o in out.decode('utf-8').split('\n'):
+                print('  {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, o))
+
+        self.reports.increment_total()
+        valid_exit_codes = self.profile.get('exit_codes', [0])
+        self.reports.exit_code = returncode
+        execution_result = 'fail'
+        if returncode in valid_exit_codes:
+            self.reports.profile_execution(True)
+            print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, returncode))
+        else:
+            self.reports.profile_execution(False)
+            print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
+                c.Style.BRIGHT, c.Fore.RED, returncode, c.Fore.RESET, valid_exit_codes))
+            if err is not None and err:
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
+            self.exit_code = 1
+            if args.halt_on_fail:
+                sys.exit(1)
+
+    def run_validate_program_main(self, program_main):
+        """Validate the program main file exists."""
+        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
+        if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
+            print('{}{}Could not find program main file ({}).'.format(
+                c.Style.BRIGHT, c.Fore.RED, program_filename))
+            sys.exit(1)
 
     # def run(self):
     #     """Run the App using the defined config."""
@@ -989,25 +887,6 @@ class TcRun(object):
     #             profile, c.Style.BRIGHT, execution_color, execution_text, validation_color,
     #             validation_text))
 
-    # @staticmethod
-    # def to_string(data, errors='strict'):
-    #     """Covert x to string in Python 2/3
-
-    #     Args:
-    #         data (any): Data to ve validated and re-encoded
-
-    #     Returns:
-    #         (any): Return validate or encoded data
-
-    #     """
-    #     # TODO: Find better way using six or unicode_literals
-    #     if isinstance(data, (bytes, str)):
-    #         try:
-    #             data = unicode(data, 'utf-8', errors=errors)  # 2to3 converts unicode to str
-    #         except NameError:
-    #             data = str(data, 'utf-8', errors=errors)
-    #     return data
-
     def gen_launcher(self):
         """
         {
@@ -1058,7 +937,13 @@ class TcRun(object):
                 "--tc_log_level",
                 "debug",
                 "--tc_playbook_out_variables",
-                "'#App:7470:datetime.format.json!String,#App:7470:datetime.format.count.pass!String,#App:7470:datetime.format.count.fail!String,#App:7470:datetime.format.input!StringArray,#App:7470:datetime.format.offset!String,#App:7470:datetime.format.strftime!String,#App:7470:datetime.format.formatted_dates.0!String,#App:7470:datetime.format.formatted_dates!StringArray,#App:7470:datetime.format.timezone!String'"
+                "'#App:7470:datetime.format.json!String,#App:7470:datetime.format.count.pass!String,
+                  #App:7470:datetime.format.count.fail!String,
+                  #App:7470:datetime.format.input!StringArray,
+                  #App:7470:datetime.format.offset!String,#App:7470:datetime.format.strftime!String,
+                  #App:7470:datetime.format.formatted_dates.0!String,
+                  #App:7470:datetime.format.formatted_dates!StringArray,
+                  #App:7470:datetime.format.timezone!String'"
             ],
         },
         """
@@ -1077,18 +962,18 @@ class TcRun(object):
 class ArgBuilder(object):
     """Build CLI Args"""
 
-    def __init__(self, lang, args):
+    def __init__(self, lang, _args):
         self.lang = lang.lower()
         self._data = {}
         self._args = []
         self._args_masked = []
         self._args_quoted = []
         # Build arg data
-        self.load(args)
+        self.load(_args)
 
     @property
     def data(self):
-        """Return all args formatted for the provided language."""
+        """Return all data formatted for the provided language."""
         return self._data
 
     @property
@@ -1114,19 +999,22 @@ class ArgBuilder(object):
             value (string): The CLI Args value (e.g., bob).
             mask (boolean, default:False): Indicates whether no mask value.
         """
+        if value is False:
+            # boolean values are flags and should only be included when True
+            return
         self._data[key] = value
         self._args.append('--{}'.format(key))
         self._args_quoted.append('--{}'.format(key))
         self._args_masked.append('--{}'.format(key))
-        if value is False:
-            return
-        self._args.append(value)
-        self._args_quoted.append(self.quote(value))
-        if mask:
-            value = 'x' * len(str(value))
-        else:
-            value = self.quote(value)
-        self._args_masked.append(value)
+        if value is not True:
+            # boolean values are flags and cli arg should not have a value
+            self._args.append(value)
+            self._args_quoted.append(self.quote(value))
+            if mask:
+                value = 'x' * len(str(value))
+            else:
+                value = self.quote(value)
+            self._args_masked.append(value)
 
     def _add_arg_java(self, key, value, mask=False):
         """Add CLI Arg formatted specifically for Java.
@@ -1212,18 +1100,159 @@ class ArgBuilder(object):
             self.add(key, value)
 
 
+class Report(object):
+    """Report Object for a single profile."""
+
+    def __init__(self, profile):
+        """Initialize class properties."""
+        self.data = {
+            'description': profile.get('description'),
+            'groups': profile.get('groups'),
+            'name': profile.get('profile_name'),
+            'selected': False,
+            'valid_exit_codes': profile.get('exit_codes')
+        }
+
+    @property
+    def execution_success(self):
+        """Return the profile/report execution_success."""
+        return self.data.get('execution_success')
+
+    @execution_success.setter
+    def execution_success(self, execution_success):
+        """Set the profile/report execution_success."""
+        self.data['execution_success'] = execution_success
+
+    @property
+    def exit_code(self):
+        """Return the profile/report exit_code."""
+        return self.data.get('exit_code')
+
+    @exit_code.setter
+    def exit_code(self, exit_code):
+        """Set the profile/report exit_code."""
+        self.data['exit_code'] = exit_code
+
+    @property
+    def name(self):
+        """Return the profile/report name."""
+        return self.data.get('name')
+
+    @property
+    def selected(self):
+        """Return the profile/report name."""
+        return self.data.get('selected')
+
+    @selected.setter
+    def selected(self, selected):
+        """Return the profile/report name."""
+        self.data['selected'] = selected
+
+    @property
+    def validation_success(self):
+        """Return the profile/report validation_success."""
+        return self.data.get('validation_success')
+
+    @validation_success.setter
+    def validation_success(self, validation_success):
+        """Set the profile/report validation_success."""
+        self.data['validation_success'] = validation_success
+
+    def __str__(self):
+        return json.dumps(self.data, indent=2, sort_keys=True)
+
+
+class Reports(object):
+    """Run Report"""
+
+    def __init__(self):
+        """Initialize class properties."""
+        self.report = {
+            'profiles': [],
+            'results': {
+                'executions': {
+                    'fail': 0,
+                    'pass': 0
+                },
+                'total': 0,
+                'validations': {
+                    'fail': 0,
+                    'pass': 0
+                },
+            },
+            'settings': {
+                'provided_group': 'qa-build',
+                'provided_profile': 'default',
+                'selected_profiles': []
+            }
+        }
+        self.profiles = {}
+        self.selected_profile = None
+
+    def add_profile(self, profile, selected):
+        """Add profile to report."""
+        report = Report(profile)
+        report.selected = selected
+        self.report['settings']['selected_profiles'].append(report.name)
+        self.profiles.setdefault(report.name, report)
+        return report
+
+    def exit_code(self, code):
+        """Set the exit code on the selected profile."""
+        self.selected_profile.data['exit_code'] = code
+
+    def increment_total(self):
+        """Return run total value."""
+        self.report['results']['total'] += 1
+
+    def profile(self, name):
+        """Return a specific profile."""
+        self.selected_profile = self.profiles.get(name)
+        return self.profiles.get(name)
+
+    def profile_execution(self, status):
+        """Return run total value."""
+        self.selected_profile.data['execution_success'] = status
+        if status:
+            self.report['results']['executions']['pass'] += 1
+        else:
+            self.report['results']['executions']['fail'] += 1
+
+    def profile_validation(self, status):
+        """Return run total value."""
+        self.selected_profile.data['validation_success'] = status
+        if status:
+            self.report['results']['validations']['pass'] += 1
+        else:
+            self.report['results']['validations']['fail'] += 1
+
+    def __str__(self):
+        return json.dumps(self.profiles, indent=2, sort_keys=True)
+
+
 if __name__ == '__main__':
     try:
         tcr = TcRun(args)
+        profile_count = 0
         for p in tcr.profiles:
+            separator = '=' * 20
+            tcr.log.info('{} {} {}'.format(separator, p.get('profile_name'), separator))
             tcr.profile = p
+
             if args.gen_launcher:
                 tcr.gen_launcher()
                 continue
             # print(json.dumps(p, indent=4))
             tcr.clear()
             tcr.stage()
-            # tcr.run()
+            tcr.run()
+
+            if profile_count > 0:
+                sleep = self.profile.get('sleep', self.config.get('sleep', self.sleep))
+                print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
+                time.sleep(sleep)
+            profile_count =+ 1
+        tcr.log.info('Exit Code: {}'.format(tcr.exit_code))
         sys.exit(tcr.exit_code)
     except Exception as e:
         # TODO: Update this, possibly raise
