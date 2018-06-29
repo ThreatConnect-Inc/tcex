@@ -6,6 +6,7 @@ import base64
 import collections
 import json
 import logging
+import operator
 import os
 import platform
 import re
@@ -17,6 +18,17 @@ import traceback
 import colorama as c
 import jmespath
 from six import string_types
+# not including these libraries as a dependencies since they are only required for local testing.
+try:
+    from deepdiff import DeepDiff
+except ImportError:
+    print('Could not import DeepDiff module (try "pip install deepdiff").')
+    sys.exit(1)
+try:
+    import jmespath
+except ImportError:
+    print('Could not import jmespath module (try "pip install jmespath").')
+    sys.exit(1)
 
 from tcex import TcEx
 
@@ -84,6 +96,19 @@ class TcRun(object):
         # initialize colorama
         c.init(autoreset=True, strip=False)
 
+    @staticmethod
+    def _create_tc_dirs(profile):
+        """Create app directories for logs and data files."""
+        tc_log_path = profile.get('args', {}).get('tc_log_path')
+        if tc_log_path is not None and not os.path.isdir(tc_log_path):
+            os.makedirs(tc_log_path)
+        tc_out_path = profile.get('args', {}).get('tc_out_path')
+        if tc_out_path is not None and not os.path.isdir(tc_out_path):
+            os.makedirs(tc_out_path)
+        tc_tmp_path = profile.get('args', {}).get('tc_tmp_path')
+        if tc_tmp_path is not None and not os.path.isdir(tc_tmp_path):
+            os.makedirs(tc_tmp_path)
+
     def _load_config_include(self, include_directory):
         """Load included configuration files."""
         include_directory = os.path.join(self.app_path, include_directory)
@@ -92,10 +117,11 @@ class TcRun(object):
             sys.exit(msg)
 
         profiles = []
-        for file in sorted(os.listdir(include_directory)):
-            if file.endswith('.json'):
-                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, file))
-                config_file = os.path.join(include_directory, file)
+        for filename in sorted(os.listdir(include_directory)):
+            if filename.endswith('.json'):
+                self.log.info('Loading config: {}'.format(filename))
+                print('Include File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, filename))
+                config_file = os.path.join(include_directory, filename)
                 with open(config_file) as data_file:
                     try:
                         profiles.extend(json.load(data_file))
@@ -147,73 +173,38 @@ class TcRun(object):
         return log
 
     @property
-    def config(self):
-        """Return configuration data.
-
-        Load on first access, otherwise return existing data.
-        """
-        if self._config is None:
-            if not os.path.isfile(self._args.config):
-                msg = 'Provided config file does not exist ({}).'.format(self._args.config)
-                sys.exit(msg)
-
-            print('Configuration File: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
-            with open(self._args.config) as data_file:
-                self._config = json.load(data_file)
-
-            # load includes
-            for directory in self._config.get('profile_include_dirs', []):
-                self._config.setdefault('profiles', []).extend(self._load_config_include(directory))
-        return self._config
-
-    def load_install_json(self, filename):
-        """Return install.json data.
-
-        Load on first access, otherwise return existing data.
-        """
-        if self._install_json is None:
-            load_output = 'Load install.json: {}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
-            if filename is not None and os.path.isfile(filename):
-                with open(filename) as config_data:
-                    self._install_json = json.load(config_data)
-                load_output += ' {}{}(Loaded){}'.format(
-                    c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
-            else:
-                load_output += ' {}{}(Not Found){}'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
-
-            # display load status
-            print(load_output)
-
-            # self.display_name = install_json.get('displayName')
-            # self.program_main = install_json.get('programMain')
-            # self.program_version = install_json.get('programVersion')
-            # self.runtime_level = install_json.get('runtimeLevel')
-            # self._install_json = install_json
-        return self._install_json
-
-    # @staticmethod
-    # def data_args(arg_data):
-    #     """Get just the args required for data services"""
-    #     return {
-    #         'api_access_id': arg_data.get('api_access_id'),
-    #         'api_secret_key': arg_data.get('api_secret_key'),
-    #         'tc_log_level': arg_data.get('tc_log_level', arg_data.get('logging', 'debug')),
-    #         'tc_api_path': arg_data.get('tc_api_path'),
-    #         'tc_log_file': 'data.log',
-    #         'tc_log_path': arg_data.get('tc_log_path'),
-    #         'tc_out_path': arg_data.get('tc_out_path'),
-    #         'tc_playbook_db_context': arg_data.get('tc_playbook_db_context'),
-    #         'tc_playbook_db_path': arg_data.get('tc_playbook_db_path'),
-    #         'tc_playbook_db_port': arg_data.get('tc_playbook_db_port'),
-    #         'tc_playbook_db_type': arg_data.get('tc_playbook_db_type'),
-    #         'tc_temp_path': arg_data.get('tc_temp_path')
-    #     }
+    def _operators(self):
+        """Return dict of Validation Operators."""
+        return {
+            'dd': self.deep_diff,
+            'deep-diff': self.deep_diff,
+            'eq': operator.eq,
+            'ew': self.data_endswith,
+            'ends-with': self.data_endswith,
+            'ge': operator.ge,
+            'gt': operator.gt,
+            'jc': self.json_compare,
+            'json-compare': self.json_compare,
+            'kva': self.data_kva_compare,
+            'key-value-compare': self.data_kva_compare,
+            'in': self.data_in_db,
+            'in-db-data': self.data_in_db,
+            'in-user-data': self.data_in_user,
+            'ni': self.data_not_in,
+            'not-in': self.data_not_in,
+            'it': self.data_it,  # is type
+            'is-type': self.data_it,
+            'lt': operator.lt,
+            'le': operator.le,
+            'ne': operator.ne,
+            'se': self.data_string_compare,
+            'string-compare': self.data_string_compare,
+            'sw': self.data_startswith,
+            'starts-with': self.data_startswith
+        }
 
     @property
-    def tcex_required_args(self):
+    def _tcex_required_args(self):
         """Get just the args required for data services"""
         return [
             'api_access_id',
@@ -236,40 +227,20 @@ class TcRun(object):
             'tc_temp_path'
         ]
 
-    def load_tcex(self):
-        """Inject required TcEx CLI Args."""
-        sys.argv = [sys.argv[1]]  # reset sys.argv
-        for arg, value in self.profile.get('profile_args', {}).data.items():
-            if arg not in self.tcex_required_args:
-                continue
-            # add new log file name and level
-            sys.argv.extend(['--tc_log_file', 'data.log'])
-            sys.argv.extend(['--tc_log_level', 'error'])
-            # format key
-            arg = '--{}'.format(arg)
-            if isinstance(value, (bool)):
-                # handle bool values as flags (e.g., --flag) with no value
-                if value:
-                    sys.argv.append(arg)
-            else:
-                sys.argv.append(arg)
-                sys.argv.append('{}'.format(value))
-        self.tcex = TcEx()
-
-    def path_data(self, variable_data, path):
-        """Return jmespath data."""
-        if isinstance(variable_data, string_types):
-            # try to convert string into list/dict before using expression
-            try:
-                variable_data = json.loads(variable_data)
-            except Exception:
-                self.log.debug('String value ({}) could not JSON serialized.'.format(
-                    variable_data))
-        if path is not None and isinstance(variable_data, (dict, list)):
-            expression = jmespath.compile(path)
-            variable_data = expression.search(
-                variable_data, jmespath.Options(dict_cls=collections.OrderedDict))
-        return variable_data
+    @property
+    def _vars_match(self):
+        """Regular expression to match playbook variable."""
+        return re.compile(
+            r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+            r':([\d]+)'  # app id (:7979)
+            r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+            r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+            r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+            r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+            r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+            r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+            r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        )
 
     def clear(self):
         """Clear Redis and ThreatConnect data defined in profile.
@@ -318,6 +289,376 @@ class TcRun(object):
                             tc_type, value))
                         batch.indicator(clear_data.get('type'), clear_data.get('value'))
                 batch.submit()
+
+    @property
+    def config(self):
+        """Return configuration data.
+
+        Load on first access, otherwise return existing data.
+        """
+        if self._config is None:
+            if not os.path.isfile(self._args.config):
+                msg = 'Provided config file does not exist ({}).'.format(self._args.config)
+                sys.exit(msg)
+
+            print('Configuration File: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
+            with open(self._args.config) as data_file:
+                self._config = json.load(data_file)
+
+            # load includes
+            for directory in self._config.get('profile_include_dirs', []):
+                self._config.setdefault('profiles', []).extend(self._load_config_include(directory))
+        return self._config
+
+    @staticmethod
+    def data_endswith(db_data, user_data):
+        """Validate data ends with user data"""
+        if db_data.endswith(user_data):
+            return True
+        return False
+
+    @staticmethod
+    def data_in_db(db_data, user_data):
+        """Validate db data in user data"""
+        if db_data in user_data:
+            return True
+        return False
+
+    @staticmethod
+    def data_in_user(db_data, user_data):
+        """Validate user data in db data"""
+        if user_data in db_data:
+            return True
+        return False
+
+    @staticmethod
+    def data_it(db_data, user_type):
+        """Validate data is Type"""
+        data_type = {
+            'array': (list),
+            'binary': (bytes),
+            'bytes': (bytes),
+            'dict': (dict),
+            'entity': (dict),
+            'list': (list),
+            'str': (string_types),
+            'string': (string_types)
+        }
+        # user_type_tuple = tuple([data_type[t] for t in user_types])
+        # if isinstance(db_data, user_type_tuple):
+        if user_type is None:
+            if db_data is None:
+                return True
+        elif user_type.lower() in ['null', 'none']:
+            if db_data is None:
+                return True
+        elif data_type.get(user_type.lower()) is not None:
+            if isinstance(db_data, data_type.get(user_type.lower())):
+                return True
+        return False
+
+    @staticmethod
+    def data_kva_compare(db_data, user_data):
+        """Validate key/value data in KeyValueArray"""
+        for kv_data in db_data:
+            if kv_data.get('key') == user_data.get('key'):
+                if kv_data.get('value') == user_data.get('value'):
+                    return True
+        return False
+
+    @staticmethod
+    def data_not_in(db_data, user_data):
+        """Validate data not in user data"""
+        if db_data not in user_data:
+            return True
+        return False
+
+    @staticmethod
+    def data_startswith(db_data, user_data):
+        """Validate data starts with user data"""
+        if db_data.startswith(user_data):
+            return True
+        return False
+
+    @staticmethod
+    def data_string_compare(db_data, user_data):
+        """Validate string removing all white space before comparison"""
+        db_data = ''.join(db_data.split())
+        user_data = ''.join(user_data.split())
+        if operator.eq(db_data, user_data):
+            return True
+        return False
+
+    @staticmethod
+    def deep_diff(db_data, user_data):
+        """Validate data in user data"""
+        try:
+            ddiff = DeepDiff(db_data, user_data, ignore_order=True)
+        except NameError:
+            tcex.log.warning(u'Could not find DeepDiff module.')
+            return False
+        if ddiff:
+            tcex.log.info(u'Diff: {}'.format(ddiff))
+            return False
+        return True
+
+    def json_compare(self, db_data, user_data):
+        """Validate data in user data"""
+        if isinstance(db_data, (string_types)):
+            db_data = json.loads(db_data)
+        if isinstance(user_data, (string_types)):
+            user_data = json.loads(user_data)
+        return self.deep_diff(db_data, user_data)
+
+    def gen_launcher(self):
+        """
+        """
+        program = self.profile.get(
+            'install_json', {}).get('programMain', self.profile.get('script'))
+        print(json.dumps({
+            'name': 'TcRun: {}'.format(self.profile.get('profile_name')),
+            'type': 'python',
+            'request': 'launch',
+            'program': '${workspaceFolder}/' + '{}.py'.format(program),
+            #'pythonPath': '/Users/bsummers/.pyenv/shims/python',
+            'args': self.profile.get('profile_args').standard
+        }, indent=4))
+
+    def load_install_json(self, filename):
+        """Return install.json data.
+
+        Load on first access, otherwise return existing data.
+        """
+        if self._install_json is None:
+            load_output = 'Load install.json: {}{}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
+            self.log.info('Loading install.json: {}'.format(filename))
+            if filename is not None and os.path.isfile(filename):
+                with open(filename) as config_data:
+                    self._install_json = json.load(config_data)
+                load_output += ' {}{}(Loaded){}'.format(
+                    c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+            else:
+                load_output += ' {}{}(Not Found){}'.format(
+                    c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+
+            # display load status
+            print(load_output)
+        return self._install_json
+
+    def load_tcex(self):
+        """Inject required TcEx CLI Args."""
+        sys.argv = [sys.argv[1]]  # reset sys.argv
+        for arg, value in self.profile.get('profile_args', {}).data.items():
+            if arg not in self._tcex_required_args:
+                continue
+            # add new log file name and level
+            sys.argv.extend(['--tc_log_file', 'data.log'])
+            sys.argv.extend(['--tc_log_level', 'error'])
+            # format key
+            arg = '--{}'.format(arg)
+            if isinstance(value, (bool)):
+                # handle bool values as flags (e.g., --flag) with no value
+                if value:
+                    sys.argv.append(arg)
+            else:
+                sys.argv.append(arg)
+                sys.argv.append('{}'.format(value))
+        self.tcex = TcEx()
+
+    def path_data(self, variable_data, path):
+        """Return jmespath data."""
+        if isinstance(variable_data, string_types):
+            # try to convert string into list/dict before using expression
+            try:
+                variable_data = json.loads(variable_data)
+            except Exception:
+                self.log.warning('String value ({}) could not JSON serialized.'.format(
+                    variable_data))
+        if path is not None and isinstance(variable_data, (dict, list)):
+            expression = jmespath.compile(path)
+            variable_data = expression.search(
+                variable_data, jmespath.Options(dict_cls=collections.OrderedDict))
+        return variable_data
+
+    @property
+    def profile(self):
+        """Return the current profile."""
+        return self._profile
+
+    @profile.setter
+    def profile(self, profile):
+        """Set the current profile."""
+        # retrieve language from install.json or assume Python
+        lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
+        # load instance of ArgBuilder
+        profile_args = ArgBuilder(lang, profile.get('args'))
+        # set current profile
+        self._profile = profile
+        # attach instance to current profile
+        self._profile['profile_args'] = profile_args
+        # load tcex module after current profile is set
+        self.load_tcex()
+
+    @property
+    def profiles(self):
+        """Return all selected profiles."""
+        selected_profiles = []
+        for config in self.config.get('profiles'):
+
+            profile_selected = False
+            profile_name = config.get('profile_name')
+
+            if profile_name == self._args.profile:
+                profile_selected = True
+            elif config.get('group') is not None and config.get('group') == self._args.group:
+                profile_selected = True
+            elif self._args.group in config.get('groups', []):
+                profile_selected = True
+
+            if profile_selected:
+                install_json_filename = config.get('install_json')
+                ij = {}
+                if install_json_filename is not None:
+                    ij = self.load_install_json(install_json_filename)
+                config['install_json'] = ij
+                selected_profiles.append(config)
+
+            report = self.reports.add_profile(config, profile_selected)
+
+        if not selected_profiles:
+            print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+
+        return selected_profiles
+
+    def run(self):
+        """Run the App using the current profile.
+
+        The current profile has the install_json and args pre-loaded.
+        """
+        install_json = self.profile.get('install_json')
+        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
+        # select report for current profile
+        self.reports.profile(self.profile.get('profile_name'))
+
+        print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
+
+        if install_json.get('programMain') is not None:
+            program_main = install_json.get('programMain').replace('.py', '')
+        elif self.profile.get('script') is not None:
+            program_main = self.profile.get('script').replace('.py', '')
+        else:
+            print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
+            sys.exit(1)
+
+        self.run_display_profile(program_main)
+        self.run_display_description()
+        self.run_validate_program_main(program_main)
+
+        # build the command
+        if program_language == 'python':
+            command = [
+                sys.executable,
+                '.',
+                program_main
+            ]
+        elif program_language == 'java':
+            command = [
+                self.config.get('java_path', program_language),
+                '-cp',
+                sp.get('class_path', './target/*')
+            ]
+            # exe_command = command + parameters.get('unmasked') + [self.program_main]
+            # print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
+
+        exe_command = command + self.profile.get('profile_args').standard
+        print_command = ' '.join(command + self.profile.get('profile_args').masked)
+        self.log.info('[run] Running command {}'.format(print_command))
+
+        # output command
+        print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
+
+        # Run Command
+        p = subprocess.Popen(
+            exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        out, err = p.communicate()
+
+        # display app output
+        self.run_display_app_output(out)
+        self.run_display_app_errors(err)
+
+        # Exit Code
+        self.run_exit_code(p.returncode, err)
+
+    def run_display_app_errors(self, err):
+        """Handle the exit code for the current run."""
+        if err is not None and err:
+            for e in err.decode('utf-8').split('\n'):
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
+                self.log.error('[tcrun] App error: {}'.format(e))
+
+    def run_display_app_output(self, out):
+        """Print any App output."""
+        if not self.profile.get('quiet') and not self._args.quiet:
+            print('App Output:')
+            for o in out.decode('utf-8').split('\n'):
+                print('  {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, o))
+                self.log.debug('[tcrun] App output: {}'.format(o))
+
+    def run_display_description(self):
+        """Print profile name with programMain."""
+        # display description if available
+        if self.profile.get('description'):
+            print('Description: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')))
+
+    def run_display_profile(self, program_main):
+        """Print profile name with programMain."""
+        install_json = self.profile.get('install_json')
+
+        output = 'Profile: '
+        output += '{}{}{}{} '.format(
+            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL)
+        output += '[{}{}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
+        if self.program_version is not None:
+            output += '{}:{}'.format(
+                c.Style.BRIGHT, c.Style.RESET_ALL)
+            output += '{}{}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.MAGENTA, install.get('programVersion'), c.Style.RESET_ALL)
+        output += ']'
+        print(output)
+
+    def run_exit_code(self, returncode, err):
+        """Handle the exit code for the current run."""
+        self.log.info('[run] Exit Code {}'.format(returncode))
+
+        self.reports.increment_total()  # increment report execution total
+        valid_exit_codes = self.profile.get('exit_codes', [0])
+        self.reports.exit_code = returncode
+
+        if returncode in valid_exit_codes:
+            self.reports.profile_execution(True)
+            print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, returncode))
+        else:
+            print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
+                c.Style.BRIGHT, c.Fore.RED, returncode, c.Fore.RESET,
+                self.profile.get('exit_codes', [0])))
+
+            self.reports.profile_execution(False)
+            self.exit_code = 1
+            if args.halt_on_fail:
+                raise RuntimeError('App exited with invalid exit code {}'.format(returncode))
+
+    def run_validate_program_main(self, program_main):
+        """Validate the program main file exists."""
+        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
+        if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
+            print('{}{}Could not find program main file ({}).'.format(
+                c.Style.BRIGHT, c.Fore.RED, program_filename))
+            sys.exit(1)
 
     def stage(self):
         """Stage Redis and ThreatConnect data defined in profile.
@@ -480,483 +821,66 @@ class TcRun(object):
         for error in batch_results.get('errors', []):
             self.log.error(error)
 
-    @staticmethod
-    def _create_tc_dirs(profile):
-        """Create app directories for logs and data files."""
-        tc_log_path = profile.get('args', {}).get('tc_log_path')
-        if tc_log_path is not None and not os.path.isdir(tc_log_path):
-            os.makedirs(tc_log_path)
-        tc_out_path = profile.get('args', {}).get('tc_out_path')
-        if tc_out_path is not None and not os.path.isdir(tc_out_path):
-            os.makedirs(tc_out_path)
-        tc_tmp_path = profile.get('args', {}).get('tc_tmp_path')
-        if tc_tmp_path is not None and not os.path.isdir(tc_tmp_path):
-            os.makedirs(tc_tmp_path)
+    def validate(self):
+        """Validate Data"""
+        for data in self.profile.get('validations'):
+            data_type = data.get('data_type', 'redis')  # default to redis for older data files
+            if data_type == 'redis':
+                # get user variable or data
+                user_data = data.get('data')
+                user_data_path = data.get('data_path')  # jmespath expression
+                if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
+                    # if user_data reference a redis variable retrieve the data
+                    user_data = self.tcex.playbook.read(user_data)
+                if user_data_path is not None:
+                    user_data = self.path_data(user_data, user_data_path)
 
-    @property
-    def profile(self):
-        """Return the current profile."""
-        return self._profile
+                # get db variable/data
+                variable = data.get('variable')
+                db_data = self.tcex.playbook.read(variable)
+                db_data_path = data.get('variable_path')
+                if db_data_path is not None:
+                    db_data = self.path_data(db_data, db_data_path)
 
-    @profile.setter
-    def profile(self, profile):
-        """Set the current profile."""
-        # retrieve language from install.json or assume Python
-        lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
-        # load instance of ArgBuilder
-        profile_args = ArgBuilder(lang, profile.get('args'))
-        # set current profile
-        self._profile = profile
-        # attach instance to current profile
-        self._profile['profile_args'] = profile_args
-        # load tcex module after current profile is set
-        self.load_tcex()
+                # validate if possible
+                if variable.endswith('Binary') or variable.endswith('BinaryArray'):
+                    self.log.info('[validate] DB Data: ({}), Type: [{}]'.format(
+                        'Excluding Binary Data Output', type(db_data)))
+                else:
+                    self.validate_redis(
+                        db_data, user_data, data.get('operator', 'eq'))
 
-    @property
-    def profiles(self):
-        """Return all selected profiles."""
-        selected_profiles = []
-        for config in self.config.get('profiles'):
+    def validate_redis(self, db_data, user_data, oper):
+        """Validate data in Redis."""
+        # convert any int to string since playbooks don't support int values
+        if isinstance(db_data, int):
+            db_data = str(db_data)
+        if isinstance(user_data, int):
+            user_data = str(user_data)
 
-            profile_selected = False
-            profile_name = config.get('profile_name')
+        self.log.info('[validate] DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
+        self.log.info('[validate] Operator: ({})'.format(oper))
+        self.log.info('[validate] Validation Data: ({}), Type: [{}]'.format(
+            user_data, type(user_data)))
 
-            if profile_name == self._args.profile:
-                profile_selected = True
-            elif config.get('group') is not None and config.get('group') == self._args.group:
-                profile_selected = True
-            elif self._args.group in config.get('groups', []):
-                profile_selected = True
+        # sort list for simple comparisons
+        if isinstance(db_data, (list)):
+            try:
+                db_data = sorted(db_data)
+            except TypeError:
+                self.log.warning('[validate] could not sort list')
+        if isinstance(user_data, (list)):
+            try:
+                user_data = sorted(user_data)
+            except TypeError:
+                self.log.warning('[validate] could not sort list')
 
-            if profile_selected:
-                install_json_filename = config.get('install_json')
-                ij = {}
-                if install_json_filename is not None:
-                    ij = self.load_install_json(install_json_filename)
-                config['install_json'] = ij
-                selected_profiles.append(config)
-
-            report = self.reports.add_profile(config, profile_selected)
-
-        if not selected_profiles:
-            print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
-
-        return selected_profiles
-
-    def run(self):
-        """Run the App using the current profile.
-
-        The current profile has the install_json and args pre-loaded.
-        """
-        install_json = self.profile.get('install_json')
-        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
-        # select report for current profile
-        self.reports.profile(self.profile.get('profile_name'))
-
-        print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
-
-        if install_json.get('programMain') is not None:
-            program_main = install_json.get('programMain').replace('.py', '')
-        elif self.profile.get('script') is not None:
-            program_main = self.profile.get('script').replace('.py', '')
+        # compare the data
+        if oper in self._operators and self._operators.get(oper)(db_data, user_data):
+            self.log.info(u'[validate] validation was successful')
         else:
-            print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
-            sys.exit(1)
-
-        self.run_display_profile(program_main)
-        self.run_display_description()
-        self.run_validate_program_main(program_main)
-
-        # build the command
-        if program_language == 'python':
-            command = [
-                sys.executable,
-                '.',
-                program_main
-            ]
-        elif program_language == 'java':
-            command = [
-                self.config.get('java_path', program_language),
-                '-cp',
-                sp.get('class_path', './target/*')
-            ]
-            # exe_command = command + parameters.get('unmasked') + [self.program_main]
-            # print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
-
-        exe_command = command + self.profile.get('profile_args').standard
-        print_command = ' '.join(command + self.profile.get('profile_args').masked)
-        self.log.info('[run] Running command {}'.format(print_command))
-
-        # output command
-        print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-        # Run Command
-        p = subprocess.Popen(
-            exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-        out, err = p.communicate()
-
-        # Exit Code
-        self.run_exit_code(p.returncode, out, err)
-
-    def run_display_profile(self, program_main):
-        """Print profile name with programMain."""
-        install_json = self.profile.get('install_json')
-
-        output = 'Profile: '
-        output += '{}{}{}{} '.format(
-            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL)
-        output += '[{}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
-        if self.program_version is not None:
-            output += '{}:{}'.format(
-                c.Style.BRIGHT, c.Style.RESET_ALL)
-            output += '{}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.MAGENTA, install.get('programVersion'), c.Style.RESET_ALL)
-        output += ']'
-        print(output)
-
-    def run_display_description(self):
-        """Print profile name with programMain."""
-        # display description if available
-        if self.profile.get('description'):
-            print('Description: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')))
-
-    def run_exit_code(self, returncode, out, err):
-        """Handle the exit code for the current run."""
-        if not self.profile.get('quiet') and not self._args.quiet:
-            print('App Output:')
-            for o in out.decode('utf-8').split('\n'):
-                print('  {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, o))
-
-        self.reports.increment_total()
-        valid_exit_codes = self.profile.get('exit_codes', [0])
-        self.reports.exit_code = returncode
-        execution_result = 'fail'
-        if returncode in valid_exit_codes:
-            self.reports.profile_execution(True)
-            print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, returncode))
-        else:
-            self.reports.profile_execution(False)
-            print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
-                c.Style.BRIGHT, c.Fore.RED, returncode, c.Fore.RESET, valid_exit_codes))
-            if err is not None and err:
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-            self.exit_code = 1
             if args.halt_on_fail:
-                sys.exit(1)
-
-    def run_validate_program_main(self, program_main):
-        """Validate the program main file exists."""
-        program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
-        if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
-            print('{}{}Could not find program main file ({}).'.format(
-                c.Style.BRIGHT, c.Fore.RED, program_filename))
-            sys.exit(1)
-
-    # def run(self):
-    #     """Run the App using the defined config."""
-    #     # load tc config
-    #     self._load_config()
-    #     self.json_report = {
-    #         'profiles': [],
-    #         'run_config': {
-    #             'provided_group': self._args.group,
-    #             'provided_profile': self._args.profile,
-    #             'selected_profiles': []
-    #         },
-    #         'run_status': {
-    #             'total': 0,
-    #             'executions': {
-    #                 'pass': 0,
-    #                 'fail': 0
-    #             },
-    #             'validations': {
-    #                 'pass': 0,
-    #                 'fail': 0
-    #             }
-    #         }
-    #     }
-
-
-    #     command_count = 0
-    #     reports = []  # output to terminal
-    #     for profile_data in selected_profiles:
-    #         sp = profile_data.get('config')
-    #         report_profile = profile_data.get('report_profile')
-
-    #         # create temp directories
-    #         self._create_tc_dirs(sp)
-
-    #         # status trackers
-    #         execution_success = False
-    #         validation_success = False
-
-    #         # cleanup old redis data
-    #         if args.clear:
-    #             self.clear_data(sp)
-
-    #         # use globally configured sleep time or per profile sleep time (default self.sleep)
-    #         if command_count > 0:
-    #             sleep = sp.get('sleep', self.config.get('sleep', self.sleep))
-    #             print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
-    #             time.sleep(sleep)
-
-    #         command_count += 1
-
-    #         # divider (add after sleep since sleep only runs after first profile)
-    #         print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
-
-    #         # load install_json (if provided)
-    #         self._load_install_json(sp.get('install_json'))
-    #         program_language = self.install_json.get('programLanguage', 'python').lower()
-
-    #         # if install.json provided use programMain, otherwise use script name from tcex.json
-    #         # eventually install.json should be required and script will be removed from tcex.json
-    #         if self.program_main is not None:
-    #             program_main = self.program_main.replace('.py', '')
-    #         elif sp.get('script') is not None:
-    #             program_main = sp.get('script').replace('.py', '')
-    #         else:
-    #             print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
-    #             sys.exit(1)
-
-    #         # Display Output with App data
-    #         output = 'Profile: '
-    #         output += '{}{}{}{} '.format(
-    #             c.Style.BRIGHT, c.Fore.CYAN, sp.get('profile_name'), c.Style.RESET_ALL)
-    #         output += '[{}{}{}{}'.format(
-    #             c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
-    #         if self.program_version is not None:
-    #             output += '{}:{}'.format(
-    #                 c.Style.BRIGHT, c.Style.RESET_ALL)
-    #             output += '{}{}{}{}'.format(
-    #                 c.Style.BRIGHT, c.Fore.MAGENTA, self.program_version, c.Style.RESET_ALL)
-    #         output += ']'
-    #         print(output)
-    #         if sp.get('description'):
-    #             print('Description: {}{}{}'.format(
-    #                 c.Style.BRIGHT, c.Fore.MAGENTA, sp.get('description')))
-
-    #         #
-    #         # Stage Data
-    #         #
-    #         self.stage_data(sp)
-
-    #         program_filename = program_main
-    #         if program_language == 'python':
-    #             # for python apps append the ".py" extension to the filename
-    #             program_filename = '{}.py'.format(program_main)
-
-    #         # validate the program main file exists only for python.  for java apps the program main
-    #         # is not a file.
-    #         if program_language == 'python' and not os.path.isfile(program_filename):
-    #             print('{}{}Could not find program main file ({}).'.format(
-    #                 c.Style.BRIGHT, c.Fore.RED, program_filename))
-    #             sys.exit(1)
-
-    #         # build command line arguments
-    #         parameters = self.parameters(sp.get('args'))
-
-    #         # build the command
-    #         if program_language == 'python':
-    #             command = [
-    #                 sys.executable,
-    #                 '.',
-    #                 program_main
-    #             ]
-    #             exe_command = command + parameters.get('unmasked')
-    #             print_command = ' '.join(command + parameters.get('masked'))
-    #         elif program_language == 'java':
-    #             command = [
-    #                 self.config.get('java_path', program_language),
-    #                 '-cp',
-    #                 sp.get('class_path', './target/*')
-    #             ]
-    #             exe_command = command + parameters.get('unmasked') + [self.program_main]
-    #             print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
-
-    #         # output command
-    #         print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-    #         #
-    #         # Run Command
-    #         #
-    #         p = subprocess.Popen(
-    #             exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-    #             stderr=subprocess.PIPE)
-    #         out, err = p.communicate()
-
-    #         #
-    #         # Logs
-    #         #
-    #         # log_directory = os.path.join(self.app_path, sp.get('args').get('tc_log_path'))
-    #         # for log_file in os.listdir(log_directory):
-    #         #     log_file = os.path.join(log_directory, log_file)
-    #         #     print('Logs: {}{}{}'.format(
-    #         #         self.BOLD_CYAN, log_file, self.DEFAULT))
-
-    #         #
-    #         # Script Output
-    #         #
-    #         if not sp.get('quiet') and not self._args.quiet:
-    #             print(self.to_string(out, 'ignore'))
-
-    #         #
-    #         # Exit Code
-    #         #
-    #         self.json_report['run_status']['total'] += 1
-    #         valid_exit_codes = sp.get('exit_codes', [0])
-    #         report_profile['exit_code'] = p.returncode
-    #         execution_result = 'fail'
-    #         if p.returncode in valid_exit_codes:
-    #             print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, p.returncode))
-    #             execution_result = 'pass'
-    #             execution_success = True
-    #         else:
-    #             print('App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
-    #                 c.Style.BRIGHT, c.Fore.RED, p.returncode, c.Fore.RESET, valid_exit_codes))
-    #             if err is not None and err:
-    #                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
-    #             self.exit_code = 1
-    #             if args.halt_on_fail:
-    #                 break
-    #         self.json_report['run_status']['executions'][execution_result] += 1
-
-    #         #
-    #         # Validate Data
-    #         #
-    #         validation_result = 'fail'
-    #         if execution_success:
-    #             validation_success = self.validate_data(sp)
-    #             if validation_success:
-    #                 validation_result = 'pass'
-    #         self.json_report['run_status']['validations'][validation_result] += 1
-
-    #         #
-    #         # Error Output
-    #         #
-    #         if err:
-    #             print(err.decode('utf-8'))
-
-    #         # updated status in report
-    #         reports.append({
-    #             'profile': sp.get('profile_name'),
-    #             'execution_success': execution_success,
-    #             'validation_success': validation_success
-    #         })
-    #         # update report
-    #         report_profile['execution_success'] = execution_success
-    #         report_profile['validation_success'] = validation_success
-    #         self.json_report['profiles'].append({
-    #             sp.get('profile_name'): report_profile
-    #         })
-
-    #     #
-    #     # Reports
-    #     #
-    #     if args.report:
-    #         with open(args.report, 'w') as outfile:
-    #             json.dump(self.json_report, outfile, sort_keys=True)
-
-    #     # on screen report
-    #     if reports:
-    #         self.report(reports)
-
-    # @staticmethod
-    # def report(data):
-    #     """Format and output report data to screen."""
-    #     print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
-    #     print('{0!s:<60}{1!s:<25}{2!s:<25}'.format('Profile:', 'Execution:', 'Validation:'))
-    #     for d in data:
-    #         profile = d.get('profile')
-    #         execution_color = c.Fore.RED
-    #         execution_text = 'Failed'
-    #         if d.get('execution_success'):
-    #             execution_color = c.Fore.GREEN
-    #             execution_text = 'Passed'
-
-    #         validation_color = c.Fore.RED
-    #         validation_text = 'Failed'
-    #         if d.get('validation_success'):
-    #             validation_color = c.Fore.GREEN
-    #             validation_text = 'Passed'
-
-    #         print('{0!s:<60}{1}{2}{3!s:<25}{4}{5!s:<25}'.format(
-    #             profile, c.Style.BRIGHT, execution_color, execution_text, validation_color,
-    #             validation_text))
-
-    def gen_launcher(self):
-        """
-        {
-            "name": "Python3: TcEx Local App",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/datetime_format.py",
-            "pythonPath": "/Users/bsummers/.pyenv/shims/python",
-            "args": [
-                "--tc_temp_path",
-                "log",
-                "--tc_out_path",
-                "log",
-                "--tc_terminate_seconds",
-                "600",
-                "--tc_aot_enabled",
-                "--api_secret_key",
-                "'hIW18fN9DfxTKk2ANJ1bmC?Do0f5n6Ba1$E71MhEeG6EkkUXuh0KNQMBAAF3BufS'",
-                "--tc_playbook_db_path",
-                "localhost",
-                "--date_input",
-                "'#App:8141:time_inputs!StringArray'",
-                "--api_access_id",
-                "55808334917504999748",
-                "--tc_exit_channel",
-                "'aot-dateformat-exit'",
-                "--tc_playbook_db_type",
-                "Redis",
-                "--date_offset",
-                "'-1 year -1 month -1 day'",
-                "--api_default_org",
-                "TCI",
-                "--date_timezone",
-                "UTC",
-                "--tc_log_path",
-                "log",
-                "--date_format",
-                "'%Y-%m-%dT%H:%M:%SZ'",
-                "--tc_playbook_db_context",
-                "'4bfb97c8-aee9-486a-aa77-811c32b5a2c8'",
-                "--tc_api_path",
-                "https://app.tci.ninja/api",
-                "--tc_playbook_db_port",
-                "6379",
-                "--tc_action_channel",
-                "'aot-dateformat'",
-                "--fail_on_error",
-                "--tc_log_level",
-                "debug",
-                "--tc_playbook_out_variables",
-                "'#App:7470:datetime.format.json!String,#App:7470:datetime.format.count.pass!String,
-                  #App:7470:datetime.format.count.fail!String,
-                  #App:7470:datetime.format.input!StringArray,
-                  #App:7470:datetime.format.offset!String,#App:7470:datetime.format.strftime!String,
-                  #App:7470:datetime.format.formatted_dates.0!String,
-                  #App:7470:datetime.format.formatted_dates!StringArray,
-                  #App:7470:datetime.format.timezone!String'"
-            ],
-        },
-        """
-        program = self.profile.get(
-            'install_json', {}).get('programMain', self.profile.get('script'))
-        print(json.dumps({
-            'name': 'TcRun: {}'.format(self.profile.get('profile_name')),
-            'type': 'python',
-            'request': 'launch',
-            'program': '${workspaceFolder}/' + '{}.py'.format(program),
-            #'pythonPath': '/Users/bsummers/.pyenv/shims/python',
-            'args': self.profile.get('profile_args').standard
-        }, indent=4))
+                raise RuntimeError('Failed validating data.')
 
 
 class ArgBuilder(object):
@@ -1246,9 +1170,10 @@ if __name__ == '__main__':
             tcr.clear()
             tcr.stage()
             tcr.run()
+            tcr.validate()
 
             if profile_count > 0:
-                sleep = self.profile.get('sleep', self.config.get('sleep', self.sleep))
+                sleep = tcr.profile.get('sleep', tcr.config.get('sleep', tcr.sleep))
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
             profile_count =+ 1
