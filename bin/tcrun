@@ -4,6 +4,7 @@
 import argparse
 import base64
 import collections
+import hashlib
 import json
 import logging
 import operator
@@ -781,10 +782,7 @@ class TcRun(object):
             if data_type == 'redis':
                 self.log.debug('Stage Redis Data')
                 self.stage_redis(sd.get('variable'), sd.get('data'))
-            elif data_type == 'threatconnect':
-                self.log.debug('Stage ThreatConnect Data')
-                self.stage_tc(sd.get('data_owner'), sd.get('data', {}))
-            elif data_type == 'redis_array':
+            elif data_type == 'redis-array':
                 self.log.debug('Stage Redis Array')
                 out_variable = sd.get('variable')
                 # build array
@@ -796,6 +794,16 @@ class TcRun(object):
                     redis_array.append(data)
                 self.stage_redis(out_variable, redis_array)
                 # print(redis_array)
+            elif data_type == 'threatconnect':
+                self.log.debug('Stage ThreatConnect Data')
+                self.stage_tc(sd.get('data_owner'), sd.get('data', {}), sd.get('variable'))
+            elif data_type == 'threatconnect-association':
+                self.log.debug('Stage ThreatConnect Association Data')
+                data = sd.get('data')
+                self.stage_tc_associations(data.get('entity1'), data.get('entity2'))
+            elif data_type == 'threatconnect-batch':
+                self.log.debug('Stage ThreatConnect Batch Data')
+                self.stage_tc_batch(sd.get('data_owner'), sd.get('data', {}))
 
     @property
     def staging_data(self):
@@ -804,6 +812,7 @@ class TcRun(object):
         for staging_file in self.profile.get('data_files', []):
             if os.path.isfile(staging_file):
                 print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
+                self.log.info('[stage] Staging Data: {}'.format(staging_file))
                 f = open(staging_file, 'r')
                 staging_data.extend(json.load(f))
                 f.close()
@@ -821,7 +830,157 @@ class TcRun(object):
         self.log.info(u'[stage] Creating variable {}'.format(variable))
         self.tcex.playbook.create(variable, data)
 
-    def stage_tc(self, owner, staging_data):
+    def stage_tc(self, owner, staging_data, variable):
+        """Stage ThreatConnect Data
+
+        [{
+          "data": {
+            "id": 116,
+            "value": "adver001-build-testing",
+            "type": "Adversary",
+            "ownerName": "qa-build",
+            "dateAdded": "2017-08-16T18:35:07-04:00",
+            "webLink": "https://app.tci.ninja/auth/adversary/adversary.xhtml?adversary=116"
+          },
+          "data_type": "redis",
+          "variable": "#App:0822:adversary!TCEntity"
+        }]
+
+        """
+        # parse resource_data
+        resource_type = staging_data.pop('type')
+
+        if resource_type in self.tcex.indicator_types or resource_type in self.tcex.group_types:
+            try:
+                attributes = staging_data.pop('attribute')
+            except KeyError:
+                attributes = []
+            try:
+                security_labels = staging_data.pop('security_label')
+            except KeyError:
+                security_labels = []
+            try:
+                tags = staging_data.pop('tag')
+            except KeyError:
+                tags = []
+
+            resource = self.tcex.resource(resource_type)
+            resource.http_method = 'POST'
+            resource.owner = owner
+            ## resource.url = args.tc_api_path
+
+            # special case for Email Group Type
+            if resource_type == 'Email':
+                resource.add_payload('option', 'createVictims')
+
+            self.log.debug('body: {}'.format(staging_data))
+            resource.body = json.dumps(staging_data)
+
+            response = resource.request()
+            if response.get('status') == 'Success':
+                # add resource id
+                if resource_type in self.tcex.indicator_types:
+                    for r_data in resource.indicators(response.get('data')):
+                        if r_data.get('value') is not None:
+                            resource_id = r_data.get('value')
+                            break
+                elif resource_type in self.tcex.group_types:
+                    resource_id = response.get('data', {}).get('id')
+                self.log.debug('[stage] resource_id: {}'.format(resource_id))
+                resource.resource_id(resource_id)
+
+                entity = self.tcex.playbook.json_to_entity(
+                    response.get('data'), resource.value_fields, resource.name, resource.parent)
+                self.log.debug('[stage] Creating Entity: {} ({})'.format(variable, entity[0]))
+                self.tcex.playbook.create_tc_entity(variable, entity[0])
+
+                # update metadata
+                for attribute_data in attributes:
+                    self.stage_tc_create_attribute(
+                        attribute_data.get('type'), attribute_data.get('value'), resource)
+                for label_data in security_labels:
+                    self.stage_tc_create_security_label(label_data.get('name'), resource)
+                for tag_data in tags:
+                    self.stage_tc_create_tag(tag_data.get('name'), resource)
+        else:
+            self.log.error('[stage] Unsupported resource type {}.'.format(resource_type))
+
+    def stage_tc_create_attribute(self, attribute_type, attribute_value, resource):
+        """Add Attribute to a Resource"""
+        attribute_data = {
+            'type': str(attribute_type),
+            'value': str(attribute_value)
+        }
+        # handle default description and source
+        if attribute_type in ['Description', 'Source']:
+            attribute_data['displayed'] = True
+
+        attrib_resource = resource.attributes()
+        attrib_resource.body = json.dumps(attribute_data)
+        attrib_resource.http_method = 'POST'
+
+        # add the attribute
+        a_response = attrib_resource.request()
+        if a_response.get('status') != 'Success':
+            self.log.warning('[stage] Failed adding attribute type "{}" with value "{}" ({}).'.format(
+                attribute_type, attribute_value, a_response.get('response').text))
+
+    def stage_tc_create_security_label(self, label, resource):
+        """Add a Tag to a Resource"""
+        sl_resource = resource.security_labels(label)
+        sl_resource.http_method = 'POST'
+        sl_response = sl_resource.request()
+        if sl_response.get('status') != 'Success':
+            self.log.warning('[tcex] Failed adding security label "{}" ({}).'.format(
+                label, sl_response.get('response').text))
+
+    def stage_tc_create_tag(self, tag, resource):
+        """Add a Tag to a Resource"""
+        tag_resource = resource.tags(self.tcex.safetag(tag))
+        tag_resource.http_method = 'POST'
+        t_response = tag_resource.request()
+        if t_response.get('status') != 'Success':
+            self.log.warning('[tcex] Failed adding tag "{}" ({}).'.format(
+                tag, t_response.get('response').text))
+
+    def stage_tc_associations(self, entity1, entity2):
+        """Add Attribute to a Resource"""
+
+        # resource 1
+        entity1 = self.tcex.playbook.read(entity1)
+        entity1_id = entity1.get('id')
+        entity1_owner = entity1.get('ownerName')
+        entity1_type = entity1.get('type')
+        if entity1.get('type') in self.tcex.indicator_types:
+            entity1_id = entity1.get('value')
+
+        # resource 2
+        entity2 = self.tcex.playbook.read(entity2)
+        entity2_id = entity2.get('id')
+        entity2_owner = entity1.get('ownerName')
+        entity2_type = entity2.get('type')
+        if entity2.get('type') in self.tcex.indicator_types:
+            entity2_id = entity2.get('value')
+
+        if entity1_owner != entity2_owner:
+            self.log.error('[stage] Can not associate resource across owners.')
+            return
+
+        resource1 = self.tcex.resource(entity1_type)
+        resource1.http_method = 'POST'
+        resource1.owner = entity1_owner
+        resource1.resource_id(entity1_id)
+
+        resource2 = self.tcex.resource(entity2_type)
+        resource2.resource_id(entity2_id)
+
+        a_resource = resource1.associations(resource2)
+        response = a_resource.request()
+        if response.get('status') != 'Success':
+            self.log.warning('[stage] Failed associating "{}:{}" with "{}:{}" ({}).'.format(
+                entity1_type, entity1_id, entity2_type, entity2_id, response.get('response').text))
+
+    def stage_tc_batch(self, owner, staging_data):
         """Stage Redis Data"""
         batch = self.tcex.batch(owner)
         for group in staging_data.get('group', []):
@@ -829,27 +988,57 @@ class TcRun(object):
             variable = group.pop('variable', None)
             path = group.pop('path', None)
             data = self.path_data(group, path)
-            if variable is not None and data is not None:
-                self.stage_redis(variable, data)
+            # update group data
+            if group.get('xid') is None:
+                # add xid if one doesn't exist
+                group['xid'] = self.stage_tc_batch_xid(group.get('type'), group.get('name'), owner)
+            # add owner name
+            group['ownerName'] = owner
             # add to batch
             batch.add_group(group)
+            # create tcentity
+            if variable is not None and data is not None:
+                self.stage_redis(variable, self.stage_tc_group_entity(data))
         for indicator in staging_data.get('indicator', []):
             # add to redis
             variable = indicator.pop('variable', None)
             path = indicator.pop('path', None)
+            if indicator.get('xid') is None:
+                indicator['xid'] = self.stage_tc_batch_xid(group.get('type'), group.get('summary'), owner)
+            indicator['ownerName'] = owner
             # add to batch after extra data has been popped
             batch.add_indicator(indicator)
             data = self.path_data(dict(indicator), path)
             if variable is not None and data is not None:
-                if isinstance(data, (dict)):
+                # if isinstance(data, (dict)):
                     # tcentity uses value as the name
-                    data['value'] = data.pop('summary')
-                self.stage_redis(variable, data)
-        # print(batch)
+                #     data['value'] = data.pop('summary')
+                self.stage_redis(variable, self.stage_tc_indicator_entity(data))
         # submit batch
         batch_results = batch.submit()
+        self.log.info('[stage] Batch Results: {}'.format(batch_results))
         for error in batch_results.get('errors', []):
-            self.log.error(error)
+            self.log.error('[stage] {}'.format(error))
+
+    def stage_tc_batch_xid(xid_type, xid_value, owner):
+        """Create an xid for a batch job."""
+        xid_string = '{}-{}'.format(xid_type, xid_value, owner)
+        hash_object = hashlib.sha256(xid_string.encode('utf-8'))
+        return hash_object.hexdigest()
+
+    def stage_tc_group_entity(self, group_data):
+        """Convert JSON data to TCEntity."""
+        path = '@.{name: name, type: type, ownerName: ownerName}'
+        return self.path_data(group_data, path)
+
+    def stage_tc_indicator_entity(self, indicator_data):
+        """Convert JSON data to TCEntity."""
+        path = '@.{value: summary, '
+        path += 'type: type, '
+        path += 'ownerName: ownerName, '
+        path += 'confidence: confidence || `0`, '
+        path += 'rating: rating || `0`}'
+        return self.path_data(indicator_data, path)
 
     def validate(self):
         """Validate Data"""
