@@ -41,7 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
 parser.add_argument(
-    '--clear', action='store_true', help='Clear Redis data before running.')
+    '--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument(
     '--halt_on_fail', action='store_true', help='Halt on any failure.')
 parser.add_argument(
@@ -500,6 +500,8 @@ class TcRun(object):
         self._profile['profile_args'] = profile_args
         # load tcex module after current profile is set
         self.load_tcex()
+        # select report for current profile
+        self.reports.profile(profile.get('profile_name'))
 
     @property
     def profiles(self):
@@ -532,6 +534,35 @@ class TcRun(object):
 
         return selected_profiles
 
+    def report(self):
+        """Format and output report data to screen."""
+        print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
+        print('{0!s:<60}{1!s:<25}{2!s:<25}'.format('Profile:', 'Execution:', 'Validation:'))
+        for r in self.reports:
+            d = r.data
+            if not d.get('selected'):
+                continue
+            execution_color = c.Fore.RED
+            execution_text = 'Failed'
+            if d.get('execution_success'):
+                execution_color = c.Fore.GREEN
+                execution_text = 'Passed'
+
+            validation_color = c.Fore.RED
+            validation_text = 'Failed'
+            if d.get('validation_success'):
+                validation_color = c.Fore.GREEN
+                validation_text = 'Passed'
+
+            print('{0!s:<60}{1}{2}{3!s:<25}{4}{5!s:<25}'.format(
+                d.get('name'), c.Style.BRIGHT, execution_color, execution_text, validation_color,
+                validation_text))
+
+        # write report to disk
+        if args.report:
+            with open(args.report, 'w') as outfile:
+                outfile.write(str(self.reports))
+
     def run(self):
         """Run the App using the current profile.
 
@@ -539,8 +570,6 @@ class TcRun(object):
         """
         install_json = self.profile.get('install_json')
         program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
-        # select report for current profile
-        self.reports.profile(self.profile.get('profile_name'))
 
         print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
 
@@ -569,8 +598,6 @@ class TcRun(object):
                 '-cp',
                 sp.get('class_path', './target/*')
             ]
-            # exe_command = command + parameters.get('unmasked') + [self.program_main]
-            # print_command = ' '.join(command + parameters.get('masked') + [self.program_main])
 
         exe_command = command + self.profile.get('profile_args').standard
         print_command = ' '.join(command + self.profile.get('profile_args').masked)
@@ -590,7 +617,7 @@ class TcRun(object):
         self.run_display_app_errors(err)
 
         # Exit Code
-        self.run_exit_code(p.returncode, err)
+        return self.run_exit_code(p.returncode, err)
 
     def run_display_app_errors(self, err):
         """Handle the exit code for the current run."""
@@ -633,13 +660,15 @@ class TcRun(object):
 
     def run_exit_code(self, returncode, err):
         """Handle the exit code for the current run."""
+        exit_status = False
         self.log.info('[run] Exit Code {}'.format(returncode))
 
         self.reports.increment_total()  # increment report execution total
         valid_exit_codes = self.profile.get('exit_codes', [0])
-        self.reports.exit_code = returncode
+        self.reports.exit_code(returncode)
 
         if returncode in valid_exit_codes:
+            exit_status = True
             self.reports.profile_execution(True)
             print('App Exit Code: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, returncode))
         else:
@@ -651,6 +680,7 @@ class TcRun(object):
             self.exit_code = 1
             if args.halt_on_fail:
                 raise RuntimeError('App exited with invalid exit code {}'.format(returncode))
+        return exit_status
 
     def run_validate_program_main(self, program_main):
         """Validate the program main file exists."""
@@ -879,6 +909,8 @@ class TcRun(object):
         if oper in self._operators and self._operators.get(oper)(db_data, user_data):
             self.log.info(u'[validate] validation was successful')
         else:
+            self.log.error(u'[validate] validation failed')
+            self.reports.profile_validation(False)
             if args.halt_on_fail:
                 raise RuntimeError('Failed validating data.')
 
@@ -1029,7 +1061,7 @@ class Report(object):
 
     def __init__(self, profile):
         """Initialize class properties."""
-        self.data = {
+        self._data = {
             'description': profile.get('description'),
             'groups': profile.get('groups'),
             'name': profile.get('profile_name'),
@@ -1038,52 +1070,57 @@ class Report(object):
         }
 
     @property
+    def data(self):
+        return self._data
+
+    @property
     def execution_success(self):
         """Return the profile/report execution_success."""
-        return self.data.get('execution_success')
+        return self._data.get('execution_success')
 
     @execution_success.setter
     def execution_success(self, execution_success):
         """Set the profile/report execution_success."""
-        self.data['execution_success'] = execution_success
+        self._data['execution_success'] = execution_success
 
     @property
     def exit_code(self):
         """Return the profile/report exit_code."""
-        return self.data.get('exit_code')
+        return self._data.get('exit_code')
 
     @exit_code.setter
     def exit_code(self, exit_code):
         """Set the profile/report exit_code."""
-        self.data['exit_code'] = exit_code
+        self._data['exit_code'] = exit_code
 
     @property
     def name(self):
         """Return the profile/report name."""
-        return self.data.get('name')
+        return self._data.get('name')
 
     @property
     def selected(self):
         """Return the profile/report name."""
-        return self.data.get('selected')
+        return self._data.get('selected')
 
     @selected.setter
     def selected(self, selected):
         """Return the profile/report name."""
-        self.data['selected'] = selected
+        self._data['selected'] = selected
 
     @property
     def validation_success(self):
         """Return the profile/report validation_success."""
-        return self.data.get('validation_success')
+        return self._data.get('validation_success')
 
     @validation_success.setter
     def validation_success(self, validation_success):
         """Set the profile/report validation_success."""
-        self.data['validation_success'] = validation_success
+        self._data['validation_success'] = validation_success
 
     def __str__(self):
-        return json.dumps(self.data, indent=2, sort_keys=True)
+        """Return report as a string."""
+        return json.dumps(self._data, indent=2, sort_keys=True)
 
 
 class Reports(object):
@@ -1092,12 +1129,16 @@ class Reports(object):
     def __init__(self):
         """Initialize class properties."""
         self.report = {
-            'profiles': [],
+            'profiles': {
+                'selected': [],
+                'unselected': [],
+            },
             'results': {
                 'executions': {
                     'fail': 0,
                     'pass': 0
                 },
+                'failed_profiles': [],
                 'total': 0,
                 'validations': {
                     'fail': 0,
@@ -1117,7 +1158,8 @@ class Reports(object):
         """Add profile to report."""
         report = Report(profile)
         report.selected = selected
-        self.report['settings']['selected_profiles'].append(report.name)
+        if selected:
+            self.report['settings']['selected_profiles'].append(report.name)
         self.profiles.setdefault(report.name, report)
         return report
 
@@ -1150,8 +1192,22 @@ class Reports(object):
         else:
             self.report['results']['validations']['fail'] += 1
 
+    def __iter__(self):
+        """Interate over all report profiles."""
+        for p in self.profiles.values():
+            yield p
+
     def __str__(self):
-        return json.dumps(self.profiles, indent=2, sort_keys=True)
+        """Return reports as a string."""
+        report = self.report
+        for name, profile in self.profiles.items():
+            if profile.data.get('selected'):
+                selected = 'selected'
+            else:
+                selected = 'unselected'
+            del profile.data['selected']
+            report['profiles'][selected].append(profile.data)
+        return json.dumps(report, indent=2, sort_keys=True)
 
 
 if __name__ == '__main__':
@@ -1164,22 +1220,30 @@ if __name__ == '__main__':
             tcr.profile = p
 
             if args.gen_launcher:
+                # print launcher config and exit
                 tcr.gen_launcher()
                 continue
-            # print(json.dumps(p, indent=4))
             tcr.clear()
             tcr.stage()
-            tcr.run()
-            tcr.validate()
+            run_success = tcr.run()
+            if run_success:
+                # set validation status to True by default
+                tcr.reports.profile_validation(True)
+                tcr.validate()
 
+            # sleep between profiles
             if profile_count > 0:
                 sleep = tcr.profile.get('sleep', tcr.config.get('sleep', tcr.sleep))
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
             profile_count =+ 1
+
+        # display report
+        tcr.report()
+
+        # log and exit
         tcr.log.info('Exit Code: {}'.format(tcr.exit_code))
         sys.exit(tcr.exit_code)
     except Exception as e:
-        # TODO: Update this, possibly raise
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)
