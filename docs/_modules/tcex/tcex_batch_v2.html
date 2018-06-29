@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.3 documentation</title>
+  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.8 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.3 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.8 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.3
+                0.8.8
               </div>
             
           
@@ -1025,10 +1025,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">group_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">group_obj</span></div>
 
-<div class="viewcode-block" id="TcExBatch.submit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">submit_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">poll</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Send the batch request to ThreatConnect.</span>
+<div class="viewcode-block" id="TcExBatch.submit"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">poll</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">process_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Submit Batch request to ThreatConnect API.</span>
 
-<span class="sd">        By default this method will submit data, poll for completion, and submit the file data.</span>
+<span class="sd">        By default this method will submit the job request and data and if the size of the data</span>
+<span class="sd">        is below the value **synchronousBatchSaveLimit** set in System Setting it will process</span>
+<span class="sd">        the request synchronously and return the batch status.  If the size of the batch is greater</span>
+<span class="sd">        than the value set the batch job will be queued.</span>
 <span class="sd">        Errors are not retrieve automatically and need to be enabled.</span>
 
 <span class="sd">        If any of the submit, poll, or error methods fail the entire submit will halt at the point</span>
@@ -1038,58 +1041,59 @@
 <span class="sd">        process.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            submit_data (bool, default:True): Submit the data after the job request.</span>
 <span class="sd">            poll (bool, default:True): Poll for status.</span>
-<span class="sd">            errors (bool, default:False): Retrieve and batch errors.</span>
+<span class="sd">            errors (bool, default:True): Retrieve any batch errors (only if poll is True).</span>
+<span class="sd">            process_files (bool, default:True): Send any document or report attachments to the API.</span>
 <span class="sd">            halt_on_error (bool, default:True): If True any exception will raise an error.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            dict: The batch data including batch id, batch status, errors (optional) and upload</span>
-<span class="sd">                status.</span>
+<span class="sd">        Returns.</span>
+<span class="sd">            dict: The Batch Status from the ThreatConnect API.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Submitting </span><span class="si">{}</span><span class="s1"> groups.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_len</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Submitting </span><span class="si">{}</span><span class="s1"> indicators.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_len</span><span class="p">))</span>
-        <span class="n">batch_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_len</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">indicator_len</span><span class="p">:</span>
-            <span class="n">batch_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_job</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;batch_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_id</span>
-                <span class="k">if</span> <span class="n">submit_data</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">submit_data</span><span class="p">(</span><span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">poll</span><span class="p">:</span>
-                        <span class="c1"># set an initial delay to allow small batch jobs to finish without a poll delay</span>
-                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                        <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;batch_status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span>
-                        <span class="c1"># retrieve errors</span>
-                        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
-                            <span class="n">data</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_status&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span>
-                            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                                <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">submit_data</span><span class="p">:</span>
-                    <span class="c1"># submit file data after batch job is complete</span>
-                    <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;upload_status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No entries to submit to batch.&#39;</span><span class="p">)</span>
+        <span class="n">batch_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_create_and_upload</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">)</span>
+
+        <span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># job hit queue</span>
+            <span class="k">if</span> <span class="n">poll</span><span class="p">:</span>
+                <span class="c1"># poll for status</span>
+                <span class="n">batch_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span>
+                    <span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="n">halt_on_error</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+                    <span class="c1"># retrieve errors</span>
+                    <span class="n">error_groups</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorGroupCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="n">error_indicators</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorIndicatorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">error_groups</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">error_indicators</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># can&#39;t process files if status is unknown (polling must be enabled)</span>
+                <span class="n">process_files</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">process_files</span><span class="p">:</span>
+            <span class="c1"># submit file data after batch job is complete</span>
+            <span class="n">batch_data</span><span class="p">[</span><span class="s1">&#39;uploadStatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_files</span><span class="p">(</span><span class="n">halt_on_error</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">batch_data</span></div>
 
-<div class="viewcode-block" id="TcExBatch.submit_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_data">[docs]</a>    <span class="k">def</span> <span class="nf">submit_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_id</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Submit the batch data to ThreatConnect API for the specified batch_id.</span>
+<div class="viewcode-block" id="TcExBatch.submit_create_and_upload"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload">[docs]</a>    <span class="k">def</span> <span class="nf">submit_create_and_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Submit Batch request to ThreatConnect API.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            batch_id (str): The ID returned from the ThreatConnect API for the current batch job.</span>
-<span class="sd">            halt_on_error (bool, default:True): If True any exception will raise an error.</span>
+<span class="sd">        Returns.</span>
+<span class="sd">            dict: The Batch Status from the ThreatConnect API.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                <span class="s1">&#39;/v2/batch/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batch_id</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;includeAdditional&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span>
+            <span class="p">}</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/batch/createAndUpload&#39;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1520</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1525</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="c1"># reset values</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_groups_raw</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indicators_raw</span> <span class="o">=</span> <span class="p">[]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1505</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExBatch.submit_files"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_files">[docs]</a>    <span class="k">def</span> <span class="nf">submit_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Submit Files for Documents and Reports to ThreatConnect API.</span>
@@ -1156,27 +1160,6 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">580</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
-
-<div class="viewcode-block" id="TcExBatch.submit_job"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_job">[docs]</a>    <span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Submit Batch request to ThreatConnect API.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            halt_on_error (bool, default:True): If True any exception will raise an error.</span>
-
-<span class="sd">        Returns.</span>
-<span class="sd">            str: The ID returned from the ThreatConnect API for the current batch job.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/v2/batch&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1505</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span> <span class="ow">or</span> <span class="s1">&#39;application/json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;Success&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">1510</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">],</span> <span class="n">halt_on_error</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Batch Submit Data: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchId&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExBatch.threat"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.threat">[docs]</a>    <span class="k">def</span> <span class="nf">threat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add Threat data to Batch object</span>
@@ -2607,7 +2590,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.3',
+            VERSION:'0.8.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

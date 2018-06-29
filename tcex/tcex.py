@@ -145,6 +145,12 @@ class TcEx(object):
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
                     sys.argv.append(arg)
+            elif '|' in value:
+                # handle multiple choice values
+                for mcv in value.split('|'):
+                    sys.argv.append(arg)
+                    sys.argv.append('{}'.format(mcv))
+
             elif value == 'true':
                 # handle bool values (string of "true") as flags (e.g., --flag) with no value
                 sys.argv.append(arg)
@@ -157,7 +163,7 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-        self._unknown_args(unknown)
+        # self._unknown_args(unknown)
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -264,6 +270,7 @@ class TcEx(object):
 
         if stream_only:
             log = logging.getLogger('tcex-stream')
+            log.setLevel(level)
             # stream logger
             sh = logging.StreamHandler()
             sh.set_name('sh')
@@ -271,41 +278,51 @@ class TcEx(object):
             sh.setFormatter(formatter)
             log.addHandler(sh)
         else:
+            log = logging.getLogger('tcex-stream')
+            # remove stream handler
+            for handler in self.log.handlers:
+                if handler.get_name() == 'sh':
+                    log.removeHandler(handler)
             log = logging.getLogger('tcex')
             if self.default_args.logging is not None:
                 level = log_level[self.default_args.logging]
             elif self.default_args.tc_log_level is not None:
                 level = log_level[self.default_args.tc_log_level]
+            log.setLevel(level)
 
-            if not log.handlers:
-                # Add API logger
+            # add api handler if not already added
+            if 'api' not in [h.get_name() for h in self.log.handlers]:
                 if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-                    # api & file logger
-                    from .tcex_logger import TcExLogHandler, TcExLogFormatter
-                    # api = TcExLogger(logfile, self)
-                    api = TcExLogHandler(self.session)
-                    api.set_name('api')
-                    # api.setLevel(level)
-                    api.setLevel(logging.DEBUG)
-                    # formatter = TcExLogFormatter()
-                    api.setFormatter(TcExLogFormatter())
-                    log.addHandler(api)
+                    log.addHandler(self._logger_api)
 
-                # Add file logger or stream handler
+            # add file handler if not already added
+            if 'fh' not in [h.get_name() for h in self.log.handlers]:
                 if self.default_args.tc_log_path:
-                    logfile = os.path.join(
-                        self.default_args.tc_log_path, self.default_args.tc_log_file)
-                    # file logger
-                    fh = logging.FileHandler(logfile)
-                    fh.set_name('fh')
-                    # fh.setLevel(level)
-                    fh.setLevel(logging.DEBUG)
+                    fh = self._logger_fh
                     fh.setFormatter(formatter)
                     log.addHandler(fh)
 
-        log.setLevel(level)
-        log.info('Logging Level: {}'.format(logging.getLevelName(level)))
+            log.info('Logging Level: {}'.format(logging.getLevelName(level)))
         return log
+
+    @property
+    def _logger_api(self):
+        """Return API logging handler."""
+        from .tcex_logger import TcExLogHandler, TcExLogFormatter
+        api = TcExLogHandler(self.session)
+        api.set_name('api')
+        api.setLevel(logging.DEBUG)
+        api.setFormatter(TcExLogFormatter())
+        return api
+
+    @property
+    def _logger_fh(self):
+        """Return File logging handler."""
+        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
+        fh = logging.FileHandler(logfile)
+        fh.set_name('fh')
+        fh.setLevel(logging.DEBUG)
+        return fh
 
     @property
     def playbook(self):
@@ -597,7 +614,7 @@ class TcEx(object):
         """
         # add exit message to message.tc file and log
         if msg is not None:
-            if code == 0 or (code is None and self.exit_code == 0):
+            if code in [0, 3] or (code is None and self.exit_code in [0, 3]):
                 self.log.info(msg)
             else:
                 self.log.error(msg)

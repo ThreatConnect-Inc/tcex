@@ -34,20 +34,6 @@ class TcExPlaybook(object):
         self.db = self._db
 
     @property
-    def _create_data_types(self):
-        """Map of standard playbook variable types to create method."""
-        return {
-            'Binary': self.create_binary,
-            'BinaryArray': self.create_binary_array,
-            'KeyValue': self.create_key_value,
-            'KeyValueArray': self.create_key_value_array,
-            'String': self.create_string,
-            'StringArray': self.create_string_array,
-            'TCEntity': self.create_tc_entity,
-            'TCEntityArray': self.create_tc_entity_array
-        }
-
-    @property
     def _db(self):
         """Return the correct KV store for this execution."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
@@ -63,20 +49,6 @@ class TcExPlaybook(object):
         else:
             err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
             raise RuntimeError(err)
-
-    @property
-    def _read_data_types(self):
-        """Map of standard playbook variable types to read method."""
-        return {
-            'Binary': self.read_binary,
-            'BinaryArray': self.read_binary_array,
-            'KeyValue': self.read_key_value,
-            'KeyValueArray': self.read_key_value_array,
-            'String': self.read_string,
-            'StringArray': self.read_string_array,
-            'TCEntity': self.read_tc_entity,
-            'TCEntityArray': self.read_tc_entity_array
-        }
 
     @property
     def _variable_pattern(self):
@@ -155,11 +127,25 @@ class TcExPlaybook(object):
             # self.tcex.log.debug(u'variable value: {}'.format(value))
             parsed_key = self.parse_variable(key.strip())
             variable_type = parsed_key['type']
-            if variable_type in self._read_data_types:
-                data = self._create_data_types[variable_type](key, value)
+            if variable_type in self.read_data_types:
+                data = self.create_data_types[variable_type](key, value)
             else:
                 data = self.create_raw(key, value)
         return data
+
+    @property
+    def create_data_types(self):
+        """Map of standard playbook variable types to create method."""
+        return {
+            'Binary': self.create_binary,
+            'BinaryArray': self.create_binary_array,
+            'KeyValue': self.create_key_value,
+            'KeyValueArray': self.create_key_value_array,
+            'String': self.create_string,
+            'StringArray': self.create_string_array,
+            'TCEntity': self.create_tc_entity,
+            'TCEntityArray': self.create_tc_entity_array
+        }
 
     def create_output(self, key, value, variable_type=None):
         """Wrapper for Create method of CRUD operation for working with KeyValue DB.
@@ -289,12 +275,12 @@ class TcExPlaybook(object):
             key = key.strip()
             key_type = self.variable_type(key)
             if re.match(self._variable_match, key):
-                if key_type in self._read_data_types:
+                if key_type in self.read_data_types:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
-                        data = self._read_data_types[key_type](key)
+                        data = self.read_data_types[key_type](key)
                     else:
-                        data = self._read_data_types[key_type](key, embedded)
+                        data = self.read_data_types[key_type](key, embedded)
                 else:
                     data = self.read_raw(key)
             elif embedded:
@@ -310,6 +296,20 @@ class TcExPlaybook(object):
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
+
+    @property
+    def read_data_types(self):
+        """Map of standard playbook variable types to read method."""
+        return {
+            'Binary': self.read_binary,
+            'BinaryArray': self.read_binary_array,
+            'KeyValue': self.read_key_value,
+            'KeyValueArray': self.read_key_value_array,
+            'String': self.read_string,
+            'StringArray': self.read_string_array,
+            'TCEntity': self.read_tc_entity,
+            'TCEntityArray': self.read_tc_entity_array
+        }
 
     def read_embedded(self, data, parent_var_type):
         """Read method for "mixed" variable type.
