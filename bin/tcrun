@@ -81,6 +81,7 @@ class TcRun(object):
         # logger
         self.log = self._logger()
 
+        self._clear_redis_tracker = []
         self.app_path = os.getcwd()
         self.exit_code = 0
         self.json_report = {}
@@ -263,8 +264,15 @@ class TcRun(object):
             elif data_type == 'threatconnect-batch':
                 for group in sd.get('data', []).get('group', []):
                     self.clear_tc(sd.get('data_owner'), group, 'auto-clear')
+                    self.clear_redis(group.get('variable'), 'auto-clear')
                 for indicator in sd.get('data', []).get('indicator', []):
                     self.clear_tc(sd.get('data_owner'), indicator, 'auto-clear')
+                    self.clear_redis(indicator.get('variable'), 'auto-clear')
+        for vd in self.profile.get('validations'):
+            data_type = sd.get('data_type', 'redis')
+            variable = sd.get('variable')
+            if data_type == 'redis':
+                self.clear_redis(variable, 'auto-clear')
 
     def clear(self):
         """Clear Redis and ThreatConnect data defined in profile.
@@ -291,10 +299,16 @@ class TcRun(object):
 
     def clear_redis(self, variable, clear_type):
         """Delete redis data for provided variable."""
-        if re.match(self._vars_match, variable):
-            self.log.info('[{}] Deleting redis variable: {}.'.format(clear_type, variable))
-            print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
-            self.tcex.playbook.delete(variable)
+        if variable is None:
+            return
+        if variable in self._clear_redis_tracker:
+            return
+        if not re.match(self._vars_match, variable):
+            return
+        self.log.info('[{}] Deleting redis variable: {}.'.format(clear_type, variable))
+        print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
+        self.tcex.playbook.delete(variable)
+        self._clear_redis_tracker.append(variable)
 
     def clear_tc(self, owner, data, clear_type):
         """Delete ThreatConnect data."""
@@ -303,7 +317,6 @@ class TcRun(object):
         path = data.get('path')
         if tc_type in self.tcex.group_types:
             name = self.tcex.playbook.read(data.get('name'))
-            # json path name
             name = self.path_data(name, path)
             if name is not None:
                 print('Deleting ThreatConnect Group: {}{}{}'.format(
@@ -885,7 +898,7 @@ class TcRun(object):
         [{
           "data": {
             "id": 116,
-            "value": "adver001-build-testing",
+            "value": "adversary001-build-testing",
             "type": "Adversary",
             "ownerName": "qa-build",
             "dateAdded": "2017-08-16T18:35:07-04:00",
@@ -1137,17 +1150,18 @@ class TcRun(object):
         self.log.info('[validate] Validation Data: ({}), Type: [{}]'.format(
             user_data, type(user_data)))
 
-        # sort list for simple comparisons
+        # try to sort list of strings for simple comparisons
+        # if list has a more complex data structure the sort will fail
         if isinstance(db_data, (list)):
             try:
                 db_data = sorted(db_data)
             except TypeError:
-                self.log.warning('[validate] could not sort list')
+                self.log.debug('[validate] could not sort list')
         if isinstance(user_data, (list)):
             try:
                 user_data = sorted(user_data)
             except TypeError:
-                self.log.warning('[validate] could not sort list')
+                self.log.debug('[validate] could not sort list')
 
         # compare the data
         if oper in self._operators and self._operators.get(oper)(db_data, user_data):
@@ -1429,11 +1443,11 @@ class Reports(object):
 
     def profile_validation(self, status):
         """Return run total value."""
+        self.selected_profile.data.setdefault('validation_pass_count', 0)
+        self.selected_profile.data.setdefault('validation_fail_count', 0)
         if status:
-            self.selected_profile.data.setdefault('validation_pass_count', 0)
             self.selected_profile.data['validation_pass_count'] += 1
         else:
-            self.selected_profile.data.setdefault('validation_fail_count', 0)
             self.selected_profile.data['validation_fail_count'] += 1
 
     def report_validation(self, status):
