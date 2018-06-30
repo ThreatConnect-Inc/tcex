@@ -30,8 +30,6 @@ if sys.version_info < (3, ):
         'ipaddress'
     ])
 scripts = [
-    'bin/tcdata',
-    'bin/tcdata.cmd',
     'bin/tclib',
     'bin/tclib.cmd',
     'bin/tcpackage',

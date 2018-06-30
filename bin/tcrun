@@ -74,6 +74,7 @@ class TcRun(object):
         self._config = None
         self._install_json = None
         self._profile = {}
+        self._staging_data = None
         self.reports = Reports()
         self.tcex = None
 
@@ -243,6 +244,28 @@ class TcRun(object):
             r'[A-Za-z0-9_-]+))'  # variable type (custom)
         )
 
+    def autoclear(self):
+        """Clear Redis and ThreatConnect data from staging data."""
+        for sd in self.staging_data:
+            data_type = sd.get('data_type', 'redis')
+            if data_type == 'redis':
+                self.clear_redis(sd.get('variable'), 'auto-clear')
+            elif data_type == 'redis-array':
+                self.clear_redis(sd.get('variable'), 'auto-clear')
+                for variables in sd.get('data', {}).get('variables', []):
+                    self.clear_redis(variables.get('value'), 'auto-clear')
+            elif data_type == 'threatconnect':
+                self.clear_tc(sd.get('data_owner'), sd.get('data', {}), 'auto-clear')
+                self.clear_redis(sd.get('variable'), 'auto-clear')
+            elif data_type == 'threatconnect-association':
+                # assuming these have already been cleared
+                pass
+            elif data_type == 'threatconnect-batch':
+                for group in sd.get('data', []).get('group', []):
+                    self.clear_tc(sd.get('data_owner'), group, 'auto-clear')
+                for indicator in sd.get('data', []).get('indicator', []):
+                    self.clear_tc(sd.get('data_owner'), indicator, 'auto-clear')
+
     def clear(self):
         """Clear Redis and ThreatConnect data defined in profile.
 
@@ -262,34 +285,50 @@ class TcRun(object):
         """
         for clear_data in self.profile.get('clear', []):
             if clear_data.get('data_type') == 'redis':
-                variable = clear_data.get('variable')
-                self.log.info('[clear] Deleting redis variable: {}.'.format(variable))
-                print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
-                self.tcex.playbook.delete(variable)
+                self.clear_redis(clear_data.get('variable'), 'clear')
             elif clear_data.get('data_type') == 'threatconnect':
-                batch = self.tcex.batch(clear_data.get('owner'), action='Delete')
-                tc_type = clear_data.get('type')
-                path = clear_data.get('path')
-                if clear_data.get('type') in self.tcex.group_types:
-                    name = self.tcex.playbook.read(clear_data.get('name'))
-                    # json path name
-                    name = self.path_data(name, path)
-                    if name is not None:
-                        print('Deleting ThreatConnect Group: {}{}{}'.format(
-                            c.Style.BRIGHT, c.Fore.MAGENTA, name))
-                        self.log.info('[clear] Deleting ThreatConnect {} with name: {}.'.format(
-                            tc_type, name))
-                        batch.group(clear_data.get('type'), clear_data.get('name'))
-                elif clear_data.get('type') in self.tcex.indicator_types:
-                    value = self.tcex.playbook.read(clear_data.get('value'))
-                    value = self.path_data(value, path)
-                    if value is not None:
-                        print('Deleting ThreatConnect Indicator: {}{}{}'.format(
-                            c.Style.BRIGHT, c.Fore.MAGENTA, value))
-                        self.log.info('[clear] Deleting ThreatConnect {} with value: {}.'.format(
-                            tc_type, value))
-                        batch.indicator(clear_data.get('type'), clear_data.get('value'))
-                batch.submit()
+                self.clear_tc(clear_data.get('owner'), clear_data, 'clear')
+
+    def clear_redis(self, variable, clear_type):
+        """Delete redis data for provided variable."""
+        if re.match(self._vars_match, variable):
+            self.log.info('[{}] Deleting redis variable: {}.'.format(clear_type, variable))
+            print('Clearing Variables: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, variable))
+            self.tcex.playbook.delete(variable)
+
+    def clear_tc(self, owner, data, clear_type):
+        """Delete ThreatConnect data."""
+        batch = self.tcex.batch(owner, action='Delete')
+        tc_type = data.get('type')
+        path = data.get('path')
+        if tc_type in self.tcex.group_types:
+            name = self.tcex.playbook.read(data.get('name'))
+            # json path name
+            name = self.path_data(name, path)
+            if name is not None:
+                print('Deleting ThreatConnect Group: {}{}{}'.format(
+                    c.Style.BRIGHT, c.Fore.MAGENTA, name))
+                self.log.info('[{}] Deleting ThreatConnect {} with name: {}.'.format(
+                    clear_type, tc_type, name))
+                batch.group(tc_type, name)
+        elif tc_type in self.tcex.indicator_types:
+            if data.get('summary') is not None:
+                summary = self.tcex.playbook.read(data.get('summary'))
+            else:
+                resource = self.tcex.resource(tc_type)
+                summary = resource.summary(data)
+            summary = self.path_data(summary, path)
+            if summary is not None:
+                print('Deleting ThreatConnect Indicator: {}{}{}'.format(
+                    c.Style.BRIGHT, c.Fore.MAGENTA, summary))
+                self.log.info('[{}] Deleting ThreatConnect {} with value: {}.'.format(
+                    clear_type, tc_type, summary))
+                batch.indicator(tc_type, summary)
+        batch_results = batch.submit()
+        self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
+        for error in batch_results.get('errors', []):
+            self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
+
 
     @property
     def config(self):
@@ -475,7 +514,7 @@ class TcRun(object):
             try:
                 variable_data = json.loads(variable_data)
             except Exception:
-                self.log.warning('String value ({}) could not JSON serialized.'.format(
+                self.log.debug('String value ({}) could not JSON serialized.'.format(
                     variable_data))
         if path is not None and isinstance(variable_data, (dict, list)):
             expression = jmespath.compile(path)
@@ -538,26 +577,34 @@ class TcRun(object):
     def report(self):
         """Format and output report data to screen."""
         print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
-        print('{0!s:<60}{1!s:<25}{2!s:<25}'.format('Profile:', 'Execution:', 'Validation:'))
+        # report headers
+        print('{!s:<85}{!s:<20}'.format('', 'Validations'))
+        print('{!s:<60}{!s:<25}{!s:<10}{!s:<10}'.format('Profile:', 'Execution:', 'Passed:', 'Failed:'))
         for r in self.reports:
             d = r.data
             if not d.get('selected'):
                 continue
+
+            # execution
             execution_color = c.Fore.RED
             execution_text = 'Failed'
             if d.get('execution_success'):
                 execution_color = c.Fore.GREEN
                 execution_text = 'Passed'
 
-            validation_color = c.Fore.RED
-            validation_text = 'Failed'
-            if d.get('validation_success'):
-                validation_color = c.Fore.GREEN
-                validation_text = 'Passed'
+            # pass count
+            pass_count_color = c.Fore.GREEN
+            pass_count = d.get('validation_pass_count', 0)
+            # fail count
+            fail_count = d.get('validation_fail_count', 0)
+            fail_count_color = c.Fore.GREEN
+            if fail_count > 0:
+                fail_count_color = c.Fore.RED
 
-            print('{0!s:<60}{1}{2}{3!s:<25}{4}{5!s:<25}'.format(
-                d.get('name'), c.Style.BRIGHT, execution_color, execution_text, validation_color,
-                validation_text))
+            # report row
+            print('{!s:<60}{}{!s:<25}{}{!s:<10}{}{!s:<10}'.format(
+                d.get('name'), execution_color, execution_text, pass_count_color, pass_count,
+                fail_count_color, fail_count))
 
         # write report to disk
         if args.report:
@@ -808,18 +855,20 @@ class TcRun(object):
     @property
     def staging_data(self):
         """Read data files and return all staging data for current profile."""
-        staging_data = []
-        for staging_file in self.profile.get('data_files', []):
-            if os.path.isfile(staging_file):
-                print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
-                self.log.info('[stage] Staging Data: {}'.format(staging_file))
-                f = open(staging_file, 'r')
-                staging_data.extend(json.load(f))
-                f.close()
-            else:
-                print('{}{}Could not find file {}.'.format(
-                    c.Style.BRIGHT, c.Fore.RED, staging_file))
-        return staging_data
+        if self._staging_data is None:
+            staging_data = []
+            for staging_file in self.profile.get('data_files', []):
+                if os.path.isfile(staging_file):
+                    print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
+                    self.log.info('[stage] Staging data file: {}'.format(staging_file))
+                    f = open(staging_file, 'r')
+                    staging_data.extend(json.load(f))
+                    f.close()
+                else:
+                    print('{}{}Could not find file {}.'.format(
+                        c.Style.BRIGHT, c.Fore.RED, staging_file))
+            self._staging_data = staging_data
+        return self._staging_data
 
     def stage_redis(self, variable, data):
         """Stage Redis Data"""
@@ -867,7 +916,6 @@ class TcRun(object):
             resource = self.tcex.resource(resource_type)
             resource.http_method = 'POST'
             resource.owner = owner
-            ## resource.url = args.tc_api_path
 
             # special case for Email Group Type
             if resource_type == 'Email':
@@ -880,11 +928,13 @@ class TcRun(object):
             if response.get('status') == 'Success':
                 # add resource id
                 if resource_type in self.tcex.indicator_types:
-                    for r_data in resource.indicators(response.get('data')):
-                        if r_data.get('value') is not None:
-                            resource_id = r_data.get('value')
-                            break
+                    resource_values = []
+                    resource_id = resource.summary(response.get('data'))
+                    self.log.info('[stage] Creating resource {}:{}'.format(
+                        resource_type, resource_id))
                 elif resource_type in self.tcex.group_types:
+                    self.log.info('[stage] Creating resource {}:{}'.format(
+                        resource_type, response.get('data', {}).get('name')))
                     resource_id = response.get('data', {}).get('id')
                 self.log.debug('[stage] resource_id: {}'.format(resource_id))
                 resource.resource_id(resource_id)
@@ -892,7 +942,9 @@ class TcRun(object):
                 entity = self.tcex.playbook.json_to_entity(
                     response.get('data'), resource.value_fields, resource.name, resource.parent)
                 self.log.debug('[stage] Creating Entity: {} ({})'.format(variable, entity[0]))
-                self.tcex.playbook.create_tc_entity(variable, entity[0])
+
+                self.stage_redis(variable, entity[0])
+                # self.tcex.playbook.create_tc_entity(variable, entity[0])
 
                 # update metadata
                 for attribute_data in attributes:
@@ -1016,7 +1068,7 @@ class TcRun(object):
                 self.stage_redis(variable, self.stage_tc_indicator_entity(data))
         # submit batch
         batch_results = batch.submit()
-        self.log.info('[stage] Batch Results: {}'.format(batch_results))
+        self.log.debug('[stage] Batch Results: {}'.format(batch_results))
         for error in batch_results.get('errors', []):
             self.log.error('[stage] {}'.format(error))
 
@@ -1042,6 +1094,7 @@ class TcRun(object):
 
     def validate(self):
         """Validate Data"""
+        passed = True
         for data in self.profile.get('validations'):
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
@@ -1066,11 +1119,13 @@ class TcRun(object):
                     self.log.info('[validate] DB Data: ({}), Type: [{}]'.format(
                         'Excluding Binary Data Output', type(db_data)))
                 else:
-                    self.validate_redis(
-                        db_data, user_data, data.get('operator', 'eq'))
+                    if not self.validate_redis(db_data, user_data, data.get('operator', 'eq')):
+                        passed = False
+        return passed
 
     def validate_redis(self, db_data, user_data, oper):
         """Validate data in Redis."""
+        passed = True
         # convert any int to string since playbooks don't support int values
         if isinstance(db_data, int):
             db_data = str(db_data)
@@ -1096,12 +1151,15 @@ class TcRun(object):
 
         # compare the data
         if oper in self._operators and self._operators.get(oper)(db_data, user_data):
+            self.reports.profile_validation(True)
             self.log.info(u'[validate] validation was successful')
         else:
             self.log.error(u'[validate] validation failed')
             self.reports.profile_validation(False)
+            passed = False
             if args.halt_on_fail:
                 raise RuntimeError('Failed validating data.')
+        return passed
 
 
 class ArgBuilder(object):
@@ -1297,16 +1355,6 @@ class Report(object):
         """Return the profile/report name."""
         self._data['selected'] = selected
 
-    @property
-    def validation_success(self):
-        """Return the profile/report validation_success."""
-        return self._data.get('validation_success')
-
-    @validation_success.setter
-    def validation_success(self, validation_success):
-        """Set the profile/report validation_success."""
-        self._data['validation_success'] = validation_success
-
     def __str__(self):
         """Return report as a string."""
         return json.dumps(self._data, indent=2, sort_keys=True)
@@ -1337,7 +1385,9 @@ class Reports(object):
             'settings': {
                 'provided_group': 'qa-build',
                 'provided_profile': 'default',
-                'selected_profiles': []
+                'selected_profiles': [],
+                'selected_profile_count': 0,
+                'total_profile_count': 0,
             }
         }
         self.profiles = {}
@@ -1349,6 +1399,8 @@ class Reports(object):
         report.selected = selected
         if selected:
             self.report['settings']['selected_profiles'].append(report.name)
+            self.report['settings']['selected_profile_count'] += 1
+        self.report['settings']['total_profile_count'] += 1
         self.profiles.setdefault(report.name, report)
         return report
 
@@ -1372,14 +1424,27 @@ class Reports(object):
             self.report['results']['executions']['pass'] += 1
         else:
             self.report['results']['executions']['fail'] += 1
+            if self.selected_profile.name not in self.report['results']['failed_profiles']:
+                self.report['results']['failed_profiles'].append(self.selected_profile.name)
 
     def profile_validation(self, status):
         """Return run total value."""
-        self.selected_profile.data['validation_success'] = status
+        if status:
+            self.selected_profile.data.setdefault('validation_pass_count', 0)
+            self.selected_profile.data['validation_pass_count'] += 1
+        else:
+            self.selected_profile.data.setdefault('validation_fail_count', 0)
+            self.selected_profile.data['validation_fail_count'] += 1
+
+    def report_validation(self, status):
+        """Return run total value."""
+        # only one fail/pass count per profile
         if status:
             self.report['results']['validations']['pass'] += 1
         else:
             self.report['results']['validations']['fail'] += 1
+            if self.selected_profile.name not in self.report['results']['failed_profiles']:
+                self.report['results']['failed_profiles'].append(self.selected_profile.name)
 
     def __iter__(self):
         """Interate over all report profiles."""
@@ -1403,6 +1468,7 @@ if __name__ == '__main__':
     try:
         tcr = TcRun(args)
         profile_count = 0
+        # load staging data
         for p in tcr.profiles:
             separator = '=' * 20
             tcr.log.info('{} {} {}'.format(separator, p.get('profile_name'), separator))
@@ -1412,13 +1478,15 @@ if __name__ == '__main__':
                 # print launcher config and exit
                 tcr.gen_launcher()
                 continue
+            if args.autoclear:
+                tcr.autoclear()
             tcr.clear()
             tcr.stage()
             run_success = tcr.run()
             if run_success:
                 # set validation status to True by default
-                tcr.reports.profile_validation(True)
-                tcr.validate()
+                validation_passed = tcr.validate()
+                tcr.reports.report_validation(validation_passed)
 
             # sleep between profiles
             if profile_count > 0:

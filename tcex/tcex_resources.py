@@ -1414,6 +1414,13 @@ class Indicator(Resource):
         """
         self.indicator(data)
 
+    def summary(self, indicator_data):
+        """Return a summary value for any given indicator type."""
+        summary = []
+        for v in self._value_fields:
+            summary.append(indicator_data.get(v, ''))
+        return indicator_data.get('summary', ' : '.join(summary))
+
 
 class Address(Indicator):
     """Address Resource Class
@@ -1621,6 +1628,16 @@ class File(Indicator):
             if hs:
                 return hs
 
+    def indicator(self, data):
+        """Update the request URI to include the Indicator for specific indicator retrieval.
+
+        Args:
+            data (string): The indicator value
+        """
+        # handle hashes in form md5 : sha1 : sha256
+        data = self.get_first_hash(data)
+        super(File, self).indicator(data)
+
     @staticmethod
     def indicator_body(indicators):
         """Generate the appropriate dictionary content for POST of an File indicator
@@ -1658,15 +1675,14 @@ class File(Indicator):
         if indicator is not None:
             self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
 
-    def indicator(self, data):
-        """Update the request URI to include the Indicator for specific indicator retrieval.
-
-        Args:
-            data (string): The indicator value
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        data = self.get_first_hash(data)
-        super(File, self).indicator(data)
+    def summary(self, indicator_data):
+        """Return a summary value for any given indicator type."""
+        summary = None
+        for v in self._value_fields:
+            if indicator_data.get(v) is not None:
+                summary = indicator_data.get(v)
+                break
+        return indicator_data.get('summary', summary)
 
 
 class Host(Indicator):
