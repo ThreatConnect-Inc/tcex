@@ -4,6 +4,7 @@
 import argparse
 import base64
 import collections
+import difflib
 import hashlib
 import json
 import logging
@@ -57,6 +58,8 @@ parser.add_argument(
     '--report', help='The JSON report filename.')
 # parser.add_argument(
 #     '--show_commands', action='store_true', help='Show staging and validation commands.')
+parser.add_argument(
+    '--truncate', default=50, help='The length at which to truncate data in the logs.', type=int)
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
 parser.add_argument(
@@ -452,7 +455,7 @@ class TcRun(object):
             tcex.log.warning(u'Could not find DeepDiff module.')
             return False
         if ddiff:
-            tcex.log.info(u'Diff: {}'.format(ddiff))
+            tcex.log.info(u'[validate] Diff      : {}'.format(ddiff))
             return False
         return True
 
@@ -506,6 +509,7 @@ class TcRun(object):
         for arg, value in self.profile.get('profile_args', {}).data.items():
             if arg not in self._tcex_required_args:
                 continue
+
             # add new log file name and level
             sys.argv.extend(['--tc_log_file', 'data.log'])
             sys.argv.extend(['--tc_log_level', 'error'])
@@ -653,15 +657,17 @@ class TcRun(object):
                 '.',
                 program_main
             ]
+            exe_command = command + self.profile.get('profile_args').standard
+            print_command = ' '.join(command + self.profile.get('profile_args').masked)
         elif program_language == 'java':
             command = [
                 self.config.get('java_path', program_language),
                 '-cp',
-                sp.get('class_path', './target/*')
+                self.config.get('class_path', './target/*')
             ]
+            exe_command = command + self.profile.get('profile_args').standard + [program_main]
+            print_command = ' '.join(command + self.profile.get('profile_args').masked + [program_main])
 
-        exe_command = command + self.profile.get('profile_args').standard
-        print_command = ' '.join(command + self.profile.get('profile_args').masked)
         self.log.info('[run] Running command {}'.format(print_command))
 
         # output command
@@ -1122,21 +1128,30 @@ class TcRun(object):
 
                 # get db variable/data
                 variable = data.get('variable')
-                db_data = self.tcex.playbook.read(variable)
+                if variable.endswith('Binary'):
+                    # call specific method and do not decode data
+                    db_data = self.tcex.playbook.read_binary(variable, False)
+                elif variable.endswith('BinaryArray'):
+                    # call specific method and do not decode data
+                    db_data = self.tcex.playbook.read_binary_array(variable, False)
+                else:
+                    db_data = self.tcex.playbook.read(variable)
                 db_data_path = data.get('variable_path')
                 if db_data_path is not None:
                     db_data = self.path_data(db_data, db_data_path)
 
+                # operator
+                oper = data.get('operator', 'eq')
+
                 # validate if possible
-                if variable.endswith('Binary') or variable.endswith('BinaryArray'):
-                    self.log.info('[validate] DB Data: ({}), Type: [{}]'.format(
-                        'Excluding Binary Data Output', type(db_data)))
-                else:
-                    if not self.validate_redis(db_data, user_data, data.get('operator', 'eq')):
-                        passed = False
+                separator = '-' * 10
+                self.log.info('{} {} {}'.format(separator, variable, separator))
+                # self.log.info('[validate] Variable  : {}'.format(variable))
+                if not self.validate_redis(db_data, user_data, oper, variable):
+                    passed = False
         return passed
 
-    def validate_redis(self, db_data, user_data, oper):
+    def validate_redis(self, db_data, user_data, oper, variable):
         """Validate data in Redis."""
         passed = True
         # convert any int to string since playbooks don't support int values
@@ -1145,10 +1160,6 @@ class TcRun(object):
         if isinstance(user_data, int):
             user_data = str(user_data)
 
-        self.log.info('[validate] DB Data: ({}), Type: [{}]'.format(db_data, type(db_data)))
-        self.log.info('[validate] Operator: ({})'.format(oper))
-        self.log.info('[validate] Validation Data: ({}), Type: [{}]'.format(
-            user_data, type(user_data)))
 
         # try to sort list of strings for simple comparisons
         # if list has a more complex data structure the sort will fail
@@ -1156,24 +1167,79 @@ class TcRun(object):
             try:
                 db_data = sorted(db_data)
             except TypeError:
-                self.log.debug('[validate] could not sort list')
+                # self.log.debug('[validate] could not sort list')
+                pass
         if isinstance(user_data, (list)):
             try:
                 user_data = sorted(user_data)
             except TypeError:
-                self.log.debug('[validate] could not sort list')
+                # self.log.debug('[validate] could not sort list')
+                pass
+
+        if oper not in self._operators:
+            self.log.error('Invalid operator provided ({})'.format(oper))
+            return False
 
         # compare the data
-        if oper in self._operators and self._operators.get(oper)(db_data, user_data):
+        if self._operators.get(oper)(db_data, user_data):
             self.reports.profile_validation(True)
-            self.log.info(u'[validate] validation was successful')
         else:
-            self.log.error(u'[validate] validation failed')
             self.reports.profile_validation(False)
             passed = False
+
+        # log validation data in a readable format
+        self.validate_log_output(passed, db_data, user_data, oper)
+
+        return passed
+
+    def validate_log_output(self, passed, db_data, user_data, oper):
+        """Format the validation log output to be easier to read."""
+        truncate = args.truncate
+        if db_data is not None and passed:
+            if isinstance(db_data, (string_types)) and len(db_data) > truncate:
+                db_data = db_data[:truncate]
+            elif isinstance(db_data, (list)):
+                db_data_truncated = []
+                for d in db_data:
+                    if d is not None and len(d) > truncate:
+                        db_data_truncated.append('{} ...'.format(d[:args.truncate]))
+                    else:
+                        db_data_truncated.append(d)
+                db_data = db_data_truncated
+
+        if user_data is not None and passed:
+            if isinstance(user_data, (string_types)) and len(user_data) > truncate:
+                user_data = user_data[:args.truncate]
+            elif isinstance(user_data, (list)):
+                user_data_truncated = []
+                for u in user_data:
+                    if u is not None and len(u) > truncate:
+                        user_data_truncated.append('{} ...'.format(u[:args.truncate]))
+                    else:
+                        user_data_truncated.append(u)
+                user_data = user_data_truncated
+
+        self.log.info('[validate] DB Data   : ({}), Type: [{}]'.format(db_data, type(db_data)))
+        self.log.info('[validate] Operator  : ({})'.format(oper))
+        self.log.info('[validate] User Data : ({}), Type: [{}]'.format(
+            user_data, type(user_data)))
+
+        if passed:
+            self.log.info('[validate] Results   : Passed')
+        else:
+            self.log.error('[validate] Results  : Failed')
+            if db_data is not None and user_data is not None and oper in ['eq', 'ne']:
+                for i, diff in enumerate(difflib.ndiff(db_data, user_data)):
+                    if diff[0] == ' ':  # no difference
+                        continue
+                    elif diff[0] == '-':
+                        self.log.info('[validate] Diff      : Missing data at index {}'.format(i))
+                    elif diff[0] == '+':
+                        self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
+
+            # halt all further actions
             if args.halt_on_fail:
                 raise RuntimeError('Failed validating data.')
-        return passed
 
 
 class ArgBuilder(object):
@@ -1243,6 +1309,7 @@ class ArgBuilder(object):
         """
         if isinstance(value, bool):
             value = int(value)
+        self._data[key] = value
         self._args.append('{}{}={}'.format('-D', key, value))
         self._args_quoted.append(self.quote('{}{}={}'.format('-D', key, value)))
         if mask:

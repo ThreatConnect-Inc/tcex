@@ -18,12 +18,11 @@ if sys.version_info[0] == 2:
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--config', default='install.json',
-    help='The install.json file name. (default: "install.json")')
+    '--config', default='install.json', help='The install.json file name (default: install.json).')
 parser.add_argument(
-    '--outfile', help='File to output or append profile.')
-parser.add_argument(
-    '--update_only', action='store_true', help='Update existing profiles.')
+    '--data_file', action='store_true', help='Attempt to build data file templates for the profile.')
+parser.add_argument('--outfile', help='File to output or append profile.')
+parser.add_argument('--update_only', action='store_true', help='Update existing profiles.')
 args, extra_args = parser.parse_known_args()
 
 c.init(autoreset=True, strip=False)
@@ -49,7 +48,7 @@ def main():
                     for profile in data:
                         update_profile(profile)
                 fh.seek(0)
-                fh.write(json.dumps(data, indent=2))
+                fh.write(json.dumps(data, indent=2, sort_keys=True))
                 fh.truncate()
         sys.exit()
 
@@ -86,6 +85,10 @@ def main():
         config_args['tc_playbook_db_port'] = '$env.DB_PORT'
         config_args['tc_playbook_out_variables'] = ''
 
+    #
+    # app inputs
+    #
+
     for d in data.get('params', []):
         if d.get('type') == 'Boolean':
             config_args[d.get('name')] = d.get('default', False)
@@ -108,7 +111,9 @@ def main():
 
     config = OrderedDict()
     config['args'] = config_args
+    config['clear'] = []
     config['description'] = ''
+    config['data_files'] = []
     config['exit_codes'] = [0]
     config['groups'] = ['qa-build']
     config['install_json'] = args.config
@@ -116,8 +121,9 @@ def main():
     config['quiet'] = False
 
     #
-    # playbook validation
+    # playbook output validation
     #
+
     if data.get('runtimeLevel') == 'Playbook':
         validations = []
         output_variables = []
@@ -163,6 +169,10 @@ def main():
         config['validations'] = validations
         config['args']['tc_playbook_out_variables'] = '{}'.format(','.join(output_variables))
 
+    #
+    # playbook output validation
+    #
+
     if args.outfile is not None:
         if os.path.isfile(args.outfile):
             # append
@@ -184,22 +194,22 @@ def main():
                         update_profile(profile)
                     data.append(config)
                 fh.seek(0)
-                fh.write(json.dumps(data, indent=2))
+                fh.write(json.dumps(data, indent=2, sort_keys=True))
                 fh.truncate()
         else:
             # create
             print('Create File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, args.outfile))
             with open(args.outfile, 'w') as fh:
                 data = [config]
-                fh.write(json.dumps(data, indent=2))
+                fh.write(json.dumps(data, indent=2, sort_keys=True))
     else:
-        print(json.dumps(config, indent=2))
+        print(json.dumps(config, indent=2, sort_keys=True))
 
     sys.exit()
 
 
 def update_profile(profile):
-    """Update an existing profile with new parameters or remove deprecated parameters"""
+    """Update an existing profile with new parameters or remove deprecated parameters."""
     # warn about missing install_json parameter
     if profile.get('install_json') is None:
         print('{}{}Missing install_json parameter for profile {}.'.format(

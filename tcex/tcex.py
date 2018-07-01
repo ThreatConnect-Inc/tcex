@@ -904,7 +904,7 @@ class TcEx(object):
             resource = getattr(self.resources, self.safe_rt(resource_type))(self)
         return resource
 
-    def results_tc(self, key, value):
+    def results_tc(self, key, value, replace=False):
         """Write data to results_tc file in TcEX specified directory.
 
         The TcEx platform support persistent values between executions of the App.  This
@@ -913,12 +913,15 @@ class TcEx(object):
         Args:
             key (string): The data key to be stored.
             value (string): The data value to be stored.
+            replace (bool): If true replace the current results.tc file.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
             result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
         else:
             result_file = 'results.tc'
         results = '{} = {}\n'.format(key, value)
+        if replace:
+            os.remove(result_file)
         with open(result_file, 'a') as rh:
             rh.write(results)
 
