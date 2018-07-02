@@ -106,7 +106,7 @@ class TcProfile(object):
                 # remove legacy profile key
                 del data['profiles']
                 data.setdefault('profile_include_dirs', [])
-                if self.profile_dir not in data.get('profile_includes_dir'):
+                if self.profile_dir not in data.get('profile_include_dirs'):
                     data['profile_include_dirs'].append(self.profile_dir)
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
@@ -366,7 +366,7 @@ class TcProfile(object):
 
     @property
     def redis(self):
-        if self._redis is None and self.args.redis_host is not None and self.args.redis_port is not None:
+        if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis
 

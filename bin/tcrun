@@ -1225,13 +1225,17 @@ class TcRun(object):
         else:
             self.log.error('[validate] Results  : Failed')
             if db_data is not None and user_data is not None and oper in ['eq', 'ne']:
-                for i, diff in enumerate(difflib.ndiff(db_data, user_data)):
-                    if diff[0] == ' ':  # no difference
-                        continue
-                    elif diff[0] == '-':
-                        self.log.info('[validate] Diff      : Missing data at index {}'.format(i))
-                    elif diff[0] == '+':
-                        self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
+                try:
+                    for i, diff in enumerate(difflib.ndiff(db_data, user_data)):
+                        if diff[0] == ' ':  # no difference
+                            continue
+                        elif diff[0] == '-':
+                            self.log.info(
+                                '[validate] Diff      : Missing data at index {}'.format(i))
+                        elif diff[0] == '+':
+                            self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
+                except TypeError:
+                    pass
 
             # halt all further actions
             if args.halt_on_fail:
