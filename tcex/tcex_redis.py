@@ -20,18 +20,14 @@ class TcExRedis(object):
         self._r = redis.StrictRedis(host=host, port=port)
 
     def create(self, key, value):
-        """Create key/value pair in Redis.
-
-        Args:
-            key (string): The key to create in Redis.
-            value (any): The value to store in Redis.
-
-        Returns:
-            (string): The response from Redis.
-        """
-        return self._r.hset(self._hash, key, value)
+        """Alias for hset method."""
+        self.hset(key, value)
 
     def delete(self, key):
+        """Alias for hdel method."""
+        self.hdel(key)
+
+    def hdel(self, key):
         """Delete data from Redis for the provided key.
 
         Args:
@@ -42,7 +38,7 @@ class TcExRedis(object):
         """
         return self._r.hdel(self._hash, key)
 
-    def read(self, key):
+    def hget(self, key):
         """Read data from Redis for the provided key.
 
         Args:
@@ -55,3 +51,30 @@ class TcExRedis(object):
         if data is not None and not isinstance(data, str):
             data = str(self._r.hget(self._hash, key), 'utf-8')
         return data
+
+    def hgetall(self):
+        """Read data from Redis for the provided key.
+
+        Args:
+            key (string): The key to read in Redis.
+
+        Returns:
+            (any): The response data from Redis.
+        """
+        return self._r.hgetall(self._hash)
+
+    def hset(self, key, value):
+        """Create key/value pair in Redis.
+
+        Args:
+            key (string): The key to create in Redis.
+            value (any): The value to store in Redis.
+
+        Returns:
+            (string): The response from Redis.
+        """
+        return self._r.hset(self._hash, key, value)
+
+    def read(self, key):
+        """Alias for hget method."""
+        return self.hget(key)

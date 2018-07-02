@@ -47,6 +47,8 @@ parser.add_argument(
 parser.add_argument(
     '--halt_on_fail', action='store_true', help='Halt on any failure.')
 parser.add_argument(
+    '--gen_launcher', action='store_true', help='Generate Visual Studio Code launcher config.')
+parser.add_argument(
     '--group', default=None, help='The group of profiles to executed.')
 parser.add_argument(
     '--logging_level', default='info', help='The logging level.')
@@ -56,18 +58,13 @@ parser.add_argument(
     '--quiet', action='store_true', help='Suppress output.')
 parser.add_argument(
     '--report', help='The JSON report filename.')
-# parser.add_argument(
-#     '--show_commands', action='store_true', help='Show staging and validation commands.')
 parser.add_argument(
     '--truncate', default=50, help='The length at which to truncate data in the logs.', type=int)
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
-parser.add_argument(
-    '--gen_launcher', action='store_true', help='Generate Visual Studio Code launcher config.')
 args, extra_args = parser.parse_known_args()
 
 
-# TODO: Clean this up when time allows
 class TcRun(object):
     """Run profiles for App"""
 
@@ -344,7 +341,6 @@ class TcRun(object):
         self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
         for error in batch_results.get('errors', []):
             self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
-
 
     @property
     def config(self):

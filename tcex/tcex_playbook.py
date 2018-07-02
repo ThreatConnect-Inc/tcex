@@ -472,6 +472,9 @@ class TcExPlaybook(object):
     #
     # db methods
     #
+    def hgetall(self):
+        """Return all values for a context."""
+        return self.db.hgetall
 
     def create_binary(self, key, value):
         """Create method of CRUD operation for binary data.
@@ -517,7 +520,7 @@ class TcExPlaybook(object):
             data = self.db.read(key.strip())
             if data is not None:
                 data = json.loads(data)
-                if decoded:
+                if decode:
                     data = base64.b64decode(json.loads(data)).decode('utf-8')
         else:
             self.tcex.log.warning(u'The key field was None.')
