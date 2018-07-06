@@ -22,7 +22,7 @@ class TcExLogFormatter(Formatter):
             }]
         """
         return {
-            'timestamp': int(float(record.created or time.time()) * 1000000),
+            'timestamp': int(float(record.created or time.time()) * 1000),
             'message': record.msg or '',
             'level': record.levelname or 'DEBUG'
         }
