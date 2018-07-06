@@ -269,8 +269,8 @@ class TcRun(object):
                     self.clear_tc(sd.get('data_owner'), indicator, 'auto-clear')
                     self.clear_redis(indicator.get('variable'), 'auto-clear')
         for vd in self.profile.get('validations'):
-            data_type = sd.get('data_type', 'redis')
-            variable = sd.get('variable')
+            data_type = vd.get('data_type', 'redis')
+            variable = vd.get('variable')
             if data_type == 'redis':
                 self.clear_redis(variable, 'auto-clear')
 
