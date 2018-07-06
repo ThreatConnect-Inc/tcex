@@ -135,7 +135,6 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-        self._unknown_args(unknown)
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -157,7 +156,7 @@ class TcEx(object):
             self.tcex.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
 
         # return secure params
-        return r.json()
+        return r.json().get('inputs', {})
 
     @property
     def jobs(self):
@@ -567,18 +566,17 @@ class TcEx(object):
         """Parse args and return default args."""
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
-            self._unknown_args(unknown)
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
                 params = self.playbook.aot_blpop()
-                tcex.log.debug('params: {}'.format(params))
+                self.log.debug('params: {}'.format(params))
                 self._inject_secure_params(params)
             elif self.default_args.tc_secure_params:
                 # inject secure params from API
                 params = self._load_secure_params()
-                tcex.log.debug('params: {}'.format(params))
+                self.log.debug('params: {}'.format(params))
                 self._inject_secure_params(params)
         return self._default_args
 
