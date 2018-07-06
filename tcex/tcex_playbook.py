@@ -94,6 +94,7 @@ class TcExPlaybook(object):
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
             params = []
             try:
+                self.tcex.log.info('Blocking for AOT message.')
                 msg_data = self._db.r.blpop(
                     self.tcex.default_args.tc_action_channel,
                     timeout=self.tcex.default_args.tc_terminate_seconds)

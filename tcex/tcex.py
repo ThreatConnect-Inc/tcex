@@ -141,10 +141,6 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-<<<<<<< HEAD
-=======
-        # self._unknown_args(unknown)
->>>>>>> develop
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -152,11 +148,25 @@ class TcEx(object):
     def _load_secure_params(self):
         """Load secure params from the API.
 
-        "params": {
-           "param1": "value1",
-           "param2": "some other value"
-        }
+        # API Response:
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "inputs":
+                    {
+                        "tc_playbook_db_type": "Redis",
+                        "fail_on_error": true,
+                        "api_default_org": "TCI"
+                    }
+            }
+
+        Returns:
+            dict: Parameters ("inputs") from the TC API.
         """
+        self.log.info('Loading secure params.')
         # Retrieve secure params and inject them into sys.argv
         r = self.session.get('/internal/job/execution/parameters')
 
@@ -592,12 +602,10 @@ class TcEx(object):
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
                 params = self.playbook.aot_blpop()
-                self.log.debug('params: {}'.format(params))
                 self._inject_secure_params(params)
             elif self.default_args.tc_secure_params:
                 # inject secure params from API
                 params = self._load_secure_params()
-                self.log.debug('params: {}'.format(params))
                 self._inject_secure_params(params)
         return self._default_args
 
