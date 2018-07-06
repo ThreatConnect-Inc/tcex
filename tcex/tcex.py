@@ -41,7 +41,6 @@ class TcEx(object):
         # Parser
         self._parsed = False
         self.parser = TcExArgParser()
-        # self.default_args, unknown = self.parser.parse_known_args()
 
         # init logger
         # self.log = self._logger()
@@ -163,7 +162,6 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-        # self._unknown_args(unknown)
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -587,7 +585,6 @@ class TcEx(object):
         """Parse args and return default args."""
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
-            self._unknown_args(unknown)
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
             self._inject_secure_params()  # inject secure params from API
