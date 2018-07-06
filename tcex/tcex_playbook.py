@@ -120,23 +120,25 @@ class TcExPlaybook(object):
     def aot_blpop(self):
         """Subscribe to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            params = []
             try:
-                msg_type = self._db.r.blpop(
+                msg_data = self._db.r.blpop(
                     self.tcex.default_args.tc_action_channel,
                     timeout=self.tcex.default_args.tc_terminate_seconds)
 
-                if msg_type is None:
+                if msg_data is None:
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
 
-                msg_type = json.loads(msg_type[1]).get('type', 'terminate')
+                msg_data = json.loads(msg_data[1])
+                msg_type = msg_data.get('type', 'terminate')
                 if msg_type == 'execute':
-                    pass
+                    return msg_data.get('params', {})
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
                     self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
                         msg_type))
-                    self.aot_blpop()
+                    return self.aot_blpop()
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 

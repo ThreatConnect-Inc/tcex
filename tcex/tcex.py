@@ -110,25 +110,10 @@ class TcEx(object):
                 self.handle_error(210, [r.text])
         return {'Authorization': authorization}
 
-    def _inject_secure_params(self):
+    def _inject_secure_params(self, params):
         """Inject secure params retrieved from the API."""
-        if not self.default_args.tc_secure_params:
-            self.log.info('Secure Params are *NOT* enabled')
-            return
-        self.log.info('Secure Params are enabled')
 
-        # Retrieve secure params and inject them into sys.argv
-        r = self.session.get('/internal/job/execution/parameters')
-
-        # check for bad status code and response that is not JSON
-        if not r.ok or r.headers.get('content-type') != 'application/json':
-            warn = u'Secure params could not be retrieved.'
-            self.log.warning(warn)
-            return
-
-        # inject args from API endpoint
-        data = r.json()
-        for arg, value in data.get('inputs', {}).items():
+        for arg, value in params.get('inputs', {}).items():
             arg = '--{}'.format(arg)
             if arg in sys.argv:
                 # arg already passed on the command line
@@ -154,6 +139,25 @@ class TcEx(object):
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
+
+    def _load_secure_params(self):
+        """Load secure params from the API.
+
+        "params": {
+           "param1": "value1",
+           "param2": "some other value"
+        }
+        """
+        # Retrieve secure params and inject them into sys.argv
+        r = self.session.get('/internal/job/execution/parameters')
+
+        # check for bad status code and response that is not JSON
+        if not r.ok or r.headers.get('content-type') != 'application/json':
+            err = r.text or r.reason
+            self.tcex.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
+
+        # return secure params
+        return r.json()
 
     @property
     def jobs(self):
@@ -567,10 +571,15 @@ class TcEx(object):
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
             if self._default_args.tc_aot_enabled:
-                # pop to AOT message
-                self.playbook.aot_blpop()
-            # inject secure params from API
-            self._inject_secure_params()
+                # block for AOT message and get params
+                params = self.playbook.aot_blpop()
+                tcex.log.debug('params: {}'.format(params))
+                self._inject_secure_params(params)
+            elif self.default_args.tc_secure_params:
+                # inject secure params from API
+                params = self._load_secure_params()
+                tcex.log.debug('params: {}'.format(params))
+                self._inject_secure_params(params)
         return self._default_args
 
     @property
