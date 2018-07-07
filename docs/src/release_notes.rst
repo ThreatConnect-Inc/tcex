@@ -6,6 +6,12 @@ Release Notes
 0.8.x
 =====
 
+0.8.9
+------
++ Rewrite of tcrun and tcprofile commands.
+- Removed tcdata commands.
++ Change logging of unsupported args to only show when App retrieves args.
+
 0.8.8
 ------
 + Updated :py:meth:`~tcex.tcex.TcEx.exit` methods to treat exit code of 3 as non-failure.
