@@ -485,22 +485,21 @@ class TcRun(object):
 
         Load on first access, otherwise return existing data.
         """
-        if self._install_json is None:
-            load_output = 'Load install.json: {}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
-            self.log.info('Loading install.json: {}'.format(filename))
-            if filename is not None and os.path.isfile(filename):
-                with open(filename) as config_data:
-                    self._install_json = json.load(config_data)
-                load_output += ' {}{}(Loaded){}'.format(
-                    c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
-            else:
-                load_output += ' {}{}(Not Found){}'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+        load_output = 'Load install.json: {}{}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
+        self.log.info('Loading install.json: {}'.format(filename))
+        if filename is not None and os.path.isfile(filename):
+            with open(filename) as config_data:
+                install_json = json.load(config_data)
+            load_output += ' {}{}(Loaded){}'.format(
+                c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+        else:
+            load_output += ' {}{}(Not Found){}'.format(
+                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
 
-            # display load status
-            print(load_output)
-        return self._install_json
+        # display load status
+        print(load_output)
+        return install_json
 
     def load_tcex(self):
         """Inject required TcEx CLI Args."""
@@ -720,7 +719,7 @@ class TcRun(object):
             output += '{}:{}'.format(
                 c.Style.BRIGHT, c.Style.RESET_ALL)
             output += '{}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.MAGENTA, install.get('programVersion'), c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.MAGENTA, install_json.get('programVersion'), c.Style.RESET_ALL)
         output += ']'
         print(output)
 
