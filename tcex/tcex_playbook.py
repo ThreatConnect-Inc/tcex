@@ -521,7 +521,7 @@ class TcExPlaybook(object):
             if data is not None:
                 data = json.loads(data)
                 if decode:
-                    data = base64.b64decode(json.loads(data)).decode('utf-8')
+                    data = base64.b64decode(data).decode('utf-8')
         else:
             self.tcex.log.warning(u'The key field was None.')
         return data

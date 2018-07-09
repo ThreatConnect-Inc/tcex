@@ -75,7 +75,6 @@ class TcRun(object):
         """ """
         self._args = _args
         self._config = None
-        self._install_json = None
         self._profile = {}
         self._staging_data = None
         self.reports = Reports()
@@ -891,8 +890,16 @@ class TcRun(object):
         """Stage Redis Data"""
         if isinstance(data, int):
             data = str(data)
+        # handle binary
         if variable.endswith('Binary'):
             data = base64.b64decode(data)
+        elif variable.endswith('BinaryArray'):
+            # loop through each entry
+            decoded_data = []
+            for d in data:
+                d_decoded = base64.b64decode(d)
+                decoded_data.append(d_decoded)
+            data = decoded_data
         self.log.info(u'[stage] Creating variable {}'.format(variable))
         self.tcex.playbook.create(variable, data)
 
