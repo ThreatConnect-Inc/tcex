@@ -41,7 +41,6 @@ class TcEx(object):
         # Parser
         self._parsed = False
         self.parser = TcExArgParser()
-        # self.default_args, unknown = self.parser.parse_known_args()
 
         # init logger
         # self.log = self._logger()
@@ -163,7 +162,6 @@ class TcEx(object):
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()
-        # self._unknown_args(unknown)
 
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
@@ -587,7 +585,6 @@ class TcEx(object):
         """Parse args and return default args."""
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
-            self._unknown_args(unknown)
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
             self._inject_secure_params()  # inject secure params from API
@@ -904,7 +901,7 @@ class TcEx(object):
             resource = getattr(self.resources, self.safe_rt(resource_type))(self)
         return resource
 
-    def results_tc(self, key, value):
+    def results_tc(self, key, value, replace=False):
         """Write data to results_tc file in TcEX specified directory.
 
         The TcEx platform support persistent values between executions of the App.  This
@@ -913,12 +910,15 @@ class TcEx(object):
         Args:
             key (string): The data key to be stored.
             value (string): The data value to be stored.
+            replace (bool): If true replace the current results.tc file.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
             result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
         else:
             result_file = 'results.tc'
         results = '{} = {}\n'.format(key, value)
+        if replace:
+            os.remove(result_file)
         with open(result_file, 'a') as rh:
             rh.write(results)
 
