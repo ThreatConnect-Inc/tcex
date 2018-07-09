@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.8.8 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.8.9 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.8 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.9 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
         <link rel="prev" title="tcex.tcex_notification_v2 module" href="tcex.tcex_notification_v2.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.8
+                0.8.9
               </div>
             
           
@@ -581,6 +581,12 @@ it a partial success instead.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_playbook.TcExPlaybook.hgetall">
+<code class="descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.hgetall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all values for a context.</p>
+</dd></dl>
+
 <dl class="staticmethod">
 <dt id="tcex.tcex_playbook.TcExPlaybook.indicator_arrays">
 <em class="property">static </em><code class="descname">indicator_arrays</code><span class="sig-paren">(</span><em>tc_entity_array</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.indicator_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.indicator_arrays" title="Permalink to this definition">¶</a></dt>
@@ -737,17 +743,23 @@ automatically determine the variable type to read.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary">
-<code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em>, <em>decode=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(bytes)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(bytes)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -755,17 +767,23 @@ automatically determine the variable type to read.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary_array">
-<code class="descname">read_binary_array</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read_binary_array</code><span class="sig-paren">(</span><em>key</em>, <em>decode=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary array data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>decode</strong> (<em>bool</em>) – If true the data will be base64 decoded.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results retrieved from DB.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1092,7 +1110,7 @@ contains not “DB variable” and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.8',
+            VERSION:'0.8.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

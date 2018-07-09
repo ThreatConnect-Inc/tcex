@@ -491,6 +491,7 @@ class TcRun(object):
 
         Load on first access, otherwise return existing data.
         """
+        install_json = {}
         load_output = 'Load install.json: {}{}{}{}'.format(
             c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
         self.log.info('Loading install.json: {}'.format(filename))
@@ -551,6 +552,8 @@ class TcRun(object):
     @profile.setter
     def profile(self, profile):
         """Set the current profile."""
+        # clear staging data
+        self._staging_data = None
         # retrieve language from install.json or assume Python
         lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
         # load instance of ArgBuilder
@@ -721,7 +724,7 @@ class TcRun(object):
             c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL)
         output += '[{}{}{}{}'.format(
             c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
-        if self.program_version is not None:
+        if install_json.get('programVersion') is not None:
             output += '{}:{}'.format(
                 c.Style.BRIGHT, c.Style.RESET_ALL)
             output += '{}{}{}{}'.format(
@@ -1463,6 +1466,9 @@ class Reports(object):
 
     def __init__(self):
         """Initialize class properties."""
+        import tcex
+        python_version = '{}.{}.{}'.format(
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
         self.report = {
             'profiles': {
                 'selected': [],
@@ -1484,10 +1490,10 @@ class Reports(object):
                 'date': datetime.now().isoformat(),
                 'provided_group': 'qa-build',
                 'provided_profile': 'default',
-                'python_version': None,
+                'python_version': python_version,
                 'selected_profiles': [],
                 'selected_profile_count': 0,
-                'tcex_version': None,
+                'tcex_version': tcex.__version__,
                 'total_profile_count': 0,
             }
         }

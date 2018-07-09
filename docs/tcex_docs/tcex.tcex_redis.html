@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis module &mdash; TcEx 0.8.8 documentation</title>
+  <title>tcex.tcex_redis module &mdash; TcEx 0.8.9 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.8 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.9 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_request module" href="tcex.tcex_request.html"/>
         <link rel="prev" title="tcex.tcex_playbook module" href="tcex.tcex_playbook.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.8
+                0.8.9
               </div>
             
           
@@ -216,6 +216,72 @@
 <dl class="method">
 <dt id="tcex.tcex_redis.TcExRedis.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for hset method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for hdel method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hdel">
+<code class="descname">hdel</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hdel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hdel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to delete in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hget">
+<code class="descname">hget</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hgetall">
+<code class="descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hgetall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hset">
+<code class="descname">hset</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create key/value pair in Redis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -238,39 +304,9 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_redis.TcExRedis.delete">
-<code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete data from Redis for the provided key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to delete in Redis.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response from Redis.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex_redis.TcExRedis.read">
 <code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read data from Redis for the provided key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in Redis.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from Redis.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Alias for hget method.</p>
 </dd></dl>
 
 </dd></dl>
@@ -320,7 +356,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.8',
+            VERSION:'0.8.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
