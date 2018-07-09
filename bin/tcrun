@@ -507,7 +507,7 @@ class TcRun(object):
                 continue
 
             # add new log file name and level
-            sys.argv.extend(['--tc_log_file', 'data.log'])
+            sys.argv.extend(['--tc_log_file', 'tcex.log'])
             sys.argv.extend(['--tc_log_level', 'error'])
             # format key
             arg = '--{}'.format(arg)
@@ -1110,7 +1110,7 @@ class TcRun(object):
     def validate(self):
         """Validate Data"""
         passed = True
-        for data in self.profile.get('validations'):
+        for data in self.profile.get('validations', []):
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
                 # get user variable or data
@@ -1197,7 +1197,7 @@ class TcRun(object):
             elif isinstance(db_data, (list)):
                 db_data_truncated = []
                 for d in db_data:
-                    if d is not None and len(d) > truncate:
+                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
                         db_data_truncated.append('{} ...'.format(d[:args.truncate]))
                     else:
                         db_data_truncated.append(d)
