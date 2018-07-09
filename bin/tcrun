@@ -16,6 +16,7 @@ import sys
 import subprocess
 import time
 import traceback
+from datetime import datetime
 
 import colorama as c
 import jmespath
@@ -59,7 +60,9 @@ parser.add_argument(
 parser.add_argument(
     '--report', help='The JSON report filename.')
 parser.add_argument(
-    '--truncate', default=50, help='The length at which to truncate data in the logs.', type=int)
+    '--truncate', default=50,
+    help='The length at which to truncate successful validation data in the logs (default=50).',
+    type=int)
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
 args, extra_args = parser.parse_known_args()
@@ -1145,6 +1148,7 @@ class TcRun(object):
                 # self.log.info('[validate] Variable  : {}'.format(variable))
                 if not self.validate_redis(db_data, user_data, oper, variable):
                     passed = False
+                    self.exit_code = 1  # if any validation fails everything fails
         return passed
 
     def validate_redis(self, db_data, user_data, oper, variable):
@@ -1464,10 +1468,13 @@ class Reports(object):
                 },
             },
             'settings': {
+                'date': datetime.now().isoformat(),
                 'provided_group': 'qa-build',
                 'provided_profile': 'default',
+                'python_version': None,
                 'selected_profiles': [],
                 'selected_profile_count': 0,
+                'tcex_version': None,
                 'total_profile_count': 0,
             }
         }
