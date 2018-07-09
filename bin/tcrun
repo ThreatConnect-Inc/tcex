@@ -391,8 +391,8 @@ class TcRun(object):
         """Validate data is Type"""
         data_type = {
             'array': (list),
-            'binary': (bytes),
-            'bytes': (bytes),
+            # 'binary': (string_types),
+            # 'bytes': (string_types),
             'dict': (dict),
             'entity': (dict),
             'list': (list),
@@ -407,6 +407,13 @@ class TcRun(object):
         elif user_type.lower() in ['null', 'none']:
             if db_data is None:
                 return True
+        elif user_type.lower() in 'binary':
+            # this test is not 100%, but should be good enough
+            try:
+                base64.b64decode(db_data)
+                return True
+            except Exception:
+                return False
         elif data_type.get(user_type.lower()) is not None:
             if isinstance(db_data, data_type.get(user_type.lower())):
                 return True
