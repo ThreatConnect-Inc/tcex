@@ -912,6 +912,9 @@ class TcExBatch(object):
             self.tcex.handle_error(1505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
             self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        # reset raw list after submission
+        self._groups_raw = []
+        self._indicators_raw = []
         return r.json()
 
     def submit_files(self, halt_on_error=True):

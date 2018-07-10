@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.10
+------
++ Updated submit_create_and_upload method to clear raw list after submission.
+
 0.8.9
 ------
 + Rewrite of tcrun and tcprofile commands.
