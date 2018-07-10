@@ -16,7 +16,7 @@ Release Notes
 0.8.9
 ------
 + Rewrite of tcrun and tcprofile commands.
-- Removed tcdata commands.
++ Removed tcdata commands.
 + Changed logging of unsupported args to only show when App retrieves args.
 + Changed read_binary_array method to decode Redis data automatically.
 
