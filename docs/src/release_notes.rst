@@ -9,6 +9,7 @@ Release Notes
 0.8.10
 ------
 + Updated submit_create_and_upload method to clear raw list after submission.
++ Rewrite of results_tc method to handle updates to key/value pairs.
 
 0.8.9
 ------
