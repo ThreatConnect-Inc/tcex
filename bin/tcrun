@@ -101,16 +101,15 @@ class TcRun(object):
         # initialize colorama
         c.init(autoreset=True, strip=False)
 
-    @staticmethod
-    def _create_tc_dirs(profile):
+    def _create_tc_dirs(self):
         """Create app directories for logs and data files."""
-        tc_log_path = profile.get('args', {}).get('tc_log_path')
+        tc_log_path = self.profile.get('args', {}).get('tc_log_path')
         if tc_log_path is not None and not os.path.isdir(tc_log_path):
             os.makedirs(tc_log_path)
-        tc_out_path = profile.get('args', {}).get('tc_out_path')
+        tc_out_path = self.profile.get('args', {}).get('tc_out_path')
         if tc_out_path is not None and not os.path.isdir(tc_out_path):
             os.makedirs(tc_out_path)
-        tc_tmp_path = profile.get('args', {}).get('tc_tmp_path')
+        tc_tmp_path = self.profile.get('args', {}).get('tc_tmp_path')
         if tc_tmp_path is not None and not os.path.isdir(tc_tmp_path):
             os.makedirs(tc_tmp_path)
 
@@ -166,6 +165,8 @@ class TcRun(object):
         # log.addHandler(sh)
 
         # File Handler
+        if not os.access('log', os.W_OK):
+            os.makedirs('log')
         logfile = os.path.join('log', 'run.log')
         fh = logging.FileHandler(logfile)
         fh.set_name('fh')
@@ -566,6 +567,8 @@ class TcRun(object):
         self.load_tcex()
         # select report for current profile
         self.reports.profile(profile.get('profile_name'))
+        # create required directories for tcrun to function
+        self._create_tc_dirs()
 
     @property
     def profiles(self):

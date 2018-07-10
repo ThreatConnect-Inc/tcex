@@ -6,10 +6,17 @@ Release Notes
 0.8.x
 =====
 
+0.8.10
+------
++ Updated submit_create_and_upload method to clear raw list after submission.
++ Rewrite of results_tc method to handle updates to key/value pairs.
++ Updated tcrun to auto create required directories.
++ Updated tclib to support building tcex develop version with "--tcex_develop" CLI flag.
+
 0.8.9
 ------
 + Rewrite of tcrun and tcprofile commands.
-- Removed tcdata commands.
++ Removed tcdata commands.
 + Changed logging of unsupported args to only show when App retrieves args.
 + Changed read_binary_array method to decode Redis data automatically.
 

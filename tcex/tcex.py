@@ -901,7 +901,7 @@ class TcEx(object):
             resource = getattr(self.resources, self.safe_rt(resource_type))(self)
         return resource
 
-    def results_tc(self, key, value, replace=False):
+    def results_tc(self, key, value):
         """Write data to results_tc file in TcEX specified directory.
 
         The TcEx platform support persistent values between executions of the App.  This
@@ -910,17 +910,30 @@ class TcEx(object):
         Args:
             key (string): The data key to be stored.
             value (string): The data value to be stored.
-            replace (bool): If true replace the current results.tc file.
         """
         if os.access(self.default_args.tc_out_path, os.W_OK):
-            result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
+            results_file = '{}/results.tc'.format(self.default_args.tc_out_path)
         else:
-            result_file = 'results.tc'
-        results = '{} = {}\n'.format(key, value)
-        if replace:
-            os.remove(result_file)
-        with open(result_file, 'a') as rh:
-            rh.write(results)
+            results_file = 'results.tc'
+
+        new = True
+        open(results_file, 'a').close()  # ensure file exists
+        with open(results_file, 'r+') as fh:
+            results = ''
+            for line in fh.read().strip().split('\n'):
+                if not line:
+                    continue
+                k, v = line.strip().split(' = ')
+                if k == key:
+                    v = value
+                    new = False
+                if v is not None:
+                    results += '{} = {}\n'.format(k, v)
+            if new and value is not None:  # indicates the key/value pair didn't already exist
+                results += '{} = {}\n'.format(key, value)
+            fh.seek(0)
+            fh.write(results)
+            fh.truncate()
 
     def results_tc_args(self):
         """Read data from results_tc file from previous run of app.
@@ -941,6 +954,8 @@ class TcEx(object):
                 results = rh.read().strip().split('\n')
             os.remove(result_file)
         for line in results:
+            if not line or ' = ' not in line:
+                continue
             key, value = line.split(' = ')
             setattr(self.default_args, key, value)
 
