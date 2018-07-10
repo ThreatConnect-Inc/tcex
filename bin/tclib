@@ -26,6 +26,8 @@ parser.add_argument(
     '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json')
 parser.add_argument(
     '--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
+parser.add_argument(
+    '--tcex_develop', action='store_true', help='Replace tcex version in config with github develop branch.')
 args, extra_args = parser.parse_known_args()
 
 
@@ -33,11 +35,13 @@ args, extra_args = parser.parse_known_args()
 class TcLib(object):
     """Install Required Modules for App"""
 
-    def __init__(self, arg_data):
+    def __init__(self, _arg):
         """Init TcLib Module"""
-        self._args = arg_data
+        self.args = _arg
         self.app_path = os.getcwd()
         self.exit_code = 0
+        self.requirements_file = 'requirements.txt'
+        self.requirements_temp = False
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
@@ -54,17 +58,35 @@ class TcLib(object):
         }]
 
         # check for requirements.txt
-        if not os.path.isfile('requirements.txt'):
+        if not os.path.isfile(self.requirements_file):
             print('{}{}A requirements.txt file is required to install modules.'.format(
                 c.Style.BRIGHT, c.Fore.RED))
             sys.exit(1)
 
+        if args.tcex_develop:
+            self.requirements_temp = True
+            # Replace tcex version with develop branch of tcex
+            with open(self.requirements_file, 'r') as fh:
+                current_requirements = fh.read().strip().split('\n')
+
+            self.requirements_file = 'temp-{}'.format(self.requirements_file)
+            with open(self.requirements_file, 'w') as fh:
+                new_requirements = ''
+                for line in current_requirements:
+                    if not line:
+                        continue
+                    if line.startswith('tcex'):
+                        line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@develop#egg=tcex'
+                    print('line', line)
+                    new_requirements += '{}\n'.format(line)
+                fh.write(new_requirements)
+
         # load configuration
         config_data = {}
-        file_path = os.path.join(self.app_path, self._args.config)
+        file_path = os.path.join(self.app_path, self.args.config)
         if os.path.isfile(file_path):
             print('Loading Config File: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
+                c.Style.BRIGHT, c.Fore.CYAN, self.args.config))
             with open(file_path, 'r') as fh:
                 config_data = json.load(fh)
 
@@ -103,7 +125,7 @@ class TcLib(object):
                 'pip',
                 'install',
                 '-r',
-                'requirements.txt',
+                self.requirements_file,
                 '--ignore-installed',
                 '--quiet',
                 '--target',
@@ -121,6 +143,10 @@ class TcLib(object):
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err.decode('utf-8')))
                 sys.exit('ERROR: {}'.format(err.decode('utf-8')))
+
+            # cleanup temp file if required
+            if self.requirements_temp:
+                os.remove(self.requirements_file)
 
 
 if __name__ == '__main__':

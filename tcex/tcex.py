@@ -917,24 +917,23 @@ class TcEx(object):
             results_file = 'results.tc'
 
         new = True
-        if os.access(tc_out_path, os.W_OK):
-            open(results_file, 'a').close()  # ensure file exists
-            with open(results_file, 'r+') as fh:
-                results = ''
-                for line in fh.read().strip().split('\n'):
-                    if not line:
-                        continue
-                    k, v = line.strip().split(' = ')
-                    if k == key:
-                        v = value
-                        new = False
-                    if v is not None:
-                        results += '{} = {}\n'.format(k, v)
-                if new and value is not None:  # indicates the key/value pair didn't already exist
-                    results += '{} = {}\n'.format(key, value)
-                fh.seek(0)
-                fh.write(results)
-                fh.truncate()
+        open(results_file, 'a').close()  # ensure file exists
+        with open(results_file, 'r+') as fh:
+            results = ''
+            for line in fh.read().strip().split('\n'):
+                if not line:
+                    continue
+                k, v = line.strip().split(' = ')
+                if k == key:
+                    v = value
+                    new = False
+                if v is not None:
+                    results += '{} = {}\n'.format(k, v)
+            if new and value is not None:  # indicates the key/value pair didn't already exist
+                results += '{} = {}\n'.format(key, value)
+            fh.seek(0)
+            fh.write(results)
+            fh.truncate()
 
     def results_tc_args(self):
         """Read data from results_tc file from previous run of app.
@@ -955,6 +954,8 @@ class TcEx(object):
                 results = rh.read().strip().split('\n')
             os.remove(result_file)
         for line in results:
+            if not line or ' = ' not in line:
+                continue
             key, value = line.split(' = ')
             setattr(self.default_args, key, value)
 

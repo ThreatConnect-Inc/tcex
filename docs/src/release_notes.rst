@@ -10,6 +10,8 @@ Release Notes
 ------
 + Updated submit_create_and_upload method to clear raw list after submission.
 + Rewrite of results_tc method to handle updates to key/value pairs.
++ Updated tcrun to auto create required directories.
++ Updated tclib to support building tcex develop version with "--tcex_develop" CLI flag.
 
 0.8.9
 ------
