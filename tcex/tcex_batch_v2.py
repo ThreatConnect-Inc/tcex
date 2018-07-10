@@ -716,12 +716,15 @@ class TcExBatch(object):
             timeout = self.poll_timeout
         else:
             timeout = int(timeout)
+        params = {
+            'includeAdditional': 'true'
+        }
 
         poll_time = 0
         data = {}
         while True:
             try:
-                r = self.tcex.session.get('/v2/batch/{}'.format(batch_id))
+                r = self.tcex.session.get('/v2/batch/{}'.format(batch_id), params=params)
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                     self.tcex.handle_error(545, [r.status_code, r.text], halt_on_error)
                     return data
@@ -882,6 +885,7 @@ class TcExBatch(object):
                     error_groups = batch_data.get('errorGroupCount', 0)
                     error_indicators = batch_data.get('errorIndicatorCount', 0)
                     if error_groups > 0 or error_indicators > 0:
+                        self.tcex.log.debug('retrieving batch errors')
                         batch_data['errors'] = self.errors(batch_id)
             else:
                 # can't process files if status is unknown (polling must be enabled)
