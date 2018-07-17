@@ -26,6 +26,7 @@ class TcEx(object):
         self._error_codes = None
         self._exit_code = 0
         self._default_args = None
+        self._install_json = None
         self._indicator_associations_types_data = {}
         self._indicator_types = []
         self._indicator_types_data = {}
@@ -144,12 +145,15 @@ class TcEx(object):
                 # handle bool values as flags (e.g., --flag) with no value
                 if value:
                     sys.argv.append(arg)
+            elif isinstance(value, (list)):
+                for mcv in value:
+                    sys.argv.append(arg)
+                    sys.argv.append('{}'.format(mcv))
             elif '|' in value:
                 # handle multiple choice values
                 for mcv in value.split('|'):
                     sys.argv.append(arg)
                     sys.argv.append('{}'.format(mcv))
-
             elif value == 'true':
                 # handle bool values (string of "true") as flags (e.g., --flag) with no value
                 sys.argv.append(arg)
@@ -176,17 +180,13 @@ class TcEx(object):
 
     def _log_app_data(self):
         """Log the App data information."""
-
         # Best Effort
-        try:
-            install_json = os.path.join(os.getcwd(), 'install.json')
-            with open(install_json, 'r') as fh:
-                app_data = json.load(fh)
-            app_features = ','.join(app_data.get('features', []))
-            app_min_ver = app_data.get('minServerVersion', 'N/A')
-            app_name = app_data.get('displayName')
-            app_runtime_level = app_data.get('runtimeLevel')
-            app_version = app_data.get('programVersion')
+        if self.install_json:
+            app_features = ','.join(self.install_json.get('features', []))
+            app_min_ver = self.install_json.get('minServerVersion', 'N/A')
+            app_name = self.install_json.get('displayName')
+            app_runtime_level = self.install_json.get('runtimeLevel')
+            app_version = self.install_json.get('programVersion')
 
             self.log.info(u'App Name: {}'.format(app_name))
             if app_features:
@@ -194,8 +194,6 @@ class TcEx(object):
             self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
             self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
             self.log.info(u'App Version: {}'.format(app_version))
-        except IOError:
-            self.log.debug(u'Could not retrieve App Data.')
 
     def _log_platform(self):
         """Log the current Platform."""
@@ -715,6 +713,18 @@ class TcEx(object):
             # load custom indicator associations
             self._resources(True)
         return self._indicator_types_data
+
+    @property
+    def install_json(self):
+        """Return contents of install.json configuration file, loading from disk if required."""
+        if self._install_json is None:
+            try:
+                install_json_filename = os.path.join(os.getcwd(), 'install.json')
+                with open(install_json_filename, 'r') as fh:
+                    self._install_json = json.load(fh)
+            except IOError:
+                self.log.debug(u'Could not retrieve App Data.')
+        return self._install_json
 
     def job(self):
         """**[Deprecated]** Return instance of Job module

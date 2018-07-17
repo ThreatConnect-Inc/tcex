@@ -227,6 +227,7 @@
   },
   "required": [
     "allowOnDemand",
+    "apiUserTokenParam",
     "displayName",
     "params",
     "programLanguage",
