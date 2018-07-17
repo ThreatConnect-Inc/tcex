@@ -166,18 +166,6 @@ class TcEx(object):
         # reinitialize logger with new log level and api settings
         self.log = self._logger()
 
-    @property
-    def jobs(self):
-        """**[Deprecated]** Include the jobs Module.
-
-        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-                     tcex.batch instead.
-        """
-        if self._jobs is None:
-            from .tcex_job import TcExJob
-            self._jobs = TcExJob(self)
-        return self._jobs
-
     def _log(self):
         """Send System and App data to logs."""
         self._log_platform()
@@ -321,17 +309,6 @@ class TcEx(object):
         fh.set_name('fh')
         fh.setLevel(logging.DEBUG)
         return fh
-
-    @property
-    def playbook(self):
-        """Include the Playbook Module.
-
-        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
-        """
-        if self._playbook is None:
-            from .tcex_playbook import TcExPlaybook
-            self._playbook = TcExPlaybook(self)
-        return self._playbook
 
     def _resources(self, custom_indicators=False):
         """Initialize the resource module.
@@ -749,6 +726,18 @@ class TcEx(object):
         from .tcex_job import TcExJob
         return TcExJob(self)
 
+    @property
+    def jobs(self):
+        """**[Deprecated]** Include the jobs Module.
+
+        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
+                     tcex.batch instead.
+        """
+        if self._jobs is None:
+            from .tcex_job import TcExJob
+            self._jobs = TcExJob(self)
+        return self._jobs
+
     def metric(self, name, description, data_type, interval, keyed=False):
         """Get instance of the Metrics module.
 
@@ -797,6 +786,17 @@ class TcEx(object):
             with open(message_file, 'a') as mh:
                 mh.write(message[:max_length])
         max_length -= len(message)
+
+    @property
+    def playbook(self):
+        """Include the Playbook Module.
+
+        .. Note:: Playbook methods can be accessed using ``tcex.playbook.<method>``.
+        """
+        if self._playbook is None:
+            from .tcex_playbook import TcExPlaybook
+            self._playbook = TcExPlaybook(self)
+        return self._playbook
 
     @property
     def proxies(self):
