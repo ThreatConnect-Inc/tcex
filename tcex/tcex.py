@@ -113,7 +113,7 @@ class TcEx(object):
     def _inject_secure_params(self, params):
         """Inject secure params retrieved from the API."""
 
-        for arg, value in params.get('inputs', {}).items():
+        for arg, value in params.items():
             arg = '--{}'.format(arg)
             if arg in sys.argv:
                 # arg already passed on the command line
