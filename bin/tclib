@@ -144,9 +144,9 @@ class TcLib(object):
                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err.decode('utf-8')))
                 sys.exit('ERROR: {}'.format(err.decode('utf-8')))
 
-            # cleanup temp file if required
-            if self.requirements_temp:
-                os.remove(self.requirements_file)
+        # cleanup temp file if required
+        if self.requirements_temp:
+            os.remove(self.requirements_file)
 
 
 if __name__ == '__main__':

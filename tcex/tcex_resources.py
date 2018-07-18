@@ -2518,7 +2518,7 @@ class DataStore(object):
             type_name (string): This is a free form index type name. The ThreatConnect API will use
                 this resource verbatim.
             search_command (string): Search command to pass to ES.
-            body (dict): Python dictionary composed of JSON serialized data type.
+            body (str): JSON serialized data.
         """
         return self._request(domain, type_name, search_command, 'POST', body)
 
@@ -2552,7 +2552,7 @@ class DataStore(object):
             type_name (string): This is a free form index type name. The ThreatConnect API will use
                 this resource verbatim.
             search_command (string): Search command to pass to ES.
-            body (dict): JSON body
+            body (str): JSON body
         """
         return self._request(domain, type_name, search_command, 'PUT', body)
 

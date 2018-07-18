@@ -27,6 +27,7 @@ class TcEx(object):
         self._exit_code = 0
         self._default_args = None
         self._install_json = None
+        self._install_json_params = {}
         self._indicator_associations_types_data = {}
         self._indicator_types = []
         self._indicator_types_data = {}
@@ -43,17 +44,11 @@ class TcEx(object):
         self._parsed = False
         self.parser = TcExArgParser()
 
-        # init logger
-        # self.log = self._logger()
-
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
             self._tc_token = self.default_args.tc_token
         if self.default_args.tc_token_expires is not None:
             self._tc_token_expires = self.default_args.tc_token_expires
-
-        # logger (must parse args first)
-        # self.log = self._logger(self.default_args.tc_log_file)
 
         # Log system and App data
         self._log()
@@ -117,58 +112,50 @@ class TcEx(object):
                 self.handle_error(210, [r.text])
         return {'Authorization': authorization}
 
-    def _inject_secure_params(self):
-        """Inject secure params retrieved from the API."""
-        if not self.default_args.tc_secure_params:
-            self.log.info('Secure Params are *NOT* enabled')
-            return
-        self.log.info('Secure Params are enabled')
+    def _load_secure_params(self):
+        """Load secure params from the API.
 
+        # API Response:
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+
+            {
+                "inputs":
+                    {
+                        "tc_playbook_db_type": "Redis",
+                        "fail_on_error": true,
+                        "api_default_org": "TCI"
+                    }
+            }
+
+        Returns:
+            dict: Parameters ("inputs") from the TC API.
+        """
+        self.log.info('Loading secure params.')
         # Retrieve secure params and inject them into sys.argv
         r = self.session.get('/internal/job/execution/parameters')
 
         # check for bad status code and response that is not JSON
         if not r.ok or r.headers.get('content-type') != 'application/json':
-            warn = u'Secure params could not be retrieved.'
-            self.log.warning(warn)
-            return
+            err = r.text or r.reason
+            self.tcex.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
 
-        # inject args from API endpoint
-        data = r.json()
-        for arg, value in data.get('inputs', {}).items():
-            arg = '--{}'.format(arg)
-            if arg in sys.argv:
-                # arg already passed on the command line
-                continue
+        # return secure params
+        return r.json().get('inputs', {})
 
-            if isinstance(value, (bool)):
-                # handle bool values as flags (e.g., --flag) with no value
-                if value:
-                    sys.argv.append(arg)
-            elif isinstance(value, (list)):
-                for mcv in value:
-                    sys.argv.append(arg)
-                    sys.argv.append('{}'.format(mcv))
-            elif '|' in value:
-                # handle multiple choice values
-                for mcv in value.split('|'):
-                    sys.argv.append(arg)
-                    sys.argv.append('{}'.format(mcv))
-            elif value == 'true':
-                # handle bool values (string of "true") as flags (e.g., --flag) with no value
-                sys.argv.append(arg)
-            elif value == 'false':
-                # boolean value as flag is not required
-                pass
-            else:
-                sys.argv.append(arg)
-                sys.argv.append('{}'.format(value))
+    @property
+    def jobs(self):
+        """**[Deprecated]** Include the jobs Module.
 
-        # reset default_args now that values have been injected into sys.argv
-        self._default_args, unknown = self.parser.parse_known_args()
-
-        # reinitialize logger with new log level and api settings
-        self.log = self._logger()
+        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
+                     tcex.batch instead.
+        """
+        if self._jobs is None:
+            from .tcex_job import TcExJob
+            self._jobs = TcExJob(self)
+        return self._jobs
 
     def _log(self):
         """Send System and App data to logs."""
@@ -562,7 +549,14 @@ class TcEx(object):
             self._default_args, unknown = self.parser.parse_known_args()
             # reinitialize logger with new log level and api settings
             self.log = self._logger()
-            self._inject_secure_params()  # inject secure params from API
+            if self._default_args.tc_aot_enabled:
+                # block for AOT message and get params
+                params = self.playbook.aot_blpop()
+                self.inject_params(params)
+            elif self.default_args.tc_secure_params:
+                # inject secure params from API
+                params = self._load_secure_params()
+                self.inject_params(params)
         return self._default_args
 
     @property
@@ -592,22 +586,20 @@ class TcEx(object):
                 self.log.error(msg)
             self.message_tc(msg)
 
-        # # flush logs to api
-        # if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-        #     if self.log is not None and self.log.handlers:
-        #         for handler in self.log.handlers:
-        #             if handler.get_name() == 'api':
-        #                 handler.log_to_api()
-
         if code is None:
-            self.log.info(u'exit_code: {}'.format(self.exit_code))
-            sys.exit(self.exit_code)
+            code = self.exit_code
         elif code in [0, 1, 3]:
-            self.log.info(u'exit_code: {}'.format(code))
-            sys.exit(code)
+            pass
         else:
             self.log.error(u'Invalid exit code')
-            sys.exit(1)  # exit with error
+            code = 1
+
+        if self._default_args.tc_aot_enabled:
+            # push exit message
+            self.playbook.aot_rpush(code)
+
+        self.log.info(u'Exit Code: {}'.format(code))
+        sys.exit(code)
 
     @property
     def exit_code(self):
@@ -714,6 +706,44 @@ class TcEx(object):
             self._resources(True)
         return self._indicator_types_data
 
+    def inject_params(self, params):
+        """Inject params into sys.argv from secureParams API, AOT, or user provided."""
+        for arg, value in params.items():
+            cli_arg = '--{}'.format(arg)
+            if cli_arg in sys.argv:
+                # arg already passed on the command line
+                continue
+
+            # ThreatConnect secure/AOT params should be updated in the future to proper JSON format.
+            # MultiChoice data should be represented as JSON array and Boolean values should be a
+            # JSON boolean and not a string.
+            param_data = self.install_json_params.get(arg, {})
+            if param_data.get('type', '').lower() == 'multichoice':
+                # update "|" delimited value to a proper array for params that have type of
+                # MultiChoice.
+                value = value.split('|')
+            elif param_data.get('type', '').lower() == 'boolean':
+                # update value to be a boolean instead of string "true"/"false".
+                value = self.utils.to_bool(value)
+
+            if isinstance(value, (bool)):
+                # handle bool values as flags (e.g., --flag) with no value
+                if value:
+                    sys.argv.append(cli_arg)
+            elif isinstance(value, (list)):
+                for mcv in value:
+                    sys.argv.append(cli_arg)
+                    sys.argv.append('{}'.format(mcv))
+            else:
+                sys.argv.append(cli_arg)
+                sys.argv.append('{}'.format(value))
+
+        # reset default_args now that values have been injected into sys.argv
+        self._default_args, unknown = self.parser.parse_known_args()
+
+        # reinitialize logger with new log level and api settings
+        self.log = self._logger()
+
     @property
     def install_json(self):
         """Return contents of install.json configuration file, loading from disk if required."""
@@ -723,8 +753,16 @@ class TcEx(object):
                 with open(install_json_filename, 'r') as fh:
                     self._install_json = json.load(fh)
             except IOError:
-                self.log.debug(u'Could not retrieve App Data.')
+                self.log.warning(u'Could not retrieve App Data.')
         return self._install_json
+
+    @property
+    def install_json_params(self):
+        """Parse params from install.json into a dict by name."""
+        if not self._install_json_params:
+            for param in self.install_json.get('params', []):
+                self._install_json_params[param.get('name')] = param
+        return self._install_json_params
 
     def job(self):
         """**[Deprecated]** Return instance of Job module

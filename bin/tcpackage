@@ -52,7 +52,7 @@ class TcPackage(object):
         self._args = args
         self.app_path = os.getcwd()
         self.exit_code = 0
-        self.features = ['secureParams']
+        self.features = ['secureParams', 'aotExecutionEnabled']
 
         # defaults
         self._app_packages = []

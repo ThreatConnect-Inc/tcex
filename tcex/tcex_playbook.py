@@ -4,6 +4,7 @@
 import base64
 import json
 import re
+import time
 
 
 class TcExPlaybook(object):
@@ -16,6 +17,7 @@ class TcExPlaybook(object):
             tcex (object): Instance of TcEx.
         """
         self.tcex = tcex
+        self._db = None
         self._out_variables = {}  # dict of output variable by name
         self._out_variables_type = {}  # dict of output variable by name-type
 
@@ -29,40 +31,6 @@ class TcExPlaybook(object):
 
         # parse out variable
         self._parse_out_variable()
-
-        # get key/value store
-        self.db = self._db
-
-    @property
-    def _db(self):
-        """Return the correct KV store for this execution."""
-        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
-            from .tcex_redis import TcExRedis
-            return TcExRedis(
-                self.tcex.default_args.tc_playbook_db_path,
-                self.tcex.default_args.tc_playbook_db_port,
-                self.tcex.default_args.tc_playbook_db_context
-            )
-        elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
-            from .tcex_key_value import TcExKeyValue
-            return TcExKeyValue(self.tcex)
-        else:
-            err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
-            raise RuntimeError(err)
-
-    @property
-    def _variable_pattern(self):
-        """Regex pattern to match and parse a playbook variable."""
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
-        variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
-        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
-        return variable_pattern
 
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
@@ -87,6 +55,54 @@ class TcExPlaybook(object):
                 self._out_variables_type[vt_key] = {
                     'variable': o
                 }
+
+    @property
+    def _variable_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern += r':([\d]+)'  # app id (:7979)
+        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        return variable_pattern
+
+    def aot_blpop(self):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            params = []
+            try:
+                self.tcex.log.info('Blocking for AOT message.')
+                msg_data = self.db.blpop(
+                    self.tcex.default_args.tc_action_channel,
+                    timeout=self.tcex.default_args.tc_terminate_seconds)
+
+                if msg_data is None:
+                    self.tcex.exit(0, 'AOT subscription timeout reached.')
+
+                msg_data = json.loads(msg_data[1])
+                msg_type = msg_data.get('type', 'terminate')
+                if msg_type == 'execute':
+                    return msg_data.get('params', {})
+                elif msg_type == 'terminate':
+                    self.tcex.exit(0, 'Received AOT terminate message.')
+                else:
+                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
+                        msg_type))
+                    return self.aot_blpop()
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
+
+    def aot_rpush(self, exit_code):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.db.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT exit push ({}).'.format(e))
 
     def check_output_variable(self, variable):
         """Check to see if output variable was requested by downstream app.
@@ -193,6 +209,25 @@ class TcExPlaybook(object):
                 self.tcex.log.info(
                     u'Variable {} was NOT requested by downstream app.'.format(var_value))
         return results
+
+    @property
+    def db(self):
+        """Return the correct KV store for this execution."""
+        if self._db is None:
+            if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+                from .tcex_redis import TcExRedis
+                self._db = TcExRedis(
+                    self.tcex.default_args.tc_playbook_db_path,
+                    self.tcex.default_args.tc_playbook_db_port,
+                    self.tcex.default_args.tc_playbook_db_context
+                )
+            elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
+                from .tcex_key_value import TcExKeyValue
+                self._db = TcExKeyValue(self.tcex)
+            else:
+                err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
+                raise RuntimeError(err)
+        return self._db
 
     def delete(self, key):
         """Delete method of CRUD operation for all data types.

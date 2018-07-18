@@ -6,6 +6,14 @@ Release Notes
 0.8.x
 =====
 
+0.8.11
+------
++ Merged AOT feature in prep for 5.7.
++ Updated default_args logic to handle both injecting secureParams, and AOT params depending on selected feature.
++ Updated param injection method to be public and generic to allow params to be added from users.
++ Updated tcex_redis module to support additional redis methods required for AOT.
++ Added method to load install.json, which is used in injection method to determine the structure on the param values.
+
 0.8.10
 ------
 + Updated submit_create_and_upload method to clear raw list after submission.
