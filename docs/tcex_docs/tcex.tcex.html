@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex module &mdash; TcEx 0.8.10 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/>
         <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -241,9 +241,37 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx._inject_secure_params">
-<code class="descname">_inject_secure_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._inject_secure_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._inject_secure_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inject secure params retrieved from the API.</p>
+<dt id="tcex.tcex.TcEx._load_secure_params">
+<code class="descname">_load_secure_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._load_secure_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._load_secure_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load secure params from the API.</p>
+<p># API Response:</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;inputs&quot;</span><span class="o">:</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;tc_playbook_db_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Redis&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fail_on_error&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span>
+        <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parameters (“inputs”) from the TC API.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -656,6 +684,24 @@ during the call of this method.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx.inject_params">
+<code class="descname">inject_params</code><span class="sig-paren">(</span><em>params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.inject_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.inject_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject params into sys.argv from secureParams API, AOT, or user provided.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.install_json">
+<code class="descname">install_json</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return contents of install.json configuration file, loading from disk if required.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.install_json_params">
+<code class="descname">install_json_params</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse params from install.json into a dict by name.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1118,7 +1164,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

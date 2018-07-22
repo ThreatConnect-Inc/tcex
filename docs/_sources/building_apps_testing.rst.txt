@@ -9,17 +9,25 @@ Usage
 
 .. code:: bash
 
-    usage: tcrun [-h] [--config CONFIG] [--halt_on_fail] [--group GROUP]
-                 [--profile PROFILE] [--quiet] [--unmask]
+    usage: tcrun [-h] [--config CONFIG] [--autoclear] [--halt_on_fail]
+                 [--group GROUP] [--logging_level LOGGING_LEVEL]
+                 [--profile PROFILE] [--quiet] [--report REPORT]
+                 [--truncate TRUNCATE] [--unmask]
 
     optional arguments:
-      -h, --help         show this help message and exit
-      --config CONFIG    The configuration file. (default: tcex.json)
-      --halt_on_fail     Halt on any failure.
-      --group GROUP      The group of profiles to executed.
-      --profile PROFILE  The profile to be executed. (default: "default")
-      --quiet            Suppress output.
-      --unmask           Unmask masked args.
+      -h, --help            show this help message and exit
+      --config CONFIG       The configuration file. (default: "tcex.json")
+      --autoclear           Clear Redis data before running.
+      --halt_on_fail        Halt on any failure.
+      --group GROUP         The group of profiles to executed.
+      --logging_level LOGGING_LEVEL
+                            The logging level.
+      --profile PROFILE     The profile to be executed. (default: "default")
+      --quiet               Suppress output.
+      --report REPORT       The JSON report filename.
+      --truncate TRUNCATE   The length at which to truncate successful validation
+                            data in the logs (default=50).
+      --unmask              Unmask masked args.
 
 Profile Format
 ----------------
@@ -73,17 +81,32 @@ For playbook Apps the ``tcprofile`` command will also create 2 standard validati
 
 .. code-block:: bash
 
-    usage: tcprofile [-h] [--config CONFIG] [--outfile OUTFILE]
+    usage: tcprofile [-h] [--action {create,delete,replace_validation,update}]
+                     [--ij IJ] [--data_file] [--outdir OUTDIR] [--outfile OUTFILE]
+                     --profile_name PROFILE_NAME [--redis_hash REDIS_HASH]
+                     [--redis_host REDIS_HOST] [--redis_port REDIS_PORT]
 
     optional arguments:
-      -h, --help         show this help message and exit
-      --config CONFIG    The install.json file name. (default: "install.json")
-      --outfile OUTFILE  File to output or append profile.
+      -h, --help            show this help message and exit
+      --action {create,delete,replace_validation,update}
+      --ij IJ               The install.json file name (default: install.json).
+      --data_file           Attempt to build data file templates for the profile.
+      --outdir OUTDIR       The *base* output directory containing the
+                            data/profiles folder.
+      --outfile OUTFILE     The name of the file to write the profile.
+      --profile_name PROFILE_NAME
+                            The profile name to create, delete, or update.
+      --redis_hash REDIS_HASH
+                            The redis hash.
+      --redis_host REDIS_HOST
+                            The redis host.
+      --redis_port REDIS_PORT
+                            The redis port.
 
 Staging Redis Data
 ------------------
 
-.. Important:: A local instance of Redis must be running to test locally.
+.. Important:: A local instance of Redis must be running to test Playbook Apps locally.
 
 In order to test using variable inputs the data can be manually added to Redis.  The ``tcrun`` command has functionality to "stage" the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.
 
@@ -228,4 +251,4 @@ The ``tcrun`` command can validate the exit code of the App.  This allows for se
 
   "exit_codes": [1]
 
-.. note:: For Custom Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the **exit_codes** parameter array.
+.. note:: For Runtime/Job Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the **exit_codes** parameter array.

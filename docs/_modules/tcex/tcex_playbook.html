@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook &mdash; TcEx 0.8.10 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -185,6 +185,7 @@
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 
 <div class="viewcode-block" id="TcExPlaybook"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook">[docs]</a><span class="k">class</span> <span class="nc">TcExPlaybook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -197,6 +198,7 @@
 <span class="sd">            tcex (object): Instance of TcEx.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables_type</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of output variable by name-type</span>
 
@@ -210,40 +212,6 @@
 
         <span class="c1"># parse out variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_out_variable</span><span class="p">()</span>
-
-        <span class="c1"># get key/value store</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the correct KV store for this execution.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_redis</span> <span class="k">import</span> <span class="n">TcExRedis</span>
-            <span class="k">return</span> <span class="n">TcExRedis</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_path</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_port</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;TCKeyValueAPI&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.tcex_key_value</span> <span class="k">import</span> <span class="n">TcExKeyValue</span>
-            <span class="k">return</span> <span class="n">TcExKeyValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Invalid DB Type: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_variable_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
-        <span class="n">variable_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_\.\-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
-        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
-        <span class="k">return</span> <span class="n">variable_pattern</span>
 
 <div class="viewcode-block" id="TcExPlaybook._parse_out_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook._parse_out_variable">[docs]</a>    <span class="k">def</span> <span class="nf">_parse_out_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Internal method to parse the tc_playbook_out_variable arg.</span>
@@ -268,6 +236,54 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_out_variables_type</span><span class="p">[</span><span class="n">vt_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">o</span>
                 <span class="p">}</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_variable_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Regex pattern to match and parse a playbook variable.&quot;&quot;&quot;</span>
+        <span class="n">variable_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;#([A-Za-z]+)&#39;</span>  <span class="c1"># match literal (#App) at beginning of String</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([\d]+)&#39;</span>  <span class="c1"># app id (:7979)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;:([A-Za-z0-9_\.\-\[\]]+)&#39;</span>  <span class="c1"># variable name (:variable_name)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;!(StringArray|BinaryArray|KeyValueArray&#39;</span>  <span class="c1"># variable type (array)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|TCEntityArray|TCEnhancedEntityArray&#39;</span>  <span class="c1"># variable type (array)</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|String|Binary|KeyValue|TCEntity|TCEnhancedEntity&#39;</span>  <span class="c1"># variable type</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;|(?:(?!String)(?!Binary)(?!KeyValue)&#39;</span>  <span class="c1"># non matching for custom</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;(?!TCEntity)(?!TCEnhancedEntity)&#39;</span>  <span class="c1"># non matching for custom</span>
+        <span class="n">variable_pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;[A-Za-z0-9_-]+))&#39;</span>  <span class="c1"># variable type (custom)</span>
+        <span class="k">return</span> <span class="n">variable_pattern</span>
+
+<div class="viewcode-block" id="TcExPlaybook.aot_blpop"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_blpop">[docs]</a>    <span class="k">def</span> <span class="nf">aot_blpop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subscribe to AOT action channel.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Blocking for AOT message.&#39;</span><span class="p">)</span>
+                <span class="n">msg_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">blpop</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_action_channel</span><span class="p">,</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_terminate_seconds</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">msg_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;AOT subscription timeout reached.&#39;</span><span class="p">)</span>
+
+                <span class="n">msg_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">msg_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">msg_type</span> <span class="o">=</span> <span class="n">msg_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;terminate&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s1">&#39;execute&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">msg_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s1">&#39;terminate&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Received AOT terminate message.&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Unsupported AOT message type: (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">msg_type</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aot_blpop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Exception during AOT subscription (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcExPlaybook.aot_rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_rpush">[docs]</a>    <span class="k">def</span> <span class="nf">aot_rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subscribe to AOT action channel.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_exit_channel</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Exception during AOT exit push (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExPlaybook.check_output_variable"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.check_output_variable">[docs]</a>    <span class="k">def</span> <span class="nf">check_output_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check to see if output variable was requested by downstream app.</span>
@@ -374,6 +390,25 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="sa">u</span><span class="s1">&#39;Variable </span><span class="si">{}</span><span class="s1"> was NOT requested by downstream app.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var_value</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">results</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the correct KV store for this execution.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;Redis&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.tcex_redis</span> <span class="k">import</span> <span class="n">TcExRedis</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">TcExRedis</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_path</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_port</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_context</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span> <span class="o">==</span> <span class="s1">&#39;TCKeyValueAPI&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.tcex_key_value</span> <span class="k">import</span> <span class="n">TcExKeyValue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">TcExKeyValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Invalid DB Type: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_playbook_db_type</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
 <div class="viewcode-block" id="TcExPlaybook.delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete method of CRUD operation for all data types.</span>
@@ -686,23 +721,32 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_binary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_binary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">b64decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
-<span class="sd">            decode (bool): If true the data will be base64 decoded.</span>
+<span class="sd">            b64decode (bool): If true the data will be base64 decoded.</span>
+<span class="sd">            decode (bool): If true the data will be decoded to a String.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (bytes): Results retrieved from DB.</span>
+<span class="sd">            (bytes|string): Results retrieved from DB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">b64decode</span><span class="p">:</span>
+                    <span class="c1"># if requested decode the base64 string</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="c1"># if requested decode bytes to a string</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+                            <span class="c1"># for data written an upstream java App</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
@@ -736,12 +780,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;The key or value field was None.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="TcExPlaybook.read_binary_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExPlaybook.read_binary_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_binary_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">b64decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read method of CRUD operation for binary array data.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (string): The variable to read from the DB.</span>
-<span class="sd">            decode (bool): If true the data will be base64 decoded.</span>
+<span class="sd">            b64decode (bool): If true the data will be base64 decoded.</span>
+<span class="sd">            decode (bool): If true the data will be decoded to a String.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): Results retrieved from DB.</span>
@@ -752,12 +797,17 @@
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">data_decoded</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">data_decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
-                        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
-                            <span class="c1"># for data written an upstream java App</span>
-                            <span class="n">data_decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">b64decode</span><span class="p">:</span>
+                        <span class="c1"># if requested decode the base64 string</span>
+                        <span class="n">dd</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">decode</span><span class="p">:</span>
+                            <span class="c1"># if requested decode bytes to a string</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">dd</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+                                <span class="c1"># for data written an upstream java App</span>
+                                <span class="n">dd</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+                        <span class="n">data_decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># for validation in tcrun it&#39;s easier to validate the base64 data</span>
                         <span class="n">data_decoded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -1334,7 +1384,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.10 documentation</title>
+  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -435,7 +435,9 @@
 <span class="sd">                &quot;type&quot;: &quot;File&quot;,</span>
 <span class="sd">                &quot;rating&quot;: 5.00,</span>
 <span class="sd">                &quot;confidence&quot;: 50,</span>
-<span class="sd">                &quot;summary&quot;: &quot;53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;,</span>
+<span class="sd">                &quot;summary&quot;: &quot;53c3609411c83f363e051d455ade78a7</span>
+<span class="sd">                            : 57a49b478310e4313c54c0fee46e4d70a73dd580</span>
+<span class="sd">                            : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;,</span>
 <span class="sd">                &quot;associatedGroups&quot;: [</span>
 <span class="sd">                    {</span>
 <span class="sd">                        &quot;groupXid&quot;: &quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
@@ -1316,7 +1318,7 @@
 <span class="sd">            displayed (bool, default:false): If True the supported attribute will be marked for</span>
 <span class="sd">                display.</span>
 <span class="sd">            source (str, optional): The source value for this attribute.</span>
-<span class="sd">            formatter (method, optional): A method that take a single attribute value and return a</span>
+<span class="sd">            formatter (method, optional): A method that takes a single attribute value and returns a</span>
 <span class="sd">                single formatted value.</span>
 
 <span class="sd">        Returns:</span>
@@ -1695,7 +1697,7 @@
 <div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Report Object&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">publish_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">publish_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -1715,7 +1717,6 @@
             <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="n">file_name</span><span class="p">,</span>
             <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span><span class="p">[</span><span class="s1">&#39;fileContent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_content</span>
         <span class="k">if</span> <span class="n">publish_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;publishDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
                 <span class="n">publish_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
@@ -2597,7 +2598,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

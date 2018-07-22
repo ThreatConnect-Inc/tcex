@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.10 documentation</title>
+  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -545,7 +545,7 @@
 <li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.Attribute.displayed" title="tcex.tcex_batch_v2.Attribute.displayed"><em>displayed</em></a>) – false): If True the supported attribute will be marked for
 display.</li>
 <li><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</li>
-<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that take a single attribute value and return a
+<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
 single formatted value.</li>
 </ul>
 </td>
@@ -917,7 +917,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Report">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>file_name</em>, <em>file_content=None</em>, <em>publish_date=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Report" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>file_name=None</em>, <em>file_content=None</em>, <em>publish_date=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Report Object</p>
 <dl class="attribute">
@@ -1140,7 +1140,9 @@ associations.</td>
     <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
     <span class="s2">&quot;rating&quot;</span><span class="o">:</span> <span class="mf">5.00</span><span class="p">,</span>
     <span class="s2">&quot;confidence&quot;</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
-    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7</span>
+<span class="s2">                : 57a49b478310e4313c54c0fee46e4d70a73dd580</span>
+<span class="s2">                : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
     <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
@@ -2072,7 +2074,7 @@ process.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

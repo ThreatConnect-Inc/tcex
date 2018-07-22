@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; TcEx 0.8.10 documentation</title>
+  <title>Usage &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.11 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -182,7 +182,7 @@
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal"><span class="pre">setup.cfg</span></code> file should have the following code:</p>
+<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal"><span class="pre">setup.cfg</span></code> file should have the following code at minimum:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">install</span><span class="p">]</span>
 <span class="n">prefix</span><span class="o">=</span>
 </pre></div>
@@ -191,19 +191,21 @@
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tclib</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no_cache_dir</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">tcex_develop</span><span class="p">]</span>
 
 <span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>           <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
   <span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
   <span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>      <span class="n">Configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">gen</span> <span class="n">lib</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>      <span class="n">Configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">gen</span> <span class="n">lib</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">no_cache_dir</span>       <span class="n">Do</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">pip</span> <span class="n">cache</span> <span class="n">directory</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">tcex_develop</span>       <span class="n">Replace</span> <span class="n">tcex</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">config</span> <span class="k">with</span> <span class="n">github</span> <span class="n">develop</span> <span class="n">branch</span><span class="o">.</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-configuration-file">
 <h1>Using Configuration File<a class="headerlink" href="#using-configuration-file" title="Permalink to this headline">¶</a></h1>
-<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.</p>
+<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.  For ease of management when building multiple Apps the tcex.json file can contain environment vars defining the Python version (e.g., $env.PY36 for <code class="docutils literal"><span class="pre">export</span> <span class="pre">PY36='3.6.5'</span></code>).</p>
 <p><strong>Linux</strong></p>
 <div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="s2">&quot;lib_versions&quot;</span><span class="p">:</span> <span class="p">[{</span>
@@ -219,8 +221,8 @@
     <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.5.3/bin/python&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_3.6.2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.6.2/bin/python&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
   <span class="p">}</span>
 <span class="p">],</span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
@@ -275,7 +277,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

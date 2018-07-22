@@ -28,7 +28,7 @@ All ThreatConnect |trade| Exchange Apps should write an exit message on successf
             data = fh.read()
     except:
         tcex.message_tc('Failed to open datafile for reading.')
-        tcex.exit_code(1)
+        tcex.exit_code = 1
 
     <snipped...>
 

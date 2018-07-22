@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; TcEx 0.8.10 documentation</title>
+  <title>Usage &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.11 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -182,17 +182,25 @@
 </div>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unmask</span><span class="p">]</span>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">autoclear</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">report</span> <span class="n">REPORT</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">truncate</span> <span class="n">TRUNCATE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unmask</span><span class="p">]</span>
 
 <span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>         <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>    <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">halt_on_fail</span>     <span class="n">Halt</span> <span class="n">on</span> <span class="nb">any</span> <span class="n">failure</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span>      <span class="n">The</span> <span class="n">group</span> <span class="n">of</span> <span class="n">profiles</span> <span class="n">to</span> <span class="n">executed</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span>  <span class="n">The</span> <span class="n">profile</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">quiet</span>            <span class="n">Suppress</span> <span class="n">output</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">unmask</span>           <span class="n">Unmask</span> <span class="n">masked</span> <span class="n">args</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;tcex.json&quot;</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">autoclear</span>           <span class="n">Clear</span> <span class="n">Redis</span> <span class="n">data</span> <span class="n">before</span> <span class="n">running</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">halt_on_fail</span>        <span class="n">Halt</span> <span class="n">on</span> <span class="nb">any</span> <span class="n">failure</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span>         <span class="n">The</span> <span class="n">group</span> <span class="n">of</span> <span class="n">profiles</span> <span class="n">to</span> <span class="n">executed</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span>
+                        <span class="n">The</span> <span class="n">logging</span> <span class="n">level</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span>     <span class="n">The</span> <span class="n">profile</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">quiet</span>               <span class="n">Suppress</span> <span class="n">output</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">report</span> <span class="n">REPORT</span>       <span class="n">The</span> <span class="n">JSON</span> <span class="n">report</span> <span class="n">filename</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">truncate</span> <span class="n">TRUNCATE</span>   <span class="n">The</span> <span class="n">length</span> <span class="n">at</span> <span class="n">which</span> <span class="n">to</span> <span class="n">truncate</span> <span class="n">successful</span> <span class="n">validation</span>
+                        <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">logs</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">unmask</span>              <span class="n">Unmask</span> <span class="n">masked</span> <span class="n">args</span><span class="o">.</span>
 </pre></div>
 </div>
 </div>
@@ -251,12 +259,27 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The <code class="docutils literal"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
 </div>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--config CONFIG<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--action <span class="o">{</span>create,delete,replace_validation,update<span class="o">}]</span>
+                 <span class="o">[</span>--ij IJ<span class="o">]</span> <span class="o">[</span>--data_file<span class="o">]</span> <span class="o">[</span>--outdir OUTDIR<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
+                 --profile_name PROFILE_NAME <span class="o">[</span>--redis_hash REDIS_HASH<span class="o">]</span>
+                 <span class="o">[</span>--redis_host REDIS_HOST<span class="o">]</span> <span class="o">[</span>--redis_port REDIS_PORT<span class="o">]</span>
 
 optional arguments:
-  -h, --help         show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --config CONFIG    The install.json file name. <span class="o">(</span>default: <span class="s2">&quot;install.json&quot;</span><span class="o">)</span>
-  --outfile OUTFILE  File to output or append profile.
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --action <span class="o">{</span>create,delete,replace_validation,update<span class="o">}</span>
+  --ij IJ               The install.json file name <span class="o">(</span>default: install.json<span class="o">)</span>.
+  --data_file           Attempt to build data file templates <span class="k">for</span> the profile.
+  --outdir OUTDIR       The *base* output directory containing the
+                        data/profiles folder.
+  --outfile OUTFILE     The name of the file to write the profile.
+  --profile_name PROFILE_NAME
+                        The profile name to create, delete, or update.
+  --redis_hash REDIS_HASH
+                        The redis hash.
+  --redis_host REDIS_HOST
+                        The redis host.
+  --redis_port REDIS_PORT
+                        The redis port.
 </pre></div>
 </div>
 </div>
@@ -264,7 +287,7 @@ optional arguments:
 <h1>Staging Redis Data<a class="headerlink" href="#staging-redis-data" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">A local instance of Redis must be running to test locally.</p>
+<p class="last">A local instance of Redis must be running to test Playbook Apps locally.</p>
 </div>
 <p>In order to test using variable inputs the data can be manually added to Redis.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command has functionality to “stage” the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.</p>
 </div>
@@ -403,7 +426,7 @@ optional arguments:
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For Custom Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the <strong>exit_codes</strong> parameter array.</p>
+<p class="last">For Runtime/Job Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the <strong>exit_codes</strong> parameter array.</p>
 </div>
 </div>
 
@@ -441,7 +464,7 @@ optional arguments:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

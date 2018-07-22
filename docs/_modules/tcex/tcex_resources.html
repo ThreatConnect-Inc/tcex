@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_resources &mdash; TcEx 0.8.10 documentation</title>
+  <title>tcex.tcex_resources &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -2699,7 +2699,7 @@
 <span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
 <span class="sd">                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
-<span class="sd">            body (dict): Python dictionary composed of JSON serialized data type.</span>
+<span class="sd">            body (str): JSON serialized data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">search_command</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span></div>
 
@@ -2733,7 +2733,7 @@
 <span class="sd">            type_name (string): This is a free form index type name. The ThreatConnect API will use</span>
 <span class="sd">                this resource verbatim.</span>
 <span class="sd">            search_command (string): Search command to pass to ES.</span>
-<span class="sd">            body (dict): JSON body</span>
+<span class="sd">            body (str): JSON body</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">search_command</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span></div></div>
 
@@ -2831,7 +2831,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

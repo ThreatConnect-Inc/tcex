@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; TcEx 0.8.10 documentation</title>
+  <title>Index &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.11 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -272,7 +272,7 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._indicators_replace_stub">_indicators_replace_stub() (tcex.tcex_job.TcExJob method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._inject_secure_params">_inject_secure_params() (tcex.tcex.TcEx method)</a>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._load_secure_params">_load_secure_params() (tcex.tcex.TcEx method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -402,10 +402,14 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">any_to_datetime() (tcex.tcex_utils.TcExUtils method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_branch">api_branch (tcex.tcex_resources.Resource attribute)</a>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_blpop">aot_blpop() (tcex.tcex_playbook.TcExPlaybook method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_rpush">aot_rpush() (tcex.tcex_playbook.TcExPlaybook method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_branch">api_branch (tcex.tcex_resources.Resource attribute)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_branch_base">api_branch_base (tcex.tcex_resources.Resource attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_entity">api_entity (tcex.tcex_resources.Resource attribute)</a>
@@ -478,15 +482,17 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_indicator_success">batch_indicator_success() (tcex.tcex_job.TcExJob method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_poll_interval">batch_poll_interval() (tcex.tcex_job.TcExJob method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_poll_interval_max">batch_poll_interval_max() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_status">batch_status() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.batch_write_type">batch_write_type() (tcex.tcex_job.TcExJob method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.blpop">blpop() (tcex.tcex_redis.TcExRedis method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.body">body (tcex.tcex_request.TcExRequest attribute)</a>
 
@@ -620,9 +626,11 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.FileOccurrence.date">date (tcex.tcex_batch_v2.FileOccurrence attribute)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime">date_to_datetime() (tcex.tcex_utils.TcExUtils method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime">date_to_datetime() (tcex.tcex_utils.TcExUtils method)</a>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.db">db (tcex.tcex_playbook.TcExPlaybook attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.default_args">default_args (tcex.tcex.TcEx attribute)</a>
 </li>
@@ -944,6 +952,12 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.inflect">inflect (tcex.tcex_utils.TcExUtils attribute)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.inject_params">inject_params() (tcex.tcex.TcEx method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.install_json">install_json (tcex.tcex.TcEx attribute)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.install_json_params">install_json_params (tcex.tcex.TcEx attribute)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Intrusion_Set">Intrusion_Set (class in tcex.tcex_resources)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.intrusion_set">intrusion_set() (tcex.tcex_batch_v2.TcExBatch method)</a>
@@ -1217,6 +1231,8 @@
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc">results_tc() (tcex.tcex.TcEx method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.results_tc_args">results_tc_args() (tcex.tcex.TcEx method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.rpush">rpush() (tcex.tcex_redis.TcExRedis method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1546,7 +1562,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

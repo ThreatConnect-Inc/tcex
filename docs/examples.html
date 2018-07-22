@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Examples &mdash; TcEx 0.8.10 documentation</title>
+  <title>Examples &mdash; TcEx 0.8.11 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.10 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.11 documentation" href="index.html"/>
         <link rel="next" title="Install JSON" href="install_json.html"/>
         <link rel="prev" title="Exit" href="exit.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.10
+                0.8.11
               </div>
             
           
@@ -897,13 +897,9 @@ use the returnValue=true query parameter.</p>
 16
 17
 18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -914,7 +910,7 @@ use the returnValue=true query parameter.</p>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">DataStore</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
 </span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
 
@@ -970,13 +966,9 @@ use the returnValue=true query parameter.</p>
 15
 16
 17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -1039,13 +1031,9 @@ use the returnValue=true query parameter.</p>
 16
 17
 18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -1056,7 +1044,7 @@ use the returnValue=true query parameter.</p>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">DataStore</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
-</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;tcex&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
 </span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
 
@@ -1112,13 +1100,9 @@ use the returnValue=true query parameter.</p>
 15
 16
 17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -2233,7 +2217,7 @@ use the returnValue=true query parameter.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.10',
+            VERSION:'0.8.11',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
