@@ -16,6 +16,7 @@ install_requires = [
     'future',
     'hvac>=0.3.0',
     'inflect>=0.2.5',
+    'jmespath',
     'jsonschema>=2.6.0',
     'parsedatetime',
     'python-dateutil>=2.6.1',
