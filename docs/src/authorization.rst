@@ -4,19 +4,19 @@
 ============================
 Authorization (Token / HMAC)
 ============================
-In general when communication with the ThreatConnect |trade| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without have to change any code.
+In general when communication with the ThreatConnect |trade| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.
 
-.. Note:: The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The Integration Server only supports HMAC authorization.  Apps should be written to run on both platforms.
+The :py:meth:`~tcex.tcex` module also has the :py:mod:`~tcex.tcex.TcEx.session` property which is a Python Requests Session with ThreatConnect Authorization added.  API call to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.
 
-If **not** using one of the Resource Classes in :py:mod:`~tcex.tcex_resources` for communications with the ThreatConnect API the :py:meth:`~tcex.tcex.TcEx.authorization` method can still be used to return a Python dictionary containing the required header values for proper authorization via Token or HMAC. The :py:meth:`~tcex.tcex.TcEx.authorization` method expects a prepared request from the Python Requests module (http://docs.python-requests.org/en/master/user/advanced/#prepared-requests).
+.. Note:: The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The MEO server supports HMAC or Token based authorization depending on the version.
 
 Token Refresh
 --------------
-Token based authorization required that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the ``tc_token`` and ``tc_token_expires`` arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the :py:meth:`~tcex.tcex.TcEx.authorization` method.
+Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the ``tc_token`` and ``tc_token_expires`` arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the :py:meth:`~tcex.tcex.TcEx.authorization` or :py:mod:`~tcex.tcex.TcEx.session` features.
 
 HMAC Authorization
 ------------------
-Generation of the Authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the Integration Server these arguments should be required.
+Generation of the Authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the certain versions of the MEO server these arguments could be required.
 
 Example install.json param section::
 
@@ -45,4 +45,4 @@ Example install.json param section::
     }
     <snipped...>
 
-For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be built immediately before the request is sent.  The :py:meth:`~tcex.tcex.TcEx.authorization_hmac` method will build the authorization string when passed a *Python Requests* prepared request.
+For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be built after the URI and query parameters are build and before the request is sent.

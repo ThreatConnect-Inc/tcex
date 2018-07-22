@@ -254,7 +254,9 @@ class TcExBatch(object):
                 "type": "File",
                 "rating": 5.00,
                 "confidence": 50,
-                "summary": "53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
+                "summary": "53c3609411c83f363e051d455ade78a7
+                            : 57a49b478310e4313c54c0fee46e4d70a73dd580
+                            : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7",
                 "associatedGroups": [
                     {
                         "groupXid": "e336e2dd-5dfb-48cd-a33a-f8809e83e904"
@@ -1135,7 +1137,7 @@ class Group(object):
             displayed (bool, default:false): If True the supported attribute will be marked for
                 display.
             source (str, optional): The source value for this attribute.
-            formatter (method, optional): A method that take a single attribute value and return a
+            formatter (method, optional): A method that takes a single attribute value and returns a
                 single formatted value.
 
         Returns:
@@ -1514,7 +1516,7 @@ class IntrusionSet(Group):
 class Report(Group):
     """ThreatConnect Batch Report Object"""
 
-    def __init__(self, tcex, name, file_name, file_content=None, publish_date=None, xid=True):
+    def __init__(self, tcex, name, file_name=None, file_content=None, publish_date=None, xid=True):
         """Initialize Class Properties.
 
         Args:
@@ -1534,7 +1536,6 @@ class Report(Group):
             'fileName': file_name,
             'type': self._group_data.get('type')
         }
-        self._file_data['fileContent'] = file_content
         if publish_date is not None:
             self._group_data['publishDate'] = self.tcex.utils.format_datetime(
                 publish_date, date_format='%Y-%m-%dT%H:%M:%SZ')

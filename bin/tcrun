@@ -18,9 +18,8 @@ import time
 import traceback
 from datetime import datetime
 
-import colorama as c
-import jmespath
 from six import string_types
+import colorama as c
 # not including these libraries as a dependencies since they are only required for local testing.
 try:
     from deepdiff import DeepDiff
@@ -369,7 +368,7 @@ class TcRun(object):
     @staticmethod
     def data_endswith(db_data, user_data):
         """Validate data ends with user data"""
-        if db_data.endswith(user_data):
+        if db_data is not None and db_data.endswith(user_data):
             return True
         return False
 
@@ -439,7 +438,7 @@ class TcRun(object):
     @staticmethod
     def data_startswith(db_data, user_data):
         """Validate data starts with user data"""
-        if db_data.startswith(user_data):
+        if db_data is not None and db_data.startswith(user_data):
             return True
         return False
 
@@ -452,16 +451,16 @@ class TcRun(object):
             return True
         return False
 
-    @staticmethod
-    def deep_diff(db_data, user_data):
+    def deep_diff(self, db_data, user_data):
         """Validate data in user data"""
         try:
             ddiff = DeepDiff(db_data, user_data, ignore_order=True)
+        except KeyError:
+            return False
         except NameError:
-            tcex.log.warning(u'Could not find DeepDiff module.')
             return False
         if ddiff:
-            tcex.log.info(u'[validate] Diff      : {}'.format(ddiff))
+            self.tcex.log.info(u'[validate] Diff      : {}'.format(ddiff))
             return False
         return True
 
@@ -764,7 +763,7 @@ class TcRun(object):
         program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
         if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
             print('{}{}Could not find program main file ({}).'.format(
-                c.Style.BRIGHT, c.Fore.RED, program_filename))
+                c.Style.BRIGHT, c.Fore.RED, program_main))
             sys.exit(1)
 
     def stage(self):
@@ -1109,6 +1108,7 @@ class TcRun(object):
         for error in batch_results.get('errors', []):
             self.log.error('[stage] {}'.format(error))
 
+    @staticmethod
     def stage_tc_batch_xid(xid_type, xid_value, owner):
         """Create an xid for a batch job."""
         xid_string = '{}-{}'.format(xid_type, xid_value, owner)
@@ -1148,10 +1148,10 @@ class TcRun(object):
                 variable = data.get('variable')
                 if variable.endswith('Binary'):
                     # call specific method and do not decode data
-                    db_data = self.tcex.playbook.read_binary(variable, False)
+                    db_data = self.tcex.playbook.read_binary(variable, False, False)
                 elif variable.endswith('BinaryArray'):
                     # call specific method and do not decode data
-                    db_data = self.tcex.playbook.read_binary_array(variable, False)
+                    db_data = self.tcex.playbook.read_binary_array(variable, False, False)
                 else:
                     db_data = self.tcex.playbook.read(variable)
                 db_data_path = data.get('variable_path')
@@ -1232,7 +1232,7 @@ class TcRun(object):
             elif isinstance(user_data, (list)):
                 user_data_truncated = []
                 for u in user_data:
-                    if u is not None and len(u) > truncate:
+                    if isinstance(db_data, (string_types)) and len(u) > truncate:
                         user_data_truncated.append('{} ...'.format(u[:args.truncate]))
                     else:
                         user_data_truncated.append(u)
@@ -1258,6 +1258,8 @@ class TcRun(object):
                         elif diff[0] == '+':
                             self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
                 except TypeError:
+                    pass
+                except KeyError:
                     pass
 
             # halt all further actions

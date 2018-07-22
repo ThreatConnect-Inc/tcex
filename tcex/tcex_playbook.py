@@ -540,23 +540,32 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary(self, key, decode=True):
+    def read_binary(self, key, b64decode=True, decode=True):
         """Read method of CRUD operation for binary data.
 
         Args:
             key (string): The variable to read from the DB.
-            decode (bool): If true the data will be base64 decoded.
+            b64decode (bool): If true the data will be base64 decoded.
+            decode (bool): If true the data will be decoded to a String.
 
         Returns:
-            (bytes): Results retrieved from DB.
+            (bytes|string): Results retrieved from DB.
         """
         data = None
         if key is not None:
             data = self.db.read(key.strip())
             if data is not None:
                 data = json.loads(data)
-                if decode:
-                    data = base64.b64decode(data).decode('utf-8')
+                if b64decode:
+                    # if requested decode the base64 string
+                    data = base64.b64decode(data)
+                    if decode:
+                        try:
+                            # if requested decode bytes to a string
+                            data = data.decode('utf-8')
+                        except UnicodeDecodeError:
+                            # for data written an upstream java App
+                            data = data.decode('latin-1')
         else:
             self.tcex.log.warning(u'The key field was None.')
         return data
@@ -590,12 +599,13 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary_array(self, key, decode=True):
+    def read_binary_array(self, key, b64decode=True, decode=True):
         """Read method of CRUD operation for binary array data.
 
         Args:
             key (string): The variable to read from the DB.
-            decode (bool): If true the data will be base64 decoded.
+            b64decode (bool): If true the data will be base64 decoded.
+            decode (bool): If true the data will be decoded to a String.
 
         Returns:
             (list): Results retrieved from DB.
@@ -606,12 +616,17 @@ class TcExPlaybook(object):
             if data is not None:
                 data_decoded = []
                 for d in json.loads(data):
-                    if decode:
-                        try:
-                            data_decoded.append(base64.b64decode(d).decode('utf-8'))
-                        except UnicodeDecodeError:
-                            # for data written an upstream java App
-                            data_decoded.append(base64.b64decode(d).decode('latin-1'))
+                    if b64decode:
+                        # if requested decode the base64 string
+                        dd = base64.b64decode(d)
+                        if decode:
+                            # if requested decode bytes to a string
+                            try:
+                                dd = dd.decode('utf-8')
+                            except UnicodeDecodeError:
+                                # for data written an upstream java App
+                                dd = dd.decode('latin-1')
+                        data_decoded.append(dd)
                     else:
                         # for validation in tcrun it's easier to validate the base64 data
                         data_decoded.append(d)

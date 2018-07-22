@@ -9,10 +9,14 @@ Release Notes
 0.8.11
 ------
 + Merged AOT feature in prep for 5.7.
-+ Updated default_args logic to handle both injecting secureParams, and AOT params depending on selected feature.
-+ Updated param injection method to be public and generic to allow params to be added from users.
-+ Updated tcex_redis module to support additional redis methods required for AOT.
-+ Added method to load install.json, which is used in injection method to determine the structure on the param values.
++ Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load install.json, which is used in injection method to determine the structure on the param values.
++ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams, and AOT params depending on selected feature.
++ Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic to allow params to be injected manually.
++ Updated :py:mod:`~tcex.tcex_redis` module to support additional redis methods required for AOT.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` methods to support b64decode and decode params.
++ Updated :py:meth:`~tcex.tcex_batch_v2.Report` module to make the report file name optional for update in 5.7.
++ Updated examples in docs.
++ Fixed validation issues in tcrun.
 
 0.8.10
 ------
@@ -73,7 +77,7 @@ Release Notes
 0.8.0
 ------
 + Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
-+ Added batch module to replace the jobs module starting in ThreatConnect 5.6.
++ Added :py:mod:`~tcex.tcex_batch_v2` module to replace the jobs module starting in ThreatConnect 5.6.
 + Added msg to :py:meth:`~tcex.tcex.TcEx.exit` methods.
 + Changed :py:meth:`~tcex.tcex.TcEx.exit_code` method to a property with a setter.
 + Changed :py:meth:`~tcex.tcex.TcEx.request` property to a method.
