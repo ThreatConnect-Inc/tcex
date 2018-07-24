@@ -114,7 +114,7 @@ class TcExPlaybook(object):
             (boolean): Boolean value indicator whether a match was found.
         """
         match = False
-        if variable in self._out_variables:
+        if variable in self.out_variables:
             match = True
         return match
 
@@ -178,9 +178,9 @@ class TcExPlaybook(object):
         if key is not None:
             key = key.strip()
             key_type = '{}-{}'.format(key, variable_type)
-            if self._out_variables_type.get(key_type) is not None:
+            if self.out_variables_type.get(key_type) is not None:
                 # variable key-type has been requested
-                v = self._out_variables_type.get(key_type)
+                v = self.out_variables_type.get(key_type)
                 self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable')))
                 if value is not None:
@@ -188,9 +188,9 @@ class TcExPlaybook(object):
                 else:
                     self.tcex.log.info(
                         u'Variable {} has a none value and will not be written.'.format(key))
-            elif self._out_variables.get(key) is not None and variable_type is None:
+            elif self.out_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
-                v = self._out_variables.get(key)
+                v = self.out_variables.get(key)
                 self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable')))
                 if value is not None:
