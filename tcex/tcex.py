@@ -696,10 +696,18 @@ class TcEx(object):
 
     def inject_params(self, params):
         """Inject params into sys.argv from secureParams API, AOT, or user provided."""
+        default_bool_args = [
+            '--apply_proxy_external',
+            '--apply_proxy_ext',
+            '--tc_proxy_external',
+            '--tc_secure_params',
+            '--tc_proxy_tc'
+        ]
         for arg, value in params.items():
             cli_arg = '--{}'.format(arg)
             if cli_arg in sys.argv:
                 # arg already passed on the command line
+                self.log.debug('skipping existing arg: {}'.format(cli_arg))
                 continue
 
             # ThreatConnect secure/AOT params should be updated in the future to proper JSON format.
@@ -712,6 +720,8 @@ class TcEx(object):
                 value = value.split('|')
             elif param_data.get('type', '').lower() == 'boolean':
                 # update value to be a boolean instead of string "true"/"false".
+                value = self.utils.to_bool(value)
+            elif arg in default_bool_args:
                 value = self.utils.to_bool(value)
 
             if isinstance(value, (bool)):

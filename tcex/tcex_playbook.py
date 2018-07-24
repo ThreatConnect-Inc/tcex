@@ -17,8 +17,8 @@ class TcExPlaybook(object):
         """
         self.tcex = tcex
         self._db = None
-        self._out_variables = {}  # dict of output variable by name
-        self._out_variables_type = {}  # dict of output variable by name-type
+        self._out_variables = None
+        self._out_variables_type = None
 
         # match full variable
         self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
@@ -28,9 +28,6 @@ class TcExPlaybook(object):
         self._vars_keyvalue_embedded = re.compile(
             r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern))
 
-        # parse out variable
-        self._parse_out_variable()
-
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
 
@@ -39,6 +36,8 @@ class TcExPlaybook(object):
             #App:1234:status!String,#App:1234:status_code!String
         """
         if self.tcex.default_args.tc_playbook_out_variables is not None:
+            self._out_variables = {}
+            self._out_variables_type = {}
             variables = self.tcex.default_args.tc_playbook_out_variables.strip()
             for o in variables.split(','):
                 # parse the variable to get individual parts
@@ -260,6 +259,22 @@ class TcExPlaybook(object):
         elif code not in [0, 1]:
             code = 1
         self.tcex.exit(code, msg)
+
+    @property
+    def out_variables(self):
+        """Return output variables stored as name dict."""
+        if self._out_variables is None:
+            # parse out variable
+            self._parse_out_variable()
+        return self._out_variables
+
+    @property
+    def out_variables_type(self):
+        """Return output variables store as name-type dict."""
+        if self._out_variables_type is None:
+            # parse out variable
+            self._parse_out_variable()
+        return self._out_variables_type
 
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
@@ -505,6 +520,7 @@ class TcExPlaybook(object):
     #
     # db methods
     #
+
     def hgetall(self):
         """Return all values for a context."""
         return self.db.hgetall
