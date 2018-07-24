@@ -453,27 +453,78 @@ class TcExBatch(object):
             return data
         return data
 
+    def data_group_association(self, xid):
+        """Return group dict array following all associations.
+
+        Args:
+            xid (str): The xid of the group to retrieve associations.
+
+        Returns:
+            list: A list of group dicts.
+        """
+        groups = []
+        group_data = None
+
+        # get group data from one of the arrays
+        if self.groups.get(xid) is not None:
+            group_data = self.groups.get(xid)
+            del self.groups[xid]
+        elif self.groups_shelf.get(xid) is not None:
+            group_data = self.groups_shelf.get(xid)
+            del self.groups_shelf[xid]
+
+        if group_data is not None:
+            # convert any obj into dict and process file data
+            group_data = self.data_group_type(group_data)
+            groups.append(group_data)
+
+            # recursively get associations
+            for assoc_xid in group_data.get('associatedGroupXid', []):
+                groups.extend(self.data_group_association(assoc_xid))
+
+        return groups
+
+    def data_group_type(self, group_data):
+        """Return dict representation of group data.
+
+        Args:
+            group_data (dict|obj): The group data dict or object.
+
+        Returns:
+            dict: The group data in dict format.
+        """
+        if isinstance(group_data, dict):
+            # process file content
+            file_content = group_data.pop('fileContent', None)
+            if file_content is not None:
+                self._files[group_data.get('xid')] = {
+                    'fileContent': file_content,
+                    'type': group_data.get('type')
+                }
+        else:
+            # process file content
+            if group_data.data.get('type') in ['Document', 'Report']:
+                self._files[group_data.data.get('xid')] = group_data.file_data
+            group_data = group_data.data
+        return group_data
+
     def data_groups(self, groups, entity_count):
-        """Process Group data."""
+        """Process Group data.
+
+        Args:
+            groups (list): The list of groups to process.
+
+        Returns:
+            list: A list of groups including associations
+        """
         data = []
         # process group objects
-        for xid, group_data in groups.items():
-            entity_count += 1
-            if isinstance(group_data, dict):
-                # process file content
-                file_content = group_data.pop('fileContent', None)
-                if file_content is not None:
-                    self._files[group_data.get('xid')] = {
-                        'fileContent': file_content,
-                        'type': group_data.get('type')
-                    }
-                data.append(group_data)
-            else:
-                # process file content
-                if group_data.data.get('type') in ['Document', 'Report']:
-                    self._files[group_data.data.get('xid')] = group_data.file_data
-                data.append(group_data.data)
-            del groups[xid]
+        for xid in groups.keys():
+            # get association from group data
+            assoc_group_data = self.data_group_association(xid)
+            data += assoc_group_data
+            entity_count += len(assoc_group_data)
+
             if entity_count >= self._batch_max_chunk:
                 break
         return data, entity_count
@@ -959,6 +1010,56 @@ class TcExBatch(object):
     def submit(self, poll=True, errors=True, process_files=True, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
 
+        TODO: .. note:: blah
+
+        By default this method will submit the job request and data and if the size of the data
+        is below the value **synchronousBatchSaveLimit** set in System Setting it will process
+        the request synchronously and return the batch status.  If the size of the batch is greater
+        than the value set the batch job will be queued.
+        Errors are not retrieve automatically and need to be enabled.
+
+        If any of the submit, poll, or error methods fail the entire submit will halt at the point
+        of failure. The behavior can be changed by setting halt_on_error to False.
+
+        Each of these methods can also be called on their own for greater control of the submit
+        process.
+
+        Args:
+            poll (bool, default:True): Poll for status.
+            errors (bool, default:True): Retrieve any batch errors (only if poll is True).
+            process_files (bool, default:True): Send any document or report attachments to the API.
+            halt_on_error (bool, default:True): If True any exception will raise an error.
+
+        Returns.
+            dict: The Batch Status from the ThreatConnect API.
+        """
+        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus')
+        batch_id = batch_data.get('id')
+        if batch_id is not None:
+            # job hit queue
+            if poll:
+                # poll for status
+                batch_data = self.poll(
+                    batch_id, halt_on_error=halt_on_error).get('data', {}).get('batchStatus')
+                if errors:
+                    # retrieve errors
+                    error_groups = batch_data.get('errorGroupCount', 0)
+                    error_indicators = batch_data.get('errorIndicatorCount', 0)
+                    if error_groups > 0 or error_indicators > 0:
+                        self.tcex.log.debug('retrieving batch errors')
+                        batch_data['errors'] = self.errors(batch_id)
+            else:
+                # can't process files if status is unknown (polling must be enabled)
+                process_files = False
+
+        if process_files:
+            # submit file data after batch job is complete
+            batch_data['uploadStatus'] = self.submit_files(halt_on_error)
+        return batch_data
+
+    def submit_all(self, poll=True, errors=True, process_files=True, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
+
         By default this method will submit the job request and data and if the size of the data
         is below the value **synchronousBatchSaveLimit** set in System Setting it will process
         the request synchronously and return the batch status.  If the size of the batch is greater
@@ -981,10 +1082,9 @@ class TcExBatch(object):
             dict: The Batch Status from the ThreatConnect API.
         """
         batch_data_array = []
-
         while True:
             batch_data = self.submit_create_and_upload(halt_on_error)
-            if batch_data is None:
+            if not batch_data:
                 break
             batch_data = batch_data.get('data', {}).get('batchStatus')
             batch_id = batch_data.get('id')
@@ -1009,7 +1109,7 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
-        return batch_data_array
+        return {}
 
     def submit_create_and_upload(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
@@ -1269,7 +1369,7 @@ class Group(object):
 
         unique:
             * False - Attribute type:value can be duplicated.
-            * Type - Attribute type has to be unique (e.g., only 1 Description Attribute).
+            * 'Type' - Attribute type has to be unique (e.g., only 1 Description Attribute).
             * True - Attribute type:value combo must be unique.
 
         Args:

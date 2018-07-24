@@ -47,7 +47,7 @@ class TcExRedis(object):
 
     def delete(self, key):
         """Alias for hdel method."""
-        self.hdel(key)
+        return self.hdel(key)
 
     def hdel(self, key):
         """Delete data from Redis for the provided key.
@@ -111,4 +111,4 @@ class TcExRedis(object):
         Returns:
             (string): The response from Redis.
         """
-        return self.r.rpush(name, *values)
+        return self.r.rpush(name, values)

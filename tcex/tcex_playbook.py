@@ -4,7 +4,6 @@
 import base64
 import json
 import re
-import time
 
 
 class TcExPlaybook(object):
@@ -73,7 +72,6 @@ class TcExPlaybook(object):
     def aot_blpop(self):
         """Subscribe to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
-            params = []
             try:
                 self.tcex.log.info('Blocking for AOT message.')
                 msg_data = self.db.blpop(

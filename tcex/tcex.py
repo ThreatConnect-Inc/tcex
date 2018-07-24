@@ -140,22 +140,10 @@ class TcEx(object):
         # check for bad status code and response that is not JSON
         if not r.ok or r.headers.get('content-type') != 'application/json':
             err = r.text or r.reason
-            self.tcex.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
+            self.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
 
         # return secure params
         return r.json().get('inputs', {})
-
-    @property
-    def jobs(self):
-        """**[Deprecated]** Include the jobs Module.
-
-        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-                     tcex.batch instead.
-        """
-        if self._jobs is None:
-            from .tcex_job import TcExJob
-            self._jobs = TcExJob(self)
-        return self._jobs
 
     def _log(self):
         """Send System and App data to logs."""
