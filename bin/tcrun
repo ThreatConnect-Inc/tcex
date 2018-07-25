@@ -861,7 +861,7 @@ class TcRun(object):
             if data_type == 'redis':
                 self.log.debug('Stage Redis Data')
                 self.stage_redis(sd.get('variable'), sd.get('data'))
-            elif data_type == 'redis-array':
+            elif data_type == 'redis-array' or data_type == 'redis_array':
                 self.log.debug('Stage Redis Array')
                 out_variable = sd.get('variable')
                 # build array
