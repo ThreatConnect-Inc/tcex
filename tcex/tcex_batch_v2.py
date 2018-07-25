@@ -1046,7 +1046,7 @@ class TcExBatch(object):
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
-        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus')
+        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus', {})
         batch_id = batch_data.get('id')
         if batch_id is not None:
             # job hit queue
@@ -1096,10 +1096,9 @@ class TcExBatch(object):
         """
         batch_data_array = []
         while True:
-            batch_data = self.submit_create_and_upload(halt_on_error)
+            batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus', {})
             if not batch_data:
                 break
-            batch_data = batch_data.get('data', {}).get('batchStatus')
             batch_id = batch_data.get('id')
             if batch_id is not None:
                 self.tcex.log.info('Batch ID: {}'.format(batch_id))
