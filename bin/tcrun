@@ -375,8 +375,9 @@ class TcRun(object):
     @staticmethod
     def data_in_db(db_data, user_data):
         """Validate db data in user data"""
-        if db_data in user_data:
-            return True
+        if isinstance(user_data, list):
+            if db_data in user_data:
+                return True
         return False
 
     @staticmethod
@@ -431,8 +432,9 @@ class TcRun(object):
     @staticmethod
     def data_not_in(db_data, user_data):
         """Validate data not in user data"""
-        if db_data not in user_data:
-            return True
+        if isinstance(user_data, list):
+            if db_data not in user_data:
+                return True
         return False
 
     @staticmethod

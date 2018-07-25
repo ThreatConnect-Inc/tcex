@@ -1123,7 +1123,7 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
-        return {}
+        return batch_data_array
 
     def submit_create_and_upload(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
@@ -1147,7 +1147,7 @@ class TcExBatch(object):
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
             return r.json()
-        return None
+        return {}
 
     def submit_files(self, halt_on_error=True):
         """Submit Files for Documents and Reports to ThreatConnect API.

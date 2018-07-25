@@ -10,6 +10,7 @@ Release Notes
 ------
 + Merged AOT feature in prep for 5.7.
 + Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load install.json, which is used in injection method to determine the structure on the param values.
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method to save batch data to disk to reduce memory usage of the App.
 + Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams, and AOT params depending on selected feature.
 + Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic to allow params to be injected manually.
 + Updated :py:mod:`~tcex.tcex_redis` module to support additional redis methods required for AOT.
