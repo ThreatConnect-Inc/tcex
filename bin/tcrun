@@ -258,8 +258,9 @@ class TcRun(object):
                 for variables in sd.get('data', {}).get('variables', []):
                     self.clear_redis(variables.get('value'), 'auto-clear')
             elif data_type == 'threatconnect':
-                self.clear_tc(sd.get('data_owner'), sd.get('data', {}), 'auto-clear')
-                self.clear_redis(sd.get('variable'), 'auto-clear')
+                # self.clear_tc(sd.get('data_owner'), sd.get('data', {}), 'auto-clear')
+                # self.clear_redis(sd.get('variable'), 'auto-clear')
+                pass
             elif data_type == 'threatconnect-association':
                 # assuming these have already been cleared
                 pass
@@ -318,16 +319,14 @@ class TcRun(object):
         tc_type = data.get('type')
         path = data.get('path')
         if tc_type in self.tcex.group_types:
-            # name = self.tcex.playbook.read(data.get('name'))
-            # name = self.path_data(name, path)
-            # if name is not None:
-            #     print('Deleting ThreatConnect Group: {}{}{}'.format(
-            #         c.Style.BRIGHT, c.Fore.MAGENTA, name))
-            #     self.log.info('[{}] Deleting ThreatConnect {} with name: {}.'.format(
-            #         clear_type, tc_type, name))
-            #     batch.group(tc_type, name)
-            pass
-            # need to retrieves group and delete by id using */v2*
+            name = self.tcex.playbook.read(data.get('name'))
+            name = self.path_data(name, path)
+            if name is not None:
+                print('Deleting ThreatConnect Group: {}{}{}'.format(
+                    c.Style.BRIGHT, c.Fore.MAGENTA, name))
+                self.log.info('[{}] Deleting ThreatConnect {} with name: {}.'.format(
+                    clear_type, tc_type, name))
+                batch.group(tc_type, name)
         elif tc_type in self.tcex.indicator_types:
             if data.get('summary') is not None:
                 summary = self.tcex.playbook.read(data.get('summary'))
@@ -968,7 +967,6 @@ class TcRun(object):
             if response.get('status') == 'Success':
                 # add resource id
                 if resource_type in self.tcex.indicator_types:
-                    resource_values = []
                     resource_id = resource.summary(response.get('data'))
                     self.log.info('[stage] Creating resource {}:{}'.format(
                         resource_type, resource_id))
