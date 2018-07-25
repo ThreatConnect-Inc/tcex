@@ -318,14 +318,16 @@ class TcRun(object):
         tc_type = data.get('type')
         path = data.get('path')
         if tc_type in self.tcex.group_types:
-            name = self.tcex.playbook.read(data.get('name'))
-            name = self.path_data(name, path)
-            if name is not None:
-                print('Deleting ThreatConnect Group: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, name))
-                self.log.info('[{}] Deleting ThreatConnect {} with name: {}.'.format(
-                    clear_type, tc_type, name))
-                batch.group(tc_type, name)
+            # name = self.tcex.playbook.read(data.get('name'))
+            # name = self.path_data(name, path)
+            # if name is not None:
+            #     print('Deleting ThreatConnect Group: {}{}{}'.format(
+            #         c.Style.BRIGHT, c.Fore.MAGENTA, name))
+            #     self.log.info('[{}] Deleting ThreatConnect {} with name: {}.'.format(
+            #         clear_type, tc_type, name))
+            #     batch.group(tc_type, name)
+            pass
+            # need to retrieves group and delete by id using */v2*
         elif tc_type in self.tcex.indicator_types:
             if data.get('summary') is not None:
                 summary = self.tcex.playbook.read(data.get('summary'))
