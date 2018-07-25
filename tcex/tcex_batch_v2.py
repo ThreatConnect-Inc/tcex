@@ -936,9 +936,11 @@ class TcExBatch(object):
     def save(self, resource):
         """Save group|indicator dict or object to shelve.
 
+        Best effort to save group/indicator data to disk.  If for any reason the save fails
+        the data will still be accessible from list in memory.
+
         Args:
             resource (dict|obj): The Group or Indicator dict or object.
-
         """
         resource_type = None
         xid = None
@@ -946,26 +948,37 @@ class TcExBatch(object):
             resource_type = resource.get('type')
             xid = resource.get('xid')
         else:
-            resource_type = resource.data.get('type')
+            resource_type = resource.type
             xid = resource.xid
 
         if resource_type is not None and xid is not None:
+            saved = True
             if resource_type in self.tcex.group_types:
-                # groups
-                self.groups_shelf[xid] = resource
                 try:
-                    del self._groups[xid]
-                except KeyError:
-                    # if group was saved twice it would already be delete
-                    pass
-            elif resource_type in self.tcex.indicator_types_data.values():
-                # indicators
-                self.indicators_shelf[xid] = resource
+                    # groups
+                    self.groups_shelf[xid] = resource
+                except Exception:
+                    saved = False
+
+                if saved:
+                    try:
+                        del self._groups[xid]
+                    except KeyError:
+                        # if group was saved twice it would already be delete
+                        pass
+            elif resource_type in self.tcex.indicator_types_data.keys():
                 try:
-                    del self._indicators[xid]
-                except KeyError:
-                    # if indicator was saved twice it would already be delete
-                    pass
+                    # indicators
+                    self.indicators_shelf[xid] = resource
+                except Exception:
+                    saved = False
+
+                if saved:
+                    try:
+                        del self._indicators[xid]
+                    except KeyError:
+                        # if indicator was saved twice it would already be delete
+                        pass
 
     @property
     def settings(self):
@@ -1486,6 +1499,11 @@ class Group(object):
         else:
             self._tags.append(tag)
         return tag
+
+    @property
+    def type(self):
+        """Return Group type."""
+        return self._group_data.get('type')
 
     @property
     def xid(self):
@@ -2137,6 +2155,11 @@ class Indicator(object):
         else:
             self._tags.append(tag)
         return tag
+
+    @property
+    def type(self):
+        """Return Group type."""
+        return self._indicator_data.get('type')
 
     @property
     def xid(self):
