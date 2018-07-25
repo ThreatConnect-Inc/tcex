@@ -699,9 +699,14 @@ class TcEx(object):
         default_bool_args = [
             '--apply_proxy_external',
             '--apply_proxy_ext',
+            '--apply_proxy_tc',
+            '--batch_halt_on_error',
+            '--tc_aot_enabled',
+            '--tc_log_to_api',
             '--tc_proxy_external',
+            '--tc_proxy_tc',
             '--tc_secure_params',
-            '--tc_proxy_tc'
+            '--tc_verify'
         ]
         for arg, value in params.items():
             cli_arg = '--{}'.format(arg)
