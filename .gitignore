@@ -36,6 +36,7 @@ docs/src/_templates
 .project
 .python-version
 .settings
+.vs
 .vscode
 nbproject
 
