@@ -77,7 +77,7 @@ class TcLib(object):
                         continue
                     if line.startswith('tcex'):
                         line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@develop#egg=tcex'
-                    print('line', line)
+                    # print('line', line)
                     new_requirements += '{}\n'.format(line)
                 fh.write(new_requirements)
 

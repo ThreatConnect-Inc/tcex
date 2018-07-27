@@ -671,7 +671,7 @@ class TcRun(object):
             ]
             exe_command = command + self.profile.get('profile_args').standard
             print_command = ' '.join(command + self.profile.get('profile_args').masked)
-            if self._args.unmasked:
+            if self._args.unmask:
                 print_command = ' '.join(command + self.profile.get('profile_args').quoted)
         elif program_language == 'java':
             command = [
@@ -682,7 +682,7 @@ class TcRun(object):
             exe_command = command + self.profile.get('profile_args').standard + [program_main]
             print_command = ' '.join(
                 command + self.profile.get('profile_args').masked + [program_main])
-            if self._args.unmasked:
+            if self._args.unmask:
                 print_command = ' '.join(
                     command + self.profile.get('profile_args').quoted + [program_main])
 
