@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.12
+------
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned.
++ Added active property to Indicator type objects.
+
 0.8.11
 ------
 + Merged AOT feature in prep for 5.7.

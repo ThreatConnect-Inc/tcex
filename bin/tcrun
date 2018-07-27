@@ -476,8 +476,7 @@ class TcRun(object):
         return self.deep_diff(db_data, user_data)
 
     def gen_launcher(self):
-        """
-        """
+        """Generate launcher for vscode."""
         program = self.profile.get(
             'install_json', {}).get('programMain', self.profile.get('script'))
         print(json.dumps({
@@ -596,7 +595,7 @@ class TcRun(object):
                 config['install_json'] = ij
                 selected_profiles.append(config)
 
-            report = self.reports.add_profile(config, profile_selected)
+            self.reports.add_profile(config, profile_selected)
 
         if not selected_profiles:
             print('{}{}No profiles selected to run.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
@@ -608,7 +607,8 @@ class TcRun(object):
         print('\n{}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'Report:'))
         # report headers
         print('{!s:<85}{!s:<20}'.format('', 'Validations'))
-        print('{!s:<60}{!s:<25}{!s:<10}{!s:<10}'.format('Profile:', 'Execution:', 'Passed:', 'Failed:'))
+        print('{!s:<60}{!s:<25}{!s:<10}{!s:<10}'.format(
+            'Profile:', 'Execution:', 'Passed:', 'Failed:'))
         for r in self.reports:
             d = r.data
             if not d.get('selected'):
@@ -671,6 +671,8 @@ class TcRun(object):
             ]
             exe_command = command + self.profile.get('profile_args').standard
             print_command = ' '.join(command + self.profile.get('profile_args').masked)
+            if self._args.unmasked:
+                print_command = ' '.join(command + self.profile.get('profile_args').quoted)
         elif program_language == 'java':
             command = [
                 self.config.get('java_path', program_language),
@@ -678,7 +680,11 @@ class TcRun(object):
                 self.config.get('class_path', './target/*')
             ]
             exe_command = command + self.profile.get('profile_args').standard + [program_main]
-            print_command = ' '.join(command + self.profile.get('profile_args').masked + [program_main])
+            print_command = ' '.join(
+                command + self.profile.get('profile_args').masked + [program_main])
+            if self._args.unmasked:
+                print_command = ' '.join(
+                    command + self.profile.get('profile_args').quoted + [program_main])
 
         self.log.info('[run] Running command {}'.format(print_command))
 
@@ -686,17 +692,17 @@ class TcRun(object):
         print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
 
         # Run Command
-        p = subprocess.Popen(
+        process = subprocess.Popen(
             exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        out, err = p.communicate()
+        out, err = process.communicate()
 
         # display app output
         self.run_display_app_output(out)
         self.run_display_app_errors(err)
 
         # Exit Code
-        return self.run_exit_code(p.returncode, err)
+        return self.run_exit_code(process.returncode)
 
     def run_display_app_errors(self, err):
         """Handle the exit code for the current run."""
@@ -733,11 +739,12 @@ class TcRun(object):
             output += '{}:{}'.format(
                 c.Style.BRIGHT, c.Style.RESET_ALL)
             output += '{}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.MAGENTA, install_json.get('programVersion'), c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.MAGENTA, install_json.get('programVersion'),
+                c.Style.RESET_ALL)
         output += ']'
         print(output)
 
-    def run_exit_code(self, returncode, err):
+    def run_exit_code(self, returncode):
         """Handle the exit code for the current run."""
         exit_status = False
         self.log.info('[run] Exit Code {}'.format(returncode))
@@ -890,7 +897,8 @@ class TcRun(object):
             staging_data = []
             for staging_file in self.profile.get('data_files', []):
                 if os.path.isfile(staging_file):
-                    print('Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
+                    print('Staging Data: {}{}{}'.format(
+                        c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
                     self.log.info('[stage] Staging data file: {}'.format(staging_file))
                     f = open(staging_file, 'r')
                     staging_data.extend(json.load(f))
@@ -1012,7 +1020,7 @@ class TcRun(object):
         # add the attribute
         a_response = attrib_resource.request()
         if a_response.get('status') != 'Success':
-            self.log.warning('[stage] Failed adding attribute type "{}" with value "{}" ({}).'.format(
+            self.log.warning('[stage] Failed adding attribute type "{}":"{}" ({}).'.format(
                 attribute_type, attribute_value, a_response.get('response').text))
 
     def stage_tc_create_security_label(self, label, resource):
@@ -1094,7 +1102,8 @@ class TcRun(object):
             variable = indicator.pop('variable', None)
             path = indicator.pop('path', None)
             if indicator.get('xid') is None:
-                indicator['xid'] = self.stage_tc_batch_xid(group.get('type'), group.get('summary'), owner)
+                indicator['xid'] = self.stage_tc_batch_xid(
+                    indicator.get('type'), indicator.get('summary'), owner)
             indicator['ownerName'] = owner
             # add to batch after extra data has been popped
             batch.add_indicator(indicator)
@@ -1113,7 +1122,7 @@ class TcRun(object):
     @staticmethod
     def stage_tc_batch_xid(xid_type, xid_value, owner):
         """Create an xid for a batch job."""
-        xid_string = '{}-{}'.format(xid_type, xid_value, owner)
+        xid_string = '{}-{}-{}'.format(xid_type, xid_value, owner)
         hash_object = hashlib.sha256(xid_string.encode('utf-8'))
         return hash_object.hexdigest()
 
@@ -1164,15 +1173,15 @@ class TcRun(object):
                 oper = data.get('operator', 'eq')
 
                 # validate if possible
-                separator = '-' * 10
-                self.log.info('{} {} {}'.format(separator, variable, separator))
+                sep = '-' * 10
+                self.log.info('{} {} {}'.format(sep, variable, sep))
                 # self.log.info('[validate] Variable  : {}'.format(variable))
-                if not self.validate_redis(db_data, user_data, oper, variable):
+                if not self.validate_redis(db_data, user_data, oper):
                     passed = False
                     self.exit_code = 1  # if any validation fails everything fails
         return passed
 
-    def validate_redis(self, db_data, user_data, oper, variable):
+    def validate_redis(self, db_data, user_data, oper):
         """Validate data in Redis."""
         passed = True
         # convert any int to string since playbooks don't support int values
@@ -1426,6 +1435,7 @@ class Report(object):
 
     @property
     def data(self):
+        """Return the report data."""
         return self._data
 
     @property
@@ -1562,13 +1572,13 @@ class Reports(object):
 
     def __iter__(self):
         """Interate over all report profiles."""
-        for p in self.profiles.values():
-            yield p
+        for profile in self.profiles.values():
+            yield profile
 
     def __str__(self):
         """Return reports as a string."""
         report = self.report
-        for name, profile in self.profiles.items():
+        for profile in self.profiles.values():
             if profile.data.get('selected'):
                 selected = 'selected'
             else:
@@ -1607,7 +1617,7 @@ if __name__ == '__main__':
                 sleep = tcr.profile.get('sleep', tcr.config.get('sleep', tcr.sleep))
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
-            profile_count =+ 1
+            profile_count += 1
 
         # display report
         tcr.report()

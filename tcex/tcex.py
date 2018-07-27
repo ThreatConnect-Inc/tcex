@@ -1008,6 +1008,10 @@ class TcEx(object):
             if not line or ' = ' not in line:
                 continue
             key, value = line.split(' = ')
+            if value == 'true':
+                value = True
+            elif value == 'false':
+                value = False
             setattr(self.default_args, key, value)
 
     def s(self, data, errors='strict'):

@@ -704,8 +704,9 @@ class TcExBatch(object):
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
             # TODO: let gc close or implicit close?
-            group_file = os.path.join(self.tcex.args.tc_temp_path, 'groups')
-            self._groups_shelf = shelve.open(group_file, writeback=False)
+            group_filename = 'groups-{}'.format(str(uuid.uuid4()))
+            group_fqpn = os.path.join(self.tcex.args.tc_temp_path, group_filename)
+            self._groups_shelf = shelve.open(group_fqpn, writeback=False)
         return self._groups_shelf
 
     @property
@@ -781,8 +782,9 @@ class TcExBatch(object):
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
             # TODO: let gc close or implicit close?
-            indicator_file = os.path.join(self.tcex.args.tc_temp_path, 'indicators')
-            self._indicators_shelf = shelve.open(indicator_file, writeback=False)
+            indicator_filename = 'indicators-{}'.format(str(uuid.uuid4()))
+            indicator_fqpn = os.path.join(self.tcex.args.tc_temp_path, indicator_filename)
+            self._indicators_shelf = shelve.open(indicator_fqpn, writeback=False)
         return self._indicators_shelf
 
     def intrusion_set(self, name, xid=True):
@@ -1046,7 +1048,8 @@ class TcExBatch(object):
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
-        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus', {})
+        batch_data = self.submit_create_and_upload(
+            halt_on_error).get('data', {}).get('batchStatus', {})
         batch_id = batch_data.get('id')
         if batch_id is not None:
             # job hit queue
@@ -1096,7 +1099,8 @@ class TcExBatch(object):
         """
         batch_data_array = []
         while True:
-            batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get('batchStatus', {})
+            batch_data = self.submit_create_and_upload(
+                halt_on_error).get('data', {}).get('batchStatus', {})
             if not batch_data:
                 break
             batch_id = batch_data.get('id')
@@ -1164,16 +1168,17 @@ class TcExBatch(object):
 
             # process the file content
             content = content_data.get('fileContent')
+            if callable(content):
+                content = content_data.get('fileContent')(xid)
             if content is None:
                 upload_status.append({'uploaded': False, 'xid': xid})
                 self.tcex.log.warning('File content was null for xid {}.'.format(xid))
                 continue
-            if callable(content):
-                content = content_data.get('fileContent')(xid)
             if content_data.get('type') == 'Document':
                 api_branch = 'documents'
             elif content_data.get('type') == 'Report':
                 api_branch = 'reports'
+
 
             # Post File
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
@@ -1959,20 +1964,15 @@ class Indicator(object):
                 key = 'flag2'
         self._indicator_data[key] = value
 
-    def build_summary(self, val1=None, val2=None, val3=None):
-        """Build the Indicator summary using available values."""
-        summary = []
-        if val1 is not None:
-            summary.append(val1)
-        if val2 is not None:
-            summary.append(val2)
-        if val3 is not None:
-            summary.append(val3)
-        if not summary:
-            ## BCS
-            # self.tcex.handle_error(590)
-            pass
-        return ' : '.join(summary)
+    @property
+    def active(self):
+        """Return Indicator active."""
+        return self._indicator_data.get('active')
+
+    @active.setter
+    def active(self, active):
+        """Set Indicator active."""
+        self._indicator_data['active'] = self._utils.to_bool(active)
 
     def association(self, group_xid):
         """Add association using xid value.
@@ -2023,6 +2023,21 @@ class Indicator(object):
         elif unique is False:
             self._attributes.append(attr)
         return attr
+
+    def build_summary(self, val1=None, val2=None, val3=None):
+        """Build the Indicator summary using available values."""
+        summary = []
+        if val1 is not None:
+            summary.append(val1)
+        if val2 is not None:
+            summary.append(val2)
+        if val3 is not None:
+            summary.append(val3)
+        if not summary:
+            ## BCS
+            # self.tcex.handle_error(590)
+            pass
+        return ' : '.join(summary)
 
     @property
     def confidence(self):
