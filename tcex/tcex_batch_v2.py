@@ -47,7 +47,7 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 class TcExBatch(object):
     """ThreatConnect Batch Import Module"""
 
-    def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=False):
+    def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True):
         """Initialize Class Properties.
 
         Args:
@@ -1145,6 +1145,7 @@ class TcExBatch(object):
                     'includeAdditional': 'true'
                 }
                 r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
+                self.tcex.log.debug('Batch Status Code: {}'.format(r.status_code))
             except Exception as e:
                 self.tcex.handle_error(1505, [e], halt_on_error)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
@@ -1154,6 +1155,10 @@ class TcExBatch(object):
 
     def submit_files(self, halt_on_error=True):
         """Submit Files for Documents and Reports to ThreatConnect API.
+
+        Critical Errors
+
+        * There is insufficient document storage allocated to this account.
 
         Args:
             halt_on_error (bool, default:True): If True any exception will raise an error.
@@ -1412,7 +1417,7 @@ class Group(object):
             self._attributes.append(attr)
         elif unique is True:
             for attribute_data in self._attributes:
-                if attribute_data.type == attr_type and attribute_data.value == attr_value:
+                if attribute_data.type == attr_type and attribute_data.value == attr.value:
                     attr = attribute_data
                     break
             else:
@@ -2015,7 +2020,7 @@ class Indicator(object):
                 self._attributes.append(attr)
         elif unique is True:
             for attribute_data in self._attributes:
-                if attribute_data.type == attr_type and attribute_data.value == attr_value:
+                if attribute_data.type == attr_type and attribute_data.value == attr.value:
                     attr = attribute_data
                     break
             else:
