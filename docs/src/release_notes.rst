@@ -8,8 +8,11 @@ Release Notes
 
 0.8.12
 ------
-+ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned.
 + Added active property to Indicator type objects.
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method be best effort.
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned.
++ Updated ``attribute()`` methods to handle unique values when using a formatter.
++ Fixed issue with --unmask arg not working on tcrun command.
 
 0.8.11
 ------
