@@ -418,8 +418,7 @@ class TcExBatch(object):
     def data(self):
         """Return the batch data to be sent to the ThreatConnect API.
 
-        Processing Order:
-        -----------------
+        **Processing Order:**
         * Process groups in memory up to max batch size.
         * Process groups in shelf to max batch size.
         * Process indicators in memory up to max batch size.

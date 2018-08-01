@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.11 documentation</title>
+  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.12 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.11 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.12 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.11
+                0.8.12
               </div>
             
           
@@ -210,28 +210,28 @@
 <p>ThreatConnect Batch Import Module</p>
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.ASN">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">ASN</code><span class="sig-paren">(</span><em>tcex</em>, <em>as_number</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#ASN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.ASN" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">ASN</code><span class="sig-paren">(</span><em>as_number</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#ASN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.ASN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch ASN Object.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Address">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Address</code><span class="sig-paren">(</span><em>tcex</em>, <em>ip</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Address" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Address</code><span class="sig-paren">(</span><em>ip</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Address" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch Address Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Adversary">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Adversary</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Adversary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Adversary</code><span class="sig-paren">(</span><em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Adversary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Adversary Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Attribute">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Attribute</code><span class="sig-paren">(</span><em>tcex</em>, <em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Attribute" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Attribute Object</p>
 <dl class="method">
@@ -280,14 +280,14 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.CIDR">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">CIDR</code><span class="sig-paren">(</span><em>tcex</em>, <em>block</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#CIDR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.CIDR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">CIDR</code><span class="sig-paren">(</span><em>block</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#CIDR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.CIDR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch CIDR Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Campaign">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Campaign</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>first_seen=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Campaign" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Campaign</code><span class="sig-paren">(</span><em>name</em>, <em>first_seen=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Campaign" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Campaign Object</p>
 <dl class="attribute">
@@ -300,7 +300,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Document">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>file_name</em>, <em>file_content=None</em>, <em>malware=False</em>, <em>password=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Document" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>file_content=None</em>, <em>malware=False</em>, <em>password=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Document Object</p>
 <dl class="attribute">
@@ -331,7 +331,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Email">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Email</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>subject</em>, <em>header</em>, <em>body</em>, <em>to_addr=None</em>, <em>from_addr=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Email" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Email</code><span class="sig-paren">(</span><em>name</em>, <em>subject</em>, <em>header</em>, <em>body</em>, <em>to_addr=None</em>, <em>from_addr=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Email" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Email Object</p>
 <dl class="attribute">
@@ -350,14 +350,14 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.EmailAddress">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">EmailAddress</code><span class="sig-paren">(</span><em>tcex</em>, <em>address</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#EmailAddress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.EmailAddress" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">EmailAddress</code><span class="sig-paren">(</span><em>address</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#EmailAddress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.EmailAddress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch EmailAddress Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Event">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>event_date=None</em>, <em>status=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Event" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>name</em>, <em>event_date=None</em>, <em>status=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Event Object</p>
 <dl class="attribute">
@@ -376,7 +376,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.File">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">File</code><span class="sig-paren">(</span><em>tcex</em>, <em>md5=None</em>, <em>sha1=None</em>, <em>sha256=None</em>, <em>size=None</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.File" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">File</code><span class="sig-paren">(</span><em>md5=None</em>, <em>sha1=None</em>, <em>sha256=None</em>, <em>size=None</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch File Object</p>
 <dl class="method">
@@ -413,7 +413,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.FileAction">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">FileAction</code><span class="sig-paren">(</span><em>tcex</em>, <em>parent_xid</em>, <em>relationship</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#FileAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.FileAction" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">FileAction</code><span class="sig-paren">(</span><em>parent_xid</em>, <em>relationship</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#FileAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.FileAction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch FileAction Object</p>
 <dl class="method">
@@ -438,7 +438,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.FileOccurrence">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">FileOccurrence</code><span class="sig-paren">(</span><em>tcex</em>, <em>file_name=None</em>, <em>path=None</em>, <em>date=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#FileOccurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.FileOccurrence" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">FileOccurrence</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>path=None</em>, <em>date=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#FileOccurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.FileOccurrence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch FileAction Object.</p>
 <dl class="method">
@@ -475,7 +475,7 @@
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Group">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>tcex</em>, <em>group_type</em>, <em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Group" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>group_type</em>, <em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Group Object</p>
 <dl class="method">
@@ -533,8 +533,17 @@
 
 <dl class="method">
 <dt id="tcex.tcex_batch_v2.Group.attribute">
-<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Group.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Group.attribute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>unique=True</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Group.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Group.attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Attribute</p>
+<dl class="docutils">
+<dt>unique:</dt>
+<dd><ul class="first last simple">
+<li>False - Attribute type:value can be duplicated.</li>
+<li>‘Type’ - Attribute type has to be unique (e.g., only 1 Description Attribute).</li>
+<li>True - Attribute type:value combo must be unique.</li>
+</ul>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -545,6 +554,7 @@
 <li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.Attribute.displayed" title="tcex.tcex_batch_v2.Attribute.displayed"><em>displayed</em></a>) – false): If True the supported attribute will be marked for
 display.</li>
 <li><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</li>
+<li><strong>unique</strong> (<em>bool|string</em><em>, </em><em>optional</em>) – Control attribute creation.</li>
 <li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
 single formatted value.</li>
 </ul>
@@ -638,6 +648,12 @@ formatted tag.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex_batch_v2.Group.type">
+<code class="descname">type</code><a class="headerlink" href="#tcex.tcex_batch_v2.Group.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Group type.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex_batch_v2.Group.xid">
 <code class="descname">xid</code><a class="headerlink" href="#tcex.tcex_batch_v2.Group.xid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group xid.</p>
@@ -647,7 +663,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Host">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>tcex</em>, <em>hostname</em>, <em>dns_active=False</em>, <em>whois_active=False</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Host" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>hostname</em>, <em>dns_active=False</em>, <em>whois_active=False</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch Host Object</p>
 <dl class="attribute">
@@ -666,7 +682,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Incident">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Incident</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>event_date=None</em>, <em>status=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Incident" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Incident</code><span class="sig-paren">(</span><em>name</em>, <em>event_date=None</em>, <em>status=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Incident" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Incident Object</p>
 <dl class="attribute">
@@ -685,7 +701,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Indicator">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Indicator</code><span class="sig-paren">(</span><em>tcex</em>, <em>indicator_type</em>, <em>summary</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Indicator</code><span class="sig-paren">(</span><em>indicator_type</em>, <em>summary</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Indicator Object</p>
 <dl class="method">
@@ -698,6 +714,12 @@ formatted tag.</li>
 <dt id="tcex.tcex_batch_v2.Indicator._xid">
 <code class="descname">_xid</code><span class="sig-paren">(</span><em>xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Indicator._xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator._xid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a valid xid.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.Indicator.active">
+<code class="descname">active</code><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator active.</p>
 </dd></dl>
 
 <dl class="method">
@@ -743,8 +765,17 @@ formatted tag.</li>
 
 <dl class="method">
 <dt id="tcex.tcex_batch_v2.Indicator.attribute">
-<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Indicator.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator.attribute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>unique=True</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Indicator.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator.attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Attribute</p>
+<dl class="docutils">
+<dt>unique:</dt>
+<dd><ul class="first last simple">
+<li>False - Attribute type:value can be duplicated.</li>
+<li>Type - Attribute type has to be unique (e.g., only 1 Description Attribute).</li>
+<li>True - Attribute type:value combo must be unique.</li>
+</ul>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -755,7 +786,8 @@ formatted tag.</li>
 <li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.Attribute.displayed" title="tcex.tcex_batch_v2.Attribute.displayed"><em>displayed</em></a>) – false): If True the supported attribute will be marked for
 display.</li>
 <li><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</li>
-<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that take a single attribute value and return a
+<li><strong>unique</strong> (<em>bool|string</em><em>, </em><em>optional</em>) – Control attribute creation.</li>
+<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
 single formatted value.</li>
 </ul>
 </td>
@@ -887,6 +919,12 @@ formatted tag.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex_batch_v2.Indicator.type">
+<code class="descname">type</code><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Group type.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex_batch_v2.Indicator.xid">
 <code class="descname">xid</code><a class="headerlink" href="#tcex.tcex_batch_v2.Indicator.xid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Group xid.</p>
@@ -896,28 +934,28 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.IntrusionSet">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">IntrusionSet</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#IntrusionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.IntrusionSet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">IntrusionSet</code><span class="sig-paren">(</span><em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#IntrusionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.IntrusionSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Adversary Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Mutex">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Mutex</code><span class="sig-paren">(</span><em>tcex</em>, <em>mutex</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Mutex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Mutex" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Mutex</code><span class="sig-paren">(</span><em>mutex</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Mutex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Mutex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch Mutex Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.RegistryKey">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">RegistryKey</code><span class="sig-paren">(</span><em>tcex</em>, <em>key_name</em>, <em>value_name</em>, <em>value_type</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#RegistryKey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.RegistryKey" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">RegistryKey</code><span class="sig-paren">(</span><em>key_name</em>, <em>value_name</em>, <em>value_type</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#RegistryKey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.RegistryKey" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch Registry Key Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Report">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>file_name=None</em>, <em>file_content=None</em>, <em>publish_date=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Report" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>name</em>, <em>file_name=None</em>, <em>file_content=None</em>, <em>publish_date=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Report Object</p>
 <dl class="attribute">
@@ -942,7 +980,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.SecurityLabel">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">SecurityLabel</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>description=None</em>, <em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#SecurityLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.SecurityLabel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">SecurityLabel</code><span class="sig-paren">(</span><em>name</em>, <em>description=None</em>, <em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#SecurityLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.SecurityLabel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch SecurityLabel Object.</p>
 <dl class="method">
@@ -969,18 +1007,24 @@ formatted tag.</li>
 <dd><p>Return Security Label description.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.SecurityLabel.name">
+<code class="descname">name</code><a class="headerlink" href="#tcex.tcex_batch_v2.SecurityLabel.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Security Label name.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Signature">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Signature</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>file_name</em>, <em>file_type</em>, <em>file_text</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Signature" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Signature</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>file_type</em>, <em>file_text</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Signature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Signature Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Tag">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Tag</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Tag" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Tag</code><span class="sig-paren">(</span><em>name</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Tag Object</p>
 <dl class="method">
@@ -1011,7 +1055,7 @@ formatted tag.</li>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.TcExBatch">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">TcExBatch</code><span class="sig-paren">(</span><em>tcex</em>, <em>owner</em>, <em>action=None</em>, <em>attribute_write_type=None</em>, <em>halt_on_error=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">TcExBatch</code><span class="sig-paren">(</span><em>tcex</em>, <em>owner</em>, <em>action=None</em>, <em>attribute_write_type=None</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>ThreatConnect Batch Import Module</p>
 <dl class="method">
@@ -1052,24 +1096,36 @@ formatted tag.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex_batch_v2.TcExBatch._group_lookup">
-<code class="descname">_group_lookup</code><span class="sig-paren">(</span><em>xid</em>, <em>group_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch._group_lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch._group_lookup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return existing group object if exists.</p>
+<dt id="tcex.tcex_batch_v2.TcExBatch._group">
+<code class="descname">_group</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch._group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch._group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously stored group or new group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>xid</strong> (<em>str</em>) – The xid (External ID) value for the Group.</li>
-<li><strong>group_obj</strong> (<em>obj</em>) – An instance of the Group object.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>dict|obj</em>) – An Group dict or instance of Group object.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The new group object or the previously stored object.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new Group dict/object or the previously stored dict/object.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict|obj</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch._indicator">
+<code class="descname">_indicator</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch._indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch._indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously stored indicator or new indicator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict|obj</em>) – An Indicator dict or instance of Indicator object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new Indicator dict/object or the previously stored dict/object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict|obj</td>
 </tr>
 </tbody>
 </table>
@@ -1257,18 +1313,6 @@ and associations.</td>
 <dd><p>Return batch attribute write type.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="tcex.tcex_batch_v2.TcExBatch.auto_submit">
-<code class="descname">auto_submit</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.auto_submit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return batch auto submit setting.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="tcex.tcex_batch_v2.TcExBatch.auto_submit_limit">
-<code class="descname">auto_submit_limit</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.auto_submit_limit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return batch auto submit limit.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="tcex.tcex_batch_v2.TcExBatch.campaign">
 <code class="descname">campaign</code><span class="sig-paren">(</span><em>name</em>, <em>first_seen=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.campaign" title="Permalink to this definition">¶</a></dt>
@@ -1324,6 +1368,72 @@ and associations.</td>
 <dt id="tcex.tcex_batch_v2.TcExBatch.data">
 <code class="descname">data</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the batch data to be sent to the ThreatConnect API.</p>
+<p><strong>Processing Order:</strong>
+* Process groups in memory up to max batch size.
+* Process groups in shelf to max batch size.
+* Process indicators in memory up to max batch size.
+* Process indicators in shelf up to max batch size.</p>
+<p>This method will remove the group/indicator from memory and/or shelf.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.data_group_association">
+<code class="descname">data_group_association</code><span class="sig-paren">(</span><em>xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.data_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data_group_association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return group dict array following all associations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xid</strong> (<em>str</em>) – The xid of the group to retrieve associations.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of group dicts.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.data_group_type">
+<code class="descname">data_group_type</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.data_group_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data_group_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dict representation of group data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>dict|obj</em>) – The group data dict or object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The group data in dict format.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.data_groups">
+<code class="descname">data_groups</code><span class="sig-paren">(</span><em>groups</em>, <em>entity_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.data_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process Group data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>groups</strong> (<em>list</em>) – The list of groups to process.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of groups including associations</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.data_indicators">
+<code class="descname">data_indicators</code><span class="sig-paren">(</span><em>indicators</em>, <em>entity_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.data_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process Indicator data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1541,6 +1651,18 @@ required.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.groups">
+<code class="descname">groups</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Groups data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.groups_shelf">
+<code class="descname">groups_shelf</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.groups_shelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Groups data.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.halt_on_error">
 <code class="descname">halt_on_error</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return batch halt on error setting.</p>
@@ -1632,6 +1754,18 @@ indicator.</li>
 <dt id="tcex.tcex_batch_v2.TcExBatch.indicator_len">
 <code class="descname">indicator_len</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicator_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of current indicators.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.indicators">
+<code class="descname">indicators</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Indicator data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.indicators_shelf">
+<code class="descname">indicators_shelf</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicators_shelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Indicator data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1792,6 +1926,22 @@ file content.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save group|indicator dict or object to shelve.</p>
+<p>Best effort to save group/indicator data to disk.  If for any reason the save fails
+the data will still be accessible from list in memory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>dict|obj</em>) – The Group or Indicator dict or object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.settings">
 <code class="descname">settings</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.settings" title="Permalink to this definition">¶</a></dt>
@@ -1838,6 +1988,40 @@ file content.</li>
 <dl class="method">
 <dt id="tcex.tcex_batch_v2.TcExBatch.submit">
 <code class="descname">submit</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<p>TODO: .. note:: blah</p>
+<p>By default this method will submit the job request and data and if the size of the data
+is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
+the request synchronously and return the batch status.  If the size of the batch is greater
+than the value set the batch job will be queued.
+Errors are not retrieve automatically and need to be enabled.</p>
+<p>If any of the submit, poll, or error methods fail the entire submit will halt at the point
+of failure. The behavior can be changed by setting halt_on_error to False.</p>
+<p>Each of these methods can also be called on their own for greater control of the submit
+process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="tcex.tcex_batch_v2.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): Poll for status.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Retrieve any batch errors (only if poll is True).</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Send any document or report attachments to the API.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.submit_all">
+<code class="descname">submit_all</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit Batch request to ThreatConnect API.</p>
 <p>By default this method will submit the job request and data and if the size of the data
 is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
@@ -1910,6 +2094,10 @@ process.</p>
 <dt id="tcex.tcex_batch_v2.TcExBatch.submit_files">
 <code class="descname">submit_files</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit Files for Documents and Reports to ThreatConnect API.</p>
+<p>Critical Errors</p>
+<ul class="simple">
+<li>There is insufficient document storage allocated to this account.</li>
+</ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2004,21 +2192,21 @@ process.</p>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.Threat">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Threat</code><span class="sig-paren">(</span><em>tcex</em>, <em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Threat" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">Threat</code><span class="sig-paren">(</span><em>name</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#Threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.Threat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Group" title="tcex.tcex_batch_v2.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Group</span></code></a></p>
 <p>ThreatConnect Batch Threat Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.URL">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">URL</code><span class="sig-paren">(</span><em>tcex</em>, <em>text</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.URL" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">URL</code><span class="sig-paren">(</span><em>text</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.URL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch URL Object</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="tcex.tcex_batch_v2.UserAgent">
-<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">UserAgent</code><span class="sig-paren">(</span><em>tcex</em>, <em>text</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#UserAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.UserAgent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_batch_v2.</code><code class="descname">UserAgent</code><span class="sig-paren">(</span><em>text</em>, <em>rating=None</em>, <em>confidence=None</em>, <em>xid=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#UserAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.UserAgent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#tcex.tcex_batch_v2.Indicator" title="tcex.tcex_batch_v2.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_batch_v2.Indicator</span></code></a></p>
 <p>ThreatConnect Batch User Agent Object</p>
 </dd></dl>
@@ -2074,7 +2262,7 @@ process.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.11',
+            VERSION:'0.8.12',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

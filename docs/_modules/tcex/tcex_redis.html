@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis &mdash; TcEx 0.8.11 documentation</title>
+  <title>tcex.tcex_redis &mdash; TcEx 0.8.12 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.11 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.12 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.11
+                0.8.12
               </div>
             
           
@@ -228,7 +228,7 @@
 
 <div class="viewcode-block" id="TcExRedis.delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alias for hdel method.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRedis.hdel"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.hdel">[docs]</a>    <span class="k">def</span> <span class="nf">hdel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete data from Redis for the provided key.</span>
@@ -292,7 +292,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): The response from Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">values</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -328,7 +328,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.11',
+            VERSION:'0.8.12',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

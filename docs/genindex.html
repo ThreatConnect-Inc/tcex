@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; TcEx 0.8.11 documentation</title>
+  <title>Index &mdash; TcEx 0.8.12 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.11 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.12 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.11
+                0.8.12
               </div>
             
           
@@ -256,17 +256,19 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch._gen_indicator_method">_gen_indicator_method() (tcex.tcex_batch_v2.TcExBatch method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch._group">_group() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_add">_group_add() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_id">_group_delete_by_id() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob._group_delete_by_name">_group_delete_by_name() (tcex.tcex_job.TcExJob method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch._group_lookup">_group_lookup() (tcex.tcex_batch_v2.TcExBatch method)</a>
-</li>
       <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._in">_in() (tcex.tcex_data_filter.DataFilter static method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._index_filter">_index_filter() (tcex.tcex_data_filter.DataFilter static method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch._indicator">_indicator() (tcex.tcex_batch_v2.TcExBatch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch._indicator_values">_indicator_values() (tcex.tcex_batch_v2.TcExBatch static method)</a>
 </li>
@@ -358,6 +360,8 @@
         <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.FileAction.action">(tcex.tcex_batch_v2.FileAction method)</a>
 </li>
       </ul></li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.active">active (tcex.tcex_batch_v2.Indicator attribute)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add">add() (tcex.tcex_metrics_v2.TcExMetricsV2 method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.add_filter">add_filter() (tcex.tcex_resources.Resource method)</a>
@@ -404,10 +408,10 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_blpop">aot_blpop() (tcex.tcex_playbook.TcExPlaybook method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_rpush">aot_rpush() (tcex.tcex_playbook.TcExPlaybook method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.aot_rpush">aot_rpush() (tcex.tcex_playbook.TcExPlaybook method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_branch">api_branch (tcex.tcex_resources.Resource attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.api_branch_base">api_branch_base (tcex.tcex_resources.Resource attribute)</a>
@@ -455,10 +459,6 @@
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization">authorization() (tcex.tcex.TcEx method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization_hmac">authorization_hmac() (tcex.tcex.TcEx method)</a>
-</li>
-      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.auto_submit">auto_submit (tcex.tcex_batch_v2.TcExBatch attribute)</a>
-</li>
-      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.auto_submit_limit">auto_submit_limit (tcex.tcex_batch_v2.TcExBatch attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -618,18 +618,26 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.data_filter">data_filter() (tcex.tcex.TcEx method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.data_group_association">data_group_association() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.data_group_type">data_group_type() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.data_groups">data_groups() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.data_indicators">data_indicators() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter">DataFilter (class in tcex.tcex_data_filter)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataObj">DataObj (class in tcex.tcex_data_filter)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore">DataStore (class in tcex.tcex_resources)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.FileOccurrence.date">date (tcex.tcex_batch_v2.FileOccurrence attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime">date_to_datetime() (tcex.tcex_utils.TcExUtils method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.db">db (tcex.tcex_playbook.TcExPlaybook attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.default_args">default_args (tcex.tcex.TcEx attribute)</a>
@@ -822,10 +830,10 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_add">group_cache_add() (tcex.tcex_job.TcExJob method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_remove">group_cache_remove() (tcex.tcex_job.TcExJob method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_cache_type">group_cache_type() (tcex.tcex_job.TcExJob method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_id">group_id() (tcex.tcex_job.TcExJob method)</a>
@@ -845,6 +853,10 @@
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_results">group_results (tcex.tcex_job.TcExJob attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.group_types">group_types (tcex.tcex.TcEx attribute)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.groups">groups (tcex.tcex_batch_v2.TcExBatch attribute)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.groups_shelf">groups_shelf (tcex.tcex_batch_v2.TcExBatch attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -930,10 +942,10 @@
         <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body">(tcex.tcex_resources.Indicator method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator_data">indicator_data (tcex.tcex_job.TcExJob attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicator_len">indicator_len (tcex.tcex_batch_v2.TcExBatch attribute)</a>
 
       <ul>
@@ -948,7 +960,11 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.indicator_types_data">indicator_types_data (tcex.tcex.TcEx attribute)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicators">indicators (tcex.tcex_batch_v2.TcExBatch attribute)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicators">indicators() (tcex.tcex_resources.Indicator method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicators_shelf">indicators_shelf (tcex.tcex_batch_v2.TcExBatch attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.inflect">inflect (tcex.tcex_utils.TcExUtils attribute)</a>
 </li>
@@ -1035,6 +1051,8 @@
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.name">name (tcex.tcex_batch_v2.Group attribute)</a>
 
       <ul>
+        <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.SecurityLabel.name">(tcex.tcex_batch_v2.SecurityLabel attribute)</a>
+</li>
         <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Tag.name">(tcex.tcex_batch_v2.Tag attribute)</a>
 </li>
         <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.name">(tcex.tcex_resources.Resource attribute)</a>
@@ -1066,11 +1084,15 @@
         <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.occurrence">(tcex.tcex_resources.File method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.operator">operator (tcex.tcex_data_filter.DataFilter attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.org">org() (tcex.tcex_notification_v2.TcExNotificationV2 method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.out_variables">out_variables (tcex.tcex_playbook.TcExPlaybook attribute)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.out_variables_type">out_variables_type (tcex.tcex_playbook.TcExPlaybook attribute)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Owner">Owner (class in tcex.tcex_resources)</a>
 </li>
@@ -1252,6 +1274,8 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl">safeurl() (tcex.tcex.TcEx method)</a>
 </li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.save">save() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.security_label">security_label() (tcex.tcex_batch_v2.Group method)</a>
 
       <ul>
@@ -1307,6 +1331,8 @@
 </li>
       </ul></li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit">submit() (tcex.tcex_batch_v2.TcExBatch method)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_all">submit_all() (tcex.tcex_batch_v2.TcExBatch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload">submit_create_and_upload() (tcex.tcex_batch_v2.TcExBatch method)</a>
 </li>
@@ -1378,10 +1404,10 @@
 </li>
       <li><a href="tcex_docs/tcex.tcex_request.html#module-tcex.tcex_request">tcex.tcex_request (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources">tcex.tcex_resources (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tcex_docs/tcex.tcex_utils.html#module-tcex.tcex_utils">tcex.tcex_utils (module)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_vault.html#module-tcex.tcex_vault">tcex.tcex_vault (module)</a>
@@ -1429,7 +1455,13 @@
       <li><a href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.to_string">to_string() (tcex.tcex.TcEx method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Attribute.type">type (tcex.tcex_batch_v2.Attribute attribute)</a>
+
+      <ul>
+        <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.type">(tcex.tcex_batch_v2.Group attribute)</a>
 </li>
+        <li><a href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.type">(tcex.tcex_batch_v2.Indicator attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1562,7 +1594,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.11',
+            VERSION:'0.8.12',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
