@@ -9,6 +9,7 @@ Release Notes
 0.8.13
 ------
 + Updated Batch to use Submit Job/Submit Data for Deletes.
++ Replaced tcex_develop arg with branch arg for tclib command.
 
 0.8.12
 ------

@@ -1098,12 +1098,13 @@ class TcExBatch(object):
         """
         batch_data_array = []
         while True:
+            batch_data = {}
             if self.action.lower() == 'delete':
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
                 batch_id = self.submit_job(halt_on_error)
                 if batch_id is not None:
-                    self.submit_data(batch_id, halt_on_error)
+                    batch_data = self.submit_data(batch_id, halt_on_error)
             else:
                 batch_data = self.submit_create_and_upload(
                     halt_on_error).get('data', {}).get('batchStatus', {})
@@ -1164,14 +1165,18 @@ class TcExBatch(object):
         Args:
             batch_id (string): The batch id of the current job.
         """
-        headers = {'Content-Type': 'application/octet-stream'}
-        try:
-            r = self.tcex.session.post(
-                '/v2/batch/{}'.format(batch_id), headers=headers, json=self.data)
-        except Exception as e:
-            self.tcex.handle_error(1520, [e], halt_on_error)
-        if not r.ok:
-            self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
+        content = self.data
+        if content.get('group') or content.get('indicator'):
+            headers = {'Content-Type': 'application/octet-stream'}
+            try:
+                r = self.tcex.session.post(
+                    '/v2/batch/{}'.format(batch_id), headers=headers, json=content)
+            except Exception as e:
+                self.tcex.handle_error(1520, [e], halt_on_error)
+            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
+            return r.json()
+        return {}
 
     def submit_files(self, halt_on_error=True):
         """Submit Files for Documents and Reports to ThreatConnect API.
