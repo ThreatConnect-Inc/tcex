@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.13
+------
++ Updated Batch to use Submit Job/Submit Data for Deletes.
+
 0.8.12
 ------
 + Added active property to Indicator type objects.

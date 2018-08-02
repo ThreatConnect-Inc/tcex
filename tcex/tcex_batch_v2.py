@@ -1098,11 +1098,18 @@ class TcExBatch(object):
         """
         batch_data_array = []
         while True:
-            batch_data = self.submit_create_and_upload(
-                halt_on_error).get('data', {}).get('batchStatus', {})
+            if self.action.lower() == 'delete':
+                # while waiting of FR for delete support in createAndUpload submit delete request
+                # the old way (submit job + submit data), still using V2.
+                batch_id = self.submit_job(halt_on_error)
+                if batch_id is not None:
+                    self.submit_data(batch_id, halt_on_error)
+            else:
+                batch_data = self.submit_create_and_upload(
+                    halt_on_error).get('data', {}).get('batchStatus', {})
+                batch_id = batch_data.get('id')
             if not batch_data:
                 break
-            batch_id = batch_data.get('id')
             if batch_id is not None:
                 self.tcex.log.info('Batch ID: {}'.format(batch_id))
                 # job hit queue
@@ -1151,6 +1158,20 @@ class TcExBatch(object):
                 self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
             return r.json()
         return {}
+
+    def submit_data(self, batch_id, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API.
+        Args:
+            batch_id (string): The batch id of the current job.
+        """
+        headers = {'Content-Type': 'application/octet-stream'}
+        try:
+            r = self.tcex.session.post(
+                '/v2/batch/{}'.format(batch_id), headers=headers, json=self.data)
+        except Exception as e:
+            self.tcex.handle_error(1520, [e], halt_on_error)
+        if not r.ok:
+            self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
 
     def submit_files(self, halt_on_error=True):
         """Submit Files for Documents and Reports to ThreatConnect API.
@@ -1223,6 +1244,20 @@ class TcExBatch(object):
             self.tcex.handle_error(580, [e], halt_on_error)
         return r
 
+    def submit_job(self, halt_on_error=True):
+        """Submit Batch request to ThreatConnect API."""
+        try:
+            r = self.tcex.session.post('/v2/batch', json=self.settings)
+        except Exception as e:
+            self.tcex.handle_error(1505, [e], halt_on_error)
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        data = r.json()
+        if data.get('status') != 'Success':
+            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+        self.tcex.log.debug('Batch Submit Data: {}'.format(data))
+        return data.get('data', {}).get('batchId')
+
     def threat(self, name, xid=True):
         """Add Threat data to Batch object
 
@@ -1286,7 +1321,7 @@ class TcExBatch(object):
         return self.group_len + self.indicator_len
 
     def __str__(self):
-        """Send the batch request to ThreatConnect."""
+        """Return string represtentation of object."""
         groups = []
         for group_data in self.groups.values():
             if isinstance(group_data, dict):
