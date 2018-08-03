@@ -10,6 +10,7 @@ Release Notes
 ------
 + Updated Batch to use Submit Job/Submit Data for Deletes.
 + Replaced tcex_develop arg with branch arg for tclib command.
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to help generate a unique and/or reproducible xid.
 
 0.8.12
 ------

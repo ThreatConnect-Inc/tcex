@@ -676,6 +676,26 @@ class TcExBatch(object):
         """Return dictionary containing all of the file content or callbacks."""
         return self._files
 
+    def generate_xid(self, identifier=None):
+        """Generate xid from provided identifiers.
+
+        .. Important::  If no identifier is provided a unique xid will be returned, but it will
+                        not be reproducible. If a list of identifiers are provided they must be
+                        in the same order to generate a reproducible xid.
+
+        Args:
+            identifier (list|str):  Optional value(s) to be used to make a unique and
+                                    reproducible xid.
+
+        """
+        if identifier is None:
+            identifier = str(uuid.uuid4())
+        elif isinstance(identifier, list):
+            identifier = '-'.join(identifier)
+            identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
+
+        return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
+
     def group(self, group_type, name, xid=True):
         """Add Group data to Batch object.
 
@@ -1099,19 +1119,24 @@ class TcExBatch(object):
         batch_data_array = []
         while True:
             batch_data = {}
+            batch_id = None
             if self.action.lower() == 'delete':
                 # while waiting of FR for delete support in createAndUpload submit delete request
                 # the old way (submit job + submit data), still using V2.
-                batch_id = self.submit_job(halt_on_error)
-                if batch_id is not None:
-                    batch_data = self.submit_data(batch_id, halt_on_error)
+                if len(self) > 0:
+                    batch_id = self.submit_job(halt_on_error)
+                    if batch_id is not None:
+                        batch_data = self.submit_data(batch_id, halt_on_error)
+                else:
+                    batch_data = {}
             else:
                 batch_data = self.submit_create_and_upload(
                     halt_on_error).get('data', {}).get('batchStatus', {})
                 batch_id = batch_data.get('id')
+
             if not batch_data:
                 break
-            if batch_id is not None:
+            elif batch_id is not None:
                 self.tcex.log.info('Batch ID: {}'.format(batch_id))
                 # job hit queue
                 if poll:
