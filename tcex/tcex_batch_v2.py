@@ -684,16 +684,15 @@ class TcExBatch(object):
                         in the same order to generate a reproducible xid.
 
         Args:
-            identifier (list|str):  Optional value(s) to be used to make a unique and
+            identifier (list|str):  Optional *string* value(s) to be used to make a unique and
                                     reproducible xid.
 
         """
         if identifier is None:
             identifier = str(uuid.uuid4())
         elif isinstance(identifier, list):
-            identifier = '-'.join(identifier)
+            identifier = '-'.join([str(i) for i in identifier])
             identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
-
         return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
     def group(self, group_type, name, xid=True):
