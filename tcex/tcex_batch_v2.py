@@ -1714,6 +1714,7 @@ class Email(Group):
         self._group_data['subject'] = subject
         self._group_data['header'] = header
         self._group_data['body'] = body
+        self._group_data['score'] = 0
         if to_addr is not None:
             self._group_data['to'] = to_addr
         if from_addr is not None:
@@ -1728,6 +1729,16 @@ class Email(Group):
     def from_addr(self, from_addr):
         """Set Email from."""
         self._group_data['from'] = from_addr
+
+    @property
+    def score(self):
+        """Return Email to."""
+        return self._group_data.get('score')
+
+    @score.setter
+    def score(self, score):
+        """Set Email from."""
+        self._group_data['score'] = score
 
     @property
     def to_addr(self):
