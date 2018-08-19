@@ -67,6 +67,9 @@ class TcExBatch(object):
         self._group_shelf_fqpn = None
         self._indicator_shelf_fqpn = None
 
+        # debug branch
+        self._batch_count = 0
+
         # default properties
         self._poll_interval = 15
         self._poll_timeout = 3600
@@ -722,8 +725,9 @@ class TcExBatch(object):
     def group_shelf_fqpn(self):
         """Return groups shelf fully qualified path name."""
         if self._group_shelf_fqpn is None:
-            self._group_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+            # self._group_shelf_fqpn = os.path.join(
+            #     self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+            self._group_shelf_fqpn = 'groups-saved'
         return self._group_shelf_fqpn
 
     @property
@@ -807,8 +811,9 @@ class TcExBatch(object):
     def indicator_shelf_fqpn(self):
         """Return indicator shelf fully qualified path name."""
         if self._indicator_shelf_fqpn is None:
-            self._indicator_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'indicator-{}'.format(str(uuid.uuid4())))
+            # self._indicator_shelf_fqpn = os.path.join(
+            #     self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
+            self._indicator_shelf_fqpn = 'indicators-saved'
         return self._indicator_shelf_fqpn
 
     @property
@@ -1180,6 +1185,7 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
+            self._batch_count += 1
         return batch_data_array
 
     def submit_create_and_upload(self, halt_on_error=True):
@@ -1189,6 +1195,8 @@ class TcExBatch(object):
             dict: The Batch Status from the ThreatConnect API.
         """
         content = self.data
+        with open('batch-{}.json'.format(self._batch_count), 'w') as fh:
+            json.dump(content, fh, indent=2)
         if content.get('group') or content.get('indicator'):
             try:
                 files = (
