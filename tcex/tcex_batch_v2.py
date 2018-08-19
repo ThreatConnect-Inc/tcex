@@ -727,7 +727,8 @@ class TcExBatch(object):
         if self._group_shelf_fqpn is None:
             # self._group_shelf_fqpn = os.path.join(
             #     self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
-            self._group_shelf_fqpn = 'groups-saved'
+            self._group_shelf_fqpn = os.path.join(
+                self.tcex.args.tc_temp_path, 'groups-saved')
         return self._group_shelf_fqpn
 
     @property
@@ -813,7 +814,8 @@ class TcExBatch(object):
         if self._indicator_shelf_fqpn is None:
             # self._indicator_shelf_fqpn = os.path.join(
             #     self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
-            self._indicator_shelf_fqpn = 'indicators-saved'
+            self._indicator_shelf_fqpn = os.path.join(
+                self.tcex.args.tc_temp_path, 'indicators-saved')
         return self._indicator_shelf_fqpn
 
     @property
