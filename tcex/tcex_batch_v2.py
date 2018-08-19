@@ -64,6 +64,8 @@ class TcExBatch(object):
         self._batch_max_chunk = 5000
         self._halt_on_error = halt_on_error
         self._owner = owner
+        self._group_shelf_fqpn = None
+        self._indicator_shelf_fqpn = None
 
         # default properties
         self._poll_interval = 15
@@ -414,6 +416,13 @@ class TcExBatch(object):
         indicator_obj = CIDR(block, rating, confidence, xid)
         return self._indicator(indicator_obj)
 
+    def close(self):
+        """Cleanup batch job."""
+        self.groups_shelf.close()
+        os.remove(self.group_shelf_fqpn)
+        self.indicators_shelf.close()
+        os.remove(self.indicator_shelf_fqpn)
+
     @property
     def data(self):
         """Return the batch data to be sent to the ThreatConnect API.
@@ -710,6 +719,14 @@ class TcExBatch(object):
         return self._group(group_obj)
 
     @property
+    def group_shelf_fqpn(self):
+        """Return groups shelf fully qualified path name."""
+        if self._group_shelf_fqpn is None:
+            self._group_shelf_fqpn = os.path.join(
+                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+        return self._group_shelf_fqpn
+
+    @property
     def groups(self):
         """Return dictionary of all Groups data."""
         if self._groups is None:
@@ -721,10 +738,9 @@ class TcExBatch(object):
     def groups_shelf(self):
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
-            # TODO: let gc close or implicit close?
-            group_filename = 'groups-{}'.format(str(uuid.uuid4()))
-            group_fqpn = os.path.join(self.tcex.args.tc_temp_path, group_filename)
-            self._groups_shelf = shelve.open(group_fqpn, writeback=False)
+            # TODO: let gc close or implicit close? there could be significant overhead/delay in
+            #       manually closing.
+            self._groups_shelf = shelve.open(self.group_shelf_fqpn, writeback=False)
         return self._groups_shelf
 
     @property
@@ -788,6 +804,14 @@ class TcExBatch(object):
         return self._indicator(indicator_obj)
 
     @property
+    def indicator_shelf_fqpn(self):
+        """Return indicator shelf fully qualified path name."""
+        if self._indicator_shelf_fqpn is None:
+            self._indicator_shelf_fqpn = os.path.join(
+                self.tcex.args.tc_temp_path, 'indicator-{}'.format(str(uuid.uuid4())))
+        return self._indicator_shelf_fqpn
+
+    @property
     def indicators(self):
         """Return dictionary of all Indicator data."""
         if self._indicators is None:
@@ -799,10 +823,9 @@ class TcExBatch(object):
     def indicators_shelf(self):
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
-            # TODO: let gc close or implicit close?
-            indicator_filename = 'indicators-{}'.format(str(uuid.uuid4()))
-            indicator_fqpn = os.path.join(self.tcex.args.tc_temp_path, indicator_filename)
-            self._indicators_shelf = shelve.open(indicator_fqpn, writeback=False)
+            # TODO: let gc close or implicit close? there could be significant overhead/delay in
+            #       manually closing.
+            self._indicators_shelf = shelve.open(self.indicator_shelf_fqpn, writeback=False)
         return self._indicators_shelf
 
     def intrusion_set(self, name, xid=True):

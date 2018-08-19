@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.14 (working)
+------
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
+
 0.8.13
 ------
 + Updated Batch to use Submit Job/Submit Data for Deletes.

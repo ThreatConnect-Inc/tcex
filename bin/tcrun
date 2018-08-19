@@ -3,6 +3,7 @@
 """ TcEx Framework App Testing Module """
 import argparse
 import base64
+import binascii
 import collections
 import difflib
 import hashlib
@@ -86,6 +87,7 @@ class TcRun(object):
         self.app_path = os.getcwd()
         self.exit_code = 0
         self.json_report = {}
+        self.max_diff = 10
         self.sleep = 1
         # data from install.json
         self.display_name = None
@@ -863,6 +865,10 @@ class TcRun(object):
         }
         """
         for sd in self.staging_data:
+            if not isinstance(sd, dict):
+                # reported issue from qa where staging data is invalid
+                msg = 'Invalid staging data provided ({}).'.format(sd)
+                sys.exit(msg)
             data_type = sd.get('data_type', 'redis')
             if data_type == 'redis':
                 self.log.debug('Stage Redis Data')
@@ -915,14 +921,24 @@ class TcRun(object):
             data = str(data)
         # handle binary
         if variable.endswith('Binary'):
-            data = base64.b64decode(data)
+            try:
+                data = base64.b64decode(data)
+            except binascii.Error:
+                msg = 'The Binary staging data for variable {} is not properly base64 encoded.'
+                msg = msg.format(variable)
+                sys.exit(msg)
         elif variable.endswith('BinaryArray'):
-            # loop through each entry
-            decoded_data = []
-            for d in data:
-                d_decoded = base64.b64decode(d)
-                decoded_data.append(d_decoded)
-            data = decoded_data
+            try:
+                # loop through each entry
+                decoded_data = []
+                for d in data:
+                    d_decoded = base64.b64decode(d)
+                    decoded_data.append(d_decoded)
+                data = decoded_data
+            except binascii.Error:
+                msg = 'The BinaryArray staging data for variable {} is not properly base64 encoded.'
+                msg = msg.format(variable)
+                sys.exit(msg)
         self.log.info(u'[stage] Creating variable {}'.format(variable))
         self.tcex.playbook.create(variable, data)
 
@@ -1260,6 +1276,7 @@ class TcRun(object):
             self.log.error('[validate] Results  : Failed')
             if db_data is not None and user_data is not None and oper in ['eq', 'ne']:
                 try:
+                    diff_count = 0
                     for i, diff in enumerate(difflib.ndiff(db_data, user_data)):
                         if diff[0] == ' ':  # no difference
                             continue
@@ -1268,6 +1285,11 @@ class TcRun(object):
                                 '[validate] Diff      : Missing data at index {}'.format(i))
                         elif diff[0] == '+':
                             self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
+                        if diff_count > self.max_diff:
+                            # don't spam the logs if string are vastly different
+                            self.log.info('Max number of differences reached.')
+                            break
+                        diff_count += 1
                 except TypeError:
                     pass
                 except KeyError:
@@ -1406,7 +1428,7 @@ class ArgBuilder(object):
         elif self.lang == 'java':
             quote_char = '\''
 
-        if re.findall(r'[!\-\s\$]{1,}', str(data)):
+        if re.findall(r'[!\-\s\$\&]{1,}', str(data)):
             data = '{}{}{}'.format(quote_char, data, quote_char)
         return data
 

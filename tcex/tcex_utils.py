@@ -2,7 +2,9 @@
 """TcEx Utilities Module"""
 from datetime import datetime
 import calendar
+import os
 import re
+import uuid
 
 from pytz import timezone
 from dateutil import parser
@@ -21,7 +23,7 @@ class TcExUtils():
             tcex (object): Instance of TcEx.
             rhash (string): The REDIS hash.
         """
-        self._tcex = tcex
+        self.tcex = tcex
         self._inflect = None
 
     def any_to_datetime(self, time_input, tz=None):
@@ -75,7 +77,7 @@ class TcExUtils():
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
                 if dt.tzinfo is None:
-                    # self._tcex.log.debug(
+                    # self.tcex.log.debug(
                     #     'Assuming local time for naive datetime {}.'.format(str(dt)))
                     dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
                 dt = dt.astimezone(timezone(tz))
@@ -162,7 +164,7 @@ class TcExUtils():
         dt, status = cal.parseDT(time_input, sourceTime=source_datetime, tzinfo=tzinfo)
         if tz is not None:  # don't add tz if no tz value is passed
             if dt.tzinfo is None:
-                # self._tcex.log.debug('Assuming local time for naive datetime {}.'.format(str(dt)))
+                # self.tcex.log.debug('Assuming local time for naive datetime {}.'.format(str(dt)))
                 dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
             # don't covert timezone if source timezone already in the correct timezone
             if tz != src_tzname:
@@ -179,6 +181,37 @@ class TcExUtils():
             import inflect
             self._inflect = inflect.engine()
         return self._inflect
+
+    def write_temp_binary_file(self, content, filename=None):
+        """Write content to a temporary file.
+
+        Args:
+            content (bytes): The file content.
+            filename (str, optional): The filename to use when writing the file.
+
+        Returns:
+            str: Fully qualified path name for the file.
+
+        """
+        return self.write_temp_file(content, filename, 'wb')
+
+    def write_temp_file(self, content, filename=None, mode='w'):
+        """Write content to a temporary file.
+
+        Args:
+            content (bytes|str): The file content. If passing binary data the mode needs to be set to 'wb'.
+            filename (str, optional): The filename to use when writing the file.
+            mode (str, optional): The file write mode which could be either 'w' or 'wb'.
+
+        Returns:
+            str: Fully qualified path name for the file.
+        """
+        if filename is None:
+            filename = str(uuid.uuid4())
+        fqpn = os.path.join(self.tcex.default_args.tc_temp_path, filename)
+        with open(fqpn, mode) as fh:
+            fh.write(content)
+        return fqpn
 
     def timedelta(self, time_input1, time_input2):
         """ Calculates time delta between two time expressions.
