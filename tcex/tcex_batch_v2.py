@@ -68,6 +68,7 @@ class TcExBatch(object):
         self._indicator_shelf_fqpn = None
 
         # debug branch
+        self._debug = False
         self._batch_count = 0
 
         # default properties
@@ -555,6 +556,17 @@ class TcExBatch(object):
                 break
         return data, entity_count
 
+    @property
+    def debug(self):
+        """Return current debug value."""
+        return self._debug
+
+    @debug.setter
+    def debug(self, value):
+        """Set debug value."""
+        if isinstance(value, bool):
+            self._debug = value
+
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
         """Add Document data to Batch object.
 
@@ -725,10 +737,11 @@ class TcExBatch(object):
     def group_shelf_fqpn(self):
         """Return groups shelf fully qualified path name."""
         if self._group_shelf_fqpn is None:
-            # self._group_shelf_fqpn = os.path.join(
-            #     self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
             self._group_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'groups-saved')
+                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+            if self._debug:
+                self._group_shelf_fqpn = os.path.join(
+                    self.tcex.args.tc_temp_path, 'groups-saved')
         return self._group_shelf_fqpn
 
     @property
@@ -812,10 +825,11 @@ class TcExBatch(object):
     def indicator_shelf_fqpn(self):
         """Return indicator shelf fully qualified path name."""
         if self._indicator_shelf_fqpn is None:
-            # self._indicator_shelf_fqpn = os.path.join(
-            #     self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
             self._indicator_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'indicators-saved')
+                self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
+            if self._debug:
+                self._indicator_shelf_fqpn = os.path.join(
+                    self.tcex.args.tc_temp_path, 'indicators-saved')
         return self._indicator_shelf_fqpn
 
     @property
@@ -1187,7 +1201,6 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
-            self._batch_count += 1
         return batch_data_array
 
     def submit_create_and_upload(self, halt_on_error=True):
@@ -1197,8 +1210,9 @@ class TcExBatch(object):
             dict: The Batch Status from the ThreatConnect API.
         """
         content = self.data
-        with open('batch-{}.json'.format(self._batch_count), 'w') as fh:
-            json.dump(content, fh, indent=2)
+        if self._debug:
+            # special code for debugging App using batchV2.
+            self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
             try:
                 files = (
@@ -1362,6 +1376,14 @@ class TcExBatch(object):
         """
         indicator_obj = URL(text, rating, confidence, xid)
         return self._indicator(indicator_obj)
+
+    def write_batch_json(self, content):
+        """Write batch json data to a file."""
+        batch_json_file = os.path.join(
+            self.tcex.args.tc_temp_path, 'batch-{}.json'.format(self._batch_count))
+        with open(batch_json_file, 'w') as fh:
+            json.dump(content, fh, indent=2)
+        self._batch_count += 1
 
     @property
     def file_len(self):
