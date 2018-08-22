@@ -9,6 +9,7 @@ Release Notes
 0.8.14 (working)
 ------
 + Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
++ Added global overrides for halt_on_error in batch module.
 
 0.8.13
 ------

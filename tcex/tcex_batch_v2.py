@@ -67,6 +67,11 @@ class TcExBatch(object):
         self._group_shelf_fqpn = None
         self._indicator_shelf_fqpn = None
 
+        # global overrides on batch/file errors
+        self._halt_on_batch_error = None
+        self._halt_on_file_error = None
+        self._halt_on_poll_error = None
+
         # debug branch
         self._debug = False
         self._batch_count = 0
@@ -771,6 +776,39 @@ class TcExBatch(object):
         """Set batch halt on error setting."""
         self._halt_on_error = halt_on_error
 
+    @property
+    def halt_on_batch_error(self):
+        """Return halt on batch error value."""
+        return self._halt_on_batch_error
+
+    @halt_on_batch_error.setter
+    def halt_on_batch_error(self, value):
+        """Set batch halt on batch error value."""
+        if isinstance(value, bool):
+            self._halt_on_batch_error = value
+
+    @property
+    def halt_on_file_error(self):
+        """Return halt on file post error value."""
+        return self._halt_on_file_error
+
+    @halt_on_file_error.setter
+    def halt_on_file_error(self, value):
+        """Set halt on file post error value."""
+        if isinstance(value, bool):
+            self._halt_on_file_error = value
+
+    @property
+    def halt_on_poll_error(self):
+        """Return halt on poll error value."""
+        return self._halt_on_poll_error
+
+    @halt_on_poll_error.setter
+    def halt_on_poll_error(self, value):
+        """Set batch halt on poll error value."""
+        if isinstance(value, bool):
+            self._halt_on_poll_error = value
+
     def host(self, hostname, dns_active=False, whois_active=False, rating=None, confidence=None,
              xid=True):
         """Add Email Address data to Batch object.
@@ -904,6 +942,9 @@ class TcExBatch(object):
         Returns:
             dict: The batch status returned from the ThreatConnect API.
         """
+        # check global setting for override
+        halt_on_error = self.halt_on_poll_error or halt_on_error
+
         if interval is None:
             interval = self.poll_interval
         else:
@@ -1087,8 +1128,6 @@ class TcExBatch(object):
     def submit(self, poll=True, errors=True, process_files=True, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
 
-        TODO: .. note:: blah
-
         By default this method will submit the job request and data and if the size of the data
         is below the value **synchronousBatchSaveLimit** set in System Setting it will process
         the request synchronously and return the batch status.  If the size of the batch is greater
@@ -1209,6 +1248,9 @@ class TcExBatch(object):
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
+        # check global setting for override
+        halt_on_error = self.halt_on_batch_error or halt_on_error
+
         content = self.data
         if self._debug:
             # special code for debugging App using batchV2.
@@ -1236,6 +1278,9 @@ class TcExBatch(object):
         Args:
             batch_id (string): The batch id of the current job.
         """
+        # check global setting for override
+        halt_on_error = self.halt_on_batch_error or halt_on_error
+
         content = self.data
         if content.get('group') or content.get('indicator'):
             headers = {'Content-Type': 'application/octet-stream'}
@@ -1262,6 +1307,9 @@ class TcExBatch(object):
         Returns:
             dict: The upload status for each xid.
         """
+        # check global setting for override
+        halt_on_error = self.halt_on_file_error or halt_on_error
+
         upload_status = []
         for xid, content_data in self._files.items():
             del self._files[xid]  # win or loose remove the entry
@@ -1279,7 +1327,6 @@ class TcExBatch(object):
                 api_branch = 'documents'
             elif content_data.get('type') == 'Report':
                 api_branch = 'reports'
-
 
             # Post File
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
@@ -1322,6 +1369,9 @@ class TcExBatch(object):
 
     def submit_job(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API."""
+        # check global setting for override
+        halt_on_error = self.halt_on_batch_error or halt_on_error
+
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
