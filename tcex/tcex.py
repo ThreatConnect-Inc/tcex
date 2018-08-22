@@ -21,7 +21,8 @@ class TcEx(object):
     def __init__(self):
         """Initialize Class Properties."""
         # init logger
-        self.log = self._logger(True)
+        self.log = logging.getLogger('tcex')
+        self._logger_stream()
         # Property defaults
         self._error_codes = None
         self._exit_code = 0
@@ -190,7 +191,7 @@ class TcEx(object):
         """Log the current TcEx version number."""
         self.log.info(u'TcEx Version: {}'.format(__import__(__name__).__version__))
 
-    def _logger(self, stream_only=False):
+    def _logger(self):
         """Create TcEx app logger instance.
 
         The logger is accessible via the ``tc.log.<level>`` call.
@@ -212,7 +213,58 @@ class TcEx(object):
         Returns:
             logger: An instance of logging
         """
-        log_level = {
+        level = logging.INFO
+        self.log.setLevel(level)
+
+        # clear all handlers
+        self.log.handlers = []
+
+        # update logging level
+        if self.default_args.logging is not None:
+            level = self._logger_levels[self.default_args.logging]
+        elif self.default_args.tc_log_level is not None:
+            level = self._logger_levels[self.default_args.tc_log_level]
+        self.log.setLevel(level)
+
+        # add file handler if not already added
+        if self.default_args.tc_log_path:
+            self._logger_fh()
+
+        # add api handler if not already added
+        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
+            self._logger_api()
+
+        self.log.info('Logging Level: {}'.format(logging.getLevelName(level)))
+
+    def _logger_api(self):
+        """Add API logging handler."""
+        from .tcex_logger import TcExLogHandler, TcExLogFormatter
+        api = TcExLogHandler(self.session)
+        api.set_name('api')
+        api.setLevel(logging.DEBUG)
+        api.setFormatter(TcExLogFormatter())
+        self.log.addHandler(api)
+
+    def _logger_fh(self):
+        """Add File logging handler."""
+        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
+        fh = logging.FileHandler(logfile)
+        fh.set_name('fh')
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(self._logger_formatter)
+        self.log.addHandler(fh)
+
+    @property
+    def _logger_formatter(self):
+        """Return log formatter."""
+        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
+        tx_format += '(%(funcName)s:%(lineno)d)'
+        return logging.Formatter(tx_format)
+
+    @property
+    def _logger_levels(self):
+        """Return log levels."""
+        return {
             'debug': logging.DEBUG,
             'info': logging.INFO,
             'warning': logging.WARNING,
@@ -220,68 +272,13 @@ class TcEx(object):
             'critical': logging.CRITICAL
         }
 
-        level = logging.INFO
-
-        # Formatter
-        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        tx_format += '(%(funcName)s:%(lineno)d)'
-        formatter = logging.Formatter(tx_format)
-
-        if stream_only:
-            log = logging.getLogger('tcex-stream')
-            log.setLevel(level)
-            # stream logger
-            sh = logging.StreamHandler()
-            sh.set_name('sh')
-            sh.setLevel(level)
-            sh.setFormatter(formatter)
-            log.addHandler(sh)
-        else:
-            log = logging.getLogger('tcex-stream')
-            # remove stream handler
-            for handler in self.log.handlers:
-                if handler.get_name() == 'sh':
-                    log.removeHandler(handler)
-            log = logging.getLogger('tcex')
-            if self.default_args.logging is not None:
-                level = log_level[self.default_args.logging]
-            elif self.default_args.tc_log_level is not None:
-                level = log_level[self.default_args.tc_log_level]
-            log.setLevel(level)
-
-            # add api handler if not already added
-            if 'api' not in [h.get_name() for h in self.log.handlers]:
-                if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-                    log.addHandler(self._logger_api)
-
-            # add file handler if not already added
-            if 'fh' not in [h.get_name() for h in self.log.handlers]:
-                if self.default_args.tc_log_path:
-                    fh = self._logger_fh
-                    fh.setFormatter(formatter)
-                    log.addHandler(fh)
-
-            log.info('Logging Level: {}'.format(logging.getLevelName(level)))
-        return log
-
-    @property
-    def _logger_api(self):
-        """Return API logging handler."""
-        from .tcex_logger import TcExLogHandler, TcExLogFormatter
-        api = TcExLogHandler(self.session)
-        api.set_name('api')
-        api.setLevel(logging.DEBUG)
-        api.setFormatter(TcExLogFormatter())
-        return api
-
-    @property
-    def _logger_fh(self):
-        """Return File logging handler."""
-        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
-        fh = logging.FileHandler(logfile)
-        fh.set_name('fh')
-        fh.setLevel(logging.DEBUG)
-        return fh
+    def _logger_stream(self):
+        """Add stream logging handler."""
+        sh = logging.StreamHandler()
+        sh.set_name('sh')
+        sh.setLevel(logging.INFO)
+        sh.setFormatter(self._logger_formatter)
+        self.log.addHandler(sh)
 
     def _resources(self, custom_indicators=False):
         """Initialize the resource module.
@@ -536,7 +533,7 @@ class TcEx(object):
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()
             # reinitialize logger with new log level and api settings
-            self.log = self._logger()
+            self._logger()
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
                 params = self.playbook.aot_blpop()
@@ -745,7 +742,7 @@ class TcEx(object):
         self._default_args, unknown = self.parser.parse_known_args()
 
         # reinitialize logger with new log level and api settings
-        self.log = self._logger()
+        self._logger()
 
     @property
     def install_json(self):

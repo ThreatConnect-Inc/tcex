@@ -14,7 +14,7 @@ class TcExAuth(auth.AuthBase):
     """ThreatConnect Authorization Class"""
     def __init__(self, logger=None):
         """Initialize Class Properties"""
-        self.log = self._logger
+        self.log = self._logger()
         if logger is not None:
             self.log = logger
 
@@ -64,21 +64,35 @@ class TcExTokenAuth(TcExAuth):
         self._token_url = token_url
         self._session = session  # use same value as session for verify
 
-    def _renew_token(self):
+    def _renew_token(self, retry=True):
         """Renew expired ThreatConnect Token."""
-        self.log.info('Token Expiration: {}'.format(self._token_expiration))
         self.log.info('Renewing ThreatConnect Token')
+        self.log.info('Current Token Expiration: {}'.format(self._token_expiration))
         try:
             payload = {'expiredToken': self._token}
             url = '{}/appAuth'.format(self._token_url)
             r = get(url, params=payload, verify=self._session.verify)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                err = 'Failure during token renewal ({}).'.format(r.text)
-                RuntimeError(1042, err)
+                if retry:
+                    warn_msg = 'Token Retry Error. API status code: {}, API message: {}.'
+                    self.log.warning(warn_msg.format(r.status_code, r.text))
+                    # delay and retry token renewal
+                    time.sleep(15)
+                    self._renew_token(False)
+                else:
+                    err_reason = r.text or r.reason
+                    err_msg = 'Token Retry Error. API status code: {}, API message: {}.'
+                    raise RuntimeError(1042, err_msg.format(r.status_code, err_reason))
             data = r.json()
-            self._token = data.get('apiToken')
-            self._token_expiration = int(data['apiTokenExpires'])
-            self.log.debug('New Token Expiration: {}'.format(self._token_expiration))
+            if retry and (data.get('apiToken') is None or data.get('apiTokenExpires') is None):
+                # add retry logic to handle case if the token renewal doesn't return valid data
+                warn_msg = 'Token Retry Error: no values for apiToken or apiTokenExpires ({}).'
+                self.log.warning(warn_msg.format(r.text))
+                self._renew_token(False)
+            else:
+                self._token = data.get('apiToken')
+                self._token_expiration = int(data.get('apiTokenExpires'))
+                self.log.info('New Token Expiration: {}'.format(self._token_expiration))
         except exceptions.SSLError:
             self.log.error(u'SSL Error during token renewal.')
 
