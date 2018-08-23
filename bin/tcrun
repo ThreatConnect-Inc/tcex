@@ -96,8 +96,9 @@ class TcRun(object):
         self.runtime_level = None
 
         self.shell = False
-        if platform.system() == 'Windows':
-            self.shell = True
+        # removing this value as it appears to cause an issue with some characters in args
+        # if platform.system() == 'Windows':
+        #    self.shell = True
 
         # initialize colorama
         c.init(autoreset=True, strip=False)

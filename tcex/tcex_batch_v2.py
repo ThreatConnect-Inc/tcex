@@ -943,7 +943,8 @@ class TcExBatch(object):
             dict: The batch status returned from the ThreatConnect API.
         """
         # check global setting for override
-        halt_on_error = self.halt_on_poll_error or halt_on_error
+        if self.halt_on_poll_error is not None:
+            halt_on_error = self.halt_on_poll_error
 
         if interval is None:
             interval = self.poll_interval
@@ -1249,7 +1250,8 @@ class TcExBatch(object):
             dict: The Batch Status from the ThreatConnect API.
         """
         # check global setting for override
-        halt_on_error = self.halt_on_batch_error or halt_on_error
+        if self.halt_on_batch_error is not None:
+            halt_on_error = self.halt_on_batch_error
 
         content = self.data
         if self._debug:
@@ -1279,7 +1281,8 @@ class TcExBatch(object):
             batch_id (string): The batch id of the current job.
         """
         # check global setting for override
-        halt_on_error = self.halt_on_batch_error or halt_on_error
+        if self.halt_on_batch_error is not None:
+            halt_on_error = self.halt_on_batch_error
 
         content = self.data
         if content.get('group') or content.get('indicator'):
@@ -1308,7 +1311,8 @@ class TcExBatch(object):
             dict: The upload status for each xid.
         """
         # check global setting for override
-        halt_on_error = self.halt_on_file_error or halt_on_error
+        if self.halt_on_file_error is not None:
+            halt_on_error = self.halt_on_file_error
 
         upload_status = []
         for xid, content_data in self._files.items():
@@ -1370,7 +1374,8 @@ class TcExBatch(object):
     def submit_job(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API."""
         # check global setting for override
-        halt_on_error = self.halt_on_batch_error or halt_on_error
+        if self.halt_on_batch_error is not None:
+            halt_on_error = self.halt_on_batch_error
 
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
