@@ -17,6 +17,8 @@ class TcExAuth(auth.AuthBase):
         self.log = self._logger()
         if logger is not None:
             self.log = logger
+        # renewing state for token auth
+        self.renewing = False
 
     @staticmethod
     def _logger():
@@ -66,6 +68,7 @@ class TcExTokenAuth(TcExAuth):
 
     def _renew_token(self, retry=True):
         """Renew expired ThreatConnect Token."""
+        self.renewing = True
         self.log.info('Renewing ThreatConnect Token')
         self.log.info('Current Token Expiration: {}'.format(self._token_expiration))
         try:
@@ -93,8 +96,10 @@ class TcExTokenAuth(TcExAuth):
                 self._token = data.get('apiToken')
                 self._token_expiration = int(data.get('apiTokenExpires'))
                 self.log.info('New Token Expiration: {}'.format(self._token_expiration))
+            self.renewing = False
         except exceptions.SSLError:
             self.log.error(u'SSL Error during token renewal.')
+            self.renewing = False
 
     def __call__(self, r):
         """Override of parent __call__ method."""

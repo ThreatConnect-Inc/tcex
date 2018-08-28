@@ -46,11 +46,12 @@ class TcExLogHandler(Handler):
     def close(self):
         """Close the logger and flush entries."""
         self.log_to_api()
+        self.entries = []
 
     def emit(self, record):
         """Emit the log record."""
         self.entries.append(self.format(record))
-        if len(self.entries) > self.flush_limit:
+        if len(self.entries) > self.flush_limit and not self.session.auth.renewing:
             self.log_to_api()
             self.entries = []
 
@@ -63,7 +64,7 @@ class TcExLogHandler(Handler):
             try:
                 headers = {'Content-Type': 'application/json'}
                 self.session.post('/v2/logs/app', headers=headers, json=self.entries)
-                self.entries = []  # clear entries
+                # self.entries = []  # clear entries
             except Exception:
                 # best effort on api logging
                 pass

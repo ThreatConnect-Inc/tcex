@@ -10,6 +10,10 @@ Release Notes
 ------
 + Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
 + Added global overrides for halt_on_error in batch module.
++ Fixed issue with token renewal not failing properly on error.
++ Updated logging method to ensure all messages are logged to file.
++ Updated logging method to skip API logging during token renewal.
++ Change tcrun to no use shell on Windows systems.
 
 0.8.13
 ------

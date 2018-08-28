@@ -99,9 +99,9 @@ class TcPackage(object):
         else:
             print('{}{}Could not load {} file.'.format(c.Style.BRIGHT, c.Fore.YELLOW, file))
 
-        if not install_data.get('apiUserTokenParam'):
-            print('{}{}The current install.json file is missing param "apiUserTokenParam"'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW))
+        # if not install_data.get('apiUserTokenParam'):
+        #     print('{}{}The current install.json file is missing param "apiUserTokenParam"'.format(
+        #         c.Style.BRIGHT, c.Fore.YELLOW))
 
         return install_data
 
