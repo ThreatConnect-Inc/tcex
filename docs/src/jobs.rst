@@ -226,6 +226,30 @@ The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following d
 
 The required ``custom_association_name`` key provides the name of the association you would like to use. These names can be found using the `associationTypes <https://docs.threatconnect.com/en/latest/rest_api/associations/associations.html#retrieving-available-associations>`__ API endpoint.
 
+.. note:: When create an `Indicator to Indicator <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations>`_ association that is a **File Action**, make sure that the 'parent' File Indicator is provided as the ``resource_value`` (**not** the ``association_value``).
+
+    For example, the following code will properly create an association between a Registry Key and a File Indicator::
+
+        assoc = {
+          'association_type': 'Registry Key',
+          'association_value': 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\6to4 : DeleteFlag : REG_NONE',
+          'custom_association_name': 'File Registry Key',
+          'resource_type': 'File',
+          'resource_value': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        }
+        tcex.jobs.association(assoc)
+
+    While the code snippet below will **not** work properly (notice that the location of the 'parent' File Indicator and the Registry Key have been switched)::
+
+        assoc = {
+          'association_type': 'File',
+          'association_value': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+          'custom_association_name': 'File Registry Key',
+          'resource_type': 'Registry Key',
+          'resource_value': 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\6to4 : DeleteFlag : REG_NONE'
+        }
+        tcex.jobs.association(assoc)
+
 File Occurrence
 ---------------
 The :py:meth:`~tcex.tcex_job.TcExJob.file_occurrence` method accepts the following data structure. All required fields are highlighted.
