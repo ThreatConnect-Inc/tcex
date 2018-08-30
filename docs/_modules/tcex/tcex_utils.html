@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_utils &mdash; TcEx 0.8.13 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 0.8.14 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.13 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.14 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.13
+                0.8.14
               </div>
             
           
@@ -183,7 +183,9 @@
 <span class="sd">&quot;&quot;&quot;TcEx Utilities Module&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="kn">from</span> <span class="nn">pytz</span> <span class="k">import</span> <span class="n">timezone</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="k">import</span> <span class="n">parser</span>
@@ -202,7 +204,7 @@
 <span class="sd">            tcex (object): Instance of TcEx.</span>
 <span class="sd">            rhash (string): The REDIS hash.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span> <span class="o">=</span> <span class="n">tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="TcExUtils.any_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.any_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">any_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -256,7 +258,7 @@
             <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># self._tcex.log.debug(</span>
+                    <span class="c1"># self.tcex.log.debug(</span>
                     <span class="c1">#     &#39;Assuming local time for naive datetime {}.&#39;.format(str(dt)))</span>
                     <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>  <span class="c1"># required for py2.x</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
@@ -343,7 +345,7 @@
         <span class="n">dt</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">cal</span><span class="o">.</span><span class="n">parseDT</span><span class="p">(</span><span class="n">time_input</span><span class="p">,</span> <span class="n">sourceTime</span><span class="o">=</span><span class="n">source_datetime</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># don&#39;t add tz if no tz value is passed</span>
             <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># self._tcex.log.debug(&#39;Assuming local time for naive datetime {}.&#39;.format(str(dt)))</span>
+                <span class="c1"># self.tcex.log.debug(&#39;Assuming local time for naive datetime {}.&#39;.format(str(dt)))</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">))</span>  <span class="c1"># required for py2.x</span>
             <span class="c1"># don&#39;t covert timezone if source timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">src_tzname</span><span class="p">:</span>
@@ -360,6 +362,37 @@
             <span class="kn">import</span> <span class="nn">inflect</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span>
+
+<div class="viewcode-block" id="TcExUtils.write_temp_binary_file"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.write_temp_binary_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_temp_binary_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write content to a temporary file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content (bytes): The file content.</span>
+<span class="sd">            filename (str, optional): The filename to use when writing the file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Fully qualified path name for the file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_temp_file</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExUtils.write_temp_file"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.write_temp_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_temp_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write content to a temporary file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content (bytes|str): The file content. If passing binary data the mode needs to be set to &#39;wb&#39;.</span>
+<span class="sd">            filename (str, optional): The filename to use when writing the file.</span>
+<span class="sd">            mode (str, optional): The file write mode which could be either &#39;w&#39; or &#39;wb&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Fully qualified path name for the file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">fqpn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqpn</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fqpn</span></div>
 
 <div class="viewcode-block" id="TcExUtils.timedelta"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.timedelta">[docs]</a>    <span class="k">def</span> <span class="nf">timedelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculates time delta between two time expressions.</span>
@@ -488,7 +521,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.13',
+            VERSION:'0.8.14',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

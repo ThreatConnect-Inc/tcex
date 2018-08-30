@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.13 documentation</title>
+  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.14 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.13 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.14 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.13
+                0.8.14
               </div>
             
           
@@ -1370,6 +1370,12 @@ and associations.</td>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup batch job.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.data">
 <code class="descname">data</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data" title="Permalink to this definition">¶</a></dt>
@@ -1440,6 +1446,12 @@ and associations.</td>
 <dt id="tcex.tcex_batch_v2.TcExBatch.data_indicators">
 <code class="descname">data_indicators</code><span class="sig-paren">(</span><em>indicators</em>, <em>entity_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.data_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.data_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process Indicator data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.debug">
+<code class="descname">debug</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return current debug value.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1678,6 +1690,12 @@ reproducible xid.</td>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.group_shelf_fqpn">
+<code class="descname">group_shelf_fqpn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.group_shelf_fqpn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return groups shelf fully qualified path name.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.groups">
 <code class="descname">groups</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dictionary of all Groups data.</p>
@@ -1690,9 +1708,27 @@ reproducible xid.</td>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.halt_on_batch_error">
+<code class="descname">halt_on_batch_error</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_batch_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on batch error value.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.halt_on_error">
 <code class="descname">halt_on_error</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return batch halt on error setting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.halt_on_file_error">
+<code class="descname">halt_on_file_error</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_file_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on file post error value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.halt_on_poll_error">
+<code class="descname">halt_on_poll_error</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.halt_on_poll_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on poll error value.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1781,6 +1817,12 @@ indicator.</li>
 <dt id="tcex.tcex_batch_v2.TcExBatch.indicator_len">
 <code class="descname">indicator_len</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicator_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of current indicators.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqpn">
+<code class="descname">indicator_shelf_fqpn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqpn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indicator shelf fully qualified path name.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2016,7 +2058,6 @@ the data will still be accessible from list in memory.</p>
 <dt id="tcex.tcex_batch_v2.TcExBatch.submit">
 <code class="descname">submit</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit Batch request to ThreatConnect API.</p>
-<p>TODO: .. note:: blah</p>
 <p>By default this method will submit the job request and data and if the size of the data
 is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
 the request synchronously and return the batch status.  If the size of the batch is greater
@@ -2229,6 +2270,12 @@ process.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex_batch_v2.TcExBatch.write_batch_json">
+<code class="descname">write_batch_json</code><span class="sig-paren">(</span><em>content</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_batch_v2.html#TcExBatch.write_batch_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.write_batch_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write batch json data to a file.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -2303,7 +2350,7 @@ process.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.13',
+            VERSION:'0.8.14',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
