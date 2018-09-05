@@ -72,9 +72,9 @@ class TcExTokenAuth(TcExAuth):
         self.log.info('Renewing ThreatConnect Token')
         self.log.info('Current Token Expiration: {}'.format(self._token_expiration))
         try:
-            payload = {'expiredToken': self._token}
+            params = {'expiredToken': self._token}
             url = '{}/appAuth'.format(self._token_url)
-            r = get(url, params=payload, verify=self._session.verify)
+            r = get(url, params=params, verify=self._session.verify)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
                 if retry:
                     warn_msg = 'Token Retry Error. API status code: {}, API message: {}.'

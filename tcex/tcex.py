@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework """
 from builtins import str
+import inspect
 import json
 import logging
 import os
 import re
+import signal
 import sys
 import time
 try:
@@ -20,6 +22,9 @@ class TcEx(object):
 
     def __init__(self):
         """Initialize Class Properties."""
+        # catch interupt signals
+        signal.signal(signal.SIGINT, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
         # init logger
         self.log = logging.getLogger('tcex')
         self._logger_stream()
@@ -357,6 +362,17 @@ class TcEx(object):
                         name, self.resources.Indicator, custom))
             except Exception as e:
                 self.handle_error(220, [e])
+
+    def _signal_handler(self, signal_interupt, frame):
+        """Handle singal interrupt."""
+        if signal_interupt in (2, 15):
+            call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
+            call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
+            call_line = inspect.stack()[1][0].f_lineno
+            self.log.error(
+                'App interrupted - file: {}, method: {}, line: {}.'.format(
+                    call_file, call_module, call_line))
+            self.exit(1, 'The App received an interrupt signal and will now exit.')
 
     def _unknown_args(self, args):
         """Log argparser unknown arguments.

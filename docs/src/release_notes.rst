@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.15
+------
++ Added signal handler to tcex to gracefully handle interrupts.
++ Updated __main__.py to version 1.0.2 with signal handling to manage subprocess.
+
 0.8.14
 ------
 + Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
