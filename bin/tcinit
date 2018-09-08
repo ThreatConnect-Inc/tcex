@@ -40,12 +40,14 @@ class TcInit(object):
     @staticmethod
     def _print_results(file, status):
         """Print the download results."""
-        file_color = c.Fore.CYAN
+        file_color = c.Fore.GREEN
         status_color = c.Fore.RED
         if status == 'Passed':
             status_color = c.Fore.GREEN
-        print('{!s:<20}{}{!s:<35}{!s:<15}{}{!s:<15}'.format(
-            'Downloading', file_color, file, 'Status', status_color, status))
+        print(
+            '{}{!s:<20}{}{!s:<35}{}{!s:<15}{}{!s:<15}'.format(
+                c.Fore.CYAN, 'Downloading:', file_color, file, c.Fore.CYAN, 'Status:', status_color,
+                status))
 
     def download_file(self, remote_filename, local_filename=None):
         """Download file from github."""
@@ -69,7 +71,7 @@ class TcInit(object):
 if __name__ == '__main__':
     try:
         tci = TcInit(args)
-        print('{}{}Using file from "{}" branch'.format(c.Style.BRIGHT, c.Fore.CYAN, args.branch))
+        print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.CYAN, args.branch))
 
         if args.new:
             # init files for a new App
