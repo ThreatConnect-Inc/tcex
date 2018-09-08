@@ -42,7 +42,7 @@ class TcInit(object):
         """Print the download results."""
         file_color = c.Fore.GREEN
         status_color = c.Fore.RED
-        if status == 'Passed':
+        if status == 'Success':
             status_color = c.Fore.GREEN
         print(
             '{}{!s:<20}{}{!s:<35}{}{!s:<15}{}{!s:<15}'.format(
@@ -60,7 +60,7 @@ class TcInit(object):
         r = requests.get(url, allow_redirects=True)
         if r.ok:
             open(local_filename, 'wb').write(r.content)
-            status = 'Passed'
+            status = 'Success'
         else:
             print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, url))
 
@@ -71,7 +71,7 @@ class TcInit(object):
 if __name__ == '__main__':
     try:
         tci = TcInit(args)
-        print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.CYAN, args.branch))
+        print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
 
         if args.new:
             # init files for a new App
