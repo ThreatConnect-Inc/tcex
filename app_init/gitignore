@@ -1,7 +1,7 @@
 #=================================================
-# Python Module Template
+# Python App Template
 # Version: 1.0.0
-# Last Updated: 2018/01/19
+# Last Updated: 2017/10/04
 #=================================================
 
 #-------------------------------------------------
@@ -11,22 +11,19 @@ __pycache__
 *.pyc
 
 #-------------------------------------------------
+# App Specific Exclusions
+#-------------------------------------------------
+*.log
+log
+sample-*.json
+
+#-------------------------------------------------
 # Build Exclusions
 #-------------------------------------------------
 build
-dist
 lib_*
 target
 temp
-*.egg-info
-
-#-------------------------------------------------
-# Documentation Exclusion
-#-------------------------------------------------
-docs/src/*example
-docs/src/_build
-docs/src/_static
-docs/src/_templates
 
 #-------------------------------------------------
 # IDE Exclusions
@@ -36,24 +33,14 @@ docs/src/_templates
 .project
 .python-version
 .settings
-.vs
 .vscode
 nbproject
-
-#-------------------------------------------------
-# Module Specific Exclusions
-#-------------------------------------------------
-__main__.py
-lib*
-*.log
-log
-requirements.txt
-tcex.json
-tcex.d
-test*
-threatconnect*
 
 #-------------------------------------------------
 # Other Nonsense
 #-------------------------------------------------
 bcs*
+
+#*************************************************
+# Custom Exclusion (per App exclusions)
+#*************************************************
