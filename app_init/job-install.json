@@ -1,0 +1,85 @@
+{
+    "allowOnDemand": true,
+    "displayName": "My Job App",
+    "features": [
+        "secureParams"
+    ],
+    "languageVersion": "3.6",
+    "listDelimiter": "|",
+    "params": [
+        {
+            "label": "Username",
+            "name": "username",
+            "sequence": 1,
+            "type": "String",
+            "validValues": [
+                "${USER:TEXT}",
+                "${ORGANIZATION:TEXT}"
+            ]
+        },
+        {
+            "encrypt": true,
+            "label": "Password",
+            "name": "password",
+            "sequence": 2,
+            "type": "String",
+            "validValues": [
+                "${USER:KEYCHAIN}",
+                "${ORGANIZATION:KEYCHAIN}"
+            ]
+        },
+        {
+            "label": "My Choice",
+            "name": "my_choice",
+            "required": true,
+            "sequence": 3,
+            "type": "Choice",
+            "validValues": [
+                "One",
+                "Two",
+                "Three"
+            ]
+        },
+        {
+            "default": "One|Three",
+            "label" : "My Multi",
+            "name" : "my_multi",
+            "required": true,
+            "sequence": 4,
+            "type": "MultiChoice",
+            "validValues": [
+                "One",
+                "Two",
+                "Three"
+            ]
+        },
+        {
+            "default": true,
+            "label": "My Boolean",
+            "name": "my_boolean",
+            "note": "A boolean selection",
+            "required": true,
+            "sequence": 5,
+            "type": "Boolean"
+        },
+        {
+            "default": "30 days ago",
+            "label": "Last Run",
+            "name": "last_run",
+            "sequence": 6,
+            "type": "String"
+        },
+        {
+            "default": "my-hidden-value",
+            "label": "Hidden Input",
+            "hidden": true,
+            "name": "hidden",
+            "sequence": 7,
+            "type": "String"
+        }
+    ],
+    "programLanguage": "PYTHON",
+    "programMain": "tc_-_my_job_app",
+    "programVersion": "1.0.0",
+    "runtimeLevel": "Organization"
+}

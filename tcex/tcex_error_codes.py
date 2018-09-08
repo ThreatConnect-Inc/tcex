@@ -24,10 +24,11 @@ class TcExErrorCodes(object):
             300: 'Failed retrieving Bulk JSON ({}).',
             305: 'An invalid action/association name ({}) was provided.',
             350: 'Data Store request failed. API status code: {}, API message: {}.',
-            # batch v2 warn: 500-600
+            # batch v2: 500-600
             520: 'File Occurrences can only be added to a File. Current type: {}.',
             540: 'Failed polling batch status ({}).',
             545: 'Failed polling batch status. API status code: {}, API message: {}.',
+            550: 'Batch status check reached timeout ({} seconds).',
             560: 'Failed retrieving batch errors ({}).',
             580: 'Failed posting file data ({}).',
             585: 'Failed posting file data. API status code: {}, API message: {}.',

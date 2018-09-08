@@ -975,12 +975,10 @@ class TcExBatch(object):
                 time.sleep(interval)
             except Exception as e:
                 self.tcex.handle_error(540, [e], halt_on_error)
-                self.tcex.log.error(self.tcex.error_codes.message(540).format(e))
+
             # time out poll to prevent App running indefinitely
             if poll_time >= timeout:
-                self.tcex.log.info(
-                    'Status check has reached the timeout value ({} seconds).'.format(timeout))
-                return data
+                self.tcex.handle_error(550, [timeout], True)
             poll_time += interval
             self.tcex.log.debug('Batch poll time: {} seconds'.format(poll_time))
 
@@ -1094,7 +1092,7 @@ class TcExBatch(object):
             # not supported in v2 batch
             # 'attributeWriteType': self._attribute_write_type,
             'attributeWriteType': 'Replace',
-            'haltOnError': self._halt_on_error,
+            'haltOnError': str(self._halt_on_error).lower(),
             'owner': self._owner,
             'version': 'V2'
         }
@@ -1228,9 +1226,10 @@ class TcExBatch(object):
                         batch_id, halt_on_error=halt_on_error).get('data', {}).get('batchStatus')
                     if errors:
                         # retrieve errors
+                        error_count = batch_data.get('errorCount', 0)
                         error_groups = batch_data.get('errorGroupCount', 0)
                         error_indicators = batch_data.get('errorIndicatorCount', 0)
-                        if error_groups > 0 or error_indicators > 0:
+                        if error_count > 0 or error_groups > 0 or error_indicators > 0:
                             self.tcex.log.debug('retrieving batch errors')
                             batch_data['errors'] = self.errors(batch_id)
                 else:

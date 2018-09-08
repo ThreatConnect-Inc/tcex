@@ -1,0 +1,148 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+""" TcEx App Init """
+import argparse
+import os
+import sys
+import requests
+import traceback
+
+import colorama as c
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--new', action='store_true', help='Init a new App.')
+parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
+parser.add_argument('--update', action='store_true', help='Update a existing App.')
+args, extra_args = parser.parse_known_args()
+
+
+class TcInit(object):
+    """Install Required Modules for App"""
+
+    def __init__(self, _arg):
+        """Init TcLib Module"""
+        self.args = _arg
+        self.app_path = os.getcwd()
+        self.base_url = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/master/app_init/'
+        self.exit_code = 0
+
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
+
+    def download_main_py(self):
+        """Download __main__.py from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, '__main__.py'))
+        url = '{}/{}'.format(self.base_url, '__main__.py')
+        r = requests.get(url, allow_redirects=True)
+        open('__main__.py', 'wb').write(r.content)
+
+    def download_gitignore(self):
+        """Download .gitignore from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, '.gitignore'))
+        url = '{}/{}'.format(self.base_url, '.gitignore')
+        r = requests.get(url, allow_redirects=True)
+        open('.gitignore', 'wb').write(r.content)
+
+    def download_job_install_json(self):
+        """Download install.json for Job App from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'install.json (job)'))
+        url = '{}/{}'.format(self.base_url, 'job-install.json')
+        r = requests.get(url, allow_redirects=True)
+        open('install.json', 'wb').write(r.content)
+
+    def download_playbook_install_json(self):
+        """Download install.json for Playbook App from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'install.json (playbook)'))
+        url = '{}/{}'.format(self.base_url, 'pb-install.json')
+        r = requests.get(url, allow_redirects=True)
+        open('install.json', 'wb').write(r.content)
+
+    def download_readme_md(self):
+        """Download README.md from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'README.md'))
+        url = '{}/{}'.format(self.base_url, 'README.md')
+        r = requests.get(url, allow_redirects=True)
+        open('README.md', 'wb').write(r.content)
+
+    def download_requirements_txt(self):
+        """Download requirements.txt from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'requirements.txt'))
+        url = '{}/{}'.format(self.base_url, 'requirements.txt')
+        r = requests.get(url, allow_redirects=True)
+        open('requirements.txt', 'wb').write(r.content)
+
+    def download_setup_cfg(self):
+        """Download setup.cfg from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'setup.cfg'))
+        url = '{}/{}'.format(self.base_url, 'setup.cfg')
+        r = requests.get(url, allow_redirects=True)
+        open('setup.cfg', 'wb').write(r.content)
+
+    def download_tc_app(self):
+        """Download tc_-_my_job_app.py sample from github."""
+        print('Downloading: {}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, 'tcpb_-_my_job_app.py'))
+        url = '{}/{}'.format(self.base_url, 'tcpb_-_my_job_app.py')
+        r = requests.get(url, allow_redirects=True)
+        open('tcpb_-_my_job_app.py', 'wb').write(r.content)
+
+    def download_tcex_json(self):
+        """Download __main__.py from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'tcex.json'))
+        url = '{}/{}'.format(self.base_url, 'tcex.json')
+        r = requests.get(url, allow_redirects=True)
+        open('tcex.json', 'wb').write(r.content)
+
+    def download_tcex_json_schema(self):
+        """Download tcex_json_schema.json from github."""
+        print('Downloading: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, 'tcex_json_schema.json'))
+        url = '{}/{}'.format(self.base_url, 'tcex_json_schema.json')
+        r = requests.get(url, allow_redirects=True)
+        open('tcex_json_schema.json', 'wb').write(r.content)
+
+    def download_tcpb_app(self):
+        """Download tcpb_-_my_playbook_app.py sample from github."""
+        print('Downloading: {}{}{}'.format(
+            c.Style.BRIGHT, c.Fore.CYAN, 'tcpb_-_my_playbook_app.py'))
+        url = '{}/{}'.format(self.base_url, 'tcpb_-_my_playbook_app.py')
+        r = requests.get(url, allow_redirects=True)
+        open('tcpb_-_my_playbook_app.py', 'wb').write(r.content)
+
+
+if __name__ == '__main__':
+    try:
+        tci = TcInit(args)
+        if args.new:
+            # init files for a new App
+            tci.download_gitignore()
+            if args.type == 'job':
+                tci.download_job_install_json()
+            elif args.type == 'playbook':
+                tci.download_playbook_install_json()
+                tci.download_tcpb_app()
+            tci.download_main_py()
+            tci.download_readme_md()
+            tci.download_requirements_txt()
+            tci.download_setup_cfg()
+            tci.download_tcex_json()
+            tci.download_tcex_json_schema()
+        elif args.update:
+            # update standard files
+            tci.download_gitignore()
+            tci.download_main_py()
+            tci.download_setup_cfg()
+            tci.download_tcex_json_schema()
+        else:
+            print('{}{}CLI option --new or --update is required.'.format(
+                c.Style.BRIGHT, c.Fore.RED))
+        sys.exit()
+
+    except Exception as e:
+        # TODO: Update this, possibly raise
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        sys.exit(1)
