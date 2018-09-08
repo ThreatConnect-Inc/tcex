@@ -30,6 +30,8 @@ if sys.version_info < (3, ):
         'ipaddress'
     ])
 scripts = [
+    'bin/tcinit',
+    'bin/tcinit.cmd',
     'bin/tclib',
     'bin/tclib.cmd',
     'bin/tcpackage',
