@@ -7,11 +7,13 @@ Batch
 
 .. important:: The Batch module requires ThreatConnect version 5.6 or higher.
 
-The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module to create, delete, and update both Groups and Indicator in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.
+The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module to create, delete, and update both Groups and Indicators in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.
 
 External ID (xid)
 =================
-The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.
+The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups and **must** be unique for the entire instance of ThreatConnect.
+
+The :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module provides the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the preferred xid type as it allows for the same unique xid to be generated on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or ['myapp', 'adversary', '222']).
 
 For Interface 1 and 2 the xid is optional, if not provided or set to True a unique xid based off the group "type-name" or indicator "type-value" will be auto-generated.  If xid is set to False a random xid will be generated. A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is best practice and allows Groups and Indicators to be easily updated.
 
@@ -32,20 +34,22 @@ The example below passes all supported fields to adversary().
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 2-5
+    :emphasize-lines: 2-5,7
 
     batch = tcex.batch('MyOrg')
     adversary = batch.adversary('adversary-001' 'my-xid-000')
     adversary.attribute('Description', 'Example Description', True)
     adversary.tag('Example Tag')
     adversary.security_label('TLP Green')
+    # optional save method
+    batch.save(adversary)
 
 The example below passes only the required fields to document().  The optional properties can then be set whenever required. The same interface is used for the attribute.  The required attribute properties are set first and then optional values can be added.
 
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 2-5,6-7,9,11-13
+    :emphasize-lines: 2-5,6-7,9,11-13,15
 
     batch = tcex.batch('MyOrg')
     document = batch.document('document-001', 'example.txt')
@@ -61,8 +65,12 @@ The example below passes only the required fields to document().  The optional p
     label = document.security_label('My Label')
     label.color = 'ffffff'
     label.description = 'Security label description.'
+    # optional save method
+    batch.save(document)
 
-.. important:: The **file_content** parameter for documents and reports will accept multiple types of data as well as a callback method.  The callback method will be passed the xid of the documents and expects a single response containing the contents of the file.  If loading a large number of documents it best practice to not load them in memory, but instead us the callback method so that the files can be processed one at a time.
+.. note:: The optional ``batch.save()`` method will write the group or indicator to disk.  When processing large amounts of data this is the preferred method in order to save on the memory usage of the App.
+
+.. important:: The **file_content** parameter for documents and reports will accept multiple types of data as well as a callback method.  The callback method will be passed the xid of the documents/report and expects a single response containing the contents of the file.  If loading a large number of documents it is best practice to not load the contents in memory, but instead use the callback method so that the files can be processed one at a time.
 
 Group Interface 2
 -----------------
@@ -82,7 +90,7 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
 
 Group Interface 3
 -----------------
-The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the data.
+The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.
 
 .. code-block:: python
     :linenos:
@@ -90,12 +98,13 @@ The third interface accepts the raw data formatted as a dictionary.  This method
     :emphasize-lines: 2-18
 
     batch = tcex.batch('MyOrg')
+    xid = tcex.batch.generate_xid(['my', 'adversary', '123']
     batch.add_group({
         'name': 'document-002',
         'fileName': 'test2.txt',
         'fileContent': 'example content 2',
         'type': 'Document',
-        'xid': 'my-xid-002',
+        'xid': xid,
         "associatedGroupXid": [
             "my-xid-001"
         ],
@@ -271,9 +280,31 @@ Example of Indicator -> Group association.
 
 Submit
 ======
-There are few options for submitting the batch job, all with an option to halt_on_error.  The most common option :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit` provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).
+There are few options for submitting the batch job, all with an option to halt_on_error.  The most common option :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_all` provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method it is possible to control the halt_on_error behavior for each step using global overrides.
 
-In some cases handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload` and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Then poll using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.poll` for status and then when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.errors` method can be used to retrieve the errors.  Submitting files for Documents and Reports would also have to be handled manually.
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 1
+
+    batch = tcex.batch('MyOrg')
+    # defaults to true or uses the provided value passed to the submit method. this value controls the behavior
+    # for errors when creating batch job and submitting the data.
+    batch.halt_on_batch_error = False
+
+    # defaults to true or uses the provided value passed to the submit method. this value controls the behavior
+    # for errors when submitting files. if set to True a single file upload error would cause the batch module
+    # to raise and exception and potentially cause the job to fail.
+    batch.halt_on_file_error = False
+
+    # defaults to true or uses the provided value passed to the submit method. this value controls the behavior
+    # for errors when polling batch status.
+    batch.halt_on_poll_error = False
+
+    if errors:
+        tcex.exit(1, 'Errors during Batch: {}'.format(errors))
+
+In some cases handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload` and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Next poll using :py:meth:`~tcex.tcex_batch_v2.TcExBatch.poll` for status and when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.errors` method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_files` method.
 
 .. note:: The setting **synchronousBatchSaveLimit** in the ThreatConnect UI -> System Settings controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value the batch data will be processed synchronously and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit` method provides logic for handling this so the developer is not required to check if the job was queued.
 
@@ -286,7 +317,7 @@ Submit the job and wait for completion. In the example any error messages are re
     :lineno-start: 1
     :emphasize-lines: 1
 
-    batch_data = batch.submit()
+    batch_data = batch.submit_all()
     errors = batch_data.get('errors')
     if errors:
         tcex.exit(1, 'Errors during Batch: {}'.format(errors))

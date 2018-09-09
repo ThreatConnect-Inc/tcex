@@ -10,10 +10,10 @@ Release Notes
 ------
 + Added signal handler to tcex to gracefully handle interrupts.
 + Added new ``tcinit`` command to download files required for a new App or update files in an existing App.
-+ Updated batch poll method to automatically calculate poll interval. REMOVED interval method parameter.
++ Updated batch poll method to automatically calculate poll interval. **REMOVED** interval method parameter.
 + Updated batch module to raise error on batch status poll timeout.
 + Updated __main__.py to version 1.0.2.
-+ Moved supporting file to app_init directory.
++ Moved and added supporting file to app_init directory.
 
 0.8.14
 ------

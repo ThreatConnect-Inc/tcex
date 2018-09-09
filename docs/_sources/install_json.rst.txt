@@ -9,6 +9,6 @@ Install JSON
 Schema Definition
 -----------------
 
-.. literalinclude:: ../../tcex/tcex_json_schema.json
+.. literalinclude:: ../../app_init/tcex_json_schema.json
     :language: json
     :linenos:

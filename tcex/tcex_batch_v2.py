@@ -938,7 +938,9 @@ class TcExBatch(object):
 
         Args:
             batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
-            interval (int, optional): Number of seconds to delay between each status request.
+            retry_seconds (int): The base number of seconds used for retries when job is not completed.
+            back_off (float): A multiplier to use for backing off on each poll attempt when job has
+                              not completed.
             timeout (int, optional): The number of seconds before the poll should timeout.
             halt_on_error (bool, default:True): If True any exception will raise an error.
 
@@ -1004,7 +1006,7 @@ class TcExBatch(object):
                 self._poll_interval_times = self._poll_interval_times[-4:] + [poll_time_total]
                 # new poll interval is average of last 5 poll times
                 self._poll_interval = (
-                    math.ceil(sum(self._poll_interval_times) / len(self._poll_interval_times)))
+                    math.floor(sum(self._poll_interval_times) / len(self._poll_interval_times)))
 
                 if poll_count == 1:
                     # if completed on first poll, reduce poll interval.

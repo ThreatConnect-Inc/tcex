@@ -76,7 +76,7 @@ if __name__ == '__main__':
         if args.new:
             # init files for a new App
             tci.download_file('__main__.py')
-            tci.download_file('.gitignore')
+            tci.download_file('gitignore', '.gitignore')
             if args.type == 'job':
                 tci.download_file('job-install.json', 'install.json')
                 tci.download_file('tcpb_-_my_job_app.py')
