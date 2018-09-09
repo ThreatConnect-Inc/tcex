@@ -986,6 +986,7 @@ class TcExBatch(object):
             poll_count += 1
             poll_time_total += self._poll_interval
             time.sleep(self._poll_interval)
+            self.tcex.log.info('Batch poll time: {} seconds'.format(poll_time_total))
             try:
                 # retrieve job status
                 r = self.tcex.session.get('/v2/batch/{}'.format(batch_id), params=params)
@@ -1014,12 +1015,10 @@ class TcExBatch(object):
 
             # update poll_interval for retry
             self._poll_interval = poll_retry_seconds + int(poll_count * poll_interval_back_off)
-            self.tcex.log.debug('Batch poll time: {} seconds'.format(poll_time_total))
 
             # time out poll to prevent App running indefinitely
             if poll_time_total >= timeout:
                 self.tcex.handle_error(550, [timeout], True)
-            self.tcex.log.info('Batch poll time: {} seconds'.format(poll_time_total))
 
     @property
     def poll_timeout(self):
@@ -1284,6 +1283,7 @@ class TcExBatch(object):
         content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content)
+        self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
         if self._debug:
             # special code for debugging App using batchV2.
             self.write_batch_json(content)
@@ -1317,6 +1317,7 @@ class TcExBatch(object):
         content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content)
+        self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
         if content.get('group') or content.get('indicator'):
             headers = {'Content-Type': 'application/octet-stream'}
             try:
