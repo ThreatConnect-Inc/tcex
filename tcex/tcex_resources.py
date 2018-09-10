@@ -2533,7 +2533,7 @@ class DataStore(object):
         """
         return self._request(domain, type_name, search_command, 'DELETE', None)
 
-    def read(self, domain, type_name, search_command):
+    def read(self, domain, type_name, search_command, body=None):
         """Read entry in ThreatConnect Data Store
 
         Args:
@@ -2541,8 +2541,9 @@ class DataStore(object):
             type_name (string): This is a free form index type name. The ThreatConnect API will use
                 this resource verbatim.
             search_command (string): Search command to pass to ES.
+            body (str): JSON body
         """
-        return self._request(domain, type_name, search_command, 'GET', None)
+        return self._request(domain, type_name, search_command, 'GET', body)
 
     def update(self, domain, type_name, search_command, body):
         """Update entry in ThreatConnect Data Store
