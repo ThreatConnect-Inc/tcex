@@ -72,6 +72,8 @@ class TcExBatch(object):
         self._halt_on_poll_error = None
 
         # debug/saved flags
+        self._saved_xids = None
+        self.enable_saved_file = False
         self.saved_groups = False  # indicates groups shelf file was provided
         self.saved_indicators = False  # indicates indicators shelf file was provided
 
@@ -429,12 +431,15 @@ class TcExBatch(object):
     def close(self):
         """Cleanup batch job."""
         self.groups_shelf.close()
-        # don't delete saved files
-        if not self.group_shelf_fqfn.endswith('saved'):
-            os.remove(self.group_shelf_fqfn)
         self.indicators_shelf.close()
-        # don't delete saved files
-        if not self.indicator_shelf_fqfn.endswith('saved'):
+        if self.debug:
+            fqfn = os.path.join(self.tcex.args.tc_temp_path, 'saved-xids')
+            with open(fqfn, 'w') as fh:
+                for xid in self.saved_xids:
+                    fh.write('{}\n'.format(xid))
+        else:
+            # don't delete saved files
+            os.remove(self.group_shelf_fqfn)
             os.remove(self.indicator_shelf_fqfn)
 
     @property
@@ -565,6 +570,14 @@ class TcExBatch(object):
             if entity_count >= self._batch_max_chunk:
                 break
         return data, entity_count
+
+    @property
+    def debug(self):
+        """Return debug setting"""
+        debug = False
+        if os.path.isfile(os.path.join(self.tcex.args.tc_tmp_path, 'DEBUG')):
+            debug = True
+        return debug
 
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
         """Add Document data to Batch object.
@@ -744,7 +757,8 @@ class TcExBatch(object):
 
         # saved shelf file
         fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
-        if os.path.isfile(fqfn_saved) and os.access(fqfn_saved, os.R_OK):
+        if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                os.access(fqfn_saved, os.R_OK)):
             fqfn = fqfn_saved
             self.saved_groups = True
             self.tcex.log.debug('groups-saved file found')
@@ -872,7 +886,8 @@ class TcExBatch(object):
 
         # saved shelf file
         fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
-        if os.path.isfile(fqfn_saved) and os.access(fqfn_saved, os.R_OK):
+        if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                os.access(fqfn_saved, os.R_OK)):
             fqfn = fqfn_saved
             self.saved_indicators = True
             self.tcex.log.debug('indicators-saved file found')
@@ -1120,6 +1135,18 @@ class TcExBatch(object):
                         pass
 
     @property
+    def saved_xids(self):
+        """Return previously saved xids."""
+        if self._saved_xids is None:
+            self._saved_xids = []
+            if self.debug:
+                fpfn = os.path.join(self.tcex.args.tc_tmp_path, 'saved-xids')
+                if os.path.isfile(fpfn) and os.access(fpfn, os.R_OK):
+                    with open(fpfn) as fh:
+                        self._saved_xids = fh.read().splitlines()
+        return self._saved_xids
+
+    @property
     def settings(self):
         """Return batch job settings."""
         return {
@@ -1291,7 +1318,7 @@ class TcExBatch(object):
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
         self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
-        if os.path.isfile(os.path.join(self.tcex.args.tc_log_path, 'debug')):
+        if self.debug:
             # special code for debugging App using batchV2.
             self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
@@ -1359,6 +1386,10 @@ class TcExBatch(object):
             del self._files[xid]  # win or loose remove the entry
             status = True
 
+            # used for debug/testing to prevent upload of previously uploaded file
+            if self.debug and xid in self.saved_xids:
+                continue
+
             # process the file content
             content = content_data.get('fileContent')
             if callable(content):
@@ -1385,6 +1416,8 @@ class TcExBatch(object):
             if not r.ok:
                 status = False
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
+            elif self.debug:
+                self.saved_xids.append(xid)
             self.tcex.log.info('Status {} for file upload with xid {}.'.format(
                 r.status_code, xid))
             upload_status.append({'uploaded': status, 'xid': xid})
