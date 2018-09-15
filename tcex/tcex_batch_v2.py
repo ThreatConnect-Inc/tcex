@@ -65,6 +65,8 @@ class TcExBatch(object):
         self._batch_max_chunk = 5000
         self._halt_on_error = halt_on_error
         self._owner = owner
+        self._group_shelf_fqfn = None
+        self._indicator_shelf_fqfn = None
 
         # global overrides on batch/file errors
         self._halt_on_batch_error = None
@@ -752,17 +754,19 @@ class TcExBatch(object):
         For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
         instead of creating a new shelf file.
         """
-        # new shelf file
-        fqfn = os.path.join(self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+        if self._group_shelf_fqfn is None:
+            # new shelf file
+            self._group_shelf_fqfn = os.path.join(
+                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
 
-        # saved shelf file
-        fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
-        if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
-                os.access(fqfn_saved, os.R_OK)):
-            fqfn = fqfn_saved
-            self.saved_groups = True
-            self.tcex.log.debug('groups-saved file found')
-        return fqfn
+            # saved shelf file
+            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
+            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                    os.access(fqfn_saved, os.R_OK)):
+                self._group_shelf_fqfn = fqfn_saved
+                self.saved_groups = True
+                self.tcex.log.debug('groups-saved file found')
+        return self._group_shelf_fqfn
 
     @property
     def groups(self):
@@ -881,17 +885,19 @@ class TcExBatch(object):
         For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
         instead of creating a new shelf file.
         """
-        # new shelf file
-        fqfn = os.path.join(self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
+        if self._indicator_shelf_fqfn is None:
+            # new shelf file
+            self._indicator_shelf_fqfn = os.path.join(
+                self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
 
-        # saved shelf file
-        fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
-        if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
-                os.access(fqfn_saved, os.R_OK)):
-            fqfn = fqfn_saved
-            self.saved_indicators = True
-            self.tcex.log.debug('indicators-saved file found')
-        return fqfn
+            # saved shelf file
+            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
+            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                    os.access(fqfn_saved, os.R_OK)):
+                self._indicator_shelf_fqfn = fqfn_saved
+                self.saved_indicators = True
+                self.tcex.log.debug('indicators-saved file found')
+        return self._indicator_shelf_fqfn
 
     @property
     def indicators(self):
