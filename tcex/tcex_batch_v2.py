@@ -65,17 +65,15 @@ class TcExBatch(object):
         self._batch_max_chunk = 5000
         self._halt_on_error = halt_on_error
         self._owner = owner
-        self._group_shelf_fqpn = None
-        self._indicator_shelf_fqpn = None
 
         # global overrides on batch/file errors
         self._halt_on_batch_error = None
         self._halt_on_file_error = None
         self._halt_on_poll_error = None
 
-        # debug branch
-        self._debug = False
-        self._batch_count = 0
+        # debug/saved flags
+        self.saved_groups = False  # indicates groups shelf file was provided
+        self.saved_indicators = False  # indicates indicators shelf file was provided
 
         # default properties
         self._batch_data_count = None
@@ -431,9 +429,13 @@ class TcExBatch(object):
     def close(self):
         """Cleanup batch job."""
         self.groups_shelf.close()
-        os.remove(self.group_shelf_fqpn)
+        # don't delete saved files
+        if not self.group_shelf_fqfn.endswith('saved'):
+            os.remove(self.group_shelf_fqfn)
         self.indicators_shelf.close()
-        os.remove(self.indicator_shelf_fqpn)
+        # don't delete saved files
+        if not self.indicator_shelf_fqfn.endswith('saved'):
+            os.remove(self.indicator_shelf_fqfn)
 
     @property
     def data(self):
@@ -563,17 +565,6 @@ class TcExBatch(object):
             if entity_count >= self._batch_max_chunk:
                 break
         return data, entity_count
-
-    @property
-    def debug(self):
-        """Return current debug value."""
-        return self._debug
-
-    @debug.setter
-    def debug(self, value):
-        """Set debug value."""
-        if isinstance(value, bool):
-            self._debug = value
 
     def document(self, name, file_name, file_content=None, malware=False, password=None, xid=True):
         """Add Document data to Batch object.
@@ -742,15 +733,21 @@ class TcExBatch(object):
         return self._group(group_obj)
 
     @property
-    def group_shelf_fqpn(self):
-        """Return groups shelf fully qualified path name."""
-        if self._group_shelf_fqpn is None:
-            self._group_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
-            if self._debug:
-                self._group_shelf_fqpn = os.path.join(
-                    self.tcex.args.tc_temp_path, 'groups-saved')
-        return self._group_shelf_fqpn
+    def group_shelf_fqfn(self):
+        """Return groups shelf fully qualified filename.
+
+        For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+        instead of creating a new shelf file.
+        """
+        # new shelf file
+        fqfn = os.path.join(self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
+
+        # saved shelf file
+        fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
+        if os.path.isfile(fqfn_saved) or not os.access(fqfn_saved, os.R_OK):
+            fqfn = fqfn_saved
+            self.saved_groups = True
+        return fqfn
 
     @property
     def groups(self):
@@ -766,7 +763,7 @@ class TcExBatch(object):
         if self._groups_shelf is None:
             # TODO: let gc close or implicit close? there could be significant overhead/delay in
             #       manually closing.
-            self._groups_shelf = shelve.open(self.group_shelf_fqpn, writeback=False)
+            self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)
         return self._groups_shelf
 
     @property
@@ -863,15 +860,21 @@ class TcExBatch(object):
         return self._indicator(indicator_obj)
 
     @property
-    def indicator_shelf_fqpn(self):
-        """Return indicator shelf fully qualified path name."""
-        if self._indicator_shelf_fqpn is None:
-            self._indicator_shelf_fqpn = os.path.join(
-                self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
-            if self._debug:
-                self._indicator_shelf_fqpn = os.path.join(
-                    self.tcex.args.tc_temp_path, 'indicators-saved')
-        return self._indicator_shelf_fqpn
+    def indicator_shelf_fqfn(self):
+        """Return indicator shelf fully qualified filename.
+
+        For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+        instead of creating a new shelf file.
+        """
+        # new shelf file
+        fqfn = os.path.join(self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
+
+        # saved shelf file
+        fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
+        if os.path.isfile(fqfn_saved) or not os.access(fqfn_saved, os.R_OK):
+            fqfn = fqfn_saved
+            self.saved_indicators = True
+        return fqfn
 
     @property
     def indicators(self):
@@ -887,7 +890,7 @@ class TcExBatch(object):
         if self._indicators_shelf is None:
             # TODO: let gc close or implicit close? there could be significant overhead/delay in
             #       manually closing.
-            self._indicators_shelf = shelve.open(self.indicator_shelf_fqpn, writeback=False)
+            self._indicators_shelf = shelve.open(self.indicator_shelf_fqfn, writeback=False)
         return self._indicators_shelf
 
     def intrusion_set(self, name, xid=True):
@@ -1286,7 +1289,7 @@ class TcExBatch(object):
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
         self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
-        if self._debug:
+        if os.path.isfile(os.path.join(self.tcex.args.tc_log_path, 'debug')):
             # special code for debugging App using batchV2.
             self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
@@ -1469,11 +1472,11 @@ class TcExBatch(object):
 
     def write_batch_json(self, content):
         """Write batch json data to a file."""
+        timestamp = str(time.time()).replace('.', '')
         batch_json_file = os.path.join(
-            self.tcex.args.tc_temp_path, 'batch-{}.json'.format(self._batch_count))
+            self.tcex.args.tc_temp_path, 'batch-{}.json'.format(timestamp))
         with open(batch_json_file, 'w') as fh:
             json.dump(content, fh, indent=2)
-        self._batch_count += 1
 
     @property
     def file_len(self):

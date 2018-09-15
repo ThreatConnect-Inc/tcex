@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.16 (unreleased)
+------
++ Removed debugging flag from batch module and replaced with logic to control debug mode externally.
+
 0.8.15
 ------
 + Added signal handler to tcex to gracefully handle interrupts.

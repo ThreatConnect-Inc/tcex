@@ -91,7 +91,7 @@ if __name__ == '__main__':
         elif args.update:
             # update standard files
             tci.download_file('__main__.py')
-            tci.download_file('.gitignore')
+            tci.download_file('gitignore', '.gitignore')
             tci.download_file('setup.cfg')
             tci.download_file('tcex_json_schema.json')
         else:
