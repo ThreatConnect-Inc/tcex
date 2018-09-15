@@ -744,9 +744,10 @@ class TcExBatch(object):
 
         # saved shelf file
         fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
-        if os.path.isfile(fqfn_saved) or not os.access(fqfn_saved, os.R_OK):
+        if os.path.isfile(fqfn_saved) and os.access(fqfn_saved, os.R_OK):
             fqfn = fqfn_saved
             self.saved_groups = True
+            self.tcex.log.debug('groups-saved file found')
         return fqfn
 
     @property
@@ -871,9 +872,10 @@ class TcExBatch(object):
 
         # saved shelf file
         fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
-        if os.path.isfile(fqfn_saved) or not os.access(fqfn_saved, os.R_OK):
+        if os.path.isfile(fqfn_saved) and os.access(fqfn_saved, os.R_OK):
             fqfn = fqfn_saved
             self.saved_indicators = True
+            self.tcex.log.debug('indicators-saved file found')
         return fqfn
 
     @property
