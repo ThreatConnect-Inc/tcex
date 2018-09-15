@@ -75,9 +75,9 @@ class TcExBatch(object):
 
         # debug/saved flags
         self._saved_xids = None
+        self._saved_groups = None  # indicates groups shelf file was provided
+        self._saved_indicators = None  # indicates indicators shelf file was provided
         self.enable_saved_file = False
-        self.saved_groups = False  # indicates groups shelf file was provided
-        self.saved_indicators = False  # indicates indicators shelf file was provided
 
         # default properties
         self._batch_data_count = None
@@ -760,12 +760,8 @@ class TcExBatch(object):
                 self.tcex.args.tc_temp_path, 'groups-{}'.format(str(uuid.uuid4())))
 
             # saved shelf file
-            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
-            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
-                    os.access(fqfn_saved, os.R_OK)):
-                self._group_shelf_fqfn = fqfn_saved
-                self.saved_groups = True
-                self.tcex.log.debug('groups-saved file found')
+            if self.saved_groups:
+                self._group_shelf_fqfn = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
         return self._group_shelf_fqfn
 
     @property
@@ -891,12 +887,9 @@ class TcExBatch(object):
                 self.tcex.args.tc_temp_path, 'indicators-{}'.format(str(uuid.uuid4())))
 
             # saved shelf file
-            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
-            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
-                    os.access(fqfn_saved, os.R_OK)):
-                self._indicator_shelf_fqfn = fqfn_saved
-                self.saved_indicators = True
-                self.tcex.log.debug('indicators-saved file found')
+            if self.saved_indicators:
+                self._indicator_shelf_fqfn = os.path.join(
+                    self.tcex.args.tc_temp_path, 'indicators-saved')
         return self._indicator_shelf_fqfn
 
     @property
@@ -964,7 +957,8 @@ class TcExBatch(object):
 
         Args:
             batch_id (str): The ID returned from the ThreatConnect API for the current batch job.
-            retry_seconds (int): The base number of seconds used for retries when job is not completed.
+            retry_seconds (int): The base number of seconds used for retries when job is not
+                                 completed.
             back_off (float): A multiplier to use for backing off on each poll attempt when job has
                               not completed.
             timeout (int, optional): The number of seconds before the poll should timeout.
@@ -1139,6 +1133,30 @@ class TcExBatch(object):
                     except KeyError:
                         # if indicator was saved twice it would already be delete
                         pass
+
+    @property
+    def saved_groups(self):
+        """Return True if saved group files exits, else False."""
+        if self._saved_groups is None:
+            self._saved_groups = False
+            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'groups-saved')
+            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                    os.access(fqfn_saved, os.R_OK)):
+                self._saved_groups = True
+                self.tcex.log.debug('groups-saved file found')
+        return self._saved_groups
+
+    @property
+    def saved_indicators(self):
+        """Return True if saved indicators files exits, else False."""
+        if self._saved_indicators is None:
+            self._saved_indicators = False
+            fqfn_saved = os.path.join(self.tcex.args.tc_temp_path, 'indicators-saved')
+            if (self.enable_saved_file and os.path.isfile(fqfn_saved) and
+                    os.access(fqfn_saved, os.R_OK)):
+                self._saved_indicators = True
+                self.tcex.log.debug('indicators-saved file found')
+        return self._saved_indicators
 
     @property
     def saved_xids(self):
