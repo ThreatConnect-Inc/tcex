@@ -575,7 +575,7 @@ class TcExBatch(object):
     def debug(self):
         """Return debug setting"""
         debug = False
-        if os.path.isfile(os.path.join(self.tcex.args.tc_tmp_path, 'DEBUG')):
+        if os.path.isfile(os.path.join(self.tcex.args.tc_temp_path, 'DEBUG')):
             debug = True
         return debug
 
@@ -1140,7 +1140,7 @@ class TcExBatch(object):
         if self._saved_xids is None:
             self._saved_xids = []
             if self.debug:
-                fpfn = os.path.join(self.tcex.args.tc_tmp_path, 'saved-xids')
+                fpfn = os.path.join(self.tcex.args.tc_temp_path, 'saved-xids')
                 if os.path.isfile(fpfn) and os.access(fpfn, os.R_OK):
                     with open(fpfn) as fh:
                         self._saved_xids = fh.read().splitlines()
