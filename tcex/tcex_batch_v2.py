@@ -1028,7 +1028,7 @@ class TcExBatch(object):
                 self._poll_interval = (
                     math.floor(sum(self._poll_interval_times) / len(self._poll_interval_times)))
 
-                if poll_count == 1 and self._poll_interval > 15:
+                if poll_count == 1 and self._poll_interval > 30:
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval -= 15
 
