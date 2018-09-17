@@ -435,7 +435,7 @@ class TcExBatch(object):
         self.groups_shelf.close()
         self.indicators_shelf.close()
         if self.debug:
-            fqfn = os.path.join(self.tcex.args.tc_temp_path, 'saved-xids')
+            fqfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
             with open(fqfn, 'w') as fh:
                 for xid in self.saved_xids:
                     fh.write('{}\n'.format(xid))
@@ -1164,7 +1164,7 @@ class TcExBatch(object):
         if self._saved_xids is None:
             self._saved_xids = []
             if self.debug:
-                fpfn = os.path.join(self.tcex.args.tc_temp_path, 'saved-xids')
+                fpfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
                 if os.path.isfile(fpfn) and os.access(fpfn, os.R_OK):
                     with open(fpfn) as fh:
                         self._saved_xids = fh.read().splitlines()
