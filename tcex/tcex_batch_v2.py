@@ -434,8 +434,9 @@ class TcExBatch(object):
         """Cleanup batch job."""
         self.groups_shelf.close()
         self.indicators_shelf.close()
-        if self.debug:
+        if self.debug and self.enable_saved_file:
             fqfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
+            os.remove(fqfn)  # remove previous file to prevent duplicates
             with open(fqfn, 'w') as fh:
                 for xid in self.saved_xids:
                     fh.write('{}\n'.format(xid))
@@ -1412,6 +1413,7 @@ class TcExBatch(object):
 
             # used for debug/testing to prevent upload of previously uploaded file
             if self.debug and xid in self.saved_xids:
+                self.tcex.log.debug('skipping previously saved file {}.'.format(xid))
                 continue
 
             # process the file content
