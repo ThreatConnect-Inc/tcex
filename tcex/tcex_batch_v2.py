@@ -1023,14 +1023,14 @@ class TcExBatch(object):
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
-                self._poll_interval_times = self._poll_interval_times[-4:] + [poll_time_total]
+                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total / 2)]
                 # new poll interval is average of last 5 poll times
                 self._poll_interval = (
                     math.floor(sum(self._poll_interval_times) / len(self._poll_interval_times)))
 
-                if poll_count == 1:
+                if poll_count == 1 and self._poll_interval > 10:
                     # if completed on first poll, reduce poll interval.
-                    self._poll_interval -= .5
+                    self._poll_interval -= 10
 
                 self.tcex.log.debug('Batch Status: {}'.format(data))
                 return data
