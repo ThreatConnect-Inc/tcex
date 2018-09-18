@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.15 documentation</title>
+  <title>tcex.tcex_batch_v2 module &mdash; TcEx 0.8.16 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.15 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.16 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_data_filter module" href="tcex.tcex_data_filter.html"/>
         <link rel="prev" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.15
+                0.8.16
               </div>
             
           
@@ -1451,7 +1451,7 @@ and associations.</td>
 <dl class="attribute">
 <dt id="tcex.tcex_batch_v2.TcExBatch.debug">
 <code class="descname">debug</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.debug" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return current debug value.</p>
+<dd><p>Return debug setting</p>
 </dd></dl>
 
 <dl class="method">
@@ -1690,9 +1690,11 @@ reproducible xid.</td>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tcex.tcex_batch_v2.TcExBatch.group_shelf_fqpn">
-<code class="descname">group_shelf_fqpn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.group_shelf_fqpn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return groups shelf fully qualified path name.</p>
+<dt id="tcex.tcex_batch_v2.TcExBatch.group_shelf_fqfn">
+<code class="descname">group_shelf_fqfn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.group_shelf_fqfn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return groups shelf fully qualified filename.</p>
+<p>For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+instead of creating a new shelf file.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1820,9 +1822,11 @@ indicator.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqpn">
-<code class="descname">indicator_shelf_fqpn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqpn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return indicator shelf fully qualified path name.</p>
+<dt id="tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqfn">
+<code class="descname">indicator_shelf_fqfn</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.indicator_shelf_fqfn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indicator shelf fully qualified filename.</p>
+<p>For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+instead of creating a new shelf file.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1911,7 +1915,8 @@ indicator.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>batch_id</strong> (<em>str</em>) – The ID returned from the ThreatConnect API for the current batch job.</li>
-<li><strong>retry_seconds</strong> (<em>int</em>) – The base number of seconds used for retries when job is not completed.</li>
+<li><strong>retry_seconds</strong> (<em>int</em>) – The base number of seconds used for retries when job is not
+completed.</li>
 <li><strong>back_off</strong> (<em>float</em>) – A multiplier to use for backing off on each poll attempt when job has
 not completed.</li>
 <li><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of seconds before the poll should timeout.</li>
@@ -2005,6 +2010,24 @@ the data will still be accessible from list in memory.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.saved_groups">
+<code class="descname">saved_groups</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.saved_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if saved group files exits, else False.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.saved_indicators">
+<code class="descname">saved_indicators</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.saved_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if saved indicators files exits, else False.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_batch_v2.TcExBatch.saved_xids">
+<code class="descname">saved_xids</code><a class="headerlink" href="#tcex.tcex_batch_v2.TcExBatch.saved_xids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously saved xids.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2346,7 +2369,7 @@ process.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.15',
+            VERSION:'0.8.16',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

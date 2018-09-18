@@ -1036,8 +1036,9 @@ class TcExBatch(object):
                 self.tcex.log.debug('Batch Status: {}'.format(data))
                 return data
 
-            # update poll_interval for retry
-            self._poll_interval = poll_retry_seconds + int(poll_count * poll_interval_back_off)
+            # update poll_interval for retry with max poll time of 20 seconds
+            self._poll_interval = min(
+                poll_retry_seconds + int(poll_count * poll_interval_back_off), 20)
 
             # time out poll to prevent App running indefinitely
             if poll_time_total >= timeout:

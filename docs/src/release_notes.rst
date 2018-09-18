@@ -6,10 +6,10 @@ Release Notes
 0.8.x
 =====
 
-0.8.16 (unreleased)
+0.8.16
 ------
-+ Removed debugging flag from batch module and replaced with logic to control debug mode externally.
-+ Updated batch poll method to logic to poll more frequently.
++ Removed debugging flag from batch module and replaced with logic to control debug externally.
++ Updated batch poll method logic to poll more frequently.
 + Update resource module to allow the addition of a body when reading from the datastore.
 
 0.8.15
