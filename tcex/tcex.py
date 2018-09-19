@@ -24,6 +24,7 @@ class TcEx(object):
         """Initialize Class Properties."""
         # catch interupt signals
         signal.signal(signal.SIGINT, self._signal_handler)
+        signal.signal(signal.SIGHUP, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
         # init logger
         self.log = logging.getLogger('tcex')
@@ -49,6 +50,9 @@ class TcEx(object):
         # Parser
         self._parsed = False
         self.parser = TcExArgParser()
+
+        # Ensure App is not already running with same session id.
+        self._singular()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -363,15 +367,31 @@ class TcEx(object):
             except Exception as e:
                 self.handle_error(220, [e])
 
+    def _singular(self):
+        """There can be only one. Validate the App doesn't already have a lock file."""
+        lock_file = os.path.join(self._default_args.tc_temp_path, 'app.lock')
+        if os.path.isfile(lock_file):
+            # append pid to lock file and exit
+            self._singular_lock(lock_file)
+            self.exit(0)
+        # create new lockfile
+        self._singular_lock(lock_file)
+
+    @staticmethod
+    def _singular_lock(lock_file):
+        """Create or update the lock file."""
+        with open(lock_file, 'a') as fh:
+            fh.write('{}\n'.format(os.getpid()))
+
     def _signal_handler(self, signal_interupt, frame):
         """Handle singal interrupt."""
+        call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
+        call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
+        call_line = inspect.stack()[1][0].f_lineno
+        self.log.error(
+            'App interrupted - file: {}, method: {}, line: {}.'.format(
+                call_file, call_module, call_line))
         if signal_interupt in (2, 15):
-            call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
-            call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
-            call_line = inspect.stack()[1][0].f_lineno
-            self.log.error(
-                'App interrupted - file: {}, method: {}, line: {}.'.format(
-                    call_file, call_module, call_line))
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
     def _unknown_args(self, args):
