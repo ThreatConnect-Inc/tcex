@@ -1024,14 +1024,25 @@ class TcExBatch(object):
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
-                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total / 2)]
-                # new poll interval is average of last 5 poll times
-                self._poll_interval = (
-                    math.floor(sum(self._poll_interval_times) / len(self._poll_interval_times)))
+                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total * .6)]
+
+                weights = [1]
+                poll_interval_time_weighted_sum = 0
+                for poll_interval_time in self._poll_interval_times:
+                    poll_interval_time_weighted_sum += poll_interval_time * weights[-1]
+                    # weights will be [1, 1.5, 2.25, 3.375, 5.0625] for all 5 poll times depending on how many poll
+                    # times are available.
+                    weights.append(weights[-1] * 1.5)
+
+                # pop off the last weight so its not added in to the sum
+                weights.pop()
+
+                # calculate the weighted average of the last 5 poll times
+                self._poll_interval = math.floor(poll_interval_time_weighted_sum/sum(weights))
 
                 if poll_count == 1 and self._poll_interval > 30:
                     # if completed on first poll, reduce poll interval.
-                    self._poll_interval -= 15
+                    self._poll_interval = self._poll_interval * .85
 
                 self.tcex.log.debug('Batch Status: {}'.format(data))
                 return data
