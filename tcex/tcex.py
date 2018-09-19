@@ -369,7 +369,7 @@ class TcEx(object):
 
     def _singular(self):
         """There can be only one. Validate the App doesn't already have a lock file."""
-        lock_file = os.path.join(self._default_args.tc_temp_path, 'app.lock')
+        lock_file = os.path.join(self.default_args.tc_temp_path, 'app.lock')
         if os.path.isfile(lock_file):
             # append pid to lock file and exit
             self._singular_lock(lock_file)
@@ -381,7 +381,8 @@ class TcEx(object):
     def _singular_lock(lock_file):
         """Create or update the lock file."""
         with open(lock_file, 'a') as fh:
-            fh.write('{}\n'.format(os.getpid()))
+            fh.write('timestamp: {}\n'.format(time.time()))
+            fh.write('pid: {}\n'.format(os.getpid()))
 
     def _signal_handler(self, signal_interupt, frame):
         """Handle singal interrupt."""
