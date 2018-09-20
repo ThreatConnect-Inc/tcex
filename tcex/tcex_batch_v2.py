@@ -985,7 +985,7 @@ class TcExBatch(object):
         if back_off is None:
             poll_interval_back_off = 2.5
         else:
-            poll_interval_back_off = float(batch_id)
+            poll_interval_back_off = float(back_off)
 
         # poll retry seconds
         if retry_seconds is None:
@@ -1030,8 +1030,8 @@ class TcExBatch(object):
                 poll_interval_time_weighted_sum = 0
                 for poll_interval_time in self._poll_interval_times:
                     poll_interval_time_weighted_sum += poll_interval_time * weights[-1]
-                    # weights will be [1, 1.5, 2.25, 3.375, 5.0625] for all 5 poll times depending on how many poll
-                    # times are available.
+                    # weights will be [1, 1.5, 2.25, 3.375, 5.0625] for all 5 poll times depending
+                    # on how many poll times are available.
                     weights.append(weights[-1] * 1.5)
 
                 # pop off the last weight so its not added in to the sum
@@ -1040,7 +1040,7 @@ class TcExBatch(object):
                 # calculate the weighted average of the last 5 poll times
                 self._poll_interval = math.floor(poll_interval_time_weighted_sum/sum(weights))
 
-                if poll_count == 1 and self._poll_interval > 30:
+                if poll_count == 1:
                     # if completed on first poll, reduce poll interval.
                     self._poll_interval = self._poll_interval * .85
 
