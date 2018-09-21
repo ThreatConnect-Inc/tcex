@@ -1357,7 +1357,7 @@ class TcExBatch(object):
         content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
+        self.tcex.log.info('Batch Size: {:,}'.format(self._batch_data_count))
         if self.debug:
             # special code for debugging App using batchV2.
             self.write_batch_json(content)
@@ -1391,7 +1391,7 @@ class TcExBatch(object):
         content = self.data
         # store the length of the batch data to use for poll interval calculations
         self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        self.tcex.log.info('Batch Size: {}'.format(self._batch_data_count))
+        self.tcex.log.info('Batch Size: {:,}'.format(self._batch_data_count))
         if content.get('group') or content.get('indicator'):
             headers = {'Content-Type': 'application/octet-stream'}
             try:
