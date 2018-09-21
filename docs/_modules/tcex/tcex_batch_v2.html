@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.16 documentation</title>
+  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.18 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.16 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.18 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.16
+                0.8.18
               </div>
             
           
@@ -617,14 +617,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">indicators_shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_saved_file</span><span class="p">:</span>
             <span class="n">fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;xids-saved&#39;</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fqfn</span><span class="p">)</span>  <span class="c1"># remove previous file to prevent duplicates</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fqfn</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fqfn</span><span class="p">)</span>  <span class="c1"># remove previous file to prevent duplicates</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqfn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">xid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_xids</span><span class="p">:</span>
                     <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xid</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># don&#39;t delete saved files</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_shelf_fqfn</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_shelf_fqfn</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_shelf_fqfn</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1166,7 +1169,7 @@
         <span class="k">if</span> <span class="n">back_off</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">poll_interval_back_off</span> <span class="o">=</span> <span class="mf">2.5</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">poll_interval_back_off</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+            <span class="n">poll_interval_back_off</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">back_off</span><span class="p">)</span>
 
         <span class="c1"># poll retry seconds</span>
         <span class="k">if</span> <span class="n">retry_seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1205,14 +1208,25 @@
 
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span><span class="p">:</span>
                 <span class="c1"># store last 5 poll times to use in calculating average poll time</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[(</span><span class="n">poll_time_total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)]</span>
-                <span class="c1"># new poll interval is average of last 5 poll times</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[(</span><span class="n">poll_time_total</span> <span class="o">*</span> <span class="o">.</span><span class="mi">6</span><span class="p">)]</span>
 
-                <span class="k">if</span> <span class="n">poll_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">poll_interval_time_weighted_sum</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">poll_interval_time</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">:</span>
+                    <span class="n">poll_interval_time_weighted_sum</span> <span class="o">+=</span> <span class="n">poll_interval_time</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c1"># weights will be [1, 1.5, 2.25, 3.375, 5.0625] for all 5 poll times depending</span>
+                    <span class="c1"># on how many poll times are available.</span>
+                    <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)</span>
+
+                <span class="c1"># pop off the last weight so its not added in to the sum</span>
+                <span class="n">weights</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+                <span class="c1"># calculate the weighted average of the last 5 poll times</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">poll_interval_time_weighted_sum</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">poll_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="c1"># if completed on first poll, reduce poll interval.</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">-=</span> <span class="mi">15</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">*</span> <span class="o">.</span><span class="mi">85</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Batch Status: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">data</span>
@@ -1524,7 +1538,7 @@
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
         <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Size: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Size: </span><span class="si">{:,}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="c1"># special code for debugging App using batchV2.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_batch_json</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
@@ -1558,7 +1572,7 @@
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
         <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Size: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Size: </span><span class="si">{:,}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">):</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
@@ -3201,7 +3215,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.16',
+            VERSION:'0.8.18',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

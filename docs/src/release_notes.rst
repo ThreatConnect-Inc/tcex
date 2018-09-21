@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.18
+------
++ Minor change to batch poll.
++ Update batch module ``close()`` method to check for xids-saved file existence before deletion.
+
 0.8.17
 ------
 + Added app.lock file to temp directory to ensure single execution.
