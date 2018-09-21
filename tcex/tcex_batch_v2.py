@@ -436,14 +436,17 @@ class TcExBatch(object):
         self.indicators_shelf.close()
         if self.debug and self.enable_saved_file:
             fqfn = os.path.join(self.tcex.args.tc_temp_path, 'xids-saved')
-            os.remove(fqfn)  # remove previous file to prevent duplicates
+            if os.path.isfile(fqfn):
+                os.remove(fqfn)  # remove previous file to prevent duplicates
             with open(fqfn, 'w') as fh:
                 for xid in self.saved_xids:
                     fh.write('{}\n'.format(xid))
         else:
             # don't delete saved files
-            os.remove(self.group_shelf_fqfn)
-            os.remove(self.indicator_shelf_fqfn)
+            if os.path.isfile(self.group_shelf_fqfn):
+                os.remove(self.group_shelf_fqfn)
+            if os.path.isfile(self.group_shelf_fqfn):
+                os.remove(self.indicator_shelf_fqfn)
 
     @property
     def data(self):
