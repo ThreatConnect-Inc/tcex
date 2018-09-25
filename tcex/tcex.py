@@ -4,6 +4,7 @@ from builtins import str
 import inspect
 import json
 import logging
+import platform
 import os
 import re
 import signal
@@ -24,7 +25,8 @@ class TcEx(object):
         """Initialize Class Properties."""
         # catch interupt signals
         signal.signal(signal.SIGINT, self._signal_handler)
-        signal.signal(signal.SIGHUP, self._signal_handler)
+        if platform.system() != 'Windows':
+            signal.signal(signal.SIGHUP, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
         # init logger
         self.log = logging.getLogger('tcex')
@@ -52,7 +54,7 @@ class TcEx(object):
         self.parser = TcExArgParser()
 
         # Ensure App is not already running with same session id.
-        self._singular()
+        # self._singular()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -367,15 +369,15 @@ class TcEx(object):
             except Exception as e:
                 self.handle_error(220, [e])
 
-    def _singular(self):
-        """There can be only one. Validate the App doesn't already have a lock file."""
-        lock_file = os.path.join(self.default_args.tc_temp_path, 'app.lock')
-        if os.path.isfile(lock_file):
-            # append pid to lock file and exit
-            self._singular_lock(lock_file)
-            self.exit(0)
-        # create new lockfile
-        self._singular_lock(lock_file)
+    # def _singular(self):
+    #     """There can be only one. Validate the App doesn't already have a lock file."""
+    #     lock_file = os.path.join(self.default_args.tc_temp_path, 'app.lock')
+    #     if os.path.isfile(lock_file):
+    #         # append pid to lock file and exit
+    #         self._singular_lock(lock_file)
+    #         self.exit(0)
+    #     # create new lockfile
+    #     self._singular_lock(lock_file)
 
     @staticmethod
     def _singular_lock(lock_file):
@@ -1046,6 +1048,8 @@ class TcEx(object):
                 value = True
             elif value == 'false':
                 value = False
+            elif not value:
+                value = None
             setattr(self.default_args, key, value)
 
     def s(self, data, errors='strict'):

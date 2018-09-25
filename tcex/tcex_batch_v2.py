@@ -1027,7 +1027,7 @@ class TcExBatch(object):
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
-                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total * .6)]
+                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total * .7)]
 
                 weights = [1]
                 poll_interval_time_weighted_sum = 0
@@ -1356,8 +1356,8 @@ class TcExBatch(object):
 
         content = self.data
         # store the length of the batch data to use for poll interval calculations
-        self._batch_data_count = len(content.get('group')) + len(content.get('indicator'))
-        self.tcex.log.info('Batch Size: {:,}'.format(self._batch_data_count))
+        self.tcex.log.info('Batch Group Size: {:,}.'.format(len(content.get('group'))))
+        self.tcex.log.info('Batch Indicator Size {:,}.'.format(len(content.get('indicator'))))
         if self.debug:
             # special code for debugging App using batchV2.
             self.write_batch_json(content)

@@ -76,7 +76,18 @@ class TcExTokenAuth(TcExAuth):
             url = '{}/appAuth'.format(self._token_url)
             r = get(url, params=params, verify=self._session.verify)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                if retry:
+                if (r.status_code == 401 and
+                        'application/json' in r.headers.get('content-type', '') and
+                        'Retry token is invalid' in r.json().get('message')):
+                    # TODO: remove this once token renewal issue is fixed
+                    self.log.error('params: {}'.format(params))
+                    self.log.error('url: {}'.format(r.url))
+
+                    # log failure
+                    err_reason = r.text or r.reason
+                    err_msg = 'Token Retry Error. API status code: {}, API message: {}.'
+                    raise RuntimeError(1042, err_msg.format(r.status_code, err_reason))
+                elif retry:
                     warn_msg = 'Token Retry Error. API status code: {}, API message: {}.'
                     self.log.warning(warn_msg.format(r.status_code, r.text))
                     # delay and retry token renewal

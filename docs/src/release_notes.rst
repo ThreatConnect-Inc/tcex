@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.19 (working)
+------
++ Removed app.lock logic.
+
 0.8.18
 ------
 + Minor change to batch poll.
