@@ -1613,6 +1613,7 @@ class TcExBatch(object):
 
 class Group(object):
     """ThreatConnect Batch Group Object"""
+    __slots__ = ['_name', '_type', '_group_data', '_attributes', '_labels', '_tags', '_processed', '_utils']
 
     def __init__(self, group_type, name, xid=True):
         """Initialize Class Properties.
@@ -1807,12 +1808,13 @@ class Group(object):
         return self._group_data.get('xid')
 
     def __str__(self):
-        """Return string represtentation of object."""
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)
 
 
 class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
+    __slots__ = []
 
     def __init__(self, name, xid=True):
         """Initialize Class Properties.
@@ -1826,6 +1828,7 @@ class Adversary(Group):
 
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
+    __slots__ = []
 
     def __init__(self, name, first_seen=None, xid=True):
         """Initialize Class Properties.
@@ -1854,6 +1857,7 @@ class Campaign(Group):
 
 class Document(Group):
     """ThreatConnect Batch Document Object"""
+    __slots__ = ['_file_data', '_group_data']
 
     def __init__(self, name, file_name, file_content=None, malware=False, password=None,
                  xid=True):
@@ -1920,6 +1924,7 @@ class Document(Group):
 
 class Email(Group):
     """ThreatConnect Batch Email Object"""
+    __slots__ = []
 
     def __init__(self, name, subject, header, body, to_addr=None, from_addr=None, xid=True):
         """Initialize Class Properties.
@@ -1976,6 +1981,7 @@ class Email(Group):
 
 class Event(Group):
     """ThreatConnect Batch Event Object"""
+    __slots__ = []
 
     def __init__(self, name, event_date=None, status=None, xid=True):
         """Initialize Class Properties.
@@ -2023,6 +2029,7 @@ class Event(Group):
 
 class Incident(Group):
     """ThreatConnect Batch Incident Object"""
+    __slots__ = []
 
     def __init__(self, name, event_date=None, status=None, xid=True):
         """Initialize Class Properties.
@@ -2087,6 +2094,7 @@ class Incident(Group):
 
 class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
+    __slots__ = []
 
     def __init__(self, name, xid=True):
         """Initialize Class Properties.
@@ -2100,6 +2108,7 @@ class IntrusionSet(Group):
 
 class Report(Group):
     """ThreatConnect Batch Report Object"""
+    __slots__ = []
 
     def __init__(self, name, file_name=None, file_content=None, publish_date=None, xid=True):
         """Initialize Class Properties.
@@ -2153,6 +2162,7 @@ class Report(Group):
 
 class Signature(Group):
     """ThreatConnect Batch Signature Object"""
+    __slots__ = []
 
     def __init__(self, name, file_name, file_type, file_text, xid=True):
         """Initialize Class Properties.
@@ -2183,6 +2193,7 @@ class Signature(Group):
 
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
+    __slots__ = []
 
     def __init__(self, name, xid=True):
         """Initialize Class Properties.
@@ -2201,6 +2212,7 @@ class Threat(Group):
 
 class Indicator(object):
     """ThreatConnect Batch Indicator Object"""
+    __slots__ = ['_attributes', '_file_actions', '_indicator_data', '_labels', '_occurrences', '_summary', '_tags', '_type', '_utils']
 
     def __init__(self, indicator_type, summary, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2490,6 +2502,7 @@ class Indicator(object):
 
 class Address(Indicator):
     """ThreatConnect Batch Address Object"""
+    __slots__ = []
 
     def __init__(self, ip, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2505,6 +2518,7 @@ class Address(Indicator):
 
 class ASN(Indicator):
     """ThreatConnect Batch ASN Object."""
+    __slots__ = []
 
     def __init__(self, as_number, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2520,6 +2534,7 @@ class ASN(Indicator):
 
 class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
+    __slots__ = []
 
     def __init__(self, block, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2535,6 +2550,7 @@ class CIDR(Indicator):
 
 class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
+    __slots__ = []
 
     def __init__(self, address, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2550,6 +2566,7 @@ class EmailAddress(Indicator):
 
 class File(Indicator):
     """ThreatConnect Batch File Object"""
+    __slots__ = []
 
     def __init__(self, md5=None, sha1=None, sha256=None, size=None, rating=None,
                  confidence=None, xid=True):
@@ -2620,6 +2637,7 @@ class File(Indicator):
 
 class Host(Indicator):
     """ThreatConnect Batch Host Object"""
+    __slots__ = []
 
     def __init__(self, hostname, dns_active=False, whois_active=False, rating=None,
                  confidence=None, xid=True):
@@ -2663,6 +2681,7 @@ class Host(Indicator):
 
 class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
+    __slots__ = []
 
     def __init__(self, mutex, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2678,6 +2697,7 @@ class Mutex(Indicator):
 
 class RegistryKey(Indicator):
     """ThreatConnect Batch Registry Key Object"""
+    __slots__ = []
 
     def __init__(self, key_name, value_name, value_type, rating=None, confidence=None,
                  xid=True):
@@ -2697,6 +2717,7 @@ class RegistryKey(Indicator):
 
 class URL(Indicator):
     """ThreatConnect Batch URL Object"""
+    __slots__ = []
 
     def __init__(self, text, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2712,6 +2733,7 @@ class URL(Indicator):
 
 class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
+    __slots__ = []
 
     def __init__(self, text, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2732,6 +2754,7 @@ class UserAgent(Indicator):
 
 class Attribute(object):
     """ThreatConnect Batch Attribute Object"""
+    __slots__ = ['_attribute_data', '_valid']
 
     def __init__(self, attr_type, attr_value, displayed=False, source=None, formatter=None):
         """Initialize Class Properties.
@@ -2809,6 +2832,7 @@ class Attribute(object):
 
 class FileAction(object):
     """ThreatConnect Batch FileAction Object"""
+    __slots__ = ['_action_data', '_children']
 
     def __init__(self, parent_xid, relationship):
         """Initialize Class Properties.
@@ -2847,6 +2871,7 @@ class FileAction(object):
 
 class FileOccurrence(object):
     """ThreatConnect Batch FileAction Object."""
+    __slots__ = ['_occurrence_data', '_utils']
 
     def __init__(self, file_name=None, path=None, date=None):
         """Initialize Class Properties
@@ -2909,6 +2934,7 @@ class FileOccurrence(object):
 
 class SecurityLabel(object):
     """ThreatConnect Batch SecurityLabel Object."""
+    __slots__ = ['_label_data']
 
     def __init__(self, name, description=None, color=None):
         """Initialize Class Properties.
@@ -2962,6 +2988,7 @@ class SecurityLabel(object):
 
 class Tag(object):
     """ThreatConnect Batch Tag Object"""
+    __slots__ = ['_tag_data', '_valid']
 
     def __init__(self, name, formatter=None):
         """Initialize Class Properties.
