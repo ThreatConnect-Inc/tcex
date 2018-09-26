@@ -535,9 +535,16 @@ class TcExBatch(object):
                     'type': group_data.get('type')
                 }
         else:
+            GROUPS_CLASSES_WITH_FILE_CONTENTS = [Document, Report]
+            GROUPS_STRINGS_WITH_FILE_CONTENTS = ['Document', 'Report']
             # process file content
-            if group_data.data.get('type') in ['Document', 'Report']:
-                self._files[group_data.data.get('xid')] = group_data.file_data
+            if group_data.data.get('type') in GROUPS_STRINGS_WITH_FILE_CONTENTS:
+                # this handles groups created using interface 1 (https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-1)
+                if type(group_data) in GROUPS_CLASSES_WITH_FILE_CONTENTS:
+                    self._files[group_data.data.get('xid')] = group_data.file_data
+                # this handles groups created using interface 2 (https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-2)
+                else:
+                    self._files[group_data.data.get('xid')] = group_data.data.get('file_data')
             group_data = group_data.data
         return group_data
 
