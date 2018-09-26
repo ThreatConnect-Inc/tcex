@@ -379,12 +379,12 @@ class TcEx(object):
     #     # create new lockfile
     #     self._singular_lock(lock_file)
 
-    @staticmethod
-    def _singular_lock(lock_file):
-        """Create or update the lock file."""
-        with open(lock_file, 'a') as fh:
-            fh.write('timestamp: {}\n'.format(time.time()))
-            fh.write('pid: {}\n'.format(os.getpid()))
+    # @staticmethod
+    # def _singular_lock(lock_file):
+    #     """Create or update the lock file."""
+    #     with open(lock_file, 'a') as fh:
+    #         fh.write('timestamp: {}\n'.format(time.time()))
+    #         fh.write('pid: {}\n'.format(os.getpid()))
 
     def _signal_handler(self, signal_interupt, frame):
         """Handle singal interrupt."""
