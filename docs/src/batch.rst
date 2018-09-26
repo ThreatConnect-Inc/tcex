@@ -37,7 +37,7 @@ The example below passes all supported fields to adversary().
     :emphasize-lines: 2-5,7
 
     batch = tcex.batch('MyOrg')
-    adversary = batch.adversary('adversary-001' 'my-xid-000')
+    adversary = batch.adversary('adversary-001', 'my-xid-000')
     adversary.attribute('Description', 'Example Description', True)
     adversary.tag('Example Tag')
     adversary.security_label('TLP Green')
@@ -87,6 +87,24 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
     event.add_key_value('status', 'New')
     event.attribute('Description', 'Example Description 2', True, 'source')
     event.tag('Example Tag')
+
+The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other groups to which file contents can be added):
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 3-7
+
+    batch = tcex.batch('MyOrg')
+    document = batch_job.group('Document', 'document-001', 'my-xid-0001')
+    document.add_key_value('file_data', {
+        'fileContent': 'This sentence will compromise the contents of the document that will be uploaded into ThreatConnect.',
+        'type': 'Document'
+    })
+    document.add_key_value('fileName', 'test.txt')
+    document.attribute('Description', 'Example Description', True, 'source')
+    document.tag('Example Tag')
+    document.security_label('TLP Green')
 
 Group Interface 3
 -----------------
