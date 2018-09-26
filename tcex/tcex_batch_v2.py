@@ -979,7 +979,7 @@ class TcExBatch(object):
         if self._poll_interval is None and self._batch_data_count is not None:
             # calculate poll_interval base off the number of entries in the batch data
             # with a minimum value of 5 seconds.
-            self._poll_interval = max(math.ceil(self._batch_data_count / 250), 5)
+            self._poll_interval = max(math.ceil(self._batch_data_count / 300), 5)
         elif self._poll_interval is None:
             # if not able to calculate poll_interval default to 15 seconds
             self._poll_interval = 15

@@ -881,7 +881,12 @@ class TcRun(object):
                 redis_array = []
                 for var in sd.get('data', {}).get('variables', []):
                     variable = var.get('value')
-                    data = self.path_data(self.tcex.playbook.read(variable), var.get('path'))
+                    if variable.endswith('Binary'):
+                        data = self.tcex.playbook.read_binary(variable, False, False)
+                    elif variable.endswith('BinaryArray'):
+                        data = self.tcex.playbook.read_binary_array(variable, False, False)
+                    else:
+                        data = self.path_data(self.tcex.playbook.read(variable), var.get('path'))
                     # TODO: should None value be appended?
                     redis_array.append(data)
                 self.stage_redis(out_variable, redis_array)
