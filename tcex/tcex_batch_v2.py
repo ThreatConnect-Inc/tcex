@@ -559,7 +559,7 @@ class TcExBatch(object):
         """
         data = []
         # process group objects
-        for xid in groups.keys():
+        for xid in list(groups.keys()):
             # get association from group data
             assoc_group_data = self.data_group_association(xid)
             data += assoc_group_data
@@ -1429,7 +1429,7 @@ class TcExBatch(object):
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
-        for xid, content_data in self._files.items():
+        for xid, content_data in list(self._files.items()):
             del self._files[xid]  # win or loose remove the entry
             status = True
 
