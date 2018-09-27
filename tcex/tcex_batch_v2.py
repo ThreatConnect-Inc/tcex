@@ -2152,11 +2152,7 @@ class Report(Group):
         super(Report, self).__init__('Report', name, xid)
         self._group_data['fileName'] = file_name
         # file data/content to upload
-        self._file_data = {
-            'fileContent': file_content,
-            'fileName': file_name,
-            'type': self._group_data.get('type')
-        }
+        self._file_content = file_content
         if publish_date is not None:
             self._group_data['publishDate'] = self._utils.format_datetime(
                 publish_date, date_format='%Y-%m-%dT%H:%M:%SZ')
@@ -2164,17 +2160,21 @@ class Report(Group):
     @property
     def file_content(self):
         """Return Group files."""
-        return self._file_data.get('fileContent')
+        return self._file_content
 
     @file_content.setter
     def file_content(self, file_content):
         """Set Document or Report file data."""
-        self._file_data['fileContent'] = file_content
+        self._file_content = file_content
 
     @property
     def file_data(self):
         """Return Group files."""
-        return self._file_data
+        return {
+            'fileContent': self._file_content,
+            'fileName': self._group_data.get('fileName'),
+            'type': self._group_data.get('type')
+        }
 
     @property
     def publish_date(self):
