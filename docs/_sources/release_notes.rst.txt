@@ -6,6 +6,13 @@ Release Notes
 0.8.x
 =====
 
+0.8.19
+------
++ Removed app.lock logic.
++ Updated file_content logic for Documents and Reports.
++ Added ``add_file()`` method for batch Group objects.
++ Added playbook_triggers_enabled parameter to batch module (requires ThreatConnect 5.7).
+
 0.8.18
 ------
 + Minor change to batch poll.

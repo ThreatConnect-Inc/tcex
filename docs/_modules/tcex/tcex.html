@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex &mdash; TcEx 0.8.18 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.18 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.18
+                0.8.19
               </div>
             
           
@@ -185,6 +185,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">signal</span>
@@ -205,7 +206,8 @@
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.&quot;&quot;&quot;</span>
         <span class="c1"># catch interupt signals</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
-        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGHUP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGHUP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
         <span class="c1"># init logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">)</span>
@@ -233,7 +235,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">TcExArgParser</span><span class="p">()</span>
 
         <span class="c1"># Ensure App is not already running with same session id.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_singular</span><span class="p">()</span>
+        <span class="c1"># self._singular()</span>
 
         <span class="c1"># NOTE: odd issue where args is not updating properly</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -548,22 +550,22 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="TcEx._singular"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._singular">[docs]</a>    <span class="k">def</span> <span class="nf">_singular</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;There can be only one. Validate the App doesn&#39;t already have a lock file.&quot;&quot;&quot;</span>
-        <span class="n">lock_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span> <span class="s1">&#39;app.lock&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">lock_file</span><span class="p">):</span>
-            <span class="c1"># append pid to lock file and exit</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_singular_lock</span><span class="p">(</span><span class="n">lock_file</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># create new lockfile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_singular_lock</span><span class="p">(</span><span class="n">lock_file</span><span class="p">)</span></div>
+    <span class="c1"># def _singular(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;There can be only one. Validate the App doesn&#39;t already have a lock file.&quot;&quot;&quot;</span>
+    <span class="c1">#     lock_file = os.path.join(self.default_args.tc_temp_path, &#39;app.lock&#39;)</span>
+    <span class="c1">#     if os.path.isfile(lock_file):</span>
+    <span class="c1">#         # append pid to lock file and exit</span>
+    <span class="c1">#         self._singular_lock(lock_file)</span>
+    <span class="c1">#         self.exit(0)</span>
+    <span class="c1">#     # create new lockfile</span>
+    <span class="c1">#     self._singular_lock(lock_file)</span>
 
-<div class="viewcode-block" id="TcEx._singular_lock"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._singular_lock">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_singular_lock</span><span class="p">(</span><span class="n">lock_file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create or update the lock file.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lock_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;timestamp: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;pid: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()))</span></div>
+    <span class="c1"># @staticmethod</span>
+    <span class="c1"># def _singular_lock(lock_file):</span>
+    <span class="c1">#     &quot;&quot;&quot;Create or update the lock file.&quot;&quot;&quot;</span>
+    <span class="c1">#     with open(lock_file, &#39;a&#39;) as fh:</span>
+    <span class="c1">#         fh.write(&#39;timestamp: {}\n&#39;.format(time.time()))</span>
+    <span class="c1">#         fh.write(&#39;pid: {}\n&#39;.format(os.getpid()))</span>
 
 <div class="viewcode-block" id="TcEx._signal_handler"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._signal_handler">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_interupt</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handle singal interrupt.&quot;&quot;&quot;</span>
@@ -682,10 +684,11 @@
             <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.tcex_batch_v2</span> <span class="k">import</span> <span class="n">TcExBatch</span>
-        <span class="k">return</span> <span class="n">TcExBatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">TcExBatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.bulk_enabled"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.bulk_enabled">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">api_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">authorization</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;[Deprecated] Check if bulk indicators is enabled for owner.</span>
@@ -1227,6 +1230,8 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.s"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.s">[docs]</a>    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
@@ -1487,7 +1492,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.18',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
