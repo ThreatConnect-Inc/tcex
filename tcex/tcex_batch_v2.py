@@ -539,18 +539,10 @@ class TcExBatch(object):
                     'type': group_data.get('type')
                 }
         else:
-            GROUPS_CLASSES_WITH_FILE_CONTENTS = [Document, Report]
             GROUPS_STRINGS_WITH_FILE_CONTENTS = ['Document', 'Report']
             # process file content
             if group_data.data.get('type') in GROUPS_STRINGS_WITH_FILE_CONTENTS:
-                # this handles groups created using interface 1:
-                # https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-1
-                if type(group_data) in GROUPS_CLASSES_WITH_FILE_CONTENTS:
-                    self._files[group_data.data.get('xid')] = group_data.file_data
-                # this handles groups created using interface 2:
-                # https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-2
-                else:
-                    self._files[group_data.data.get('xid')] = group_data.data.get('file_data')
+                self._files[group_data.data.get('xid')] = group_data.file_data
             group_data = group_data.data
         return group_data
 
@@ -1040,7 +1032,8 @@ class TcExBatch(object):
 
             if data.get('data', {}).get('batchStatus', {}).get('status') == 'Completed':
                 # store last 5 poll times to use in calculating average poll time
-                self._poll_interval_times = self._poll_interval_times[-4:] + [(poll_time_total * .7)]
+                modifier = poll_time_total * .7
+                self._poll_interval_times = self._poll_interval_times[-4:] + [modifier]
 
                 weights = [1]
                 poll_interval_time_weighted_sum = 0
@@ -1670,7 +1663,7 @@ class Group(object):
         Example::
 
             document = tcex.batch.group('Document', 'My Document')
-            document.add_file('myfile.txt', 'my contents')
+            document.add_file('my_file.txt', 'my contents')
 
         Args:
             filename (str): The name of the file.
