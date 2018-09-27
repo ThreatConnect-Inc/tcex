@@ -48,7 +48,8 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 class TcExBatch(object):
     """ThreatConnect Batch Import Module"""
 
-    def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True):
+    def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True,
+                 playbook_triggers_enabled=False):
         """Initialize Class Properties.
 
         Args:
@@ -65,6 +66,9 @@ class TcExBatch(object):
         self._batch_max_chunk = 5000
         self._halt_on_error = halt_on_error
         self._owner = owner
+        self._playbook_triggers_enabled = playbook_triggers_enabled
+
+        # shelf settings
         self._group_shelf_fqfn = None
         self._indicator_shelf_fqfn = None
 
@@ -1203,6 +1207,7 @@ class TcExBatch(object):
             'attributeWriteType': 'Replace',
             'haltOnError': str(self._halt_on_error).lower(),
             'owner': self._owner,
+            'playbookTriggersEnabled': str(self._playbook_triggers_enabled).lower(),
             'version': 'V2'
         }
 
@@ -1638,6 +1643,7 @@ class Group(object):
         }
         self._attributes = []
         self._labels = []
+        self._file_content = None
         self._tags = []
         # processed
         self._processed = False
@@ -1655,6 +1661,21 @@ class Group(object):
             xid = str(uuid.uuid4())
 
         return xid
+
+    def add_file(self, filename, file_content):
+        """Add a file for Document and Report types.
+
+        Example::
+
+            document = tcex.batch.group('Document', 'My Document')
+            document.add_file('myfile.txt', 'my contents')
+
+        Args:
+            filename (str): The name of the file.
+            file_content (bytes|method|str): The contents of the file or callback to get contents.
+        """
+        self._group_data['fileName'] = filename
+        self._file_content = file_content
 
     def add_key_value(self, key, value):
         """Add custom field to Group object.
@@ -1741,6 +1762,15 @@ class Group(object):
                 if tag.valid:
                     self._group_data['tag'].append(tag.data)
         return self._group_data
+
+    @property
+    def file_data(self):
+        """Return Group file (only supported for Document and Report)."""
+        return {
+            'fileContent': self._file_content,
+            'fileName': self._group_data.get('fileName'),
+            'type': self._group_data.get('type')
+        }
 
     @property
     def name(self):
@@ -1879,11 +1909,7 @@ class Document(Group):
         super(Document, self).__init__('Document', name, xid)
         self._group_data['fileName'] = file_name
         # file data/content to upload
-        self._file_data = {
-            'fileContent': file_content,
-            'fileName': file_name,
-            'type': self._group_data.get('type')
-        }
+        self._file_content = file_content
         if malware:
             self._group_data['malware'] = malware
         if password is not None:
@@ -1892,17 +1918,21 @@ class Document(Group):
     @property
     def file_content(self):
         """Return Group files."""
-        return self._file_data.get('fileContent')
+        return self._file_content
 
     @file_content.setter
     def file_content(self, file_content):
         """Set Document or Report file data."""
-        self._file_data['fileContent'] = file_content
+        self._file_content = file_content
 
     @property
     def file_data(self):
         """Return Group files."""
-        return self._file_data
+        return {
+            'fileContent': self._file_content,
+            'fileName': self._group_data.get('fileName'),
+            'type': self._group_data.get('type')
+        }
 
     @property
     def malware(self):
