@@ -543,10 +543,12 @@ class TcExBatch(object):
             GROUPS_STRINGS_WITH_FILE_CONTENTS = ['Document', 'Report']
             # process file content
             if group_data.data.get('type') in GROUPS_STRINGS_WITH_FILE_CONTENTS:
-                # this handles groups created using interface 1 (https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-1)
+                # this handles groups created using interface 1:
+                # https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-1
                 if type(group_data) in GROUPS_CLASSES_WITH_FILE_CONTENTS:
                     self._files[group_data.data.get('xid')] = group_data.file_data
-                # this handles groups created using interface 2 (https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-2)
+                # this handles groups created using interface 2:
+                # https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-2
                 else:
                     self._files[group_data.data.get('xid')] = group_data.data.get('file_data')
             group_data = group_data.data
@@ -563,7 +565,7 @@ class TcExBatch(object):
         """
         data = []
         # process group objects
-        for xid in list(groups.keys()):
+        for xid in groups.keys():
             # get association from group data
             assoc_group_data = self.data_group_association(xid)
             data += assoc_group_data
@@ -1434,7 +1436,7 @@ class TcExBatch(object):
             halt_on_error = self.halt_on_file_error
 
         upload_status = []
-        for xid, content_data in list(self._files.items()):
+        for xid, content_data in self._files.items():
             del self._files[xid]  # win or loose remove the entry
             status = True
 
