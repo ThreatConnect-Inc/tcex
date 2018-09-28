@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+""" TcEx App Init """
+import argparse
+import os
+import sys
+import requests
+import traceback
+
+import colorama as c
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
+parser.add_argument('--new', action='store_true', help='Init a new App.')
+parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
+parser.add_argument('--update', action='store_true', help='Update a existing App.')
+args, extra_args = parser.parse_known_args()
+
+
+class TcInit(object):
+    """Install Required Modules for App"""
+
+    def __init__(self, _arg):
+        """Init TcLib Module"""
+        self.args = _arg
+        self.app_path = os.getcwd()
+        self.base_url = (
+            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{}/app_init/'.format(
+                self.args.branch))
+        self.exit_code = 0
+
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
+
+    @staticmethod
+    def _print_results(file, status):
+        """Print the download results."""
+        file_color = c.Fore.GREEN
+        status_color = c.Fore.RED
+        if status == 'Success':
+            status_color = c.Fore.GREEN
+        print(
+            '{}{!s:<20}{}{!s:<35}{}{!s:<15}{}{!s:<15}'.format(
+                c.Fore.CYAN, 'Downloading:', file_color, file, c.Fore.CYAN, 'Status:', status_color,
+                status))
+
+    def download_file(self, remote_filename, local_filename=None):
+        """Download file from github."""
+        status = 'Failed'
+        if local_filename is None:
+            local_filename = remote_filename
+
+        # github url
+        url = '{}{}'.format(self.base_url, remote_filename)
+        r = requests.get(url, allow_redirects=True)
+        if r.ok:
+            open(local_filename, 'wb').write(r.content)
+            status = 'Success'
+        else:
+            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, url))
+
+        # print download status
+        self._print_results(local_filename, status)
+
+
+if __name__ == '__main__':
+    try:
+        tci = TcInit(args)
+        print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
+
+        if args.new:
+            # init files for a new App
+            tci.download_file('__main__.py')
+            tci.download_file('gitignore', '.gitignore')
+            if args.type == 'job':
+                tci.download_file('job-install.json', 'install.json')
+                tci.download_file('tcpb_-_my_job_app.py')
+            elif args.type == 'playbook':
+                tci.download_file('pb-install.json', 'install.json')
+                tci.download_file('tcpb_-_my_playbook_app.py')
+            tci.download_file('README.md')
+            tci.download_file('requirements.txt')
+            tci.download_file('setup.cfg')
+            tci.download_file('tcex.json')
+            tci.download_file('tcex_json_schema.json')
+        elif args.update:
+            # update standard files
+            tci.download_file('__main__.py')
+            tci.download_file('gitignore', '.gitignore')
+            tci.download_file('setup.cfg')
+            tci.download_file('tcex_json_schema.json')
+        else:
+            print('{}{}CLI option --new or --update is required.'.format(
+                c.Style.BRIGHT, c.Fore.RED))
+        sys.exit()
+
+    except Exception as e:
+        # TODO: Update this, possibly raise
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        sys.exit(1)
+

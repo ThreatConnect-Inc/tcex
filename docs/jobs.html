@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Jobs &mdash; TcEx 0.7.14 documentation</title>
+  <title>Jobs &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/>
         <link rel="next" title="Logging" href="logging.html"/>
         <link rel="prev" title="Install JSON" href="install_json.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -95,6 +95,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
@@ -102,9 +103,14 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Jobs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#group-associations">Group Associations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#documents">Documents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#group-to-indicator-associations">Group to Indicator Associations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#group-to-group-associations">Group to Group Associations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indicators">Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indicator-to-indicator-associations">Indicator to Indicator Associations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#file-occurrence">File Occurrence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sample-job-flow">Sample Job Flow</a></li>
 </ul>
@@ -112,6 +118,8 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -183,6 +191,10 @@
             
   <div class="section" id="jobs">
 <span id="id1"></span><h1>Jobs<a class="headerlink" href="#jobs" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This module is being deprecated and will be removed in a future release.  Please use the new Batch module as a replacement.</p>
+</div>
 <p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.</p>
 <p>Once all the data has been added to the job a call to the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method will attempt to write the data to the ThreatConnect API.</p>
 <div class="admonition note">
@@ -262,9 +274,38 @@
 <li>Saved - The Group was saved to ThreatConnect via the API.</li>
 <li>Submitted - The complete list of submitted Group Names.</li>
 </ul>
+<div class="section" id="documents">
+<h3>Documents<a class="headerlink" href="#documents" title="Permalink to this headline">¶</a></h3>
+<p>To create a document, use the same structure described above and add <code class="docutils literal"><span class="pre">fileName</span></code> and <code class="docutils literal"><span class="pre">fileData</span></code> fields. For example, the following JSON will create a document named <code class="docutils literal"><span class="pre">test.txt</span></code> with the content <code class="docutils literal"><span class="pre">This</span> <span class="pre">is</span> <span class="pre">just</span> <span class="pre">a</span> <span class="pre">test</span></code>:</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Test Description&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+<span class="hll">  <span class="s2">&quot;fileData&quot;</span><span class="o">:</span> <span class="s2">&quot;This is just a test&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;fileName&quot;</span><span class="o">:</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">,</span>
+</span>  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Test Document&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Document&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 </div>
-<div class="section" id="group-associations">
-<h2>Group Associations<a class="headerlink" href="#group-associations" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="group-to-indicator-associations">
+<h2>Group to Indicator Associations<a class="headerlink" href="#group-to-indicator-associations" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -281,8 +322,31 @@
 </td></tr></table></div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">If more than one Group exist with the same name the association created using
+<p class="last">If more than one Group exist with the same name, the association created using
 <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> will only associate the indicator
+to the first group found with the name.</p>
+</div>
+</div>
+<div class="section" id="group-to-group-associations">
+<h2>Group to Group Associations<a class="headerlink" href="#group-to-group-associations" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> method accepts the following data structure to create an association between two groups. All required fields are highlighted.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">  <span class="s2">&quot;association_value&quot;</span><span class="o">:</span> <span class="s2">&quot;Incident 1&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;association_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Incident&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;resource_value&quot;</span><span class="o">:</span> <span class="s2">&quot;Pierre Despereaux&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;resource_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Adversary&quot;</span><span class="p">,</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If more than one Group exist with the same name, the association created using
+<a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> will only associate the indicator
 to the first group found with the name.</p>
 </div>
 </div>
@@ -336,6 +400,16 @@ to the first group found with the name.</p>
 </span><span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>To create file indicators using the <code class="docutils literal"><span class="pre">tcex.tcex_job.indicator()</span></code> function, the <code class="docutils literal"><span class="pre">summary</span></code> should be a string with each file hash (md5, sha1, and/or sha256) separated by <code class="docutils literal"><span class="pre">&lt;space&gt;:&lt;space&gt;</span></code>. For example, the following json would create a file indicator with the md5 hash <code class="docutils literal"><span class="pre">905ad8176a569a36421bf54c04ba7f95</span></code>, sha1 hash <code class="docutils literal"><span class="pre">a52b6986d68cdfac53aa740566cbeade4452124e</span></code> and sha256 hash <code class="docutils literal"><span class="pre">25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0</span></code>:</p>
+<div class="last highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;File&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 <p>The module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator_results" title="tcex.tcex_job.TcExJob.indicator_results"><code class="xref py py-mod docutils literal"><span class="pre">indicator_results</span></code></a> property to get the status of each Indicator submitted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -386,6 +460,52 @@ to the first group found with the name.</p>
 <li>Saved - The Indicator was saved to ThreatConnect via the API.</li>
 <li>Submitted - The complete list of submitted Indicator Names.</li>
 </ul>
+</div>
+<div class="section" id="indicator-to-indicator-associations">
+<h2>Indicator to Indicator Associations<a class="headerlink" href="#indicator-to-indicator-associations" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> method accepts the following data structure to create custom, <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations">Indicator to Indicator Associations</a>. All required fields are highlighted.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">  <span class="s2">&quot;association_value&quot;</span><span class="o">:</span> <span class="s2">&quot;ASN1234&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;association_type&quot;</span><span class="o">:</span> <span class="nx">tcex</span><span class="p">.</span><span class="nx">safe_rt</span><span class="p">(</span><span class="s2">&quot;ASN&quot;</span><span class="p">),</span>
+</span><span class="hll">  <span class="s2">&quot;resource_value&quot;</span><span class="o">:</span> <span class="s2">&quot;1.2.3.4&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;resource_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span>
+</span><span class="hll">  <span class="s2">&quot;custom_association_name&quot;</span><span class="o">:</span> <span class="s2">&quot;ASN to Address&quot;</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>The required <code class="docutils literal"><span class="pre">custom_association_name</span></code> key provides the name of the association you would like to use. These names can be found using the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/associations/associations.html#retrieving-available-associations">associationTypes</a> API endpoint.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>When create an <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations">Indicator to Indicator</a> association that is a <strong>File Action</strong>, make sure that the ‘parent’ File Indicator is provided as the <code class="docutils literal"><span class="pre">resource_value</span></code> (<strong>not</strong> the <code class="docutils literal"><span class="pre">association_value</span></code>).</p>
+<p>For example, the following code will properly create an association between a Registry Key and a File Indicator:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">assoc</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;association_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Registry Key&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;association_value&#39;</span><span class="p">:</span> <span class="s1">&#39;HKEY_LOCAL_MACHINE</span><span class="se">\\</span><span class="s1">SYSTEM</span><span class="se">\\</span><span class="s1">CurrentControlSet</span><span class="se">\\</span><span class="s1">Services</span><span class="se">\\</span><span class="s1">6to4 : DeleteFlag : REG_NONE&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;custom_association_name&#39;</span><span class="p">:</span> <span class="s1">&#39;File Registry Key&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="s1">&#39;File&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;resource_value&#39;</span><span class="p">:</span> <span class="s1">&#39;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#39;</span>
+<span class="p">}</span>
+<span class="n">tcex</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">assoc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>While the code snippet below will <strong>not</strong> work properly (notice that the location of the ‘parent’ File Indicator and the Registry Key have been switched):</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="n">assoc</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;association_type&#39;</span><span class="p">:</span> <span class="s1">&#39;File&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;association_value&#39;</span><span class="p">:</span> <span class="s1">&#39;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;custom_association_name&#39;</span><span class="p">:</span> <span class="s1">&#39;File Registry Key&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;resource_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Registry Key&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;resource_value&#39;</span><span class="p">:</span> <span class="s1">&#39;HKEY_LOCAL_MACHINE</span><span class="se">\\</span><span class="s1">SYSTEM</span><span class="se">\\</span><span class="s1">CurrentControlSet</span><span class="se">\\</span><span class="s1">Services</span><span class="se">\\</span><span class="s1">6to4 : DeleteFlag : REG_NONE&#39;</span>
+<span class="p">}</span>
+<span class="n">tcex</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">assoc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="file-occurrence">
 <h2>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h2>
@@ -492,7 +612,7 @@ the POST.  It is used to indicate which File Indicator to add the occurrence.</p
 <p class="last">The Batch API call allows for Group Associations via the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field using
 the Group Id. However, if Groups are being added in the Job the Group Id will not be known
 until after the Group is added.  The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a>
-method allows the Group named to be used instead of the Group Id. If the Group Id is
+method allows the Group name to be used instead of the Group Id. If the Group Id is
 already known it can be associated using the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field.</p>
 </div>
 </div>
@@ -541,7 +661,7 @@ already known it can be associated using the <code class="docutils literal"><spa
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

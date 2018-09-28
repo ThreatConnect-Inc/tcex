@@ -11,6 +11,7 @@ Release |version|.
    :maxdepth: 2
 
    authorization
+   batch
    building_apps
    data_filter
    development_tools
@@ -21,6 +22,8 @@ Release |version|.
    logging
    message_tc
    tcex_docs/modules
+   metrics
+   notifications
    parser
    playbook
    proxies

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage &mdash; TcEx 0.7.14 documentation</title>
+  <title>Usage &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -93,6 +93,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
@@ -103,6 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -175,7 +178,7 @@
   <p id="building-apps-packaging">Running <code class="docutils literal"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically if the <strong>tcex_json_schema.json</strong> schema file is included in the base directory of your App.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files. Optionally a <strong>package</strong> configuration parameter can be added to the configuration file to provide additional functionality.</p>
+<p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files.</p>
 </div>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
@@ -186,11 +189,11 @@
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
   <span class="o">--</span><span class="n">bundle</span>              <span class="n">Build</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">file</span><span class="o">.</span>
   <span class="o">--</span><span class="n">exclude</span> <span class="n">EXCLUDE</span>     <span class="n">File</span> <span class="ow">and</span> <span class="n">directories</span> <span class="n">to</span> <span class="n">exclude</span> <span class="kn">from</span> <span class="nn">build.</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">Build</span> <span class="n">configuration</span> <span class="n">file</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">Build</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
   <span class="o">--</span><span class="n">install_json</span> <span class="n">INSTALL_JSON</span>
                         <span class="n">The</span> <span class="n">install</span><span class="o">.</span><span class="n">json</span> <span class="n">file</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">App</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span>
                         <span class="n">built</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -199,8 +202,9 @@
 <p>By default the <code class="docutils literal"><span class="pre">tcex.json</span></code> file will be loaded by <code class="docutils literal"><span class="pre">tcpackage</span></code>.  The following is an example of additional configuration that can be provided for the <code class="docutils literal"><span class="pre">tcpackage</span></code> command.</p>
 <div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;..</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="s2">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-  <span class="s2">&quot;bundle_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_My_Bundle&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyApp&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;app_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v1.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
   <span class="s2">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="s2">&quot;log&quot;</span><span class="p">,</span>
     <span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
@@ -274,7 +278,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

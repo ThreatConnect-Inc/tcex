@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_redis module &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_request module" href="tcex.tcex_request.html"/>
         <link rel="prev" title="tcex.tcex_playbook module" href="tcex.tcex_playbook.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -96,6 +96,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
@@ -108,12 +109,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="tcex.api_logging_handler.html">tcex.api_logging_handler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.argparser.html">tcex.argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +130,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -209,21 +214,169 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Create/Read Data in/from Redis</p>
 <dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.blpop">
+<code class="descname">blpop</code><span class="sig-paren">(</span><em>keys</em>, <em>timeout=30</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.blpop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.blpop" title="Permalink to this definition">¶</a></dt>
+<dd><p>RPOP a value off the first empty list in keys.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If timeout is 0, the block indefinitely.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>keys</strong> (<em>string|list</em>) – The key(s) to pop the value.</li>
+<li><strong>timeout</strong> (<em>int</em>) – The number of seconds to wait before blocking stops.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from Redis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_redis.TcExRedis.create">
 <code class="descname">create</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create key/value pair in Redis</p>
+<dd><p>Create key/value pair in Redis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The key to create in Redis.</li>
+<li><strong>value</strong> (<em>any</em>) – The value to store in Redis.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from Redis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_redis.TcExRedis.delete">
 <code class="descname">delete</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete data from Redis for the provided key</p>
+<dd><p>Alias for hdel method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hdel">
+<code class="descname">hdel</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hdel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hdel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to delete in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hget">
+<code class="descname">hget</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hgetall">
+<code class="descname">hgetall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hgetall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hgetall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data from Redis for the provided key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>string</em>) – The key to read in Redis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The response data from Redis.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(any)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.hset">
+<code class="descname">hset</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.hset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.hset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create key/value pair in Redis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The key to create in Redis.</li>
+<li><strong>value</strong> (<em>any</em>) – The value to store in Redis.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from Redis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_redis.TcExRedis.read">
 <code class="descname">read</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.read" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read data from Redis for the provided key</p>
+<dd><p>Alias for hget method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_redis.TcExRedis.rpush">
+<code class="descname">rpush</code><span class="sig-paren">(</span><em>name</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_redis.html#TcExRedis.rpush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_redis.TcExRedis.rpush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append/Push values to the end of list <code class="docutils literal"><span class="pre">name</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>string</em>) – The channel/name of the list.</li>
+<li><strong>timeout</strong> (<em>int</em>) – The number of seconds to wait before blocking stops.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from Redis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -273,7 +426,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

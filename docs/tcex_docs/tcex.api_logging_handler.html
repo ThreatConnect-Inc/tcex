@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.api_logging_handler module &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.api_logging_handler module &mdash; TcEx 0.8.0 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.argparser module" href="tcex.argparser.html"/>
+        <link rel="next" title="tcex.tcex module" href="tcex.tcex.html"/>
         <link rel="prev" title="tcex package" href="tcex.html"/> 
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.0
               </div>
             
           
@@ -96,6 +96,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
@@ -109,11 +110,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.api_logging_handler module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.argparser.html">tcex.argparser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_local.html">tcex.tcex_local module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
@@ -127,6 +130,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
@@ -200,64 +205,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-tcex.api_logging_handler">
-<span id="tcex-api-logging-handler-module"></span><h1>tcex.api_logging_handler module<a class="headerlink" href="#module-tcex.api_logging_handler" title="Permalink to this headline">¶</a></h1>
-<p>standard</p>
-<dl class="class">
-<dt id="tcex.api_logging_handler.ApiLoggingHandler">
-<em class="property">class </em><code class="descclassname">tcex.api_logging_handler.</code><code class="descname">ApiLoggingHandler</code><span class="sig-paren">(</span><em>filename</em>, <em>tcex</em>, <em>max_entries_before_flush=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/api_logging_handler.html#ApiLoggingHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.api_logging_handler.ApiLoggingHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">logging.FileHandler</span></code></p>
-<p>Extension of FileHandler</p>
-<p>Sends logs entries to the ThreatConnect API.</p>
-<dl class="method">
-<dt id="tcex.api_logging_handler.ApiLoggingHandler.emit">
-<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/api_logging_handler.html#ApiLoggingHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.api_logging_handler.ApiLoggingHandler.emit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overload of logger emit method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> (<em>object</em>) – The log entry record</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.api_logging_handler.ApiLoggingHandler.log_to_api">
-<code class="descname">log_to_api</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/api_logging_handler.html#ApiLoggingHandler.log_to_api"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.api_logging_handler.ApiLoggingHandler.log_to_api" title="Permalink to this definition">¶</a></dt>
-<dd><p>Best effort API logger.</p>
-<p>Send logs to API and do nothing if the attempt fails.</p>
-<p>Example log event:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[{</span>
-    <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="mi">1478907537000</span><span class="p">,</span>
-    <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Test Message&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="s2">&quot;DEBUG&quot;</span>
-<span class="p">}]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="tcex.api_logging_handler.create_log_entry">
-<code class="descclassname">tcex.api_logging_handler.</code><code class="descname">create_log_entry</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/api_logging_handler.html#create_log_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.api_logging_handler.create_log_entry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the API log entry.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>record</strong> (<em>object</em>) – The log entry record.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The data to log to API</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="tcex-api-logging-handler-module">
+<h1>tcex.api_logging_handler module<a class="headerlink" href="#tcex-api-logging-handler-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -270,7 +219,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tcex.argparser.html" class="btn btn-neutral float-right" title="tcex.argparser module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tcex.tcex.html" class="btn btn-neutral float-right" title="tcex.tcex module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="tcex.html" class="btn btn-neutral" title="tcex package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -303,7 +252,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.7.14',
+            VERSION:'0.8.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

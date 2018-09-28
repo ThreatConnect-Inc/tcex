@@ -4,6 +4,9 @@
 ====
 Jobs
 ====
+
+.. important:: This module is being deprecated and will be removed in a future release.  Please use the new Batch module as a replacement.
+
 The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_job.TcExJob` module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.
 
 Once all the data has been added to the job a call to the :py:meth:`~tcex.tcex_job.TcExJob.process` method will attempt to write the data to the ThreatConnect API.
@@ -64,8 +67,31 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.group_results` property 
 + Saved - The Group was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Group Names.
 
-Group Associations
-------------------
+Documents
+^^^^^^^^^
+
+To create a document, use the same structure described above and add ``fileName`` and ``fileData`` fields. For example, the following JSON will create a document named ``test.txt`` with the content ``This is just a test``:
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 8,9
+
+    {
+      "attribute": [
+        {
+          "type": "Description",
+          "value": "Test Description"
+        }
+      ],
+      "fileData": "This is just a test",
+      "fileName": "test.txt",
+      "name": "Test Document",
+      "type": "Document"
+    }
+
+Group to Indicator Associations
+-------------------------------
 The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the following data structure. All required fields are highlighted.
 
 .. code-block:: javascript
@@ -80,8 +106,29 @@ The :py:meth:`~tcex.tcex_job.TcExJob.group_association` method accepts the follo
       "indicator_type": "Address"
     }
 
-.. Warning:: If more than one Group exist with the same name the association created using
+.. Warning:: If more than one Group exist with the same name, the association created using
              :py:meth:`~tcex.tcex_job.TcExJob.group_association` will only associate the indicator
+             to the first group found with the name.
+
+Group to Group Associations
+---------------------------
+
+The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following data structure to create an association between two groups. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-5
+
+    {
+      "association_value": "Incident 1",
+      "association_type": "Incident",
+      "resource_value": "Pierre Despereaux",
+      "resource_type": "Adversary",
+    }
+
+.. Warning:: If more than one Group exist with the same name, the association created using
+             :py:meth:`~tcex.tcex_job.TcExJob.association` will only associate the indicator
              to the first group found with the name.
 
 Indicators
@@ -117,6 +164,15 @@ The :py:meth:`~tcex.tcex_job.TcExJob.indicator` method accepts the following dat
       "type": "Address"
     }
 
+.. note:: To create file indicators using the ``tcex.tcex_job.indicator()`` function, the ``summary`` should be a string with each file hash (md5, sha1, and/or sha256) separated by ``<space>:<space>``. For example, the following json would create a file indicator with the md5 hash ``905ad8176a569a36421bf54c04ba7f95``, sha1 hash ``a52b6986d68cdfac53aa740566cbeade4452124e`` and sha256 hash ``25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0``:
+
+    .. code-block:: javascript
+
+        {
+          "summary": "905ad8176a569a36421bf54c04ba7f95 : a52b6986d68cdfac53aa740566cbeade4452124e : 25bdabd23e349f5e5ea7890795b06d15d842bde1d43135c361e755f748ca05d0",
+          "type": "File"
+        }
+
 The module provides the :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` property to get the status of each Indicator submitted.
 
 .. code-block:: javascript
@@ -151,6 +207,48 @@ The module provides the :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` prope
 + Saved - The Indicator was saved to ThreatConnect via the API.
 + Submitted - The complete list of submitted Indicator Names.
 
+Indicator to Indicator Associations
+-----------------------------------
+The :py:meth:`~tcex.tcex_job.TcExJob.association` method accepts the following data structure to create custom, `Indicator to Indicator Associations <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations>`__. All required fields are highlighted.
+
+.. code-block:: javascript
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 2-6
+
+    {
+      "association_value": "ASN1234",
+      "association_type": tcex.safe_rt("ASN"),
+      "resource_value": "1.2.3.4",
+      "resource_type": "Address",
+      "custom_association_name": "ASN to Address"
+    }
+
+The required ``custom_association_name`` key provides the name of the association you would like to use. These names can be found using the `associationTypes <https://docs.threatconnect.com/en/latest/rest_api/associations/associations.html#retrieving-available-associations>`__ API endpoint.
+
+.. note:: When create an `Indicator to Indicator <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations>`_ association that is a **File Action**, make sure that the 'parent' File Indicator is provided as the ``resource_value`` (**not** the ``association_value``).
+
+    For example, the following code will properly create an association between a Registry Key and a File Indicator::
+
+        assoc = {
+          'association_type': 'Registry Key',
+          'association_value': 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\6to4 : DeleteFlag : REG_NONE',
+          'custom_association_name': 'File Registry Key',
+          'resource_type': 'File',
+          'resource_value': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        }
+        tcex.jobs.association(assoc)
+
+    While the code snippet below will **not** work properly (notice that the location of the 'parent' File Indicator and the Registry Key have been switched)::
+
+        assoc = {
+          'association_type': 'File',
+          'association_value': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+          'custom_association_name': 'File Registry Key',
+          'resource_type': 'Registry Key',
+          'resource_value': 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\6to4 : DeleteFlag : REG_NONE'
+        }
+        tcex.jobs.association(assoc)
 
 File Occurrence
 ---------------
@@ -222,5 +320,5 @@ The key method calls are highlighted in the following code sample.
 .. Note:: The Batch API call allows for Group Associations via the ``associatedGroup`` field using
           the Group Id. However, if Groups are being added in the Job the Group Id will not be known
           until after the Group is added.  The :py:meth:`~tcex.tcex_job.TcExJob.group_association`
-          method allows the Group named to be used instead of the Group Id. If the Group Id is
+          method allows the Group name to be used instead of the Group Id. If the Group Id is
           already known it can be associated using the ``associatedGroup`` field.

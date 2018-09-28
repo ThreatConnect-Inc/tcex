@@ -6,18 +6,28 @@ import time
 
 
 class TcExJob(object):
-    """Job processing functionality
+    """Job processing functionality.
+
+    .. warning:: This module will be deprecated in version 0.9.0.
 
     Supports batch indicator adds and allows structured group adds.
     """
 
     def __init__(self, tcex):
-        """Initialize class data
+        """Initialize the Class properties.
 
         Args:
-            tcex (instance): An instance of TcEx class
+            tcex (instance): An instance of TcEx class.
         """
         self._tcex = tcex
+
+        # defaults batch settings
+        self._batch_action = self._tcex.default_args.batch_action
+        self._batch_chunk = self._tcex.default_args.batch_chunk
+        self._batch_halt_on_error = self._tcex.default_args.batch_halt_on_error
+        self._batch_poll_interval_max = self._tcex.default_args.batch_poll_interval_max
+        self._batch_poll_interval = self._tcex.default_args.batch_poll_interval
+        self._batch_write_type = self._tcex.default_args.batch_write_type
 
         # containers
         self._associations = []
@@ -53,28 +63,26 @@ class TcExJob(object):
         self._indicator_batch_ids = []
 
     def _chunk_indicators(self):
-        """Split indicator list into smaller more manageable numbers.
-
-        """
+        """Split indicator list into smaller more manageable numbers."""
         try:
-            for i in xrange(0, len(self._indicators), self._tcex.default_args.batch_chunk):
-                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
+            for i in xrange(0, len(self._indicators), self._batch_chunk):
+                yield self._indicators[i:i + self._batch_chunk]
         except NameError:  # Python 3 uses range() instead of xrange()
-            for i in range(0, len(self._indicators), self._tcex.default_args.batch_chunk):
-                yield self._indicators[i:i + self._tcex.default_args.batch_chunk]
+            for i in range(0, len(self._indicators), self._batch_chunk):
+                yield self._indicators[i:i + self._batch_chunk]
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
-        """Add a group to ThreatConnect
+        """Add a group to ThreatConnect.
 
         Args:
-            resource_type (string): String with resource [group] type
-            resource_name (string): The name of the group
-            owner (string): The name of the TC owner for the group add
+            resource_type (string): String with resource [group] type.
+            resource_name (string): The name of the group.
+            owner (string): The name of the TC owner for the group add.
             data (Optional [dictionary]): Any optional group parameters, tags,
-                or attributes
+                or attributes.
 
         Returns:
-            (integer): The ID of the created resource
+            (integer): The ID of the created resource.
         """
         resource_id = None
         if data is None:
@@ -123,7 +131,7 @@ class TcExJob(object):
                         attribute.get('type'), attribute.get('value'), resource_name,
                         a_results.get('response').text)
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
 
             # add tags
             for tag in data.get('tag', []):
@@ -135,7 +143,7 @@ class TcExJob(object):
                     err = u'Failed adding tag "{}" ({})'.format(
                         tag, t_results.get('response').text)
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
 
             # document upload
             if resource_type == 'Document' and data.get('fileData') is not None:
@@ -158,25 +166,22 @@ class TcExJob(object):
                     err = u'Failed uploading document {} to group {}. ({})'.format(
                         data.get('fileName'), resource_name, u_results.get('response').text)
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
         else:
             self._group_results['failed'].append(resource_name)
             err = u'Failed adding group "{}" ({})'.format(
                 resource_name, results.get('response').text)
             self._tcex.log.error(err)
-            self._tcex.exit_code(3)
+            self._tcex.exit_code = 3
 
         return resource_id
 
-    def _group_delete(self, resource_type, resource_id):
-        """Delete a group from ThreatConnect
+    def _group_delete_by_id(self, resource_type, resource_id):
+        """Delete a group from ThreatConnect.
 
         Args:
-            resource_type (string): String with resource [group] type
-            resource_id (string): The ID of the group
-
-        Returns:
-            (integer): The ID of the created resource
+            resource_type (string): String with resource [group] type.
+            resource_id (string): The ID of the group.
         """
         # self._tcex.log.debug(u'Deleting {} with ID {}.'.format(resource_type, resource_id))
         resource = self._tcex.resource(resource_type)
@@ -187,14 +192,34 @@ class TcExJob(object):
             self._tcex.log.warning(u'Deleted {} with ID {} failed ({}).'.format(
                 resource_type, resource_id, results.get('response').text))
 
-    def _indicators_replace_stub(self, owner):
-        """Process Indicator data replacing associatedGroup stub values with the Group ID
-
-        Format of a stub ${<group name>:<group type>}
+    def _group_delete_by_name(self, owner, resource_type, resource_name):
+        """Delete group(s) from ThreatConnect by Name.
 
         Args:
-            indicators (list): Batch Indicator Data
-            owner (string):  The owner name for the indicator to be written
+            resource_type (string): String with resource [group] type.
+            resource_name (string): The name of the group.
+        """
+        resource = self._tcex.resource(resource_type)
+        resource.add_filter('name', '=', resource_name)
+        resource.owner = owner
+        for results in resource:
+            if results.get('status') != 'Success':
+                self._tcex.log.warning(u'Retrieve {} with name {} failed ({}).'.format(
+                    resource_type, resource_name, results.get('response').text))
+            else:
+                # remove group from cache
+                self.group_cache_remove(owner, resource_type, resource_name)
+                for result in results['data']:
+                    self._group_delete_by_id(resource_type, result.get('id'))
+
+    def _indicators_replace_stub(self, owner):
+        """Process Indicator data replacing associatedGroup stub values with the Group ID.
+
+        Format of a stub ${<group name>:<group type>}.
+
+        Args:
+            indicators (list): Batch Indicator Data.
+            owner (string):  The owner name for the indicator to be written.
         """
         for indicator_data in self._indicators:
             for group_value in list(indicator_data.get('associatedGroup', [])):
@@ -217,10 +242,10 @@ class TcExJob(object):
                     indicator_data['associatedGroup'].append(group_id)
 
     def _process_file_occurrences(self, owner):
-        """Process file occurrences and write to TC API
+        """Process file occurrences and write to TC API.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string):  The owner name for the indicator to be written.
         """
         # POST /v2/indicators/files/BE7DE2F0CF48294400C714C9E28ECD01/fileOccurrences
         # supported format -> 2014-11-03T00:00:00-05:00
@@ -241,10 +266,10 @@ class TcExJob(object):
             resource.request()
 
     def _process_association(self, owner):
-        """Process groups and write to TC API
+        """Process groups and write to TC API.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string):  The owner name for the indicator to be written.
         """
         for a in self._associations:
             self._tcex.log.info(u'creating association: resource {} association {}'.format(
@@ -254,6 +279,7 @@ class TcExJob(object):
             association_id = a.get('association_value')
             resource_type = a.get('resource_type')
             resource_id = a.get('resource_value')
+            custom_association_name = a.get('custom_association_name')
             # get group id from group name (duplicate group names not supported)
             if resource_type in self._tcex.group_types:
                 resource_id = self.group_id(resource_id, owner, resource_type)
@@ -268,19 +294,22 @@ class TcExJob(object):
 
             ar = self._tcex.resource(association_type)
             ar.resource_id(association_id)
-            association_resource = resource.association_pivot(ar)
+            if custom_association_name:
+                association_resource = resource.association_custom(custom_association_name, ar)
+            else:
+                association_resource = resource.association_pivot(ar)
             association_results = association_resource.request()
             if association_results.get('status') != 'Success':
                 err = 'Failed adding association ({}).'.format(
                     association_results.get('response').text)
                 self._tcex.log.error(err)
-                self._tcex.exit_code(3)
+                self._tcex.exit_code = 3
 
     def _process_group_association(self, owner):
-        """Process groups and write to TC API
+        """Process group associations and write to ThreatConnect API.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string): The owner name for the associations to be written.
         """
         for ga in self._group_associations:
             self._tcex.log.info(u'creating association: group "{}" indicator {}'.format(
@@ -302,10 +331,10 @@ class TcExJob(object):
             association_resource.request()
 
     def _process_groups(self, owner, group_action):
-        """Process groups and write to TC API
+        """Process groups and write to ThreatConnect API.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string): The owner name for the groups to be written.
         """
         self._group_results['not_saved'] = list(self._group_results.get('submitted', []))
         for group in self._groups:
@@ -317,29 +346,35 @@ class TcExJob(object):
             self._tcex.log.debug(u'Processing group ({})'.format(group_name))
             if group_action == 'duplicate':
                 group_id = self._group_add(group_type, group_name, owner, group)
-                if group_id is None and self._tcex.args.batch_halt_on_error:
+                if group_id is None and self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
-                    self._tcex.exit_code(1)
+                    self._tcex.exit_code = 1
                     break
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
             elif group_action == 'replace':
                 if group_id is not None:
-                    self._group_delete(group_type, group_id)
-                    self._tcex.log.info(u'Deleting Group "{}" with id: {}'.format(
-                        group_name, group_id))
+                    # delete the group from TC and group cache
+                    self._group_delete_by_name(owner, group_type, group_name)
+                    self._tcex.log.info(u'Deleting Group "{}" with name: "{}"'.format(
+                        group_type, group_name))
+
                 group_id = self._group_add(group_type, group_name, owner, group)
-                if group_id is None and self._tcex.args.batch_halt_on_error:
+                if group_id is None and self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
-                    self._tcex.exit_code(1)
+                    self._tcex.exit_code = 1
                     break
+                else:
+                    self.group_cache_add(group_name, owner, group_type, group_id)
                 self._tcex.log.info(u'Created Group "{}" with id: {}'.format(group_name, group_id))
             elif group_action == 'skip':
                 if group_id is None:
                     group_id = self._group_add(group_type, group_name, owner, group)
-                    if group_id is None and self._tcex.args.batch_halt_on_error:
+                    if group_id is None and self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
-                        self._tcex.exit_code(1)
+                        self._tcex.exit_code = 1
                         break
+                    else:
+                        self.group_cache_add(group_name, owner, group_type, group_id)
                     self._tcex.log.info(u'Created Group "{}" with id: {}'.format(
                         group_name, group_id))
                 else:
@@ -351,31 +386,30 @@ class TcExJob(object):
                 self._tcex.log.info(u'Invalid group action ({})'.format(group_action))
 
     def _process_indicators(self, owner, batch):
-        """Process batch indicators and write to TC API
+        """Process batch indicators and write to ThreatConnect API.
 
         Args:
-            owner (string): The owner name for the indicator to be written
-            batch (boolean): Use the batch API to create indicators
+            owner (string): The owner name for the indicator to be written.
+            batch (boolean): Use the batch API to create indicators.
         """
         self._tcex.log.info(u'Processing {} indicators'.format(len(self._indicators)))
-
         if batch:
             self._process_indicators_batch(owner)
         else:
             self._process_indicators_v2(owner)
 
     def _process_indicators_batch(self, owner):
-        """Process batch indicators and write to TC API
+        """Process batch indicators and write to ThreatConnect API.
 
         .. Note:: Failed attributes and/or tags will not cause a batch import to fail.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string):  The owner name for the indicator to be written.
         """
         batch_job_body = {
-            'action': self._tcex.default_args.batch_action,
-            'attributeWriteType': self._tcex.default_args.batch_write_type,
-            'haltOnError': self._tcex.default_args.batch_halt_on_error,
+            'action': self._batch_action,
+            'attributeWriteType': self._batch_write_type,
+            'haltOnError': self._batch_halt_on_error,
             'owner': owner
         }
 
@@ -408,7 +442,7 @@ class TcExJob(object):
                     poll_time = 0
                     while True:
                         self._tcex.log.debug(u'poll_time: {}'.format(poll_time))
-                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
+                        if poll_time >= self._batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
@@ -417,8 +451,8 @@ class TcExJob(object):
                         status = self.batch_status(batch_id)
                         if status.get('completed'):
                             if status.get('errors'):
-                                if self._tcex.args.batch_halt_on_error:
-                                    self._tcex.exit_code(1)
+                                if self._batch_halt_on_error:
+                                    self._tcex.exit_code = 1
                                     halt = True
                                     # all indicator in chunk will be not_saved
                                     self._indicator_results['not_saved'].extend(
@@ -426,7 +460,8 @@ class TcExJob(object):
                                     break
                                 else:
                                     # all indicators were saved minus failed; not_save == failed
-                                    self._indicator_results['not_saved'] = self._indicator_results.get('failed', [])
+                                    self._indicator_results['not_saved'] = self._indicator_results.get(
+                                        'failed', [])
                                     self._indicator_results['saved'].extend(
                                         [i.get('summary') for i in chunk
                                          if i.get('summary') not in self._indicator_results.get(
@@ -442,13 +477,13 @@ class TcExJob(object):
                                 self._indicators_response.extend(chunk)
                             break  # no need to check status anymore
 
-                        time.sleep(self._tcex.default_args.batch_poll_interval)
-                        poll_time += self._tcex.default_args.batch_poll_interval
+                        time.sleep(self._batch_poll_interval)
+                        poll_time += self._batch_poll_interval
             else:
                 self._tcex.log.warning('API request failed ({}).'.format(
                     results.get('response').text))
                 # TODO: move this and above duplicate code to "if halt" below after validating logic
-                self._tcex.exit_code(1)
+                self._tcex.exit_code = 1
                 # all indicator in chunk will be not_saved
                 self._indicator_results['not_saved'].extend([i.get('summary') for i in chunk])
                 halt = True
@@ -458,10 +493,10 @@ class TcExJob(object):
                 break
 
     def _process_indicators_v2(self, owner):
-        """Process batch indicators and write to TC API
+        """Process batch indicators and write to ThreatConnect API using **/v2/indicators**.
 
         Args:
-            owner (string):  The owner name for the indicator to be written
+            owner (string):  The owner name for the indicator to be written.
         """
         self._indicator_results['not_saved'] = list(self._indicator_results.get('submitted', []))
         for i_data in self._indicators:
@@ -496,7 +531,7 @@ class TcExJob(object):
 
             i_results = resource.request()
 
-            # PUT file indicator since API does not work consistently for all indiator types
+            # PUT file indicator since API does not work consistently for all indicator types
             if i_data.get('type') == 'File' and i_results.get('response').status_code == 400:
                 if 'MD5' in i_results.get('response').text:
                     i_value = body.get('md5', i_value)
@@ -517,12 +552,12 @@ class TcExJob(object):
                 self._tcex.log.error(err)
 
                 # halt on error check
-                if self._tcex.args.batch_halt_on_error:
+                if self._batch_halt_on_error:
                     self._tcex.log.info(u'Halt on error is enabled.')
-                    self._tcex.exit_code(1)
+                    self._tcex.exit_code = 1
                     break
                 else:
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
                     continue
 
             # update indicator result list
@@ -554,13 +589,13 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
-                        self._tcex.exit_code(1)
+                        self._tcex.exit_code = 1
                         halt = True
                         break
                     else:
-                        self._tcex.exit_code(3)
+                        self._tcex.exit_code = 3
                         continue
                 results_data.setdefault('attribute', []).append(a_results.get('data'))
             if halt:
@@ -572,7 +607,7 @@ class TcExJob(object):
                     resource.indicator(i_data.get('summary'))
                 else:
                     resource.indicator(i_value)
-                tag_resource = resource.tags(self._tcex.safetag(tag.get('name')))
+                tag_resource = resource.tags(tag.get('name'))
                 tag_resource.http_method = 'POST'
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
@@ -581,13 +616,13 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
-                        self._tcex.exit_code(1)
+                        self._tcex.exit_code = 1
                         halt = True
                         break
                     else:
-                        self._tcex.exit_code(3)
+                        self._tcex.exit_code = 3
                         continue
                 results_data.setdefault('tag', []).append(tag)
             if halt:
@@ -599,7 +634,7 @@ class TcExJob(object):
                     err = u'Could not get Group Type for Group ID {} in Owner "{}"'.format(
                         group_id, owner)
                     self._tcex.log.error(err)
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
                     continue
 
                 if resource.custom:
@@ -617,13 +652,13 @@ class TcExJob(object):
                     self._tcex.log.error(err)
 
                     # halt on error check
-                    if self._tcex.args.batch_halt_on_error:
+                    if self._batch_halt_on_error:
                         self._tcex.log.info(u'Halt on error is enabled.')
-                        self._tcex.exit_code(1)
+                        self._tcex.exit_code = 1
                         halt = True
                         break
                     else:
-                        self._tcex.exit_code(3)
+                        self._tcex.exit_code = 3
                         continue
                 results_data.setdefault('associatedGroup', []).append(group_id)
             if halt:
@@ -662,6 +697,22 @@ class TcExJob(object):
               'resource_type': 'Threat',
             }]
 
+        **Example Data for Creating Indicator-to-Indicator Associations**
+        *(required fields are highlighted)*
+
+        .. code-block:: javascript
+            :linenos:
+            :lineno-start: 1
+            :emphasize-lines: 2-6
+
+            {
+              "association_value": "ASN1234",
+              "association_type": tcex.safe_rt("ASN"),
+              "resource_value": "1.2.3.4",
+              "resource_type": "Address",
+              "custom_association_name": "ASN to Address"
+            }
+
         Args:
             associations (dict | list): Dictionary or List containing
                 association data
@@ -675,27 +726,27 @@ class TcExJob(object):
         """Set the default batch action for argument parser.
 
         Args:
-            action (string): Set batch job action
+            action (string): Set batch job action.
         """
         if action in ['Create', 'Delete']:
-            self._tcex.parser.set_defaults(batch_action=action)
+            self._batch_action = action
 
     def batch_chunk(self, chunk_size):
         """Set batch chunk_size for argument parser.
 
         Args:
-            chunk_size (integer): Set batch job chunk size
+            chunk_size (integer): Set batch job chunk size.
         """
-        self._tcex.parser.set_defaults(batch_chunk=chunk_size)
+        self._batch_chunk = chunk_size
 
     def batch_halt_on_error(self, halt_on_error):
         """Set batch halt on error boolean for argument parser.
 
         Args:
-            halt_on_error (boolean): Boolean value for halt on error
+            halt_on_error (boolean): Boolean value for halt on error.
         """
         if isinstance(halt_on_error, bool):
-            self._tcex.parser.set_defaults(batch_halt_on_error=halt_on_error)
+            self._batch_halt_on_error = halt_on_error
 
     def batch_indicator_success(self):
         """Check completion for all batch jobs associated with this instance.
@@ -746,22 +797,22 @@ class TcExJob(object):
         """Set batch polling interval for argument parser.
 
         Args:
-            interval (integer): Seconds between polling
+            interval (integer): Seconds between polling.
         """
         if isinstance(interval, int):
-            self._tcex.parser.set_defaults(batch_poll_interval=interval)
+            self._batch_poll_interval = interval
 
     def batch_poll_interval_max(self, interval_max):
         """Set batch polling interval max for argument parser.
 
         Args:
-            interval_max (integer): Max seconds before timeout on batch
+            interval_max (integer): Max seconds before timeout on batch.
         """
         if isinstance(interval_max, int):
-            self._tcex.parser.set_defaults(batch_poll_interval_max=interval_max)
+            self._batch_poll_interval_max = interval_max
 
     def batch_status(self, batch_id):
-        """Check the status of a batch job
+        """Check the status of a batch job.
 
         This method will get the status of a batch job. Any errors returned from the batch status
         will be automatically logged.
@@ -772,7 +823,7 @@ class TcExJob(object):
         to halt.
 
         Args:
-            batch_id (int): Id of the batch job
+            batch_id (int): Id of the batch job.
 
         Returns:
             (dict): A dictionary with status and error boolean.
@@ -800,7 +851,7 @@ class TcExJob(object):
 
                 if results['data']['errorCount'] > 0:
                     status['errors'] = True
-                    self._tcex.exit_code(3)
+                    self._tcex.exit_code = 3
                     time.sleep(2)
 
                     poll_time = 0
@@ -809,7 +860,7 @@ class TcExJob(object):
                         resource.url = self._tcex.default_args.tc_api_path
                         resource.errors(batch_id)
                         error_results = resource.request()
-                        if poll_time >= self._tcex.default_args.batch_poll_interval_max:
+                        if poll_time >= self._batch_poll_interval_max:
                             msg = u'Status check exceeded max poll time.'
                             self._tcex.log.error(msg)
                             self._tcex.message_tc(msg)
@@ -817,9 +868,9 @@ class TcExJob(object):
                         elif error_results.get('response').status_code == 200:
                             break
                         self._tcex.log.info(u'Error retrieve sleep ({} seconds)'.format(
-                            self._tcex.default_args.batch_poll_interval))
-                        time.sleep(self._tcex.default_args.batch_poll_interval)
-                        poll_time += self._tcex.default_args.batch_poll_interval
+                            self._batch_poll_interval))
+                        time.sleep(self._batch_poll_interval)
+                        poll_time += self._batch_poll_interval
 
                     try:
                         errors = json.loads(self._tcex.s(error_results.get('data')))
@@ -854,13 +905,13 @@ class TcExJob(object):
         """Set batch attributes write type for argument parser.
 
         Args:
-            write_type (string): Type of Append or Replace
+            write_type (string): Type of Append or Replace.
         """
         if write_type in ['Append', 'Replace']:
-            self._tcex.parser.set_defaults(batch_write_type=write_type)
+            self._batch_write_type = write_type
 
     def file_occurrence(self, fo):
-        """
+        """Add a file occurrence to job.
 
         Args:
             fo (dictionary): The file occurrence data.
@@ -956,7 +1007,7 @@ class TcExJob(object):
 
         Args:
             associations (dict | list): Dictionary or List containing group
-                association data
+                association data.
         """
         if isinstance(associations, list):
             self._group_associations.extend(associations)
@@ -968,7 +1019,7 @@ class TcExJob(object):
         """The current length of the group association list.
 
         Returns:
-            (integer): The length of the group association list
+            (integer): The length of the group association list.
         """
         return len(self._group_associations)
 
@@ -1026,9 +1077,9 @@ class TcExJob(object):
         """Get the group id from the group cache.
 
         Args:
-            name(string): The name of the Group
-            owner (string): The TC Owner where the resource should be found
-            resource_type (string): The resource type name
+            name(string): The name of the Group.
+            owner (string): The TC Owner where the resource should be found.
+            resource_type (string): The resource type name.
 
         Returns:
             (integer): The ID for the provided group name and owner.
@@ -1041,19 +1092,51 @@ class TcExJob(object):
 
         return self._group_cache.get(owner, {}).get(resource_type, {}).get(name)
 
+    def group_cache_add(self, name, owner, resource_type, resource_id):
+        """Add a group to the group cache.
+
+        Args:
+            name(string): The name of the Group.
+            owner (string): The TC Owner where the resource should be found.
+            resource_type (string): The resource type name.
+
+        Returns:
+            (integer): The ID for the provided group name and owner.
+        """
+        if self._group_cache.get(owner, {}).get(resource_type, {}) is None:
+            self.group_cache(owner, resource_type)
+
+        self._group_cache[owner][resource_type][name] = resource_id
+
+    def group_cache_remove(self, name, owner, resource_type):
+        """Remove a group from the group cache.
+
+        Args:
+            name(string): The name of the Group.
+            owner (string): The TC Owner where the resource should be found.
+            resource_type (string): The resource type name.
+
+        Returns:
+            (integer): The ID for the provided group name and owner.
+        """
+        self._tcex.log.debug(
+            u'Removing {} ID for group "{}" in "{}".'.format(
+                resource_type, name, owner))
+        if self._group_cache.get(owner, {}).get(resource_type, {}).get(name) is not None:
+            del self._group_cache[owner][resource_type][name]
+
     def group_cache_type(self, group_id, owner):
-        """Get the group type for the provided group id
+        """Get the group type for the provided group id.
 
         **Cache Structure**
         ::
 
             Owner -> Group Id:Group Type
 
-
         Args:
-            group_id (string): The group id to lookup
-            owner (string): The TC Owner where the resource should be found
-            resource_type (string): The resource type name
+            group_id (string): The group id to lookup.
+            owner (string): The TC Owner where the resource should be found.
+            resource_type (string): The resource type name.
 
         Returns:
             (integer): The ID for the provided group name and owner.
@@ -1089,10 +1172,10 @@ class TcExJob(object):
 
     @property
     def group_results(self):
-        """Result dictionary of failed, saved, not_saved, and submitted groups
+        """Result dictionary of failed, saved, not_saved, and submitted groups.
 
         Returns:
-            (dictionary): Dictionary of group names for each status
+            (dictionary): Dictionary of group names for each status.
         """
         return self._group_results
 
@@ -1118,23 +1201,27 @@ class TcExJob(object):
               ],
               'attribute': [
                 {
-                  'type': 'Description',
-                  'value': 'Test Description'
+                  'type': 'Attribute Name',
+                  'value': 'Description'
                 }
               ],
               'confidence': 5,
-              'rating': '3',
+              'rating': 3.2,
               'summary': '1.1.1.1',
               'tag': [
-                'APT',
-                'Crimeware'
+                {
+                  'name': 'APT',
+                },
+                {
+                  'name': 'CrimeWare',
+                }
               ],
               'type': 'Address'
             }
 
         Args:
             indicator (dict | list): Dictionary or List containing indicator
-                data
+                data.
         """
         if isinstance(indicator, dict):
             indicator = [indicator]
@@ -1147,16 +1234,16 @@ class TcExJob(object):
 
     @property
     def unprocessed_indicators(self):
-        """ Return indicators (unprocessed)
+        """Return indicators (unprocessed).
 
         Returns:
-            (list): The unprocessed indicator list
+            (list): The list of unprocessed indicator.
         """
         return self._indicators
 
     @unprocessed_indicators.setter
     def unprocessed_indicators(self, value):
-        """ Set indicators list
+        """Set indicators list.
 
         Args:
             value (list): List of indicators
@@ -1169,13 +1256,13 @@ class TcExJob(object):
         """Return the current indicator list.
 
         Returns:
-            (list): The indicator list
+            (list): The indicator list.
         """
         return self._indicators_response
 
     @property
     def indicator_len(self):
-        """The current length of the indicator list
+        """The current length of the indicator list.
 
         Returns:
             (integer): The length of the indicator list
@@ -1184,21 +1271,24 @@ class TcExJob(object):
 
     @property
     def indicator_results(self):
-        """Result dictionary of failed, saved, not_saved, and submitted indicators
+        """Result dictionary of failed, saved, not_saved, and submitted indicators.
 
         Returns:
-            (dictionary): Dictionary of indicator values for each status
+            (dictionary): Dictionary of indicator values for each status.
         """
         return self._indicator_results
 
     def process(self, owner, indicator_batch=True, group_action='skip'):
-        """Process all association, group and indicator data.
+        """Process all groups, indicator data, and associations.
 
-        Process each of the supported data types for this job.
+        Process each of the supported data types for this job, in the following
+        order (left to right):
+
+            groups > indicators > file occurrences > group associations > associations
 
         Args:
-            owner (string): The owner name for the data to be written
-            indicator_batch (bool): If true use the Batch Api otherwise use `/v2`.
+            owner (string): The owner name for the data to be written.
+            indicator_batch (bool): If true use the Batch Api otherwise use `/v2` REST API.
             group_action (string): The action to use on group create (duplicate, replace, skip).
         """
         if self._groups:

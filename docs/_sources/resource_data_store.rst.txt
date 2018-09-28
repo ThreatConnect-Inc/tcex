@@ -9,13 +9,11 @@ Create Entry
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-16
+    :emphasize-lines: 12-14
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -26,7 +24,7 @@ Create Entry
         """ """
         resource = tcex.resources.DataStore(tcex)
         body = {'one': 1}
-        results = resource.create('local', 'tcex', 1, body)
+        results = resource.create('local', 'tcex', 1, json.dumps(body))
         print(json.dumps(results.get('data'), indent=4))
 
 
@@ -59,13 +57,11 @@ Read Entry
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-15
+    :emphasize-lines: 12-13
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -106,13 +102,11 @@ Update Entry
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-16
+    :emphasize-lines: 12-14
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -123,7 +117,7 @@ Update Entry
         """ """
         resource = tcex.resources.DataStore(tcex)
         body = {'one': 1, 'two', 2}
-        results = resource.update('local', 'tcex', 1, body)
+        results = resource.update('local', 'tcex', 1, json.dumps(body))
         print(json.dumps(results.get('data'), indent=4))
 
 
@@ -156,13 +150,11 @@ Delete Entry
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-15
+    :emphasize-lines: 12-13
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()

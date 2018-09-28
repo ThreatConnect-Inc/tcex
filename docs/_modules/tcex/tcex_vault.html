@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_vault &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_vault &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -104,6 +105,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -177,11 +180,7 @@
             
   <h1>Source code for tcex.tcex_vault</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; TcEx Framework Value Module</span>
-
-<span class="sd">.. important:: This module will be deprecated in a future release.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot; TcEx Framework Value Module &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">hvac</span>
@@ -191,24 +190,41 @@
     <span class="sd">&quot;&quot;&quot;Add Value functionality to TcEx Framework&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;VAULT_TOKEN&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8200&#39;</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            url (string): The URL to the value server.</span>
+<span class="sd">            token (string): The value token.</span>
+<span class="sd">            cert (string): The value cert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;VAULT_TOKEN&#39;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">url</span> <span class="ow">or</span> <span class="s1">&#39;http://localhost:8200&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">hvac</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="n">cert</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcExVault.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">lease</span><span class="o">=</span><span class="s1">&#39;1h&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create key/value pair in Vault&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create key/value pair in Vault.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The data key.</span>
+<span class="sd">            value (string): The data value.</span>
+<span class="sd">            lease (string): The least time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">lease</span><span class="o">=</span><span class="n">lease</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExVault.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read data from Vault for the provided key&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Read data from Vault for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The data key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExVault.delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_vault.html#tcex.tcex_vault.TcExVault.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete data from Vault for the provided key&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Delete data from Vault for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The data key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -245,7 +261,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

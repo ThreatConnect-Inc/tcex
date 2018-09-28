@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_redis &mdash; TcEx 0.7.14 documentation</title>
+  <title>tcex.tcex_redis &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -94,6 +94,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
@@ -104,6 +105,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
@@ -177,7 +180,7 @@
             
   <h1>Source code for tcex.tcex_redis</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; TcEx Framework Redis Module &quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;TcEx Framework Redis Module&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">str</span>
 
 <span class="kn">import</span> <span class="nn">redis</span>
@@ -187,25 +190,109 @@
     <span class="sd">&quot;&quot;&quot;Create/Read Data in/from Redis&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">rhash</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="n">rhash</span>
-        <span class="c1"># self._r = redis.StrictRedis(host=host, port=port, db=0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host (string): The Redis host.</span>
+<span class="sd">            port (string): The Redis port.</span>
+<span class="sd">            rhash (string): The rhash value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="n">rhash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">StrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TcExRedis.blpop"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.blpop">[docs]</a>    <span class="k">def</span> <span class="nf">blpop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;RPOP a value off the first empty list in keys.</span>
+
+<span class="sd">        .. note:: If timeout is 0, the block indefinitely.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keys (string|list): The key(s) to pop the value.</span>
+<span class="sd">            timeout (int): The number of seconds to wait before blocking stops.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The response from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">blpop</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRedis.create"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The key to create in Redis.</span>
+<span class="sd">            value (any): The value to store in Redis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The response from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRedis.delete"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete data from Redis for the provided key&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Alias for hdel method.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExRedis.hdel"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.hdel">[docs]</a>    <span class="k">def</span> <span class="nf">hdel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete data from Redis for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The key to delete in Redis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The response from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hdel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExRedis.hget"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.hget">[docs]</a>    <span class="k">def</span> <span class="nf">hget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read data from Redis for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The key to read in Redis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (any): The response data from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="TcExRedis.hgetall"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.hgetall">[docs]</a>    <span class="k">def</span> <span class="nf">hgetall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read data from Redis for the provided key.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The key to read in Redis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (any): The response data from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hgetall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExRedis.hset"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.hset">[docs]</a>    <span class="k">def</span> <span class="nf">hset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create key/value pair in Redis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The key to create in Redis.</span>
+<span class="sd">            value (any): The value to store in Redis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The response from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">hset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRedis.read"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read data from Redis for the provided key&quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data</span></div></div>
+        <span class="sd">&quot;&quot;&quot;Alias for hget method.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hget</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExRedis.rpush"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_redis.html#tcex.tcex_redis.TcExRedis.rpush">[docs]</a>    <span class="k">def</span> <span class="nf">rpush</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append/Push values to the end of list ``name``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (string): The channel/name of the list.</span>
+<span class="sd">            timeout (int): The number of seconds to wait before blocking stops.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The response from Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -241,7 +328,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

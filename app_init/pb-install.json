@@ -1,0 +1,88 @@
+{
+    "allowOnDemand": true,
+    "displayName": "My Playbook App",
+    "features": [
+        "secureParams",
+        "aotExecutionEnabled"
+    ],
+    "languageVersion": "3.6",
+    "listDelimiter": "|",
+    "note": "Takes a input and provides and output.",
+    "params": [
+        {
+            "label": "My Input",
+            "name": "my_input",
+            "note": "The input String or StringArray.",
+            "playbookDataType": [
+                "String",
+                "StringArray"
+            ],
+            "sequence": 1,
+            "type": "String",
+            "validValues": [
+                "${TEXT}",
+                "${KEYCHAIN}"
+            ]
+        },
+        {
+            "label": "My Choice",
+            "name": "my_choice",
+            "note": "A choice selection",
+            "required": true,
+            "sequence": 2,
+            "type": "Choice",
+            "validValues": [
+                "One",
+                "Two",
+                "Three"
+            ]
+        },
+        {
+            "default": "One|Three",
+            "label" : "A MultiChoice selection",
+            "name" : "my_multi",
+            "required": true,
+            "sequence": 3,
+            "type": "MultiChoice",
+            "validValues": [
+                "One",
+                "Two",
+                "Three"
+            ]
+        },
+        {
+            "default": true,
+            "label": "My Boolean",
+            "name": "my_boolean",
+            "note": "A boolean selection",
+            "required": true,
+            "sequence": 4,
+            "type": "Boolean"
+        },
+        {
+            "default": "my-hidden-value",
+            "label": "My Hidden Input",
+            "hidden": true,
+            "name": "my_hidden",
+            "sequence": 5,
+            "type": "String"
+        }
+    ],
+    "playbook": {
+        "outputVariables": [
+            {
+                "name": "mypbapp.outputs.0",
+                "type": "String"
+            },
+            {
+                "name": "mypbapp.outputs",
+                "type": "StringArray"
+            }
+        ],
+        "type": "Utility"
+    },
+    "programLanguage": "PYTHON",
+    "programMain": "tcpb_-_my_playbook_app",
+    "programVersion": "1.0.0",
+    "runtimeLevel": "Playbook"
+}

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Exit &mdash; TcEx 0.7.14 documentation</title>
+  <title>Exit &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/>
         <link rel="next" title="Examples" href="examples.html"/>
         <link rel="prev" title="Development Tools" href="development_tools.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -95,6 +95,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
@@ -110,6 +111,8 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -181,7 +184,8 @@
             
   <div class="section" id="exit">
 <span id="id1"></span><h1>Exit<a class="headerlink" href="#exit" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on completion or failure of execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> methods to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method.</p>
+<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method supports and optional <code class="docutils literal"><span class="pre">msg</span></code> parameter.  If provided the <code class="docutils literal"><span class="pre">msg</span></code> value will be logged and written to the <code class="docutils literal"><span class="pre">message_tc</span></code> file as the App exit message.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">Providing a proper exit code for Playbook Apps is important for execution of downstream Apps.</p>
@@ -192,7 +196,7 @@
 </div>
 <div class="section" id="setting-exit-code">
 <h2>Setting Exit Code<a class="headerlink" href="#setting-exit-code" title="Permalink to this headline">¶</a></h2>
-<p>Some failures do not warrant an immediate exit.  In such case the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> method allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.</p>
+<p>Some failures do not warrant an immediate exit.  In such case the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.</p>
 <p><strong>Example</strong></p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -212,11 +216,11 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
 </span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 
-<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
 </span></pre></div>
 </td></tr></table></div>
 </div>
@@ -239,7 +243,7 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <span class="k">except</span><span class="p">:</span>
-<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
 </span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
@@ -298,7 +302,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

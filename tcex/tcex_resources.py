@@ -14,20 +14,23 @@ class Resource(object):
     """Common settings for All ThreatConnect API Endpoints"""
 
     def __init__(self, tcex):
-        """Initialize default class values."""
-        self._tcex = tcex
+        """Initialize the Class properties.
+
+        Args:
+            tcex (object): Instance of TcEx.
+        """
+        self.tcex = tcex
 
         # request
-        self._r = tcex.request
-        if tcex.default_args.tc_proxy_tc:
-            self._r.proxies = tcex.proxies
+        self._request = self.tcex.request(self.tcex.session)
+        # set default. can be overwritten for individual requests.
+        self._request.content_type = 'application/json'
 
         # common
         self._api_branch = None
         self._api_branch_base = None
         self._api_entity = None
         self._api_uri = None
-        self._authorization_method = self._tcex.authorization
         self._case_preference = 'sensitive'
         self._custom = False
         self._http_method = 'GET'
@@ -45,63 +48,28 @@ class Resource(object):
         self._result_start = 0
         self._stream = False
         self._status_codes = {}
-        self._url = self._tcex.default_args.tc_api_path
         self._value_fields = []
 
     def _apply_filters(self):
-        """
+        """Apply any filters added to the resource.
         """
         # apply filters
         filters = []
         for f in self._filters:
             filters.append('{}{}{}'.format(f['name'], f['operator'], f['value']))
-        self._tcex.log.debug(u'filters: {}'.format(filters))
+        self.tcex.log.debug(u'filters: {}'.format(filters))
 
-        if len(filters) > 0:
-            self._r.add_payload('filters', ','.join(filters))
-
-    def copy(self):
-        """Return a "clean" copy of this instance.
-
-        Return:
-            (instance): A clean copy of this instance.
-        """
-        resource = copy.copy(self)
-
-        # workaround for bytes/str issue in Py3 with copy of instance
-        # TypeError: a bytes-like object is required, not 'str' (ssl.py)
-        resource._r = self._tcex.request
-        if self._tcex.default_args.tc_proxy_tc:
-            resource._r.proxies = self._tcex.proxies
-
-        # Reset settings
-        resource._filters = []
-        resource._filter_or = False
-        resource._paginate = True
-        resource._paginate_count = 0
-        resource._result_count = None
-        resource._result_limit = 500
-        resource._result_start = 0
-
-        # Preserve settings
-        resource.http_method = self.http_method
-        if self._r.payload.get('owner') is not None:
-            resource.owner = self._r.payload.get('owner')
-
-        # future bcs - these should not need to be reset. correct?
-        # resource._request_entity = self._api_entity
-        # resource._request_uri = self._api_uri
-
-        return resource
+        if filters:
+            self._request.add_payload('filters', ','.join(filters))
 
     def _request_bulk(self, response):
         """
         """
         try:
             # write bulk download to disk with unique ID
-            temp_file = os.path.join(self._tcex.default_args.tc_temp_path, '{}.json'.format(
+            temp_file = os.path.join(self.tcex.default_args.tc_temp_path, '{}.json'.format(
                 uuid.uuid4()))
-            self._tcex.log.debug(u'temp json file: {}'.format(temp_file))
+            self.tcex.log.debug(u'temp json file: {}'.format(temp_file))
             with open(temp_file, 'wb') as fh:
                 for block in response.iter_content(1024):
                     fh.write(block)
@@ -109,18 +77,17 @@ class Resource(object):
                 data = json.load(fh)
 
             # remove temporary json file
-            if self._tcex.default_args.logging == 'debug':
+            if self.tcex.default_args.logging == 'debug':
                 try:
-                    with open(temp_file, 'rb') as f_in, gzip.open('{}.gz'.format(temp_file), 'wb') as f_out:
+                    with open(temp_file, 'rb') as f_in, gzip.open(
+                        '{}.gz'.format(temp_file), 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
-                except:
-                    self._tcex.log.warning(u'Could not compress temporary bulk JSON file.')
+                except Exception:
+                    self.tcex.log.warning(u'Could not compress temporary bulk JSON file.')
             os.remove(temp_file)
 
         except IOError as e:
-            err = u'Failed retrieving Bulk JSON ({}).'.format(e)
-            self._tcex.log.error(err)
-            raise RuntimeError(err)
+            self.tcex.handle_error(300, [e])
 
         return data
 
@@ -144,13 +111,13 @@ class Resource(object):
                 data, status = self._request_process_text(response)
             else:
                 err = u'Failed Request: {}'.format(response.text)
-                self._tcex.log.error(err)
-                self._tcex.message_tc(err)
+                self.tcex.log.error(err)
         else:
             status = 'Failure'
-            err = u'Failed Request {}: Status Code ({}) not in {}'.format(
-                self._name, response.status_code, self._status_codes[self._http_method])
-            self._tcex.log.error(err)
+            err = u'Failed Request {}: Status Code ({}) not in {}. API Response: "{}".'.format(
+                self._name, response.status_code, self._status_codes[self._http_method],
+                response.text)
+            self.tcex.log.error(err)
 
         return data, status
 
@@ -183,25 +150,22 @@ class Resource(object):
             elif response_data.get('status') == 'Success':
                 data, status = self._request_process_json_standard(response_data)
 
-                """ setup pagination """
+                # setup pagination
                 if self._result_count is None:
                     self._result_count = response_data.get('data', {}).get('resultCount')
             else:
-                self._tcex.message_tc('Failed Request: {}'.format(response.text))
+                self.tcex.log.error('Failed Request: {}'.format(response.text))
                 status = 'Failure'
         except KeyError as e:
             # TODO: Remove try/except block
             status = 'Failure'
             msg = u'Error: Invalid key {}. [{}] '.format(e, self.request_entity)
-            self._tcex.message_tc(msg)
-            self._tcex.log.error(msg)
+            self.tcex.log.error(msg)
         except ValueError as e:
             # TODO: Remove try/except block
             status = 'Failure'
             msg = u'Error: ({})'.format(e)
-            self._tcex.message_tc(msg)
-            self._tcex.log.error(msg)
-            # bcs = raise error
+            self.tcex.log.error(msg)
 
         return data, status
 
@@ -214,7 +178,7 @@ class Resource(object):
         """
         status = 'Failure'
         data = response_data.get(self.request_entity, [])
-        if len(data) != 0:
+        if data:
             status = 'Success'
         return data, status
 
@@ -254,7 +218,7 @@ class Resource(object):
         status = 'Failure'
         # Handle document download
         data = response.content
-        if len(data) != 0:
+        if data:
             status = 'Success'
 
         return data, status
@@ -269,7 +233,7 @@ class Resource(object):
         status = 'Failure'
         # Handle document download
         data = response.content
-        if len(data) != 0:
+        if data:
             status = 'Success'
 
         return data, status
@@ -301,7 +265,7 @@ class Resource(object):
             val (string): The payload value
             append (bool): Indicate whether the value should be appended
         """
-        self._r.add_payload(key, val, append)
+        self._request.add_payload(key, val, append)
 
     @property
     def api_branch(self):
@@ -345,33 +309,33 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-------------------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                          |
-        +==============+=============================================================================================================+
-        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators                         |
-        +--------------+-------------------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}         |
-        +--------------+-------------------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |
-        +--------------+-------------------------------------------------------------------------------------------------------------+
-        | POST         | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName}/indicators/{indicatorType}/{value} |
-        +--------------+-------------------------------------------------------------------------------------------------------------+
+        +--------+--------------------------------------------------------------------------+
+        | HTTP   | API Endpoint URI's                                                       |
+        +========+==========================================================================+
+        | {base} | /v2/indicators/{indicatorType}/{uniqueId}/associations/{associationName} |
+        +--------+--------------------------------------------------------------------------+
+        | GET    | {base}/indicators                                                        |
+        +--------+--------------------------------------------------------------------------+
+        | GET    | {base}/indicators/{indicatorType}                                        |
+        +--------+--------------------------------------------------------------------------+
+        | DELETE | {base}/indicators/{indicatorType}/{value}                                |
+        +--------+--------------------------------------------------------------------------+
+        | POST   | {base}/indicators/{indicatorType}/{value}                                |
+        +--------+--------------------------------------------------------------------------+
 
         Args:
             association_name (string): The name of the custom association as defined in the UI.
             association_resource (object): An instance of Resource for an Indicator or sub type.
         """
         resource = self.copy()
-        association_api_branch = self._tcex.indicator_associations_types_data.get(
+        association_api_branch = self.tcex.indicator_associations_types_data.get(
             association_name, {}).get('apiBranch')
         if association_api_branch is None:
-            err = u'An invalid action/association name ({}) was provided.'.format(association_name)
-            self._tcex.log.error(err)
-            raise RuntimeError(err)
+            self.tcex.handle_error(305, [association_name])
 
         # handle URL difference between Custom Associations and File Actions
         custom_type = 'associations'
-        file_action = self._tcex.utils.to_bool(self._tcex.indicator_associations_types_data.get(
+        file_action = self.tcex.utils.to_bool(self.tcex.indicator_associations_types_data.get(
             association_name, {}).get('fileAction'))
         if file_action:
             custom_type = 'actions'
@@ -394,21 +358,21 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                     |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}                                 |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                      |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +---------+--------------------------------------------------------------------------------+
+        | METHOD  | API Endpoint URI's                                                             |
+        +=========+================================================================================+
+        | GET     | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}                |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}     |
+        +---------+--------------------------------------------------------------------------------+
+        | POST    | /v2/groups/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}     |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}            |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/indicators/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId} |
+        +---------+--------------------------------------------------------------------------------+
+        | POST    | /v2/indicator/{pivot resourceType}/{pivot uniqueId}/{resourceType}/{uniqueId}  |
+        +---------+--------------------------------------------------------------------------------+
 
         Args:
             resource_api_branch (string): The resource pivot api branch including resource id.
@@ -426,15 +390,17 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+---------------------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                            |
-        +==============+===============================================================================================================+
-        | GET          | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}                    |
-        +--------------+---------------------------------------------------------------------------------------------------------------+
-        | POST         | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
-        +--------------+---------------------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/{resourceClass}/{resourceType}/{resourceId}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
-        +--------------+---------------------------------------------------------------------------------------------------------------+
+        +--------+----------------------------------------------------------------------+
+        | Method | API Endpoint URI's                                                   |
+        +========+======================================================================+
+        | {base} | /v2/{resourceClass}/{resourceType}/{resourceId}                      |
+        +--------+----------------------------------------------------------------------+
+        | GET    | {base}/{assoc resourceClass}/{assoc resourceType}                    |
+        +--------+----------------------------------------------------------------------+
+        | POST   | {base}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
+        +--------+----------------------------------------------------------------------+
+        | DELETE | {base}/{assoc resourceClass}/{assoc resourceType}/{assoc resourceId} |
+        +--------+----------------------------------------------------------------------+
 
         + resourceClass - Groups/Indicators
         + resourceType - Adversary, Incident, etc / Address, EmailAddress, etc
@@ -490,13 +456,13 @@ class Resource(object):
             resource._request_uri = '{}/{}'.format(resource._request_uri, resource_id)
         return resource
 
-    def authorization_method(self, method):
-        """Method to create authorization header for this resource request.
+    # def authorization_method(self, method):
+    #     """Method to create authorization header for this resource request.
 
-        Args:
-            method (method): The method to use to generate the authorization header(s).
-        """
-        self._authorization_method = method
+    #     Args:
+    #         method (method): The method to use to generate the authorization header(s).
+    #     """
+    #     self._authorization_method = method
 
     @property
     def body(self):
@@ -505,22 +471,12 @@ class Resource(object):
         Return:
             (any): The HTTP request body.
         """
-        return self._r.body
+        return self._request.body
 
     @body.setter
     def body(self, data):
         """The POST/PUT body content for this resource request."""
-        self._r.body = data
-
-    @property
-    def content_type(self):
-        """The Content-Type header value for this resource request."""
-        return self._r.content_type
-
-    @content_type.setter
-    def content_type(self, data):
-        """The Content-Type header for this resource request."""
-        self._r.content_type = data
+        self._request.body = data
 
     @property
     def case_preference(self):
@@ -530,6 +486,52 @@ class Resource(object):
             (string): Either lower, upper or case sensitive.
         """
         return self._case_preference
+
+    @property
+    def content_type(self):
+        """The Content-Type header value for this resource request."""
+        return self._request.content_type
+
+    @content_type.setter
+    def content_type(self, data):
+        """The Content-Type header for this resource request."""
+        self._request.content_type = data
+
+    def copy_reset(self):
+        """Reset values after instance has been copied"""
+        # Reset settings
+        self._filters = []
+        self._filter_or = False
+        self._paginate = True
+        self._paginate_count = 0
+        self._result_count = None
+        self._result_limit = 500
+        self._result_start = 0
+
+    def copy(self):
+        """Return a "clean" copy of this instance.
+
+        Return:
+            (instance): A clean copy of this instance.
+        """
+        resource = copy.copy(self)
+
+        # workaround for bytes/str issue in Py3 with copy of instance
+        # TypeError: a bytes-like object is required, not 'str' (ssl.py)
+        resource._request = self.tcex.request(self.tcex.session)
+
+        # reset properties of resource
+        resource.copy_reset()
+
+        # Preserve settings
+        resource.http_method = self.http_method
+        if self._request.payload.get('owner') is not None:
+            resource.owner = self._request.payload.get('owner')
+
+        # future bcs - these should not need to be reset. correct?
+        # resource._request_entity = self._api_entity
+        # resource._request_uri = self._api_uri
+        return resource
 
     @property
     def custom(self):
@@ -548,21 +550,21 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}                                    |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/                                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}                                             |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/                                                     |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}                                           |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------+---------------------------------------------------------------------------------+
+        | Method | API Endpoint URI's                                                              |
+        +========+=================================================================================+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}                |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/indicators/{resourceType}/{uniqueId}     |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/tasks/                                   |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/tasks/{uniqueId}                         |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/victims/                                 |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/groups/{resourceType}/{resourceId}/victims/{uniqueId}                       |
+        +--------+---------------------------------------------------------------------------------+
 
         Args:
             group_resource (Resource Instance): A resource object with optional resource_id.
@@ -581,14 +583,14 @@ class Resource(object):
         Return:
             (string): The HTTP request method (GET, POST, etc.)
         """
-        return self._r.http_method
+        return self._request.http_method
 
     @http_method.setter
     def http_method(self, data):
         """The HTTP Method for this resource request."""
         data = data.upper()
         if data in ['DELETE', 'GET', 'POST', 'PUT']:
-            self._r.http_method = data
+            self._request.http_method = data
             self._http_method = data
 
     def indicator_pivot(self, indicator_resource):
@@ -600,21 +602,21 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}                                    |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/                                                   |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}                                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/                                                 |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +--------+---------------------------------------------------------------------------------+
+        | Method | API Endpoint URI's                                                              |
+        +========+=================================================================================+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}                |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/groups/{resourceType}/{uniqueId}     |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/tasks/                               |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/tasks/{uniqueId}                     |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/victims/                             |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | /v2/indicators/{resourceType}/{resourceId}/victims/{uniqueId}                   |
+        +--------+---------------------------------------------------------------------------------+
 
         Args:
             resource_type (string): The resource pivot resource type (indicator type).
@@ -641,15 +643,15 @@ class Resource(object):
         Return:
             (str): The ThreatConnect owner name set during request.
         """
-        return self._r.payload.get('owner')
+        return self._request.payload.get('owner')
 
     @owner.setter
     def owner(self, data):
         """The Owner payload value for this resource request."""
         if data is not None:
-            self._r.add_payload('owner', data)
+            self._request.add_payload('owner', data)
         else:
-            self._tcex.log.warn(u'Provided owner was invalid. ({})'.format(data))
+            self.tcex.log.warn(u'Provided owner was invalid. ({})'.format(data))
 
     @property
     def parent(self):
@@ -669,10 +671,10 @@ class Resource(object):
         Return:
             (dictionary): Resource Data
         """
-        self._tcex.log.warning(u'Using deprecated method (paginate).')
+        self.tcex.log.warning(u'Using deprecated method (paginate).')
         resources = []
-        self._r.add_payload('resultStart', self._result_start)
-        self._r.add_payload('resultLimit', self._result_limit)
+        self._request.add_payload('resultStart', self._result_start)
+        self._request.add_payload('resultLimit', self._result_limit)
         results = self.request()
         response = results.get('response')
         if results.get('status') == 'Success':
@@ -684,17 +686,17 @@ class Resource(object):
                 self._result_count = data.get('resultCount')
                 # self._result_start = self._result_limit
 
-            self._tcex.log.debug(u'Result Count: {}'.format(self._result_count))
+            self.tcex.log.debug(u'Result Count: {}'.format(self._result_count))
 
             while True:
                 if len(resources) >= self._result_count:
                     break
                 self._result_start += self._result_limit
-                self._r.add_payload('resultStart', self._result_start)
+                self._request.add_payload('resultStart', self._result_start)
                 results = self.request()
                 resources.extend(results['data'])
 
-            self._tcex.log.debug(u'Resource Count: {}'.format(len(resources)))
+            self.tcex.log.debug(u'Resource Count: {}'.format(len(resources)))
 
         return resources
 
@@ -718,24 +720,18 @@ class Resource(object):
         Return:
             (dictionary): Response/Results data.
         """
-        if self._url is None:
-            err = u'URL must not be None Type.'
-            self._tcex.log.error(err)
-            raise AttributeError(err)
-
-        """ configure request """
-        self._r.authorization_method(self._authorization_method)
-        self._r.url = '{}/v2/{}'.format(self._url, self._request_uri)
+        # self._request.authorization_method(self._authorization_method)
+        self._request.url = '{}/v2/{}'.format(self.tcex.default_args.tc_api_path, self._request_uri)
         self._apply_filters()
-        self._tcex.log.debug(u'Resource URL: ({})'.format(self._r.url))
+        self.tcex.log.debug(u'Resource URL: ({})'.format(self._request.url))
 
-        response = self._r.send(stream=self._stream)
+        response = self._request.send(stream=self._stream)
         data, status = self._request_process(response)
 
         # # bcs - to reset or not to reset?
-        # self._r.body = None
-        # # self._r.reset_headers()
-        # # self._r.reset_payload()
+        # self._request.body = None
+        # # self._request.reset_headers()
+        # # self._request.reset_payload()
         # self._request_uri = self._api_uri
         # self._request_entity = self._api_entity
 
@@ -891,8 +887,7 @@ class Resource(object):
             resource_id (string): The resource pivot id (tag name).
         """
         resource = self.copy()
-        resource._request_uri = '{}/{}'.format(
-            tag_resource.request_uri, resource._request_uri)
+        resource._request_uri = '{}/{}'.format(tag_resource.request_uri, resource._request_uri)
         return resource
 
     def tags(self, resource_id=None):
@@ -936,7 +931,7 @@ class Resource(object):
         resource._request_uri = '{}/tags'.format(resource._request_uri)
         if resource_id is not None:
             resource._request_uri = '{}/{}'.format(
-                resource._request_uri, self._tcex.safetag(resource_id))
+                resource._request_uri, self.tcex.safetag(resource_id))
         return resource
 
     def task_pivot(self, task_resource):
@@ -1050,29 +1045,29 @@ class Resource(object):
 
         **Example Endpoints URI's**
 
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                                                  |
-        +==============+=====================================================================================================+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets                                                   |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}                                       |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets                                               |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}                                   |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                      |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}                                                      |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | GET          | /v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}                                         |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | DELETE       | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
-        | POST         | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}                          |
-        +--------------+-----------------------------------------------------------------------------------------------------+
+        +---------+--------------------------------------------------------------------------------+
+        | Method  | API Endpoint URI's                                                             |
+        +=========+================================================================================+
+        | GET     | /v2/groups/{resourceType}/{uniqueId}/victimAssets                              |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}                  |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}     |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/indicators/{resourceType}/{uniqueId}/victimAssets                          |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}              |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/indicators/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId} |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/victim/{uniqueId}/victimAssets/{assetType}                                 |
+        +---------+--------------------------------------------------------------------------------+
+        | GET     | /v2/victim/{uniqueId}/victimAssets/{assetType}/{resourceId}                    |
+        +---------+--------------------------------------------------------------------------------+
+        | DELETE  | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}     |
+        +---------+--------------------------------------------------------------------------------+
+        | POST    | /v2/groups/{resourceType}/{uniqueId}/victimAssets/{assetType}/{resourceId}     |
+        +---------+--------------------------------------------------------------------------------+
 
         Args:
             asset_type (Optional [string]): The asset type.
@@ -1097,19 +1092,6 @@ class Resource(object):
                     resource._request_uri, asset_id)
         return resource
 
-    @property
-    def url(self):
-        """The ThreatConnect URL for this resource request.
-
-        Return:
-            (str): The requested URL.
-        """
-        return self._url
-
-    @url.setter
-    def url(self, data):
-        """The ThreatConnect URL for this resource request."""
-        self._url = data
 
     def __iter__(self):
         """Add iterator to Resource Object"""
@@ -1123,10 +1105,10 @@ class Resource(object):
             raise StopIteration
 
         # some endpoints don't require a resultLimit
-        self._r.add_payload('resultLimit', self._result_limit)
+        self._request.add_payload('resultLimit', self._result_limit)
         if self._result_count is not None:
             # on an endpoint that support pagination the default resultStart is 0
-            self._r.add_payload('resultStart', self._result_start)
+            self._request.add_payload('resultStart', self._result_start)
 
         results = self.request()
 
@@ -1156,18 +1138,18 @@ class Resource(object):
 
         # body
         printable_string += '\n{0!s:40}\n'.format('Body')
-        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Body', self._r.body)
+        printable_string += '  {0!s:<29}{1!s:<50}\n'.format('Body', self._request.body)
 
         # headers
-        if len(self._r.headers) > 0:
+        if self._request.headers:
             printable_string += '\n{0!s:40}\n'.format('Headers')
-            for k, v in self._r.headers.items():
+            for k, v in self._request.headers.items():
                 printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
 
         # payload
-        if len(self._r.payload) > 0:
+        if self._request.payload:
             printable_string += '\n{0!s:40}\n'.format('Payload')
-            for k, v in self._r.payload.items():
+            for k, v in self._request.payload.items():
                 printable_string += '  {0!s:<29}{1!s:<50}\n'.format(k, v)
 
         return printable_string
@@ -1251,6 +1233,11 @@ class Indicator(Resource):
         }
         self._value_fields = ['summary']
 
+    def deleted(self):
+        """Update the request URI to include the deleted endpoint.
+        """
+        self._request_uri = '{}/deleted'.format(self._request_uri)
+
     def entity_body(self, data):
         """Alias to :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method.
 
@@ -1273,9 +1260,8 @@ class Indicator(Resource):
             data (string): The indicator value
         """
         if self._name != 'Bulk' or self._name != 'Indicator':
-            # self._request_uri = '{}/{}'.format(self._api_uri, data)
             self._request_uri = '{}/{}'.format(
-                self._api_uri, self._tcex.safe_indicator(data, 'ignore'))
+                self._api_uri, self.tcex.safe_indicator(data, 'ignore'))
 
     def indicator_body(self, indicators):
         """Generate the appropriate dictionary content for POST of a **single** indicator.
@@ -1296,7 +1282,7 @@ class Indicator(Resource):
             if i:
                 body[vf] = i
 
-            if len(indicators) == 0:
+            if not indicators:
                 break
 
         return body
@@ -1340,7 +1326,7 @@ class Indicator(Resource):
         # indicator_list = []
         for indicator_field in self.value_fields:
             if indicator_field == 'summary':
-                indicators = self._tcex.expand_indicators(indicator_data.get('summary'))
+                indicators = self.tcex.expand_indicators(indicator_data.get('summary'))
                 if indicator_data.get('type') == 'File':
                     hash_patterns = {
                         'md5': re.compile(r'^([a-fA-F\d]{32})$'),
@@ -1362,7 +1348,7 @@ class Indicator(Resource):
                         else:
                             msg = u'Cannot determine hash type: "{}"'.format(
                                 indicator_data.get('summary'))
-                            self._tcex.log.warning(msg)
+                            self.tcex.log.warning(msg)
 
                         data = {
                             'type': i_type,
@@ -1371,8 +1357,8 @@ class Indicator(Resource):
                         yield data
                 else:
                     resource = getattr(
-                        self._tcex.resources, self._tcex.safe_rt(indicator_data.get('type')))(
-                            self._tcex)
+                        self.tcex.resources, self.tcex.safe_rt(indicator_data.get('type')))(
+                            self.tcex)
                     values = resource.value_fields
 
                     index = 0
@@ -1411,11 +1397,11 @@ class Indicator(Resource):
     def observed(self, date_observed=None):
         """Retrieve indicator observations count for top 10"""
         if self.name != 'Indicator':
-            self._tcex.log.warning(u'Observed endpoint only available for "indicator" endpoint.')
+            self.tcex.log.warning(u'Observed endpoint only available for "indicator" endpoint.')
         else:
             self._request_uri = '{}/observed'.format(self._request_uri)
             if date_observed is not None:
-                self.r.add_payload('dateObserved', date_observed)
+                self._request.add_payload('dateObserved', date_observed)
 
     def resource_id(self, data):
         """Alias for indicator method.
@@ -1427,6 +1413,13 @@ class Indicator(Resource):
             data (string): The indicator value.
         """
         self.indicator(data)
+
+    def summary(self, indicator_data):
+        """Return a summary value for any given indicator type."""
+        summary = []
+        for v in self._value_fields:
+            summary.append(indicator_data.get(v, ''))
+        return indicator_data.get('summary', ' : '.join(summary))
 
 
 class Address(Indicator):
@@ -1522,7 +1515,7 @@ class Bulk(Indicator):
         self._request_uri = '{}/{}'.format(self._api_uri, 'csv')
         self._stream = True
         if ondemand:
-            self._r.add_payload('runNow', True)
+            self._request.add_payload('runNow', True)
 
     def json(self, ondemand=False):
         """Update request URI to return JSON data.
@@ -1537,7 +1530,7 @@ class Bulk(Indicator):
         self._request_uri = '{}/{}'.format(self._api_uri, 'json')
         self._stream = True
         if ondemand:
-            self._r.add_payload('runNow', True)
+            self._request.add_payload('runNow', True)
 
 
 class EmailAddress(Indicator):
@@ -1584,17 +1577,19 @@ class File(Indicator):
 
         **Example Endpoints URI's**
 
-        +--------------+----------------------------------------------------------------------------------+
-        | HTTP Method  | API Endpoint URI's                                                               |
-        +==============+==================================================================================+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators                  |
-        +--------------+----------------------------------------------------------------------------------+
-        | GET          | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}           |
-        +--------------+----------------------------------------------------------------------------------+
-        | DELETE       | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |
-        +--------------+----------------------------------------------------------------------------------+
-        | POST         | /v2/indicators/files/{uniqueId}/actions/{actionName}/indicators/{type}/indicator |
-        +--------------+----------------------------------------------------------------------------------+
+        +--------+---------------------------------------------------------------------------------+
+        | Method | API Endpoint URI's                                                              |
+        +========+=================================================================================+
+        | {base} | /v2/indicators/files/{uniqueId}/actions/{actionName}                            |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | {base}/indicators                                                               |
+        +--------+---------------------------------------------------------------------------------+
+        | GET    | {base}/indicators/{type}                                                        |
+        +--------+---------------------------------------------------------------------------------+
+        | DELETE | {base}/indicators/{type}/indicator                                              |
+        +--------+---------------------------------------------------------------------------------+
+        | POST   | {base}/indicators/{type}/indicator                                              |
+        +--------+---------------------------------------------------------------------------------+
 
         +-------------------+------------------+-------------------------------------+
         | Name              | API Branch       | Indicator Type Associated with File |
@@ -1633,6 +1628,16 @@ class File(Indicator):
             if hs:
                 return hs
 
+    def indicator(self, data):
+        """Update the request URI to include the Indicator for specific indicator retrieval.
+
+        Args:
+            data (string): The indicator value
+        """
+        # handle hashes in form md5 : sha1 : sha256
+        data = self.get_first_hash(data)
+        super(File, self).indicator(data)
+
     @staticmethod
     def indicator_body(indicators):
         """Generate the appropriate dictionary content for POST of an File indicator
@@ -1670,15 +1675,14 @@ class File(Indicator):
         if indicator is not None:
             self._request_uri = '{}/{}/fileOccurrences'.format(self._api_uri, indicator)
 
-    def indicator(self, data):
-        """Update the request URI to include the Indicator for specific indicator retrieval.
-
-        Args:
-            data (string): The indicator value
-        """
-        # handle hashes in form md5 : sha1 : sha256
-        data = self.get_first_hash(data)
-        super(File, self).indicator(data)
+    def summary(self, indicator_data):
+        """Return a summary value for any given indicator type."""
+        summary = None
+        for v in self._value_fields:
+            if indicator_data.get(v) is not None:
+                summary = indicator_data.get(v)
+                break
+        return indicator_data.get('summary', summary)
 
 
 class Host(Indicator):
@@ -1883,6 +1887,25 @@ class Email(Group):
         self._request_uri = self._api_uri
 
 
+class Event(Group):
+    """Event Resource Class
+
+    This resource class will return groups of type Event. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Event, self).__init__(tcex)
+        self._api_branch = 'events'
+        self._api_entity = 'event'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Event'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+
 class Incident(Group):
     """Incident Resource Class
 
@@ -1910,6 +1933,65 @@ class Incident(Group):
             date: The event date in ISO 8601 format.
         """
         pass
+
+
+class Intrusion_Set(Group):
+    """Intrusion Set Resource Class
+
+    This resource class will return groups of type Intrusion Set. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Intrusion_Set, self).__init__(tcex)
+        self._api_branch = 'intrusionSets'
+        self._api_entity = 'intrusionSet'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Intrusion Set'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+
+class Report(Group):
+    """Report Resource Class
+
+    This resource class will return groups of type Report. To filter on
+    specific groups use the **group_id** or **resource_id** methods provided in
+    the parent class.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Report, self).__init__(tcex)
+        self._api_branch = 'reports'
+        self._api_entity = 'report'
+        self._api_uri = '{}/{}'.format(self._api_branch_base, self._api_branch)
+        self._name = 'Report'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+
+    def download(self, resource_id):
+        """Update the request URI to download the report for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/download'.format(self._request_uri)
+
+    def upload(self, resource_id, data):
+        """Update the request URI to upload the a report to this resource.
+
+        Args:
+            resource_id (integer): The group id.
+            data (any): The raw data to upload.
+        """
+        self.body = data
+        self.content_type = 'application/octet-stream'
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/upload'.format(self._request_uri)
 
 
 class Signature(Group):
@@ -2000,7 +2082,7 @@ class CustomMetric(Resource):
         self._request_uri = self._api_uri
         self._status_codes = {
             'GET': [200],
-            'POST': [200, 204],
+            'POST': [200, 201, 204],
             'PUT': [200]
         }
         self._value_fields = ['customMetricConfig']
@@ -2091,7 +2173,7 @@ class CustomMetric(Resource):
         """
         if return_value:
             self._request_entity = None
-            self._r.add_payload('returnValue', True)
+            self._request.add_payload('returnValue', True)
         self._request_uri = '{}/{}/data'.format(self._request_uri, resource_value)
 
 
@@ -2221,7 +2303,7 @@ class Tag(Resource):
         Args:
             resource_id (string): The tag name.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self._request_uri = '{}/{}'.format(self._request_uri, self.tcex.safetag(resource_id))
 
     def resource_id(self, resource_id):
         """Alias for tag
@@ -2379,24 +2461,10 @@ class DataStore(object):
 
     def __init__(self, tcex):
         """Initialize default class values."""
-        self._tcex = tcex
+        self.tcex = tcex
+        self._params = {}
 
-        # request
-        self._r = tcex.request
-        if tcex.default_args.tc_proxy_tc:
-            self._r.proxies = tcex.proxies
-
-        self._authorization_method = self._tcex.authorization
-        self._request_uri = 'exchange/db'
-        self._url = self._tcex.default_args.tc_api_path
-        self._status_codes = {
-            'DELETE': [200],
-            'GET': [200],
-            'POST': [200, 201],
-            'PUT': [200]
-        }
-
-    def _request(self, domain, type_name, search_command, db_method, body=None, owner=None):
+    def _request(self, domain, type_name, search_command, db_method, body=None):
         """Make the API request for a Data Store CRUD operation
 
         Args:
@@ -2406,41 +2474,28 @@ class DataStore(object):
             search_command (string): Search command to pass to ES.
             db_method (string): The DB method 'DELETE', 'GET', 'POST', or 'PUT'
             body (dict): JSON body
-            owner (string): The ThreatConnect owner.
         """
-        self._r.add_header('DB-Method', db_method)
-        self._r.authorization_method(self._authorization_method)
-        if body is not None:
-            self._r.body = json.dumps(body)
-            self._r.content_type = 'application/json'
-        self._r.http_method = 'POST'
-        self._r.url = '{}/v2/{}/{}/{}/{}'.format(
-            self._url, self._request_uri, domain, type_name, search_command)
-        self._tcex.log.debug(u'Resource URL: ({})'.format(self._r.url))
-
-        if owner is not None:
-            self._r.add_payload('owner', owner)
-
-        response = self._r.send()
+        headers = {
+            'Content-Type': 'application/json',
+            'DB-Method': db_method
+        }
+        url = '/v2/exchange/db/{}/{}/{}'.format(domain, type_name, search_command)
+        r = self.tcex.session.post(url, data=body, headers=headers, params=self._params)
 
         data = []
         status = 'Failed'
-        if response.status_code in self._status_codes[db_method]:
-            status = 'Success'
-        if 'application/json' in response.headers['content-type'].split(';'):
-            # handle API issue where content type does not match response data type
-            try:
-                data = response.json()
-            except ValueError as e:
-                status = 'Failed'
+        if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+            self.tcex.handle_error(350, [r.status_code, r.text])
+        data = r.json()
+        status = 'Success'
 
         return {
             'data': data,
-            'response': response,
+            'response': r,
             'status': status
         }
 
-    def add_payload(self, key, val):
+    def add_payload(self, key, val, append=True):
         """Add a key value pair to payload for this request.
 
         .. Note:: For ``_search`` you can pass a search argument. (e.g. _search?summary=1.1.1.1).
@@ -2448,66 +2503,102 @@ class DataStore(object):
         Args:
             key (string): The payload key
             val (string): The payload value
+            append (bool): Indicates whether the value should be appended or overwritten.
         """
-        self._r.add_payload(key, val)
+        if append:
+            self._params.setdefault(key, []).append(val)
+        else:
+            self._params[key] = val
 
-    def create(self, domain, type_name, search_command, body, owner=None):
+    def create(self, domain, type_name, search_command, body):
         """Create entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
-
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
             type_name (string): This is a free form index type name. The ThreatConnect API will use
-                                this resource verbatim.
+                this resource verbatim.
             search_command (string): Search command to pass to ES.
-            body (dict): JSON body
-            owner (string): The ThreatConnect owner.
+            body (str): JSON serialized data.
         """
-        return self._request(domain, type_name, search_command, 'POST', body, owner)
+        return self._request(domain, type_name, search_command, 'POST', body)
 
-    def delete(self, domain, type_name, search_command, owner=None):
+    def delete(self, domain, type_name, search_command):
         """Delete entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
-
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
             type_name (string): This is a free form index type name. The ThreatConnect API will use
-                                this resource verbatim.
+                this resource verbatim.
             search_command (string): Search command to pass to ES.
-            owner (string): The ThreatConnect owner.
         """
-        return self._request(domain, type_name, search_command, 'DELETE', None, owner)
+        return self._request(domain, type_name, search_command, 'DELETE', None)
 
-    def read(self, domain, type_name, search_command, owner=None):
+    def read(self, domain, type_name, search_command, body=None):
         """Read entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
-
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
             type_name (string): This is a free form index type name. The ThreatConnect API will use
-                                this resource verbatim.
+                this resource verbatim.
             search_command (string): Search command to pass to ES.
-            owner (string): The ThreatConnect owner.
+            body (str): JSON body
         """
-        return self._request(domain, type_name, search_command, 'GET', None, owner)
+        return self._request(domain, type_name, search_command, 'GET', body)
 
-    def update(self, domain, type_name, search_command, body, owner=None):
+    def update(self, domain, type_name, search_command, body):
         """Update entry in ThreatConnect Data Store
 
-        .. Note:: An owner is only required with the domain is **organization**.
-
         Args:
             domain (string): One of 'local', 'organization', or 'system'.
             type_name (string): This is a free form index type name. The ThreatConnect API will use
-                                this resource verbatim.
+                this resource verbatim.
             search_command (string): Search command to pass to ES.
-            body (dict): JSON body
-            owner (string): The ThreatConnect owner.
+            body (str): JSON body
         """
-        return self._request(domain, type_name, search_command, 'PUT', body, owner)
+        return self._request(domain, type_name, search_command, 'PUT', body)
+
+
+#
+# Notification
+#
+
+
+class Notification(Resource):
+    """Custom Notification Class
+
+    +--------------+----------------------------------+
+    | HTTP Method  | API Endpoint URI's               |
+    +==============+==================================+
+    | POST         | /v2/notifications                |
+    +--------------+----------------------------------+
+
+    .. code-block:: javascript
+
+        {
+            "notificationType": "App Success",
+            "priority": "High",
+            "message": "App worked just fine.",
+            "isOrganization": false,
+            "recipients": "opsTeam@threatconnect.com"
+        }
+
+    This resource class will create notifications.
+    """
+
+    def __init__(self, tcex):
+        """Initialize default class values."""
+        super(Notification, self).__init__(tcex)
+        self._api_branch = 'notifications'
+        self._api_entity = 'notificationsConfig'
+        self._api_uri = self._api_branch
+        self._name = 'Notification'
+        self._parent = 'Notification'
+        self._request_entity = self._api_entity
+        self._request_uri = self._api_uri
+        self._status_codes = {
+            'POST': [200]
+        }
+        self._value_fields = ['notificationsConfig']
 
 
 #

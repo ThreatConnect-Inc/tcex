@@ -1,0 +1,4 @@
+# Don't exclude
+!__main__.py
+!requirements.txt
+!tcex.json

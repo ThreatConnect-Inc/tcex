@@ -4,7 +4,9 @@
 ====
 Exit
 ====
-All ThreatConnect |trade| Exchange Apps should deliberately exit with the appropriate exit code on completion or failure of execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` and :py:meth:`~tcex.tcex.TcEx.exit_code` methods to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
+All ThreatConnect |trade| Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` and :py:mod:`~tcex.tcex.TcEx.exit_code` property to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
+
+The :py:meth:`~tcex.tcex.TcEx.exit` method supports and optional ``msg`` parameter.  If provided the ``msg`` value will be logged and written to the ``message_tc`` file as the App exit message.
 
 .. Important:: Providing a proper exit code for Playbook Apps is important for execution of downstream Apps.
 
@@ -12,7 +14,7 @@ All ThreatConnect |trade| Exchange Apps should deliberately exit with the approp
 
 Setting Exit Code
 -----------------
-Some failures do not warrant an immediate exit.  In such case the :py:meth:`~tcex.tcex.TcEx.exit_code` method allows an exit code to be set for when the :py:meth:`~tcex.tcex.TcEx.exit` method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.
+Some failures do not warrant an immediate exit.  In such case the :py:mod:`~tcex.tcex.TcEx.exit_code` property allows an exit code to be set for when the :py:meth:`~tcex.tcex.TcEx.exit` method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.
 
 **Example**
 
@@ -28,11 +30,11 @@ Some failures do not warrant an immediate exit.  In such case the :py:meth:`~tce
         with open(datafile, 'r') as fh:
             data = fh.read()
     except:
-        tcex.exit_code(3)
+        tcex.exit_code = 3
 
     <snipped...>
 
-    tcex.exit()
+    tcex.exit(msg='My App message')
 
 Immediate Exit on Failure
 -------------------------
@@ -50,7 +52,7 @@ Certain failures require that the App exit immediately.  In these cases calling 
         with open(datafile, 'r') as fh:
             data = fh.read()
     except:
-        tcex.exit(1)
+        tcex.exit(1, 'App failed')
 
     <snipped...>
 

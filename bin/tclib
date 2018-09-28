@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 """ TcEx Library Builder """
 import argparse
-import colorama as c
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import traceback
+
+import colorama as c
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
@@ -24,6 +26,8 @@ parser.add_argument(
     '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json')
 parser.add_argument(
     '--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
+parser.add_argument(
+    '--branch', help='Build tcex from specified branch instead of downloading from PyPi.')
 args, extra_args = parser.parse_known_args()
 
 
@@ -31,11 +35,13 @@ args, extra_args = parser.parse_known_args()
 class TcLib(object):
     """Install Required Modules for App"""
 
-    def __init__(self, arg_data):
+    def __init__(self, _arg):
         """Init TcLib Module"""
-        self._args = arg_data
+        self.args = _arg
         self.app_path = os.getcwd()
         self.exit_code = 0
+        self.requirements_file = 'requirements.txt'
+        self.requirements_temp = False
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
@@ -52,17 +58,36 @@ class TcLib(object):
         }]
 
         # check for requirements.txt
-        if not os.path.isfile('requirements.txt'):
+        if not os.path.isfile(self.requirements_file):
             print('{}{}A requirements.txt file is required to install modules.'.format(
                 c.Style.BRIGHT, c.Fore.RED))
             sys.exit(1)
 
+        if args.branch is not None:
+            self.requirements_temp = True
+            # Replace tcex version with develop branch of tcex
+            with open(self.requirements_file, 'r') as fh:
+                current_requirements = fh.read().strip().split('\n')
+
+            self.requirements_file = 'temp-{}'.format(self.requirements_file)
+            with open(self.requirements_file, 'w') as fh:
+                new_requirements = ''
+                for line in current_requirements:
+                    if not line:
+                        continue
+                    if line.startswith('tcex'):
+                        line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@{}#egg=tcex'
+                        line = line.format(args.branch)
+                    # print('line', line)
+                    new_requirements += '{}\n'.format(line)
+                fh.write(new_requirements)
+
         # load configuration
         config_data = {}
-        file_path = os.path.join(self.app_path, self._args.config)
+        file_path = os.path.join(self.app_path, self.args.config)
         if os.path.isfile(file_path):
             print('Loading Config File: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
+                c.Style.BRIGHT, c.Fore.CYAN, self.args.config))
             with open(file_path, 'r') as fh:
                 config_data = json.load(fh)
 
@@ -73,20 +98,35 @@ class TcLib(object):
 
         # install all requested lib directories
         for data in lib_data:
+            # pattern to match env vars in data
+            env_var = re.compile(r'\$env\.([a-zA-Z0-9]+)')
+
             lib_dir = os.path.join(self.app_path, data.get('lib_dir'))
+            # replace env vars with env val in the lib dir
+            matches = re.findall(env_var, lib_dir)
+            if matches:
+                env_val = os.environ.get(matches[0])
+                lib_dir = re.sub(env_var, env_val, lib_dir)
             if os.access(lib_dir, os.W_OK):
                 # remove lib directory from previous runs
                 shutil.rmtree(lib_dir)
 
+            # replace env vars with env val in the python executable
+            python_executable = data.get('python_executable')
+            matches = re.findall(env_var, python_executable)
+            if matches:
+                env_val = os.environ.get(matches[0])
+                python_executable = re.sub(env_var, env_val, python_executable)
+
             print('Building Lib Dir: {}{}{} ({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, data.get('lib_dir'), using))
+                c.Style.BRIGHT, c.Fore.CYAN, lib_dir, using))
             exe_command = [
-                os.path.expanduser(data.get('python_executable')),
+                os.path.expanduser(python_executable),
                 '-m',
                 'pip',
                 'install',
                 '-r',
-                'requirements.txt',
+                self.requirements_file,
                 '--ignore-installed',
                 '--quiet',
                 '--target',
@@ -103,26 +143,11 @@ class TcLib(object):
             if p.returncode != 0:
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err.decode('utf-8')))
+                sys.exit('ERROR: {}'.format(err.decode('utf-8')))
 
-    # def _pip_install(self, app_path, app_name, lib_path):
-    #     """ """
-    #     args = [
-    #         'install',
-    #         '-r',
-    #         'requirements.txt',
-    #         '--ignore-installed',
-    #         '--quiet',
-    #         '--target',
-    #         lib_path
-    #     ]
-    #     command = '{} {}'.format('pip', ' '.join(args))
-    #     print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, command))
-    #     pip.main(args)
-
-    # def _make_lib_dir(self, directory):
-    #     """ """
-    #     if not os.path.isdir(directory):
-    #         os.mkdir(directory)
+        # cleanup temp file if required
+        if self.requirements_temp:
+            os.remove(self.requirements_file)
 
 
 if __name__ == '__main__':

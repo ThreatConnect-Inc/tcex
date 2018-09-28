@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Batch &mdash; TcEx 0.8.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/>
+        <link rel="next" title="Building Apps" href="building_apps.html"/>
+        <link rel="prev" title="Authorization (Token / HMAC)" href="authorization.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TcEx
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.19
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Batch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#external-id-xid">External ID (xid)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#group-interface-1">Group Interface 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#group-interface-2">Group Interface 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#group-interface-3">Group Interface 3</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#indicators">Indicators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#indicator-interface-1">Indicator Interface 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indicator-interface-2">Indicator Interface 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indicator-interface-3">Indicator Interface 3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-occurrence">File Occurrence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#associations">Associations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#group">Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indicator">Indicator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submit">Submit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#option-1">Option 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#option-2">Option 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Batch</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="batch">
+<span id="id1"></span><h1>Batch<a class="headerlink" href="#batch" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">The Batch module requires ThreatConnect version 5.6 or higher.</p>
+</div>
+<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch" title="tcex.tcex_batch_v2.TcExBatch"><code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code></a> module to create, delete, and update both Groups and Indicators in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.</p>
+<div class="section" id="external-id-xid">
+<h2>External ID (xid)<a class="headerlink" href="#external-id-xid" title="Permalink to this headline">¶</a></h2>
+<p>The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups and <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch" title="tcex.tcex_batch_v2.TcExBatch"><code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.generate_xid" title="tcex.tcex_batch_v2.TcExBatch.generate_xid"><code class="xref py py-meth docutils literal"><span class="pre">generate_xid()</span></code></a> method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the preferred xid type as it allows for the same unique xid to be generated on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or [‘myapp’, ‘adversary’, ‘222’]).</p>
+<p>For Interface 1 and 2 the xid is optional, if not provided or set to True a unique xid based off the group “type-name” or indicator “type-value” will be auto-generated.  If xid is set to False a random xid will be generated. A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is best practice and allows Groups and Indicators to be easily updated.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">For Groups when using a unique xid value generated using “type-name” support of duplicate group name is not possible.  If having duplicate group names is a requirement then a xid should be provided for each group.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the [submit section](<a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">https://docs.threatconnect.com/en/latest/tcex/batch.html#submit</a>).</p>
+</div>
+</div>
+<div class="section" id="groups">
+<h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<p>There are three interfaces to add Group Threat Intelligence data to the Batch Module.</p>
+<div class="section" id="group-interface-1">
+<h3>Group Interface 1<a class="headerlink" href="#group-interface-1" title="Permalink to this headline">¶</a></h3>
+<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
+<p>The example below passes all supported fields to adversary().</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span> <span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+</span><span class="c1"># optional save method</span>
+<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">adversary</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+<p>The example below passes only the required fields to document().  The optional properties can then be set whenever required. The same interface is used for the attribute.  The required attribute properties are set first and then optional values can be added.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;example.txt&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">malware</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">file_content</span> <span class="o">=</span> <span class="s1">&#39;example file content&#39;</span>
+</span><span class="hll"><span class="c1"># Add Attribute</span>
+</span><span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
+</span><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="hll"><span class="c1"># Add Tag</span>
+</span><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+<span class="hll"><span class="c1"># Add Label</span>
+</span><span class="hll"><span class="n">label</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
+</span><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
+<span class="hll"><span class="c1"># optional save method</span>
+</span><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The optional <code class="docutils literal"><span class="pre">batch.save()</span></code> method will write the group or indicator to disk.  When processing large amounts of data this is the preferred method in order to save on the memory usage of the App.</p>
+</div>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">The <strong>file_content</strong> parameter for documents and reports will accept multiple types of data as well as a callback method.  The callback method will be passed the xid of the documents/report and expects a single response containing the contents of the file.  If loading a large number of documents it is best practice to not load the contents in memory, but instead use the callback method so that the files can be processed one at a time.</p>
+</div>
+</div>
+<div class="section" id="group-interface-2">
+<h3>Group Interface 2<a class="headerlink" href="#group-interface-2" title="Permalink to this headline">¶</a></h3>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.group" title="tcex.tcex_batch_v2.TcExBatch.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_key_value" title="tcex.tcex_batch_v2.Group.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;event-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;New&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="group-interface-3">
+<h3>Group Interface 3<a class="headerlink" href="#group-interface-3" title="Permalink to this headline">¶</a></h3>
+<p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">xid</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">generate_xid</span><span class="p">([</span><span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">]</span>
+</span><span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_group</span><span class="p">({</span>
+</span><span class="hll">    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;document-002&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;test2.txt&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="s1">&#39;example content 2&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s1">&#39;xid&#39;</span><span class="p">:</span> <span class="n">xid</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll">    <span class="p">],</span>
+</span><span class="hll">    <span class="s1">&#39;attribute&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Example Description&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
+</span>    <span class="p">}]</span>
+<span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="indicators">
+<h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
+<p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
+<div class="section" id="indicator-interface-1">
+<h3>Indicator Interface 1<a class="headerlink" href="#indicator-interface-1" title="Permalink to this headline">¶</a></h3>
+<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the indicator instance directly.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">file_hash</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;43c3609411c83f363e051d455ade78a6&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">rating</span> <span class="o">=</span> <span class="mf">5.0</span>
+</span><span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span class="c1"># Add Attribute</span>
+<span class="hll"><span class="n">attr</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">attr</span><span class="o">.</span><span class="n">displayed</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class="c1"># Tag</span>
+<span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="c1"># Add Label</span>
+<span class="hll"><span class="n">label</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;My Label&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;ffffff&#39;</span>
+</span><span class="hll"><span class="n">label</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Security label description.&#39;</span>
+</span><span class="c1"># Add Occurrence</span>
+<span class="hll"><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="indicator-interface-2">
+<h3>Indicator Interface 2<a class="headerlink" href="#indicator-interface-2" title="Permalink to this headline">¶</a></h3>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicator" title="tcex.tcex_batch_v2.TcExBatch.indicator"><code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code></a> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.add_key_value" title="tcex.tcex_batch_v2.Indicator.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="indicator-interface-3">
+<h3>Indicator Interface 3<a class="headerlink" href="#indicator-interface-3" title="Permalink to this headline">¶</a></h3>
+<p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_indicator</span><span class="p">({</span>
+</span><span class="hll">    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="mf">5.00</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7 : 57a49b478310e4313c54c0fee46e4d70a73dd580 : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class="hll">        <span class="p">{</span>
+</span><span class="hll">            <span class="s2">&quot;groupXid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
+</span><span class="hll">        <span class="p">}</span>
+</span><span class="hll">    <span class="p">],</span>
+</span><span class="hll">    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;displayed&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Malware Analysis provided by external AMA.&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s2">&quot;fileOccurrence&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s2">&quot;fileName&quot;</span><span class="p">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
+</span><span class="hll">        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2017-03-03T18:00:00-06:00&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;China&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s2">&quot;xid&quot;</span><span class="p">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904:170139&quot;</span>
+</span><span class="hll"><span class="p">})</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="file-occurrence">
+<h3>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># &lt;... snipped&gt;</span>
+<span class="hll"><span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">(</span><span class="s1">&#39;drop1.exe&#39;</span><span class="p">,</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span><span class="p">)</span>
+</span><span class="c1"># &lt;snipped ...&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># &lt;... snipped&gt;</span>
+<span class="hll"><span class="n">occurrence</span> <span class="o">=</span> <span class="n">file_hash</span><span class="o">.</span><span class="n">occurrence</span><span class="p">()</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;drop1.exe&#39;</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">test</span><span class="se">\\</span><span class="s1">&#39;</span>
+</span><span class="hll"><span class="n">occurrence</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;2017-02-02 01:02:03&#39;</span>
+</span><span class="c1"># &lt;snipped ...&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="associations">
+<h2>Associations<a class="headerlink" href="#associations" title="Permalink to this headline">¶</a></h2>
+<p>Associations are supported as Group -&gt; Group or Indicator -&gt; Group.  Using Interface 1 or 2 the behavior is the same for Group and Indicators.  However, for Interface 3 the structure is slightly different as displayed below.</p>
+<div class="section" id="group">
+<h3>Group<a class="headerlink" href="#group" title="Permalink to this headline">¶</a></h3>
+<p>Example of Group -&gt; Group association.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;document-002&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-002&quot;</span><span class="p">,</span>
+<span class="hll">    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="hll">        <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll">    <span class="p">]</span>
+</span><span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="indicator">
+<h3>Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h3>
+<p>Example of Indicator -&gt; Group association.</p>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
+</span><span class="hll">        <span class="p">{</span>
+</span><span class="hll">            <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll">        <span class="p">}</span>
+</span><span class="hll">    <span class="p">],</span>
+</span>    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;ba60d2d6-8049-4080-9c5c-2b33d8d97767&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="submit">
+<h2>Submit<a class="headerlink" href="#submit" title="Permalink to this headline">¶</a></h2>
+<p>There are few options for submitting the batch job, all with an option to halt_on_error.  The most common option <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_all" title="tcex.tcex_batch_v2.TcExBatch.submit_all"><code class="xref py py-meth docutils literal"><span class="pre">submit_all()</span></code></a> provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method it is possible to control the halt_on_error behavior for each step using global overrides.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+</span><span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="c1"># for errors when creating batch job and submitting the data.</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_batch_error</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="c1"># for errors when submitting files. if set to True a single file upload error would cause the batch module</span>
+<span class="c1"># to raise and exception and potentially cause the job to fail.</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_file_error</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c1"># defaults to true or uses the provided value passed to the submit method. this value controls the behavior</span>
+<span class="c1"># for errors when polling batch status.</span>
+<span class="n">batch</span><span class="o">.</span><span class="n">halt_on_poll_error</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+<p>In some cases handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload" title="tcex.tcex_batch_v2.TcExBatch.submit_create_and_upload"><code class="xref py py-meth docutils literal"><span class="pre">submit_create_and_upload()</span></code></a> and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Next poll using <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.poll" title="tcex.tcex_batch_v2.TcExBatch.poll"><code class="xref py py-meth docutils literal"><span class="pre">poll()</span></code></a> for status and when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.errors" title="tcex.tcex_batch_v2.TcExBatch.errors"><code class="xref py py-meth docutils literal"><span class="pre">errors()</span></code></a> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit_files" title="tcex.tcex_batch_v2.TcExBatch.submit_files"><code class="xref py py-meth docutils literal"><span class="pre">submit_files()</span></code></a> method.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The setting <strong>synchronousBatchSaveLimit</strong> in the ThreatConnect UI -&gt; System Settings controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value the batch data will be processed synchronously and the batch status will be returned on completion without the need to poll. The <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.submit" title="tcex.tcex_batch_v2.TcExBatch.submit"><code class="xref py py-meth docutils literal"><span class="pre">submit()</span></code></a> method provides logic for handling this so the developer is not required to check if the job was queued.</p>
+</div>
+<div class="section" id="option-1">
+<h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
+<p>Submit the job and wait for completion. In the example any error messages are requested to be returned as well.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_all</span><span class="p">()</span>
+</span><span class="n">errors</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="option-2">
+<h3>Option 2<a class="headerlink" href="#option-2" title="Permalink to this headline">¶</a></h3>
+<p>Call each step in submitting the batch job manually. A check for batch_id will indicate whether the job was processed asynchronously.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># submit batch job create and upload request</span>
+<span class="hll"><span class="n">batch_data</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_create_and_upload</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">)</span>
+</span>
+<span class="c1"># check if job requires polling</span>
+<span class="hll"><span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class="hll">    <span class="c1"># poll for batch status</span>
+</span><span class="hll">    <span class="n">batch_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="c1"># check for errors</span>
+</span><span class="hll">    <span class="k">if</span> <span class="n">batch_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errorCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class="hll">        <span class="c1"># retrieve errors</span>
+</span><span class="hll">        <span class="n">errors</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">errors</span><span class="p">(</span><span class="n">batch_id</span><span class="p">)</span>
+</span><span class="hll">        <span class="k">print</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+</span>
+<span class="c1"># submit any documents or reports</span>
+<span class="hll"><span class="n">upload_status</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">submit_files</span><span class="p">()</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="building_apps.html" class="btn btn-neutral float-right" title="Building Apps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="authorization.html" class="btn btn-neutral" title="Authorization (Token / HMAC)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.8.19',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

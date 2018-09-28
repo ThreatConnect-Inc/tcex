@@ -3,19 +3,15 @@
 from argparse import ArgumentParser
 
 
-class ArgParser(ArgumentParser):
+class TcExArgParser(ArgumentParser):
     """Overload of the ArgumentParser class.
 
     Adding common arguments for TcEx apps.
     """
 
     def __init__(self, **kwargs):
-        """Initialize default values for common args.
-        """
-        super(ArgParser, self).__init__(**kwargs)
-
-        # api defaults
-
+        """Initialize the Class properties."""
+        super(TcExArgParser, self).__init__(**kwargs)
         # batch defaults
         self._batch_action = 'Create'
         self._batch_chunk = 25000
@@ -36,6 +32,7 @@ class ArgParser(ArgumentParser):
         self._tc_log_file = 'app.log'
         self._tc_log_path = '/tmp'
         self._tc_out_path = '/tmp'
+        self._tc_secure_params = False
         self._tc_temp_path = '/tmp'
         self._tc_user_id = None
         self._tc_log_to_api = False
@@ -63,18 +60,22 @@ class ArgParser(ArgumentParser):
             '--tc_token_expires', default=None,
             help='ThreatConnect API Token Expiration Time', type=int)
 
-        # TC Integrations Server  or TC main < 4.4
+        # TC Integrations Server or TC main < 4.4
         self.add_argument(
             '--api_access_id', default=None, help='ThreatConnect API Access ID', required=False)
         self.add_argument(
             '--api_secret_key', default=None, help='ThreatConnect API Secret Key', required=False)
+
+        # Validate ThreatConnect SSL certificate
+        self.add_argument(
+            '--tc_verify', action='store_true', help='Validate the ThreatConnect SSL Cert')
 
     def _batch_arguments(self):
         """Arguments specific to Batch API writes.
 
         --batch_action action          Action for the batch job ['Create', 'Delete'].
         --batch_chunk number           The maximum number of indicator per batch job.
-        --batch_halt_on_error          Flag to indicate that batch job should halt on error.
+        --batch_halt_on_error          Flag to indicate that the batch job should halt on error.
         --batch_poll_interval seconds  Seconds between batch status polls.
         --batch_interval_max seconds   Seconds before app should time out waiting on batch job
                                        completion.
@@ -132,11 +133,14 @@ class ArgParser(ArgumentParser):
 
         --api_default_org org        The TC API user default organization.
         --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).
-        --tc_out_path path           The app in path.
+        --tc_in_path path            The app in path.
+        --tc_log_file filename       The app log file name.
         --tc_log_path path           The app log path.
         --tc_out_path path           The app out path.
+        --tc_secure_params bool      Flag to indicator secure params is supported.
         --tc_temp_path path          The app temp path.
         --tc_user_id id              The user id of user running the job.
+
         --tc_proxy_host host         The proxy host.
         --tc_proxy_port port         The proxy port.
         --tc_proxy_username user     The proxy username.
@@ -152,7 +156,13 @@ class ArgParser(ArgumentParser):
         self.add_argument(
             '--api_default_org', default=None, help='ThreatConnect api default Org')
         self.add_argument(
+            '--tc_action_channel', default=None, help='ThreatConnect AOT action channel')
+        self.add_argument(
+            '--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled')
+        self.add_argument(
             '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
+        self.add_argument(
+            '--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
         self.add_argument(
             '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
         self.add_argument(
@@ -162,14 +172,17 @@ class ArgParser(ArgumentParser):
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path')
         self.add_argument(
+            '--tc_secure_params', action='store_true', default=self._tc_secure_params,
+            help='ThreatConnect Secure params enabled')
+        self.add_argument(
+            '--tc_terminate_seconds', default=None, help='ThreatConnect AOT terminate seconds',
+            type=int)
+        self.add_argument(
             '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
         self.add_argument(
             '--tc_user_id', default=self._tc_user_id, help='User ID')
 
-        #
         # Proxy Configuration
-        #
-
         self.add_argument(
             '--tc_proxy_host', default=None, help='Proxy Host')
         self.add_argument(
@@ -178,9 +191,8 @@ class ArgParser(ArgumentParser):
             '--tc_proxy_username', default=None, help='Proxy User')
         self.add_argument(
             '--tc_proxy_password', default=None, help='Proxy Password')
-
         self.add_argument(
-            '--tc_proxy_external', '--apply_proxy_ext', action='store_true', default=False,
+            '--tc_proxy_external', '--apply_proxy_external', action='store_true', default=False,
             help='Proxy External Connections', dest='tc_proxy_external')
         self.add_argument(
             '--tc_proxy_tc', '--apply_proxy_tc', action='store_true', default=False,

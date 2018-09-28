@@ -3,8 +3,196 @@
 Release Notes
 #############
 
+0.8.x
+=====
+
+0.8.19
+------
++ Removed app.lock logic.
++ Updated file_content logic for Documents and Reports.
++ Added ``add_file()`` method for batch Group objects.
++ Added playbook_triggers_enabled parameter to batch module (requires ThreatConnect 5.7).
+
+0.8.18
+------
++ Minor change to batch poll.
++ Update batch module ``close()`` method to check for xids-saved file existence before deletion.
+
+0.8.17
+------
++ Added app.lock file to temp directory to ensure single execution.
+
+0.8.16
+------
++ Removed debugging flag from batch module and replaced with logic to control debug externally.
++ Updated batch poll method logic to poll more frequently.
++ Update resource module to allow the addition of a body when reading from the datastore.
+
+0.8.15
+------
++ Added signal handler to tcex to gracefully handle interrupts.
++ Added new ``tcinit`` command to download files required for a new App or update files in an existing App.
++ Updated batch poll method to automatically calculate poll interval. **REMOVED** interval method parameter.
++ Updated batch module to raise error on batch status poll timeout.
++ Updated __main__.py to version 1.0.2.
++ Moved and added supporting file to app_init directory.
+
+0.8.14
+------
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
++ Added global overrides for halt_on_error in batch module.
++ Fixed issue with token renewal not failing properly on error.
++ Updated logging method to ensure all messages are logged to file.
++ Updated logging method to skip API logging during token renewal.
++ Changed tcrun to not use shell on Windows systems.
+
+0.8.13
+------
++ Updated Batch to use Submit Job/Submit Data for Deletes.
++ Replaced tcex_develop arg with branch arg for tclib command.
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to help generate a unique and/or reproducible xid.
++ Added default value for Email score in batch module.
+
+0.8.12
+------
++ Added active property to Indicator type objects.
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method be best effort.
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned.
++ Updated ``attribute()`` methods to handle unique values when using a formatter.
++ Fixed issue with --unmask arg not working on tcrun command.
+
+0.8.11
+------
++ Merged AOT feature in prep for 5.7.
++ Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load install.json, which is used in injection method to determine the structure on the param values.
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method to save batch data to disk to reduce memory usage of the App.
++ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams, and AOT params depending on selected feature.
++ Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic to allow params to be injected manually.
++ Updated :py:mod:`~tcex.tcex_redis` module to support additional redis methods required for AOT.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` methods to support b64decode and decode params.
++ Updated :py:meth:`~tcex.tcex_batch_v2.Report` module to make the report file name optional for update in 5.7.
++ Updated examples in docs.
++ Fixed validation issues in tcrun.
+
+0.8.10
+------
++ Updated submit_create_and_upload method to clear raw list after submission.
++ Rewrite of results_tc method to handle updates to key/value pairs.
++ Updated tcrun to auto create required directories.
++ Updated tclib to support building tcex develop version with "--tcex_develop" CLI flag.
+
+0.8.9
+------
++ Rewrite of tcrun and tcprofile commands.
++ Removed tcdata commands.
++ Changed logging of unsupported args to only show when App retrieves args.
++ Changed read_binary_array method to decode Redis data automatically.
+
+0.8.8
+------
++ Updated :py:meth:`~tcex.tcex.TcEx.exit` methods to treat exit code of 3 as non-failure.
++ Updates for v2 Batch createAndUpload.
+
+0.8.7
+------
++ Updated secure params injection to handle pipe delimited multiple choice values.
+
+0.8.6
+------
++ Fixed issue with API logging not working when secure params is enabled.
++ Fixed issue with API logging timestamp precision.
+
+0.8.5
+------
++ Updated tcdata for playbook variable creation during staging testing data.
++ Updated tcex logging for level and removal of stream logger once API logger is initialized.
+
+0.8.4
+------
++ Update to handle binary array in tcdata.
++ Update to support environment variables in tcex.json file for tclib command.
++ Added initial functionality for v2 Batch create and upload.
+
+0.8.3
+------
++ Updated regex for playbook variables.
+
+0.8.2
+------
++ Update for tcdata module for local testing.
++ Updates for changes in Batch V2 API.
+
+0.8.1
+------
++ Update for secureParams loading order.
++ Updates to :py:mod:`~tcex.tcex_logger` module.
++ Updates to :py:mod:`~tcex.tcex` module to only import modules when required.
++ Moved :py:meth:`~tcex.tcex_utils.TcExUtils.inflect` to the Utils module.
++ Updated docs for Metrics, Notifications, and Batch.
+
+0.8.0
+------
++ Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
++ Added :py:mod:`~tcex.tcex_batch_v2` module to replace the jobs module starting in ThreatConnect 5.6.
++ Added msg to :py:meth:`~tcex.tcex.TcEx.exit` methods.
++ Changed :py:meth:`~tcex.tcex.TcEx.exit_code` method to a property with a setter.
++ Changed :py:meth:`~tcex.tcex.TcEx.request` property to a method.
++ Updated multiple methods to use :py:mod:`~tcex.tcex_session` instead of :py:mod:`~tcex.tcex_request`.
++ Renamed logger module to be consistent with other modules.
++ Removed second arg from :py:meth:`~tcex.tcex.TcEx.expand_indicators` method.
++ Removed owner parameter from :py:mod:`~tcex.tcex_resources.DataStore` module.
++ Added deprecation warning for the following methods: :py:meth:`~tcex.tcex.TcEx.bulk_enabled`, :py:meth:`~tcex.tcex.TcEx.job`, :py:meth:`~tcex.tcex.TcEx.request_tc`, :py:meth:`~tcex.tcex.TcEx.epoch_seconds`, and :py:meth:`~tcex.tcex.TcEx.to_string`.  These methods will be removed in version 0.9.0.
++ Cleaned up code, comments and documentation.
++ Added error code/message for all RuntimeError exceptions.
+
 0.7.x
 =====
+
+0.7.21
+------
++ Fixed issue with newstr when using quote() method in :py:meth:`~tcex.tcex.TcEx.safe_indicator`.
+
+0.7.20
+------
++ Updated logging to log App name and other data.
++ Added notifications module for ThreatConnect 5.6+.
+
+0.7.19
+------
++ Updated secure params injection to treat string value of "true" as boolean/flag.
++ Updated secure params to handle unicode values in py2.
++ Updated jobs module to use batch settings from args on init and to allow programmatic override of batch settings.
++ Updated token renewal to handle issue with newstr.
+
+0.7.18
+------
++ Updated jobs module to not call safetag method when using resource module.
++ Updated Intrusion Set class in resource module.
++ Updated group list to include new group types.
++ Added ``upload()`` and ``download()`` methods to Report class in resource module.
++ Added Task as a group type.
++ Added new secure params feature.
+
+0.7.17
+------
++ Update utils module for handling naive datetime in Py2.
++ Added to_bool() method back to utils module.
+
+0.7.16
+------
++ Updated utils datetime methods to not require a timezone.
++ Updated Tag class to urlencode tag value so slashes are supported.
++ Updated safetag method to strip **^** from tag values.
++ Changed modules dependency to use latest version instead of restricting to current version.
++ Added Event, Intrusion Set and Report group types in preparation for TC > 5.6.0.
++ Added metrics module to create and add metrics to ThreatConnect.
++ Added **deleted** endpoint for indicators.
+
+0.7.15
+------
++ Updated jobs module to delete by name when using replace for groups.
++ Updated token renewal to log more information on failure.
++ Updated playbooks read binary array to better handle null values.
 
 0.7.14
 ------

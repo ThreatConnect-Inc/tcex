@@ -1,0 +1,33 @@
+{
+  "lib_versions": [
+    {
+      "lib_dir": "lib_$env.PY27",
+      "python_executable": "~/.pyenv/versions/$env.PY27/bin/python"
+    },
+    {
+      "lib_dir": "lib_$env.PY34",
+      "python_executable": "~/.pyenv/versions/$env.PY34/bin/python"
+    },
+    {
+      "lib_dir": "lib_$env.PY35",
+      "python_executable": "~/.pyenv/versions/$env.PY35/bin/python"
+    },
+    {
+      "lib_dir": "lib_$env.PY36",
+      "python_executable": "~/.pyenv/versions/$env.PY36/bin/python"
+    }
+  ],
+  "package": {
+    "app_name": "TCPB_-_My_Playbook_App",
+    "app_version": "v1.0",
+    "excludes": [
+      "bitbucket-pipelines.yml",
+      "requirements.txt",
+      "tcex.d"
+    ],
+    "outdir": "target"
+  },
+  "profile_include_dirs": [
+    "tcex.d/profiles"
+  ]
+}

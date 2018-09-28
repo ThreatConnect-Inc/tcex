@@ -1,82 +1,32 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Playbook module """
-from builtins import str
+# from builtins import int, str
 import base64
-import codecs
 import json
 import re
 
 
 class TcExPlaybook(object):
-    """Playbook methods for accessing Database"""
+    """Playbook methods for accessing key value store."""
 
     def __init__(self, tcex):
-        """Initialize class data
+        """Initialize the Class properties.
 
-        Initialize parent class for default values and logging method.
+        Args:
+            tcex (object): Instance of TcEx.
         """
-        self._tcex = tcex
-        self._create_data_type = {
-            'Binary': self.create_binary,
-            'BinaryArray': self.create_binary_array,
-            'KeyValue': self.create_key_value,
-            'KeyValueArray': self.create_key_value_array,
-            'String': self.create_string,
-            'StringArray': self.create_string_array,
-            'TCEntity': self.create_tc_entity,
-            'TCEntityArray': self.create_tc_entity_array
-        }
-        self._read_data_type = {
-            'Binary': self.read_binary,
-            'BinaryArray': self.read_binary_array,
-            'KeyValue': self.read_key_value,
-            'KeyValueArray': self.read_key_value_array,
-            'String': self.read_string,
-            'StringArray': self.read_string_array,
-            'TCEntity': self.read_tc_entity,
-            'TCEntityArray': self.read_tc_entity_array
-        }
-        self._out_variables = {}  # dict of output variable by name
-        self._out_variables_type = {}  # dict of output variable by name-type
-        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
-        variable_pattern += r':([\d]+)'  # app id (:7979)
-        variable_pattern += r':([A-Za-z0-9_.-]+)'  # variable name (:variable_name)
-        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
-        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
-        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
-        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
-        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
-        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        self.tcex = tcex
+        self._db = None
+        self._out_variables = None
+        self._out_variables_type = None
+
         # match full variable
-        self._variable_match = re.compile(r'^{}$'.format(variable_pattern))
+        self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
         # capture variable parts (exactly a variable)
-        self._variable_parse = re.compile(variable_pattern)
+        self._variable_parse = re.compile(self._variable_pattern)
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
-        self._vars_keyvalue_embedded = re.compile(r'(?:\"\:\s?)[^\"]?{}'.format(variable_pattern))
-
-        # parse out variable
-        self._parse_out_variable()
-
-        if self._tcex.default_args.tc_playbook_db_type == 'Redis':
-            try:
-                from tcex_redis import TcExRedis
-            except ImportError as e:
-                self._tcex.log.error(u'Redis Module is not installed ({}).'.format(e))
-                raise
-
-            self._db = TcExRedis(
-                self._tcex.default_args.tc_playbook_db_path,
-                self._tcex.default_args.tc_playbook_db_port,
-                self._tcex.default_args.tc_playbook_db_context
-            )
-        elif self._tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
-            from .tcex_key_value import TcExKeyValue
-            self._db = TcExKeyValue(self._tcex, self._tcex.default_args.tc_playbook_db_context)
-        else:
-            err = u'Invalid DB Type: ({})'.format(self._tcex.default_args.tc_playbook_db_type)
-            self._tcex.message_tc(err)
-            self._tcex.log.error(err)
-            self._tcex.exit(1)
+        self._vars_keyvalue_embedded = re.compile(
+            r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern))
 
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
@@ -85,8 +35,10 @@ class TcExPlaybook(object):
 
             #App:1234:status!String,#App:1234:status_code!String
         """
-        if self._tcex.default_args.tc_playbook_out_variables is not None:
-            variables = self._tcex.default_args.tc_playbook_out_variables.strip()
+        if self.tcex.default_args.tc_playbook_out_variables is not None:
+            self._out_variables = {}
+            self._out_variables_type = {}
+            variables = self.tcex.default_args.tc_playbook_out_variables.strip()
             for o in variables.split(','):
                 # parse the variable to get individual parts
                 parsed_key = self.parse_variable(o)
@@ -102,6 +54,53 @@ class TcExPlaybook(object):
                     'variable': o
                 }
 
+    @property
+    def _variable_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern += r':([\d]+)'  # app id (:7979)
+        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        return variable_pattern
+
+    def aot_blpop(self):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.tcex.log.info('Blocking for AOT message.')
+                msg_data = self.db.blpop(
+                    self.tcex.default_args.tc_action_channel,
+                    timeout=self.tcex.default_args.tc_terminate_seconds)
+
+                if msg_data is None:
+                    self.tcex.exit(0, 'AOT subscription timeout reached.')
+
+                msg_data = json.loads(msg_data[1])
+                msg_type = msg_data.get('type', 'terminate')
+                if msg_type == 'execute':
+                    return msg_data.get('params', {})
+                elif msg_type == 'terminate':
+                    self.tcex.exit(0, 'Received AOT terminate message.')
+                else:
+                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
+                        msg_type))
+                    return self.aot_blpop()
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
+
+    def aot_rpush(self, exit_code):
+        """Subscribe to AOT action channel."""
+        if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            try:
+                self.db.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
+            except Exception as e:
+                self.tcex.exit(1, 'Exception during AOT exit push ({}).'.format(e))
+
     def check_output_variable(self, variable):
         """Check to see if output variable was requested by downstream app.
 
@@ -115,7 +114,7 @@ class TcExPlaybook(object):
             (boolean): Boolean value indicator whether a match was found.
         """
         match = False
-        if variable in self._out_variables:
+        if variable in self.out_variables:
             match = True
         return match
 
@@ -131,21 +130,35 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result string of DB write
+            (string): Result string of DB write.
         """
         data = None
         if key is not None:
             key = key.strip()
-            self._tcex.log.debug(u'create variable {}'.format(key))
+            self.tcex.log.debug(u'create variable {}'.format(key))
             # bcs - only for debugging or binary might cause issues
-            # self._tcex.log.debug(u'variable value: {}'.format(value))
+            # self.tcex.log.debug(u'variable value: {}'.format(value))
             parsed_key = self.parse_variable(key.strip())
             variable_type = parsed_key['type']
-            if variable_type in self._read_data_type:
-                data = self._create_data_type[variable_type](key, value)
+            if variable_type in self.read_data_types:
+                data = self.create_data_types[variable_type](key, value)
             else:
                 data = self.create_raw(key, value)
         return data
+
+    @property
+    def create_data_types(self):
+        """Map of standard playbook variable types to create method."""
+        return {
+            'Binary': self.create_binary,
+            'BinaryArray': self.create_binary_array,
+            'KeyValue': self.create_key_value,
+            'KeyValueArray': self.create_key_value_array,
+            'String': self.create_string,
+            'StringArray': self.create_string_array,
+            'TCEntity': self.create_tc_entity,
+            'TCEntityArray': self.create_tc_entity_array
+        }
 
     def create_output(self, key, value, variable_type=None):
         """Wrapper for Create method of CRUD operation for working with KeyValue DB.
@@ -156,45 +169,63 @@ class TcExPlaybook(object):
         Args:
             key (string): The variable to write to the DB.
             value (any): The data to write to the DB.
-            variable_type (string): The variable type being written
+            variable_type (string): The variable type being written.
 
         Returns:
-            (string): Result string of DB write
+            (string): Result string of DB write.
         """
         results = None
         if key is not None:
             key = key.strip()
             key_type = '{}-{}'.format(key, variable_type)
-            if self._out_variables_type.get(key_type) is not None:
+            if self.out_variables_type.get(key_type) is not None:
                 # variable key-type has been requested
-                v = self._out_variables_type.get(key_type)
-                self._tcex.log.info(
+                v = self.out_variables_type.get(key_type)
+                self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable')))
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
-                    self._tcex.log.info(
-                        u'Variable {} has a none value an will not be written.'.format(key))
-            elif self._out_variables.get(key) is not None and variable_type is None:
+                    self.tcex.log.info(
+                        u'Variable {} has a none value and will not be written.'.format(key))
+            elif self.out_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
-                v = self._out_variables.get(key)
-                self._tcex.log.info(
+                v = self.out_variables.get(key)
+                self.tcex.log.info(
                     u'Variable {} was requested by downstream app.'.format(v.get('variable')))
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
-                    self._tcex.log.info(
-                        u'Variable {} has a none value an will not be written.'.format(
+                    self.tcex.log.info(
+                        u'Variable {} has a none value and will not be written.'.format(
                             v.get('variable')))
             else:
                 var_value = key
                 if variable_type is not None:
                     var_value = key_type
-                self._tcex.log.info(
+                self.tcex.log.info(
                     u'Variable {} was NOT requested by downstream app.'.format(var_value))
         return results
 
-    # string
+    @property
+    def db(self):
+        """Return the correct KV store for this execution."""
+        if self._db is None:
+            if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+                from .tcex_redis import TcExRedis
+                self._db = TcExRedis(
+                    self.tcex.default_args.tc_playbook_db_path,
+                    self.tcex.default_args.tc_playbook_db_port,
+                    self.tcex.default_args.tc_playbook_db_context
+                )
+            elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
+                from .tcex_key_value import TcExKeyValue
+                self._db = TcExKeyValue(self.tcex)
+            else:
+                err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
+                raise RuntimeError(err)
+        return self._db
+
     def delete(self, key):
         """Delete method of CRUD operation for all data types.
 
@@ -202,16 +233,16 @@ class TcExPlaybook(object):
             key (string): The variable to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None:
-            data = self._db.delete(key.strip())
+            data = self.db.delete(key.strip())
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    def exit(self, code=None):
+    def exit(self, code=None, msg=None):
         """Playbook wrapper on TcEx exit method
 
         Playbooks do not support partial failures so we change the exit method from 3 to 1 and call
@@ -221,14 +252,29 @@ class TcExPlaybook(object):
             code (Optional [integer]): The exit code value for the app.
         """
         if code is None:
-            code = self._tcex._exit_code
+            code = self.tcex.exit_code
             if code == 3:
-                self._tcex.log.info(u'Changing exit code from 3 to 0.')
+                self.tcex.log.info(u'Changing exit code from 3 to 0.')
                 code = 0  # playbooks doesn't support partial failure
         elif code not in [0, 1]:
             code = 1
+        self.tcex.exit(code, msg)
 
-        self._tcex.exit(code)
+    @property
+    def out_variables(self):
+        """Return output variables stored as name dict."""
+        if self._out_variables is None:
+            # parse out variable
+            self._parse_out_variable()
+        return self._out_variables
+
+    @property
+    def out_variables_type(self):
+        """Return output variables store as name-type dict."""
+        if self._out_variables_type is None:
+            # parse out variable
+            self._parse_out_variable()
+        return self._out_variables_type
 
     def parse_variable(self, variable):
         """Method to parse an input or output variable.
@@ -271,18 +317,18 @@ class TcExPlaybook(object):
         Returns:
             (any): Results retrieved from DB
         """
-        self._tcex.log.debug(u'read variable {}'.format(key))
+        self.tcex.log.debug(u'read variable {}'.format(key))
         data = None
         if key is not None:
             key = key.strip()
             key_type = self.variable_type(key)
             if re.match(self._variable_match, key):
-                if key_type in self._read_data_type:
+                if key_type in self.read_data_types:
                     # handle types with embedded variable
                     if key_type in ['Binary', 'BinaryArray']:
-                        data = self._read_data_type[key_type](key)
+                        data = self.read_data_types[key_type](key)
                     else:
-                        data = self._read_data_type[key_type](key, embedded)
+                        data = self.read_data_types[key_type](key, embedded)
                 else:
                     data = self.read_raw(key)
             elif embedded:
@@ -296,8 +342,22 @@ class TcExPlaybook(object):
             else:
                 data = []
 
-        # self._tcex.log.debug(u'read data {}'.format(self._tcex.s(data)))
+        # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
+
+    @property
+    def read_data_types(self):
+        """Map of standard playbook variable types to read method."""
+        return {
+            'Binary': self.read_binary,
+            'BinaryArray': self.read_binary_array,
+            'KeyValue': self.read_key_value,
+            'KeyValueArray': self.read_key_value_array,
+            'String': self.read_string,
+            'StringArray': self.read_string_array,
+            'TCEntity': self.read_tc_entity,
+            'TCEntityArray': self.read_tc_entity_array
+        }
 
     def read_embedded(self, data, parent_var_type):
         """Read method for "mixed" variable type.
@@ -345,7 +405,7 @@ class TcExPlaybook(object):
             (string): Results retrieved from DB
         """
         if data is not None:
-            # self._tcex.log.debug(u'data {}'.format(data))
+            # self.tcex.log.debug(u'data {}'.format(data))
             try:
                 data = u'{}'.format(data.strip())
             except UnicodeEncodeError:
@@ -357,10 +417,10 @@ class TcExPlaybook(object):
                 variables.append(v.group(0))
 
             for var in set(variables):  # recursion over set to handle duplicates
-                self._tcex.log.debug(u'var {}'.format(var))
+                self.tcex.log.debug(u'var {}'.format(var))
                 # get the embedded variable type.
                 key_type = self.variable_type(var)
-                # self._tcex.log.debug(u'key_type {}'.format(key_type))
+                # self.tcex.log.debug(u'key_type {}'.format(key_type))
 
                 # val - read raw value from DB leaving escaped characters intact
                 val = self.read_raw(var)
@@ -371,7 +431,7 @@ class TcExPlaybook(object):
                     # per slack conversation with danny on 3/22/17 all string data should already
                     # have quotes since they are JSON values
                     val = val[1:-1]  # ensure only first and last quote are removed
-                # self._tcex.log.debug(u'var {}: val: {}'.format(var, val))
+                # self.tcex.log.debug(u'var {}: val: {}'.format(var, val))
 
                 if val is None:
                     # replace variable reference with nothing
@@ -380,7 +440,7 @@ class TcExPlaybook(object):
                 #     # a parent type of String should have escaped characters removed
                 #     # convert "embedded \\\\\\"variable\\\\" TO "embedded \\"variable"
                 #     val = codecs.getdecoder('unicode_escape')(val)[0]
-                #     # self._tcex.log.debug(u'val (codec.getdecoder): {}'.format(val))
+                #     # self.tcex.log.debug(u'val (codec.getdecoder): {}'.format(val))
                 elif parent_var_type in ['StringArray']:
                     if key_type in ['String']:
                         # handle case where String may or may not be wrapped in double quotes.
@@ -423,10 +483,9 @@ class TcExPlaybook(object):
         var_type = 'String'
         if variable is not None:
             variable = variable.strip()
-            # self._tcex.log.info(u'Variable {}'.format(variable))
+            # self.tcex.log.info(u'Variable {}'.format(variable))
             if re.match(self._variable_match, variable):
                 var_type = re.search(self._variable_parse, variable).group(4)
-
         return var_type
 
     def wrap_embedded_keyvalue(self, data):
@@ -462,7 +521,10 @@ class TcExPlaybook(object):
     # db methods
     #
 
-    # binary
+    def hgetall(self):
+        """Return all values for a context."""
+        return self.db.hgetall
+
     def create_binary(self, key, value):
         """Create method of CRUD operation for binary data.
 
@@ -471,7 +533,7 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
@@ -479,38 +541,49 @@ class TcExPlaybook(object):
                 # py2
                 # convert to bytes as required for b64encode
                 # decode bytes for json serialization as required for json dumps
-                data = self._db.create(
+                data = self.db.create(
                     key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
             except TypeError:
                 # py3
                 # set encoding on string and convert to bytes as required for b64encode
                 # decode bytes for json serialization as required for json dumps
-                data = self._db.create(
+                data = self.db.create(
                     key.strip(), json.dumps(
                         base64.b64encode(bytes(value, 'utf-8')).decode('utf-8')))
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary(self, key):
+    def read_binary(self, key, b64decode=True, decode=True):
         """Read method of CRUD operation for binary data.
 
         Args:
             key (string): The variable to read from the DB.
+            b64decode (bool): If true the data will be base64 decoded.
+            decode (bool): If true the data will be decoded to a String.
 
         Returns:
-            (): Results retrieved from DB
+            (bytes|string): Results retrieved from DB.
         """
         data = None
         if key is not None:
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if data is not None:
-                data = base64.b64decode(json.loads(data))
+                data = json.loads(data)
+                if b64decode:
+                    # if requested decode the base64 string
+                    data = base64.b64decode(data)
+                    if decode:
+                        try:
+                            # if requested decode bytes to a string
+                            data = data.decode('utf-8')
+                        except UnicodeDecodeError:
+                            # for data written an upstream java App
+                            data = data.decode('latin-1')
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    # binary array
     def create_binary_array(self, key, value):
         """Create method of CRUD operation for binary array data.
 
@@ -519,7 +592,7 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
@@ -535,32 +608,47 @@ class TcExPlaybook(object):
                     # set encoding on string and convert to bytes as required for b64encode
                     # decode bytes for json serialization as required for json dumps
                     value_encoded.append(base64.b64encode(bytes(v, 'utf-8')).decode('utf-8'))
-            data = self._db.create(key.strip(), json.dumps(value_encoded))
+            data = self.db.create(key.strip(), json.dumps(value_encoded))
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary_array(self, key):
+    def read_binary_array(self, key, b64decode=True, decode=True):
         """Read method of CRUD operation for binary array data.
 
         Args:
             key (string): The variable to read from the DB.
+            b64decode (bool): If true the data will be base64 decoded.
+            decode (bool): If true the data will be decoded to a String.
 
         Returns:
-            (): Results retrieved from DB
+            (list): Results retrieved from DB.
         """
         data = None
         if key is not None:
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if data is not None:
                 data_decoded = []
                 for d in json.loads(data):
-                    data_decoded.append(base64.b64decode(d))
+                    if b64decode:
+                        # if requested decode the base64 string
+                        dd = base64.b64decode(d)
+                        if decode:
+                            # if requested decode bytes to a string
+                            try:
+                                dd = dd.decode('utf-8')
+                            except UnicodeDecodeError:
+                                # for data written an upstream java App
+                                dd = dd.decode('latin-1')
+                        data_decoded.append(dd)
+                    else:
+                        # for validation in tcrun it's easier to validate the base64 data
+                        data_decoded.append(d)
+                data = data_decoded
         else:
-            self._tcex.log.warning(u'The key field was None.')
-        return data_decoded
+            self.tcex.log.warning(u'The key field was None.')
+        return data
 
-    # key/value
     def create_key_value(self, key, value):
         """Create method of CRUD operation for key/value data.
 
@@ -574,12 +662,12 @@ class TcExPlaybook(object):
         data = None
         if key is not None and value is not None:
             if isinstance(value, (dict, list)):
-                data = self._db.create(key.strip(), json.dumps(value))
+                data = self.db.create(key.strip(), json.dumps(value))
             else:
                 # used to save raw value with embedded variables
-                data = self._db.create(key.strip(), value)
+                data = self.db.create(key.strip(), value)
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_key_value(self, key, embedded=True):
@@ -590,12 +678,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (dictionary): Results retrieved from DB
+            (dictionary): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             # embedded variable can be unquoted, which breaks JSON.
             data = self.wrap_embedded_keyvalue(data)
             if embedded:
@@ -605,14 +693,13 @@ class TcExPlaybook(object):
                     data = json.loads(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-                    self._tcex.exit(1)
+                    self.tcex.log.error(err)
+                    self.tcex.message_tc(err)
+                    self.tcex.exit(1)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    # key/value array
     def create_key_value_array(self, key, value):
         """Create method of CRUD operation for key/value array data.
 
@@ -621,17 +708,17 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
             if isinstance(value, (dict, list)):
-                data = self._db.create(key.strip(), json.dumps(value))
+                data = self.db.create(key.strip(), json.dumps(value))
             else:
                 # used to save raw value with embedded variables
-                data = self._db.create(key.strip(), value)
+                data = self.db.create(key.strip(), value)
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_key_value_array(self, key, embedded=True):
@@ -642,12 +729,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (list): Results retrieved from DB
+            (list): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             # embedded variable can be unquoted, which breaks JSON.
             data = self.wrap_embedded_keyvalue(data)
             if embedded:
@@ -657,14 +744,13 @@ class TcExPlaybook(object):
                     data = json.loads(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-                    self._tcex.exit(1)
+                    self.tcex.log.error(err)
+                    self.tcex.message_tc(err)
+                    self.tcex.exit(1)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    # raw
     def create_raw(self, key, value):
         """Create method of CRUD operation for raw data.
 
@@ -673,13 +759,13 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), value)
+            data = self.db.create(key.strip(), value)
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_raw(self, key):
@@ -689,16 +775,15 @@ class TcExPlaybook(object):
             key (string): The variable to read from the DB.
 
         Returns:
-            (): Results retrieved from DB
+            (any): Results retrieved from DB.
         """
         data = None
         if key is not None:
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    # string
     def create_string(self, key, value):
         """Create method of CRUD operation for string data.
 
@@ -707,17 +792,17 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
             if isinstance(value, (bool, list, int, dict)):
                 # value = str(value)
                 value = u'{}'.format(value)
-            # data = self._db.create(key.strip(), str(json.dumps(value)))
-            data = self._db.create(key.strip(), u'{}'.format(json.dumps(value)))
+            # data = self.db.create(key.strip(), str(json.dumps(value)))
+            data = self.db.create(key.strip(), u'{}'.format(json.dumps(value)))
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_string(self, key, embedded=True):
@@ -728,12 +813,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (string): Results retrieved from DB
+            (string): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if embedded:
                 data = self.read_embedded(data, key_type)
             if data is not None:
@@ -747,12 +832,11 @@ class TcExPlaybook(object):
                         data = u'{}'.format(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
+                    self.tcex.log.error(err)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
-    # string array
     def create_string_array(self, key, value):
         """Create method of CRUD operation for string array data.
 
@@ -761,17 +845,17 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
             if isinstance(value, (list)):
-                data = self._db.create(key.strip(), json.dumps(value))
+                data = self.db.create(key.strip(), json.dumps(value))
             else:
                 # used to save raw value with embedded variables
-                data = self._db.create(key.strip(), value)
+                data = self.db.create(key.strip(), value)
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_string_array(self, key, embedded=True):
@@ -782,12 +866,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (list): Results retrieved from DB
+            (list): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if embedded:
                 data = self.read_embedded(data, key_type)
             if data is not None:
@@ -795,11 +879,11 @@ class TcExPlaybook(object):
                     data = json.loads(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-                    self._tcex.exit(1)
+                    self.tcex.log.error(err)
+                    self.tcex.message_tc(err)
+                    self.tcex.exit(1)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
     # tc entity
@@ -811,13 +895,13 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(value))
+            data = self.db.create(key.strip(), json.dumps(value))
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_tc_entity(self, key, embedded=True):
@@ -828,12 +912,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (dictionary): Results retrieved from DB
+            (dictionary): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if embedded:
                 # untested. this is not a current use case.
                 data = self.read_embedded(data, key_type)
@@ -842,11 +926,11 @@ class TcExPlaybook(object):
                     data = json.loads(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-                    self._tcex.exit(1)
+                    self.tcex.log.error(err)
+                    self.tcex.message_tc(err)
+                    self.tcex.exit(1)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
     # tc entity array
@@ -858,13 +942,13 @@ class TcExPlaybook(object):
             value (any): The data to write to the DB.
 
         Returns:
-            (string): Result of DB write
+            (string): Result of DB write.
         """
         data = None
         if key is not None and value is not None:
-            data = self._db.create(key.strip(), json.dumps(value))
+            data = self.db.create(key.strip(), json.dumps(value))
         else:
-            self._tcex.log.warning(u'The key or value field was None.')
+            self.tcex.log.warning(u'The key or value field was None.')
         return data
 
     def read_tc_entity_array(self, key, embedded=True):
@@ -875,12 +959,12 @@ class TcExPlaybook(object):
             embedded (boolean): Resolve embedded variables.
 
         Returns:
-            (list): Results retrieved from DB
+            (list): Results retrieved from DB.
         """
         data = None
         if key is not None:
             key_type = self.variable_type(key)
-            data = self._db.read(key.strip())
+            data = self.db.read(key.strip())
             if embedded:
                 # untested. this is not a current use case.
                 data = self.read_embedded(data, key_type)
@@ -889,11 +973,11 @@ class TcExPlaybook(object):
                     data = json.loads(data)
                 except ValueError as e:
                     err = u'Failed loading JSON data ({}). Error: ({})'.format(data, e)
-                    self._tcex.log.error(err)
-                    self._tcex.message_tc(err)
-                    self._tcex.exit(1)
+                    self.tcex.log.error(err)
+                    self.tcex.message_tc(err)
+                    self.tcex.exit(1)
         else:
-            self._tcex.log.warning(u'The key field was None.')
+            self.tcex.log.warning(u'The key field was None.')
         return data
 
     #
@@ -902,7 +986,7 @@ class TcExPlaybook(object):
 
     @staticmethod
     def entity_to_bulk(entities, resource_type_parent):
-        """Convert Single TC Entity to Bulk format
+        """Convert Single TC Entity to Bulk format.
 
         .. Attention:: This method is subject to frequent changes
 
@@ -911,8 +995,7 @@ class TcExPlaybook(object):
             resource_type_parent (string): The resource parent type of the tc_data provided.
 
         Returns:
-            (dictionary): A dictionary representing TC Bulk format
-
+            (dictionary): A dictionary representing TC Bulk format.
         """
         if not isinstance(entities, list):
             entities = [entities]
@@ -938,14 +1021,13 @@ class TcExPlaybook(object):
 
     @staticmethod
     def indicator_arrays(tc_entity_array):
-        """Convert TCEntityArray to Indicator Type dictionary
+        """Convert TCEntityArray to Indicator Type dictionary.
 
         Args:
-            tc_entity_array (dictionary): The TCEntityArray to convert
+            tc_entity_array (dictionary): The TCEntityArray to convert.
 
         Returns:
-            (dictionary): Dictionary containing arrays of indicators for each indicator type
-
+            (dictionary): Dictionary containing arrays of indicators for each indicator type.
         """
         type_dict = {}
         for ea in tc_entity_array:
@@ -954,7 +1036,7 @@ class TcExPlaybook(object):
 
     @staticmethod
     def json_to_bulk(tc_data, value_fields, resource_type, resource_type_parent):
-        """Convert ThreatConnect JSON response to a Bulk Format
+        """Convert ThreatConnect JSON response to a Bulk Format.
 
         .. Attention:: This method is subject to frequent changes
 
@@ -1000,9 +1082,9 @@ class TcExPlaybook(object):
 
     @staticmethod
     def json_to_entity(tc_data, value_fields, resource_type, resource_type_parent):
-        """Convert ThreatConnect JSON response to a TCEntityArray
+        """Convert ThreatConnect JSON response to a TCEntityArray.
 
-        .. Attention:: This method is subject to frequent changes
+        .. Attention:: This method is subject to frequent changes.
 
         Args:
             tc_data (dictionary): Array of data returned from TC API call.
@@ -1011,7 +1093,7 @@ class TcExPlaybook(object):
             resource_type_parent (string): The resource parent type of the tc_data provided.
 
         Returns:
-            (list): A list representing a TCEntityArray
+            (list): A list representing a TCEntityArray.
 
         """
         if not isinstance(tc_data, list):
@@ -1063,7 +1145,7 @@ class TcExPlaybook(object):
 
     @staticmethod
     def json_to_key_value(json_data, key_field, value_field=None, array=False):
-        """Convert JSON data to a KeyValue/KeyValueArray
+        """Convert JSON data to a KeyValue/KeyValueArray.
 
         Args:
             json_data (dictionary|list): Array/List of JSON data.

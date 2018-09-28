@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Authorization (Token / HMAC) &mdash; TcEx 0.7.14 documentation</title>
+  <title>Authorization (Token / HMAC) &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/>
-        <link rel="next" title="Building Apps" href="building_apps.html"/>
-        <link rel="prev" title="ThreatConnect Exchange App Framework (TcEx)" href="index.html"/> 
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/>
+        <link rel="next" title="Batch" href="batch.html"/>
+        <link rel="prev" title="ThreatConnect App Framework (TcEx)" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#hmac-authorization">HMAC Authorization</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
@@ -109,6 +110,8 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -180,19 +183,19 @@
             
   <div class="section" id="authorization-token-hmac">
 <span id="authorization"></span><h1>Authorization (Token / HMAC)<a class="headerlink" href="#authorization-token-hmac" title="Permalink to this headline">¶</a></h1>
-<p>In general when communication with the ThreatConnect ™ API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without have to change any code.</p>
+<p>In general when communication with the ThreatConnect ™ API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#module-tcex.tcex" title="tcex.tcex"><code class="xref py py-meth docutils literal"><span class="pre">tcex()</span></code></a> module also has the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal"><span class="pre">session</span></code></a> property which is a Python Requests Session with ThreatConnect Authorization added.  API call to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The Integration Server only supports HMAC authorization.  Apps should be written to run on both platforms.</p>
+<p class="last">The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The MEO server supports HMAC or Token based authorization depending on the version.</p>
 </div>
-<p>If <strong>not</strong> using one of the Resource Classes in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal"><span class="pre">tcex_resources</span></code></a> for communications with the ThreatConnect API the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal"><span class="pre">authorization()</span></code></a> method can still be used to return a Python dictionary containing the required header values for proper authorization via Token or HMAC. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal"><span class="pre">authorization()</span></code></a> method expects a prepared request from the Python Requests module (<a class="reference external" href="http://docs.python-requests.org/en/master/user/advanced/#prepared-requests">http://docs.python-requests.org/en/master/user/advanced/#prepared-requests</a>).</p>
 <div class="section" id="token-refresh">
 <h2>Token Refresh<a class="headerlink" href="#token-refresh" title="Permalink to this headline">¶</a></h2>
-<p>Token based authorization required that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the <code class="docutils literal"><span class="pre">tc_token</span></code> and <code class="docutils literal"><span class="pre">tc_token_expires</span></code> arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal"><span class="pre">authorization()</span></code></a> method.</p>
+<p>Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the <code class="docutils literal"><span class="pre">tc_token</span></code> and <code class="docutils literal"><span class="pre">tc_token_expires</span></code> arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization" title="tcex.tcex.TcEx.authorization"><code class="xref py py-meth docutils literal"><span class="pre">authorization()</span></code></a> or <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.session" title="tcex.tcex.TcEx.session"><code class="xref py py-mod docutils literal"><span class="pre">session</span></code></a> features.</p>
 </div>
 <div class="section" id="hmac-authorization">
 <h2>HMAC Authorization<a class="headerlink" href="#hmac-authorization" title="Permalink to this headline">¶</a></h2>
-<p>Generation of the Authorization headers when using HMAC will utilize the <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the Integration Server these arguments should be required.</p>
+<p>Generation of the Authorization headers when using HMAC will utilize the <code class="docutils literal"><span class="pre">api_access_id</span></code> and <code class="docutils literal"><span class="pre">api_secret_key</span></code> arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the certain versions of the MEO server these arguments could be required.</p>
 <p>Example install.json param section:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -220,7 +223,7 @@
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
 </pre></div>
 </div>
-<p>For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be built immediately before the request is sent.  The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.authorization_hmac" title="tcex.tcex.TcEx.authorization_hmac"><code class="xref py py-meth docutils literal"><span class="pre">authorization_hmac()</span></code></a> method will build the authorization string when passed a <em>Python Requests</em> prepared request.</p>
+<p>For proper HMAC authorization the HTTP Method and URI with query string arguments are required when building the authorization string.  Therefore the authorization string has to be built after the URI and query parameters are build and before the request is sent.</p>
 </div>
 </div>
 
@@ -234,10 +237,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="building_apps.html" class="btn btn-neutral float-right" title="Building Apps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="batch.html" class="btn btn-neutral float-right" title="Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="ThreatConnect Exchange App Framework (TcEx)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="ThreatConnect App Framework (TcEx)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -267,7 +270,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

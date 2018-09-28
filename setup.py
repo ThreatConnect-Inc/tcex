@@ -12,17 +12,17 @@ if not version:
     raise RuntimeError('Cannot find version information')
 
 install_requires = [
-    'colorama==0.3.9',
+    'colorama>=0.3.9',
     'future',
-    'hvac==0.3.0',
-    'inflect==0.2.5',
-    'jsonschema==2.6.0',
+    'hvac>=0.3.0',
+    'inflect>=0.2.5',
+    'jsonschema>=2.6.0',
     'parsedatetime',
-    'python-dateutil==2.6.1',
+    'python-dateutil>=2.6.1',
     'pytz',
-    'redis==2.10.6',
-    'requests==2.18.4',
-    'six==1.11.0',
+    'redis>=2.10.6',
+    'requests>=2.18.4',
+    'six>=1.11.0',
     'tzlocal'
 ]
 if sys.version_info < (3, ):
@@ -30,8 +30,8 @@ if sys.version_info < (3, ):
         'ipaddress'
     ])
 scripts = [
-    'bin/tcdata',
-    'bin/tcdata.cmd',
+    'bin/tcinit',
+    'bin/tcinit.cmd',
     'bin/tclib',
     'bin/tclib.cmd',
     'bin/tcpackage',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building Apps &mdash; TcEx 0.7.14 documentation</title>
+  <title>Building Apps &mdash; TcEx 0.8.19 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.7.14 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.19 documentation" href="index.html"/>
         <link rel="next" title="Data Filter" href="data_filter.html"/>
-        <link rel="prev" title="Authorization (Token / HMAC)" href="authorization.html"/> 
+        <link rel="prev" title="Batch" href="batch.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.7.14
+                0.8.19
               </div>
             
           
@@ -95,6 +95,7 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Building Apps</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#build-local-modules">Build Local Modules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
@@ -128,6 +129,8 @@
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
@@ -208,7 +211,7 @@
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal"><span class="pre">setup.cfg</span></code> file should have the following code:</p>
+<p>If you are using <strong>macOS</strong> and have Python installed via Homebrew, there is a <a class="reference external" href="https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both">known bug</a> that requires you to create a <code class="docutils literal"><span class="pre">setup.cfg</span></code> file in the same directory as the <code class="docutils literal"><span class="pre">requirements.txt</span></code>. The <code class="docutils literal"><span class="pre">setup.cfg</span></code> file should have the following code at minimum:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">install</span><span class="p">]</span>
 <span class="n">prefix</span><span class="o">=</span>
 </pre></div>
@@ -217,19 +220,21 @@
 <div class="section" id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tclib</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no_cache_dir</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">tcex_develop</span><span class="p">]</span>
 
 <span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>           <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
   <span class="o">--</span><span class="n">app_name</span> <span class="n">APP_NAME</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
   <span class="o">--</span><span class="n">app_path</span> <span class="n">APP_PATH</span>  <span class="n">Fully</span> <span class="n">qualified</span> <span class="n">path</span> <span class="n">of</span> <span class="n">App</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>      <span class="n">Configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">gen</span> <span class="n">lib</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>      <span class="n">Configuration</span> <span class="n">file</span> <span class="k">for</span> <span class="n">gen</span> <span class="n">lib</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">no_cache_dir</span>       <span class="n">Do</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">pip</span> <span class="n">cache</span> <span class="n">directory</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">tcex_develop</span>       <span class="n">Replace</span> <span class="n">tcex</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">config</span> <span class="k">with</span> <span class="n">github</span> <span class="n">develop</span> <span class="n">branch</span><span class="o">.</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-configuration-file">
 <h3>Using Configuration File<a class="headerlink" href="#using-configuration-file" title="Permalink to this headline">¶</a></h3>
-<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.</p>
+<p>By default the <strong>tcex.json</strong> configuration file will be loaded if it exists.  If the configuration includes the <code class="docutils literal"><span class="pre">lib_versions</span></code> parameter array the <code class="docutils literal"><span class="pre">tclib</span></code> command will use the values defined in the configuration to build the lib directories.  For ease of management when building multiple Apps the tcex.json file can contain environment vars defining the Python version (e.g., $env.PY36 for <code class="docutils literal"><span class="pre">export</span> <span class="pre">PY36='3.6.5'</span></code>).</p>
 <p><strong>Linux</strong></p>
 <div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="s2">&quot;lib_versions&quot;</span><span class="p">:</span> <span class="p">[{</span>
@@ -245,8 +250,8 @@
     <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.5.3/bin/python&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_3.6.2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/3.6.2/bin/python&quot;</span>
+    <span class="s2">&quot;lib_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib_$env.PY36&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;python_executable&quot;</span><span class="p">:</span> <span class="s2">&quot;~/.pyenv/versions/$env.PY36/bin/python&quot;</span>
   <span class="p">}</span>
 <span class="p">],</span>
 <span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
@@ -276,17 +281,25 @@
 </div>
 <div class="section" id="id2">
 <h3>Usage<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unmask</span><span class="p">]</span>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">autoclear</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">report</span> <span class="n">REPORT</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">truncate</span> <span class="n">TRUNCATE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unmask</span><span class="p">]</span>
 
 <span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>         <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>    <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">halt_on_fail</span>     <span class="n">Halt</span> <span class="n">on</span> <span class="nb">any</span> <span class="n">failure</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span>      <span class="n">The</span> <span class="n">group</span> <span class="n">of</span> <span class="n">profiles</span> <span class="n">to</span> <span class="n">executed</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span>  <span class="n">The</span> <span class="n">profile</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
-  <span class="o">--</span><span class="n">quiet</span>            <span class="n">Suppress</span> <span class="n">output</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">unmask</span>           <span class="n">Unmask</span> <span class="n">masked</span> <span class="n">args</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">The</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;tcex.json&quot;</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">autoclear</span>           <span class="n">Clear</span> <span class="n">Redis</span> <span class="n">data</span> <span class="n">before</span> <span class="n">running</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">halt_on_fail</span>        <span class="n">Halt</span> <span class="n">on</span> <span class="nb">any</span> <span class="n">failure</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span>         <span class="n">The</span> <span class="n">group</span> <span class="n">of</span> <span class="n">profiles</span> <span class="n">to</span> <span class="n">executed</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span>
+                        <span class="n">The</span> <span class="n">logging</span> <span class="n">level</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span>     <span class="n">The</span> <span class="n">profile</span> <span class="n">to</span> <span class="n">be</span> <span class="n">executed</span><span class="o">.</span> <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">quiet</span>               <span class="n">Suppress</span> <span class="n">output</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">report</span> <span class="n">REPORT</span>       <span class="n">The</span> <span class="n">JSON</span> <span class="n">report</span> <span class="n">filename</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">truncate</span> <span class="n">TRUNCATE</span>   <span class="n">The</span> <span class="n">length</span> <span class="n">at</span> <span class="n">which</span> <span class="n">to</span> <span class="n">truncate</span> <span class="n">successful</span> <span class="n">validation</span>
+                        <span class="n">data</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">logs</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">unmask</span>              <span class="n">Unmask</span> <span class="n">masked</span> <span class="n">args</span><span class="o">.</span>
 </pre></div>
 </div>
 </div>
@@ -345,12 +358,27 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The <code class="docutils literal"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
 </div>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--config CONFIG<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>usage: tcprofile <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--action <span class="o">{</span>create,delete,replace_validation,update<span class="o">}]</span>
+                 <span class="o">[</span>--ij IJ<span class="o">]</span> <span class="o">[</span>--data_file<span class="o">]</span> <span class="o">[</span>--outdir OUTDIR<span class="o">]</span> <span class="o">[</span>--outfile OUTFILE<span class="o">]</span>
+                 --profile_name PROFILE_NAME <span class="o">[</span>--redis_hash REDIS_HASH<span class="o">]</span>
+                 <span class="o">[</span>--redis_host REDIS_HOST<span class="o">]</span> <span class="o">[</span>--redis_port REDIS_PORT<span class="o">]</span>
 
 optional arguments:
-  -h, --help         show this <span class="nb">help</span> message and <span class="nb">exit</span>
-  --config CONFIG    The install.json file name. <span class="o">(</span>default: <span class="s2">&quot;install.json&quot;</span><span class="o">)</span>
-  --outfile OUTFILE  File to output or append profile.
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  --action <span class="o">{</span>create,delete,replace_validation,update<span class="o">}</span>
+  --ij IJ               The install.json file name <span class="o">(</span>default: install.json<span class="o">)</span>.
+  --data_file           Attempt to build data file templates <span class="k">for</span> the profile.
+  --outdir OUTDIR       The *base* output directory containing the
+                        data/profiles folder.
+  --outfile OUTFILE     The name of the file to write the profile.
+  --profile_name PROFILE_NAME
+                        The profile name to create, delete, or update.
+  --redis_hash REDIS_HASH
+                        The redis hash.
+  --redis_host REDIS_HOST
+                        The redis host.
+  --redis_port REDIS_PORT
+                        The redis port.
 </pre></div>
 </div>
 </div>
@@ -358,7 +386,7 @@ optional arguments:
 <h3>Staging Redis Data<a class="headerlink" href="#staging-redis-data" title="Permalink to this headline">¶</a></h3>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">A local instance of Redis must be running to test locally.</p>
+<p class="last">A local instance of Redis must be running to test Playbook Apps locally.</p>
 </div>
 <p>In order to test using variable inputs the data can be manually added to Redis.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command has functionality to “stage” the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.</p>
 </div>
@@ -497,7 +525,7 @@ optional arguments:
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For Custom Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the <strong>exit_codes</strong> parameter array.</p>
+<p class="last">For Runtime/Job Apps (non Playbook Apps) valid exit codes are 0, 1, and 3.  For certain profiles you may expect an exit code of 0 for success or 3 for partial success/partial failure.  This can be achieved by adding both status codes to the <strong>exit_codes</strong> parameter array.</p>
 </div>
 </div>
 </div>
@@ -506,7 +534,7 @@ optional arguments:
 <p id="building-apps-packaging">Running <code class="docutils literal"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically if the <strong>tcex_json_schema.json</strong> schema file is included in the base directory of your App.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files. Optionally a <strong>package</strong> configuration parameter can be added to the configuration file to provide additional functionality.</p>
+<p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files.</p>
 </div>
 <div class="section" id="id3">
 <h3>Usage<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
@@ -517,11 +545,11 @@ optional arguments:
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
   <span class="o">--</span><span class="n">bundle</span>              <span class="n">Build</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">file</span><span class="o">.</span>
   <span class="o">--</span><span class="n">exclude</span> <span class="n">EXCLUDE</span>     <span class="n">File</span> <span class="ow">and</span> <span class="n">directories</span> <span class="n">to</span> <span class="n">exclude</span> <span class="kn">from</span> <span class="nn">build.</span>
-  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">Build</span> <span class="n">configuration</span> <span class="n">file</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="n">Build</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
   <span class="o">--</span><span class="n">install_json</span> <span class="n">INSTALL_JSON</span>
                         <span class="n">The</span> <span class="n">install</span><span class="o">.</span><span class="n">json</span> <span class="n">file</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">App</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span>
                         <span class="n">built</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -530,8 +558,9 @@ optional arguments:
 <p>By default the <code class="docutils literal"><span class="pre">tcex.json</span></code> file will be loaded by <code class="docutils literal"><span class="pre">tcpackage</span></code>.  The following is an example of additional configuration that can be provided for the <code class="docutils literal"><span class="pre">tcpackage</span></code> command.</p>
 <div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;..</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="s2">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-  <span class="s2">&quot;bundle_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_My_Bundle&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyApp&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;app_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v1.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
   <span class="s2">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="s2">&quot;log&quot;</span><span class="p">,</span>
     <span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
@@ -586,7 +615,7 @@ optional arguments:
         <a href="data_filter.html" class="btn btn-neutral float-right" title="Data Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="authorization.html" class="btn btn-neutral" title="Authorization (Token / HMAC)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="batch.html" class="btn btn-neutral" title="Batch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -616,7 +645,7 @@ optional arguments:
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.7.14',
+            VERSION:'0.8.19',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
