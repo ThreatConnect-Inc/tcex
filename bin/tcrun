@@ -515,7 +515,6 @@ class TcRun(object):
 
     def load_tcex(self):
         """Inject required TcEx CLI Args."""
-        sys.argv = [sys.argv[1]]  # reset sys.argv
         for arg, value in self.profile.get('profile_args', {}).data.items():
             if arg not in self._tcex_required_args:
                 continue
