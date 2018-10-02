@@ -116,7 +116,7 @@ The third interface accepts the raw data formatted as a dictionary.  This method
     :emphasize-lines: 2-18
 
     batch = tcex.batch('MyOrg')
-    xid = tcex.batch.generate_xid(['my', 'adversary', '123']
+    xid = batch.generate_xid(['my', 'adversary', '123'])
     batch.add_group({
         'name': 'document-002',
         'fileName': 'test2.txt',
