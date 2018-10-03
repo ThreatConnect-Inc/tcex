@@ -49,7 +49,7 @@ class TcExBatch(object):
     """ThreatConnect Batch Import Module"""
 
     def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True,
-                 playbook_triggers_enabled=False):
+                 playbook_triggers_enabled=None):
         """Initialize Class Properties.
 
         Args:
@@ -1499,7 +1499,11 @@ class TcExBatch(object):
             halt_on_error = self.halt_on_batch_error
 
         try:
-            r = self.tcex.session.post('/v2/batch', json=self.settings)
+            settings = self.settings
+            # this is necessary for instances for TC versions < 5.7
+            if settings['playbookTriggersEnabled'] == 'none':
+                del settings['playbookTriggersEnabled']
+            r = self.tcex.session.post('/v2/batch', json=settings)
         except Exception as e:
             self.tcex.handle_error(1505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
