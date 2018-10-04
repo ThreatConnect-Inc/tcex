@@ -685,7 +685,7 @@
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="TcEx.batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.batch">[docs]</a>    <span class="k">def</span> <span class="nf">batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+              <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return instance of Batch&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.tcex_batch_v2</span> <span class="k">import</span> <span class="n">TcExBatch</span>
         <span class="k">return</span> <span class="n">TcExBatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span><span class="p">)</span></div>

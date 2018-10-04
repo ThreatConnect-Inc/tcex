@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.20
+------
++ Fixed deletion in the batch module for TC instances < 5.7.
+
 0.8.19
 ------
 + Removed app.lock logic.
