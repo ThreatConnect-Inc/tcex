@@ -1261,6 +1261,7 @@ class TcExBatch(object):
             halt_on_error).get('data', {}).get('batchStatus', {})
         batch_id = batch_data.get('id')
         if batch_id is not None:
+            self.tcex.log.info('Batch ID: {}'.format(batch_id))
             # job hit queue
             if poll:
                 # poll for status
