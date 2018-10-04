@@ -49,7 +49,7 @@ class TcExBatch(object):
     """ThreatConnect Batch Import Module"""
 
     def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True,
-                 playbook_triggers_enabled=False):
+                 playbook_triggers_enabled=None):
         """Initialize Class Properties.
 
         Args:
@@ -1195,16 +1195,18 @@ class TcExBatch(object):
     @property
     def settings(self):
         """Return batch job settings."""
-        return {
+        _settings = {
             'action': self._action,
             # not supported in v2 batch
             # 'attributeWriteType': self._attribute_write_type,
             'attributeWriteType': 'Replace',
             'haltOnError': str(self._halt_on_error).lower(),
             'owner': self._owner,
-            'playbookTriggersEnabled': str(self._playbook_triggers_enabled).lower(),
             'version': 'V2'
         }
+        if self._playbook_triggers_enabled is not None:
+            _settings['playbookTriggersEnabled'] = str(self._playbook_triggers_enabled).lower()
+        return _settings
 
     def signature(self, name, file_name, file_type, file_text, xid=True):
         """Add Signature data to Batch object.

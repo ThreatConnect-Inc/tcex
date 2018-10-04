@@ -504,7 +504,7 @@ class TcEx(object):
         }
 
     def batch(self, owner, action=None, attribute_write_type=None, halt_on_error=False,
-              playbook_triggers_enabled=False):
+              playbook_triggers_enabled=None):
         """Return instance of Batch"""
         from .tcex_batch_v2 import TcExBatch
         return TcExBatch(self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled)
