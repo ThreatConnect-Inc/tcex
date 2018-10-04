@@ -1195,16 +1195,18 @@ class TcExBatch(object):
     @property
     def settings(self):
         """Return batch job settings."""
-        return {
+        _settings = {
             'action': self._action,
             # not supported in v2 batch
             # 'attributeWriteType': self._attribute_write_type,
             'attributeWriteType': 'Replace',
             'haltOnError': str(self._halt_on_error).lower(),
             'owner': self._owner,
-            'playbookTriggersEnabled': str(self._playbook_triggers_enabled).lower(),
             'version': 'V2'
         }
+        if self._playbook_triggers_enabled is not None:
+            _settings['playbookTriggersEnabled'] = str(self._playbook_triggers_enabled).lower()
+        return _settings
 
     def signature(self, name, file_name, file_type, file_text, xid=True):
         """Add Signature data to Batch object.
@@ -1499,11 +1501,7 @@ class TcExBatch(object):
             halt_on_error = self.halt_on_batch_error
 
         try:
-            settings = self.settings
-            # this is necessary for instances for TC versions < 5.7
-            if settings['playbookTriggersEnabled'] == 'none':
-                del settings['playbookTriggersEnabled']
-            r = self.tcex.session.post('/v2/batch', json=settings)
+            r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
             self.tcex.handle_error(1505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
