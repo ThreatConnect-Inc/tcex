@@ -292,6 +292,12 @@ class TcExBatch(object):
             group_data (dict): The full Group data including attributes, labels, tags, and
                 associations.
         """
+        # make sure there is an "xid" key-value pair
+        if not group_data.get('xid'):
+            message = 'An "xid" key-value pair is necessary to create a group (see {}).'.format(
+                      'https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-3')
+            self.tcex.log.error(message)
+            raise KeyError(message)
         return self._group(group_data)
 
     def add_indicator(self, indicator_data):
@@ -330,6 +336,13 @@ class TcExBatch(object):
             indicator_data (dict): The Full Indicator data including attributes, labels, tags,
                 and associations.
         """
+        # make sure there is an "xid" key-value pair
+        if not indicator_data.get('xid'):
+            message = 'An "xid" key-value pair is necessary to create an indicator (see {}).'.format(
+                      'https://docs.threatconnect.com/en/latest/tcex/batch.html#indicator-interface-3')
+            self.tcex.log.error(message)
+            raise KeyError(message)
+
         if indicator_data.get('type') not in ['Address', 'EmailAddress', 'File', 'Host', 'URL']:
             # for custom indicator types the valueX fields are required.
             # using the summary we can build the values
