@@ -97,12 +97,9 @@ The code below demonstrates how to create a Document using this interface (and t
 
     batch = tcex.batch('MyOrg')
     document = batch_job.group('Document', 'document-001', 'my-xid-0001')
-    document.add_key_value('file_data', {
-        'fileContent': 'This sentence will compromise the contents of the document that will be uploaded into ThreatConnect.',
-        'type': 'Document'
-    })
+    document.add_file('test.txt', 'Document content here...')
     document.add_key_value('fileName', 'test.txt')
-    document.attribute('Description', 'Example Description', True, 'source')
+    document.attribute('Description', 'Example Description', True, 'Attribute source')
     document.tag('Example Tag')
     document.security_label('TLP Green')
 
