@@ -32,6 +32,11 @@ def init_tcex():
     tcex_instance.args.tc_api_path = os.environ['TC_API_PATH']
     tcex_instance.args.api_default_org = os.environ['API_DEFAULT_ORG']
     tcex_instance.args.api_secret_key = os.environ['API_SECRET_KEY']
+
+    # clear out any data in the source
+    cleaner.clean(tcex_instance)
+    validator.validate(tcex_instance, expected_groups=0, expected_indicators=0)
+
     return tcex_instance
 
 
@@ -53,7 +58,6 @@ def test_interface_1():
     batch_group_creation_interface_1.threat_create(batch)
     batch.submit_all()
     validator.validate(tcex_instance, expected_groups=11)
-    cleaner.clean(tcex_instance)
 
 
 def test_interface_2():
@@ -74,7 +78,6 @@ def test_interface_2():
     batch_group_creation_interface_2.threat_create(batch)
     batch.submit_all()
     validator.validate(tcex_instance, expected_groups=11)
-    cleaner.clean(tcex_instance)
 
 
 def test_interface_3():
@@ -95,4 +98,3 @@ def test_interface_3():
     batch_group_creation_interface_3.threat_create(batch)
     batch.submit_all()
     validator.validate(tcex_instance, expected_groups=11)
-    cleaner.clean(tcex_instance)
