@@ -27,8 +27,12 @@ def _delete_groups(tcex):
 
 def _delete_indicators(tcex):
     # TODO: implement
-    pass
-    # tcex.args.api_default_org
+    batch = tcex.batch(tcex.args.api_default_org, action='Delete')
+    indicators = validator.get_indicators(tcex)
+    for indicator in indicators:
+        indicator['xid'] = _create_xid(indicator['type'], indicator['summary'])
+        batch.add_indicator(indicator)
+    batch.submit_all()
 
 
 def clean(tcex):
