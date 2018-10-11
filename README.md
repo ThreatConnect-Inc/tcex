@@ -56,7 +56,7 @@ To run the tests, you will need to:
 
     You can more details on how to setup environmental variables for TCEX [here](https://gitlab.com/fhightower-tc/tcex-playground#setup).
 
-4. Run `cd tests/ && pytest tcex_tests.py`
+4. Run `cd tests/ && pytest tcex_tests.py --ignore=lib_2.7.12/`
 
 ## Contact
 

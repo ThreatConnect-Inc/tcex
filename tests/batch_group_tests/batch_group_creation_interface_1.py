@@ -17,7 +17,8 @@ def campaign_create(batch_job):
 
 
 def document_create(batch_job):
-    document = batch_job.document('document-001', 'example.txt', file_content='Example document content')
+    document = batch_job.document('document-001', 'example.txt')
+    document.file_content = 'Example file content'
     document.attribute('Description', 'Example Description', True)
     document.tag('Example Tag')
     document.security_label('TLP Green')
