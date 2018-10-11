@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import batch_group_creation_interface_1
-import batch_group_creation_interface_2
-import batch_group_creation_interface_3
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
+from batch_group_tests import batch_group_creation_interface_1
+from batch_group_tests import batch_group_creation_interface_2
+from batch_group_tests import batch_group_creation_interface_3
 import validator
 import cleaner
 

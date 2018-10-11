@@ -25,12 +25,10 @@ def get_indicators(tcex):
 
 def validate(tcex, expected_groups=None, expected_indicators=None):
     """Validate that the number of groups and indicators are correct."""
-    if expected_groups:
+    if expected_groups is not None:
         groups = get_groups(tcex)
-        print("assert {} == {}".format(len(groups), expected_groups))
         assert len(groups) == expected_groups
 
-    if expected_indicators:
+    if expected_indicators is not None:
         indicators = get_indicators(tcex)
-        print("assert {} == {}".format(len(indicators), expected_indicators))
         assert len(indicators) == expected_indicators
