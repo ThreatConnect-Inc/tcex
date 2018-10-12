@@ -1623,7 +1623,16 @@ class TcExBatch(object):
 
 class Group(object):
     """ThreatConnect Batch Group Object"""
-    __slots__ = ['_name', '_type', '_group_data', '_attributes', '_labels', '_tags', '_processed', '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_content',
+        '_group_data',
+        '_labels',
+        '_name',
+        '_processed',
+        '_type',
+        '_tags',
+        '_utils']
 
     def __init__(self, group_type, name, xid=True):
         """Initialize Class Properties.
@@ -2258,7 +2267,16 @@ class Threat(Group):
 
 class Indicator(object):
     """ThreatConnect Batch Indicator Object"""
-    __slots__ = ['_attributes', '_file_actions', '_indicator_data', '_labels', '_occurrences', '_summary', '_tags', '_type', '_utils']
+    __slots__ = [
+        '_attributes',
+        '_file_actions',
+        '_indicator_data',
+        '_labels',
+        '_occurrences',
+        '_summary',
+        '_tags',
+        '_type',
+        '_utils']
 
     def __init__(self, indicator_type, summary, rating=None, confidence=None, xid=True):
         """Initialize Class Properties.
@@ -2900,7 +2918,7 @@ class Attribute(object):
 
 class FileAction(object):
     """ThreatConnect Batch FileAction Object"""
-    __slots__ = ['_action_data', '_children']
+    __slots__ = ['_action_data', '_children', 'xid']
 
     def __init__(self, parent_xid, relationship):
         """Initialize Class Properties.
