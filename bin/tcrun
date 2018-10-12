@@ -1175,10 +1175,10 @@ class TcRun(object):
                 user_data_path = data.get('data_path')  # jmespath expression
                 if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
                     # if user_data reference a redis variable retrieve the data
-                    if variable.endswith('Binary'):
+                    if user_data.endswith('Binary'):
                         # call specific method and do not decode data
                         user_data = self.tcex.playbook.read_binary(user_data, False, False)
-                    elif variable.endswith('BinaryArray'):
+                    elif user_data.endswith('BinaryArray'):
                         # call specific method and do not decode data
                         user_data = self.tcex.playbook.read_binary_array(user_data, False, False)
                     else:
