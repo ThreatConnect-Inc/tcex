@@ -934,6 +934,9 @@ class TcRun(object):
                 msg = msg.format(variable)
                 sys.exit(msg)
         elif variable.endswith('BinaryArray'):
+            if isinstance(data, string_types):
+                data = json.loads(data)
+
             try:
                 # loop through each entry
                 decoded_data = []
@@ -1168,12 +1171,19 @@ class TcRun(object):
         for data in self.profile.get('validations', []):
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
-                # get user variable or data
                 user_data = data.get('data')
                 user_data_path = data.get('data_path')  # jmespath expression
                 if isinstance(user_data, string_types) and re.match(self._vars_match, user_data):
                     # if user_data reference a redis variable retrieve the data
-                    user_data = self.tcex.playbook.read(user_data)
+                    if variable.endswith('Binary'):
+                        # call specific method and do not decode data
+                        user_data = self.tcex.playbook.read_binary(user_data, False, False)
+                    elif variable.endswith('BinaryArray'):
+                        # call specific method and do not decode data
+                        user_data = self.tcex.playbook.read_binary_array(user_data, False, False)
+                    else:
+                        user_data = self.tcex.playbook.read(user_data)
+
                 if user_data_path is not None:
                     user_data = self.path_data(user_data, user_data_path)
 

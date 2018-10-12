@@ -1762,6 +1762,17 @@ class Group(object):
         return self._group_data
 
     @property
+    def date_added(self):
+        """Return Group dateAdded."""
+        return self._group_data.get('dateAdded')
+
+    @date_added.setter
+    def date_added(self, date_added):
+        """Set Indicator dateAdded."""
+        self._group_data['dateAdded'] = self._utils.format_datetime(
+            date_added, date_format='%Y-%m-%dT%H:%M:%SZ')
+
+    @property
     def file_data(self):
         """Return Group file (only supported for Document and Report)."""
         return {
@@ -2419,6 +2430,28 @@ class Indicator(object):
                 if tag.valid:
                     self._indicator_data['tag'].append(tag.data)
         return self._indicator_data
+
+    @property
+    def date_added(self):
+        """Return Indicator dateAdded."""
+        return self._indicator_data.get('dateAdded')
+
+    @date_added.setter
+    def date_added(self, date_added):
+        """Set Indicator dateAdded."""
+        self._indicator_data['dateAdded'] = self._utils.format_datetime(
+            date_added, date_format='%Y-%m-%dT%H:%M:%SZ')
+
+    @property
+    def last_modified(self):
+        """Return Indicator lastModified."""
+        return self._indicator_data.get('lastModified')
+
+    @last_modified.setter
+    def last_modified(self, last_modified):
+        """Set Indicator lastModified."""
+        self._indicator_data['lastModified'] = self._utils.format_datetime(
+            last_modified, date_format='%Y-%m-%dT%H:%M:%SZ')
 
     def occurrence(self, file_name=None, path=None, date=None):
         """Add a file Occurrence.
