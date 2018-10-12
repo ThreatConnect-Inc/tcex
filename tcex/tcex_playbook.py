@@ -554,7 +554,7 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary(self, key, b64decode=True, decode=True):
+    def read_binary(self, key, b64decode=True, decode=False):
         """Read method of CRUD operation for binary data.
 
         Args:
@@ -613,7 +613,7 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary_array(self, key, b64decode=True, decode=True):
+    def read_binary_array(self, key, b64decode=True, decode=False):
         """Read method of CRUD operation for binary array data.
 
         Args:

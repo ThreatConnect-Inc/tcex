@@ -3,6 +3,14 @@
 Release Notes
 #############
 
+1.0.x
+=====
+
+1.0.0
+-----
++ **Breaking Change:** Updated all optional args for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.
++ **Breaking Change:** Updated the decoder arg on the read Binary/BinaryArray methods to be False by default. When set to True the ``read()`` method can't be used in normal use cases.
+
 0.8.x
 =====
 
