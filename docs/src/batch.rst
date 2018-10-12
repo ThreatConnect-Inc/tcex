@@ -19,7 +19,7 @@ For Interface 1 and 2 the xid is optional, if not provided or set to True a uniq
 
 .. important:: For Groups when using a unique xid value generated using "type-name" support of duplicate group name is not possible.  If having duplicate group names is a requirement then a xid should be provided for each group.
 
-.. note:: In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the [submit section](https://docs.threatconnect.com/en/latest/tcex/batch.html#submit).
+.. note:: In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the `submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
 
 Groups
 ======
@@ -37,7 +37,7 @@ The example below passes all supported fields to adversary().
     :emphasize-lines: 2-5,7
 
     batch = tcex.batch('MyOrg')
-    adversary = batch.adversary('adversary-001' 'my-xid-000')
+    adversary = batch.adversary('adversary-001', 'my-xid-000')
     adversary.attribute('Description', 'Example Description', True)
     adversary.tag('Example Tag')
     adversary.security_label('TLP Green')
@@ -74,7 +74,7 @@ The example below passes only the required fields to document().  The optional p
 
 Group Interface 2
 -----------------
-The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_batch_v2.TcExBatch.group` method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as **eventDate** for an Event Group the :py:meth:`~tcex.tcex_batch_v2.Group.add_key_value` method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.
+The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_batch_v2.TcExBatch.group` method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as **eventDate** for an Event Group the :py:meth:`~tcex.tcex_batch_v2.Group.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__).  Adding metadata behaves the same as in Interface 1.
 
 .. code-block:: python
     :linenos:
@@ -88,17 +88,32 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
     event.attribute('Description', 'Example Description 2', True, 'source')
     event.tag('Example Tag')
 
-Group Interface 3
------------------
-The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.
+The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other groups to which file contents can be added):
 
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 2-18
+    :emphasize-lines: 3-7
 
     batch = tcex.batch('MyOrg')
-    xid = tcex.batch.generate_xid(['my', 'adversary', '123']
+    document = batch_job.group('Document', 'document-001', 'my-xid-0001')
+    document.add_file('test.txt', 'Document content here...')
+    document.add_key_value('fileName', 'test.txt')
+    document.attribute('Description', 'Example Description', True, 'Attribute source')
+    document.tag('Example Tag')
+    document.security_label('TLP Green')
+
+Group Interface 3
+-----------------
+The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  You can view the required fields for each group type `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__.
+
+.. code-block:: python
+    :linenos:
+    :lineno-start: 1
+    :emphasize-lines: 3-20
+
+    batch = tcex.batch('MyOrg')
+    xid = batch.generate_xid(['my', 'adversary', '123'])
     batch.add_group({
         'name': 'document-002',
         'fileName': 'test2.txt',
@@ -163,7 +178,7 @@ The first interface is for type specific access.  This interface allows for pass
 
 Indicator Interface 2
 ---------------------
-The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_batch_v2.TcExBatch.indicator` method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as **size** for a File indicator the :py:meth:`~tcex.tcex_batch_v2.Indicator.add_key_value` method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.
+The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_batch_v2.TcExBatch.indicator` method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as **size** for a File indicator the :py:meth:`~tcex.tcex_batch_v2.Indicator.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__).  Adding metadata behaves the same as in Interface 1.
 
 .. code-block:: python
     :linenos:
@@ -179,7 +194,7 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
 
 Indicator Interface 3
 ---------------------
-The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data.
+The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. You can view the required fields for each indicator type `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__.
 
 .. code-block:: python
     :linenos:

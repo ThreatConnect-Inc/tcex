@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.18 documentation</title>
+  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.20 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.18 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.20 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.18
+                0.8.20
               </div>
             
           
@@ -229,7 +229,8 @@
 <div class="viewcode-block" id="TcExBatch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch">[docs]</a><span class="k">class</span> <span class="nc">TcExBatch</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">playbook_triggers_enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
@@ -246,6 +247,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="o">=</span> <span class="mi">5000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_halt_on_error</span> <span class="o">=</span> <span class="n">halt_on_error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="o">=</span> <span class="n">playbook_triggers_enabled</span>
+
+        <span class="c1"># shelf settings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_shelf_fqfn</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_shelf_fqfn</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -716,8 +720,9 @@
                     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
                 <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">GROUPS_STRINGS_WITH_FILE_CONTENTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Report&#39;</span><span class="p">]</span>
             <span class="c1"># process file content</span>
-            <span class="k">if</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;Report&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">GROUPS_STRINGS_WITH_FILE_CONTENTS</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">group_data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">file_data</span>
             <span class="n">group_data</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">data</span>
         <span class="k">return</span> <span class="n">group_data</span></div>
@@ -1160,7 +1165,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># calculate poll_interval base off the number of entries in the batch data</span>
             <span class="c1"># with a minimum value of 5 seconds.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">/</span> <span class="mi">250</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">/</span> <span class="mi">300</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># if not able to calculate poll_interval default to 15 seconds</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval</span> <span class="o">=</span> <span class="mi">15</span>
@@ -1208,7 +1213,8 @@
 
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span><span class="p">:</span>
                 <span class="c1"># store last 5 poll times to use in calculating average poll time</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[(</span><span class="n">poll_time_total</span> <span class="o">*</span> <span class="o">.</span><span class="mi">6</span><span class="p">)]</span>
+                <span class="n">modifier</span> <span class="o">=</span> <span class="n">poll_time_total</span> <span class="o">*</span> <span class="o">.</span><span class="mi">7</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll_interval_times</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">modifier</span><span class="p">]</span>
 
                 <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">poll_interval_time_weighted_sum</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1370,7 +1376,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return batch job settings.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
+        <span class="n">_settings</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_action</span><span class="p">,</span>
             <span class="c1"># not supported in v2 batch</span>
             <span class="c1"># &#39;attributeWriteType&#39;: self._attribute_write_type,</span>
@@ -1379,6 +1385,9 @@
             <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="p">,</span>
             <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;V2&#39;</span>
         <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;playbookTriggersEnabled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_settings</span>
 
 <div class="viewcode-block" id="TcExBatch.signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.signature">[docs]</a>    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">file_text</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add Signature data to Batch object.</span>
@@ -1435,6 +1444,7 @@
             <span class="n">halt_on_error</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batchStatus&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">batch_id</span> <span class="o">=</span> <span class="n">batch_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">batch_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch ID: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batch_id</span><span class="p">))</span>
             <span class="c1"># job hit queue</span>
             <span class="k">if</span> <span class="n">poll</span><span class="p">:</span>
                 <span class="c1"># poll for status</span>
@@ -1537,8 +1547,8 @@
 
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
         <span class="c1"># store the length of the batch data to use for poll interval calculations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Size: </span><span class="si">{:,}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_data_count</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Group Size: </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Batch Indicator Size </span><span class="si">{:,}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indicator&#39;</span><span class="p">))))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
             <span class="c1"># special code for debugging App using batchV2.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_batch_json</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
@@ -1812,6 +1822,7 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># processed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_processed</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1829,6 +1840,21 @@
             <span class="n">xid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">xid</span></div>
+
+<div class="viewcode-block" id="Group.add_file"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a file for Document and Report types.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            document = tcex.batch.group(&#39;Document&#39;, &#39;My Document&#39;)</span>
+<span class="sd">            document.add_file(&#39;my_file.txt&#39;, &#39;my contents&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The name of the file.</span>
+<span class="sd">            file_content (bytes|method|str): The contents of the file or callback to get contents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span></div>
 
 <div class="viewcode-block" id="Group.add_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">add_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add custom field to Group object.</span>
@@ -1915,6 +1941,15 @@
                 <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group file (only supported for Document and Report).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2053,11 +2088,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
         <span class="c1"># file data/content to upload</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="n">file_content</span><span class="p">,</span>
-            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="n">file_name</span><span class="p">,</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
-        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
         <span class="k">if</span> <span class="n">malware</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;malware&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">malware</span>
         <span class="k">if</span> <span class="n">password</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2066,17 +2097,21 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileContent&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
 
     <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Document or Report file data.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span><span class="p">[</span><span class="s1">&#39;fileContent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">malware</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2296,11 +2331,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Report</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Report&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
         <span class="c1"># file data/content to upload</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="n">file_content</span><span class="p">,</span>
-            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="n">file_name</span><span class="p">,</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
-        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
         <span class="k">if</span> <span class="n">publish_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;publishDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
                 <span class="n">publish_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
@@ -2308,17 +2339,21 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileContent&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
 
     <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set Document or Report file data.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span><span class="p">[</span><span class="s1">&#39;fileContent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_data</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">publish_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3215,7 +3250,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.18',
+            VERSION:'0.8.20',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

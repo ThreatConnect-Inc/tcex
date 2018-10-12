@@ -1804,6 +1804,15 @@ class Adversary(Group):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
 
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
+
 
 class Campaign(Group):
     """Campaign Resource Class
@@ -1822,6 +1831,15 @@ class Campaign(Group):
         self._name = 'Campaign'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
+
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
 
 
 class Document(Group):
@@ -1905,6 +1923,15 @@ class Event(Group):
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
 
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
+
 
 class Incident(Group):
     """Incident Resource Class
@@ -1934,6 +1961,15 @@ class Incident(Group):
         """
         pass
 
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
+
 
 class Intrusion_Set(Group):
     """Intrusion Set Resource Class
@@ -1952,6 +1988,15 @@ class Intrusion_Set(Group):
         self._name = 'Intrusion Set'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
+
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
 
 
 class Report(Group):
@@ -2021,6 +2066,15 @@ class Signature(Group):
         self.resource_id(str(resource_id))
         self._request_uri = '{}/download'.format(self._request_uri)
 
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
+
 
 class Threat(Group):
     """Threat Resource Class
@@ -2039,6 +2093,15 @@ class Threat(Group):
         self._name = 'Threat'
         self._request_entity = self._api_entity
         self._request_uri = self._api_uri
+
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
+
+        Args:
+            resource_id (integer): The group id.
+        """
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
 
 
 #
@@ -2381,13 +2444,14 @@ class Task(Resource):
         if escalatee is not None:
             self._request_uri = '{}/{}'.format(self._request_uri, escalatee)
 
-    def task_id(self, resource_id):
-        """Update the request URI to include the Task Id for specific retrieval.
+    def pdf(self, resource_id):
+        """Update the request URI to get the pdf for this resource.
 
         Args:
-            resource_id (string): The task id.
+            resource_id (integer): The group id.
         """
-        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
+        self.resource_id(str(resource_id))
+        self._request_uri = '{}/pdf'.format(self._request_uri)
 
     def resource_id(self, resource_id):
         """Alias for task_id method
@@ -2398,6 +2462,14 @@ class Task(Resource):
             resource_id (string): The task id.
         """
         self.task_id(resource_id)
+
+    def task_id(self, resource_id):
+        """Update the request URI to include the Task Id for specific retrieval.
+
+        Args:
+            resource_id (string): The task id.
+        """
+        self._request_uri = '{}/{}'.format(self._request_uri, resource_id)
 
 
 #
