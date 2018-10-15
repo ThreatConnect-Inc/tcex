@@ -6,6 +6,14 @@ Release Notes
 0.8.x
 =====
 
+0.8.21
+------
++ Added PDF method to resource module for supported group types.
++ Added task_id method for Task class.
++ Added date_added property to Indicator and Groups objects.
++ Added last_modified property to Indicator objects.
++ Updated tcrun for handling Binary/BinaryArray validation.
+
 0.8.20
 ------
 + Fixed deletion in the batch module for TC instances < 5.7.
