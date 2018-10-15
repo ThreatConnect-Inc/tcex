@@ -352,52 +352,52 @@ class TcExBatch(object):
                 indicator_data['flag2'] = whois_active
         return self._indicator(indicator_data)
 
-    def address(self, ip, xid, **kwargs):
+    def address(self, ip, **kwargs):
         """Add Address data to Batch object.
 
         Args:
             ip (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of Address.
         """
-        indicator_obj = Address(ip, xid, **kwargs)
+        indicator_obj = Address(ip, **kwargs)
         return self._indicator(indicator_obj)
 
-    def adversary(self, name, xid, **kwargs):
+    def adversary(self, name, **kwargs):
         """Add Adversary data to Batch object.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Adversary.
         """
-        group_obj = Adversary(name, xid, **kwargs)
+        group_obj = Adversary(name, **kwargs)
         return self._group(group_obj)
 
-    def asn(self, as_number, xid, **kwargs):
+    def asn(self, as_number, **kwargs):
         """Add ASN data to Batch object.
 
         Args:
             as_number (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
-            confidence (str, optional): The threat confidence for this Indicator.
+            confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
-            rating (str, optional): The threat rating for this Indicator.
+            rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of ASN.
         """
-        indicator_obj = ASN(as_number, xid, **kwargs)
+        indicator_obj = ASN(as_number, **kwargs)
         return self._indicator(indicator_obj)
 
     @property
@@ -410,36 +410,36 @@ class TcExBatch(object):
         """Set batch attribute write type."""
         self._attribute_write_type = attribute_write_type
 
-    def campaign(self, name, xid, **kwargs):
+    def campaign(self, name, **kwargs):
         """Add Campaign data to Batch object.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            first_seen (str, optional): The first seen datetime expression for this Group.
+            first_seen (str, kwargs): The first seen datetime expression for this Group.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Campaign.
         """
-        group_obj = Campaign(name, xid, **kwargs)
+        group_obj = Campaign(name, **kwargs)
         return self._group(group_obj)
 
-    def cidr(self, block, xid, **kwargs):
+    def cidr(self, block, **kwargs):
         """Add CIDR data to Batch object.
 
         Args:
             block (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of CIDR.
         """
-        indicator_obj = CIDR(block, xid, **kwargs)
+        indicator_obj = CIDR(block, **kwargs)
         return self._indicator(indicator_obj)
 
     def close(self):
@@ -454,7 +454,7 @@ class TcExBatch(object):
                 for xid in self.saved_xids:
                     fh.write('{}\n'.format(xid))
         else:
-            # don't delete saved files
+            # delete saved files
             if os.path.isfile(self.group_shelf_fqfn):
                 os.remove(self.group_shelf_fqfn)
             if os.path.isfile(self.group_shelf_fqfn):
@@ -598,26 +598,26 @@ class TcExBatch(object):
             debug = True
         return debug
 
-    def document(self, name, file_name, xid, **kwargs):
+    def document(self, name, file_name, **kwargs):
         """Add Document data to Batch object.
 
         Args:
             name (str): The name for this Group.
             file_name (str): The name for the attached file for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            file_content (str;method, kwargs):
-                The file contents or callback method to retrieve file content.
+            file_content (str;method, kwargs): The file contents or callback method to retrieve
+                                               file content.
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Document.
         """
-        group_obj = Document(name, file_name, xid, **kwargs)
+        group_obj = Document(name, file_name, **kwargs)
         return self._group(group_obj)
 
-    def email(self, name, subject, header, body, xid, **kwargs):
+    def email(self, name, subject, header, body, **kwargs):
         """Add Email data to Batch object.
 
         Args:
@@ -625,32 +625,32 @@ class TcExBatch(object):
             subject (str): The subject for this Email.
             header (str): The header for this Email.
             body (str): The body for this Email.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             from_addr (str, kwargs): The **from** address for this Email.
             to_addr (str, kwargs): The **to** address for this Email.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Email.
         """
-        group_obj = Email(name, subject, header, body, xid, **kwargs)
+        group_obj = Email(name, subject, header, body, **kwargs)
         return self._group(group_obj)
 
-    def email_address(self, address, xid, **kwargs):
+    def email_address(self, address, **kwargs):
         """Add Email Address data to Batch object.
 
         Args:
             address (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of EmailAddress.
         """
-        indicator_obj = EmailAddress(address, xid, **kwargs)
+        indicator_obj = EmailAddress(address, **kwargs)
         return self._indicator(indicator_obj)
 
     def errors(self, batch_id, halt_on_error=True):
@@ -693,23 +693,23 @@ class TcExBatch(object):
         except Exception as e:
             self.tcex.handle_error(560, [e], halt_on_error)
 
-    def event(self, name, xid, **kwargs):
+    def event(self, name, **kwargs):
         """Add Event data to Batch object.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Event.
         """
-        group_obj = Event(name, xid, **kwargs)
+        group_obj = Event(name, **kwargs)
         return self._group(group_obj)
 
-    def file(self, md5=None, sha1=None, sha256=None, xid=None, **kwargs):
+    def file(self, md5=None, sha1=None, sha256=None, **kwargs):
         """Add File data to Batch object.
 
         .. note:: A least one file hash value must be specified.
@@ -718,17 +718,17 @@ class TcExBatch(object):
             md5 (str, optional): The md5 value for this Indicator.
             sha1 (str, optional): The sha1 value for this Indicator.
             sha256 (str, optional): The sha256 value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of File.
         """
-        indicator_obj = File(md5, sha1, sha256, xid, **kwargs)
+        indicator_obj = File(md5, sha1, sha256, **kwargs)
         return self._indicator(indicator_obj)
 
     @property
@@ -736,7 +736,8 @@ class TcExBatch(object):
         """Return dictionary containing all of the file content or callbacks."""
         return self._files
 
-    def generate_xid(self, identifier=None):
+    @staticmethod
+    def generate_xid(identifier=None):
         """Generate xid from provided identifiers.
 
         .. Important::  If no identifier is provided a unique xid will be returned, but it will
@@ -755,19 +756,19 @@ class TcExBatch(object):
             identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
         return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
-    def group(self, group_type, name, xid, **kwargs):
+    def group(self, group_type, name, **kwargs):
         """Add Group data to Batch object.
 
         Args:
             group_type (str): The ThreatConnect define Group type.
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Group.
         """
-        group_obj = Group(group_type, name, xid, **kwargs)
+        group_obj = Group(group_type, name, **kwargs)
         return self._group(group_obj)
 
     @property
@@ -799,8 +800,6 @@ class TcExBatch(object):
     def groups_shelf(self):
         """Return dictionary of all Groups data."""
         if self._groups_shelf is None:
-            # TODO: let gc close or implicit close? there could be significant overhead/delay in
-            #       manually closing.
             self._groups_shelf = shelve.open(self.group_shelf_fqfn, writeback=False)
         return self._groups_shelf
 
@@ -847,57 +846,57 @@ class TcExBatch(object):
         if isinstance(value, bool):
             self._halt_on_poll_error = value
 
-    def host(self, hostname, xid, **kwargs):
+    def host(self, hostname, **kwargs):
         """Add Email Address data to Batch object.
 
         Args:
             hostname (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of Host.
         """
-        indicator_obj = Host(hostname, xid, **kwargs)
+        indicator_obj = Host(hostname, **kwargs)
         return self._indicator(indicator_obj)
 
-    def incident(self, name, xid, **kwargs):
+    def incident(self, name, **kwargs):
         """Add Incident data to Batch object.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Incident.
         """
-        group_obj = Incident(name, xid, **kwargs)
+        group_obj = Incident(name, **kwargs)
         return self._group(group_obj)
 
-    def indicator(self, indicator_type, summary, xid, **kwargs):
+    def indicator(self, indicator_type, summary, **kwargs):
         """Add Indicator data to Batch object.
 
         Args:
             indicator_type (str): The ThreatConnect define Indicator type.
             summary (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of Indicator.
         """
-        indicator_obj = Indicator(indicator_type, summary, xid, **kwargs)
+        indicator_obj = Indicator(indicator_type, summary, **kwargs)
         return self._indicator(indicator_obj)
 
     @property
@@ -930,40 +929,38 @@ class TcExBatch(object):
     def indicators_shelf(self):
         """Return dictionary of all Indicator data."""
         if self._indicators_shelf is None:
-            # TODO: let gc close or implicit close? there could be significant overhead/delay in
-            #       manually closing.
             self._indicators_shelf = shelve.open(self.indicator_shelf_fqfn, writeback=False)
         return self._indicators_shelf
 
-    def intrusion_set(self, name, xid, **kwargs):
+    def intrusion_set(self, name, **kwargs):
         """Add Intrusion Set data to Batch object.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of IntrusionSet.
         """
-        group_obj = IntrusionSet(name, xid, **kwargs)
+        group_obj = IntrusionSet(name, **kwargs)
         return self._group(group_obj)
 
-    def mutex(self, mutex, xid, **kwargs):
+    def mutex(self, mutex, **kwargs):
         """Add Mutex data to Batch object.
 
         Args:
             mutex (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of Mutex.
         """
-        indicator_obj = Mutex(mutex, xid, **kwargs)
+        indicator_obj = Mutex(mutex, **kwargs)
         return self._indicator(indicator_obj)
 
     def poll(self, batch_id, retry_seconds=None, back_off=None, timeout=None, halt_on_error=True):
@@ -1094,41 +1091,41 @@ class TcExBatch(object):
         """Set the poll timeout value."""
         self._poll_timeout = int(seconds)
 
-    def registry_key(self, key_name, value_name, value_type, xid, **kwargs):
+    def registry_key(self, key_name, value_name, value_type, **kwargs):
         """Add Registry Key data to Batch object.
 
         Args:
             key_name (str): The key_name value for this Indicator.
             value_name (str): The value_name value for this Indicator.
             value_type (str): The value_type value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of Registry Key.
         """
-        indicator_obj = RegistryKey(key_name, value_name, value_type, xid, **kwargs)
+        indicator_obj = RegistryKey(key_name, value_name, value_type, **kwargs)
         return self._indicator(indicator_obj)
 
-    def report(self, name, xid, **kwargs):
+    def report(self, name, **kwargs):
         """Add Report data to Batch object.
 
         Args:
             name (str): The name for this Group.
             file_name (str): The name for the attached file for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             file_content (str;method, kwargs): The file contents or callback method to retrieve
                 file content.
             publish_date (str, kwargs): The publish datetime expression for this Group.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Report.
         """
-        group_obj = Report(name, xid, **kwargs)
+        group_obj = Report(name, **kwargs)
         return self._group(group_obj)
 
     def save(self, resource):
@@ -1230,7 +1227,7 @@ class TcExBatch(object):
             _settings['playbookTriggersEnabled'] = str(self._playbook_triggers_enabled).lower()
         return _settings
 
-    def signature(self, name, file_name, file_type, file_text, xid, **kwargs):
+    def signature(self, name, file_name, file_type, file_text, **kwargs):
         """Add Signature data to Batch object.
 
         Valid file_types:
@@ -1249,13 +1246,13 @@ class TcExBatch(object):
             file_name (str): The name for the attached signature for this Group.
             file_type (str): The signature type for this Group.
             file_text (str): The signature content for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Signature.
         """
-        group_obj = Signature(name, file_name, file_type, file_text, xid, **kwargs)
+        group_obj = Signature(name, file_name, file_type, file_text, **kwargs)
         return self._group(group_obj)
 
     def submit(self, poll=True, errors=True, process_files=True, halt_on_error=True):
@@ -1536,52 +1533,52 @@ class TcExBatch(object):
         self.tcex.log.debug('Batch Submit Data: {}'.format(data))
         return data.get('data', {}).get('batchId')
 
-    def threat(self, name, xid, **kwargs):
+    def threat(self, name, **kwargs):
         """Add Threat data to Batch object
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
 
         Returns:
             obj: An instance of Threat.
         """
-        group_obj = Threat(name, xid, **kwargs)
+        group_obj = Threat(name, **kwargs)
         return self._group(group_obj)
 
-    def user_agent(self, text, xid, **kwargs):
+    def user_agent(self, text, **kwargs):
         """Add User Agent data to Batch object
 
         Args:
             text (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of UserAgent.
         """
-        indicator_obj = UserAgent(text, xid, **kwargs)
+        indicator_obj = UserAgent(text, **kwargs)
         return self._indicator(indicator_obj)
 
-    def url(self, text, xid, **kwargs):
+    def url(self, text, **kwargs):
         """Add URL Address data to Batch object.
 
         Args:
             text (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
 
         Returns:
             obj: An instance of URL.
         """
-        indicator_obj = URL(text, xid, **kwargs)
+        indicator_obj = URL(text, **kwargs)
         return self._indicator(indicator_obj)
 
     def write_batch_json(self, content):
@@ -1662,48 +1659,47 @@ class Group(object):
         '_tags',
         '_utils']
 
-    def __init__(self, group_type, name, xid, **kwargs):
+    def __init__(self, group_type, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             group_type (str): The ThreatConnect define Group type.
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
-            kwargs (optional): Optional key value pairs for Group Data.
+            xid (str, kwargs): The external id for this Group.
         """
         self._utils = TcExUtils()
         self._name = name
         self._type = group_type
         self._group_data = {
             'name': name,
-            'type': group_type,
-            'xid': xid
+            'type': group_type
         }
-        for arg, val in kwargs.items():
-            # TODO: BCS - create field map for dns_active to flag2. if not in map then used
-            #       provided arg value.
-            self._group_data[arg] = val
-        if kwargs.get('date_added') is not None:
-            self._group_data['dateAdded'] = self._utils.format_datetime(
-                kwargs.get('date_added'), date_format='%Y-%m-%dT%H:%M:%SZ')
+        # process all kwargs and update metadata field names
+        for arg, value in kwargs.items():
+            self.add_key_value(arg, value)
+        # set xid to random and unique uuid4 value if not provided
+        if kwargs.get('xid') is None:
+            self._group_data['xid'] = str(uuid.uuid4())
         self._attributes = []
         self._labels = []
         self._file_content = None
         self._tags = []
         self._processed = False
 
-    # def _xid(self, xid):
-    #     """Return a valid xid."""
-    #     if xid is True or xid is None:
-    #         # generate a reproducible value for xid
-    #         xid_string = '{}-{}'.format(self._type, self._name)
-    #         hash_object = hashlib.sha256(xid_string.encode('utf-8'))
-    #         xid = hash_object.hexdigest()
-    #     elif xid is False:
-    #         # generate a random value for xid
-    #         xid = str(uuid.uuid4())
-
-    #     return xid
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Group objects."""
+        return {
+            'date_added': 'dateAdded',
+            'event_date': 'eventDate',
+            'file_name': 'fileName',
+            'file_text': 'fileText',
+            'file_type': 'fileType',
+            'first_seen': 'firstSeen',
+            'from_addr': 'from',
+            'publish_date': 'publishDate',
+            'to_addr': 'to'
+        }
 
     def add_file(self, filename, file_content):
         """Add a file for Document and Report types.
@@ -1734,7 +1730,15 @@ class Group(object):
             key (str): The field key to add to the JSON batch data.
             value (str): The field value to add to the JSON batch data.
         """
-        self._group_data[key] = value
+        key = self._metadata_map.get(key, key)
+        if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
+            self._group_data[key] = self._utils.format_datetime(
+                value, date_format='%Y-%m-%dT%H:%M:%SZ')
+        elif key == 'file_content':
+            # file content arg is not part of Group JSON
+            pass
+        else:
+            self._group_data[key] = value
 
     def association(self, group_xid):
         """Add association using xid value.
@@ -1906,35 +1910,31 @@ class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Adversary, self).__init__('Adversary', name, xid, **kwargs)
+        super(Adversary, self).__init__('Adversary', name, **kwargs)
 
 
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Campaign, self).__init__('Campaign', name, xid, **kwargs)
-        if kwargs.get('first_seen') is not None:
-            del self._group_data['first_seen']
-            self._group_data['firstSeen'] = self._utils.format_datetime(
-                kwargs.get('first_seen'), date_format='%Y-%m-%dT%H:%M:%SZ')
+        super(Campaign, self).__init__('Campaign', name, **kwargs)
 
     @property
     def first_seen(self):
@@ -1952,27 +1952,23 @@ class Document(Group):
     """ThreatConnect Batch Document Object"""
     __slots__ = ['_file_data', '_group_data']
 
-    def __init__(self, name, file_name, xid, **kwargs):
+    def __init__(self, name, file_name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
             file_name (str): The name for the attached file for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             file_content (str;method, kwargs): The file contents or callback method to retrieve
-                file content.
+                                               file content.
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is required.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Document, self).__init__('Document', name, xid, **kwargs)
+        super(Document, self).__init__('Document', name, **kwargs)
         self._group_data['fileName'] = file_name
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
-        # if kwargs.get('malware') is not None:
-        #     self._group_data['malware'] = kwargs.get('malware')
-        # if kwargs.get('password') is not None:
-        #     self._group_data['password'] = kwargs.get('password')
 
     @property
     def file_content(self):
@@ -2018,7 +2014,7 @@ class Email(Group):
     """ThreatConnect Batch Email Object"""
     __slots__ = []
 
-    def __init__(self, name, subject, header, body, xid, **kwargs):
+    def __init__(self, name, subject, header, body, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -2026,20 +2022,16 @@ class Email(Group):
             subject (str): The subject for this Email.
             header (str): The header for this Email.
             body (str): The body for this Email.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             from_addr (str, kwargs): The **from** address for this Email.
             to_addr (str, kwargs): The **to** address for this Email.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Email, self).__init__('Email', name, xid, **kwargs)
+        super(Email, self).__init__('Email', name, **kwargs)
         self._group_data['subject'] = subject
         self._group_data['header'] = header
         self._group_data['body'] = body
         self._group_data['score'] = 0
-        if kwargs.get('to_addr') is not None:
-            self._group_data['to'] = kwargs.get('to_addr')
-        if kwargs.get('from_addr') is not None:
-            self._group_data['from'] = kwargs.get('from_addr')
 
     @property
     def from_addr(self):
@@ -2076,7 +2068,7 @@ class Event(Group):
     """ThreatConnect Batch Event Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -2087,18 +2079,12 @@ class Event(Group):
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Event, self).__init__('Event', name, xid, **kwargs)
-        if kwargs.get('event_date') is not None:
-            del self._group_data['event_date']
-            self._group_data['eventDate'] = self._utils.format_datetime(
-                kwargs.get('event_date'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        if kwargs.get('status') is not None:
-            self._group_data['status'] = kwargs.get('status')
+        super(Event, self).__init__('Event', name, **kwargs)
 
     @property
     def event_date(self):
@@ -2126,7 +2112,7 @@ class Incident(Group):
     """ThreatConnect Batch Incident Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Valid Values:
@@ -2142,21 +2128,12 @@ class Incident(Group):
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Incident, self).__init__('Incident', name, xid, **kwargs)
-        if kwargs.get('event_date') is not None:
-            del self._group_data['event_date']
-            self._group_data['eventDate'] = self._utils.format_datetime(
-                kwargs.get('event_date'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        if kwargs.get('eventDate') is not None:
-            self._group_data['eventDate'] = self._utils.format_datetime(
-                kwargs.get('eventDate'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        # if status is not None:
-        #     self._group_data['status'] = status
+        super(Incident, self).__init__('Incident', name, **kwargs)
 
     @property
     def event_date(self):
@@ -2196,46 +2173,36 @@ class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(IntrusionSet, self).__init__('Intrusion Set', name, xid, **kwargs)
+        super(IntrusionSet, self).__init__('Intrusion Set', name, **kwargs)
 
 
 class Report(Group):
     """ThreatConnect Batch Report Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             file_name (str, kwargs): The name for the attached file for this Group.
             file_content (str;method, kwargs): The file contents or callback method to retrieve
                                                file content.
             publish_date (str, kwargs): The publish datetime expression for this Group.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Report, self).__init__('Report', name, xid, **kwargs)
-        if kwargs.get('file_name') is not None:
-            del self._group_data['file_name']
-            self._group_data['fileName'] = kwargs.get('file_name')
+        super(Report, self).__init__('Report', name, **kwargs)
         # file data/content to upload
         self._file_content = kwargs.get('file_content')
-        if kwargs.get('publish_date') is not None:
-            del self._group_data['publish_date']
-            self._group_data['publishDate'] = self._utils.format_datetime(
-                kwargs.get('publish_date'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        # if kwargs.get('publishDate') is not None:
-        #     self._group_data['publishDate'] = self._utils.format_datetime(
-        #         kwargs.get('publishDate'), date_format='%Y-%m-%dT%H:%M:%SZ')
 
     @property
     def file_content(self):
@@ -2272,7 +2239,7 @@ class Signature(Group):
     """ThreatConnect Batch Signature Object"""
     __slots__ = []
 
-    def __init__(self, name, file_name, file_type, file_text, xid, **kwargs):
+    def __init__(self, name, file_name, file_type, file_text, **kwargs):
         """Initialize Class Properties.
 
         Valid file_types:
@@ -2291,10 +2258,10 @@ class Signature(Group):
             file_name (str): The name for the attached signature for this Group.
             file_type (str): The signature type for this Group.
             file_text (str): The signature content for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Signature, self).__init__('Signature', name, xid, **kwargs)
+        super(Signature, self).__init__('Signature', name, **kwargs)
         self._group_data['fileName'] = file_name
         self._group_data['fileType'] = file_type
         self._group_data['fileText'] = file_text
@@ -2304,15 +2271,15 @@ class Threat(Group):
     """ThreatConnect Batch Threat Object"""
     __slots__ = []
 
-    def __init__(self, name, xid, **kwargs):
+    def __init__(self, name, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
-            xid (str): The external id for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
+            xid (str, kwargs): The external id for this Group.
         """
-        super(Threat, self).__init__('Threat', name, xid, **kwargs)
+        super(Threat, self).__init__('Threat', name, **kwargs)
 
 
 #
@@ -2333,56 +2300,52 @@ class Indicator(object):
         '_type',
         '_utils']
 
-    def __init__(self, indicator_type, summary, xid, **kwargs):
+    def __init__(self, indicator_type, summary, **kwargs):
         """Initialize Class Properties.
 
         Args:
             indicator_type (str): The ThreatConnect define Indicator type.
             summary (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
         self._utils = TcExUtils()
         self._summary = summary
         self._type = indicator_type
         self._indicator_data = {
             'summary': summary,
-            'type': indicator_type,
-            'xid': xid
+            'type': indicator_type
         }
+        # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
-            self._indicator_data[arg] = value
-        if kwargs.get('confidence') is not None:
-            self._indicator_data['confidence'] = int(kwargs.get('confidence'))
-        if kwargs.get('date_added') is not None:
-            self._indicator_data['dateAdded'] = self._utils.format_datetime(
-                kwargs.get('date_added'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        if kwargs.get('last_modified') is not None:
-            self._indicator_data['lastModified'] = self._utils.format_datetime(
-                kwargs.get('last_modified'), date_format='%Y-%m-%dT%H:%M:%SZ')
-        if kwargs.get('rating') is not None:
-            self._indicator_data['rating'] = float(kwargs.get('rating'))
+            self.add_key_value(arg, value)
+        # set xid to random and unique uuid4 value if not provided
+        if kwargs.get('xid') is None:
+            self._indicator_data['xid'] = str(uuid.uuid4())
         self._attributes = []
         self._file_actions = []
         self._labels = []
         self._occurrences = []
         self._tags = []
 
-    # def _xid(self, xid):
-    #     """Return a valid xid."""
-    #     if xid is True or xid is None:
-    #         # generate a reproducible value for xid
-    #         xid_string = '{}-{}'.format(self._type, self._summary)
-    #         hash_object = hashlib.sha256(xid_string.encode('utf-8'))
-    #         xid = hash_object.hexdigest()
-    #     elif xid is False:
-    #         # generate a random value for xid
-    #         xid = str(uuid.uuid4())
-
-    #     return xid
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Indicator objects."""
+        return {
+            'date_added': 'dateAdded',
+            'dnsActive': 'flag1',
+            'dns_active': 'flag1',
+            'last_modified': 'lastModified',
+            'private_flag': 'privateFlag',
+            'size': 'intValue1',
+            'whoisActive': 'flag2',
+            'whois_active': 'flag2'
+        }
 
     def add_key_value(self, key, value):
         """Add custom field to Indicator object.
@@ -2398,15 +2361,16 @@ class Indicator(object):
             key (str): The field key to add to the JSON batch data.
             value (str): The field value to add to the JSON batch data.
         """
-        if self._indicator_data.get('type') == 'File':
-            if key == 'size':
-                key = 'intValue1'
-        if self._indicator_data.get('type') == 'Host':
-            if key == 'dnsActive':
-                key = 'flag1'
-            elif key == 'whoisActive':
-                key = 'flag2'
-        self._indicator_data[key] = value
+        key = self._metadata_map.get(key, key)
+        if key in ['dateAdded', 'lastModified']:
+            self._indicator_data[key] = self._utils.format_datetime(
+                value, date_format='%Y-%m-%dT%H:%M:%SZ')
+        elif key == 'confidence':
+            self._indicator_data[key] = int(value)
+        elif key == 'rating':
+            self._indicator_data[key] = float(value)
+        else:
+            self._indicator_data[key] = value
 
     @property
     def active(self):
@@ -2478,8 +2442,7 @@ class Indicator(object):
         if val3 is not None:
             summary.append(val3)
         if not summary:
-            ## BCS
-            # self.tcex.handle_error(590)
+            # Indicator object has no logger to output warning
             pass
         return ' : '.join(summary)
 
@@ -2560,9 +2523,8 @@ class Indicator(object):
             obj: An instance of Occurrence.
         """
         if self._indicator_data.get('type') != 'File':
-            ## BCS
-            # self.tcex.handle_error(520, [self._indicator_data.get('type')], True)
-            pass
+            # Indicator object has no logger to output warning
+            return
 
         occurrence_obj = FileOccurrence(file_name, path, date)
         self._occurrences.append(occurrence_obj)
@@ -2655,97 +2617,104 @@ class Address(Indicator):
     """ThreatConnect Batch Address Object"""
     __slots__ = []
 
-    def __init__(self, ip, xid, **kwargs):
+    def __init__(self, ip, **kwargs):
         """Initialize Class Properties.
 
         Args:
             ip (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(Address, self).__init__('Address', ip, xid, **kwargs)
+        super(Address, self).__init__('Address', ip, **kwargs)
 
 
 class ASN(Indicator):
     """ThreatConnect Batch ASN Object."""
     __slots__ = []
 
-    def __init__(self, as_number, xid, **kwargs):
+    def __init__(self, as_number, **kwargs):
         """Initialize Class Properties.
 
         Args:
             as_number (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(ASN, self).__init__('ASN', as_number, xid, **kwargs)
+        super(ASN, self).__init__('ASN', as_number, **kwargs)
 
 
 class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
     __slots__ = []
 
-    def __init__(self, block, xid, **kwargs):
+    def __init__(self, block, **kwargs):
         """Initialize Class Properties.
 
         Args:
             block (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(CIDR, self).__init__('CIDR', block, xid, **kwargs)
+        super(CIDR, self).__init__('CIDR', block, **kwargs)
 
 
 class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
     __slots__ = []
 
-    def __init__(self, address, xid, **kwargs):
+    def __init__(self, address, **kwargs):
         """Initialize Class Properties.
 
         Args:
             address (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__('EmailAddress', address, xid, **kwargs)
+        super(EmailAddress, self).__init__('EmailAddress', address, **kwargs)
 
 
 class File(Indicator):
     """ThreatConnect Batch File Object"""
     __slots__ = []
 
-    def __init__(self, md5=None, sha1=None, sha256=None, xid=None, **kwargs):
+    def __init__(self, md5=None, sha1=None, sha256=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
             md5 (str, optional): The md5 value for this Indicator.
             sha1 (str, optional): The sha1 value for this Indicator.
             sha256 (str, optional): The sha256 value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(md5, sha1, sha256)  # build the indicator summary
-        super(File, self).__init__('File', summary, xid, **kwargs)
-        self._indicator_data['type'] = 'File'
-        # if kwargs.get('size')is not None:
-        #     self._indicator_data['intValue1'] = size
+        super(File, self).__init__('File', summary, **kwargs)
         # self._file_action = []
 
     def action(self, relationship):
@@ -2799,26 +2768,22 @@ class Host(Indicator):
     """ThreatConnect Batch Host Object"""
     __slots__ = []
 
-    def __init__(self, hostname, xid, **kwargs):
+    def __init__(self, hostname, **kwargs):
         """Initialize Class Properties.
 
         Args:
             hostname (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(Host, self).__init__('Host', hostname, xid, **kwargs)
-        if kwargs.get('dns_active') is not None:
-            del self._indicator_data['dns_active']
-            self._indicator_data['flag1'] = kwargs.get('dns_active')
-        if kwargs.get('whois_active') is not None:
-            del self._indicator_data['whois_active']
-            self._indicator_data['flag2'] = kwargs.get('dns_active')
+        super(Host, self).__init__('Host', hostname, **kwargs)
 
     @property
     def dns_active(self):
@@ -2845,75 +2810,83 @@ class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
     __slots__ = []
 
-    def __init__(self, mutex, xid, **kwargs):
+    def __init__(self, mutex, **kwargs):
         """Initialize Class Properties.
 
         Args:
             mutex (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(Mutex, self).__init__('Mutex', mutex, xid, **kwargs)
+        super(Mutex, self).__init__('Mutex', mutex, **kwargs)
 
 
 class RegistryKey(Indicator):
     """ThreatConnect Batch Registry Key Object"""
     __slots__ = []
 
-    def __init__(self, key_name, value_name, value_type, xid, **kwargs):
+    def __init__(self, key_name, value_name, value_type, **kwargs):
         """Initialize Class Properties.
 
         Args:
             key_name (str): The key_name value for this Indicator.
             value_name (str): The value_name value for this Indicator.
             value_type (str): The value_type value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
         summary = self.build_summary(key_name, value_name, value_type)
-        super(RegistryKey, self).__init__('Registry Key', summary, xid, **kwargs)
+        super(RegistryKey, self).__init__('Registry Key', summary, **kwargs)
 
 
 class URL(Indicator):
     """ThreatConnect Batch URL Object"""
     __slots__ = []
 
-    def __init__(self, text, xid, **kwargs):
+    def __init__(self, text, **kwargs):
         """Initialize Class Properties.
 
         Args:
             text (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__('URL', text, xid, **kwargs)
+        super(URL, self).__init__('URL', text, **kwargs)
 
 
 class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
     __slots__ = []
 
-    def __init__(self, text, xid, **kwargs):
+    def __init__(self, text, **kwargs):
         """Initialize Class Properties.
 
         Args:
             text (str): The value for this Indicator.
-            xid (str): The external id for this Indicator.
+            active (bool, kwargs): If False the indicator is marked "inactive" in TC.
             confidence (str, kwargs): The threat confidence for this Indicator.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
+            private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
+            xid (str, kwargs): The external id for this Indicator.
         """
-        super(UserAgent, self).__init__('User Agent', text, xid, **kwargs)
+        super(UserAgent, self).__init__('User Agent', text, **kwargs)
 
 
 #

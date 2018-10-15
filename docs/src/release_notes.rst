@@ -8,8 +8,9 @@ Release Notes
 
 1.0.0
 -----
-+ **Breaking Change:** Updated all optional args for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.
-+ **Breaking Change:** Updated the decoder arg on the read Binary/BinaryArray methods to be False by default. When set to True the ``read()`` method can't be used in normal use cases.
++ **Breaking Change:** Updated all optional args in batch module for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.
++ **Breaking Change:** Updated the decode arg on the read Binary/BinaryArray methods to be False by default. When set to True the ``read()`` method can't be used in some use cases.
++ **Breaking Change:** Updated the Group and Indicator object in the Batch module to only produce random and unique xids when an xid is not provided.  These objects will no longer produce a unique and reproducible xid.
 
 0.8.x
 =====
