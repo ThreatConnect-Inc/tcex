@@ -167,7 +167,7 @@ def signature_create(batch_job):
         'name': 'signature-003',
         'fileName': 'test.snort',
         'fileType': 'Snort',
-        'fileContent': 'Signature content',
+        'fileText': 'Signature content',
         'type': 'Signature',
         'xid': cleaner._create_xid('Signature', 'signature-003'),
         'attribute': [{
