@@ -75,6 +75,26 @@ def test_retrieval_path_with_spaces():
     assert results['_type'] == TEST_DATASTORE_PATH
 
 
+def test_creation_path_with_unicode():
+    tcex = utility.init_tcex(requires_tc_token=True)
+    resource = tcex.resources.DataStore(tcex)
+    body = {'four': 4}
+    results = resource.create('organization', TEST_DATASTORE_PATH, 'niño', json.dumps(body)).get('data')
+    assert results
+    assert results['_shards']['successful'] == 1
+    assert results['_type'] == TEST_DATASTORE_PATH
+
+
+def test_retrieval_path_with_unicode():
+    tcex = utility.init_tcex(requires_tc_token=True)
+    resource = tcex.resources.DataStore(tcex)
+    results = resource.read('organization', TEST_DATASTORE_PATH, 'niño').get('data')
+    assert results
+    assert results['_source'] == {'four': 4}
+    assert results['found'] == True
+    assert results['_type'] == TEST_DATASTORE_PATH
+
+
 @pytest.fixture(scope="session", autouse=True)
 def cleanup(request):
     """Cleanup the datastore."""
@@ -88,6 +108,9 @@ def cleanup(request):
         assert results['_shards']['successful'] == 1
         assert results['result'] == 'deleted'
         results = resource.delete('organization', TEST_DATASTORE_PATH, 'test ing').get('data')
+        assert results['_shards']['successful'] == 1
+        assert results['result'] == 'deleted'
+        results = resource.delete('organization', TEST_DATASTORE_PATH, 'niño').get('data')
         assert results['_shards']['successful'] == 1
         assert results['result'] == 'deleted'
     request.addfinalizer(clear_datastore)
