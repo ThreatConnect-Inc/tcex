@@ -2536,6 +2536,11 @@ class DataStore(object):
         self.tcex = tcex
         self._params = {}
 
+    @staticmethod
+    def _clean_datastore_path(path):
+        """Clean a path name for use in the datastore."""
+        return str(path).replace(' ', '+')
+
     def _request(self, domain, type_name, search_command, db_method, body=None):
         """Make the API request for a Data Store CRUD operation
 
@@ -2551,6 +2556,7 @@ class DataStore(object):
             'Content-Type': 'application/json',
             'DB-Method': db_method
         }
+        search_command = self._clean_datastore_path(search_command)
         url = '/v2/exchange/db/{}/{}/{}'.format(domain, type_name, search_command)
         r = self.tcex.session.post(url, data=body, headers=headers, params=self._params)
 
