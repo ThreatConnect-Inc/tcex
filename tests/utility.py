@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "./li
 import tcex
 
 
-def init_tcex():
+def init_tcex(requires_tc_token=False):
     """Initialize the tcex instance."""
     tcex_instance = tcex.TcEx()
     tcex_instance.log.debug('Creating content in {}. If this is not correct, pass in a different owner name using the --api_default_org flag.'.format(tcex_instance.args.api_default_org))
@@ -28,6 +28,15 @@ def init_tcex():
     tcex_instance.args.tc_api_path = os.environ['TC_API_PATH']
     tcex_instance.args.api_default_org = os.environ['API_DEFAULT_ORG']
     tcex_instance.args.api_secret_key = os.environ['API_SECRET_KEY']
+
+    if requires_tc_token:
+        if os.environ.get('TC_TOKEN'):
+            tcex_instance.args.tc_token = os.environ['TC_TOKEN']
+            # parse the expiration timestamp from the tc_token
+            tcex_instance.args.tc_token_expires = tcex_instance.args.tc_token.split(':')[4]
+        # if the request requires a token and a token is not found, raise an error
+        else:
+            raise RuntimeError('The TC_TOKEN environmental variable is required and was not found. Please add it (you can find instructions for doing so here: https://gitlab.com/fhightower-tc/tcex-playground#setup).')
 
     # clear out any data in the source
     cleaner.clean(tcex_instance)
