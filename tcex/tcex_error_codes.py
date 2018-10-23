@@ -25,6 +25,10 @@ class TcExErrorCodes(object):
             305: 'An invalid action/association name ({}) was provided.',
             350: 'Data Store request failed. API status code: {}, API message: {}.',
             # batch v2: 500-600
+            500: 'An "xid" key-value pair was not found and is necessary to create a group ' + \
+                 '(see {}).'.format('https://docs.threatconnect.com/en/latest/tcex/batch.html#group-interface-3'),
+            501: 'An "xid" key-value pair was not found and is necessary to create an indicator ' + \
+                 '(see {}).'.format('https://docs.threatconnect.com/en/latest/tcex/batch.html#indicator-interface-3'),
             520: 'File Occurrences can only be added to a File. Current type: {}.',
             540: 'Failed polling batch status ({}).',
             545: 'Failed polling batch status. API status code: {}, API message: {}.',
