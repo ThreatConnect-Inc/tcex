@@ -102,24 +102,32 @@ if __name__ == '__main__':
             # init files for a new App
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
-            if args.type == 'job':
-                tci.download_file('job-install.json', 'install.json')
-                tci.download_file('tc_-_my_job_app.py')
-            elif args.type == 'playbook':
-                tci.download_file('pb-install.json', 'install.json')
-                tci.download_file('tcpb_-_my_playbook_app.py')
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex.json')
-            # if we are dealing with a job app, update the name of the app in the tcex.json
+            tci.download_file('tcex_json_schema.json')
+
             if args.type == 'job':
+                tci.download_file('job/app.py', 'app.py')
+                tci.download_file('job/args.py', 'args.py')
+                tci.download_file('job/install.json', 'install.json')
+                tci.download_file('job/job_app.py', 'job_app.py')
+                tci.download_file('job/run.py', 'run.py')
+                tci.download_file('job/tcex.json', 'tcex.json')
+
+                # if we are dealing with a job app, update the name of the app in the tcex.json
                 with open('tcex.json', 'r') as f:
                     tcex_json = json.load(f)
                     tcex_json['package']['app_name'] = 'TC_-_My_Job_App'
                 with open('tcex.json', 'w') as f:
                     json.dump(tcex_json, f, indent=2)
-            tci.download_file('tcex_json_schema.json')
+            elif args.type == 'playbook':
+                tci.download_file('playbook/app.py', 'app.py')
+                tci.download_file('playbook/args.py', 'args.py')
+                tci.download_file('playbook/install.json', 'install.json')
+                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
+                tci.download_file('playbook/run.py', 'run.py')
+                tci.download_file('playbook/tcex.json', 'tcex.json')
         elif args.action == 'update':
             # update standard files
             tci.download_file('__main__.py')
