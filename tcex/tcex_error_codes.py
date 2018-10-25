@@ -17,6 +17,7 @@ class TcExErrorCodes(object):
             100: 'Generic error. See log for more details ({}).',
             105: 'Required Module is not installed ({}).',
             200: 'Failed retrieving Custom Indicator Associations types from API ({}).',
+            205: 'Invalid token: {}',
             210: 'Failure during token renewal ({}).',
             215: 'HMAC authorization requires a PreparedRequest Object.',
             220: 'Failed retrieving indicator types from API ({}).',

@@ -273,8 +273,12 @@ class TcExRequest(object):
                 files=self._files, headers=self._headers, params=self._payload, stream=stream,
                 timeout=self._timeout)
         except Exception as e:
-            err = 'Failed making HTTP request ({}).'.format(e)
-            raise RuntimeError(err)
+            # if the error has to do with a bad token, raise a specific error
+            if 'Token signature is invalid.' in str(e) or 'token is either invalid or does not exist.' in str(e):
+                self.tcex.handle_error(205, [str(e)])
+            else:
+                err = 'Failed making HTTP request ({}).'.format(e)
+                raise RuntimeError(err)
 
         # self.tcex.log.info(u'URL ({}): {}'.format(self._http_method, response.url))
         self.tcex.log.info(u'Status Code: {}'.format(response.status_code))
