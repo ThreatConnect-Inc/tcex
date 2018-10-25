@@ -33,10 +33,10 @@ def _validate_tcinit_files(app_type, action='create'):
     """Make sure that the expected files were created by the tcinit command."""
     for path, dirs, files in os.walk(TESTING_DIR):
         if app_type == 'job':
-            assert files == ['requirements.txt', 'tc_-_my_job_app.py', 'README.md', 'tcex.json', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json']
+            assert set(files) == {'requirements.txt', 'run.py', 'README.md', 'tcex.json', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'app.py', 'args.py', 'job_app.py'}
         else:
-            assert files == ['requirements.txt', 'README.md', 'tcex.json', 'tcpb_-_my_playbook_app.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json']
-        assert len(files) == 9
+            assert set(files) == {'requirements.txt', 'README.md', 'tcex.json', 'app.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'args.py', 'playbook_app.py', 'run.py'}
+        assert len(files) == 12
 
         # if we just updated the app, make sure the contents of all of the updated files are correct
         if action == 'update':
