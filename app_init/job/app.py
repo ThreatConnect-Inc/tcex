@@ -63,6 +63,10 @@ class App(JobApp):
         """
         self.tcex.log.info('Counting indicators in: {}'.format(self.args.tc_owner))
 
+        # initialize the counts
+        self.indicator_count = 0
+        self.group_count = 0
+
         # count indicators
         self.count_indicators()
 

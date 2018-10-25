@@ -20,7 +20,6 @@
             "label" : "Count Groups",
             "name" : "count_groups",
             "note": "Whether or not the app should count the number of groups in the owner",
-            "required": true,
             "type": "Boolean"
         }
     ],
