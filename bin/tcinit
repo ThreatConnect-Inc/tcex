@@ -114,13 +114,6 @@ if __name__ == '__main__':
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
                 tci.download_file('job/tcex.json', 'tcex.json')
-
-                # if we are dealing with a job app, update the name of the app in the tcex.json
-                with open('tcex.json', 'r') as f:
-                    tcex_json = json.load(f)
-                    tcex_json['package']['app_name'] = 'TC_-_My_Job_App'
-                with open('tcex.json', 'w') as f:
-                    json.dump(tcex_json, f, indent=2)
             elif args.type == 'playbook':
                 tci.download_file('playbook/app.py', 'app.py')
                 tci.download_file('playbook/args.py', 'args.py')

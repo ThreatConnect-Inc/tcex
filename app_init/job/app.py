@@ -1,73 +1,81 @@
 # -*- coding: utf-8 -*-
-""" My Job App
+""" ThreatConnect Job App """
 
-This is NOT a functioning App.  It is intended to show common methods used when writing a Job
-App using the TcEx framework.
-"""
-import time
-import traceback
-
-from tcex import TcEx
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-
-tcex = TcEx()
-
-# App args
-tcex.parser.add_argument('--username', required=True)
-tcex.parser.add_argument('--password', required=True)
-tcex.parser.add_argument('--my_choice', required=True)
-tcex.parser.add_argument('--my_multi', action='append', required=True)
-tcex.parser.add_argument('--my_boolean', action='store_true')
-tcex.parser.add_argument('--last_run', default='7 days ago')
-tcex.parser.add_argument('--my_hidden', action='store_true')
-args = tcex.args
+# Import default Job Class (Required)
+from job_app import JobApp
 
 
-class MyApp(object):
-    """String Operation App"""
+class App(JobApp):
+    """ Job App """
 
-    def __init__(self, _args):
-        """Initialize class properties."""
-        self.args = _args
+    # def __init__(self, _tcex):
+    #     """ Initialize class properties.
 
-        # init output
-        self.my_output = []
+    #     This method can be OPTIONALLY overridden.
+    #     """
+    #     super(App, self).__init__(_tcex)
+    #     self.indicator_count = 0
+    #     self.group_count = 0
 
-    def do_the_thing(self):
-        """Do something."""
-        tcex.log.info('doing the thing')
-        self.my_output.append(self.args.username)
-        self.my_output.append(self.args.password)
-        self.my_output.append(self.args.my_choice)
-        self.my_output.extend(self.args.my_multi)
-        self.my_output.append(str(self.args.my_boolean))
-        self.my_output.append(self.args.my_hidden)
+    # def parse_args(self):
+    #     """ Parse CLI args.
 
+    #     This method can be OPTIONALLY overridden, but using the args.py file is best practice.
+    #     """
+    #     tcex.parser.add_argument('--tc_owner', required=True)
+    #     tcex.parser.add_argument('--count_groups', action='store_true', default=False)
+    #     self.args = self.tcex.args
 
-if __name__ == '__main__':
-    try:
-        # get app init timestamp for last_run
-        last_run = time.time()
+    def count_indicators(self):
+        """Count the indicators in the owner."""
+        self.tcex.log.info('Counting indicators')
 
-        # get MyApp instance
-        app = MyApp(args)
-        tcex.log.info('username: {}'.format(args.username))
+        resource = self.tcex.resource('Indicator')
+        resource.owner = self.args.tc_owner
+        for results in resource:
+            if results.get('status') == 'Success':
+                self.indicator_count += len(results.get('data'))
+            else:
+                message = 'Failed retrieving result during pagination.'
+                self.tcex.log.error(message)
 
-        # do something
-        app.do_the_thing()
+        self.tcex.log.info('Found {} indicators'.format(self.indicator_count))
 
-        # store persistent value
-        tcex.results_tc('last_run', last_run)
+    def count_groups(self):
+        """Count the groups in the owner."""
+        self.tcex.log.info('Counting groups')
 
-        # write message and gracefully exit the App
-        tcex.exit(0, 'Success.')
+        resource = self.tcex.resource('Group')
+        resource.owner = self.args.tc_owner
+        for results in resource:
+            if results.get('status') == 'Success':
+                self.group_count += len(results.get('data'))
+            else:
+                message = 'Failed retrieving result during pagination.'
+                self.tcex.log.error(message)
 
-    except Exception as e:
-        tcex.results_tc('last_run', args.last_run)
-        main_err = 'Generic Error.  See logs for more details ({}).'.format(e)
-        tcex.log.error(traceback.format_exc())
-        tcex.exit(1, main_err)
+        self.tcex.log.info('Found {} groups'.format(self.group_count))
+
+    def run(self):
+        """  Run the App main logic.
+
+        This method should contain the core logic of the App.
+        """
+        self.tcex.log.info('Counting indicators in: {}'.format(self.args.tc_owner))
+
+        # count indicators
+        self.count_indicators()
+
+        # count the groups if appropriate
+        if self.args.count_groups:
+            self.count_groups()
+
+        # output the results
+        if self.args.count_groups:
+            message = 'Found {} indicators and {} groups in {}'.format(self.indicator_count,
+                                                                       self.group_count,
+                                                                       self.args.tc_owner)
+        else:
+            message = 'Found {} indicators in {}'.format(self.indicator_count, self.args.tc_owner)
+
+        self.exit_message = message
