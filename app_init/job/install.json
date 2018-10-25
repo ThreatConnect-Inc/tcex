@@ -25,7 +25,7 @@
         }
     ],
     "programLanguage": "PYTHON",
-    "programMain": "tc_-_my_job_app",
+    "programMain": "run",
     "programVersion": "1.0.0",
     "runtimeLevel": "Organization"
 }
