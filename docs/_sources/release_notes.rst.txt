@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.22
+------
++ Removed ``__slots__`` on batch module due to issues w/ Python2.
++ Update tcinit and corresponding App templates.
+
 0.8.21
 ------
 + Added PDF method to resource module for supported group types.
