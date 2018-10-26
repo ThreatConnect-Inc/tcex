@@ -46,6 +46,7 @@ All tests should be run in python2. The instructions below assume you have pytho
 
 To run the tests, you will need to:
 
+0. Move into `tests` directory (`cd tests`)
 1. Install the necessary requirements: `pip install -r test_requirements.py --upgrade`
 2. Run `tclib` to create a `lib_2.7.12` directory from which your tests will pull their code
 3. Configure the following environmental variables:
@@ -56,7 +57,7 @@ To run the tests, you will need to:
 
     You can more details on how to setup environmental variables for TCEX [here](https://gitlab.com/fhightower-tc/tcex-playground#setup).
 
-4. Run `cd tests/ && pytest tcex_tests.py --ignore=lib_2.7.12/`
+4. Run `pytest --ignore=lib_2.7.12/`
 
 ## Contact
 
