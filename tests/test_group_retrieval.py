@@ -10,7 +10,6 @@ import validator
 import utility
 
 
-# TODO: test this out
 def test_document_download():
     """Test downloading a document from TC."""
     tcex_instance = utility.init_tcex()
