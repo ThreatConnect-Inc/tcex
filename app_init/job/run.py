@@ -32,6 +32,9 @@ if __name__ == '__main__':
         # perform cleanup operations
         app.done()
 
+        # explicitly call the exit method
+        tcex.exit(msg=app.exit_message)
+
     except Exception as e:
         main_err = 'Generic Error.  See logs for more details ({}).'.format(e)
         tcex.log.error(traceback.format_exc())

@@ -16,7 +16,7 @@ class JobApp(object):
 
     def done(self):
         """ Perform cleanup operations and gracefully exit the App. """
-        self.tcex.exit(msg=self.exit_message)
+        self.tcex.log.debug('Running done.')
 
     def parse_args(self):
         """ Parse CLI args. """

@@ -49,7 +49,10 @@ class App(PlaybookApp):
             json_data = json.loads(json_data)
 
         # generate the new "pretty" json (this will be used as an option variable)
-        self.pretty_json = json.dumps(json_data, indent=indent, sort_keys=self.args.sort_keys)
+        try:
+            self.pretty_json = json.dumps(json_data, indent=indent, sort_keys=self.args.sort_keys)
+        except Exception:
+            self.tcex.exit(1, 'Failed parsing JSON data.')
 
         # set the App exit message
         self.exit_message = 'JSON prettified.'
