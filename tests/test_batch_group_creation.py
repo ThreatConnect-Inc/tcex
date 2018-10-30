@@ -28,7 +28,9 @@ def test_interface_1():
     batch_group_creation_interface_1.report_create(batch)
     batch_group_creation_interface_1.signature_create(batch)
     batch_group_creation_interface_1.threat_create(batch)
-    batch.submit_all()
+    results = batch.submit_all()
+    assert results[0]['errorCount'] == 0
+    assert results[0]['successCount'] == 11
     validator.validate(tcex_instance, expected_groups=11)
 
 
@@ -48,7 +50,9 @@ def test_interface_2():
     batch_group_creation_interface_2.report_create(batch)
     batch_group_creation_interface_2.signature_create(batch)
     batch_group_creation_interface_2.threat_create(batch)
-    batch.submit_all()
+    results = batch.submit_all()
+    assert results[0]['errorCount'] == 0
+    assert results[0]['successCount'] == 11
     validator.validate(tcex_instance, expected_groups=11)
 
 
@@ -68,5 +72,7 @@ def test_interface_3():
     batch_group_creation_interface_3.report_create(batch)
     batch_group_creation_interface_3.signature_create(batch)
     batch_group_creation_interface_3.threat_create(batch)
-    batch.submit_all()
+    results = batch.submit_all()
+    assert results[0]['errorCount'] == 0
+    assert results[0]['successCount'] == 11
     validator.validate(tcex_instance, expected_groups=11)
