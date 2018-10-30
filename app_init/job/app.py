@@ -17,15 +17,6 @@ class App(JobApp):
     #     self.indicator_count = 0
     #     self.group_count = 0
 
-    # def parse_args(self):
-    #     """ Parse CLI args.
-
-    #     This method can be OPTIONALLY overridden, but using the args.py file is best practice.
-    #     """
-    #     tcex.parser.add_argument('--tc_owner', required=True)
-    #     tcex.parser.add_argument('--count_groups', action='store_true', default=False)
-    #     self.args = self.tcex.args
-
     def count_indicators(self):
         """Count the indicators in the owner."""
         self.tcex.log.info('Counting indicators')
@@ -56,6 +47,20 @@ class App(JobApp):
 
         self.tcex.log.info('Found {} groups'.format(self.group_count))
 
+    # def done(self):
+    #     """ Write exit message and gracefully exit the App. """
+    #     self.tcex.exit(msg=self.exit_message)
+
+    # def parse_args(self):
+    #     """ Parse CLI args.
+
+    #     This method can be OPTIONALLY overridden, but using the args.py file is best practice.
+    #     """
+    #     super(App, self).parse_args()  # optionally call parent method before overriding.
+    #     tcex.parser.add_argument('--tc_owner', required=True)
+    #     tcex.parser.add_argument('--count_groups', action='store_true', default=False)
+    #     self.args = self.tcex.args
+
     def run(self):
         """  Run the App main logic.
 
@@ -83,3 +88,7 @@ class App(JobApp):
             message = 'Found {} indicators in {}'.format(self.indicator_count, self.args.tc_owner)
 
         self.exit_message = message
+
+    # def start(self):
+    #     """ Perform prep work before running App. """
+    #     self.tcex.log.debug('Running start.')

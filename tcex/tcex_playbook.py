@@ -345,6 +345,19 @@ class TcExPlaybook(object):
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
 
+    def read_array(self, key, embedded=True):
+        """Alias for read method that will read any type (e.g., String, KeyValue) and always
+           return array.
+
+        Args:
+            key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
+
+        Returns:
+            (any): Results retrieved from DB
+        """
+        return self.read(key, True, embedded)
+
     @property
     def read_data_types(self):
         """Map of standard playbook variable types to read method."""

@@ -14,6 +14,10 @@ class JobApp(object):
         self.args = None
         self.exit_message = 'Success'
 
+    def done(self):
+        """ Perform cleanup operations and gracefully exit the App. """
+        self.tcex.exit(msg=self.exit_message)
+
     def parse_args(self):
         """ Parse CLI args. """
         Args(self.tcex)
@@ -22,3 +26,7 @@ class JobApp(object):
     def run(self):
         """ Run the App main logic. """
         self.tcex.log.info('No run logic provided.')
+
+    def start(self):
+        """ Perform prep/startup operations. """
+        self.tcex.log.debug('Running start.')

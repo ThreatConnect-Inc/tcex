@@ -17,11 +17,16 @@ class App(PlaybookApp):
     #     super(App, self).__init__(_tcex)
     #     self.pretty_json = {}
 
+    # def done(self):
+    #     """ Write exit message and gracefully exit the App. """
+    #     self.tcex.exit(msg=self.exit_message)
+
     # def parse_args(self):
     #     """ Parse CLI args.
 
     #     This method can be OPTIONALLY overridden, but using the args.py file is best practice.
     #     """
+    #     super(App, self).parse_args()  # optionally call parent method before overriding.
     #     self.tcex.parser.add_argument('--indent', default=4)
     #     self.tcex.parser.add_argument('--json_data', required=True)
     #     self.tcex.parser.add_argument('--sort_keys', action='store_true')
@@ -48,6 +53,10 @@ class App(PlaybookApp):
 
         # set the App exit message
         self.exit_message = 'JSON prettified.'
+
+    # def start(self):
+    #     """ Perform prep work before running App. """
+    #     self.tcex.log.debug('Running start.')
 
     def write_output(self):
         """ Write the Playbook output variables.

@@ -14,14 +14,23 @@ class PlaybookApp(object):
         self.args = None
         self.exit_message = 'Success'
 
+    def done(self):
+        """ Perform cleanup operations and gracefully exit the App. """
+        self.tcex.exit(msg=self.exit_message)
+
     def parse_args(self):
         """ Parse CLI args. """
+        self.tcex.log.info('Parsing Args.')
         Args(self.tcex)
         self.args = self.tcex.args
 
     def run(self):
         """ Run the App main logic. """
         self.tcex.log.info('No run logic provided.')
+
+    def start(self):
+        """ Perform prep/startup operations. """
+        self.tcex.log.debug('Running start.')
 
     def write_output(self):
         """ Write the Playbook output variables. """

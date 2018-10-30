@@ -2891,7 +2891,8 @@ class Attribute(object):
             self._attribute_data['source'] = source
         # is attr_value not null or ''
         self._valid = True
-        if not attr_value:
+        # check for None and '' value only.
+        if attr_value not in [None, '']:
             self._valid = False
 
     @property

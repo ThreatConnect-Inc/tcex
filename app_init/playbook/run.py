@@ -23,14 +23,17 @@ if __name__ == '__main__':
         # parse args
         app.parse_args()
 
+        # perform prep/startup operations
+        app.start()
+
         # run the main logic
         app.run()
 
         # write requested value for downstream Apps
         app.write_output()
 
-        # write message and gracefully exit the App
-        tcex.exit(msg=app.exit_message)
+        # perform cleanup operations
+        app.done()
 
     except Exception as e:
         main_err = 'Generic Error.  See logs for more details ({}).'.format(e)
