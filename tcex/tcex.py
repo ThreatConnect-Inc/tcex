@@ -1009,17 +1009,14 @@ class TcEx(object):
         with open(results_file, 'r+') as fh:
             results = ''
             for line in fh.read().strip().split('\n'):
-                try:
-                    if not line:
-                        continue
-                    k, v = line.strip().split(' = ')
-                    if k == key:
-                        v = value
-                        new = False
-                    if v is not None:
-                        results += '{} = {}\n'.format(k, v)
-                except ValueError:
-                    pass
+                if not line:
+                    continue
+                k, v = line.split(' = ')
+                if k == key:
+                    v = value
+                    new = False
+                if v is not None:
+                    results += '{} = {}\n'.format(k, v)
             if new and value is not None:  # indicates the key/value pair didn't already exist
                 results += '{} = {}\n'.format(key, value)
             fh.seek(0)
