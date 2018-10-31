@@ -6,10 +6,16 @@ Release Notes
 0.8.x
 =====
 
+0.8.23
+------
++ Update for batch module to handle attribute values of False.
++ Added ``read_array`` method to playbook module.
++ Updated App templates to include start and done methods.
+
 0.8.22
 ------
 + Removed ``__slots__`` on batch module due to issues w/ Python2.
-+ Update tcinit and corresponding App templates.
++ Updated tcinit and corresponding App templates.
 
 0.8.21
 ------
