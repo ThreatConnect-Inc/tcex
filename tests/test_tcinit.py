@@ -115,7 +115,7 @@ def test_create_app_in_nonempty_dir():
     output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'create'], reset_testing_dir=False)
     print(output)
     assert 'RuntimeWarning: The current directory' in output['stdout']
-    assert 'is not empty and no app will be created so that no files are overwritten. You can either (A) create a new directory for this app or (B) add the "--force" flag to the command you just ran to force a new app to be created (which MAY OVERWRITE FILES IN THIS DIRECTORY).' in output['stdout']
+    assert 'is not empty so no app will be created. You can either create a new directory for this app or add the "--force" flag to the command you just ran to force a new app to be created' in output['stdout']
 
 
 def test_create_playbook_app():
