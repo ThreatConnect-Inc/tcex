@@ -1011,7 +1011,11 @@ class TcEx(object):
             for line in fh.read().strip().split('\n'):
                 if not line:
                     continue
-                k, v = line.split(' = ')
+                try:
+                    k, v = line.split(' = ')
+                except ValueError:
+                    # handle null/empty value (e.g., "name =")
+                    k, v = line.split(' =')
                 if k == key:
                     v = value
                     new = False
