@@ -2892,7 +2892,7 @@ class Attribute(object):
         # is attr_value not null or ''
         self._valid = True
         # check for None and '' value only.
-        if attr_value not in [None, '']:
+        if attr_value in [None, '']:
             self._valid = False
 
     @property
