@@ -1192,7 +1192,11 @@
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; = &#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; = &#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="c1"># handle null/empty value (e.g., &quot;name =&quot;)</span>
+                    <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; =&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
                     <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="n">new</span> <span class="o">=</span> <span class="kc">False</span>

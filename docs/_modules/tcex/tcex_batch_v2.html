@@ -3072,7 +3072,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_data</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span>
         <span class="c1"># is attr_value not null or &#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_value</span><span class="p">:</span>
+        <span class="c1"># check for None and &#39;&#39; value only.</span>
+        <span class="k">if</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>

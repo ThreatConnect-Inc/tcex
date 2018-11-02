@@ -11,6 +11,7 @@ Release Notes
 + Update for batch module to handle attribute values of False.
 + Added ``read_array`` method to playbook module.
 + Updated App templates to include start and done methods.
++ Update tcprofile to create the tcex.d directory automatically.
 
 0.8.22
 ------

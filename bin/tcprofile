@@ -56,6 +56,17 @@ class TcProfile(object):
         self.profile_dir = os.path.join(self.args.outdir, 'profiles')
         self.profiles = {}
 
+    def _create_tcex_dirs(self):
+        """Create tcex.d directory and sub directories."""
+        dirs = [
+            'tcex.d',
+            'tcex.d/data',
+            'tcex.d/profiles'
+        ]
+        for d in dirs:
+            if not os.path.isdir(d):
+                os.makedirs(d)
+
     @staticmethod
     def _handle_error(err, halt=True):
         """Print errors message and optionally exit."""
@@ -90,6 +101,9 @@ class TcProfile(object):
         if not os.path.isfile('tcex.json'):
             msg = 'The tcex.json config file is required.'
             sys.exit(msg)
+
+        # create default directories
+        self._create_tcex_dirs()
 
         # open tcex.json configuration file
         with open('tcex.json', 'r+') as fh:

@@ -772,6 +772,33 @@ automatically determine the variable type to read.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex_playbook.TcExPlaybook.read_array">
+<code class="descname">read_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Alias for read method that will read any type (e.g., String, KeyValue) and always</dt>
+<dd>return array.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(any)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex_playbook.TcExPlaybook.read_binary">
 <code class="descname">read_binary</code><span class="sig-paren">(</span><em>key</em>, <em>b64decode=True</em>, <em>decode=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_binary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read method of CRUD operation for binary data.</p>

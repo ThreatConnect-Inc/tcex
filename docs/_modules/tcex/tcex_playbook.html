@@ -526,6 +526,19 @@
         <span class="c1"># self.tcex.log.debug(u&#39;read data {}&#39;.format(self.tcex.s(data)))</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
+<div class="viewcode-block" id="TcExPlaybook.read_array"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_array">[docs]</a>    <span class="k">def</span> <span class="nf">read_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for read method that will read any type (e.g., String, KeyValue) and always</span>
+<span class="sd">           return array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (string): The variable to read from the DB.</span>
+<span class="sd">            embedded (boolean): Resolve embedded variables.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (any): Results retrieved from DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">embedded</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">read_data_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Map of standard playbook variable types to read method.&quot;&quot;&quot;</span>
