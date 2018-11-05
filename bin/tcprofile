@@ -74,6 +74,25 @@ class TcProfile(object):
         if halt:
             sys.exit(1)
 
+    def display_help(self):
+        """Display help mesage."""
+        print('Update the value and add the following to the local environment (e.g., ~/.bashrc or ~/.bash_profile)\n')
+        print('# ThreatConnect API Credential and URL')
+        print('export API_DEFAULT_ORG=MyOrg')
+        print('export API_ACCESS_ID=1234')
+        print('export API_SECRET_KEY=abc123')
+        print('export TC_API_PATH=https://mytc.mydom.io/api')
+        print('# API Token can be supplied optionally, but must be updated frequently.')
+        print('export TC_TOKEN=123-abc-456-def')
+        print('# Proxy settings are optional')
+        print('export TC_PROXY_HOST=10.10.10.10')
+        print('export TC_PROXY_PORT=3128')
+        print('export TC_PROXY_USERNAME=robin')
+        print('export TC_PROXY_PASSWORD=sparkles')
+        print('# The Redis IP/Host and Port')
+        print('export DB_PATH=localhost')
+        print('export DB_PORT=6379')
+
     @property
     def ij(self):
         """Return the install.json file."""
@@ -198,6 +217,8 @@ class TcProfile(object):
         profile_args['api_access_id'] = '$env.API_ACCESS_ID'
         profile_args['api_secret_key'] = '$envs.API_SECRET_KEY'
         profile_args['tc_api_path'] = '$env.TC_API_PATH'
+        profile_args['tc_docker'] = False
+        profile_args['tc_in_path'] = 'log'
         profile_args['tc_log_level'] = 'debug'
         profile_args['tc_log_path'] = 'log'
         profile_args['tc_log_to_api'] = False
@@ -444,7 +465,8 @@ class TcProfile(object):
             for profile in data:
                 if profile.get('profile_name') == self.args.profile_name:
                     profile['validations'] = validations.get('rules')
-                    profile['args']['tc_playbook_out_variables'] = ','.join(validations.get('outputs'))
+                    profile['args']['tc_playbook_out_variables'] = ','.join(
+                        validations.get('outputs'))
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
@@ -453,8 +475,6 @@ class TcProfile(object):
         """Validate the provided profiles name exists."""
         if not self.args.profile_name in self.profiles:
             self._handle_error('Could not find profile "{}"'.format(self.args.profile_name))
-
-
 
 
 if __name__ == '__main__':
@@ -467,6 +487,7 @@ if __name__ == '__main__':
         if args.action == 'create':
             profile = tcp.profile_create()
             tcp.profile_write(profile, args.outfile)
+            tcp.display_help()
         elif args.action == 'delete':
             tcp.profile_delete()
         elif args.action == 'replace_validation':

@@ -26,8 +26,16 @@ if __name__ == '__main__':
         # perform prep/startup operations
         app.start()
 
-        # run the main logic
-        app.run()
+        # run the App logic
+        if hasattr(app.args, 'action') and app.args.action is not None:
+            try:
+                # run action method
+                getattr(app, app.args.action)()
+            except AttributeError:
+                tcex.exit(1, 'Action method ({}) was not found.'.format(app.args.action))
+        else:
+            # default to run method
+            app.run()
 
         # perform cleanup operations
         app.done()
