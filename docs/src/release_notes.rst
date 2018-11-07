@@ -6,6 +6,10 @@ Release Notes
 0.8.x
 =====
 
+0.8.24
+------
++ Fixed GH issue #(60)
+
 0.8.23
 ------
 + Update for batch module to handle attribute values of False.

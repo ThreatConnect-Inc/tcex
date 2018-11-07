@@ -1,6 +1,6 @@
 """TcEx Framework"""
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.8.23'
+__version__ = '0.8.24'
 __license__ = 'Apache License, Version 2'
 name = 'tcex'
 
