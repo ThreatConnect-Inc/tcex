@@ -46,6 +46,8 @@ parser.add_argument(
 parser.add_argument(
     '--docker', action='store_true', help='Run the App in a docker container.')
 parser.add_argument(
+    '--docker_image', help='Override the docker container defined in install.json or profile.')
+parser.add_argument(
     '--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument(
     '--halt_on_fail', action='store_true', help='Halt on any failure.')
@@ -780,10 +782,19 @@ class TcRun(object):
             'bind': app_dir
         }
 
+        if self._args.docker_image is not None:
+            docker_image = self._args.docker_image
+        else:
+            # docker image - use profile setting first then fall back to install.json value
+            #                else use default.
+            docker_image = self.profile.get(
+                'docker_image', install_json.get(
+                    'tc_docker_image', 'tcintegrations/tci-dev:latest'))
+
         status_code = 1
         try:
             container = client.containers.run(
-                install_json.get('tc_docker_image', 'tcintegrations/tci-dev:latest'),
+                docker_image,
                 entrypoint=commands.get('cli_command'),
                 detach=True,
                 network_mode=install_json.get('docker_host', 'host'),
