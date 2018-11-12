@@ -101,8 +101,13 @@ class TcProfile(object):
                 print('{}{}Configuration file ({}) could not be found.'.format(
                     c.Style.BRIGHT, c.Fore.CYAN, self.args.ij))
 
-            with open(self.args.ij) as fh:
-                self._ij = json.load(fh)
+            try:
+                with open(self.args.ij) as fh:
+                    self._ij = json.load(fh)
+            except IOError:
+                err = 'Could not open install.json file: {}.'.format(self.args.ij)
+                print('{}{}{}.'.format(c.Style.BRIGHT, c.Fore.RED, err))
+                sys.exit(1)
         return self._ij
 
     def load_profiles(self):

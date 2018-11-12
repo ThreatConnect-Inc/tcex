@@ -44,6 +44,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
 parser.add_argument(
+    '--docker', action='store_true', help='Run the App in a docker container.')
+parser.add_argument(
     '--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument(
     '--halt_on_fail', action='store_true', help='Halt on any failure.')
@@ -56,7 +58,7 @@ parser.add_argument(
 parser.add_argument(
     '--profile', default='default', help='The profile to be executed. (default: "default")')
 parser.add_argument(
-    '--quiet', action='store_true', help='Suppress output.')
+    '--quiet', action='store_true', help='Suppress the output from the App.')
 parser.add_argument(
     '--report', help='The JSON report filename.')
 parser.add_argument(
@@ -664,39 +666,66 @@ class TcRun(object):
         self.run_display_description()
         self.run_validate_program_main(program_main)
 
+        # get the commands
+        commands = self.run_commands(program_language, program_main)
+        self.log.info('[run] Running command {}'.format(commands.get('print_command')))
+
+        # output command
+        print(
+            'Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, commands.get('print_command')))
+
+        if self._args.docker:
+            return self.run_docker(commands)
+        else:
+            return self.run_local(commands)
+
+    def run_commands(self, program_language, program_main):
+        """Return the run Print Command."""
         # build the command
         if program_language == 'python':
-            command = [
-                sys.executable,
-                '.',
-                program_main
-            ]
-            exe_command = command + self.profile.get('profile_args').standard
+            if self._args.docker:
+                command = ['python', '.', program_main]
+            else:
+                command = [sys.executable, '.', program_main ]
+
+            # exe command
+            cli_command = command + self.profile.get('profile_args').standard
+
+            # print command
             print_command = ' '.join(command + self.profile.get('profile_args').masked)
             if self._args.unmask:
                 print_command = ' '.join(command + self.profile.get('profile_args').quoted)
+
         elif program_language == 'java':
-            command = [
-                self.config.get('java_path', program_language),
-                '-cp',
-                self.config.get('class_path', './target/*')
-            ]
-            exe_command = command + self.profile.get('profile_args').standard + [program_main]
+            if self._args.docker:
+                command = ['java', '-cp', self.config.get('class_path', './target/*')]
+            else:
+                command = [
+                    self.config.get('java_path', program_language),
+                    '-cp',
+                    self.config.get('class_path', './target/*')
+                ]
+
+            # exe command
+            cli_command = command + self.profile.get('profile_args').standard + [program_main]
+
+            # print command
             print_command = ' '.join(
                 command + self.profile.get('profile_args').masked + [program_main])
             if self._args.unmask:
                 print_command = ' '.join(
                     command + self.profile.get('profile_args').quoted + [program_main])
+        return {
+            'cli_command': cli_command,
+            'print_command': print_command
+        }
 
-        self.log.info('[run] Running command {}'.format(print_command))
-
-        # output command
-        print('Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, print_command))
-
-        # Run Command
+    def run_local(self, commands):
+        """Run the App on local system."""
         process = subprocess.Popen(
-            exe_command, shell=self.shell, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            commands.get('cli_command'), shell=self.shell, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
         out, err = process.communicate()
 
         # display app output
@@ -705,6 +734,74 @@ class TcRun(object):
 
         # Exit Code
         return self.run_exit_code(process.returncode)
+
+    def run_docker(self, commands):
+        """Run App in Docker Container"""
+        # app_args = self.profile.get('profile_args').standard
+        app_args_data = self.profile.get('profile_args').data
+        install_json = self.profile.get('install_json')
+
+        try:
+            import docker
+        except ImportError:
+            print('{}{}Python docker module not installed (run: pip install docker.)'.format(
+                c.Style.BRIGHT, c.Fore.RED))
+            sys.exit()
+
+        # client
+        client = docker.from_env()
+
+        # app data
+        app_dir = os.getcwd()
+        # app_path = '{}/{}'.format(app_dir, program_main)
+
+        volumes = {}
+        in_path = '{}/{}'.format(app_dir, app_args_data.get('tc_in_path'))
+        if app_args_data.get('tc_in_path') is not None:
+            volumes[in_path] = {
+                'bind': in_path
+            }
+        log_path = '{}/{}'.format(app_dir, app_args_data.get('tc_log_path'))
+        if app_args_data.get('tc_log_path') is not None:
+            volumes[log_path] = {
+                'bind': log_path
+            }
+        out_path = '{}/{}'.format(app_dir, app_args_data.get('tc_out_path'))
+        if app_args_data.get('tc_out_path') is not None:
+            volumes[out_path] = {
+                'bind': out_path
+            }
+        temp_path = '{}/{}'.format(app_dir, app_args_data.get('tc_temp_path'))
+        if app_args_data.get('tc_temp_path') is not None:
+            volumes[temp_path] = {
+                'bind': temp_path
+            }
+        volumes[app_dir] = {
+            'bind': app_dir
+        }
+
+        status_code = 1
+        try:
+            container = client.containers.run(
+                install_json.get('tc_docker_image', 'tcintegrations/tci-dev:latest'),
+                entrypoint=commands.get('cli_command'),
+                detach=True,
+                network_mode=install_json.get('docker_host', 'host'),
+                remove=True,
+                volumes=volumes,
+                working_dir=app_dir
+            )
+            results = container.wait()
+            status_code = results.get('StatusCode')
+            error = results.get('Error')
+            if error:
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, error))
+        except Exception as e:
+            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
+            sys.exit()
+
+        # Exit Code
+        return self.run_exit_code(status_code)
 
     def run_display_app_errors(self, err):
         """Handle the exit code for the current run."""
@@ -1334,12 +1431,12 @@ class ArgBuilder(object):
 
     @property
     def masked(self):
-        """Return all args formatted for the provided language."""
+        """Return all args formatted for the provided language with sensitive data masked."""
         return self._args_masked
 
     @property
     def quoted(self):
-        """Return all args formatted for the provided language."""
+        """Return all args formatted for the provided language with appropriate args quoted."""
         return self._args_quoted
 
     @property

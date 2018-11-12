@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-""" ThreatConnect Job App """
+"""ThreatConnect Job App"""
 
 # Import default Job Class (Required)
 from job_app import JobApp
 
 
 class App(JobApp):
-    """ Job App """
+    """Job App"""
 
     # def __init__(self, _tcex):
-    #     """ Initialize class properties.
+    #     """Initialize class properties.
 
     #     This method can be OPTIONALLY overridden.
     #     """
@@ -48,8 +48,8 @@ class App(JobApp):
         self.tcex.log.info('Found {} groups'.format(self.group_count))
 
     # def done(self):
-    #     """ Write exit message and gracefully exit the App. """
-    #     self.tcex.exit(msg=self.exit_message)
+    #     """Perform cleanup work before after App main logic."""
+    #     self.tcex.log.debug('Running done.')
 
     # def parse_args(self):
     #     """ Parse CLI args.
@@ -62,7 +62,7 @@ class App(JobApp):
     #     self.args = self.tcex.args
 
     def run(self):
-        """  Run the App main logic.
+        """Run the App main logic.
 
         This method should contain the core logic of the App.
         """
@@ -90,5 +90,5 @@ class App(JobApp):
         self.exit_message = message
 
     # def start(self):
-    #     """ Perform prep work before running App. """
+    #     """Perform prep work before running App."""
     #     self.tcex.log.debug('Running start.')
