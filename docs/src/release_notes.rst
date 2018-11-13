@@ -6,6 +6,12 @@ Release Notes
 0.8.x
 =====
 
+0.8.25
+------
++ Updated the ``tcinit`` command  CLI option ``--upgrade`` to download additional files.
++ Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
++ Updated the ``.gitignore`` App template.
+
 0.8.24
 ------
 + Fixed GH issue #(60)

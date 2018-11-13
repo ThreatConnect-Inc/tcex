@@ -83,6 +83,7 @@ class TcRun(object):
         self._staging_data = None
         self.reports = Reports()
         self.tcex = None
+        self.docker_image = 'tcintegrations/tci-dev:latest'
 
         # logger
         self.log = self._logger()
@@ -739,16 +740,16 @@ class TcRun(object):
 
     def run_docker(self, commands):
         """Run App in Docker Container"""
-        # app_args = self.profile.get('profile_args').standard
-        app_args_data = self.profile.get('profile_args').data
-        install_json = self.profile.get('install_json')
-
         try:
             import docker
         except ImportError:
-            print('{}{}Python docker module not installed (run: pip install docker.)'.format(
+            print('{}{}Could not import docker module (try "pip install docker").'.format(
                 c.Style.BRIGHT, c.Fore.RED))
-            sys.exit()
+            sys.exit(1)
+
+        # app_args = self.profile.get('profile_args').standard
+        app_args_data = self.profile.get('profile_args').data
+        install_json = self.profile.get('install_json')
 
         # client
         client = docker.from_env()
@@ -783,13 +784,14 @@ class TcRun(object):
         }
 
         if self._args.docker_image is not None:
+            # user docker image from cli as an override.
             docker_image = self._args.docker_image
         else:
-            # docker image - use profile setting first then fall back to install.json value
-            #                else use default.
+            # docker image from install.json can be overridden by docker image in profile. if no
+            # image is defined in either file use the default image define as self.docker_image.
             docker_image = self.profile.get(
-                'docker_image', install_json.get(
-                    'tc_docker_image', 'tcintegrations/tci-dev:latest'))
+                'dockerImage', install_json.get(
+                    'dockerImage', self.docker_image))
 
         status_code = 1
         try:

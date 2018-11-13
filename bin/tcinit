@@ -126,6 +126,12 @@ if __name__ == '__main__':
             tci.download_file('gitignore', '.gitignore')
             tci.download_file('setup.cfg')
             tci.download_file('tcex_json_schema.json')
+            if args.type == 'job':
+                tci.download_file('job/job_app.py', 'job_app.py')
+                tci.download_file('job/run.py', 'run.py')
+            elif args.type == 'playbook':
+                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
+                tci.download_file('playbook/run.py', 'run.py')
         sys.exit()
 
     except Exception as e:
