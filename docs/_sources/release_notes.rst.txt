@@ -6,6 +6,12 @@ Release Notes
 0.8.x
 =====
 
+0.8.24
+------
++ Fixed GH issue #(60)
++ Updates to App templates.  Added "tc_action" logic to handle launching "action" methods in the App class.
++ Added ``--docker`` flag to ``tcrun`` command to launch App in docker container.
+
 0.8.23
 ------
 + Update for batch module to handle attribute values of False.

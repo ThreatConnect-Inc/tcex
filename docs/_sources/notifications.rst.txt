@@ -29,7 +29,7 @@ The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.recipients` method i
 
 Organization
 ============
-The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.recipients` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
+The :py:meth:`~tcex.tcex_notification_v2.TcExNotificationV2.org` method is used when sending to the Org related to the 'user' used in connecting to ThreatConnect. It requires a **type** field.  It also accepts an optional field for **priority**.  If no priority is provided the value of 'Low' is used. **type** is a free formed text field used for filtering within the ThreatConnect UI.
 
 .. code-block:: python
     :linenos:

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Notifications &mdash; TcEx 0.8.23 documentation</title>
+  <title>Notifications &mdash; TcEx 0.8.24 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.23 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.24 documentation" href="index.html"/>
         <link rel="next" title="Parser / Args" href="parser.html"/>
         <link rel="prev" title="Metrics" href="metrics.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.23
+                0.8.24
               </div>
             
           
@@ -202,7 +202,7 @@
 </div>
 <div class="section" id="organization">
 <h2>Organization<a class="headerlink" href="#organization" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.recipients" title="tcex.tcex_notification_v2.TcExNotificationV2.recipients"><code class="xref py py-meth docutils literal"><span class="pre">recipients()</span></code></a> method is used when sending to the Org related to the ‘user’ used in connecting to ThreatConnect. It requires a <strong>type</strong> field.  It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_notification_v2.html#tcex.tcex_notification_v2.TcExNotificationV2.org" title="tcex.tcex_notification_v2.TcExNotificationV2.org"><code class="xref py py-meth docutils literal"><span class="pre">org()</span></code></a> method is used when sending to the Org related to the ‘user’ used in connecting to ThreatConnect. It requires a <strong>type</strong> field.  It also accepts an optional field for <strong>priority</strong>.  If no priority is provided the value of ‘Low’ is used. <strong>type</strong> is a free formed text field used for filtering within the ThreatConnect UI.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">notification</span><span class="o">.</span><span class="n">org</span><span class="p">(</span><span class="s1">&#39;Import Success&#39;</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
@@ -259,7 +259,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.23',
+            VERSION:'0.8.24',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
