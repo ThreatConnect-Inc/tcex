@@ -11,6 +11,8 @@ Release Notes
 + Updated the ``tcinit`` command  CLI option ``--upgrade`` to download additional files.
 + Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
 + Updated the ``.gitignore`` App template.
++ Updated ``tcpackage`` command to add **commitHash** value to install.json.
++ Updated :py:mod:`~tcex.tcex` module to log **commitHash** value.
 
 0.8.24
 ------

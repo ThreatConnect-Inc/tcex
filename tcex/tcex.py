@@ -169,6 +169,7 @@ class TcEx(object):
         """Log the App data information."""
         # Best Effort
         if self.install_json:
+            app_commit_hash = self.install_json.get('commitHash')
             app_features = ','.join(self.install_json.get('features', []))
             app_min_ver = self.install_json.get('minServerVersion', 'N/A')
             app_name = self.install_json.get('displayName')
@@ -181,6 +182,8 @@ class TcEx(object):
             self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
             self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
             self.log.info(u'App Version: {}'.format(app_version))
+            if app_commit_hash is not None:
+                self.log.info(u'App Commit Hash: {}'.format(app_commit_hash))
 
     def _log_platform(self):
         """Log the current Platform."""
