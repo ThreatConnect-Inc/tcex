@@ -35,9 +35,9 @@ class TcExPlaybook(object):
 
             #App:1234:status!String,#App:1234:status_code!String
         """
+        self._out_variables = {}
+        self._out_variables_type = {}
         if self.tcex.default_args.tc_playbook_out_variables is not None:
-            self._out_variables = {}
-            self._out_variables_type = {}
             variables = self.tcex.default_args.tc_playbook_out_variables.strip()
             for o in variables.split(','):
                 # parse the variable to get individual parts
@@ -270,7 +270,7 @@ class TcExPlaybook(object):
 
     @property
     def out_variables_type(self):
-        """Return output variables store as name-type dict."""
+        """Return output variables stored as name-type dict."""
         if self._out_variables_type is None:
             # parse out variable
             self._parse_out_variable()
@@ -344,6 +344,19 @@ class TcExPlaybook(object):
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
+
+    def read_array(self, key, embedded=True):
+        """Alias for read method that will read any type (e.g., String, KeyValue) and always
+           return array.
+
+        Args:
+            key (string): The variable to read from the DB.
+            embedded (boolean): Resolve embedded variables.
+
+        Returns:
+            (any): Results retrieved from DB
+        """
+        return self.read(key, True, embedded)
 
     @property
     def read_data_types(self):

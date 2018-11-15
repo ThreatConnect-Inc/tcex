@@ -1,0 +1,30 @@
+{
+    "allowOnDemand": true,
+    "displayName": "My Job App",
+    "features": [
+        "secureParams"
+    ],
+    "languageVersion": "3.6",
+    "listDelimiter": "|",
+    "params": [
+        {
+            "label" : "ThreatConnect Owner",
+            "name" : "tc_owner",
+            "note": "The owner from which indicators (and maybe groups) will be counted",
+            "required": true,
+            "type": "Choice",
+            "validValues": ["${OWNERS}"]
+        },
+        {
+            "default": false,
+            "label" : "Count Groups",
+            "name" : "count_groups",
+            "note": "Whether or not the app should count the number of groups in the owner",
+            "type": "Boolean"
+        }
+    ],
+    "programLanguage": "PYTHON",
+    "programMain": "run",
+    "programVersion": "1.0.0",
+    "runtimeLevel": "Organization"
+}

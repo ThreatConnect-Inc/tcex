@@ -15,6 +15,32 @@ Release Notes
 0.8.x
 =====
 
+0.8.25
+------
++ Updated the ``tcinit`` command  CLI option ``--upgrade`` to download additional files.
++ Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
++ Updated the ``.gitignore`` App template.
++ Updated ``tcpackage`` command to add **commitHash** value to install.json.
++ Updated :py:mod:`~tcex.tcex` module to log **commitHash** value.
+
+0.8.24
+------
++ Fixed GH issue #(60)
++ Updates to App templates.  Added "tc_action" logic to handle launching "action" methods in the App class.
++ Added ``--docker`` flag to ``tcrun`` command to launch App in docker container.
+
+0.8.23
+------
++ Update for batch module to handle attribute values of False.
++ Added ``read_array`` method to playbook module.
++ Updated App templates to include start and done methods.
++ Update tcprofile to create the tcex.d directory automatically.
+
+0.8.22
+------
++ Removed ``__slots__`` on batch module due to issues w/ Python2.
++ Updated tcinit and corresponding App templates.
+
 0.8.21
 ------
 + Added PDF method to resource module for supported group types.

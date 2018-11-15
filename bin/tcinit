@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """ TcEx App Init """
+
 import argparse
 import os
 import sys
-import requests
 import traceback
 
+import requests
 import colorama as c
 
 # Python 2 unicode
@@ -16,9 +17,11 @@ if sys.version_info[0] == 2:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
-parser.add_argument('--new', action='store_true', help='Init a new App.')
+parser.add_argument('--action', choices=['create', 'update'], default='create', help='Whether a ' +
+                    'new app should be CREATED or an existing app should be UPDATED')
 parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
-parser.add_argument('--update', action='store_true', help='Update a existing App.')
+parser.add_argument('--force', action='store_true', help='If true, this will overwrite existing ' +
+                    'files in a directory to create a new app.', default=False)
 args, extra_args = parser.parse_known_args()
 
 
@@ -36,6 +39,27 @@ class TcInit(object):
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
+
+        if not self.args.force:
+            # make sure the current directory is empty (if not, a RuntimeWarning is raised)
+            self._check_empty_app_dir()
+
+    def _check_empty_app_dir(self):
+        """Check to see if the directory in which the app is going to be created is empty."""
+        # if we are creating an app and the directory is not empty - raise a warning
+        if os.listdir(self.app_path) and self.args.action == 'create':
+            message = 'The current directory ({}) is not empty so no '.format(self.app_path) + \
+                      'app will be created. You can either create a new directory ' + \
+                      'for this app or add the "--force" flag to the command you ' + \
+                      'just ran to force a new app to be created (which MAY OVERWRITE FILES ' + \
+                      'IN THIS DIRECTORY).'
+            raise RuntimeWarning(message)
+        # if we are updating an app and the directory is empty - raise a warning
+        elif not any(os.listdir(self.app_path)) and self.args.action == 'update':
+            message = 'No app exists in this directory. Try using "tcinit --type ' + \
+                      '{} --action create --branch '.format(self.args.type) + \
+                      '{}" to create an app.'.format(self.args.branch)
+            raise RuntimeWarning(message)
 
     @staticmethod
     def _print_results(file, status):
@@ -62,7 +86,7 @@ class TcInit(object):
             open(local_filename, 'wb').write(r.content)
             status = 'Success'
         else:
-            print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, url))
+            print('{}{}Error requesting: {}'.format(c.Style.BRIGHT, c.Fore.RED, url))
 
         # print download status
         self._print_results(local_filename, status)
@@ -73,34 +97,44 @@ if __name__ == '__main__':
         tci = TcInit(args)
         print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
 
-        if args.new:
+        if args.action == 'create':
             # init files for a new App
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
-            if args.type == 'job':
-                tci.download_file('job-install.json', 'install.json')
-                tci.download_file('tcpb_-_my_job_app.py')
-            elif args.type == 'playbook':
-                tci.download_file('pb-install.json', 'install.json')
-                tci.download_file('tcpb_-_my_playbook_app.py')
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex.json')
             tci.download_file('tcex_json_schema.json')
-        elif args.update:
+
+            if args.type == 'job':
+                tci.download_file('job/app.py', 'app.py')
+                tci.download_file('job/args.py', 'args.py')
+                tci.download_file('job/install.json', 'install.json')
+                tci.download_file('job/job_app.py', 'job_app.py')
+                tci.download_file('job/run.py', 'run.py')
+                tci.download_file('job/tcex.json', 'tcex.json')
+            elif args.type == 'playbook':
+                tci.download_file('playbook/app.py', 'app.py')
+                tci.download_file('playbook/args.py', 'args.py')
+                tci.download_file('playbook/install.json', 'install.json')
+                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
+                tci.download_file('playbook/run.py', 'run.py')
+                tci.download_file('playbook/tcex.json', 'tcex.json')
+        elif args.action == 'update':
             # update standard files
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
             tci.download_file('setup.cfg')
             tci.download_file('tcex_json_schema.json')
-        else:
-            print('{}{}CLI option --new or --update is required.'.format(
-                c.Style.BRIGHT, c.Fore.RED))
+            if args.type == 'job':
+                tci.download_file('job/job_app.py', 'job_app.py')
+                tci.download_file('job/run.py', 'run.py')
+            elif args.type == 'playbook':
+                tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
+                tci.download_file('playbook/run.py', 'run.py')
         sys.exit()
 
     except Exception as e:
         # TODO: Update this, possibly raise
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)
-

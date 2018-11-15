@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.20 documentation</title>
+  <title>tcex.tcex_batch_v2 &mdash; TcEx 0.8.24 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.20 documentation" href="../../index.html"/>
+    <link rel="top" title="TcEx 0.8.24 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                0.8.20
+                0.8.24
               </div>
             
           
@@ -1804,6 +1804,17 @@
 
 <div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Group Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [</span>
+    <span class="c1">#     &#39;_attributes&#39;,</span>
+    <span class="c1">#     &#39;_file_content&#39;,</span>
+    <span class="c1">#     &#39;_group_data&#39;,</span>
+    <span class="c1">#     &#39;_labels&#39;,</span>
+    <span class="c1">#     &#39;_name&#39;,</span>
+    <span class="c1">#     &#39;_processed&#39;,</span>
+    <span class="c1">#     &#39;_type&#39;,</span>
+    <span class="c1">#     &#39;_tags&#39;,</span>
+    <span class="c1">#     &#39;_utils&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -1943,6 +1954,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group dateAdded.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">)</span>
+
+    <span class="nd">@date_added</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Indicator dateAdded.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">date_added</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return Group file (only supported for Document and Report).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -2023,12 +2045,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Group.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return string represtentation of object.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation of object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Adversary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Adversary">[docs]</a><span class="k">class</span> <span class="nc">Adversary</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2042,6 +2066,8 @@
 
 <div class="viewcode-block" id="Campaign"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Campaign">[docs]</a><span class="k">class</span> <span class="nc">Campaign</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Campaign Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">first_seen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2070,6 +2096,8 @@
 
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Document Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_file_data&#39;, &#39;_group_data&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">malware</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2136,6 +2164,8 @@
 
 <div class="viewcode-block" id="Email"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Email">[docs]</a><span class="k">class</span> <span class="nc">Email</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Email Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">to_addr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">from_addr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2192,6 +2222,8 @@
 
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Event Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">event_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2239,6 +2271,8 @@
 
 <div class="viewcode-block" id="Incident"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Incident">[docs]</a><span class="k">class</span> <span class="nc">Incident</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Incident Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">event_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2303,6 +2337,8 @@
 
 <div class="viewcode-block" id="IntrusionSet"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.IntrusionSet">[docs]</a><span class="k">class</span> <span class="nc">IntrusionSet</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2316,6 +2352,8 @@
 
 <div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Report Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">publish_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2369,6 +2407,8 @@
 
 <div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Signature Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">file_text</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2399,6 +2439,8 @@
 
 <div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Threat Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2417,6 +2459,17 @@
 
 <div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Indicator Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [</span>
+    <span class="c1">#     &#39;_attributes&#39;,</span>
+    <span class="c1">#     &#39;_file_actions&#39;,</span>
+    <span class="c1">#     &#39;_indicator_data&#39;,</span>
+    <span class="c1">#     &#39;_labels&#39;,</span>
+    <span class="c1">#     &#39;_occurrences&#39;,</span>
+    <span class="c1">#     &#39;_summary&#39;,</span>
+    <span class="c1">#     &#39;_tags&#39;,</span>
+    <span class="c1">#     &#39;_type&#39;,</span>
+    <span class="c1">#     &#39;_utils&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_type</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2601,6 +2654,28 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Indicator dateAdded.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">)</span>
+
+    <span class="nd">@date_added</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Indicator dateAdded.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">date_added</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Indicator lastModified.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lastModified&#39;</span><span class="p">)</span>
+
+    <span class="nd">@last_modified</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">last_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_modified</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Indicator lastModified.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_data</span><span class="p">[</span><span class="s1">&#39;lastModified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">last_modified</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Indicator.occurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.occurrence">[docs]</a>    <span class="k">def</span> <span class="nf">occurrence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a file Occurrence.</span>
 
@@ -2706,6 +2781,8 @@
 
 <div class="viewcode-block" id="Address"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Address">[docs]</a><span class="k">class</span> <span class="nc">Address</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Address Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2721,6 +2798,8 @@
 
 <div class="viewcode-block" id="ASN"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.ASN">[docs]</a><span class="k">class</span> <span class="nc">ASN</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch ASN Object.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_number</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2736,6 +2815,8 @@
 
 <div class="viewcode-block" id="CIDR"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.CIDR">[docs]</a><span class="k">class</span> <span class="nc">CIDR</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch CIDR Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2751,6 +2832,8 @@
 
 <div class="viewcode-block" id="EmailAddress"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.EmailAddress">[docs]</a><span class="k">class</span> <span class="nc">EmailAddress</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch EmailAddress Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2766,6 +2849,8 @@
 
 <div class="viewcode-block" id="File"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.File">[docs]</a><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch File Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sha256</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2836,6 +2921,8 @@
 
 <div class="viewcode-block" id="Host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Host">[docs]</a><span class="k">class</span> <span class="nc">Host</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Host Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">dns_active</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">whois_active</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2879,6 +2966,8 @@
 
 <div class="viewcode-block" id="Mutex"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Mutex">[docs]</a><span class="k">class</span> <span class="nc">Mutex</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Mutex Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutex</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2894,6 +2983,8 @@
 
 <div class="viewcode-block" id="RegistryKey"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.RegistryKey">[docs]</a><span class="k">class</span> <span class="nc">RegistryKey</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Registry Key Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2913,6 +3004,8 @@
 
 <div class="viewcode-block" id="URL"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.URL">[docs]</a><span class="k">class</span> <span class="nc">URL</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch URL Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2928,6 +3021,8 @@
 
 <div class="viewcode-block" id="UserAgent"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.UserAgent">[docs]</a><span class="k">class</span> <span class="nc">UserAgent</span><span class="p">(</span><span class="n">Indicator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch User Agent Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2948,6 +3043,8 @@
 
 <div class="viewcode-block" id="Attribute"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Attribute">[docs]</a><span class="k">class</span> <span class="nc">Attribute</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Attribute Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_attribute_data&#39;, &#39;_valid&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_type</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">,</span> <span class="n">displayed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -2975,7 +3072,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_data</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span>
         <span class="c1"># is attr_value not null or &#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">attr_value</span><span class="p">:</span>
+        <span class="c1"># check for None and &#39;&#39; value only.</span>
+        <span class="k">if</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
@@ -3025,6 +3123,8 @@
 
 <div class="viewcode-block" id="FileAction"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.FileAction">[docs]</a><span class="k">class</span> <span class="nc">FileAction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch FileAction Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_action_data&#39;, &#39;_children&#39;, &#39;xid&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_xid</span><span class="p">,</span> <span class="n">relationship</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -3063,6 +3163,8 @@
 
 <div class="viewcode-block" id="FileOccurrence"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.FileOccurrence">[docs]</a><span class="k">class</span> <span class="nc">FileOccurrence</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch FileAction Object.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_occurrence_data&#39;, &#39;_utils&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -3125,6 +3227,8 @@
 
 <div class="viewcode-block" id="SecurityLabel"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.SecurityLabel">[docs]</a><span class="k">class</span> <span class="nc">SecurityLabel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch SecurityLabel Object.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_label_data&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -3178,6 +3282,8 @@
 
 <div class="viewcode-block" id="Tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Tag">[docs]</a><span class="k">class</span> <span class="nc">Tag</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Tag Object&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_tag_data&#39;, &#39;_valid&#39;]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
@@ -3250,7 +3356,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.20',
+            VERSION:'0.8.24',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

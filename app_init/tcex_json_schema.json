@@ -13,6 +13,9 @@
     "displayName": {
       "type": "string"
     },
+    "dockerImage": {
+      "type": "string"
+    },
     "features": {
       "type": "array"
     },

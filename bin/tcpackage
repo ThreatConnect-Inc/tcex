@@ -108,6 +108,7 @@ class TcPackage(object):
     def _update_install_json(self, install_json):
         """Write install.json file"""
         updated = False
+        # Update features
         install_json.setdefault('features', [])
         for feature in self.features:
             if feature not in install_json.get('features'):
@@ -115,16 +116,45 @@ class TcPackage(object):
                 updated = True
                 print('Updating install.json for feature: {}{}{}'.format(
                     c.Style.BRIGHT, c.Fore.CYAN, feature))
+
         return install_json, updated
 
     @staticmethod
     def _write_install_json(filename, install_json):
         """Write install.json file"""
+        # TODO: why check if it exists?
         if os.path.isfile(filename):
             with open(filename, 'w') as fh:
                 json.dump(install_json, fh, indent=4, sort_keys=True)
         else:
             print('{}{}Could not write {} file.'.format(c.Style.BRIGHT, c.Fore.YELLOW, filename))
+
+    @property
+    def commit_hash(self):
+        """Return the current commit hash if available.
+
+        This is not a required task so best effort is fine. In other words this is not guaranteed
+        to work 100% of the time.
+        """
+        commit_hash = None
+        branch = None
+        branch_file = '.git/HEAD'  # ref: refs/heads/develop
+
+        # get current branch
+        if os.path.isfile(branch_file):
+            with open(branch_file, 'r') as f:
+                try:
+                    branch = f.read().strip().split('/')[2]
+                except IndexError:
+                    pass
+
+            # get commit hash
+            if branch:
+                hash_file = '.git/refs/heads/{}'.format(branch)
+                if os.path.isfile(hash_file):
+                    with open(hash_file, 'r') as f:
+                        commit_hash = f.read().strip()
+        return commit_hash
 
     def package(self):
         """Package the App for deployment in TcEx"""
@@ -231,10 +261,8 @@ class TcPackage(object):
             app_version = '{}'.format(
                 self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version)))
 
-            """
-            !!! The name of the folder in the zip is the *key* for an App. This value must
-            !!! remain consistent for the App to upgrade successfully.
-            """
+            # !!! The name of the folder in the zip is the *key* for an App. This value must
+            # !!! remain consistent for the App to upgrade successfully.
             app_name_version = '{}_{}'.format(app_name, app_version)
 
             #
@@ -247,7 +275,12 @@ class TcPackage(object):
             shutil.copytree(template_app_path, tmp_app_path)
 
             # Copy install.json
+            # TODO: do we need copy if writing the data in the next step?
             shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
+
+            # Update commit hash after install.json has been copied.
+            ij.setdefault('commitHash', self.commit_hash)
+            self._write_install_json(os.path.join(tmp_app_path, 'install.json'), ij)
 
             # zip file
             self.zip_file(self.app_path, app_name_version, tmp_path)

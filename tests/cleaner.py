@@ -11,6 +11,9 @@ import validator
 
 
 def _create_xid(type_, name):
+    # if given a file indicator, make sure the name is based on the first hash
+    if type_ == 'file':
+        name = name.split(' : ')[0]
     xid_string = '{}-{}'.format(type_, name)
     hash_object = hashlib.sha256(xid_string.encode('utf-8'))
     return hash_object.hexdigest()

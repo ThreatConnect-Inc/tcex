@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Batch &mdash; TcEx 0.8.20 documentation</title>
+  <title>Batch &mdash; TcEx 0.8.24 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.20 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.24 documentation" href="index.html"/>
         <link rel="next" title="Building Apps" href="building_apps.html"/>
         <link rel="prev" title="Authorization (Token / HMAC)" href="authorization.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.20
+                0.8.24
               </div>
             
           
@@ -221,7 +221,7 @@
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the [submit section](<a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">https://docs.threatconnect.com/en/latest/tcex/batch.html#submit</a>).</p>
+<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">submit section</a>.</p>
 </div>
 </div>
 <div class="section" id="groups">
@@ -238,7 +238,7 @@
 5
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span> <span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
@@ -291,7 +291,7 @@
 </div>
 <div class="section" id="group-interface-2">
 <h3>Group Interface 2<a class="headerlink" href="#group-interface-2" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.group" title="tcex.tcex_batch_v2.TcExBatch.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_key_value" title="tcex.tcex_batch_v2.Group.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.group" title="tcex.tcex_batch_v2.TcExBatch.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Group.add_key_value" title="tcex.tcex_batch_v2.Group.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>).  Adding metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -305,10 +305,26 @@
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span></pre></div>
 </td></tr></table></div>
+<p>The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other groups to which file contents can be added):</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
 </div>
 <div class="section" id="group-interface-3">
 <h3>Group Interface 3<a class="headerlink" href="#group-interface-3" title="Permalink to this headline">¶</a></h3>
-<p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.</p>
+<p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  You can view the required fields for each group type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -329,8 +345,8 @@
 18
 19
 20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">xid</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">generate_xid</span><span class="p">([</span><span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">]</span>
-</span><span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_group</span><span class="p">({</span>
+<span class="n">xid</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">generate_xid</span><span class="p">([</span><span class="s1">&#39;my&#39;</span><span class="p">,</span> <span class="s1">&#39;adversary&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">])</span>
+<span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">add_group</span><span class="p">({</span>
 </span><span class="hll">    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;document-002&#39;</span><span class="p">,</span>
 </span><span class="hll">    <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="s1">&#39;test2.txt&#39;</span><span class="p">,</span>
 </span><span class="hll">    <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="s1">&#39;example content 2&#39;</span><span class="p">,</span>
@@ -346,9 +362,9 @@
 </span><span class="hll">    <span class="p">}],</span>
 </span><span class="hll">    <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="p">[{</span>
 </span><span class="hll">        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SafeToDelete&#39;</span>
-</span>    <span class="p">}]</span>
-<span class="p">})</span>
-</pre></div>
+</span><span class="hll">    <span class="p">}]</span>
+</span><span class="hll"><span class="p">})</span>
+</span></pre></div>
 </td></tr></table></div>
 </div>
 </div>
@@ -409,7 +425,7 @@
 </div>
 <div class="section" id="indicator-interface-2">
 <h3>Indicator Interface 2<a class="headerlink" href="#indicator-interface-2" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicator" title="tcex.tcex_batch_v2.TcExBatch.indicator"><code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code></a> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.add_key_value" title="tcex.tcex_batch_v2.Indicator.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects.  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.TcExBatch.indicator" title="tcex.tcex_batch_v2.TcExBatch.indicator"><code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code></a> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <a class="reference internal" href="tcex_docs/tcex.tcex_batch_v2.html#tcex.tcex_batch_v2.Indicator.add_key_value" title="tcex.tcex_batch_v2.Indicator.add_key_value"><code class="xref py py-meth docutils literal"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>).  Adding metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -426,7 +442,7 @@
 </div>
 <div class="section" id="indicator-interface-3">
 <h3>Indicator Interface 3<a class="headerlink" href="#indicator-interface-3" title="Permalink to this headline">¶</a></h3>
-<p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data.</p>
+<p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. You can view the required fields for each indicator type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>.</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -692,7 +708,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.20',
+            VERSION:'0.8.24',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

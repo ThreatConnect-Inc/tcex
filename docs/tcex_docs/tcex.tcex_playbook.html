@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tcex.tcex_playbook module &mdash; TcEx 0.8.20 documentation</title>
+  <title>tcex.tcex_playbook module &mdash; TcEx 0.8.24 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.20 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.8.24 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
         <link rel="next" title="tcex.tcex_redis module" href="tcex.tcex_redis.html"/>
         <link rel="prev" title="tcex.tcex_notification_v2 module" href="tcex.tcex_notification_v2.html"/> 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                0.8.20
+                0.8.24
               </div>
             
           
@@ -718,7 +718,7 @@ it a partial success instead.</p>
 <dl class="attribute">
 <dt id="tcex.tcex_playbook.TcExPlaybook.out_variables_type">
 <code class="descname">out_variables_type</code><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.out_variables_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return output variables store as name-type dict.</p>
+<dd><p>Return output variables stored as name-type dict.</p>
 </dd></dl>
 
 <dl class="method">
@@ -757,6 +757,33 @@ automatically determine the variable type to read.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
 <li><strong>array</strong> (<em>boolean</em>) – Convert string/dict to Array/List before returning.</li>
+<li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Results retrieved from DB</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(any)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_playbook.TcExPlaybook.read_array">
+<code class="descname">read_array</code><span class="sig-paren">(</span><em>key</em>, <em>embedded=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_playbook.html#TcExPlaybook.read_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_playbook.TcExPlaybook.read_array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Alias for read method that will read any type (e.g., String, KeyValue) and always</dt>
+<dd>return array.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>string</em>) – The variable to read from the DB.</li>
 <li><strong>embedded</strong> (<em>boolean</em>) – Resolve embedded variables.</li>
 </ul>
 </td>
@@ -1142,7 +1169,7 @@ contains not “DB variable” and is just a String.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.20',
+            VERSION:'0.8.24',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
