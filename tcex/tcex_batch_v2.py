@@ -18,6 +18,7 @@ module = __import__(__name__)
 def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
+
     def init_1(self, tcex, value1, xid, **kwargs):
         """Init method for Custom Indicator Types with one value"""
         summary = self.build_summary(value1)  # build the indicator summary
@@ -48,8 +49,14 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 class TcExBatch(object):
     """ThreatConnect Batch Import Module"""
 
-    def __init__(self, tcex, owner, action=None, attribute_write_type=None, halt_on_error=True,
-                 playbook_triggers_enabled=None):
+    def __init__(
+            self,
+            tcex,
+            owner,
+            action=None,
+            attribute_write_type=None,
+            halt_on_error=True,
+            playbook_triggers_enabled=None):
         """Initialize Class Properties.
 
         Args:
@@ -161,8 +168,7 @@ class TcExBatch(object):
 
         def method_3(value1, value2, value3, xid, **kwargs):
             """Add Custom Indicator data to Batch object"""
-            indicator_obj = custom_class(
-                value1, value2, value3, xid, **kwargs)
+            indicator_obj = custom_class(value1, value2, value3, xid, **kwargs)
             return self._indicator(indicator_obj)
 
         method = locals()['method_{}'.format(value_count)]
@@ -473,10 +479,7 @@ class TcExBatch(object):
         This method will remove the group/indicator from memory and/or shelf.
         """
         entity_count = 0
-        data = {
-            'group': [],
-            'indicator': []
-        }
+        data = {'group': [], 'indicator': []}
         # process group data
         group_data, entity_count = self.data_groups(self.groups, entity_count)
         data['group'].extend(group_data)
@@ -676,8 +679,9 @@ class TcExBatch(object):
             # if r.status_code == 404:
             #     time.sleep(5)  # allow time for errors to be processed
             #     r = self.tcex.session.get('/v2/batch/{}/errors'.format(batch_id))
-            self.tcex.log.debug('Retrieve Errors for ID {}: status code {}, errors {}'.format(
-                batch_id, r.status_code, r.text))
+            self.tcex.log.debug(
+                'Retrieve Errors for ID {}: status code {}, errors {}'.format(
+                    batch_id, r.status_code, r.text))
             # self.tcex.log.debug('Retrieve Errors URL {}'.format(r.url))
             # API does not return correct content type
             if r.ok:
@@ -1023,9 +1027,7 @@ class TcExBatch(object):
             timeout = self.poll_timeout
         else:
             timeout = int(timeout)
-        params = {
-            'includeAdditional': 'true'
-        }
+        params = {'includeAdditional': 'true'}
 
         poll_count = 0
         poll_time_total = 0
@@ -1064,7 +1066,7 @@ class TcExBatch(object):
                 weights.pop()
 
                 # calculate the weighted average of the last 5 poll times
-                self._poll_interval = math.floor(poll_interval_time_weighted_sum/sum(weights))
+                self._poll_interval = math.floor(poll_interval_time_weighted_sum / sum(weights))
 
                 if poll_count == 1:
                     # if completed on first poll, reduce poll interval.
@@ -1279,8 +1281,8 @@ class TcExBatch(object):
         Returns.
             dict: The Batch Status from the ThreatConnect API.
         """
-        batch_data = self.submit_create_and_upload(
-            halt_on_error).get('data', {}).get('batchStatus', {})
+        batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get(
+            'batchStatus', {})
         batch_id = batch_data.get('id')
         if batch_id is not None:
             self.tcex.log.info('Batch ID: {}'.format(batch_id))
@@ -1343,8 +1345,8 @@ class TcExBatch(object):
                 else:
                     batch_data = {}
             else:
-                batch_data = self.submit_create_and_upload(
-                    halt_on_error).get('data', {}).get('batchStatus', {})
+                batch_data = self.submit_create_and_upload(halt_on_error).get('data', {}).get(
+                    'batchStatus', {})
                 batch_id = batch_data.get('id')
 
             if not batch_data:
@@ -1393,13 +1395,8 @@ class TcExBatch(object):
             self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
             try:
-                files = (
-                    ('config', json.dumps(self.settings)),
-                    ('content', json.dumps(content))
-                )
-                params = {
-                    'includeAdditional': 'true'
-                }
+                files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
+                params = {'includeAdditional': 'true'}
                 r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
                 self.tcex.log.debug('Batch Status Code: {}'.format(r.status_code))
             except Exception as e:
@@ -1489,8 +1486,7 @@ class TcExBatch(object):
                 self.tcex.handle_error(585, [r.status_code, r.text], halt_on_error)
             elif self.debug:
                 self.saved_xids.append(xid)
-            self.tcex.log.info('Status {} for file upload with xid {}.'.format(
-                r.status_code, xid))
+            self.tcex.log.info('Status {} for file upload with xid {}.'.format(r.status_code, xid))
             upload_status.append({'uploaded': status, 'xid': xid})
         return upload_status
 
@@ -1634,10 +1630,7 @@ class TcExBatch(object):
             else:
                 indicators.append(indicator_data.data)
 
-        data = {
-            'group': groups,
-            'indicators': indicators
-        }
+        data = {'group': groups, 'indicators': indicators}
         return json.dumps(data, indent=4, sort_keys=True)
 
 
@@ -1648,6 +1641,7 @@ class TcExBatch(object):
 
 class Group(object):
     """ThreatConnect Batch Group Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = [
     #     '_attributes',
@@ -1671,10 +1665,7 @@ class Group(object):
         self._utils = TcExUtils()
         self._name = name
         self._type = group_type
-        self._group_data = {
-            'name': name,
-            'type': group_type
-        }
+        self._group_data = {'name': name, 'type': group_type}
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -1749,8 +1740,8 @@ class Group(object):
         """
         self._group_data.setdefault('associatedGroupXid', []).append(group_xid)
 
-    def attribute(self, attr_type, attr_value, displayed=False, source=None, unique=True,
-                  formatter=None):
+    def attribute(
+            self, attr_type, attr_value, displayed=False, source=None, unique=True, formatter=None):
         """Return instance of Attribute
 
         unique:
@@ -1909,6 +1900,7 @@ class Group(object):
 
 class Adversary(Group):
     """ThreatConnect Batch Adversary Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -1925,6 +1917,7 @@ class Adversary(Group):
 
 class Campaign(Group):
     """ThreatConnect Batch Campaign Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -1953,6 +1946,7 @@ class Campaign(Group):
 
 class Document(Group):
     """ThreatConnect Batch Document Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_file_data', '_group_data']
 
@@ -2016,6 +2010,7 @@ class Document(Group):
 
 class Email(Group):
     """ThreatConnect Batch Email Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2071,6 +2066,7 @@ class Email(Group):
 
 class Event(Group):
     """ThreatConnect Batch Event Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2116,6 +2112,7 @@ class Event(Group):
 
 class Incident(Group):
     """ThreatConnect Batch Incident Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2178,6 +2175,7 @@ class Incident(Group):
 
 class IntrusionSet(Group):
     """ThreatConnect Batch Adversary Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2194,6 +2192,7 @@ class IntrusionSet(Group):
 
 class Report(Group):
     """ThreatConnect Batch Report Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2246,6 +2245,7 @@ class Report(Group):
 
 class Signature(Group):
     """ThreatConnect Batch Signature Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2279,6 +2279,7 @@ class Signature(Group):
 
 class Threat(Group):
     """ThreatConnect Batch Threat Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2300,6 +2301,7 @@ class Threat(Group):
 
 class Indicator(object):
     """ThreatConnect Batch Indicator Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = [
     #     '_attributes',
@@ -2329,10 +2331,7 @@ class Indicator(object):
         self._utils = TcExUtils()
         self._summary = summary
         self._type = indicator_type
-        self._indicator_data = {
-            'summary': summary,
-            'type': indicator_type
-        }
+        self._indicator_data = {'summary': summary, 'type': indicator_type}
         # process all kwargs and update metadata field names
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -2403,8 +2402,8 @@ class Indicator(object):
         association = {'groupXid': group_xid}
         self._indicator_data.setdefault('associatedGroups', []).append(association)
 
-    def attribute(self, attr_type, attr_value, displayed=False, source=None, unique=True,
-                  formatter=None):
+    def attribute(
+            self, attr_type, attr_value, displayed=False, source=None, unique=True, formatter=None):
         """Return instance of Attribute
 
         unique:
@@ -2627,6 +2626,7 @@ class Indicator(object):
 
 class Address(Indicator):
     """ThreatConnect Batch Address Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2648,6 +2648,7 @@ class Address(Indicator):
 
 class ASN(Indicator):
     """ThreatConnect Batch ASN Object."""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2669,6 +2670,7 @@ class ASN(Indicator):
 
 class CIDR(Indicator):
     """ThreatConnect Batch CIDR Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2690,6 +2692,7 @@ class CIDR(Indicator):
 
 class EmailAddress(Indicator):
     """ThreatConnect Batch EmailAddress Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2711,6 +2714,7 @@ class EmailAddress(Indicator):
 
 class File(Indicator):
     """ThreatConnect Batch File Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2783,6 +2787,7 @@ class File(Indicator):
 
 class Host(Indicator):
     """ThreatConnect Batch Host Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2826,6 +2831,7 @@ class Host(Indicator):
 
 class Mutex(Indicator):
     """ThreatConnect Batch Mutex Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2847,6 +2853,7 @@ class Mutex(Indicator):
 
 class RegistryKey(Indicator):
     """ThreatConnect Batch Registry Key Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2871,6 +2878,7 @@ class RegistryKey(Indicator):
 
 class URL(Indicator):
     """ThreatConnect Batch URL Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2892,6 +2900,7 @@ class URL(Indicator):
 
 class UserAgent(Indicator):
     """ThreatConnect Batch User Agent Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
@@ -2918,6 +2927,7 @@ class UserAgent(Indicator):
 
 class Attribute(object):
     """ThreatConnect Batch Attribute Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_attribute_data', '_valid']
 
@@ -2933,9 +2943,7 @@ class Attribute(object):
             formatter (method, optional): A method that take a single attribute value and return a
                 single formatted value.
         """
-        self._attribute_data = {
-            'type': attr_type
-        }
+        self._attribute_data = {'type': attr_type}
         if displayed:
             self._attribute_data['displayed'] = displayed
         # format the value
@@ -2998,6 +3006,7 @@ class Attribute(object):
 
 class FileAction(object):
     """ThreatConnect Batch FileAction Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_action_data', '_children', 'xid']
 
@@ -3038,6 +3047,7 @@ class FileAction(object):
 
 class FileOccurrence(object):
     """ThreatConnect Batch FileAction Object."""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_occurrence_data', '_utils']
 
@@ -3102,6 +3112,7 @@ class FileOccurrence(object):
 
 class SecurityLabel(object):
     """ThreatConnect Batch SecurityLabel Object."""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_label_data']
 
@@ -3157,6 +3168,7 @@ class SecurityLabel(object):
 
 class Tag(object):
     """ThreatConnect Batch Tag Object"""
+
     # TODO: enable when support for py2 is dropped.
     # __slots__ = ['_tag_data', '_valid']
 
@@ -3170,9 +3182,7 @@ class Tag(object):
         """
         if formatter is not None:
             name = formatter(name)
-        self._tag_data = {
-            'name': name
-        }
+        self._tag_data = {'name': name}
         # is tag not null or ''
         self._valid = True
         if not name:
