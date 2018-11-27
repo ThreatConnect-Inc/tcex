@@ -98,15 +98,18 @@ class TcLib(object):
             # pattern to match env vars in data
             env_var = re.compile(r'\$env\.([a-zA-Z0-9]+)')
 
-            lib_dir = os.path.join(self.app_path, data.get('lib_dir'))
+            lib_dir = data.get('lib_dir')
             # replace env vars with env val in the lib dir
             matches = re.findall(env_var, lib_dir)
             if matches:
                 env_val = os.environ.get(matches[0])
                 lib_dir = re.sub(env_var, env_val, lib_dir)
-            if os.access(lib_dir, os.W_OK):
+
+            lib_dir_fq = os.path.join(self.app_path, lib_dir)
+
+            if os.access(lib_dir_fq, os.W_OK):
                 # remove lib directory from previous runs
-                shutil.rmtree(lib_dir)
+                shutil.rmtree(lib_dir_fq)
 
             # replace env vars with env val in the python executable
             python_executable = data.get('python_executable')
@@ -116,10 +119,11 @@ class TcLib(object):
                 python_executable = re.sub(env_var, env_val, python_executable)
 
             print(
-                'Building Lib Dir: {}{}{} ({})'.format(c.Style.BRIGHT, c.Fore.CYAN, lib_dir, using))
+                'Building Lib Dir: {}{}{} ({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq, using))
             exe_command = [
                 os.path.expanduser(python_executable), '-m', 'pip', 'install', '-r',
-                self.requirements_file, '--ignore-installed', '--quiet', '--target', lib_dir
+                self.requirements_file, '--ignore-installed', '--quiet', '--target', lib_dir_fq
             ]
             if args.no_cache_dir:
                 exe_command.append('--no-cache-dir')
@@ -139,7 +143,7 @@ class TcLib(object):
 
             # version comparison
             try:
-                python_version = data.get('lib_dir').split('_', 1)[0]
+                python_version = lib_dir.split('_', 1)[1]
             except IndexError:
                 print(
                     '{}{}{}'.format(
