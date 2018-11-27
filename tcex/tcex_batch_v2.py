@@ -479,7 +479,10 @@ class TcExBatch(object):
         This method will remove the group/indicator from memory and/or shelf.
         """
         entity_count = 0
-        data = {'group': [], 'indicator': []}
+        data = {
+            'group': [],
+            'indicator': [],
+        }
         # process group data
         group_data, entity_count = self.data_groups(self.groups, entity_count)
         data['group'].extend(group_data)
