@@ -28,5 +28,5 @@ def test_date_to_datetime():
 def test_date_to_datetime_with_bad_timezone():
     starting_date = datetime.datetime.now()
     tcex_instance = utility.init_tcex(clean_data=False)
-    new_date = tcex_instance.utils.date_to_datetime(str(datetime.datetime.now()), tz='local')
+    new_date = tcex_instance.utils.date_to_datetime(str(datetime.datetime.now()))
     assert new_date.hour == starting_date.hour

@@ -4,9 +4,11 @@ from datetime import datetime
 import calendar
 import os
 import re
+import time
 import uuid
 
 from pytz import timezone
+import pytz
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from tzlocal import get_localzone
@@ -61,6 +63,21 @@ class TcExUtils():
 
         return dt_value
 
+    @staticmethod
+    def _replace_timezone(dateutil_parser):
+        try:
+            # try to get the timezone from tzlocal
+            tzinfo = timezone(get_localzone().zone)
+        except pytz.exceptions.UnknownTimeZoneError as e:
+            try:
+                # try to get the timezone from python's time package
+                tzinfo = timezone(time.tzname[0])
+            except pytz.exceptions.UnknownTimeZoneError as e:
+                # seeing as all else has failed: use UTC as the timezone
+                tzinfo = timezone('UTC')
+        dateutil_parser = dateutil_parser.replace(tzinfo=tzinfo)
+        return dateutil_parser
+
     def date_to_datetime(self, time_input, tz=None):
         """ Convert ISO 8601 and other date strings to datetime.datetime type.
 
@@ -77,9 +94,7 @@ class TcExUtils():
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
                 if dt.tzinfo is None:
-                    # self.tcex.log.debug(
-                    #     'Assuming local time for naive datetime {}.'.format(str(dt)))
-                    dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
+                    dt = self._replace_timezone(dt)
                 dt = dt.astimezone(timezone(tz))
         except ValueError:
             pass
@@ -165,7 +180,7 @@ class TcExUtils():
         if tz is not None:  # don't add tz if no tz value is passed
             if dt.tzinfo is None:
                 # self.tcex.log.debug('Assuming local time for naive datetime {}.'.format(str(dt)))
-                dt = dt.replace(tzinfo=timezone(get_localzone().zone))  # required for py2.x
+                dt = self._replace_timezone(dt)
             # don't covert timezone if source timezone already in the correct timezone
             if tz != src_tzname:
                 dt = dt.astimezone(timezone(tz))
