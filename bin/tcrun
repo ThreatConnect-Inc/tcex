@@ -44,9 +44,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
 parser.add_argument(
-    '--docker', action='store_true', help='Run the App in a docker container.')
+    '--docker', action='store_true', help='(Experimental) Run the App in a docker container.')
 parser.add_argument(
-    '--docker_image', help='Override the docker container defined in install.json or profile.')
+    '--docker_image',
+    help='(Experimental) Override the docker container defined in install.json or profile.')
 parser.add_argument(
     '--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument(
@@ -69,6 +70,9 @@ parser.add_argument(
     type=int)
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
+parser.add_argument(
+    '--vscd', action='store_true',
+     help='(Experimental) Enable Visual Studio Code debugging using attach method on port 4242.')
 args, extra_args = parser.parse_known_args()
 
 
@@ -660,6 +664,7 @@ class TcRun(object):
         if install_json.get('programMain') is not None:
             program_main = install_json.get('programMain').replace('.py', '')
         elif self.profile.get('script') is not None:
+            # TODO: remove this option on version 1.0.0
             program_main = self.profile.get('script').replace('.py', '')
         else:
             print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
@@ -686,7 +691,20 @@ class TcRun(object):
         """Return the run Print Command."""
         # build the command
         if program_language == 'python':
-            if self._args.docker:
+            if self._args.vscd:
+                self.update_environment()  # update Python Path
+                command = [
+                    'python',
+                    '-m',
+                    'ptvsd',
+                    '--host',
+                    'localhost',
+                    '--port',
+                    '5678',
+                    '--wait',
+                    '{}.py'.format(program_main)
+                ]
+            elif self._args.docker:
                 command = ['python', '.', program_main]
             else:
                 command = [sys.executable, '.', program_main ]
@@ -1274,6 +1292,16 @@ class TcRun(object):
         path += 'rating: rating || `0`}'
         return self.path_data(indicator_data, path)
 
+    @staticmethod
+    def update_environment():
+        """Run the App as a subprocess."""
+        lib_path = os.path.join(os.getcwd(), 'lib_latest')
+        if 'PYTHONPATH' in os.environ:
+            os.environ['PYTHONPATH'] = '{}{}{}'.format(
+                lib_path, os.pathsep, os.environ['PYTHONPATH'])
+        else:
+            os.environ['PYTHONPATH'] = '{}'.format(lib_path)
+
     def validate(self):
         """Validate Data"""
         passed = True
@@ -1749,7 +1777,8 @@ if __name__ == '__main__':
                 # print launcher config and exit
                 tcr.gen_launcher()
                 continue
-            if args.autoclear:
+            # clear redis and threatconnect data found in profile and staging files.
+            if p.get('autoclear') or args.autoclear:
                 tcr.autoclear()
             tcr.clear()
             tcr.stage()
