@@ -82,7 +82,7 @@ Job App Example
     <snipped...>
 
 Playbook App Example
----------------
+--------------------
 
 .. code-block:: python
     :linenos:

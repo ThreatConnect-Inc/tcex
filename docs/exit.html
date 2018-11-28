@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Exit &mdash; TcEx 0.8.24 documentation</title>
+  <title>Exit &mdash; TcEx 0.8.25 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.24 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.8.25 documentation" href="index.html"/>
         <link rel="next" title="Examples" href="examples.html"/>
         <link rel="prev" title="Development Tools" href="development_tools.html"/> 
 
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.8.24
+                0.8.25
               </div>
             
           
@@ -100,9 +100,18 @@
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Exit</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setting-exit-code">Setting Exit Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#immediate-exit-on-failure">Immediate Exit on Failure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-exit-codes">Supported Exit Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-exit-code">Setting Exit Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#job-app-example">Job App Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#playbook-app-example">Playbook App Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#immediate-exit-on-failure">Immediate Exit on Failure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Job App Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Playbook App Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#job-app-exit-codes">Job App Exit Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#playbook-app-exit-codes">Playbook App Exit Codes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -184,20 +193,21 @@
             
   <div class="section" id="exit">
 <span id="id1"></span><h1>Exit<a class="headerlink" href="#exit" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method.</p>
+<p>All ThreatConnect ™ Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx" title="tcex.tcex.TcEx"><code class="xref py py-mod docutils literal"><span class="pre">TcEx</span></code></a> Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property to handle exit codes.  All Apps should end with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method.</p>
 <p>The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method supports and optional <code class="docutils literal"><span class="pre">msg</span></code> parameter.  If provided the <code class="docutils literal"><span class="pre">msg</span></code> value will be logged and written to the <code class="docutils literal"><span class="pre">message_tc</span></code> file as the App exit message.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">Providing a proper exit code for Playbook Apps is important for execution of downstream Apps.</p>
+<p class="last">Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality on the TcEx Framework.</p>
+<p class="last">The exit methods automatically logs the exit code using the <a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a> functionality of the TcEx Framework.</p>
 </div>
 <div class="section" id="setting-exit-code">
 <h2>Setting Exit Code<a class="headerlink" href="#setting-exit-code" title="Permalink to this headline">¶</a></h2>
 <p>Some failures do not warrant an immediate exit.  In such case the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-mod docutils literal"><span class="pre">exit_code</span></code></a> property allows an exit code to be set for when the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.</p>
-<p><strong>Example</strong></p>
+<div class="section" id="job-app-example">
+<h3>Job App Example<a class="headerlink" href="#job-app-example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -224,9 +234,40 @@
 </span></pre></div>
 </td></tr></table></div>
 </div>
+<div class="section" id="playbook-app-example">
+<h3>Playbook App Example<a class="headerlink" href="#playbook-app-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">3</span>
+</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+
+<span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;My App message&#39;</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+</div>
 <div class="section" id="immediate-exit-on-failure">
 <h2>Immediate Exit on Failure<a class="headerlink" href="#immediate-exit-on-failure" title="Permalink to this headline">¶</a></h2>
 <p>Certain failures require that the App exit immediately.  In these cases calling the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal"><span class="pre">exit()</span></code></a> method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.</p>
+<div class="section" id="id2">
+<h3>Job App Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -249,12 +290,44 @@
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="supported-exit-codes">
-<h2>Supported Exit Codes<a class="headerlink" href="#supported-exit-codes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Playbook App Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datafile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+<span class="hll">    <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;App failed&#39;</span><span class="p">)</span>
+</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">...&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="job-app-exit-codes">
+<h2>Job App Exit Codes<a class="headerlink" href="#job-app-exit-codes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>0 - Successful execution of App</li>
 <li>1 - Failed execution of App</li>
 <li>3 - Partial failure of App</li>
+</ul>
+</div>
+<div class="section" id="playbook-app-exit-codes">
+<h2>Playbook App Exit Codes<a class="headerlink" href="#playbook-app-exit-codes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>0 - Successful execution of App</li>
+<li>1 - Failed execution of App</li>
 </ul>
 </div>
 </div>
@@ -302,7 +375,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.24',
+            VERSION:'0.8.25',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
