@@ -13,8 +13,9 @@ import operator
 import os
 # import platform
 import re
-import sys
+import signal
 import subprocess
+import sys
 import time
 import traceback
 from datetime import datetime
@@ -44,9 +45,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
 parser.add_argument(
-    '--docker', action='store_true', help='Run the App in a docker container.')
+    '--docker', action='store_true', help='(Experimental) Run the App in a docker container.')
 parser.add_argument(
-    '--docker_image', help='Override the docker container defined in install.json or profile.')
+    '--docker_image',
+    help='(Experimental) Override the docker container defined in install.json or profile.')
 parser.add_argument(
     '--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument(
@@ -69,6 +71,12 @@ parser.add_argument(
     type=int)
 parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
+parser.add_argument(
+    '--vscd', action='store_true',
+     help='(Experimental) Enable Visual Studio Code debugging using attach method on port 5678.')
+parser.add_argument(
+    '--vscd_port', default='5678',
+     help='(Experimental) Visual Studio Code debugging port (default: 5678).')
 args, extra_args = parser.parse_known_args()
 
 
@@ -77,10 +85,12 @@ class TcRun(object):
 
     def __init__(self, _args):
         """ """
+        self._signal_handler_init()
         self._args = _args
         self._config = None
         self._profile = {}
         self._staging_data = None
+        self.container = None
         self.reports = Reports()
         self.tcex = None
         self.docker_image = 'tcintegrations/tci-dev:latest'
@@ -215,6 +225,21 @@ class TcRun(object):
             'sw': self.data_startswith,
             'starts-with': self.data_startswith
         }
+
+    def _signal_handler_init(self):
+        # catch interupt signals
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        signal.signal(signal.SIGINT, self._signal_handler)
+        signal.signal(signal.SIGTERM, self._signal_handler)
+
+    def _signal_handler(self, signal_interupt, frame):
+        """Handle singal interrupt."""
+        if self.container is not None:
+            print('{}{}Stopping docker container.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+            self.container.stop()
+        print('{}{}Interrupt signal received.'.format(c.Style.BRIGHT, c.Fore.RED))
+        self.log.error('tcrun received an interrupt signal and will now exit.')
+        sys.exit(1)
 
     @property
     def _tcex_required_args(self):
@@ -536,7 +561,11 @@ class TcRun(object):
             else:
                 sys.argv.append(arg)
                 sys.argv.append('{}'.format(value))
+
         self.tcex = TcEx()
+
+        # reset singal handlers
+        self._signal_handler_init()
 
     def path_data(self, variable_data, path):
         """Return jmespath data."""
@@ -660,6 +689,7 @@ class TcRun(object):
         if install_json.get('programMain') is not None:
             program_main = install_json.get('programMain').replace('.py', '')
         elif self.profile.get('script') is not None:
+            # TODO: remove this option on version 1.0.0
             program_main = self.profile.get('script').replace('.py', '')
         else:
             print('{}{}No Program Main or Script defined.'.format(c.Style.BRIGHT, c.Fore.RED))
@@ -686,10 +716,28 @@ class TcRun(object):
         """Return the run Print Command."""
         # build the command
         if program_language == 'python':
+            python_exe = sys.executable
+            ptvsd_host = 'localhost'
             if self._args.docker:
-                command = ['python', '.', program_main]
+                # use the default python command in the container
+                python_exe = 'python'
+                ptvsd_host = '0.0.0.0'
+
+            if self._args.vscd:
+                self.update_environment()  # update PYTHONPATH for local testing
+                command = [
+                    python_exe,
+                    '-m',
+                    'ptvsd',
+                    '--host',
+                    ptvsd_host,
+                    '--port',
+                    self._args.vscd_port,
+                    '--wait',
+                    '{}.py'.format(program_main)
+                ]
             else:
-                command = [sys.executable, '.', program_main ]
+                command = [python_exe, '.', program_main]
 
             # exe command
             cli_command = command + self.profile.get('profile_args').standard
@@ -758,6 +806,12 @@ class TcRun(object):
         app_dir = os.getcwd()
         # app_path = '{}/{}'.format(app_dir, program_main)
 
+        # ports
+        ports = {}
+        if self._args.vscd:
+            ports = {'{}/tcp'.format(self._args.vscd_port): self._args.vscd_port}
+
+        # volumes
         volumes = {}
         in_path = '{}/{}'.format(app_dir, app_args_data.get('tc_in_path'))
         if app_args_data.get('tc_in_path') is not None:
@@ -795,16 +849,18 @@ class TcRun(object):
 
         status_code = 1
         try:
-            container = client.containers.run(
+            self.container = client.containers.run(
                 docker_image,
                 entrypoint=commands.get('cli_command'),
+                environment=['PYTHONPATH={}/lib_latest'.format(app_dir)],
                 detach=True,
-                network_mode=install_json.get('docker_host', 'host'),
+                # network_mode=install_json.get('docker_host', 'host'),
+                ports=ports,
                 remove=True,
                 volumes=volumes,
                 working_dir=app_dir
             )
-            results = container.wait()
+            results = self.container.wait()
             status_code = results.get('StatusCode')
             error = results.get('Error')
             if error:
@@ -1273,6 +1329,16 @@ class TcRun(object):
         path += 'confidence: confidence || `0`, '
         path += 'rating: rating || `0`}'
         return self.path_data(indicator_data, path)
+
+    @staticmethod
+    def update_environment():
+        """Run the App as a subprocess."""
+        lib_path = os.path.join(os.getcwd(), 'lib_latest')
+        if 'PYTHONPATH' in os.environ:
+            os.environ['PYTHONPATH'] = '{}{}{}'.format(
+                lib_path, os.pathsep, os.environ['PYTHONPATH'])
+        else:
+            os.environ['PYTHONPATH'] = '{}'.format(lib_path)
 
     def validate(self):
         """Validate Data"""
@@ -1749,7 +1815,8 @@ if __name__ == '__main__':
                 # print launcher config and exit
                 tcr.gen_launcher()
                 continue
-            if args.autoclear:
+            # clear redis and threatconnect data found in profile and staging files.
+            if p.get('autoclear') or args.autoclear:
                 tcr.autoclear()
             tcr.clear()
             tcr.stage()

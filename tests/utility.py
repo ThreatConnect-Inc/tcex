@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "./li
 import tcex
 
 
-def init_tcex(requires_tc_token=False):
+def init_tcex(requires_tc_token=False, clean_data=True):
     """Initialize the tcex instance."""
     tcex_instance = tcex.TcEx()
     tcex_instance.log.debug('Creating content in {}. If this is not correct, pass in a different owner name using the --api_default_org flag.'.format(tcex_instance.args.api_default_org))
@@ -38,8 +38,9 @@ def init_tcex(requires_tc_token=False):
         else:
             raise RuntimeError('The TC_TOKEN environmental variable is required and was not found. Please add it (you can find instructions for doing so here: https://gitlab.com/fhightower-tc/tcex-playground#setup).')
 
-    # clear out any data in the source
-    cleaner.clean(tcex_instance)
-    validator.validate(tcex_instance, expected_groups=0, expected_indicators=0)
+    if clean_data:
+        # clear out any data in the source
+        cleaner.clean(tcex_instance)
+        validator.validate(tcex_instance, expected_groups=0, expected_indicators=0)
 
     return tcex_instance

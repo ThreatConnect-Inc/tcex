@@ -1,6 +1,5 @@
 """Set App lib directory for current version of Python"""
 import os
-# import signal
 import subprocess
 import sys
 
@@ -9,12 +8,9 @@ __version__ = '1.0.2'
 
 class AppLib(object):
     """Set App Lib Directory"""
+
     def __init__(self):
         """Initialize App properties."""
-        # NOTE: TC Core will handle sending kill to child. Then tcex has it's own logic
-        #       to handle graceful shutdown.
-        # signal.signal(signal.SIGINT, self.signal_handler)
-        # signal.signal(signal.SIGTERM, self.signal_handler)
         self._app_process = None
         self._lib_directories = None
 
@@ -68,12 +64,6 @@ class AppLib(object):
         # Make sure to exit with the return value from the subprocess call
         self._app_process = subprocess.Popen(sys.argv)
         return self._app_process.wait()  # returns exit code
-
-    # def signal_handler(self, signal_interrupt, frame):
-    #     """Handle signal interrupts."""
-    #     self._app_process.send_signal(signal_interrupt)
-    #     if signal_interrupt in (2, 15):  # SIGINT, SIGTERM
-    #         sys.exit(1)
 
     @staticmethod
     def update_environment(lib_directory):
