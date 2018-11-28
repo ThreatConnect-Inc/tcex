@@ -73,7 +73,10 @@ parser.add_argument(
     '--unmask', action='store_true', help='Unmask masked args.')
 parser.add_argument(
     '--vscd', action='store_true',
-     help='(Experimental) Enable Visual Studio Code debugging using attach method on port 4242.')
+     help='(Experimental) Enable Visual Studio Code debugging using attach method on port 5678.')
+parser.add_argument(
+    '--vscd_port', default='5678',
+     help='(Experimental) Visual Studio Code debugging port (default: 5678).')
 args, extra_args = parser.parse_known_args()
 
 
@@ -713,23 +716,28 @@ class TcRun(object):
         """Return the run Print Command."""
         # build the command
         if program_language == 'python':
+            python_exe = sys.executable
+            ptvsd_host = 'localhost'
+            if self._args.docker:
+                # use the default python command in the container
+                python_exe = 'python'
+                ptvsd_host = '0.0.0.0'
+
             if self._args.vscd:
-                self.update_environment()  # update Python Path
+                self.update_environment()  # update PYTHONPATH for local testing
                 command = [
-                    'python',
+                    python_exe,
                     '-m',
                     'ptvsd',
                     '--host',
-                    'localhost',
+                    ptvsd_host,
                     '--port',
-                    '5678',
+                    self._args.vscd_port,
                     '--wait',
                     '{}.py'.format(program_main)
                 ]
-            elif self._args.docker:
-                command = ['python', '.', program_main]
             else:
-                command = [sys.executable, '.', program_main]
+                command = [python_exe, '.', program_main]
 
             # exe command
             cli_command = command + self.profile.get('profile_args').standard
@@ -799,10 +807,9 @@ class TcRun(object):
         # app_path = '{}/{}'.format(app_dir, program_main)
 
         # ports
-        # ports = {}
-        # if self._args.vscd:
-        #     # ports = {'5678/tcp': 5678}
-        #     ports = {'5678/tcp': ('localhost', 5678)}
+        ports = {}
+        if self._args.vscd:
+            ports = {'{}/tcp'.format(self._args.vscd_port): self._args.vscd_port}
 
         # volumes
         volumes = {}
@@ -845,10 +852,10 @@ class TcRun(object):
             self.container = client.containers.run(
                 docker_image,
                 entrypoint=commands.get('cli_command'),
+                environment=['PYTHONPATH={}/lib_latest'.format(app_dir)],
                 detach=True,
-                network_mode=install_json.get('docker_host', 'host'),
-                # ports=ports,
-                # publish_all_ports=True,
+                # network_mode=install_json.get('docker_host', 'host'),
+                ports=ports,
                 remove=True,
                 volumes=volumes,
                 working_dir=app_dir
