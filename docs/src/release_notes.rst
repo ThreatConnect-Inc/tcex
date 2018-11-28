@@ -10,7 +10,7 @@ Release Notes
 ------
 + Updated ``tcinit`` command  CLI option ``--upgrade`` to download additional files.
 + Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
-+ Updated ``tcrun`` command to support new **autorun** value in profile.
++ Updated ``tcrun`` command to support new **autoclear** value in profile.
 + Updated ``tclib`` to create a symbolic link to the latest Python lib directory.
 + Updated ``tcpackage`` command to add **commitHash** value to install.json.
 + Updated :py:mod:`~tcex.tcex` module to log **commitHash** value.
