@@ -45,14 +45,10 @@ class TcExPlaybook(object):
                 variable_name = parsed_key['name']
                 variable_type = parsed_key['type']
                 # store the variables in dict by name (e.g. "status_code")
-                self._out_variables[variable_name] = {
-                    'variable': o
-                }
+                self._out_variables[variable_name] = {'variable': o}
                 # store the variables in dict by name-type (e.g. "status_code-String")
                 vt_key = '{}-{}'.format(variable_name, variable_type)
-                self._out_variables_type[vt_key] = {
-                    'variable': o
-                }
+                self._out_variables_type[vt_key] = {'variable': o}
 
     @property
     def _variable_pattern(self):
@@ -87,14 +83,13 @@ class TcExPlaybook(object):
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
-                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
-                        msg_type))
+                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(msg_type))
                     return self.aot_blpop()
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 
     def aot_rpush(self, exit_code):
-        """Subscribe to AOT action channel."""
+        """Push message to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
             try:
                 self.db.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
@@ -216,8 +211,7 @@ class TcExPlaybook(object):
                 self._db = TcExRedis(
                     self.tcex.default_args.tc_playbook_db_path,
                     self.tcex.default_args.tc_playbook_db_port,
-                    self.tcex.default_args.tc_playbook_db_context
-                )
+                    self.tcex.default_args.tc_playbook_db_context)
             elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
                 from .tcex_key_value import TcExKeyValue
                 self._db = TcExKeyValue(self.tcex)
@@ -1015,10 +1009,7 @@ class TcExPlaybook(object):
 
         bulk_array = []
         for e in entities:
-            bulk = {
-                'type': e.get('type'),
-                'ownerName': e.get('ownerName')
-            }
+            bulk = {'type': e.get('type'), 'ownerName': e.get('ownerName')}
             if resource_type_parent in ['Group', 'Task', 'Victim']:
                 bulk['name'] = e.get('value')
             elif resource_type_parent in ['Indicator']:
@@ -1114,10 +1105,7 @@ class TcExPlaybook(object):
 
         entity_array = []
         for d in tc_data:
-            entity = {
-                'id': d.get('id'),
-                'webLink': d.get('webLink')
-            }
+            entity = {'id': d.get('id'), 'webLink': d.get('webLink')}
 
             # value
             values = []
@@ -1186,10 +1174,7 @@ class TcExPlaybook(object):
             else:
                 continue
 
-            key_value_array.append({
-                'key': key,
-                'value': value
-            })
+            key_value_array.append({'key': key, 'value': value})
 
         if len(key_value_array) == 1 and not array:
             return key_value_array[0]

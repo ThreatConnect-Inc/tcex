@@ -17,11 +17,17 @@ if sys.version_info[0] == 2:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
-parser.add_argument('--action', choices=['create', 'update'], default='create', help='Whether a ' +
-                    'new app should be CREATED or an existing app should be UPDATED')
+parser.add_argument(
+    '--action',
+    choices=['create', 'update'],
+    default='create',
+    help='Whether a ' + 'new app should be CREATED or an existing app should be UPDATED')
 parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
-parser.add_argument('--force', action='store_true', help='If true, this will overwrite existing ' +
-                    'files in a directory to create a new app.', default=False)
+parser.add_argument(
+    '--force',
+    action='store_true',
+    help='If true, this will overwrite existing ' + 'files in a directory to create a new app.',
+    default=False)
 args, extra_args = parser.parse_known_args()
 
 

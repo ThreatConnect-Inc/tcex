@@ -20,8 +20,7 @@ if sys.version_info[0] == 2:
     sys.setdefaultencoding('utf-8')
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--bundle', action='store_true', help='Build a bundle file.')
+parser.add_argument('--bundle', action='store_true', help='Build a bundle file.')
 parser.add_argument(
     '--exclude', action='append', default=[], help='File and directories to exclude from build.')
 parser.add_argument(
@@ -47,6 +46,7 @@ class TcPackage(object):
     This method will package the app for deployment to ThreatConnect. Validation of the
     install.json file or files will be automatically run before packaging the app.
     """
+
     def __init__(self, args):
         """ """
         self._args = args
@@ -86,8 +86,9 @@ class TcPackage(object):
             with open(self.schema_file) as fh:
                 self.schema = json.load(fh)
         else:
-            print('{}{}Packager can not validate install.json without {} schema file.'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file))
+            print(
+                '{}{}Packager can not validate install.json without {} schema file.'.format(
+                    c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file))
 
     @staticmethod
     def _load_install_json(file):
@@ -114,8 +115,9 @@ class TcPackage(object):
             if feature not in install_json.get('features'):
                 install_json['features'].append(feature)
                 updated = True
-                print('Updating install.json for feature: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, feature))
+                print(
+                    'Updating install.json for feature: {}{}{}'.format(
+                        c.Style.BRIGHT, c.Fore.CYAN, feature))
 
         return install_json, updated
 
@@ -173,8 +175,8 @@ class TcPackage(object):
         if os.access(template_app_path, os.W_OK):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
-        print('Building App Template: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, template_app_path))
+        print(
+            'Building App Template: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, template_app_path))
 
         #
         # build exclude file/directory list
@@ -297,8 +299,9 @@ class TcPackage(object):
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
         zip_file_tcx = '{}.tcx'.format(zip_file)
-        print('Creating zip: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)))
+        print(
+            'Creating zip: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)))
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_tcx)
@@ -329,12 +332,12 @@ class TcPackage(object):
         """Bundle zip (tcx) file"""
         bundle_file = os.path.join(
             self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
-        print('Creating bundle: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
+        print(
+            'Creating bundle: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
-            print('  Adding: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
+            print('  Adding: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
             z.write(app, os.path.basename(app))
         z.close
 
@@ -345,14 +348,17 @@ class TcPackage(object):
             with open(install_json) as fh:
                 data = json.loads(fh.read())
             validate(data, self.schema)
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'))
         except SchemaError as e:
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
         except ValidationError as e:
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
 
 
 if __name__ == '__main__':
