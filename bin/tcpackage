@@ -16,24 +16,27 @@ from jsonschema import SchemaError, ValidationError, validate
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)  # pylint: disable=E0602
+    reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', action='store_true', help='Build a bundle file.')
 parser.add_argument(
-    '--exclude', action='append', default=[], help='File and directories to exclude from build.')
+    '--exclude', action='append', default=[], help='File and directories to exclude from build.'
+)
 parser.add_argument(
-    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)')
+    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)'
+)
 # parser.add_argument(
 #     '--dryrun', action='store_true', help='Perform a dry run of the build.')
 parser.add_argument(
-    '--install_json',
-    help='(Advanced) The install.json file name for the App that should be built.')
+    '--install_json', help='(Advanced) The install.json file name for the App that should be built.'
+)
 parser.add_argument(
     '--outdir',
     default='target',
-    help='(Advanced) Directory to write the outfile. (Default: target)')
+    help='(Advanced) Directory to write the outfile. (Default: target)',
+)
 # parser.add_argument(
 #     '--validate', help='The install.json file to validate.')
 args, extra_args = parser.parse_known_args()
@@ -91,7 +94,9 @@ class TcPackage(object):
         else:
             print(
                 '{}{}Packager can not validate install.json without {} schema file.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file))
+                    c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file
+                )
+            )
 
     @staticmethod
     def _load_install_json(file):
@@ -120,7 +125,9 @@ class TcPackage(object):
                 updated = True
                 print(
                     'Updating install.json for feature: {}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.CYAN, feature))
+                        c.Style.BRIGHT, c.Fore.CYAN, feature
+                    )
+                )
 
         return install_json, updated
 
@@ -179,7 +186,8 @@ class TcPackage(object):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
         print(
-            'Building App Template: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, template_app_path))
+            'Building App Template: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, template_app_path)
+        )
 
         #
         # build exclude file/directory list
@@ -196,7 +204,7 @@ class TcPackage(object):
             '.vscode',  # Visual Studio Code
             'log',  # log directory
             'tcex.json',  # tcex framework config file
-            '*.install.json'  # additional install.json files
+            '*.install.json',  # additional install.json files
         ]
         excludes.extend(self._args.exclude)
         excludes.extend(self.config.get('excludes', []))
@@ -264,7 +272,8 @@ class TcPackage(object):
             except IndexError:
                 minor_version = 0
             app_version = '{}'.format(
-                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version)))
+                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version))
+            )
 
             # !!! The name of the folder in the zip is the *key* for an App. This value must
             # !!! remain consistent for the App to upgrade successfully.
@@ -304,7 +313,9 @@ class TcPackage(object):
         zip_file_tcx = '{}.tcx'.format(zip_file)
         print(
             'Creating zip: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)))
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)
+            )
+        )
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_tcx)
@@ -334,10 +345,13 @@ class TcPackage(object):
     def bundle_apps(self, bundle_name, bundle_apps):
         """Bundle zip (tcx) file"""
         bundle_file = os.path.join(
-            self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
+            self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name)
+        )
         print(
             'Creating bundle: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)
+            )
+        )
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
             print('  Adding: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
@@ -353,15 +367,21 @@ class TcPackage(object):
             validate(data, self.schema)
             print(
                 'Validating: {}{}{} {}({})'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'))
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'
+                )
+            )
         except SchemaError as e:
             print(
                 'Validating: {}{}{} {}({})'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e
+                )
+            )
         except ValidationError as e:
             print(
                 'Validating: {}{}{} {}({})'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e
+                )
+            )
 
 
 if __name__ == '__main__':
@@ -369,7 +389,7 @@ if __name__ == '__main__':
         tcp = TcPackage(args)
         tcp.package()
         sys.exit(tcp.exit_code)
-    except Exception as e:
+    except Exception:
         # TODO: Update this, possibly raise
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

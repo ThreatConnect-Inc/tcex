@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Playbook Args"""
 
+
 class Args(object):
     """Playbook Args"""
 

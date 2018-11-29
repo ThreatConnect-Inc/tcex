@@ -15,7 +15,7 @@ import redis
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)  # pylint: disable=E0602
+    reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 epilog = (
@@ -35,14 +35,18 @@ epilog = (
     'export TC_PROXY_PASSWORD=sparkles\n'
     '\n# The Redis IP/Host and Port\n'
     'export DB_PATH=localhost\n'
-    'export DB_PORT=6379')
+    'export DB_PORT=6379'
+)
 
 parser = argparse.ArgumentParser(
-    epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
+    epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
+)
 parser.add_argument(
-    '--action', choices=['create', 'delete', 'replace_validation'], default='create')
+    '--action', choices=['create', 'delete', 'replace_validation'], default='create'
+)
 parser.add_argument(
-    '--ij', default='install.json', help='The install.json file name (default: install.json).')
+    '--ij', default='install.json', help='The install.json file name (default: install.json).'
+)
 # parser.add_argument(
 #     '--data_file',
 #     action='store_true',
@@ -50,15 +54,18 @@ parser.add_argument(
 parser.add_argument(
     '--outdir',
     default='tcex.d',
-    help='The *base* output directory containing the data/profiles folder.')
+    help='The *base* output directory containing the data/profiles folder.',
+)
 parser.add_argument(
-    '--outfile', help='The filename for the profile (default: <profile name>.json).')
+    '--outfile', help='The filename for the profile (default: <profile name>.json).'
+)
 parser.add_argument(
     '--profile_name',
     '--name',
     dest='profile_name',
     help='The profile name to create, delete, or replace_validation.',
-    required=True)
+    required=True,
+)
 parser.add_argument('--redis_hash', help='The redis hash.')
 parser.add_argument('--redis_host', default='localhost', help='The redis host.')
 parser.add_argument('--redis_port', default='6379', help='The redis port.')
@@ -105,7 +112,9 @@ class TcProfile(object):
             if not os.path.isfile(self.args.ij):
                 print(
                     '{}{}Configuration file ({}) could not be found.'.format(
-                        c.Style.BRIGHT, c.Fore.CYAN, self.args.ij))
+                        c.Style.BRIGHT, c.Fore.CYAN, self.args.ij
+                    )
+                )
 
             try:
                 with open(self.args.ij) as fh:
@@ -142,11 +151,14 @@ class TcProfile(object):
                 # no longer supporting profiles in tcex.json
                 print(
                     '{}{}Migrating profiles from tcex.json to individual files.'.format(
-                        c.Style.BRIGHT, c.Fore.YELLOW))
+                        c.Style.BRIGHT, c.Fore.YELLOW
+                    )
+                )
 
                 for profile in data.get('profiles', []):
                     outfile = '{}.json'.format(
-                        profile.get('profile_name').replace(' ', '_').lower())
+                        profile.get('profile_name').replace(' ', '_').lower()
+                    )
                     self.profile_write(profile, outfile)
 
                 # remove legacy profile key
@@ -194,15 +206,14 @@ class TcProfile(object):
             if d.get('profile_name') in self.profiles:
                 print(
                     '{}{}Found a duplicate profile name ({}).'.format(
-                        c.Style.BRIGHT, c.Fore.RED, d.get('profile_name')))
+                        c.Style.BRIGHT, c.Fore.RED, d.get('profile_name')
+                    )
+                )
                 sys.exit()
             self.profiles.setdefault(
                 d.get('profile_name'),
-                {
-                    'data': d,
-                    'ij_filename': d.get('install_json'),
-                    'fqfn': fqfn
-                })
+                {'data': d, 'ij_filename': d.get('install_json'), 'fqfn': fqfn},
+            )
 
     def load_install_json(self, filename):
         """Return install.json data.
@@ -211,14 +222,16 @@ class TcProfile(object):
         """
         install_json = None
         load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
+            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
+        )
         if filename is not None and os.path.isfile(filename):
             with open(filename) as config_data:
                 install_json = json.load(config_data)
             load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         else:
             load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
+            )
             sys.exit(1)
         # display load status
         print(load_output)
@@ -293,11 +306,14 @@ class TcProfile(object):
         if self.args.profile_name in self.profiles:
             print(
                 '{}{}Profile "{}" already exists.'.format(
-                    c.Style.BRIGHT, c.Fore.RED, self.args.profile_name))
+                    c.Style.BRIGHT, c.Fore.RED, self.args.profile_name
+                )
+            )
             sys.exit(1)
 
         print(
-            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name))
+            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
+        )
         profile = OrderedDict()
         profile['args'] = self.profile_args
         profile['autoclear'] = True
@@ -314,7 +330,8 @@ class TcProfile(object):
             validations = self.profile_validations
             profile['validations'] = validations.get('rules')
             profile['args']['tc_playbook_out_variables'] = '{}'.format(
-                ','.join(validations.get('outputs')))
+                ','.join(validations.get('outputs'))
+            )
         return profile
 
     @staticmethod
@@ -324,12 +341,15 @@ class TcProfile(object):
         if profile.get('install_json') is None:
             print(
                 '{}{}Missing install_json parameter for profile {}.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')))
+                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
+                )
+            )
 
         # cleanup
-        if (profile.get('install_json') is not None and profile.get('script') is not None):
+        if profile.get('install_json') is not None and profile.get('script') is not None:
             print(
-                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW)
+            )
             profile.pop('script')
 
         # add new autoclear field
@@ -484,14 +504,15 @@ class TcProfile(object):
                 if profile.get('profile_name') == self.args.profile_name:
                     profile['validations'] = validations.get('rules')
                     profile['args']['tc_playbook_out_variables'] = ','.join(
-                        validations.get('outputs'))
+                        validations.get('outputs')
+                    )
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
 
     def validate_profile_exists(self):
         """Validate the provided profiles name exists."""
-        if not self.args.profile_name in self.profiles:
+        if self.args.profile_name not in self.profiles:
             self._handle_error('Could not find profile "{}"'.format(self.args.profile_name))
 
 
@@ -515,6 +536,6 @@ if __name__ == '__main__':
 
         # exit
         sys.exit()
-    except Exception as e:
+    except Exception:
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

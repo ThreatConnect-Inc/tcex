@@ -64,23 +64,15 @@ class TcExArgParser(ArgumentParser):
 
         # TC Integrations Server or TC main < 4.4
         self.add_argument(
-            '--api_access_id',
-            default=None,
-            help='ThreatConnect API Access ID',
-            required=False,
+            '--api_access_id', default=None, help='ThreatConnect API Access ID', required=False
         )
         self.add_argument(
-            '--api_secret_key',
-            default=None,
-            help='ThreatConnect API Secret Key',
-            required=False,
+            '--api_secret_key', default=None, help='ThreatConnect API Secret Key', required=False
         )
 
         # Validate ThreatConnect SSL certificate
         self.add_argument(
-            '--tc_verify',
-            action='store_true',
-            help='Validate the ThreatConnect SSL Cert',
+            '--tc_verify', action='store_true', help='Validate the ThreatConnect SSL Cert'
         )
 
     def _batch_arguments(self):
@@ -145,9 +137,7 @@ class TcExArgParser(ArgumentParser):
         """
 
         self.add_argument(
-            '--tc_playbook_db_type',
-            default=self._tc_playbook_db_type,
-            help='Playbook DB type',
+            '--tc_playbook_db_type', default=self._tc_playbook_db_type, help='Playbook DB type'
         )
         self.add_argument(
             '--tc_playbook_db_context',
@@ -155,19 +145,13 @@ class TcExArgParser(ArgumentParser):
             help='Playbook DB Context',
         )
         self.add_argument(
-            '--tc_playbook_db_path',
-            default=self._tc_playbook_db_path,
-            help='Playbook DB path',
+            '--tc_playbook_db_path', default=self._tc_playbook_db_path, help='Playbook DB path'
         )
         self.add_argument(
-            '--tc_playbook_db_port',
-            default=self._tc_playbook_db_port,
-            help='Playbook DB port',
+            '--tc_playbook_db_port', default=self._tc_playbook_db_port, help='Playbook DB port'
         )
         self.add_argument(
-            '--tc_playbook_out_variables',
-            help='Playbook output variables',
-            required=False,
+            '--tc_playbook_out_variables', help='Playbook output variables', required=False
         )
 
     def _standard_arguments(self):
@@ -195,30 +179,16 @@ class TcExArgParser(ArgumentParser):
         --logging level              Alias for **tc_log_level**.
         """
 
-        self.add_argument(
-            '--api_default_org', default=None, help='ThreatConnect api default Org'
-        )
+        self.add_argument('--api_default_org', default=None, help='ThreatConnect api default Org')
         self.add_argument(
             '--tc_action_channel', default=None, help='ThreatConnect AOT action channel'
         )
-        self.add_argument(
-            '--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled'
-        )
-        self.add_argument(
-            '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path'
-        )
-        self.add_argument(
-            '--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel'
-        )
-        self.add_argument(
-            '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path'
-        )
-        self.add_argument(
-            '--tc_log_file', default=self._tc_log_file, help='App logfile name'
-        )
-        self.add_argument(
-            '--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path'
-        )
+        self.add_argument('--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled')
+        self.add_argument('--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
+        self.add_argument('--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
+        self.add_argument('--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
+        self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
+        self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path'
         )

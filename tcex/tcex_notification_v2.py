@@ -74,7 +74,7 @@ class TcExNotificationV2(object):
             'notificationType': self._notification_type,
             'priority': self._priority,
             'isOrganization': self._is_organization,
-            'message': message
+            'message': message,
         }
 
         if self._recipients:

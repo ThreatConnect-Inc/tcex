@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ThreatConnect API Logger"""
 import time
 from logging import Formatter, Handler
@@ -5,6 +6,7 @@ from logging import Formatter, Handler
 
 class TcExLogFormatter(Formatter):
     """Logger formatter for ThreatConnect Exchange API logging."""
+
     def __init__(self, task_name=None):
         """Initialize Class properties."""
         self.task_name = task_name
@@ -24,7 +26,7 @@ class TcExLogFormatter(Formatter):
         return {
             'timestamp': int(float(record.created or time.time()) * 1000),
             'message': record.msg or '',
-            'level': record.levelname or 'DEBUG'
+            'level': record.levelname or 'DEBUG',
         }
 
 

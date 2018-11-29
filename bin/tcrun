@@ -11,6 +11,7 @@ import json
 import logging
 import operator
 import os
+
 # import platform
 import re
 import signal
@@ -22,6 +23,7 @@ from datetime import datetime
 
 from six import string_types
 import colorama as c
+
 # not including these libraries as a dependencies since they are only required for local testing.
 try:
     from deepdiff import DeepDiff
@@ -38,17 +40,20 @@ from tcex import TcEx
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)  # pylint: disable=E0602
+    reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")')
+    '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")'
+)
 parser.add_argument(
-    '--docker', action='store_true', help='(Experimental) Run the App in a docker container.')
+    '--docker', action='store_true', help='(Experimental) Run the App in a docker container.'
+)
 parser.add_argument(
     '--docker_image',
-    help='(Experimental) Override the docker container defined in install.json or profile.')
+    help='(Experimental) Override the docker container defined in install.json or profile.',
+)
 parser.add_argument('--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument('--halt_on_fail', action='store_true', help='Halt on any failure.')
 parser.add_argument('--group', default=None, help='The group of profiles to run.')
@@ -61,16 +66,19 @@ parser.add_argument(
     default=50,
     help='(Advanced) The length at which to truncate successful validation '
     'data in the logs (default=50).',
-    type=int)
+    type=int,
+)
 parser.add_argument('--unmask', action='store_true', help='Unmask masked args.')
 parser.add_argument(
     '--vscd',
     action='store_true',
-    help='(Experimental) Enable Visual Studio Code debugging using attach method on port 5678.')
+    help='(Experimental) Enable Visual Studio Code debugging using attach method on port 5678.',
+)
 parser.add_argument(
     '--vscd_port',
     default='5678',
-    help='(Experimental) Visual Studio Code debugging port (default: 5678).')
+    help='(Experimental) Visual Studio Code debugging port (default: 5678).',
+)
 args, extra_args = parser.parse_known_args()
 
 
@@ -156,7 +164,7 @@ class TcRun(object):
             'info': logging.INFO,
             'warning': logging.WARNING,
             'error': logging.ERROR,
-            'critical': logging.CRITICAL
+            'critical': logging.CRITICAL,
         }
         level = log_level.get(self._args.logging_level.lower())
 
@@ -217,7 +225,7 @@ class TcRun(object):
             'se': self.data_string_compare,
             'string-compare': self.data_string_compare,
             'sw': self.data_startswith,
-            'starts-with': self.data_startswith
+            'starts-with': self.data_startswith,
         }
 
     def _signal_handler_init(self):
@@ -256,7 +264,7 @@ class TcRun(object):
             'tc_proxy_password',
             'tc_proxy_tc',
             'tc_proxy_username',
-            'tc_temp_path'
+            'tc_temp_path',
         ]
 
     @property
@@ -351,10 +359,14 @@ class TcRun(object):
             if name is not None:
                 print(
                     'Deleting ThreatConnect Group: {}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.MAGENTA, name))
+                        c.Style.BRIGHT, c.Fore.MAGENTA, name
+                    )
+                )
                 self.log.info(
                     '[{}] Deleting ThreatConnect {} with name: {}.'.format(
-                        clear_type, tc_type, name))
+                        clear_type, tc_type, name
+                    )
+                )
                 batch.group(tc_type, name)
         elif tc_type in self.tcex.indicator_types:
             if data.get('summary') is not None:
@@ -366,10 +378,14 @@ class TcRun(object):
             if summary is not None:
                 print(
                     'Deleting ThreatConnect Indicator: {}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.MAGENTA, summary))
+                        c.Style.BRIGHT, c.Fore.MAGENTA, summary
+                    )
+                )
                 self.log.info(
                     '[{}] Deleting ThreatConnect {} with value: {}.'.format(
-                        clear_type, tc_type, summary))
+                        clear_type, tc_type, summary
+                    )
+                )
                 batch.indicator(tc_type, summary)
         batch_results = batch.submit()
         self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
@@ -388,7 +404,8 @@ class TcRun(object):
                 sys.exit(msg)
 
             print(
-                'Configuration File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self._args.config))
+                'Configuration File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self._args.config)
+            )
             with open(self._args.config) as data_file:
                 self._config = json.load(data_file)
 
@@ -430,7 +447,7 @@ class TcRun(object):
             'entity': (dict),
             'list': (list),
             'str': (string_types),
-            'string': (string_types)
+            'string': (string_types),
         }
         # user_type_tuple = tuple([data_type[t] for t in user_types])
         # if isinstance(db_data, user_type_tuple):
@@ -513,7 +530,8 @@ class TcRun(object):
         """
         install_json = {}
         load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
+            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
+        )
         self.log.info('Loading install.json: {}'.format(filename))
         if filename is not None and os.path.isfile(filename):
             with open(filename) as config_data:
@@ -521,7 +539,8 @@ class TcRun(object):
             load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         else:
             load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
+            )
 
         # display load status
         print(load_output)
@@ -562,7 +581,8 @@ class TcRun(object):
         if path is not None and isinstance(variable_data, (dict, list)):
             expression = jmespath.compile(path)
             variable_data = expression.search(
-                variable_data, jmespath.Options(dict_cls=collections.OrderedDict))
+                variable_data, jmespath.Options(dict_cls=collections.OrderedDict)
+            )
         return variable_data
 
     @property
@@ -628,7 +648,9 @@ class TcRun(object):
         print('{!s:<85}{!s:<20}'.format('', 'Validations'))
         print(
             '{!s:<60}{!s:<25}{!s:<10}{!s:<10}'.format(
-                'Profile:', 'Execution:', 'Passed:', 'Failed:'))
+                'Profile:', 'Execution:', 'Passed:', 'Failed:'
+            )
+        )
         for r in self.reports:
             d = r.data
             if not d.get('selected'):
@@ -653,8 +675,15 @@ class TcRun(object):
             # report row
             print(
                 '{!s:<60}{}{!s:<25}{}{!s:<10}{}{!s:<10}'.format(
-                    d.get('name'), execution_color, execution_text, pass_count_color, pass_count,
-                    fail_count_color, fail_count))
+                    d.get('name'),
+                    execution_color,
+                    execution_text,
+                    pass_count_color,
+                    pass_count,
+                    fail_count_color,
+                    fail_count,
+                )
+            )
 
         # write report to disk
         if args.report:
@@ -690,7 +719,8 @@ class TcRun(object):
 
         # output command
         print(
-            'Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, commands.get('print_command')))
+            'Executing: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, commands.get('print_command'))
+        )
 
         if self._args.docker:
             return self.run_docker(commands)
@@ -711,8 +741,15 @@ class TcRun(object):
             if self._args.vscd:
                 self.update_environment()  # update PYTHONPATH for local testing
                 command = [
-                    python_exe, '-m', 'ptvsd', '--host', ptvsd_host, '--port', self._args.vscd_port,
-                    '--wait', '{}.py'.format(program_main)
+                    python_exe,
+                    '-m',
+                    'ptvsd',
+                    '--host',
+                    ptvsd_host,
+                    '--port',
+                    self._args.vscd_port,
+                    '--wait',
+                    '{}.py'.format(program_main),
                 ]
             else:
                 command = [python_exe, '.', program_main]
@@ -730,8 +767,9 @@ class TcRun(object):
                 command = ['java', '-cp', self.config.get('class_path', './target/*')]
             else:
                 command = [
-                    self.config.get('java_path', program_language), '-cp',
-                    self.config.get('class_path', './target/*')
+                    self.config.get('java_path', program_language),
+                    '-cp',
+                    self.config.get('class_path', './target/*'),
                 ]
 
             # exe command
@@ -739,10 +777,12 @@ class TcRun(object):
 
             # print command
             print_command = ' '.join(
-                command + self.profile.get('profile_args').masked + [program_main])
+                command + self.profile.get('profile_args').masked + [program_main]
+            )
             if self._args.unmask:
                 print_command = ' '.join(
-                    command + self.profile.get('profile_args').quoted + [program_main])
+                    command + self.profile.get('profile_args').quoted + [program_main]
+                )
         return {'cli_command': cli_command, 'print_command': print_command}
 
     def run_local(self, commands):
@@ -752,7 +792,8 @@ class TcRun(object):
             shell=self.shell,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE,
+        )
 
         out, err = process.communicate()
 
@@ -770,7 +811,9 @@ class TcRun(object):
         except ImportError:
             print(
                 '{}{}Could not import docker module (try "pip install docker").'.format(
-                    c.Style.BRIGHT, c.Fore.RED))
+                    c.Style.BRIGHT, c.Fore.RED
+                )
+            )
             sys.exit(1)
 
         # app_args = self.profile.get('profile_args').standard
@@ -812,7 +855,8 @@ class TcRun(object):
             # docker image from install.json can be overridden by docker image in profile. if no
             # image is defined in either file use the default image define as self.docker_image.
             docker_image = self.profile.get(
-                'dockerImage', install_json.get('dockerImage', self.docker_image))
+                'dockerImage', install_json.get('dockerImage', self.docker_image)
+            )
 
         status_code = 1
         try:
@@ -825,7 +869,8 @@ class TcRun(object):
                 ports=ports,
                 remove=True,
                 volumes=volumes,
-                working_dir=app_dir)
+                working_dir=app_dir,
+            )
             results = self.container.wait()
             status_code = results.get('StatusCode')
             error = results.get('Error')
@@ -859,7 +904,9 @@ class TcRun(object):
         if self.profile.get('description'):
             print(
                 'Description: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')))
+                    c.Style.BRIGHT, c.Fore.MAGENTA, self.profile.get('description')
+                )
+            )
 
     def run_display_profile(self, program_main):
         """Print profile name with programMain."""
@@ -867,14 +914,19 @@ class TcRun(object):
 
         output = 'Profile: '
         output += '{}{}{}{} '.format(
-            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL)
+            c.Style.BRIGHT, c.Fore.CYAN, self.profile.get('profile_name'), c.Style.RESET_ALL
+        )
         output += '[{}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL)
+            c.Style.BRIGHT, c.Fore.MAGENTA, program_main, c.Style.RESET_ALL
+        )
         if install_json.get('programVersion') is not None:
             output += '{}:{}'.format(c.Style.BRIGHT, c.Style.RESET_ALL)
             output += '{}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.MAGENTA, install_json.get('programVersion'),
-                c.Style.RESET_ALL)
+                c.Style.BRIGHT,
+                c.Fore.MAGENTA,
+                install_json.get('programVersion'),
+                c.Style.RESET_ALL,
+            )
         output += ']'
         print(output)
 
@@ -894,8 +946,13 @@ class TcRun(object):
         else:
             print(
                 'App Exit Code: {}{}{}{} (Valid Exit Codes: {})'.format(
-                    c.Style.BRIGHT, c.Fore.RED, returncode, c.Fore.RESET,
-                    self.profile.get('exit_codes', [0])))
+                    c.Style.BRIGHT,
+                    c.Fore.RED,
+                    returncode,
+                    c.Fore.RESET,
+                    self.profile.get('exit_codes', [0]),
+                )
+            )
 
             self.reports.profile_execution(False)
             self.exit_code = 1
@@ -909,7 +966,9 @@ class TcRun(object):
         if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
             print(
                 '{}{}Could not find program main file ({}).'.format(
-                    c.Style.BRIGHT, c.Fore.RED, program_main))
+                    c.Style.BRIGHT, c.Fore.RED, program_main
+                )
+            )
             sys.exit(1)
 
     def stage(self):
@@ -1043,7 +1102,8 @@ class TcRun(object):
             for staging_file in self.profile.get('data_files', []):
                 if os.path.isfile(staging_file):
                     print(
-                        'Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file))
+                        'Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file)
+                    )
                     self.log.info('[stage] Staging data file: {}'.format(staging_file))
                     f = open(staging_file, 'r')
                     staging_data.extend(json.load(f))
@@ -1051,7 +1111,9 @@ class TcRun(object):
                 else:
                     print(
                         '{}{}Could not find file {}.'.format(
-                            c.Style.BRIGHT, c.Fore.RED, staging_file))
+                            c.Style.BRIGHT, c.Fore.RED, staging_file
+                        )
+                    )
             self._staging_data = staging_data
         return self._staging_data
 
@@ -1136,18 +1198,21 @@ class TcRun(object):
                 if resource_type in self.tcex.indicator_types:
                     resource_id = resource.summary(response.get('data'))
                     self.log.info(
-                        '[stage] Creating resource {}:{}'.format(resource_type, resource_id))
+                        '[stage] Creating resource {}:{}'.format(resource_type, resource_id)
+                    )
                 elif resource_type in self.tcex.group_types:
                     self.log.info(
                         '[stage] Creating resource {}:{}'.format(
-                            resource_type,
-                            response.get('data', {}).get('name')))
+                            resource_type, response.get('data', {}).get('name')
+                        )
+                    )
                     resource_id = response.get('data', {}).get('id')
                 self.log.debug('[stage] resource_id: {}'.format(resource_id))
                 resource.resource_id(resource_id)
 
                 entity = self.tcex.playbook.json_to_entity(
-                    response.get('data'), resource.value_fields, resource.name, resource.parent)
+                    response.get('data'), resource.value_fields, resource.name, resource.parent
+                )
                 self.log.debug('[stage] Creating Entity: {} ({})'.format(variable, entity[0]))
 
                 self.stage_redis(variable, entity[0])
@@ -1156,7 +1221,8 @@ class TcRun(object):
                 # update metadata
                 for attribute_data in attributes:
                     self.stage_tc_create_attribute(
-                        attribute_data.get('type'), attribute_data.get('value'), resource)
+                        attribute_data.get('type'), attribute_data.get('value'), resource
+                    )
                 for label_data in security_labels:
                     self.stage_tc_create_security_label(label_data.get('name'), resource)
                 for tag_data in tags:
@@ -1180,8 +1246,9 @@ class TcRun(object):
         if a_response.get('status') != 'Success':
             self.log.warning(
                 '[stage] Failed adding attribute type "{}":"{}" ({}).'.format(
-                    attribute_type, attribute_value,
-                    a_response.get('response').text))
+                    attribute_type, attribute_value, a_response.get('response').text
+                )
+            )
 
     def stage_tc_create_security_label(self, label, resource):
         """Add a Tag to a Resource"""
@@ -1191,8 +1258,9 @@ class TcRun(object):
         if sl_response.get('status') != 'Success':
             self.log.warning(
                 '[tcex] Failed adding security label "{}" ({}).'.format(
-                    label,
-                    sl_response.get('response').text))
+                    label, sl_response.get('response').text
+                )
+            )
 
     def stage_tc_create_tag(self, tag, resource):
         """Add a Tag to a Resource"""
@@ -1201,8 +1269,8 @@ class TcRun(object):
         t_response = tag_resource.request()
         if t_response.get('status') != 'Success':
             self.log.warning(
-                '[tcex] Failed adding tag "{}" ({}).'.format(tag,
-                                                             t_response.get('response').text))
+                '[tcex] Failed adding tag "{}" ({}).'.format(tag, t_response.get('response').text)
+            )
 
     def stage_tc_associations(self, entity1, entity2):
         """Add Attribute to a Resource"""
@@ -1240,8 +1308,13 @@ class TcRun(object):
         if response.get('status') != 'Success':
             self.log.warning(
                 '[stage] Failed associating "{}:{}" with "{}:{}" ({}).'.format(
-                    entity1_type, entity1_id, entity2_type, entity2_id,
-                    response.get('response').text))
+                    entity1_type,
+                    entity1_id,
+                    entity2_type,
+                    entity2_id,
+                    response.get('response').text,
+                )
+            )
 
     def stage_tc_batch(self, owner, staging_data):
         """Stage Redis Data"""
@@ -1268,7 +1341,8 @@ class TcRun(object):
             path = indicator.pop('path', None)
             if indicator.get('xid') is None:
                 indicator['xid'] = self.stage_tc_batch_xid(
-                    indicator.get('type'), indicator.get('summary'), owner)
+                    indicator.get('type'), indicator.get('summary'), owner
+                )
             indicator['ownerName'] = owner
             # add to batch after extra data has been popped
             batch.add_indicator(indicator)
@@ -1311,7 +1385,8 @@ class TcRun(object):
         lib_path = os.path.join(os.getcwd(), 'lib_latest')
         if 'PYTHONPATH' in os.environ:
             os.environ['PYTHONPATH'] = '{}{}{}'.format(
-                lib_path, os.pathsep, os.environ['PYTHONPATH'])
+                lib_path, os.pathsep, os.environ['PYTHONPATH']
+            )
         else:
             os.environ['PYTHONPATH'] = '{}'.format(lib_path)
 
@@ -1413,19 +1488,19 @@ class TcRun(object):
                 db_data_truncated = []
                 for d in db_data:
                     if d is not None and isinstance(d, string_types) and len(d) > truncate:
-                        db_data_truncated.append('{} ...'.format(d[:args.truncate]))
+                        db_data_truncated.append('{} ...'.format(d[: args.truncate]))
                     else:
                         db_data_truncated.append(d)
                 db_data = db_data_truncated
 
         if user_data is not None and passed:
             if isinstance(user_data, (string_types)) and len(user_data) > truncate:
-                user_data = user_data[:args.truncate]
+                user_data = user_data[: args.truncate]
             elif isinstance(user_data, (list)):
                 user_data_truncated = []
                 for u in user_data:
                     if isinstance(db_data, (string_types)) and len(u) > truncate:
-                        user_data_truncated.append('{} ...'.format(u[:args.truncate]))
+                        user_data_truncated.append('{} ...'.format(u[: args.truncate]))
                     else:
                         user_data_truncated.append(u)
                 user_data = user_data_truncated
@@ -1446,7 +1521,8 @@ class TcRun(object):
                             continue
                         elif diff[0] == '-':
                             self.log.info(
-                                '[validate] Diff      : Missing data at index {}'.format(i))
+                                '[validate] Diff      : Missing data at index {}'.format(i)
+                            )
                         elif diff[0] == '+':
                             self.log.info('[validate] Diff      : Extra data at index {}'.format(i))
                         if diff_count > self.max_diff:
@@ -1616,7 +1692,7 @@ class Report(object):
             'groups': profile.get('groups'),
             'name': profile.get('profile_name'),
             'selected': False,
-            'valid_exit_codes': profile.get('exit_codes')
+            'valid_exit_codes': profile.get('exit_codes'),
         }
 
     @property
@@ -1670,24 +1746,17 @@ class Reports(object):
     def __init__(self):
         """Initialize class properties."""
         import tcex
+
         python_version = '{}.{}.{}'.format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+        )
         self.report = {
-            'profiles': {
-                'selected': [],
-                'unselected': [],
-            },
+            'profiles': {'selected': [], 'unselected': []},
             'results': {
-                'executions': {
-                    'fail': 0,
-                    'pass': 0
-                },
+                'executions': {'fail': 0, 'pass': 0},
                 'failed_profiles': [],
                 'total': 0,
-                'validations': {
-                    'fail': 0,
-                    'pass': 0
-                },
+                'validations': {'fail': 0, 'pass': 0},
             },
             'settings': {
                 'date': datetime.now().isoformat(),
@@ -1698,7 +1767,7 @@ class Reports(object):
                 'selected_profile_count': 0,
                 'tcex_version': tcex.__version__,
                 'total_profile_count': 0,
-            }
+            },
         }
         self.profiles = {}
         self.selected_profile = None
@@ -1808,6 +1877,6 @@ if __name__ == '__main__':
         # log and exit
         tcr.log.info('Exit Code: {}'.format(tcr.exit_code))
         sys.exit(tcr.exit_code)
-    except Exception as e:
+    except Exception:
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

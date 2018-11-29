@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 """ThreatConnect Requests Session"""
-from requests import (adapters, packages, Session)
+from requests import adapters, packages, Session
 from requests.packages.urllib3.util.retry import Retry
 
-from .tcex_auth import (TcExHmacAuth, TcExTokenAuth)
+from .tcex_auth import TcExHmacAuth, TcExTokenAuth
 
 # disable ssl warning message
 packages.urllib3.disable_warnings()
@@ -30,8 +31,11 @@ class TcExSession(Session):
         # Set Proxy
         if self.args.tc_proxy_tc:
             self.proxies = self.tcex.proxies
-            self.tcex.log.info('Using proxy host {}:{} for ThreatConnect API.'.format(
-                self.args.tc_proxy_host, self.args.tc_proxy_port))
+            self.tcex.log.info(
+                'Using proxy host {}:{} for ThreatConnect API.'.format(
+                    self.args.tc_proxy_host, self.args.tc_proxy_port
+                )
+            )
         # Add Retry
         self.retry()
         # Verify
@@ -44,8 +48,12 @@ class TcExSession(Session):
     def _token_auth(self):
         """Add ThreatConnect Token Auth to Session."""
         return TcExTokenAuth(
-            self, self.args.tc_token, self.args.tc_token_expires, self.args.tc_api_path,
-            self.tcex.log)
+            self,
+            self.args.tc_token,
+            self.args.tc_token_expires,
+            self.args.tc_api_path,
+            self.tcex.log,
+        )
 
     def request(self, method, url, **kwargs):
         """Override request method disabling verify on token renewal if disabled on session."""

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Setup for TCEX Module"""
 import re
 import sys
@@ -6,7 +7,9 @@ from setuptools import setup, find_packages
 with open('tcex/__init__.py', 'r') as fd:
     version = re.search(
         r'^__version__(?:\s+)?=(?:\s+)?[\'|\"]((?:[0-9]{1,3}(?:\.)?){1,3})[\'|\"]',
-        fd.read(), re.MULTILINE).group(1)
+        fd.read(),
+        re.MULTILINE,
+    ).group(1)
 
 if not version:
     raise RuntimeError('Cannot find version information')
@@ -23,12 +26,10 @@ install_requires = [
     'redis>=2.10.6',
     'requests>=2.18.4',
     'six>=1.11.0',
-    'tzlocal'
+    'tzlocal',
 ]
-if sys.version_info < (3, ):
-    install_requires.extend([
-        'ipaddress'
-    ])
+if sys.version_info < (3,):
+    install_requires.extend(['ipaddress'])
 scripts = [
     'bin/tcinit',
     'bin/tcinit.cmd',
@@ -39,7 +40,7 @@ scripts = [
     'bin/tcprofile',
     'bin/tcprofile.cmd',
     'bin/tcrun',
-    'bin/tcrun.cmd'
+    'bin/tcrun.cmd',
 ]
 
 setup(
@@ -55,5 +56,5 @@ setup(
     scripts=scripts,
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,
-    version=version
+    version=version,
 )

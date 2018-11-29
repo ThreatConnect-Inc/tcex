@@ -15,7 +15,7 @@ from tzlocal import get_localzone
 import parsedatetime as pdt
 
 
-class TcExUtils():
+class TcExUtils:
     """TcEx framework Utils module"""
 
     def __init__(self, tcex=None):
@@ -68,11 +68,11 @@ class TcExUtils():
         try:
             # try to get the timezone from tzlocal
             tzinfo = timezone(get_localzone().zone)
-        except pytz.exceptions.UnknownTimeZoneError as e:
+        except pytz.exceptions.UnknownTimeZoneError:
             try:
                 # try to get the timezone from python's time package
                 tzinfo = timezone(time.tzname[0])
-            except pytz.exceptions.UnknownTimeZoneError as e:
+            except pytz.exceptions.UnknownTimeZoneError:
                 # seeing as all else has failed: use UTC as the timezone
                 tzinfo = timezone('UTC')
         dateutil_parser = dateutil_parser.replace(tzinfo=tzinfo)
@@ -198,6 +198,7 @@ class TcExUtils():
         """Return instance of inflect."""
         if self._inflect is None:
             import inflect
+
             self._inflect = inflect.engine()
         return self._inflect
 
@@ -218,7 +219,8 @@ class TcExUtils():
         """Write content to a temporary file.
 
         Args:
-            content (bytes|str): The file content. If passing binary data the mode needs to be set to 'wb'.
+            content (bytes|str): The file content. If passing binary data the mode needs to be set
+                                 to 'wb'.
             filename (str, optional): The filename to use when writing the file.
             mode (str, optional): The file write mode which could be either 'w' or 'wb'.
 
@@ -245,7 +247,7 @@ class TcExUtils():
         time_input1 = self.any_to_datetime(time_input1)
         time_input2 = self.any_to_datetime(time_input2)
 
-        diff = (time_input1 - time_input2)  # timedelta
+        diff = time_input1 - time_input2  # timedelta
         delta = relativedelta(time_input1, time_input2)  # relativedelta
 
         # totals
@@ -273,7 +275,7 @@ class TcExUtils():
             'total_hours': total_hours,
             'total_minutes': total_minutes,
             'total_seconds': total_seconds,
-            'total_microseconds': total_microseconds
+            'total_microseconds': total_microseconds,
         }
 
     @staticmethod

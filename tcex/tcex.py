@@ -90,9 +90,7 @@ class TcEx(object):
         try:
             # Association Type Name is not a unique value at this time, but should be.
             for association in data.get('data', {}).get('associationType', []):
-                self._indicator_associations_types_data[
-                    association.get('name')
-                ] = association
+                self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
             self.handle_error(200, [e])
 
@@ -272,9 +270,7 @@ class TcEx(object):
 
     def _logger_fh(self):
         """Add File logging handler."""
-        logfile = os.path.join(
-            self.default_args.tc_log_path, self.default_args.tc_log_file
-        )
+        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
         fh = logging.FileHandler(logfile)
         fh.set_name('fh')
         fh.setLevel(logging.DEBUG)
@@ -334,9 +330,7 @@ class TcEx(object):
                 return
             response = r.json()
             if response.get('status') != 'Success':
-                warn = u'Bad Status: Custom Indicators are not supported ({}).'.format(
-                    r.text
-                )
+                warn = u'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
                 self.log.warning(warn)
                 return
 
@@ -373,9 +367,7 @@ class TcEx(object):
                         '_name': name,
                         '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(
-                            i.api_branch, entry['apiBranch']
-                        ),
+                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],
@@ -388,9 +380,7 @@ class TcEx(object):
                     setattr(
                         self.resources,
                         name,
-                        self.resources.class_factory(
-                            name, self.resources.Indicator, custom
-                        ),
+                        self.resources.class_factory(name, self.resources.Indicator, custom),
                     )
             except Exception as e:
                 self.handle_error(220, [e])
@@ -523,9 +513,7 @@ class TcEx(object):
             self.handle_error(215, [])
 
         timestamp = int(time.time())
-        signature = '{}:{}:{}'.format(
-            request_prepped.path_url, request_prepped.method, timestamp
-        )
+        signature = '{}:{}:{}'.format(request_prepped.path_url, request_prepped.method, timestamp)
         hmac_signature = hmac.new(
             self.default_args.api_secret_key.strip('\'').encode(),
             signature.encode(),
@@ -548,12 +536,7 @@ class TcEx(object):
         from .tcex_batch_v2 import TcExBatch
 
         return TcExBatch(
-            self,
-            owner,
-            action,
-            attribute_write_type,
-            halt_on_error,
-            playbook_triggers_enabled,
+            self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
@@ -590,8 +573,7 @@ class TcEx(object):
             if data.get('status') == 'Success':
                 if (
                     data.get('data', {}).get('bulkStatus', {}).get('jsonEnabled')
-                    and data.get('data').get('bulkStatus', {}).get('lastRun')
-                    is not None
+                    and data.get('data').get('bulkStatus', {}).get('lastRun') is not None
                 ):
                     return True
         return False
@@ -1097,9 +1079,7 @@ class TcEx(object):
                     new = False
                 if v is not None:
                     results += '{} = {}\n'.format(k, v)
-            if (
-                new and value is not None
-            ):  # indicates the key/value pair didn't already exist
+            if new and value is not None:  # indicates the key/value pair didn't already exist
                 results += '{} = {}\n'.format(key, value)
             fh.seek(0)
             fh.write(results)
@@ -1157,9 +1137,7 @@ class TcEx(object):
                 except UnicodeEncodeError:  # 2to3 converts unicode to str
                     # 2to3 converts unicode to str
                     data = str(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning(
-                        u'Encoding poorly encoded string ({})'.format(data)
-                    )
+                    self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
@@ -1298,9 +1276,7 @@ class TcEx(object):
             group_name = ''
             for word in group_name_array:
                 word = u'{}'.format(word)
-                if (
-                    len(group_name) + len(word) + len(ellipsis_value)
-                ) >= group_max_length:
+                if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
                     group_name = '{}{}'.format(group_name, ellipsis_value)
                     group_name = group_name.lstrip(' ')
                     break

@@ -40,23 +40,18 @@ class TcExJob(object):
             'failed': [],
             'not_saved': [],
             'saved': [],
-            'submitted': []
+            'submitted': [],
         }
         self._groups = []
         self._groups_response = []
-        self._indicator_results = {
-            'failed': [],
-            'not_saved': [],
-            'saved': [],
-            'submitted': []
-        }
+        self._indicator_results = {'failed': [], 'not_saved': [], 'saved': [], 'submitted': []}
         self._indicators = []
         self._indicators_response = []
 
         # batch "bad" errors
         self._batch_failures = [
             'Encountered an unexpected Exception while processing batch job',
-            'would exceed the number of allowed indicators'
+            'would exceed the number of allowed indicators',
         ]
 
         # keep the batch_id
@@ -66,10 +61,10 @@ class TcExJob(object):
         """Split indicator list into smaller more manageable numbers."""
         try:
             for i in xrange(0, len(self._indicators), self._batch_chunk):
-                yield self._indicators[i:i + self._batch_chunk]
+                yield self._indicators[i : i + self._batch_chunk]  # noqa: E203
         except NameError:  # Python 3 uses range() instead of xrange()
             for i in range(0, len(self._indicators), self._batch_chunk):
-                yield self._indicators[i:i + self._batch_chunk]
+                yield self._indicators[i : i + self._batch_chunk]  # noqa: E203
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect.
@@ -88,8 +83,9 @@ class TcExJob(object):
         if data is None:
             data = {}
 
-        self._tcex.log.debug(u'Adding {} "{}" in owner {}'.format(
-            resource_type, resource_name, owner))
+        self._tcex.log.debug(
+            u'Adding {} "{}" in owner {}'.format(resource_type, resource_name, owner)
+        )
         resource_body = {}
         resource = self._tcex.resource(resource_type)
         resource.http_method = 'POST'
@@ -101,8 +97,7 @@ class TcExJob(object):
                 # attributes, fileData and tags are handled separately
                 continue
             resource_body[param] = value
-            self._tcex.log.debug(u'Adding parameter {}:{}'.format(
-                param, value))
+            self._tcex.log.debug(u'Adding parameter {}:{}'.format(param, value))
 
         resource.body = json.dumps(resource_body)
         results = resource.request()
@@ -119,8 +114,11 @@ class TcExJob(object):
 
             # add attributes
             for attribute in data.get('attribute', []):
-                self._tcex.log.debug(u'Adding attribute type "{}" to Group ID {}'.format(
-                    attribute.get('type'), resource_id))
+                self._tcex.log.debug(
+                    u'Adding attribute type "{}" to Group ID {}'.format(
+                        attribute.get('type'), resource_id
+                    )
+                )
                 resource.resource_id(resource_id)
                 attribute_resource = resource.attributes()
                 attribute_resource.body = json.dumps(attribute)
@@ -128,8 +126,11 @@ class TcExJob(object):
                 if a_results.get('status') != 'Success':
                     err = u'Failed adding attribute type "{}" with value "{}" to group "{}". ({})'
                     err = err.format(
-                        attribute.get('type'), attribute.get('value'), resource_name,
-                        a_results.get('response').text)
+                        attribute.get('type'),
+                        attribute.get('value'),
+                        resource_name,
+                        a_results.get('response').text,
+                    )
                     self._tcex.log.error(err)
                     self._tcex.exit_code = 3
 
@@ -140,8 +141,7 @@ class TcExJob(object):
                 tag_resource = resource.tags(tag.get('name'))
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
-                    err = u'Failed adding tag "{}" ({})'.format(
-                        tag, t_results.get('response').text)
+                    err = u'Failed adding tag "{}" ({})'.format(tag, t_results.get('response').text)
                     self._tcex.log.error(err)
                     self._tcex.exit_code = 3
 
@@ -164,13 +164,15 @@ class TcExJob(object):
 
                 if u_results.get('status') != 'Success':
                     err = u'Failed uploading document {} to group {}. ({})'.format(
-                        data.get('fileName'), resource_name, u_results.get('response').text)
+                        data.get('fileName'), resource_name, u_results.get('response').text
+                    )
                     self._tcex.log.error(err)
                     self._tcex.exit_code = 3
         else:
             self._group_results['failed'].append(resource_name)
             err = u'Failed adding group "{}" ({})'.format(
-                resource_name, results.get('response').text)
+                resource_name, results.get('response').text
+            )
             self._tcex.log.error(err)
             self._tcex.exit_code = 3
 
@@ -189,8 +191,11 @@ class TcExJob(object):
         resource.resource_id(resource_id)
         results = resource.request()
         if results.get('status') != 'Success':
-            self._tcex.log.warning(u'Deleted {} with ID {} failed ({}).'.format(
-                resource_type, resource_id, results.get('response').text))
+            self._tcex.log.warning(
+                u'Deleted {} with ID {} failed ({}).'.format(
+                    resource_type, resource_id, results.get('response').text
+                )
+            )
 
     def _group_delete_by_name(self, owner, resource_type, resource_name):
         """Delete group(s) from ThreatConnect by Name.
@@ -204,8 +209,11 @@ class TcExJob(object):
         resource.owner = owner
         for results in resource:
             if results.get('status') != 'Success':
-                self._tcex.log.warning(u'Retrieve {} with name {} failed ({}).'.format(
-                    resource_type, resource_name, results.get('response').text))
+                self._tcex.log.warning(
+                    u'Retrieve {} with name {} failed ({}).'.format(
+                        resource_type, resource_name, results.get('response').text
+                    )
+                )
             else:
                 # remove group from cache
                 self.group_cache_remove(owner, resource_type, resource_name)
@@ -236,8 +244,9 @@ class TcExJob(object):
                 group_id = self.group_id(group_name, owner, group_type)
 
                 if group_id is not None:
-                    self._tcex.log.debug('Replacing stub {} with id {}.'.format(
-                        group_value, group_id))
+                    self._tcex.log.debug(
+                        'Replacing stub {} with id {}.'.format(group_value, group_id)
+                    )
                     # add group id returned from stub values
                     indicator_data['associatedGroup'].append(group_id)
 
@@ -272,8 +281,11 @@ class TcExJob(object):
             owner (string):  The owner name for the indicator to be written.
         """
         for a in self._associations:
-            self._tcex.log.info(u'creating association: resource {} association {}'.format(
-                a.get('resource_value'), a.get('association_value')))
+            self._tcex.log.info(
+                u'creating association: resource {} association {}'.format(
+                    a.get('resource_value'), a.get('association_value')
+                )
+            )
 
             association_type = a.get('association_type')
             association_id = a.get('association_value')
@@ -301,7 +313,8 @@ class TcExJob(object):
             association_results = association_resource.request()
             if association_results.get('status') != 'Success':
                 err = 'Failed adding association ({}).'.format(
-                    association_results.get('response').text)
+                    association_results.get('response').text
+                )
                 self._tcex.log.error(err)
                 self._tcex.exit_code = 3
 
@@ -312,8 +325,11 @@ class TcExJob(object):
             owner (string): The owner name for the associations to be written.
         """
         for ga in self._group_associations:
-            self._tcex.log.info(u'creating association: group "{}" indicator {}'.format(
-                ga.get('group_name'), ga.get('indicator')))
+            self._tcex.log.info(
+                u'creating association: group "{}" indicator {}'.format(
+                    ga.get('group_name'), ga.get('indicator')
+                )
+            )
 
             group_id = self.group_id(ga.get('group_name'), owner, ga.get('group_type'))
             if group_id is None:
@@ -355,8 +371,9 @@ class TcExJob(object):
                 if group_id is not None:
                     # delete the group from TC and group cache
                     self._group_delete_by_name(owner, group_type, group_name)
-                    self._tcex.log.info(u'Deleting Group "{}" with name: "{}"'.format(
-                        group_type, group_name))
+                    self._tcex.log.info(
+                        u'Deleting Group "{}" with name: "{}"'.format(group_type, group_name)
+                    )
 
                 group_id = self._group_add(group_type, group_name, owner, group)
                 if group_id is None and self._batch_halt_on_error:
@@ -375,8 +392,9 @@ class TcExJob(object):
                         break
                     else:
                         self.group_cache_add(group_name, owner, group_type, group_id)
-                    self._tcex.log.info(u'Created Group "{}" with id: {}'.format(
-                        group_name, group_id))
+                    self._tcex.log.info(
+                        u'Created Group "{}" with id: {}'.format(group_name, group_id)
+                    )
                 else:
                     # update group results tracking
                     self._group_results['cached'].append(group_name)
@@ -410,7 +428,7 @@ class TcExJob(object):
             'action': self._batch_action,
             'attributeWriteType': self._batch_write_type,
             'haltOnError': self._batch_halt_on_error,
-            'owner': owner
+            'owner': owner,
         }
 
         halt = False
@@ -456,32 +474,44 @@ class TcExJob(object):
                                     halt = True
                                     # all indicator in chunk will be not_saved
                                     self._indicator_results['not_saved'].extend(
-                                        [i.get('summary') for i in chunk])
+                                        [i.get('summary') for i in chunk]
+                                    )
                                     break
                                 else:
                                     # all indicators were saved minus failed; not_save == failed
-                                    self._indicator_results['not_saved'] = self._indicator_results.get(
-                                        'failed', [])
+                                    self._indicator_results[
+                                        'not_saved'
+                                    ] = self._indicator_results.get('failed', [])
                                     self._indicator_results['saved'].extend(
-                                        [i.get('summary') for i in chunk
-                                         if i.get('summary') not in self._indicator_results.get(
-                                             'failed', [])])
+                                        [
+                                            i.get('summary')
+                                            for i in chunk
+                                            if i.get('summary')
+                                            not in self._indicator_results.get('failed', [])
+                                        ]
+                                    )
                                     self._indicators_response.extend(
-                                        [i for i in chunk
-                                         if i.get('summary') not in self._indicator_results.get(
-                                             'failed', [])])
+                                        [
+                                            i
+                                            for i in chunk
+                                            if i.get('summary')
+                                            not in self._indicator_results.get('failed', [])
+                                        ]
+                                    )
                             else:
                                 # all indicators were saved
                                 self._indicator_results['saved'].extend(
-                                    [i.get('summary') for i in chunk])
+                                    [i.get('summary') for i in chunk]
+                                )
                                 self._indicators_response.extend(chunk)
                             break  # no need to check status anymore
 
                         time.sleep(self._batch_poll_interval)
                         poll_time += self._batch_poll_interval
             else:
-                self._tcex.log.warning('API request failed ({}).'.format(
-                    results.get('response').text))
+                self._tcex.log.warning(
+                    'API request failed ({}).'.format(results.get('response').text)
+                )
                 # TODO: move this and above duplicate code to "if halt" below after validating logic
                 self._tcex.exit_code = 1
                 # all indicator in chunk will be not_saved
@@ -548,7 +578,8 @@ class TcExJob(object):
             if i_results.get('status') != 'Success':
                 self._indicator_results['failed'].append(i_data.get('summary'))
                 err = u'Failed adding indicator {} type {} ({}).'.format(
-                    i_data.get('summary'), i_data.get('type'), i_results.get('response').text)
+                    i_data.get('summary'), i_data.get('type'), i_results.get('response').text
+                )
                 self._tcex.log.error(err)
 
                 # halt on error check
@@ -585,7 +616,8 @@ class TcExJob(object):
                 if a_results.get('status') != 'Success':
                     err = u'Failed adding attribute type {} with value {} to indicator {}.'
                     err = err.format(
-                        attribute.get('type'), attribute.get('value'), i_data.get('summary'))
+                        attribute.get('type'), attribute.get('value'), i_data.get('summary')
+                    )
                     self._tcex.log.error(err)
 
                     # halt on error check
@@ -612,7 +644,8 @@ class TcExJob(object):
                 t_results = tag_resource.request()
                 if t_results.get('status') != 'Success':
                     err = u'Failed adding tag {} to indicator {}.'.format(
-                        tag.get('name'), i_data.get('summary'))
+                        tag.get('name'), i_data.get('summary')
+                    )
                     self._tcex.log.error(err)
 
                     # halt on error check
@@ -632,7 +665,8 @@ class TcExJob(object):
                 group_type = self.group_cache_type(group_id, owner)
                 if group_type is None:
                     err = u'Could not get Group Type for Group ID {} in Owner "{}"'.format(
-                        group_id, owner)
+                        group_id, owner
+                    )
                     self._tcex.log.error(err)
                     self._tcex.exit_code = 3
                     continue
@@ -648,7 +682,8 @@ class TcExJob(object):
                 a_results = association_resource.request()
                 if a_results.get('status') != 'Success':
                     err = u'Failed association group id {} to indicator {}.'.format(
-                        group_id, i_data.get('summary'))
+                        group_id, i_data.get('summary')
+                    )
                     self._tcex.log.error(err)
 
                     # halt on error check
@@ -828,10 +863,7 @@ class TcExJob(object):
         Returns:
             (dict): A dictionary with status and error boolean.
         """
-        status = {
-            'completed': False,
-            'errors': False
-        }
+        status = {'completed': False, 'errors': False}
 
         resource = self._tcex.resource('Batch')
         resource.url = self._tcex.default_args.tc_api_path
@@ -867,8 +899,9 @@ class TcExJob(object):
                             self._tcex.exit(1)
                         elif error_results.get('response').status_code == 200:
                             break
-                        self._tcex.log.info(u'Error retrieve sleep ({} seconds)'.format(
-                            self._batch_poll_interval))
+                        self._tcex.log.info(
+                            u'Error retrieve sleep ({} seconds)'.format(self._batch_poll_interval)
+                        )
                         time.sleep(self._batch_poll_interval)
                         poll_time += self._batch_poll_interval
 
@@ -1084,9 +1117,9 @@ class TcExJob(object):
         Returns:
             (integer): The ID for the provided group name and owner.
         """
-        self._tcex.log.debug(u'Retrieving {} ID for group "{}" in "{}".'.format(
-            resource_type, name, owner
-        ))
+        self._tcex.log.debug(
+            u'Retrieving {} ID for group "{}" in "{}".'.format(resource_type, name, owner)
+        )
         if self._group_cache.get(owner, {}).get(resource_type) is None:
             self.group_cache(owner, resource_type)
 
@@ -1120,8 +1153,8 @@ class TcExJob(object):
             (integer): The ID for the provided group name and owner.
         """
         self._tcex.log.debug(
-            u'Removing {} ID for group "{}" in "{}".'.format(
-                resource_type, name, owner))
+            u'Removing {} ID for group "{}" in "{}".'.format(resource_type, name, owner)
+        )
         if self._group_cache.get(owner, {}).get(resource_type, {}).get(name) is not None:
             del self._group_cache[owner][resource_type][name]
 
