@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Profile Generation Module """
 import argparse
-import colorama as c
 import json
 import os
 import sys
@@ -11,29 +10,55 @@ from uuid import uuid4
 from collections import OrderedDict
 from random import randint
 
+import colorama as c
 import redis
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
-parser = argparse.ArgumentParser()
+epilog = (
+    'Update the values and add the following to the local environment '
+    '(e.g., ~/.bashrc or ~/.bash_profile)\n'
+    '\n# ThreatConnect API Credential and URL\n'
+    'export API_DEFAULT_ORG=MyOrg\n'
+    'export API_ACCESS_ID=1234\n'
+    'export API_SECRET_KEY=abc123\n'
+    'export TC_API_PATH=https://maclaren.pub/api\n'
+    '\n# API Token can be supplied optionally, but must be updated frequently.\n'
+    'export TC_TOKEN=123-abc-456-def\n'
+    '\n# Proxy settings are optional\n'
+    'export TC_PROXY_HOST=10.10.10.10\n'
+    'export TC_PROXY_PORT=3128\n'
+    'export TC_PROXY_USERNAME=robin\n'
+    'export TC_PROXY_PASSWORD=sparkles\n'
+    '\n# The Redis IP/Host and Port\n'
+    'export DB_PATH=localhost\n'
+    'export DB_PORT=6379')
+
+parser = argparse.ArgumentParser(
+    epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument(
-    '--action', choices=['create', 'delete', 'replace_validation', 'update'], default='create')
+    '--action', choices=['create', 'delete', 'replace_validation'], default='create')
 parser.add_argument(
     '--ij', default='install.json', help='The install.json file name (default: install.json).')
-parser.add_argument(
-    '--data_file',
-    action='store_true',
-    help='Attempt to build data file templates for the profile.')
+# parser.add_argument(
+#     '--data_file',
+#     action='store_true',
+#     help='Attempt to build data file templates for the profile.')
 parser.add_argument(
     '--outdir',
     default='tcex.d',
     help='The *base* output directory containing the data/profiles folder.')
-parser.add_argument('--outfile', help='The name of the file to write the profile.')
 parser.add_argument(
-    '--profile_name', help='The profile name to create, delete, or update.', required=True)
+    '--outfile', help='The filename for the profile (default: <profile name>.json).')
+parser.add_argument(
+    '--profile_name',
+    '--name',
+    dest='profile_name',
+    help='The profile name to create, delete, or replace_validation.',
+    required=True)
 parser.add_argument('--redis_hash', help='The redis hash.')
 parser.add_argument('--redis_host', default='localhost', help='The redis host.')
 parser.add_argument('--redis_port', default='6379', help='The redis port.')
@@ -72,27 +97,6 @@ class TcProfile(object):
         print('{}{}{}.'.format(c.Style.BRIGHT, c.Fore.RED, err))
         if halt:
             sys.exit(1)
-
-    def display_help(self):
-        """Display help mesage."""
-        print(
-            'Update the value and add the following to the local environment (e.g., ~/.bashrc or ~/.bash_profile)\n'
-        )
-        print('# ThreatConnect API Credential and URL')
-        print('export API_DEFAULT_ORG=MyOrg')
-        print('export API_ACCESS_ID=1234')
-        print('export API_SECRET_KEY=abc123')
-        print('export TC_API_PATH=https://mytc.mydom.io/api')
-        print('# API Token can be supplied optionally, but must be updated frequently.')
-        print('export TC_TOKEN=123-abc-456-def')
-        print('# Proxy settings are optional')
-        print('export TC_PROXY_HOST=10.10.10.10')
-        print('export TC_PROXY_PORT=3128')
-        print('export TC_PROXY_USERNAME=robin')
-        print('export TC_PROXY_PASSWORD=sparkles')
-        print('# The Redis IP/Host and Port')
-        print('export DB_PATH=localhost')
-        print('export DB_PORT=6379')
 
     @property
     def ij(self):
@@ -181,7 +185,7 @@ class TcProfile(object):
             data = json.load(fh)
             for profile in data:
                 # force update old profiles
-                self.profile_upgrade(profile)
+                self.profile_update(profile)
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
@@ -296,6 +300,7 @@ class TcProfile(object):
             'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name))
         profile = OrderedDict()
         profile['args'] = self.profile_args
+        profile['autoclear'] = True
         profile['clear'] = []
         profile['description'] = ''
         profile['data_files'] = []
@@ -313,7 +318,7 @@ class TcProfile(object):
         return profile
 
     @staticmethod
-    def profile_upgrade(profile):
+    def profile_update(profile):
         """Update an existing profile with new parameters or remove deprecated parameters."""
         # warn about missing install_json parameter
         if profile.get('install_json') is None:
@@ -326,6 +331,10 @@ class TcProfile(object):
             print(
                 '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
             profile.pop('script')
+
+        # add new autoclear field
+        # if profile.get('autoclear') is None:
+        #     profile['autoclear'] = False
 
         # update old profiles with new "data_type" field.
         for validation in profile.get('validations', []):
@@ -412,12 +421,13 @@ class TcProfile(object):
 
     @property
     def redis(self):
+        """Return instance of Redis."""
         if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis
 
     def replace_validation(self):
-        """ """
+        """Replace the validation configuration in the selected profile."""
         self.validate_profile_exists()
         profile_data = self.profiles.get(self.args.profile_name)
 
@@ -493,15 +503,15 @@ if __name__ == '__main__':
         tcp.load_profiles()
 
         if args.action == 'create':
-            profile = tcp.profile_create()
-            tcp.profile_write(profile, args.outfile)
-            tcp.display_help()
+            profile_ = tcp.profile_create()
+            tcp.profile_write(profile_, args.outfile)
         elif args.action == 'delete':
             tcp.profile_delete()
         elif args.action == 'replace_validation':
             tcp.replace_validation()
         # elif args.action == 'update':
-        #     tcp.profile_update()
+        #     # profiles are automatically updated during loading process
+        #     pass
 
         # exit
         sys.exit()

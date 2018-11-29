@@ -38,8 +38,8 @@ from tcex import TcEx
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -51,18 +51,16 @@ parser.add_argument(
     help='(Experimental) Override the docker container defined in install.json or profile.')
 parser.add_argument('--autoclear', action='store_true', help='Clear Redis data before running.')
 parser.add_argument('--halt_on_fail', action='store_true', help='Halt on any failure.')
-parser.add_argument(
-    '--gen_launcher', action='store_true', help='Generate Visual Studio Code launcher config.')
-parser.add_argument('--group', default=None, help='The group of profiles to executed.')
+parser.add_argument('--group', default=None, help='The group of profiles to run.')
 parser.add_argument('--logging_level', default='info', help='The logging level.')
-parser.add_argument(
-    '--profile', default='default', help='The profile to be executed. (default: "default")')
+parser.add_argument('--profile', default='default', help='The profile to run. (default: "default")')
 parser.add_argument('--quiet', action='store_true', help='Suppress the output from the App.')
 parser.add_argument('--report', help='The JSON report filename.')
 parser.add_argument(
     '--truncate',
     default=50,
-    help='The length at which to truncate successful validation data in the logs (default=50).',
+    help='(Advanced) The length at which to truncate successful validation '
+    'data in the logs (default=50).',
     type=int)
 parser.add_argument('--unmask', action='store_true', help='Unmask masked args.')
 parser.add_argument(
@@ -228,7 +226,7 @@ class TcRun(object):
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
-    def _signal_handler(self, signal_interupt, frame):
+    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
         """Handle singal interrupt."""
         if self.container is not None:
             print('{}{}Stopping docker container.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
@@ -507,22 +505,6 @@ class TcRun(object):
         if isinstance(user_data, (string_types)):
             user_data = json.loads(user_data)
         return self.deep_diff(db_data, user_data)
-
-    def gen_launcher(self):
-        """Generate launcher for vscode."""
-        program = self.profile.get('install_json', {}).get(
-            'programMain', self.profile.get('script'))
-        print(
-            json.dumps(
-                {
-                    'name': 'TcRun: {}'.format(self.profile.get('profile_name')),
-                    'type': 'python',
-                    'request': 'launch',
-                    'program': '${workspaceFolder}/' + '{}.py'.format(program),
-                    #'pythonPath': '/Users/bsummers/.pyenv/shims/python',
-                    'args': self.profile.get('profile_args').standard
-                },
-                indent=4))
 
     def load_install_json(self, filename):
         """Return install.json data.
@@ -859,9 +841,9 @@ class TcRun(object):
     def run_display_app_errors(self, err):
         """Handle the exit code for the current run."""
         if err is not None and err:
-            for e in err.decode('utf-8').split('\n'):
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
-                self.log.error('[tcrun] App error: {}'.format(e))
+            for e_ in err.decode('utf-8').split('\n'):
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e_))
+                self.log.error('[tcrun] App error: {}'.format(e_))
 
     def run_display_app_output(self, out):
         """Print any App output."""
@@ -1802,10 +1784,6 @@ if __name__ == '__main__':
             tcr.log.info('{} {} {}'.format(separator, p.get('profile_name'), separator))
             tcr.profile = p
 
-            if args.gen_launcher:
-                # print launcher config and exit
-                tcr.gen_launcher()
-                continue
             # clear redis and threatconnect data found in profile and staging files.
             if p.get('autoclear') or args.autoclear:
                 tcr.autoclear()

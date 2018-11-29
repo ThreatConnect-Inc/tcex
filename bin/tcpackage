@@ -16,8 +16,8 @@ from jsonschema import SchemaError, ValidationError, validate
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', action='store_true', help='Build a bundle file.')
@@ -28,9 +28,12 @@ parser.add_argument(
 # parser.add_argument(
 #     '--dryrun', action='store_true', help='Perform a dry run of the build.')
 parser.add_argument(
-    '--install_json', help='The install.json file name for the App that should be built.')
+    '--install_json',
+    help='(Advanced) The install.json file name for the App that should be built.')
 parser.add_argument(
-    '--outdir', default='target', help='Directory to write the outfile. (Default: target)')
+    '--outdir',
+    default='target',
+    help='(Advanced) Directory to write the outfile. (Default: target)')
 # parser.add_argument(
 #     '--validate', help='The install.json file to validate.')
 args, extra_args = parser.parse_known_args()
@@ -47,9 +50,9 @@ class TcPackage(object):
     install.json file or files will be automatically run before packaging the app.
     """
 
-    def __init__(self, args):
+    def __init__(self, _args):
         """ """
-        self._args = args
+        self._args = _args
         self.app_path = os.getcwd()
         self.exit_code = 0
         self.features = ['secureParams', 'aotExecutionEnabled']
@@ -339,7 +342,7 @@ class TcPackage(object):
         for app in bundle_apps:
             print('  Adding: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
             z.write(app, os.path.basename(app))
-        z.close
+        z.close()
 
     def validate(self, install_json):
         """Validate install.json file for required parameters"""
