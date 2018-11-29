@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TcEx Framework """
+"""TcEx Framework"""
 from builtins import str
 import inspect
 import json
@@ -90,7 +90,9 @@ class TcEx(object):
         try:
             # Association Type Name is not a unique value at this time, but should be.
             for association in data.get('data', {}).get('associationType', []):
-                self._indicator_associations_types_data[association.get('name')] = association
+                self._indicator_associations_types_data[
+                    association.get('name')
+                ] = association
         except Exception as e:
             self.handle_error(200, [e])
 
@@ -189,18 +191,25 @@ class TcEx(object):
     def _log_platform(self):
         """Log the current Platform."""
         from platform import platform
+
         self.log.info(u'Platform: {}'.format(platform()))
 
     def _log_python_version(self):
         """Log the current Python version."""
-        self.log.info(u'Python Version: {}.{}.{}'.format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro))
+        self.log.info(
+            u'Python Version: {}.{}.{}'.format(
+                sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+            )
+        )
 
     def _log_tc_proxy(self):
         """Log the proxy settings."""
         if self.default_args.tc_proxy_tc:
-            self.log.info(u'Proxy Server (TC): {}:{}.'.format(
-                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
+            self.log.info(
+                u'Proxy Server (TC): {}:{}.'.format(
+                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                )
+            )
 
     def _log_tcex_version(self):
         """Log the current TcEx version number."""
@@ -254,6 +263,7 @@ class TcEx(object):
     def _logger_api(self):
         """Add API logging handler."""
         from .tcex_logger import TcExLogHandler, TcExLogFormatter
+
         api = TcExLogHandler(self.session)
         api.set_name('api')
         api.setLevel(logging.DEBUG)
@@ -262,7 +272,9 @@ class TcEx(object):
 
     def _logger_fh(self):
         """Add File logging handler."""
-        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
+        logfile = os.path.join(
+            self.default_args.tc_log_path, self.default_args.tc_log_file
+        )
         fh = logging.FileHandler(logfile)
         fh.set_name('fh')
         fh.setLevel(logging.DEBUG)
@@ -284,7 +296,7 @@ class TcEx(object):
             'info': logging.INFO,
             'warning': logging.WARNING,
             'error': logging.ERROR,
-            'critical': logging.CRITICAL
+            'critical': logging.CRITICAL,
         }
 
     def _logger_stream(self):
@@ -306,6 +318,7 @@ class TcEx(object):
                   tcex.resource('<resource name>').
         """
         from importlib import import_module
+
         # create resource object
         self.resources = import_module('tcex.tcex_resources')
 
@@ -321,7 +334,9 @@ class TcEx(object):
                 return
             response = r.json()
             if response.get('status') != 'Success':
-                warn = u'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
+                warn = u'Bad Status: Custom Indicators are not supported ({}).'.format(
+                    r.text
+                )
                 self.log.warning(warn)
                 return
 
@@ -358,18 +373,25 @@ class TcEx(object):
                         '_name': name,
                         '_parsable': entry['parsable'],
                         '_request_entity': entry['apiEntity'],
-                        '_request_uri': '{}/{}'.format(i.api_branch, entry['apiBranch']),
+                        '_request_uri': '{}/{}'.format(
+                            i.api_branch, entry['apiBranch']
+                        ),
                         '_status_codes': {
                             'DELETE': [200],
                             'GET': [200],
                             'POST': [200, 201],
-                            'PUT': [200]
+                            'PUT': [200],
                         },
-                        '_value_fields': value_fields
+                        '_value_fields': value_fields,
                     }
                     # Call custom indicator class factory
-                    setattr(self.resources, name, self.resources.class_factory(
-                        name, self.resources.Indicator, custom))
+                    setattr(
+                        self.resources,
+                        name,
+                        self.resources.class_factory(
+                            name, self.resources.Indicator, custom
+                        ),
+                    )
             except Exception as e:
                 self.handle_error(220, [e])
 
@@ -397,7 +419,9 @@ class TcEx(object):
         call_line = inspect.stack()[1][0].f_lineno
         self.log.error(
             'App interrupted - file: {}, method: {}, line: {}.'.format(
-                call_file, call_module, call_line))
+                call_file, call_module, call_line
+            )
+        )
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
@@ -418,6 +442,7 @@ class TcEx(object):
         """
         if self._utils is None:
             from .tcex_utils import TcExUtils
+
             self._utils = TcExUtils(self)
         return self._utils
 
@@ -470,8 +495,10 @@ class TcEx(object):
             authorization = {'Authorization': 'TC-Token {}'.format(self._tc_token)}
             if self._tc_token_expires is not None:
                 authorization = self._authorization_token_renew()
-        elif (self.default_args.api_access_id is not None and
-              self.default_args.api_secret_key is not None):
+        elif (
+            self.default_args.api_access_id is not None
+            and self.default_args.api_secret_key is not None
+        ):
             authorization = self.authorization_hmac(request_prepped)
 
         return authorization
@@ -491,27 +518,43 @@ class TcEx(object):
         import base64
         import hashlib
         import hmac
+
         if request_prepped is None:
             self.handle_error(215, [])
 
         timestamp = int(time.time())
         signature = '{}:{}:{}'.format(
-            request_prepped.path_url, request_prepped.method, timestamp)
+            request_prepped.path_url, request_prepped.method, timestamp
+        )
         hmac_signature = hmac.new(
-            self.default_args.api_secret_key.strip('\'').encode(), signature.encode(),
-            digestmod=hashlib.sha256).digest()
+            self.default_args.api_secret_key.strip('\'').encode(),
+            signature.encode(),
+            digestmod=hashlib.sha256,
+        ).digest()
         authorization = 'TC {}:{}'.format(
-            self.default_args.api_access_id, base64.b64encode(hmac_signature).decode())
-        return {
-            'Authorization': authorization,
-            'Timestamp': str(timestamp)
-        }
+            self.default_args.api_access_id, base64.b64encode(hmac_signature).decode()
+        )
+        return {'Authorization': authorization, 'Timestamp': str(timestamp)}
 
-    def batch(self, owner, action=None, attribute_write_type=None, halt_on_error=False,
-              playbook_triggers_enabled=None):
+    def batch(
+        self,
+        owner,
+        action=None,
+        attribute_write_type=None,
+        halt_on_error=False,
+        playbook_triggers_enabled=None,
+    ):
         """Return instance of Batch"""
         from .tcex_batch_v2 import TcExBatch
-        return TcExBatch(self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled)
+
+        return TcExBatch(
+            self,
+            owner,
+            action,
+            attribute_write_type,
+            halt_on_error,
+            playbook_triggers_enabled,
+        )
 
     def bulk_enabled(self, owner=None, api_path=None, authorization=None):
         """[Deprecated] Check if bulk indicators is enabled for owner.
@@ -545,8 +588,11 @@ class TcEx(object):
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             data = r.json()
             if data.get('status') == 'Success':
-                if (data.get('data', {}).get('bulkStatus', {}).get('jsonEnabled') and
-                        data.get('data').get('bulkStatus', {}).get('lastRun') is not None):
+                if (
+                    data.get('data', {}).get('bulkStatus', {}).get('jsonEnabled')
+                    and data.get('data').get('bulkStatus', {}).get('lastRun')
+                    is not None
+                ):
                     return True
         return False
 
@@ -566,6 +612,7 @@ class TcEx(object):
         """
         try:
             from .tcex_data_filter import DataFilter
+
             return DataFilter(self, data)
         except ImportError as e:
             warn = u'Required Module is not installed ({}).'.format(e)
@@ -593,6 +640,7 @@ class TcEx(object):
         """ThreatConnect error codes."""
         if self._error_codes is None:
             from .tcex_error_codes import TcExErrorCodes
+
             self._error_codes = TcExErrorCodes()
         return self._error_codes
 
@@ -670,7 +718,7 @@ class TcEx(object):
             'Signature',
             'Report',
             'Threat',
-            'Task'
+            'Task',
         ]
 
     def handle_error(self, code, message_values=None, raise_error=True):
@@ -689,8 +737,11 @@ class TcEx(object):
             self.log.error('Incorrect error code provided ({}).'.format(code))
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         except IndexError:
-            self.log.error('Incorrect message values provided for error code {} ({}).'.format(
-                code, message_values))
+            self.log.error(
+                'Incorrect message values provided for error code {} ({}).'.format(
+                    code, message_values
+                )
+            )
             raise RuntimeError(1000, 'Generic Failure, see logs for more details.')
         if raise_error:
             raise RuntimeError(code, message)
@@ -747,7 +798,7 @@ class TcEx(object):
             'tc_proxy_external',
             'tc_proxy_tc',
             'tc_secure_params',
-            'tc_verify'
+            'tc_verify',
         ]
         for arg, value in params.items():
             cli_arg = '--{}'.format(arg)
@@ -816,6 +867,7 @@ class TcEx(object):
         """
         self.log.warning('Jobs module will be deprecated in TcEx version 0.9.0.')
         from .tcex_job import TcExJob
+
         return TcExJob(self)
 
     @property
@@ -827,6 +879,7 @@ class TcEx(object):
         """
         if self._jobs is None:
             from .tcex_job import TcExJob
+
             self._jobs = TcExJob(self)
         return self._jobs
 
@@ -844,6 +897,7 @@ class TcEx(object):
             (object): An instance of the Metrics Class.
         """
         from .tcex_metrics_v2 import TcExMetricsV2
+
         return TcExMetricsV2(self, name, description, data_type, interval, keyed)
 
     def notification(self):
@@ -853,6 +907,7 @@ class TcEx(object):
             (object): An instance of the Notification Class.
         """
         from .tcex_notification_v2 import TcExNotificationV2
+
         return TcExNotificationV2(self)
 
     def message_tc(self, message, max_length=255):
@@ -887,6 +942,7 @@ class TcEx(object):
         """
         if self._playbook is None:
             from .tcex_playbook import TcExPlaybook
+
             self._playbook = TcExPlaybook(self)
         return self._playbook
 
@@ -906,28 +962,40 @@ class TcEx(object):
            (dictionary): Dictionary of proxy settings
         """
         proxies = {}
-        if (self.default_args.tc_proxy_host is not None and
-                self.default_args.tc_proxy_port is not None):
+        if (
+            self.default_args.tc_proxy_host is not None
+            and self.default_args.tc_proxy_port is not None
+        ):
 
-            if (self.default_args.tc_proxy_username is not None and
-                    self.default_args.tc_proxy_password is not None):
+            if (
+                self.default_args.tc_proxy_username is not None
+                and self.default_args.tc_proxy_password is not None
+            ):
                 tc_proxy_username = quote(self.default_args.tc_proxy_username, safe='~')
                 tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
 
                 proxies = {
                     'http': 'http://{}:{}@{}:{}'.format(
-                        tc_proxy_username, tc_proxy_password,
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
+                        tc_proxy_username,
+                        tc_proxy_password,
+                        self.default_args.tc_proxy_host,
+                        self.default_args.tc_proxy_port,
+                    ),
                     'https': 'https://{}:{}@{}:{}'.format(
-                        tc_proxy_username, tc_proxy_password,
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
+                        tc_proxy_username,
+                        tc_proxy_password,
+                        self.default_args.tc_proxy_host,
+                        self.default_args.tc_proxy_port,
+                    ),
                 }
             else:
                 proxies = {
                     'http': 'http://{}:{}'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port),
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                    ),
                     'https': 'https://{}:{}'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port)
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                    ),
                 }
         return proxies
 
@@ -943,6 +1011,7 @@ class TcEx(object):
         """
         try:
             from .tcex_request import TcExRequest
+
             return TcExRequest(self, session)
         except ImportError as e:
             self.handle_error(105, [e])
@@ -957,8 +1026,11 @@ class TcEx(object):
         """
         r = self.request()
         if self.default_args.tc_proxy_external:
-            self.log.info(u'Using proxy server for external request {}:{}.'.format(
-                self.default_args.tc_proxy_host, self.default_args.tc_proxy_port))
+            self.log.info(
+                u'Using proxy server for external request {}:{}.'.format(
+                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                )
+            )
             r.proxies = self.proxies
         return r
 
@@ -1025,7 +1097,9 @@ class TcEx(object):
                     new = False
                 if v is not None:
                     results += '{} = {}\n'.format(k, v)
-            if new and value is not None:  # indicates the key/value pair didn't already exist
+            if (
+                new and value is not None
+            ):  # indicates the key/value pair didn't already exist
                 results += '{} = {}\n'.format(key, value)
             fh.seek(0)
             fh.write(results)
@@ -1083,7 +1157,9 @@ class TcEx(object):
                 except UnicodeEncodeError:  # 2to3 converts unicode to str
                     # 2to3 converts unicode to str
                     data = str(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
+                    self.log.warning(
+                        u'Encoding poorly encoded string ({})'.format(data)
+                    )
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
@@ -1135,6 +1211,7 @@ class TcEx(object):
         """
         from datetime import datetime
         from dateutil.relativedelta import relativedelta
+
         self.log.warning('This App is using a deprecated method (epoch seconds).')
         epoch = datetime.now()
         if delta is not None:
@@ -1221,7 +1298,9 @@ class TcEx(object):
             group_name = ''
             for word in group_name_array:
                 word = u'{}'.format(word)
-                if (len(group_name) + len(word) + len(ellipsis_value)) >= group_max_length:
+                if (
+                    len(group_name) + len(word) + len(ellipsis_value)
+                ) >= group_max_length:
                     group_name = '{}{}'.format(group_name, ellipsis_value)
                     group_name = group_name.lstrip(' ')
                     break
@@ -1264,6 +1343,7 @@ class TcEx(object):
         """Return an instance of Requests Session configured for the ThreatConnect API."""
         if self._session is None:
             from .tcex_session import TcExSession
+
             self._session = TcExSession(self)
         return self._session
 
