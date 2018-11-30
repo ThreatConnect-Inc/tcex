@@ -250,7 +250,7 @@ class TcExUtils():
 
         # totals
         total_months = (delta.years * 12) + delta.months
-        total_weeks = (delta.years * 52) + delta.weeks
+        total_weeks = (delta.years * 52) + (total_months * 4) + delta.weeks
         total_days = diff.days  # handles leap days
         total_hours = (total_days * 24) + delta.hours
         total_minutes = (total_hours * 60) + delta.minutes
