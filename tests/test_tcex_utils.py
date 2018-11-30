@@ -6,6 +6,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import utility
 
 
@@ -23,3 +24,13 @@ def test_date_to_datetime():
     new_date = tcex_instance.utils.date_to_datetime(str(datetime.datetime.now()), tz='UTC')
     # make sure the hour is different b/c of the different timezone
     assert new_date.hour != starting_date.hour
+
+
+def test_timedelta():
+    from tcex import tcex_utils
+    utils = tcex_utils.TcExUtils()
+    delta = utils.timedelta('2018-01-13', '2018-02-14')
+    assert delta['days'] == -1
+    assert delta['total_days'] == -32
+    assert delta['hours'] == 0
+    assert delta['total_weeks'] == -4
