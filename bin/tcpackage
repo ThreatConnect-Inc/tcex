@@ -10,8 +10,8 @@ import sys
 import traceback
 import zipfile
 from collections import OrderedDict
-import colorama as c
 
+import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
 
 # Python 2 unicode
