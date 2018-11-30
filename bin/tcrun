@@ -724,8 +724,8 @@ class TcRun(object):
 
         if self._args.docker:
             return self.run_docker(commands)
-        else:
-            return self.run_local(commands)
+
+        return self.run_local(commands)
 
     def run_commands(self, program_language, program_main):
         """Return the run Print Command."""
@@ -1066,7 +1066,7 @@ class TcRun(object):
             if data_type == 'redis':
                 self.log.debug('Stage Redis Data')
                 self.stage_redis(sd.get('variable'), sd.get('data'))
-            elif data_type == 'redis-array' or data_type == 'redis_array':
+            elif data_type in ['redis-array', 'redis_array']:
                 self.log.debug('Stage Redis Array')
                 out_variable = sd.get('variable')
                 # build array
@@ -1431,7 +1431,7 @@ class TcRun(object):
 
                 # validate if possible
                 sep = '-' * 10
-                self.log.info('{} {} {}'.format(sep, variable, sep))
+                self.log.info('{0} {1} {0}'.format(sep, variable))
                 # self.log.info('[validate] Variable  : {}'.format(variable))
                 if not self.validate_redis(db_data, user_data, oper):
                     passed = False
@@ -1669,7 +1669,7 @@ class ArgBuilder(object):
             quote_char = '\''
 
         if re.findall(r'[!\-\s\$\&]{1,}', str(data)):
-            data = '{}{}{}'.format(quote_char, data, quote_char)
+            data = '{0}{1}{0}'.format(quote_char, data)
         return data
 
     def load(self, profile_args):
@@ -1850,7 +1850,7 @@ if __name__ == '__main__':
         # load staging data
         for p in tcr.profiles:
             separator = '=' * 20
-            tcr.log.info('{} {} {}'.format(separator, p.get('profile_name'), separator))
+            tcr.log.info('{0} {1} {0}'.format(separator, p.get('profile_name')))
             tcr.profile = p
 
             # clear redis and threatconnect data found in profile and staging files.

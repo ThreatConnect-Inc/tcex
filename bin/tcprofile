@@ -91,7 +91,8 @@ class TcProfile(object):
         self.profile_dir = os.path.join(self.args.outdir, 'profiles')
         self.profiles = {}
 
-    def _create_tcex_dirs(self):
+    @staticmethod
+    def _create_tcex_dirs():
         """Create tcex.d directory and sub directories."""
         dirs = ['tcex.d', 'tcex.d/data', 'tcex.d/profiles']
         for d in dirs:
@@ -215,7 +216,8 @@ class TcProfile(object):
                 {'data': d, 'ij_filename': d.get('install_json'), 'fqfn': fqfn},
             )
 
-    def load_install_json(self, filename):
+    @staticmethod
+    def load_install_json(filename):
         """Return install.json data.
 
         Load on first access, otherwise return existing data.
