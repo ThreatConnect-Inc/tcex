@@ -37,7 +37,12 @@ class TcInit(object):
     """Install Required Modules for App"""
 
     def __init__(self, _arg):
-        """Init TcLib Module"""
+        """Init TcLib Module
+
+        Args:
+            _arg (argparse.Namespace): The argparser namespace containing CLI arg.
+        """
+
         self.args = _arg
         self.app_path = os.getcwd()
         self.base_url = (
@@ -53,7 +58,13 @@ class TcInit(object):
             self._check_empty_app_dir()
 
     def _check_empty_app_dir(self):
-        """Check to see if the directory in which the app is going to be created is empty."""
+        """Check to see if the directory in which the app is going to be created is empty.
+
+        Raises:
+            RuntimeWarning: Working direcotry is not empty.
+            RuntimeWarning: Directory does not contain content to update.
+        """
+
         # if we are creating an app and the directory is not empty - raise a warning
         if os.listdir(self.app_path) and self.args.action == 'create':
             message = (
@@ -73,7 +84,13 @@ class TcInit(object):
 
     @staticmethod
     def _print_results(file, status):
-        """Print the download results."""
+        """Print the download results.
+
+        Args:
+            file (str): The file name being downloaded.
+            status (str): The status of the download.
+        """
+
         file_color = c.Fore.GREEN
         status_color = c.Fore.RED
         if status == 'Success':
@@ -92,7 +109,13 @@ class TcInit(object):
         )
 
     def download_file(self, remote_filename, local_filename=None):
-        """Download file from github."""
+        """Download file from github.
+
+        Args:
+            remote_filename (str): The filename on the remote system.
+            local_filename (str, optional): Defaults to None. The filename on the local system.
+        """
+
         status = 'Failed'
         if local_filename is None:
             local_filename = remote_filename
