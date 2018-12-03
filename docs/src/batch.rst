@@ -192,6 +192,8 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
     host.attribute('Description', 'Example Description 2', True, 'source')
     host.tag('Example Tag')
 
+.. note:: The casing of the indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the `indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
+
 Indicator Interface 3
 ---------------------
 The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. You can view the required fields for each indicator type `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__.
