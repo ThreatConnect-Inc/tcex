@@ -5,6 +5,11 @@
 Building Apps
 =============
 
+------------------
+Creating a New App
+------------------
+.. include:: creating_new_app.rst
+
 -------------------
 Build Local Modules
 -------------------
