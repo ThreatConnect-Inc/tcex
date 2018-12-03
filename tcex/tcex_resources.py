@@ -49,6 +49,7 @@ class Resource(object):
         self._stream = False
         self._status_codes = {}
         self._value_fields = []
+        self.owner = self.tcex.args.api_default_org
 
     def _apply_filters(self):
         """Apply any filters added to the resource.

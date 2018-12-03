@@ -5,7 +5,6 @@
 
 def get_groups(tcex):
     resource = tcex.resource('Group')
-    resource.owner = tcex.args.api_default_org
     groups = []
     # paginate over results
     for result in resource:
@@ -15,7 +14,6 @@ def get_groups(tcex):
 
 def get_indicators(tcex):
     resource = tcex.resource('Indicator')
-    resource.owner = tcex.args.api_default_org
     indicators = []
     # paginate over results
     for result in resource:
