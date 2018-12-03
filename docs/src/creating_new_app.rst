@@ -36,4 +36,4 @@ New App Layout
 
 **Playbook** apps created with ``tcinit --type playbook`` will have a ``playbook_app.py`` file which serves as a parent class for the ``App`` class in ``app.py``. **Job** apps created with ``tcinit --type job`` will have a ``job_app.py`` file which serves as a parent class for the ``App`` class in ``app.py``.
 
-To get familiar with how the app layout works, you'll want to take a look at ``run.py`` and ``app.py``. When writing a new app, most of the work will be done in ``app.py``.
+To get familiar with how your new app works, you'll want to take a look at ``run.py`` and ``app.py``. When writing a new app, most of the work will be done in ``app.py``.
