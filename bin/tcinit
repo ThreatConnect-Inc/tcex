@@ -3,6 +3,7 @@
 """ TcEx App Init """
 
 import argparse
+import json
 import os
 import sys
 import traceback
@@ -14,11 +15,16 @@ import colorama as c
 if sys.version_info[0] == 2:
     reload(sys)
     sys.setdefaultencoding('utf-8')
+    get_input = raw_input
+else:
+    get_input = input
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
-parser.add_argument('--action', choices=['create', 'update'], default='create', help='Whether a ' +
-                    'new app should be CREATED or an existing app should be UPDATED')
+parser.add_argument('--action', choices=['create', 'update', 'migrate'], default='create', help='Whether a ' +
+                    'new app should be CREATED, an existing app should be UPDATED, or an existing app of ' +
+                    'a different format MIGRATED to the new version.')
 parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
 parser.add_argument('--force', action='store_true', help='If true, this will overwrite existing ' +
                     'files in a directory to create a new app.', default=False)
@@ -36,26 +42,24 @@ class TcInit(object):
             'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{}/app_init/'.format(
                 self.args.branch))
         self.exit_code = 0
+        self.confirm_overwrite = True
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
 
-        if not self.args.force:
-            # make sure the current directory is empty (if not, a RuntimeWarning is raised)
+        if self.args.action == 'update' or self.args.action == 'migrate':
+            # check if the current directory is empty (if so, a RuntimeWarning is raised)
             self._check_empty_app_dir()
+            if self.args.action == 'update':
+                self.confirm_overwrite = False
+
+        if self.args.force:
+            self.confirm_overwrite = False
 
     def _check_empty_app_dir(self):
         """Check to see if the directory in which the app is going to be created is empty."""
-        # if we are creating an app and the directory is not empty - raise a warning
-        if os.listdir(self.app_path) and self.args.action == 'create':
-            message = 'The current directory ({}) is not empty so no '.format(self.app_path) + \
-                      'app will be created. You can either create a new directory ' + \
-                      'for this app or add the "--force" flag to the command you ' + \
-                      'just ran to force a new app to be created (which MAY OVERWRITE FILES ' + \
-                      'IN THIS DIRECTORY).'
-            raise RuntimeWarning(message)
-        # if we are updating an app and the directory is empty - raise a warning
-        elif not any(os.listdir(self.app_path)) and self.args.action == 'update':
+        # if we are updating/migrating an app and the directory is empty - raise a warning
+        if not any(os.listdir(self.app_path)):
             message = 'No app exists in this directory. Try using "tcinit --type ' + \
                       '{} --action create --branch '.format(self.args.type) + \
                       '{}" to create an app.'.format(self.args.branch)
@@ -73,11 +77,34 @@ class TcInit(object):
                 c.Fore.CYAN, 'Downloading:', file_color, file, c.Fore.CYAN, 'Status:', status_color,
                 status))
 
+    @staticmethod
+    def _file_exists(file_path):
+        """Check if a file at the given path exists."""
+        return os.access(file_path, os.F_OK)
+
+    def _confirm_overwrite(self, file_path):
+        """Make sure the user would like to continue downloading a file which will overwrite a file in the current directory."""
+        message = '\n{}Would you like to overwrite the contents of {} (y/n)? '.format(c.Fore.YELLOW, file_path)
+        response = get_input(message)
+        response = response.lower()
+
+        if response in ['y', 'yes']:
+            return True
+        elif response not in ['n', 'no']:
+            print('{}{}Please enter "y"/"yes" or "n"/"no"... try again:'.format(c.Style.BRIGHT, c.Fore.RED, file_path))
+            return self._confirm_overwrite(file_path)
+        return False
+
     def download_file(self, remote_filename, local_filename=None):
         """Download file from github."""
         status = 'Failed'
         if local_filename is None:
             local_filename = remote_filename
+
+        if self.confirm_overwrite and self._file_exists(local_filename):
+            if not self._confirm_overwrite(local_filename):
+                print('{}{!s:<20}{}'.format(c.Fore.YELLOW, 'Skipping:', local_filename))
+                return
 
         # github url
         url = '{}{}'.format(self.base_url, remote_filename)
@@ -97,7 +124,8 @@ if __name__ == '__main__':
         tci = TcInit(args)
         print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
 
-        if args.action == 'create':
+        # create a new app OR migrate an app of a different form to the new app format
+        if args.action == 'create' or args.action == 'migrate':
             # init files for a new App
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
@@ -120,6 +148,24 @@ if __name__ == '__main__':
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
                 tci.download_file('playbook/tcex.json', 'tcex.json')
+
+            # if we are migrating, update the install.json
+            if args.action == 'migrate':
+                with open('install.json', 'r') as f:
+                    install_json = json.load(f)
+
+                if install_json.get('programMain'):
+                    install_json['programMain'] = 'run'
+
+                if install_json.get('features'):
+                    if 'appBuilderCompliant' not in install_json['features']:
+                        install_json['features'].append('appBuilderCompliant')
+                else:
+                    install_json['features'] = ['appBuilderCompliant']
+
+                with open('install.json', 'w') as f:
+                    json.dump(install_json, f, indent=4, sort_keys=True)
+        # update the standard files
         elif args.action == 'update':
             # update standard files
             tci.download_file('__main__.py')
