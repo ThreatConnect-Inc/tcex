@@ -9,9 +9,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
 import validator
 import cleaner
 
-# This deletes the first path which will be to the ../tcex directory. This is added automatically by pytest and must be removed to make sure that the tests use the version of tcex in the ./lib_2.7.12 directory.
-del sys.path[0]
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "./lib_2.7.12")))
 import tcex
 
 
