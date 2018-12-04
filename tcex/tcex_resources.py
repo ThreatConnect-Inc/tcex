@@ -49,6 +49,7 @@ class Resource(object):
         self._stream = False
         self._status_codes = {}
         self._value_fields = []
+        self.owner = self.tcex.args.api_default_org
 
     def _apply_filters(self):
         """Apply any filters added to the resource.
@@ -81,7 +82,7 @@ class Resource(object):
             if self.tcex.default_args.logging == 'debug':
                 try:
                     with open(temp_file, 'rb') as f_in, gzip.open(
-                        '{}.gz'.format(temp_file), 'wb'
+                        '{}.gz'.format(temp_file), 'wb'  # pylint: disable=C0330
                     ) as f_out:
                         shutil.copyfileobj(f_in, f_out)
                 except Exception:
@@ -200,7 +201,8 @@ class Resource(object):
         status = response_data.get('status', 'Failure')
         return data, status
 
-    def _request_process_json_status(self, response_data):
+    @staticmethod
+    def _request_process_json_status(response_data):
         """Handle JSON response with no "data" entity
 
         Return:
@@ -213,7 +215,8 @@ class Resource(object):
         status = response_data.get('status')
         return data, status
 
-    def _request_process_octet(self, response):
+    @staticmethod
+    def _request_process_octet(response):
         """Handle Document download.
 
         Return:
@@ -228,7 +231,8 @@ class Resource(object):
 
         return data, status
 
-    def _request_process_text(self, response):
+    @staticmethod
+    def _request_process_text(response):
         """Handle Signature download.
 
         Return:
@@ -1611,7 +1615,8 @@ class File(Indicator):
         """
         for hs in hash_string.split(' : '):
             if hs:
-                return hs
+                hash_string = hs
+        return hash_string
 
     def indicator(self, data):
         """Update the request URI to include the Indicator for specific indicator retrieval.
@@ -1939,7 +1944,7 @@ class Incident(Group):
         Args:
             date: The event date in ISO 8601 format.
         """
-        pass
+        pass  # pylint: disable=W0107
 
     def pdf(self, resource_id):
         """Update the request URI to get the pdf for this resource.

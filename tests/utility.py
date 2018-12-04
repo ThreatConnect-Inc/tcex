@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Testing Utility module"""
+"""Test utility module."""
 
 import logging
 import os
@@ -11,11 +11,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 import validator  # pylint: disable=C0413
 import cleaner  # pylint: disable=C0413
 
-# This deletes the first path which will be to the ../tcex directory. This is added automatically
-# by pytest and must be removed to make sure that the tests use the version of tcex in the
-# ./lib_2.7.12 directory.
-del sys.path[0]
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), './lib_2.7.12')))
 import tcex  # pylint: disable=C0413
 
 

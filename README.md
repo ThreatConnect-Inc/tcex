@@ -47,17 +47,12 @@ All tests should be run in python2. The instructions below assume you have pytho
 To run the tests, you will need to:
 
 0. Move into `tests` directory (`cd tests`)
-1. Install the necessary requirements: `pip install -r test_requirements.py --upgrade`
-2. Run `tclib` to create a `lib_2.7.12` directory from which your tests will pull their code
-3. Configure the following environmental variables:
+1. Configure the following environmental variables:
    - `API_ACCESS_ID` (e.g. `123456789987654321`)
    - `TC_API_PATH` (e.g. `https://sandbox.threatconnect.com/api`)
    - `API_DEFAULT_ORG` (e.g. `My Organization`)
    - `API_SECRET_KEY` (e.g. `abcdefg.....`)
-
-    You can more details on how to setup environmental variables for TCEX [here](https://gitlab.com/fhightower-tc/tcex-playground#setup).
-
-4. Run `pytest --ignore=lib_2.7.12/`
+2. Run `pytest` (you may have to run `python2.7 -m pytest` depending on how your system is setup)
 
 ## Contact
 
