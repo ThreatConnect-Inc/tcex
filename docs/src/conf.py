@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Document formatting"""
 #
 # TcEx documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun  2 15:51:01 2016.
@@ -18,10 +19,11 @@
 #
 import os
 import sys
+
 # sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../'))
 
-from tcex import __version__
+from tcex import __version__  # pylint: disable=C0413
 
 # -- General configuration ------------------------------------------------
 
@@ -32,12 +34,7 @@ from tcex import __version__
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'reno.sphinxext',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode'
-]
+extensions = ['reno.sphinxext', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode']
 
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
@@ -67,10 +64,9 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 # source_suffix = '.rst'
 
-from recommonmark.parser import CommonMarkParser
-source_parsers = {
-    '.md': CommonMarkParser,
-}
+from recommonmark.parser import CommonMarkParser  # pylint: disable=C0413
+
+source_parsers = {'.md': CommonMarkParser}
 
 source_suffix = ['.rst', '.md']
 
@@ -83,7 +79,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'TcEx'
-copyright = u'2016, ThreatConnect Inc'
+copyright = u'2016, ThreatConnect Inc'  # pylint: disable=W0622
 author = u'ThreatConnect Inc'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -149,13 +145,13 @@ todo_include_todos = False
 
 # -- Options for HTML output ----------------------------------------------
 
-import sphinx_rtd_theme
+import sphinx_rtd_theme  # pylint: disable=C0413
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = "sphinx_rtd_theme"
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -278,30 +274,24 @@ htmlhelp_basename = 'TcExdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-     # The paper size ('letterpaper' or 'a4paper').
-     #
-     # 'papersize': 'letterpaper',
-
-     # The font size ('10pt', '11pt' or '12pt').
-     #
-     # 'pointsize': '10pt',
-
-     # Additional stuff for the LaTeX preamble.
-     #
-     # 'preamble': '',
-
-     # Latex figure (float) alignment
-     #
-     # 'figure_align': 'htbp',
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
+    # Additional stuff for the LaTeX preamble.
+    #
+    # 'preamble': '',
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, 'TcEx.tex', u'TcEx Documentation',
-     u'ThreatConnect Inc.', 'manual'),
-]
+latex_documents = [(master_doc, 'TcEx.tex', u'TcEx Documentation', u'ThreatConnect Inc.', 'manual')]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -334,10 +324,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'tcex', u'TcEx Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'tcex', u'TcEx Documentation', [author], 1)]
 
 # If true, show URL addresses after external links.
 #
@@ -350,9 +337,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TcEx', u'TcEx Documentation',
-     author, 'TcEx', 'ThreatConnect App Framework.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'TcEx',
+        u'TcEx Documentation',
+        author,
+        'TcEx',
+        'ThreatConnect App Framework.',
+        'Miscellaneous',
+    )
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -373,4 +366,5 @@ texinfo_documents = [
 
 
 def setup(app):
+    """setup method"""
     app.add_stylesheet('css/custom.css')

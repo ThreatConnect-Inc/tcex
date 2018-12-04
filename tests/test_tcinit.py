@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Module for testing tcinit command"""
 
 import json
 import os
@@ -8,8 +9,8 @@ import subprocess
 
 import pytest
 
-PATH_TO_TCINIT = os.path.abspath(os.path.join(os.path.dirname(__file__), "./../bin/tcinit"))
-TESTING_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "./test-app"))
+PATH_TO_TCINIT = os.path.abspath(os.path.join(os.path.dirname(__file__), './../bin/tcinit'))
+TESTING_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), './test-app'))
 FILES_TO_BE_UPDATED = ['__main__.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json']
 
 
@@ -21,21 +22,46 @@ def _run_subprocess(command_list, reset_testing_dir=True):
             shutil.rmtree(TESTING_DIR)
         # create a new directory
         os.makedirs(TESTING_DIR)
-    command = subprocess.Popen(command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=TESTING_DIR)
+    command = subprocess.Popen(
+        command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=TESTING_DIR
+    )
     results = command.communicate()
-    return {
-        'stdout': results[0],
-        'stderr': results[1]
-    }
+    return {'stdout': results[0], 'stderr': results[1]}
 
 
 def _validate_tcinit_files(app_type, action='create'):
     """Make sure that the expected files were created by the tcinit command."""
-    for path, dirs, files in os.walk(TESTING_DIR):
+    for path, dirs, files in os.walk(TESTING_DIR):  # pylint: disable=W0612
         if app_type == 'job':
-            assert set(files) == {'requirements.txt', 'run.py', 'README.md', 'tcex.json', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'app.py', 'args.py', 'job_app.py'}
+            assert set(files) == {
+                'requirements.txt',
+                'run.py',
+                'README.md',
+                'tcex.json',
+                '.gitignore',
+                'setup.cfg',
+                'tcex_json_schema.json',
+                '__main__.py',
+                'install.json',
+                'app.py',
+                'args.py',
+                'job_app.py',
+            }
         else:
-            assert set(files) == {'requirements.txt', 'README.md', 'tcex.json', 'app.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'args.py', 'playbook_app.py', 'run.py'}
+            assert set(files) == {
+                'requirements.txt',
+                'README.md',
+                'tcex.json',
+                'app.py',
+                '.gitignore',
+                'setup.cfg',
+                'tcex_json_schema.json',
+                '__main__.py',
+                'install.json',
+                'args.py',
+                'playbook_app.py',
+                'run.py',
+            }
         assert len(files) == 12
 
         # if we just updated the app, make sure the contents of all of the updated files are correct
@@ -58,7 +84,10 @@ def test_tcinit_without_args():
     output = _run_subprocess([PATH_TO_TCINIT])
     print(output)
     assert output['stdout'] == ''
-    assert 'usage: tcinit [-h] [--branch {master,develop}] [--action {create,update}]' in output['stderr']
+    assert (
+        'usage: tcinit [-h] [--branch {master,develop}] [--action {create,update}]'
+        in output['stderr']
+    )
 
 
 def test_tcinit_without_proper_action():
@@ -72,7 +101,10 @@ def test_tcinit_update_on_empty_dir():
     """Run the tcinit command trying to update an app in an empty dir."""
     output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'update'])
     print(output)
-    assert 'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job --action create --branch master" to create an app.' in output['stdout']
+    assert (
+        'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job '
+        '--action create --branch master" to create an app.' in output['stdout']
+    )
 
 
 def _check_command_succeeded(subprocess_output):
@@ -103,7 +135,9 @@ def test_update_job_app():
     _change_files_before_updating()
 
     # update the app
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'update'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'update'], reset_testing_dir=False
+    )
 
     # make sure the app was updated properly
     _check_command_succeeded(output)
@@ -112,10 +146,16 @@ def test_update_job_app():
 
 def test_create_app_in_nonempty_dir():
     """Run the tcinit command in a non-empty dir."""
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'create'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'create'], reset_testing_dir=False
+    )
     print(output)
     assert 'RuntimeWarning: The current directory' in output['stdout']
-    assert 'is not empty so no app will be created. You can either create a new directory for this app or add the "--force" flag to the command you just ran to force a new app to be created' in output['stdout']
+    assert (
+        'is not empty so no app will be created. You can either create a new directory for this '
+        'app or add the "--force" flag to the command you just ran to force a new app to be created'
+        in output['stdout']
+    )
 
 
 def test_create_playbook_app():
@@ -134,16 +174,20 @@ def test_update_playbook_app():
     _change_files_before_updating()
 
     # update the app
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'playbook', '--action', 'update'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'playbook', '--action', 'update'], reset_testing_dir=False
+    )
 
     # make sure the app was updated properly
     _check_command_succeeded(output)
     _validate_tcinit_files('playbook', action='update')
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def cleanup(request):
     """Cleanup the testing directory once we are finished."""
+
     def remove_test_dir():
         shutil.rmtree(TESTING_DIR)
+
     request.addfinalizer(remove_test_dir)

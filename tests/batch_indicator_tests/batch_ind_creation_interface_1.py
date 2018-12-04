@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Module to test batch indicator creation using interface 3"""
 
 
 def address_create(batch_job):
+    """Test address creation"""
     address = batch_job.address('123.124.125.126', '5.0', '100')
     address.attribute('Description', 'Example Description', True)
     address.tag('Example Tag')
@@ -10,6 +12,7 @@ def address_create(batch_job):
 
 
 def email_address_create(batch_job):
+    """Test email address creation"""
     email_address = batch_job.email_address('bad@dfadsfaddsfa.com', '5.0', '100')
     email_address.attribute('Description', 'Example Description', True)
     email_address.tag('Example Tag')
@@ -17,13 +20,17 @@ def email_address_create(batch_job):
 
 
 def file_create(batch_job):
-    file = batch_job.file(md5='a'*32, sha1='b'*40, sha256='c'*64, rating='5.0', confidence='100')
+    """Test file creation"""
+    file = batch_job.file(
+        md5='a' * 32, sha1='b' * 40, sha256='c' * 64, rating='5.0', confidence='100'
+    )
     file.attribute('Description', 'Example Description', True)
     file.tag('Example Tag')
     file.security_label('TLP Green')
 
 
 def host_create(batch_job):
+    """Test host creation"""
     host = batch_job.host('dfadsfaddsfa.com', rating='5.0', confidence='100')
     host.attribute('Description', 'Example Description', True)
     host.tag('Example Tag')
@@ -31,6 +38,7 @@ def host_create(batch_job):
 
 
 def url_create(batch_job):
+    """Test url creation"""
     url = batch_job.url('https://dfadsfaddsfa.com/index.html', '5.0', '100')
     url.attribute('Description', 'Example Description', True)
     url.tag('Example Tag')

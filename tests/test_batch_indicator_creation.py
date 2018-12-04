@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Module to test batch indicator creation"""
 
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from batch_indicator_tests import batch_ind_creation_interface_1, batch_ind_creation_interface_2, batch_ind_creation_interface_3
-import validator
-import utility
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+
+from batch_indicator_tests import (  # pylint: disable=C0413
+    batch_ind_creation_interface_1,
+    batch_ind_creation_interface_2,
+    batch_ind_creation_interface_3,
+)
+import validator  # pylint: disable=C0413
+import utility  # pylint: disable=C0413
 
 
 def test_interface_1():

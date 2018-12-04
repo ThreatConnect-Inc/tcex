@@ -136,7 +136,8 @@ class TcExUtils:
 
         return dt_value
 
-    def human_date_to_datetime(self, time_input, tz=None, source_datetime=None):
+    @staticmethod
+    def human_date_to_datetime(time_input, tz=None, source_datetime=None):
         """ Convert human readable date (e.g. 30 days ago) to datetime.datetime using
             parsedatetime module.
 
@@ -252,7 +253,7 @@ class TcExUtils:
 
         # totals
         total_months = (delta.years * 12) + delta.months
-        total_weeks = (delta.years * 52) + delta.weeks
+        total_weeks = (delta.years * 52) + (total_months * 4) + delta.weeks
         total_days = diff.days  # handles leap days
         total_hours = (total_days * 24) + delta.hours
         total_minutes = (total_hours * 60) + delta.minutes
@@ -312,17 +313,16 @@ class TcExUtils:
         return dt
 
 
-"""
->>> from pytz import timezone
->>> from datetime import datetime
->>> time_input = 1229084481
->>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
->>> dt.isoformat()
-'2008-12-12T12:21:21+00:00'
->>> tz.normalize(dt).isoformat()
-'2008-12-12T06:21:21-06:00'
->>> dt.astimezone(timezone('US/Central'))
-datetime.datetime(2008, 12, 12, 6, 21, 21, tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
->>> dt.astimezone(timezone('US/Central')).isoformat()
-'2008-12-12T06:21:21-06:00'
-"""
+# >>> from pytz import timezone
+# >>> from datetime import datetime
+# >>> time_input = 1229084481
+# >>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
+# >>> dt.isoformat()
+# '2008-12-12T12:21:21+00:00'
+# >>> tz.normalize(dt).isoformat()
+# '2008-12-12T06:21:21-06:00'
+# >>> dt.astimezone(timezone('US/Central'))
+# datetime.datetime(2008, 12, 12, 6, 21, 21,
+#   tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
+# >>> dt.astimezone(timezone('US/Central')).isoformat()
+# '2008-12-12T06:21:21-06:00'
