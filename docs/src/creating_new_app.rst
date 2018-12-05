@@ -7,14 +7,22 @@ Usage
 
 .. code:: bash
 
-  usage: tcinit [-h] [--branch {master,develop}] [--action {create,update}] --type {job,playbook} [--force]
+    usage: tcinit [-h] [--branch {master,develop}]
+                  [--action {create,update,migrate}] --type {job,playbook}
+                  [--force]
 
-  optional arguments:
-    -h, --help            show this help message and exit
-    --branch {master,develop}  Git branch.
-    --action {create,update}  Whether a new app should be CREATED or an existing app should be UPDATED
-    --type {job,playbook}  Init a new App.
-    --force               If true, this will overwrite existing files in a directory to create a new app.
+    optional arguments:
+      -h, --help            show this help message and exit
+      --branch {master,develop}
+                            Git branch.
+      --action {create,update,migrate}
+                            Whether a new app should be CREATED, an existing app
+                            should be UPDATED, or an existing app of a different
+                            format MIGRATED to the new version.
+      --type {job,playbook}
+                            Init a new App.
+      --force               If true, this will overwrite existing files in a
+                            directory to create a new app.
 
 A new playbook app can be created with: ``tcinit --type playbook``.
 
