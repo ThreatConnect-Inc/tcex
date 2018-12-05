@@ -6,16 +6,21 @@ Release Notes
 0.8.x
 =====
 
+0.8.26
+------
++ Updated ``tcinit`` to include **migration** as an action to help convert non App Builder compliant Apps.
++ Updated utils module for additional method to determine local timezone.
++ Updated utils module to output correct total_weeks value.
+
 0.8.25
 ------
-+ Updated ``tcinit`` command  CLI option ``--upgrade`` to download additional files.
++ Updated ``tcinit`` command CLI option ``--upgrade`` to download additional files.
 + Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
 + Updated ``tcrun`` command to support new **autoclear** value in profile.
 + Updated ``tclib`` to create a symbolic link to the latest Python lib directory.
 + Updated ``tcpackage`` command to add **commitHash** value to install.json.
 + Updated :py:mod:`~tcex.tcex` module to log **commitHash** value.
 + Updated the ``.gitignore`` file for App templates.
-+ Updated utils module for additional method to determine local timezone.
 
 0.8.24
 ------
