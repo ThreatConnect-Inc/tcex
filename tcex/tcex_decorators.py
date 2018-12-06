@@ -76,3 +76,43 @@ class PlaybookArgRead(object):
             # retrieve data from Redis and call decorated function
             fn(app, app.tcex.playbook.read(getattr(app.args, self.input_arg), self.array))
         return read
+
+
+class PlaybookException(object):
+    """Handle Exception in Playbook Method
+
+    """
+    def __init__(self, exit_message=None):
+        """Initialize Class Properties
+
+        Args:
+            exit_message (str): The message to send to exit method.
+        """
+
+        self.exit_message = exit_message
+
+    def __call__(self, fn):
+        """[summary]
+
+        Args:
+            fn (function): The decorated function.
+
+        Returns:
+            function: The custom function for looping.
+        """
+
+        def exception(app, *args):
+            """Call the function and handle any exception.
+
+            Args:
+                app (class): The instance of the App class "self".
+            """
+
+            # retrieve data from Redis and call decorated function
+            try:
+                fn(app, args)
+            except Exception as e:
+                app.tcex.log.error('method failure ({})'.format(e))
+                app.tcex.exit(1, self.exit_message)
+
+        return exception
