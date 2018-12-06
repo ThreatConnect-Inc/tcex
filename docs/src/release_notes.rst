@@ -6,6 +6,11 @@ Release Notes
 0.8.x
 =====
 
+0.8.27
+------
++ Added decorator to provide common methods for Playbook Apps.
++ Updated ``tclib`` logic for **lib_latest** symbolic link.
+
 0.8.26
 ------
 + Updated ``tcinit`` to include **migration** as an action to help convert non App Builder compliant Apps.
