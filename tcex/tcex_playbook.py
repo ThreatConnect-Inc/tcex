@@ -19,6 +19,7 @@ class TcExPlaybook(object):
         self._db = None
         self._out_variables = None
         self._out_variables_type = None
+        self.output_data = {}
 
         # match full variable
         self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
@@ -67,6 +68,60 @@ class TcExPlaybook(object):
         variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
         variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
         return variable_pattern
+
+    def add_output(self, key, value, variable_type):
+        """Dynamically add output to output_data dictionary to be written to DB later.
+
+        This method provides an alternative and more dynamic way to create output variables in an
+        App. Instead of storing the output data manually and writing all at once the data can be
+        stored inline, when it is generated and then written before the App completes.
+
+        .. code-block:: python
+            :linenos:
+            :lineno-start: 1
+
+            for color in ['blue', 'red', 'yellow']:
+                tcex.playbook.add_output('app.colors', color, 'StringArray')
+
+            tcex.playbook.write_output()  #  writes the output stored in output_data
+
+        .. code-block:: json
+            {
+                "my_color-String": {
+                    "key": "my_color",
+                    "type": "String",
+                    "value": "blue"
+                },
+                "my_numbers-String": {
+                    "key": "my_numbers",
+                    "type": "String",
+                    "value": "seven"
+                },
+                "my_numbers-StringArray": {
+                    "key": "my_numbers",
+                    "type": "StringArray",
+                    "value": ["seven", "five"]
+                }
+            }
+
+        Args:
+            key (string): The variable name to write to storage.
+            value (any): The value to write to storage.
+            variable_type (string): The variable type being written.
+
+        """
+        index = '{}-{}'.format(key, variable_type)
+        if value is None:
+            return
+        if variable_type in ['String', 'Binary', 'KeyValue', 'TCEntity', 'TCEnhancedEntity']:
+            self.output_data[index] = {'key': key, 'type': variable_type, 'value': value}
+        elif variable_type in ['StringArray', 'BinaryArray', 'KeyValueArray', 'TCEntityArray', 'TCEnhancedEntityArray']:
+            self.output_data[index].setdefault('key', key)
+            self.output_data[index].setdefault('type', variable_type)
+            if isinstance(value, list):
+                self.output_data[key].setdefault('value', []).extend(value)
+            else:
+                self.output_data[key].setdefault('value', []).append(value)
 
     def aot_blpop(self):
         """Subscribe to AOT action channel."""
@@ -529,6 +584,11 @@ class TcExPlaybook(object):
                 # is embedded multiple times in the same key value array.
                 data = data.replace(var, '": "{}"'.format(variable_string))
         return data
+
+    def write_output(self):
+        """Write all stored output data to storage."""
+        for key, data in self.output_data.items():
+            self.create_output(key, data.get('value'), data.get('type'))
 
     #
     # db methods

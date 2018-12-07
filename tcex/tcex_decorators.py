@@ -2,56 +2,19 @@
 """App Decorators"""
 
 
-class AppendOutput(object):
-    """Set exit message on success
-
-    """
-
-    def __init__(self, output_list):
-        """Initialize Class Properties
-
-        Args:
-            output (str): The name of the output variable.
-        """
-
-        self.output_list = output_list
-
-    def __call__(self, fn):
-        """Implement __call__ function for decorator
-
-        Args:
-            fn (function): The decorated function.
-
-        Returns:
-            function: The custom decorator function.
-        """
-
-        def append(app, *args):
-            """Call the function and append return value.
-
-            Args:
-                app (class): The instance of the App class "self".
-            """
-
-            output = getattr(app, self.output_list)
-            output.append(fn(app, args))
-
-        return append
-
-
 class InterateOnArg(object):
     """Iterate over arg data"""
 
-    def __init__(self, input_arg):
+    def __init__(self, arg):
         """Initialize Class Properties
 
         Args:
-            input_arg (str): The arg name from the App which contains the input. This input can be
+            arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
         """
 
-        self.input_arg = input_arg
+        self.arg = arg
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -63,7 +26,7 @@ class InterateOnArg(object):
             function: The custom decorator function.
         """
 
-        def loop(app):
+        def loop(app, *args):
             """Iterate over data, calling the decorated function for each value.
 
             Args:
@@ -71,8 +34,15 @@ class InterateOnArg(object):
             """
 
             # retrieve data from Redis if variable and always return and array.
-            for s in app.tcex.playbook.read(getattr(app.args, self.input_arg), True):
-                fn(app, s)  # call decorated function
+            for s in app.tcex.playbook.read(getattr(app.args, self.arg), True):
+                # update the first item in the tuple
+                args_list = list(args)
+                try:
+                    args_list[0] = s
+                except IndexError:
+                    args_list.append(s)
+                args = tuple(args_list)
+                return fn(app, *args)
 
         return loop
 
@@ -80,14 +50,14 @@ class InterateOnArg(object):
 class OnException(object):
     """Handle Exception in function"""
 
-    def __init__(self, exit_message=None):
+    def __init__(self, msg=None):
         """Initialize Class Properties
 
         Args:
-            exit_message (str): The message to send to exit method.
+            msg (str): The message to send to exit method.
         """
 
-        self.exit_message = exit_message
+        self.msg = msg
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -107,10 +77,10 @@ class OnException(object):
             """
 
             try:
-                fn(app, args)
+                return fn(app, *args)
             except Exception as e:
                 app.tcex.log.error('method failure ({})'.format(e))
-                app.tcex.exit(1, self.exit_message)
+                app.tcex.exit(1, self.msg)
 
         return exception
 
@@ -118,14 +88,14 @@ class OnException(object):
 class OnSuccess(object):
     """Set exit message on successful execution"""
 
-    def __init__(self, exit_message=None):
+    def __init__(self, msg=None):
         """Initialize Class Properties
 
         Args:
-            exit_message (str): The message to send to exit method.
+            msg (str): The message to send to exit method.
         """
 
-        self.exit_message = exit_message
+        self.msg = msg
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -144,21 +114,23 @@ class OnSuccess(object):
                 app (class): The instance of the App class "self".
             """
 
-            app.exit_message = self.exit_message
+            app.msg = self.msg
+            return fn(app, *args)
 
         return completion
 
 
 class Output(object):
-    """Set function output"""
+    """Set exit message on success"""
 
-    def __init__(self, output):
+    def __init__(self, output, append=False):
         """Initialize Class Properties
 
         Args:
             output (str): The name of the output variable.
         """
 
+        self.append = append
         self.output = output
 
     def __call__(self, fn):
@@ -171,32 +143,37 @@ class Output(object):
             function: The custom decorator function.
         """
 
-        def append(app, *args):
-            """Call the function and store the output.
+        def output(app, *args):
+            """Call the function and store or append return value.
 
             Args:
                 app (class): The instance of the App class "self".
             """
 
-            setattr(app, self.output, fn(app, args))
+            data = fn(app, *args)
+            if self.append:
+                getattr(app, self.output).append(data)
+            else:
+                setattr(app, self.output, data)
+            return data
 
-        return append
+        return output
 
 
 class ReadArg(object):
-    """Retrieve value from Redis for args that are variables."""
+    """Retrieve value from Redis for arg that is a playbook variables."""
 
-    def __init__(self, input_arg, array=False):
+    def __init__(self, arg, array=False):
         """Initialize Class Properties
 
         Args:
-            input_arg (str): The arg name from the App which contains the input. This input can be
+            arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
         """
 
         self.array = array
-        self.input_arg = input_arg
+        self.arg = arg
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -208,7 +185,7 @@ class ReadArg(object):
             function: The custom decorator function.
         """
 
-        def read(app):
+        def read(app, *args):
             """Retrieve/Read data from Redis.
 
             Args:
@@ -216,6 +193,59 @@ class ReadArg(object):
             """
 
             # retrieve data from Redis and call decorated function
-            fn(app, app.tcex.playbook.read(getattr(app.args, self.input_arg), self.array))
+            args_list = list(args)
+            try:
+                args_list[0] = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+            except IndexError:
+                args_list.append(
+                    app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+                )
+            args = tuple(args_list)
+            return fn(app, *args)
 
         return read
+
+
+class WriteOutput(object):
+    """Set exit message on success"""
+
+    def __init__(self, var_name, var_type, value=None):
+        """Initialize Class Properties
+
+        Args:
+            var_name (str): The name of the playbook output variable.
+            var_type (str): The type for the playbook output variable.  Supported types are:
+                String, Binary, KeyValue, TCEntity, TCEnhancedEntity, StringArray,
+                BinaryArray, KeyValueArray, TCEntityArray, TCEnhancedEntityArray.
+        """
+
+        self.app_output = 'tc_app_output'  # defined in PlaybookApp class
+        self.var_name = var_name
+        self.var_type = var_type
+        self.value = value
+
+    def __call__(self, fn):
+        """Implement __call__ function for decorator
+
+        Args:
+            fn (function): The decorated function.
+
+        Returns:
+            function: The custom decorator function.
+        """
+
+        def output(app, *args):
+            """Call the function and store or append return value.
+
+            Args:
+                app (class): The instance of the App class "self".
+            """
+
+            data = fn(app, *args)
+            if self.value is not None:
+                app.tcex.playbook.add_output(self.var_name, self.value, self.var_type)
+            else:
+                app.tcex.playbook.add_output(self.var_name, data, self.var_type)
+            return data
+
+        return output
