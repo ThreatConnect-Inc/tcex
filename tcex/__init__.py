@@ -11,4 +11,4 @@ except ImportError as e:
     print('Try running tc_lib')
 
 from .tcex_argparser import TcExArgParser
-from .tcex_decorators import *
+from .tcex_app_decorators import *

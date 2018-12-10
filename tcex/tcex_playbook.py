@@ -111,6 +111,7 @@ class TcExPlaybook(object):
 
         """
         index = '{}-{}'.format(key, variable_type)
+        self.output_data.setdefault(index, {})
         if value is None:
             return
         if variable_type in ['String', 'Binary', 'KeyValue', 'TCEntity', 'TCEnhancedEntity']:
@@ -119,9 +120,9 @@ class TcExPlaybook(object):
             self.output_data[index].setdefault('key', key)
             self.output_data[index].setdefault('type', variable_type)
             if isinstance(value, list):
-                self.output_data[key].setdefault('value', []).extend(value)
+                self.output_data[index].setdefault('value', []).extend(value)
             else:
-                self.output_data[key].setdefault('value', []).append(value)
+                self.output_data[index].setdefault('value', []).append(value)
 
     def aot_blpop(self):
         """Subscribe to AOT action channel."""
@@ -587,8 +588,8 @@ class TcExPlaybook(object):
 
     def write_output(self):
         """Write all stored output data to storage."""
-        for key, data in self.output_data.items():
-            self.create_output(key, data.get('value'), data.get('type'))
+        for data in self.output_data.values():
+            self.create_output(data.get('key'), data.get('value'), data.get('type'))
 
     #
     # db methods
