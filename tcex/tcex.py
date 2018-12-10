@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
+# pylint: disable=C0411
+from past.builtins import basestring  # must be imported before builtins
 from builtins import str
 import inspect
 import json
@@ -10,6 +12,7 @@ import re
 import signal
 import sys
 import time
+from argparse import Namespace
 
 try:
     from urllib import quote  # Python 2
@@ -36,6 +39,7 @@ class TcEx(object):
         self._error_codes = None
         self._exit_code = 0
         self._default_args = None
+        self._default_args_resolved = None
         self._install_json = None
         self._install_json_params = {}
         self._indicator_associations_types_data = {}
@@ -188,9 +192,7 @@ class TcEx(object):
 
     def _log_platform(self):
         """Log the current Platform."""
-        from platform import platform
-
-        self.log.info(u'Platform: {}'.format(platform()))
+        self.log.info(u'Platform: {}'.format(platform.platform()))
 
     def _log_python_version(self):
         """Log the current Python version."""
@@ -402,7 +404,7 @@ class TcEx(object):
     #         fh.write('timestamp: {}\n'.format(time.time()))
     #         fh.write('pid: {}\n'.format(os.getpid()))
 
-    def _signal_handler(self, signal_interupt, frame):
+    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
         """Handle singal interrupt."""
         call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
@@ -448,6 +450,54 @@ class TcEx(object):
 
         if not self._parsed:
             self._default_args, unknown = self.parser.parse_known_args()
+            # self._default_args_resolved = Namespace(**vars(self._default_args))
+            self._default_args_resolved = Namespace()
+
+            # threatconnect reserved args
+            reserved_args = [
+                'tc_token',
+                'tc_token_expires',
+                'api_access_id',
+                'api_secret_key',
+                'batch_action',
+                'batch_chunk',
+                'batch_halt_on_error',
+                'batch_poll_interval',
+                'batch_interval_max',
+                'batch_write_type',
+                'tc_playbook_db_type',
+                'tc_playbook_db_context',
+                'tc_playbook_db_path',
+                'tc_playbook_db_port',
+                'tc_playbook_out_variables',
+                'api_default_org',
+                'tc_api_path',
+                'tc_in_path',
+                'tc_log_file',
+                'tc_log_path',
+                'tc_out_path',
+                'tc_secure_params',
+                'tc_temp_path',
+                'tc_user_id',
+                'tc_proxy_host',
+                'tc_proxy_port',
+                'tc_proxy_username',
+                'tc_proxy_password',
+                'tc_proxy_external',
+                'tc_proxy_tc',
+                'tc_log_to_api',
+                'tc_log_level',
+                'logging',
+            ]
+
+            # iterate over args and resolve them
+            for arg in vars(self._default_args):
+                arg_val = getattr(self._default_args, arg)
+                if arg not in reserved_args:
+                    if isinstance(arg_val, (basestring)):
+                        arg_val = self.playbook.read(arg_val)
+                setattr(self._default_args_resolved, arg, arg_val)
+
             self.results_tc_args()  # for local testing only
             self._parsed = True
 
@@ -455,6 +505,21 @@ class TcEx(object):
             self._unknown_args(unknown)
 
         return self._default_args
+
+    @property
+    def rargs(self):
+        """The parsed and resolved args from argparser / Redis
+
+        .. Note:: Accessing args should only be done directly in the App.
+
+        Returns:
+            (namespace): ArgParser parsed and resolved arguments
+        """
+
+        if not self._parsed:
+            self.args  # pylint: disable=W0104
+
+        return self._default_args_resolved
 
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
@@ -604,7 +669,7 @@ class TcEx(object):
     def default_args(self):
         """Parse args and return default args."""
         if self._default_args is None:
-            self._default_args, unknown = self.parser.parse_known_args()
+            self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
             # reinitialize logger with new log level and api settings
             self._logger()
             if self._default_args.tc_aot_enabled:
@@ -816,7 +881,7 @@ class TcEx(object):
                 sys.argv.append('{}'.format(value))
 
         # reset default_args now that values have been injected into sys.argv
-        self._default_args, unknown = self.parser.parse_known_args()
+        self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
 
         # reinitialize logger with new log level and api settings
         self._logger()

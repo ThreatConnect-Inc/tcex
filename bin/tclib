@@ -5,11 +5,12 @@ import argparse
 import json
 import os
 import re
+import platform
 import shutil
 import subprocess
 import sys
 import traceback
-from distutils.version import StrictVersion
+from distutils.version import StrictVersion  # pylint: disable=E0611
 
 import colorama as c
 
@@ -44,6 +45,7 @@ class TcLib(object):
         self.exit_code = 0
         self.requirements_file = 'requirements.txt'
         self.requirements_temp = False
+        self.static_lib_dir = 'lib_latest'
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
@@ -178,7 +180,10 @@ class TcLib(object):
                 latest_version = python_version
 
         # create sym link to point to latest Python version lib directory
-        os.symlink('lib_{}'.format(latest_version), 'lib_latest')
+        if platform.system() != 'Windows':
+            if os.path.isfile(self.static_lib_dir):
+                os.unlink(self.static_lib_dir)
+            os.symlink('lib_{}'.format(latest_version), self.static_lib_dir)
 
         # cleanup temp file if required
         if self.requirements_temp:

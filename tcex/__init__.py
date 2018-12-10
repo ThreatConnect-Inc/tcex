@@ -12,3 +12,4 @@ except ImportError as e:
     print('Try running tc_lib')
 
 from .tcex_argparser import TcExArgParser  # noqa: F401; pylint: disable=C0413
+from .tcex_app_decorators import *  # noqa: F401,F403; pylint: disable=C0413
