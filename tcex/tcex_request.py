@@ -5,9 +5,9 @@ import json
 from base64 import b64encode
 
 from requests import adapters, packages, Session
-from requests.packages.urllib3.util.retry import Retry
+from requests.packages.urllib3.util.retry import Retry  # pylint: disable=E0401
 
-packages.urllib3.disable_warnings()  # disable ssl warning message
+packages.urllib3.disable_warnings()  # pylint: disable=E1101
 
 
 def session_retry(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None):
@@ -200,7 +200,7 @@ class TcExRequest(object):
             )
 
     #
-    # Send Properties
+    # Set Properties
     #
 
     @property

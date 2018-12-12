@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""ThreatConnect group retrieval testing module"""
 
 import os
 
 from .test_tcinit import test_create_job_app as create_job_app
 from .test_tcinit import _run_subprocess
 
-PATH_TO_TCLIB = os.path.abspath(os.path.join(os.path.dirname(__file__), "./../bin/tclib"))
+PATH_TO_TCLIB = os.path.abspath(os.path.join(os.path.dirname(__file__), './../bin/tclib'))
 
 
 def test_tclib_without_package():

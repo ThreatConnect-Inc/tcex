@@ -105,7 +105,7 @@ class TcRun(object):
         self.exit_code = 0
         self.json_report = {}
         self.max_diff = 10
-        self.sleep = 1
+        self.sleep = 0
         # data from install.json
         self.display_name = None
         self.program_main = None

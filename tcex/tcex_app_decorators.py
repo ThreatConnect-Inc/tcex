@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """App Decorators"""
 import datetime
+
 # import time
 
 
@@ -294,6 +295,7 @@ class WriteOutput(object):
         """
 
         self.key = key
+        self.overwrite = overwrite
         self.value = value
         self.variable_type = variable_type
 
@@ -319,7 +321,7 @@ class WriteOutput(object):
             if self.value is not None:
                 # store user provided data
                 app.tcex.playbook.add_output(self.key, self.value, self.variable_type)
-            elif app.tcex.playbook.output_data.get(index) and not overwrite:
+            elif app.tcex.playbook.output_data.get(index) and not self.overwrite:
                 # skip data since a previous value has already been written
                 pass
             else:
