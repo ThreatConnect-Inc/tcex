@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Package Module """
 import argparse
+import ast
 import json
 import os
 import re
@@ -27,18 +28,12 @@ parser.add_argument(
 parser.add_argument(
     '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)'
 )
-# parser.add_argument(
-#     '--dryrun', action='store_true', help='Perform a dry run of the build.')
 parser.add_argument(
-    '--install_json', help='(Advanced) The install.json file name for the App that should be built.'
+    '--install_json', help='The install.json file name for the App that should be built.'
 )
 parser.add_argument(
-    '--outdir',
-    default='target',
-    help='(Advanced) Directory to write the outfile. (Default: target)',
+    '--outdir', default='target', help='Directory to write the outfile. (Default: target)'
 )
-# parser.add_argument(
-#     '--validate', help='The install.json file to validate.')
 args, extra_args = parser.parse_known_args()
 
 # Load Schema
@@ -54,7 +49,7 @@ class TcPackage(object):
     """
 
     def __init__(self, _args):
-        """ """
+        """Init Class properties"""
         self._args = _args
         self.app_path = os.getcwd()
         self.exit_code = 0
@@ -141,6 +136,57 @@ class TcPackage(object):
         else:
             print('{}{}Could not write {} file.'.format(c.Style.BRIGHT, c.Fore.YELLOW, filename))
 
+    @staticmethod
+    def check_ast(app_path=None):
+        """Run ast on each Python file.
+
+        Args:
+            app_path (str, optional): Defaults to None. The path of Python files.
+
+        Returns:
+            [type]: [description]
+        """
+        print('{}{}Validating File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+
+        app_path = app_path or '.'
+        error = False
+
+        print('{!s:<60}{!s:<25}'.format('File:', 'Status:'))
+        for filename in sorted(os.listdir(app_path)):
+            if filename.endswith('.py'):
+                errors = []
+                status = 'passed'
+                status_color = c.Fore.GREEN
+
+                try:
+                    with open(filename, 'rb') as f:
+                        ast.parse(f.read(), filename=filename)
+                except SyntaxError:
+                    status = 'failed'
+                    status_color = c.Fore.RED
+                    errors = traceback.format_exc().split('\n')[-5:-2]
+                    error = True
+
+            elif filename.endswith('.json'):
+                try:
+                    with open(filename, 'r') as fh:
+                        json.load(fh)
+                except Exception:
+                    status = 'failed'
+                    status_color = c.Fore.RED
+                    error = True
+            else:
+                # skip unsupported file types
+                continue
+
+            # display results
+            print('{!s:<60}{}{!s:<25}'.format(filename, status_color, status))
+            for line in errors:
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, line))
+
+        if error:
+            sys.exit(1)
+
     @property
     def commit_hash(self):
         """Return the current commit hash if available.
@@ -185,6 +231,7 @@ class TcPackage(object):
         if os.access(template_app_path, os.W_OK):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
+        print('\n{}{}Packaging App:'.format(c.Style.BRIGHT, c.Fore.BLUE))
         print(
             'Building App Template: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, template_app_path)
         )
@@ -387,6 +434,7 @@ class TcPackage(object):
 if __name__ == '__main__':
     try:
         tcp = TcPackage(args)
+        tcp.check_ast()
         tcp.package()
         sys.exit(tcp.exit_code)
     except Exception:

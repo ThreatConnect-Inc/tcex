@@ -18,6 +18,7 @@ Release Notes
 0.8.27
 ------
 + Added decorator to provide common methods for Playbook Apps.
++ Added logic to ``tcpackage`` to do basic syntax validation of ``.py`` and ``.json`` files.
 + Added :py:meth:`~tcex.tcex_playbook.TcExPlaybook.add_output` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.write_output` methods to provide an alternative way to write playbook output data.
 + Added access to resolved args.
 + Updated ``tclib`` logic for **lib_latest** symbolic link.

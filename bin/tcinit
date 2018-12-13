@@ -26,9 +26,10 @@ parser.add_argument(
     '--action',
     choices=['create', 'update', 'migrate'],
     default='create',
-    help='Whether a '
-    + 'new app should be CREATED, an existing app should be UPDATED, or an existing app of '
-    + 'a different format MIGRATED to the new version.',
+    help=(
+        'Whether a new app should be CREATED, an existing app should be UPDATED, or an existing '
+        'app of a different format MIGRATED to the new version.'
+    ),
 )
 parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
 parser.add_argument(
@@ -71,9 +72,8 @@ class TcInit(object):
         if not any(os.listdir(self.app_path)):
             message = (
                 'No app exists in this directory. Try using "tcinit --type '
-                + '{} --action create --branch '.format(self.args.type)
-                + '{}" to create an app.'.format(self.args.branch)
-            )
+                '{} --action create --branch {}" to create an app.'
+            ).format(self.args.type, self.args.branch)
             raise RuntimeWarning(message)
 
     @staticmethod
@@ -103,8 +103,7 @@ class TcInit(object):
 
     def _confirm_overwrite(self, file_path):
         """Make sure the user would like to continue downloading a file which will overwrite a file
-           in the current directory.
-        """
+        in the current directory."""
         message = '\n{}Would you like to overwrite the contents of {} (y/n)? '.format(
             c.Fore.YELLOW, file_path
         )

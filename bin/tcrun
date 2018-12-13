@@ -1664,9 +1664,9 @@ class ArgBuilder(object):
             (string): String containing parameters wrapped in double quotes
         """
         if self.lang == 'python':
-            quote_char = '\''
+            quote_char = "'"
         elif self.lang == 'java':
-            quote_char = '\''
+            quote_char = "'"
 
         if re.findall(r'[!\-\s\$\&]{1,}', str(data)):
             data = '{0}{1}{0}'.format(quote_char, data)
