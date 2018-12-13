@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Profile Generation Module """
 import argparse
-import colorama as c
 import json
 import os
 import sys
@@ -11,26 +10,33 @@ from uuid import uuid4
 from collections import OrderedDict
 from random import randint
 
+import colorama as c
 import redis
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--action', choices=['create', 'delete', 'replace_validation', 'update'], default='create')
+    '--action', choices=['create', 'delete', 'replace_validation', 'update'], default='create'
+)
 parser.add_argument(
-    '--ij', default='install.json', help='The install.json file name (default: install.json).')
+    '--ij', default='install.json', help='The install.json file name (default: install.json).'
+)
 parser.add_argument(
-    '--data_file', action='store_true', help='Attempt to build data file templates for the profile.')
+    '--data_file', action='store_true', help='Attempt to build data file templates for the profile.'
+)
 parser.add_argument(
-    '--outdir', default='tcex.d', help='The *base* output directory containing the data/profiles folder.')
+    '--outdir',
+    default='tcex.d',
+    help='The *base* output directory containing the data/profiles folder.',
+)
+parser.add_argument('--outfile', help='The name of the file to write the profile.')
 parser.add_argument(
-    '--outfile', help='The name of the file to write the profile.')
-parser.add_argument(
-    '--profile_name', help='The profile name to create, delete, or update.', required=True)
+    '--profile_name', help='The profile name to create, delete, or update.', required=True
+)
 parser.add_argument('--redis_hash', help='The redis hash.')
 parser.add_argument('--redis_host', default='localhost', help='The redis host.')
 parser.add_argument('--redis_port', default='6379', help='The redis port.')
@@ -56,13 +62,10 @@ class TcProfile(object):
         self.profile_dir = os.path.join(self.args.outdir, 'profiles')
         self.profiles = {}
 
-    def _create_tcex_dirs(self):
+    @staticmethod
+    def _create_tcex_dirs():
         """Create tcex.d directory and sub directories."""
-        dirs = [
-            'tcex.d',
-            'tcex.d/data',
-            'tcex.d/profiles'
-        ]
+        dirs = ['tcex.d', 'tcex.d/data', 'tcex.d/profiles']
         for d in dirs:
             if not os.path.isdir(d):
                 os.makedirs(d)
@@ -74,9 +77,13 @@ class TcProfile(object):
         if halt:
             sys.exit(1)
 
-    def display_help(self):
+    @staticmethod
+    def display_help():
         """Display help mesage."""
-        print('Update the value and add the following to the local environment (e.g., ~/.bashrc or ~/.bash_profile)\n')
+        print(
+            'Update the value and add the following to the local environment '
+            '(e.g., ~/.bashrc or ~/.bash_profile)\n'
+        )
         print('# ThreatConnect API Credential and URL')
         print('export API_DEFAULT_ORG=MyOrg')
         print('export API_ACCESS_ID=1234')
@@ -98,8 +105,11 @@ class TcProfile(object):
         """Return the install.json file."""
         if self._ij is None:
             if not os.path.isfile(self.args.ij):
-                print('{}{}Configuration file ({}) could not be found.'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, self.args.ij))
+                print(
+                    '{}{}Configuration file ({}) could not be found.'.format(
+                        c.Style.BRIGHT, c.Fore.CYAN, self.args.ij
+                    )
+                )
 
             try:
                 with open(self.args.ij) as fh:
@@ -134,11 +144,16 @@ class TcProfile(object):
             data = json.load(fh)
             if data.get('profiles') is not None:
                 # no longer supporting profiles in tcex.json
-                print('{}{}Migrating profiles from tcex.json to individual files.'.format(
-                    c.Style.BRIGHT, c.Fore.YELLOW))
+                print(
+                    '{}{}Migrating profiles from tcex.json to individual files.'.format(
+                        c.Style.BRIGHT, c.Fore.YELLOW
+                    )
+                )
 
                 for profile in data.get('profiles', []):
-                    outfile = '{}.json'.format(profile.get('profile_name').replace(' ', '_').lower())
+                    outfile = '{}.json'.format(
+                        profile.get('profile_name').replace(' ', '_').lower()
+                    )
                     self.profile_write(profile, outfile)
 
                 # remove legacy profile key
@@ -184,31 +199,35 @@ class TcProfile(object):
 
         for d in data:
             if d.get('profile_name') in self.profiles:
-                print('{}{}Found a duplicate profile name ({}).'.format(
-                    c.Style.BRIGHT, c.Fore.RED, d.get('profile_name')))
+                print(
+                    '{}{}Found a duplicate profile name ({}).'.format(
+                        c.Style.BRIGHT, c.Fore.RED, d.get('profile_name')
+                    )
+                )
                 sys.exit()
-            self.profiles.setdefault(d.get('profile_name'), {
-                'data': d,
-                'ij_filename': d.get('install_json'),
-                'fqfn': fqfn
-            })
+            self.profiles.setdefault(
+                d.get('profile_name'),
+                {'data': d, 'ij_filename': d.get('install_json'), 'fqfn': fqfn},
+            )
 
-    def load_install_json(self, filename):
+    @staticmethod
+    def load_install_json(filename):
         """Return install.json data.
 
         Load on first access, otherwise return existing data.
         """
         install_json = None
         load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL)
+            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
+        )
         if filename is not None and os.path.isfile(filename):
             with open(filename) as config_data:
                 install_json = json.load(config_data)
-            load_output += ' {}{}(Loaded){}'.format(
-                c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         else:
             load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL)
+                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
+            )
             sys.exit(1)
         # display load status
         print(load_output)
@@ -281,11 +300,16 @@ class TcProfile(object):
     def profile_create(self):
         """Create a profile."""
         if self.args.profile_name in self.profiles:
-            print('{}{}Profile "{}" already exists.'.format(
-                c.Style.BRIGHT, c.Fore.RED, self.args.profile_name))
+            print(
+                '{}{}Profile "{}" already exists.'.format(
+                    c.Style.BRIGHT, c.Fore.RED, self.args.profile_name
+                )
+            )
             sys.exit(1)
 
-        print('Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name))
+        print(
+            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
+        )
         profile = OrderedDict()
         profile['args'] = self.profile_args
         profile['clear'] = []
@@ -301,7 +325,8 @@ class TcProfile(object):
             validations = self.profile_validations
             profile['validations'] = validations.get('rules')
             profile['args']['tc_playbook_out_variables'] = '{}'.format(
-                ','.join(validations.get('outputs')))
+                ','.join(validations.get('outputs'))
+            )
         return profile
 
     @staticmethod
@@ -309,13 +334,17 @@ class TcProfile(object):
         """Update an existing profile with new parameters or remove deprecated parameters."""
         # warn about missing install_json parameter
         if profile.get('install_json') is None:
-            print('{}{}Missing install_json parameter for profile {}.'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')))
+            print(
+                '{}{}Missing install_json parameter for profile {}.'.format(
+                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
+                )
+            )
 
         # cleanup
-        if (profile.get('install_json') is not None and profile.get('script') is not None):
-            print('{}{}Removing deprecated "script" parameter.'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW))
+        if profile.get('install_json') is not None and profile.get('script') is not None:
+            print(
+                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW)
+            )
             profile.pop('script')
 
         # update old profiles with new "data_type" field.
@@ -327,10 +356,7 @@ class TcProfile(object):
     @property
     def profile_validations(self):
         """Profile validation rules."""
-        validations = {
-            'rules': [],
-            'outputs': []
-        }
+        validations = {'rules': [], 'outputs': []}
 
         job_id = randint(1000, 9999)
         for o in self.ij.get('playbook', {}).get('outputVariables', []):
@@ -406,12 +432,13 @@ class TcProfile(object):
 
     @property
     def redis(self):
+        """Return instance of Redis."""
         if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis
 
     def replace_validation(self):
-        """ """
+        """Replace validation rules."""
         self.validate_profile_exists()
         profile_data = self.profiles.get(self.args.profile_name)
 
@@ -428,10 +455,7 @@ class TcProfile(object):
         data = self.redis.hgetall(redis_hash)
         if data is None:
             self._handle_error('Could not load data for hash {}.'.format(redis_hash))
-        validations = {
-            'rules': [],
-            'outputs': []
-        }
+        validations = {'rules': [], 'outputs': []}
         for v, d in data.items():
             variable = v.decode('utf-8')
             # data = d.decode('utf-8')
@@ -471,14 +495,15 @@ class TcProfile(object):
                 if profile.get('profile_name') == self.args.profile_name:
                     profile['validations'] = validations.get('rules')
                     profile['args']['tc_playbook_out_variables'] = ','.join(
-                        validations.get('outputs'))
+                        validations.get('outputs')
+                    )
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
 
     def validate_profile_exists(self):
         """Validate the provided profiles name exists."""
-        if not self.args.profile_name in self.profiles:
+        if self.args.profile_name not in self.profiles:
             self._handle_error('Could not find profile "{}"'.format(self.args.profile_name))
 
 
@@ -490,8 +515,8 @@ if __name__ == '__main__':
         tcp.load_profiles()
 
         if args.action == 'create':
-            profile = tcp.profile_create()
-            tcp.profile_write(profile, args.outfile)
+            profile_ = tcp.profile_create()
+            tcp.profile_write(profile_, args.outfile)
             tcp.display_help()
         elif args.action == 'delete':
             tcp.profile_delete()
@@ -500,9 +525,8 @@ if __name__ == '__main__':
         # elif args.action == 'update':
         #     tcp.profile_update()
 
-
         # exit
         sys.exit()
-    except Exception as e:
+    except Exception:
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

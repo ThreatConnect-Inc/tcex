@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """ TcEx Framework Package Module """
 import argparse
+import ast
 import json
 import os
 import re
@@ -16,24 +17,24 @@ from jsonschema import SchemaError, ValidationError, validate
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--bundle', action='store_true', help='Build a bundle file.')
 parser.add_argument(
-    '--bundle', action='store_true', help='Build a bundle file.')
+    '--exclude', action='append', default=[], help='File and directories to exclude from build.'
+)
 parser.add_argument(
-    '--exclude', action='append', default=[], help='File and directories to exclude from build.')
+    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)'
+)
+parser.add_argument('--flake8', action='store_true', help='Run flake8 on current project.')
 parser.add_argument(
-    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)')
-# parser.add_argument(
-#     '--dryrun', action='store_true', help='Perform a dry run of the build.')
+    '--install_json', help='The install.json file name for the App that should be built.'
+)
 parser.add_argument(
-    '--install_json', help='The install.json file name for the App that should be built.')
-parser.add_argument(
-    '--outdir', default='target', help='Directory to write the outfile. (Default: target)')
-# parser.add_argument(
-#     '--validate', help='The install.json file to validate.')
+    '--outdir', default='target', help='Directory to write the outfile. (Default: target)'
+)
 args, extra_args = parser.parse_known_args()
 
 # Load Schema
@@ -47,9 +48,10 @@ class TcPackage(object):
     This method will package the app for deployment to ThreatConnect. Validation of the
     install.json file or files will be automatically run before packaging the app.
     """
-    def __init__(self, args):
-        """ """
-        self._args = args
+
+    def __init__(self, _args):
+        """Init Class properties"""
+        self._args = _args
         self.app_path = os.getcwd()
         self.exit_code = 0
         self.features = ['secureParams', 'aotExecutionEnabled']
@@ -86,8 +88,11 @@ class TcPackage(object):
             with open(self.schema_file) as fh:
                 self.schema = json.load(fh)
         else:
-            print('{}{}Packager can not validate install.json without {} schema file.'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file))
+            print(
+                '{}{}Packager can not validate install.json without {} schema file.'.format(
+                    c.Style.BRIGHT, c.Fore.YELLOW, self.schema_file
+                )
+            )
 
     @staticmethod
     def _load_install_json(file):
@@ -114,8 +119,11 @@ class TcPackage(object):
             if feature not in install_json.get('features'):
                 install_json['features'].append(feature)
                 updated = True
-                print('Updating install.json for feature: {}{}{}'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, feature))
+                print(
+                    'Updating install.json for feature: {}{}{}'.format(
+                        c.Style.BRIGHT, c.Fore.CYAN, feature
+                    )
+                )
 
         return install_json, updated
 
@@ -128,6 +136,57 @@ class TcPackage(object):
                 json.dump(install_json, fh, indent=4, sort_keys=True)
         else:
             print('{}{}Could not write {} file.'.format(c.Style.BRIGHT, c.Fore.YELLOW, filename))
+
+    @staticmethod
+    def check_ast(app_path=None):
+        """Run ast on each Python file.
+
+        Args:
+            app_path (str, optional): Defaults to None. The path of Python files.
+
+        Returns:
+            [type]: [description]
+        """
+        print('{}{}Validating File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+
+        app_path = app_path or '.'
+        error = False
+
+        print('{!s:<60}{!s:<25}'.format('File:', 'Status:'))
+        for filename in sorted(os.listdir(app_path)):
+            if filename.endswith('.py'):
+                errors = []
+                status = 'passed'
+                status_color = c.Fore.GREEN
+
+                try:
+                    with open(filename, 'rb') as f:
+                        ast.parse(f.read(), filename=filename)
+                except SyntaxError:
+                    status = 'failed'
+                    status_color = c.Fore.RED
+                    errors = traceback.format_exc().split('\n')[-5:-2]
+                    error = True
+
+            elif filename.endswith('.json'):
+                try:
+                    with open(filename, 'r') as fh:
+                        json.load(fh)
+                except Exception:
+                    status = 'failed'
+                    status_color = c.Fore.RED
+                    error = True
+            else:
+                # skip unsupported file types
+                continue
+
+            # display results
+            print('{!s:<60}{}{!s:<25}'.format(filename, status_color, status))
+            for line in errors:
+                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, line))
+
+        if error:
+            sys.exit(1)
 
     @property
     def commit_hash(self):
@@ -173,8 +232,10 @@ class TcPackage(object):
         if os.access(template_app_path, os.W_OK):
             # cleanup any previous failed builds
             shutil.rmtree(template_app_path)
-        print('Building App Template: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, template_app_path))
+        print('\n{}{}Packaging App:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+        print(
+            'Building App Template: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, template_app_path)
+        )
 
         #
         # build exclude file/directory list
@@ -191,7 +252,7 @@ class TcPackage(object):
             '.vscode',  # Visual Studio Code
             'log',  # log directory
             'tcex.json',  # tcex framework config file
-            '*.install.json'  # additional install.json files
+            '*.install.json',  # additional install.json files
         ]
         excludes.extend(self._args.exclude)
         excludes.extend(self.config.get('excludes', []))
@@ -259,7 +320,8 @@ class TcPackage(object):
             except IndexError:
                 minor_version = 0
             app_version = '{}'.format(
-                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version)))
+                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version))
+            )
 
             # !!! The name of the folder in the zip is the *key* for an App. This value must
             # !!! remain consistent for the App to upgrade successfully.
@@ -297,8 +359,11 @@ class TcPackage(object):
         zip_file = os.path.join(app_path, self._args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)
         zip_file_tcx = '{}.tcx'.format(zip_file)
-        print('Creating zip: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)))
+        print(
+            'Creating zip: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(zip_file_tcx)
+            )
+        )
         shutil.make_archive(zip_file, 'zip', tmp_path, app_name)
         shutil.move(zip_file_zip, zip_file_tcx)
         self._app_packages.append(zip_file_tcx)
@@ -328,15 +393,18 @@ class TcPackage(object):
     def bundle_apps(self, bundle_name, bundle_apps):
         """Bundle zip (tcx) file"""
         bundle_file = os.path.join(
-            self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name))
-        print('Creating bundle: {}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)))
+            self.app_path, self._args.outdir, '{}-bundle.zip'.format(bundle_name)
+        )
+        print(
+            'Creating bundle: {}{}{}'.format(
+                c.Style.BRIGHT, c.Fore.CYAN, os.path.basename(bundle_file)
+            )
+        )
         z = zipfile.ZipFile(bundle_file, 'w')
         for app in bundle_apps:
-            print('  Adding: {}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
+            print('  Adding: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, os.path.basename(app)))
             z.write(app, os.path.basename(app))
-        z.close
+        z.close()
 
     def validate(self, install_json):
         """Validate install.json file for required parameters"""
@@ -345,22 +413,32 @@ class TcPackage(object):
             with open(install_json) as fh:
                 data = json.loads(fh.read())
             validate(data, self.schema)
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.GREEN, 'valid'
+                )
+            )
         except SchemaError as e:
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e
+                )
+            )
         except ValidationError as e:
-            print('Validating: {}{}{} {}({})'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e))
+            print(
+                'Validating: {}{}{} {}({})'.format(
+                    c.Style.BRIGHT, c.Fore.CYAN, install_json, c.Fore.RED, e
+                )
+            )
 
 
 if __name__ == '__main__':
     try:
         tcp = TcPackage(args)
+        tcp.check_ast()
         tcp.package()
         sys.exit(tcp.exit_code)
-    except Exception as e:
+    except Exception:
         # TODO: Update this, possibly raise
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)

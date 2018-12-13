@@ -10,23 +10,25 @@ import shutil
 import subprocess
 import sys
 import traceback
-from distutils.version import StrictVersion
+from distutils.version import StrictVersion  # pylint: disable=E0611
 
 import colorama as c
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--app_name', help='Fully qualified path of App.', required=False)
 parser.add_argument('--app_path', help='Fully qualified path of App.', required=False)
 parser.add_argument(
-    '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json')
+    '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json'
+)
 parser.add_argument('--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
 parser.add_argument(
-    '--branch', help='Build tcex from specified branch instead of downloading from PyPi.')
+    '--branch', help='Build tcex from specified branch instead of downloading from PyPi.'
+)
 args, extra_args = parser.parse_known_args()
 
 
@@ -51,14 +53,17 @@ class TcLib(object):
         using = 'Default'
         # default or current python version
         lib_directory = 'lib_{}.{}.{}'.format(
-            sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+            sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+        )
         lib_data = [{'python_executable': sys.executable, 'lib_dir': lib_directory}]
 
         # check for requirements.txt
         if not os.path.isfile(self.requirements_file):
             print(
                 '{}{}A requirements.txt file is required to install modules.'.format(
-                    c.Style.BRIGHT, c.Fore.RED))
+                    c.Style.BRIGHT, c.Fore.RED
+                )
+            )
             sys.exit(1)
 
         if args.branch is not None:
@@ -85,7 +90,8 @@ class TcLib(object):
         file_path = os.path.join(self.app_path, self.args.config)
         if os.path.isfile(file_path):
             print(
-                'Loading Config File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.config))
+                'Loading Config File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.config)
+            )
             with open(file_path, 'r') as fh:
                 config_data = json.load(fh)
 
@@ -122,10 +128,20 @@ class TcLib(object):
 
             print(
                 'Building Lib Dir: {}{}{} ({})'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq, using))
+                    c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq, using
+                )
+            )
             exe_command = [
-                os.path.expanduser(python_executable), '-m', 'pip', 'install', '-r',
-                self.requirements_file, '--ignore-installed', '--quiet', '--target', lib_dir_fq
+                os.path.expanduser(python_executable),
+                '-m',
+                'pip',
+                'install',
+                '-r',
+                self.requirements_file,
+                '--ignore-installed',
+                '--quiet',
+                '--target',
+                lib_dir_fq,
             ]
             if args.no_cache_dir:
                 exe_command.append('--no-cache-dir')
@@ -135,8 +151,9 @@ class TcLib(object):
                 shell=False,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE)
-            out, err = p.communicate()
+                stderr=subprocess.PIPE,
+            )
+            out, err = p.communicate()  # pylint: disable=W0612
 
             if p.returncode != 0:
                 print('{}{}FAIL'.format(c.Style.BRIGHT, c.Fore.RED))
@@ -149,7 +166,9 @@ class TcLib(object):
             except IndexError:
                 print(
                     '{}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.RED, 'Could not determine version from lib string.'))
+                        c.Style.BRIGHT, c.Fore.RED, 'Could not determine version from lib string.'
+                    )
+                )
                 sys.exit(1)
 
             # track the latest Python version
@@ -174,7 +193,7 @@ if __name__ == '__main__':
         tcl = TcLib(args)
         tcl.install_libs()
         sys.exit(tcl.exit_code)
-    except Exception as e:
+    except Exception:
         # TODO: Update this, possibly raise
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
         sys.exit(1)
