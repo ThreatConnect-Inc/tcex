@@ -20,14 +20,16 @@ if sys.version_info[0] == 2:
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--app_name', help='Fully qualified path of App.', required=False)
-parser.add_argument('--app_path', help='Fully qualified path of App.', required=False)
+parser.add_argument('--app_name', help='(Advanced) Fully qualified path of App.')
+parser.add_argument('--app_path', help='(Advanced) Fully qualified path of App.')
 parser.add_argument(
-    '--config', help='Configuration file for gen lib. (Default: tcex.json)', default='tcex.json'
+    '--config',
+    help='(Advanced) Configuration file for gen lib. (Default: tcex.json)',
+    default='tcex.json',
 )
 parser.add_argument('--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
 parser.add_argument(
-    '--branch', help='Build tcex from specified branch instead of downloading from PyPi.'
+    '--branch', help='Build tcex from specified git branch instead of downloading from PyPi.'
 )
 args, extra_args = parser.parse_known_args()
 
