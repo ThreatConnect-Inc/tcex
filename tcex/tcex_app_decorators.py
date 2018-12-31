@@ -185,7 +185,7 @@ class OnSuccess(object):
                 app (class): The instance of the App class "self".
             """
 
-            app.msg = self.msg
+            app.exit_message = self.msg
             return fn(app, *args, **kwargs)
 
         return completion
