@@ -27,7 +27,8 @@ class TcExPlaybook(object):
         self._variable_parse = re.compile(self._variable_pattern)
         # match embedded variables without quotes (#App:7979:variable_name!StringArray)
         self._vars_keyvalue_embedded = re.compile(
-            r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern))
+            r'(?:\"\:\s?)[^\"]?{}'.format(self._variable_pattern)
+        )
 
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
@@ -46,14 +47,10 @@ class TcExPlaybook(object):
                 variable_name = parsed_key['name']
                 variable_type = parsed_key['type']
                 # store the variables in dict by name (e.g. "status_code")
-                self._out_variables[variable_name] = {
-                    'variable': o
-                }
+                self._out_variables[variable_name] = {'variable': o}
                 # store the variables in dict by name-type (e.g. "status_code-String")
                 vt_key = '{}-{}'.format(variable_name, variable_type)
-                self._out_variables_type[vt_key] = {
-                    'variable': o
-                }
+                self._out_variables_type[vt_key] = {'variable': o}
 
     @property
     def _variable_pattern(self):
@@ -116,7 +113,13 @@ class TcExPlaybook(object):
             return
         if variable_type in ['String', 'Binary', 'KeyValue', 'TCEntity', 'TCEnhancedEntity']:
             self.output_data[index] = {'key': key, 'type': variable_type, 'value': value}
-        elif variable_type in ['StringArray', 'BinaryArray', 'KeyValueArray', 'TCEntityArray', 'TCEnhancedEntityArray']:
+        elif variable_type in [
+            'StringArray',
+            'BinaryArray',
+            'KeyValueArray',
+            'TCEntityArray',
+            'TCEnhancedEntityArray',
+        ]:
             self.output_data[index].setdefault('key', key)
             self.output_data[index].setdefault('type', variable_type)
             if isinstance(value, list):
@@ -131,7 +134,8 @@ class TcExPlaybook(object):
                 self.tcex.log.info('Blocking for AOT message.')
                 msg_data = self.db.blpop(
                     self.tcex.default_args.tc_action_channel,
-                    timeout=self.tcex.default_args.tc_terminate_seconds)
+                    timeout=self.tcex.default_args.tc_terminate_seconds,
+                )
 
                 if msg_data is None:
                     self.tcex.exit(0, 'AOT subscription timeout reached.')
@@ -143,8 +147,7 @@ class TcExPlaybook(object):
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
-                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(
-                        msg_type))
+                    self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(msg_type))
                     return self.aot_blpop()
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
@@ -213,7 +216,7 @@ class TcExPlaybook(object):
             'String': self.create_string,
             'StringArray': self.create_string_array,
             'TCEntity': self.create_tc_entity,
-            'TCEntityArray': self.create_tc_entity_array
+            'TCEntityArray': self.create_tc_entity_array,
         }
 
     def create_output(self, key, value, variable_type=None):
@@ -238,29 +241,35 @@ class TcExPlaybook(object):
                 # variable key-type has been requested
                 v = self.out_variables_type.get(key_type)
                 self.tcex.log.info(
-                    u'Variable {} was requested by downstream app.'.format(v.get('variable')))
+                    u'Variable {} was requested by downstream app.'.format(v.get('variable'))
+                )
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
                     self.tcex.log.info(
-                        u'Variable {} has a none value and will not be written.'.format(key))
+                        u'Variable {} has a none value and will not be written.'.format(key)
+                    )
             elif self.out_variables.get(key) is not None and variable_type is None:
                 # variable key has been requested
                 v = self.out_variables.get(key)
                 self.tcex.log.info(
-                    u'Variable {} was requested by downstream app.'.format(v.get('variable')))
+                    u'Variable {} was requested by downstream app.'.format(v.get('variable'))
+                )
                 if value is not None:
                     results = self.create(v.get('variable'), value)
                 else:
                     self.tcex.log.info(
                         u'Variable {} has a none value and will not be written.'.format(
-                            v.get('variable')))
+                            v.get('variable')
+                        )
+                    )
             else:
                 var_value = key
                 if variable_type is not None:
                     var_value = key_type
                 self.tcex.log.info(
-                    u'Variable {} was NOT requested by downstream app.'.format(var_value))
+                    u'Variable {} was NOT requested by downstream app.'.format(var_value)
+                )
         return results
 
     @property
@@ -269,13 +278,15 @@ class TcExPlaybook(object):
         if self._db is None:
             if self.tcex.default_args.tc_playbook_db_type == 'Redis':
                 from .tcex_redis import TcExRedis
+
                 self._db = TcExRedis(
                     self.tcex.default_args.tc_playbook_db_path,
                     self.tcex.default_args.tc_playbook_db_port,
-                    self.tcex.default_args.tc_playbook_db_context
+                    self.tcex.default_args.tc_playbook_db_context,
                 )
             elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
                 from .tcex_key_value import TcExKeyValue
+
                 self._db = TcExKeyValue(self.tcex)
             else:
                 err = u'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
@@ -354,7 +365,7 @@ class TcExPlaybook(object):
                     'root': var.group(0),
                     'job_id': var.group(2),
                     'name': var.group(3),
-                    'type': var.group(4)
+                    'type': var.group(4),
                 }
         return data
 
@@ -425,7 +436,7 @@ class TcExPlaybook(object):
             'String': self.read_string,
             'StringArray': self.read_string_array,
             'TCEntity': self.read_tc_entity,
-            'TCEntityArray': self.read_tc_entity_array
+            'TCEntityArray': self.read_tc_entity_array,
         }
 
     def read_embedded(self, data, parent_var_type):
@@ -616,14 +627,15 @@ class TcExPlaybook(object):
                 # convert to bytes as required for b64encode
                 # decode bytes for json serialization as required for json dumps
                 data = self.db.create(
-                    key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8')))
+                    key.strip(), json.dumps(base64.b64encode(bytes(value)).decode('utf-8'))
+                )
             except TypeError:
                 # py3
                 # set encoding on string and convert to bytes as required for b64encode
                 # decode bytes for json serialization as required for json dumps
                 data = self.db.create(
-                    key.strip(), json.dumps(
-                        base64.b64encode(bytes(value, 'utf-8')).decode('utf-8')))
+                    key.strip(), json.dumps(base64.b64encode(bytes(value, 'utf-8')).decode('utf-8'))
+                )
         else:
             self.tcex.log.warning(u'The key or value field was None.')
         return data
@@ -1076,10 +1088,7 @@ class TcExPlaybook(object):
 
         bulk_array = []
         for e in entities:
-            bulk = {
-                'type': e.get('type'),
-                'ownerName': e.get('ownerName')
-            }
+            bulk = {'type': e.get('type'), 'ownerName': e.get('ownerName')}
             if resource_type_parent in ['Group', 'Task', 'Victim']:
                 bulk['name'] = e.get('value')
             elif resource_type_parent in ['Indicator']:
@@ -1175,10 +1184,7 @@ class TcExPlaybook(object):
 
         entity_array = []
         for d in tc_data:
-            entity = {
-                'id': d.get('id'),
-                'webLink': d.get('webLink')
-            }
+            entity = {'id': d.get('id'), 'webLink': d.get('webLink')}
 
             # value
             values = []
@@ -1247,10 +1253,7 @@ class TcExPlaybook(object):
             else:
                 continue
 
-            key_value_array.append({
-                'key': key,
-                'value': value
-            })
+            key_value_array.append({'key': key, 'value': value})
 
         if len(key_value_array) == 1 and not array:
             return key_value_array[0]

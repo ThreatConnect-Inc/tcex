@@ -15,7 +15,7 @@ from tzlocal import get_localzone
 import parsedatetime as pdt
 
 
-class TcExUtils():
+class TcExUtils:
     """TcEx framework Utils module"""
 
     def __init__(self, tcex=None):
@@ -196,6 +196,7 @@ class TcExUtils():
         """Return instance of inflect."""
         if self._inflect is None:
             import inflect
+
             self._inflect = inflect.engine()
         return self._inflect
 
@@ -243,7 +244,7 @@ class TcExUtils():
         time_input1 = self.any_to_datetime(time_input1)
         time_input2 = self.any_to_datetime(time_input2)
 
-        diff = (time_input1 - time_input2)  # timedelta
+        diff = time_input1 - time_input2  # timedelta
         delta = relativedelta(time_input1, time_input2)  # relativedelta
 
         # totals
@@ -271,7 +272,7 @@ class TcExUtils():
             'total_hours': total_hours,
             'total_minutes': total_minutes,
             'total_seconds': total_seconds,
-            'total_microseconds': total_microseconds
+            'total_microseconds': total_microseconds,
         }
 
     @staticmethod

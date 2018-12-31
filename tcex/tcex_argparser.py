@@ -54,21 +54,26 @@ class TcExArgParser(ArgumentParser):
         """
 
         # TC main >= 4.4 token will be passed to jobs.
+        self.add_argument('--tc_token', default=None, help='ThreatConnect API Token')
         self.add_argument(
-            '--tc_token', default=None, help='ThreatConnect API Token')
-        self.add_argument(
-            '--tc_token_expires', default=None,
-            help='ThreatConnect API Token Expiration Time', type=int)
+            '--tc_token_expires',
+            default=None,
+            help='ThreatConnect API Token Expiration Time',
+            type=int,
+        )
 
         # TC Integrations Server or TC main < 4.4
         self.add_argument(
-            '--api_access_id', default=None, help='ThreatConnect API Access ID', required=False)
+            '--api_access_id', default=None, help='ThreatConnect API Access ID', required=False
+        )
         self.add_argument(
-            '--api_secret_key', default=None, help='ThreatConnect API Secret Key', required=False)
+            '--api_secret_key', default=None, help='ThreatConnect API Secret Key', required=False
+        )
 
         # Validate ThreatConnect SSL certificate
         self.add_argument(
-            '--tc_verify', action='store_true', help='Validate the ThreatConnect SSL Cert')
+            '--tc_verify', action='store_true', help='Validate the ThreatConnect SSL Cert'
+        )
 
     def _batch_arguments(self):
         """Arguments specific to Batch API writes.
@@ -83,23 +88,41 @@ class TcExArgParser(ArgumentParser):
         """
 
         self.add_argument(
-            '--batch_action', choices=['Create', 'Delete'], default=self._batch_action,
-            help='Action for the batch job')
+            '--batch_action',
+            choices=['Create', 'Delete'],
+            default=self._batch_action,
+            help='Action for the batch job',
+        )
         self.add_argument(
-            '--batch_chunk', default=self._batch_chunk,
-            help='Max number of indicators per batch', type=int)
+            '--batch_chunk',
+            default=self._batch_chunk,
+            help='Max number of indicators per batch',
+            type=int,
+        )
         self.add_argument(
-            '--batch_halt_on_error', action='store_true', default=self._batch_halt_on_error,
-            help='Halt batch job on error')
+            '--batch_halt_on_error',
+            action='store_true',
+            default=self._batch_halt_on_error,
+            help='Halt batch job on error',
+        )
         self.add_argument(
-            '--batch_poll_interval', default=self._batch_poll_interval,
-            help='Frequency to run status check for batch job.', type=int)
+            '--batch_poll_interval',
+            default=self._batch_poll_interval,
+            help='Frequency to run status check for batch job.',
+            type=int,
+        )
         self.add_argument(
-            '--batch_poll_interval_max', default=self._batch_poll_interval_max,
-            help='Maximum amount of time for status check on batch job.', type=int)
+            '--batch_poll_interval_max',
+            default=self._batch_poll_interval_max,
+            help='Maximum amount of time for status check on batch job.',
+            type=int,
+        )
         self.add_argument(
-            '--batch_write_type', choices=['Append', 'Replace'], default=self._batch_write_type,
-            help='Append or Replace attributes.')
+            '--batch_write_type',
+            choices=['Append', 'Replace'],
+            default=self._batch_write_type,
+            help='Append or Replace attributes.',
+        )
 
     def _playbook_arguments(self):
         """Argument specific to playbook apps.
@@ -114,19 +137,22 @@ class TcExArgParser(ArgumentParser):
         """
 
         self.add_argument(
-            '--tc_playbook_db_type', default=self._tc_playbook_db_type,
-            help='Playbook DB type')
+            '--tc_playbook_db_type', default=self._tc_playbook_db_type, help='Playbook DB type'
+        )
         self.add_argument(
-            '--tc_playbook_db_context', default=self._tc_playbook_db_context,
-            help='Playbook DB Context')
+            '--tc_playbook_db_context',
+            default=self._tc_playbook_db_context,
+            help='Playbook DB Context',
+        )
         self.add_argument(
-            '--tc_playbook_db_path', default=self._tc_playbook_db_path,
-            help='Playbook DB path')
+            '--tc_playbook_db_path', default=self._tc_playbook_db_path, help='Playbook DB path'
+        )
         self.add_argument(
-            '--tc_playbook_db_port', default=self._tc_playbook_db_port,
-            help='Playbook DB port')
+            '--tc_playbook_db_port', default=self._tc_playbook_db_port, help='Playbook DB port'
+        )
         self.add_argument(
-            '--tc_playbook_out_variables', help='Playbook output variables', required=False)
+            '--tc_playbook_out_variables', help='Playbook output variables', required=False
+        )
 
     def _standard_arguments(self):
         """These are the standard args passed to every TcEx App.
@@ -153,50 +179,57 @@ class TcExArgParser(ArgumentParser):
         --logging level              Alias for **tc_log_level**.
         """
 
+        self.add_argument('--api_default_org', default=None, help='ThreatConnect api default Org')
         self.add_argument(
-            '--api_default_org', default=None, help='ThreatConnect api default Org')
+            '--tc_action_channel', default=None, help='ThreatConnect AOT action channel'
+        )
+        self.add_argument('--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled')
+        self.add_argument('--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
+        self.add_argument('--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
+        self.add_argument('--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
+        self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
+        self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         self.add_argument(
-            '--tc_action_channel', default=None, help='ThreatConnect AOT action channel')
+            '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path'
+        )
         self.add_argument(
-            '--tc_aot_enabled', action='store_true', help='ThreatConnect AOT enabled')
+            '--tc_secure_params',
+            action='store_true',
+            default=self._tc_secure_params,
+            help='ThreatConnect Secure params enabled',
+        )
         self.add_argument(
-            '--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
+            '--tc_terminate_seconds',
+            default=None,
+            help='ThreatConnect AOT terminate seconds',
+            type=int,
+        )
         self.add_argument(
-            '--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
-        self.add_argument(
-            '--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
-        self.add_argument(
-            '--tc_log_file', default=self._tc_log_file, help='App logfile name')
-        self.add_argument(
-            '--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
-        self.add_argument(
-            '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path')
-        self.add_argument(
-            '--tc_secure_params', action='store_true', default=self._tc_secure_params,
-            help='ThreatConnect Secure params enabled')
-        self.add_argument(
-            '--tc_terminate_seconds', default=None, help='ThreatConnect AOT terminate seconds',
-            type=int)
-        self.add_argument(
-            '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path')
-        self.add_argument(
-            '--tc_user_id', default=self._tc_user_id, help='User ID')
+            '--tc_temp_path', default=self._tc_temp_path, help='ThreatConnect temp path'
+        )
+        self.add_argument('--tc_user_id', default=self._tc_user_id, help='User ID')
 
         # Proxy Configuration
+        self.add_argument('--tc_proxy_host', default=None, help='Proxy Host')
+        self.add_argument('--tc_proxy_port', default=None, help='Proxy Port')
+        self.add_argument('--tc_proxy_username', default=None, help='Proxy User')
+        self.add_argument('--tc_proxy_password', default=None, help='Proxy Password')
         self.add_argument(
-            '--tc_proxy_host', default=None, help='Proxy Host')
+            '--tc_proxy_external',
+            '--apply_proxy_external',
+            action='store_true',
+            default=False,
+            help='Proxy External Connections',
+            dest='tc_proxy_external',
+        )
         self.add_argument(
-            '--tc_proxy_port', default=None, help='Proxy Port')
-        self.add_argument(
-            '--tc_proxy_username', default=None, help='Proxy User')
-        self.add_argument(
-            '--tc_proxy_password', default=None, help='Proxy Password')
-        self.add_argument(
-            '--tc_proxy_external', '--apply_proxy_external', action='store_true', default=False,
-            help='Proxy External Connections', dest='tc_proxy_external')
-        self.add_argument(
-            '--tc_proxy_tc', '--apply_proxy_tc', action='store_true', default=False,
-            help='Proxy TC Connection', dest='tc_proxy_tc')
+            '--tc_proxy_tc',
+            '--apply_proxy_tc',
+            action='store_true',
+            default=False,
+            help='Proxy TC Connection',
+            dest='tc_proxy_tc',
+        )
 
         #
         # Logging
@@ -204,16 +237,29 @@ class TcExArgParser(ArgumentParser):
 
         # currently only applicable to TC Main
         self.add_argument(
-            '--tc_log_to_api', action='store_true', default=self._tc_log_to_api,
-            help='ThreatConnect API Logging')
+            '--tc_log_to_api',
+            action='store_true',
+            default=self._tc_log_to_api,
+            help='ThreatConnect API Logging',
+        )
         # self.add_argument(
         #     '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error',
         #     'critical'],
         #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level', type=str.lower)
         # BCS - temporarily until there is some way to configure App logging level in the UI
         self.add_argument(
-            '--logging', choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None, help='Logging Level', dest='logging', type=str.lower)
+            '--logging',
+            choices=['debug', 'info', 'warning', 'error', 'critical'],
+            default=None,
+            help='Logging Level',
+            dest='logging',
+            type=str.lower,
+        )
         self.add_argument(
-            '--tc_log_level', choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None, help='Logging Level', dest='tc_log_level', type=str.lower)
+            '--tc_log_level',
+            choices=['debug', 'info', 'warning', 'error', 'critical'],
+            default=None,
+            help='Logging Level',
+            dest='tc_log_level',
+            type=str.lower,
+        )

@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""ThreatConnect batch group creation testing module"""
 
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from batch_group_tests import batch_group_creation_interface_1
-from batch_group_tests import batch_group_creation_interface_2
-from batch_group_tests import batch_group_creation_interface_3
-import validator
-import utility
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+
+from batch_group_tests import batch_group_creation_interface_1  # pylint: disable=C0413
+from batch_group_tests import batch_group_creation_interface_2  # pylint: disable=C0413
+from batch_group_tests import batch_group_creation_interface_3  # pylint: disable=C0413
+import validator  # pylint: disable=C0413
+import utility  # pylint: disable=C0413
 
 
 def test_interface_1():

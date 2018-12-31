@@ -26,11 +26,11 @@
           "attributesFile": {
             "type": "string"
           },
-          "enableBulkJson": {
-            "type": "boolean"
-          },
           "documentStorageLimitMb": {
             "type": "integer"
+          },
+          "enableBulkJson": {
+            "type": "boolean"
           },
           "indicatorLimit": {
             "type": "integer"

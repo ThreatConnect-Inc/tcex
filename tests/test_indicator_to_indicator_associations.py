@@ -4,9 +4,10 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-import utility
-import cleaner
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+
+import utility  # pylint: disable=C0413
+import cleaner  # pylint: disable=C0413
 
 
 def verify_association_created(tcex):
@@ -26,23 +27,19 @@ def verify_association_created(tcex):
 def test_indicator_associations():
     """."""
     tcex = utility.init_tcex()
-    tcex.jobs.indicator({
-        "summary": "4.5.6.7",
-        "type": "Address",
-    })
-    tcex.jobs.indicator({
-        "summary": "ASN1234",
-        "type": tcex.safe_rt('ASN', lower=False),
-    })
-    tcex.jobs.association({
-        'association_value': 'ASN1234',
-        'association_type': tcex.safe_rt('ASN', lower=False),
-        'resource_value': '4.5.6.7',
-        'resource_type': 'Address'
-    })
+    tcex.jobs.indicator({'summary': '4.5.6.7', 'type': 'Address'})
+    tcex.jobs.indicator({'summary': 'ASN1234', 'type': tcex.safe_rt('ASN', lower=False)})
+    tcex.jobs.association(
+        {
+            'association_value': 'ASN1234',
+            'association_type': tcex.safe_rt('ASN', lower=False),
+            'resource_value': '4.5.6.7',
+            'resource_type': 'Address',
+        }
+    )
     tcex.jobs.process(tcex.args.api_default_org)
-    assert len(tcex.jobs.indicator_results['failed']) == 0
-    assert len(tcex.jobs.indicator_results['not_saved']) == 0
+    assert tcex.jobs.indicator_results['failed']
+    assert tcex.jobs.indicator_results['not_saved']
     assert len(tcex.jobs.indicator_results['saved']) == 2
 
     verify_association_created(tcex)

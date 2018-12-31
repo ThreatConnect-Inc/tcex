@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""ThreatConnect group retrieval testing module"""
+
 
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from batch_group_tests import batch_group_creation_interface_1
-import validator
-import utility
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+
+from batch_group_tests import batch_group_creation_interface_1  # pylint: disable=C0413
+import validator  # pylint: disable=C0413
+import utility  # pylint: disable=C0413
 
 
 def test_document_download():

@@ -46,11 +46,11 @@ class TcExMetricsV2(object):
             }
         """
         body = {
-            'dataType' : self._metric_data_type,
-            'description' : self._metric_description,
-            'interval' : self._metric_interval,
-            'name' : self._metric_name,
-            'keyedValues' : self._metric_keyed
+            'dataType': self._metric_data_type,
+            'description': self._metric_description,
+            'interval': self._metric_interval,
+            'name': self._metric_name,
+            'keyedValues': self._metric_keyed,
         }
         self.tcex.log.debug('metric body: {}'.format(body))
         r = self.tcex.session.post('/v2/customMetrics', json=body)
@@ -84,10 +84,7 @@ class TcExMetricsV2(object):
                 }
             }
         """
-        params = {
-            'resultLimit': 50,
-            'resultStart': 0
-        }
+        params = {'resultLimit': 50, 'resultStart': 0}
         while True:
             if params.get('resultStart') >= params.get('resultLimit'):
                 break

@@ -182,7 +182,8 @@ class DataFilter(object):
         data = []
         if self._indexes.get(field) is not None:
             data = self._index_filter(
-                self._indexes.get(field), filter_value, filter_operator, field_converter)
+                self._indexes.get(field), filter_value, filter_operator, field_converter
+            )
         # else:
         #     data = self._loop_filter(field, filter_value, filter_operator)
 
@@ -234,7 +235,7 @@ class DataFilter(object):
             'LE': operator.le,
             'SW': self._starts_with,
             'IN': self._in,
-            'NI': self._ni  # not in
+            'NI': self._ni,  # not in
         }
 
     @staticmethod

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ TcEx Error Codes """
 
+
 class TcExErrorCodes(object):
     """TcEx Framework Error Codes."""
 

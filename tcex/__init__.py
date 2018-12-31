@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """TcEx Framework"""
 __author__ = 'ThreatConnect (support@threatconnect.com)'
 __version__ = '0.8.26'

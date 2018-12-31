@@ -5,12 +5,14 @@ import datetime
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import utility
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import utility  # pylint: disable=C0413
 
 
 def test_date_to_datetime():
+    """Test date to datetime"""
     starting_date = datetime.datetime.now()
     tcex_instance = utility.init_tcex(clean_data=False)
     new_date = tcex_instance.utils.date_to_datetime(str(starting_date))
@@ -27,7 +29,9 @@ def test_date_to_datetime():
 
 
 def test_timedelta():
+    """Test timedelta module"""
     from tcex import tcex_utils
+
     utils = tcex_utils.TcExUtils()
     delta = utils.timedelta('2018-01-13', '2018-02-14')
     assert delta['days'] == -1

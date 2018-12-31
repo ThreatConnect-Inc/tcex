@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework KeyValue Module"""
 from builtins import str
+
 try:
     from urllib import quote  # Python 2
 except ImportError:

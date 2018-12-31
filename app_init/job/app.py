@@ -81,9 +81,9 @@ class App(JobApp):
 
         # output the results
         if self.args.count_groups:
-            message = 'Found {} indicators and {} groups in {}'.format(self.indicator_count,
-                                                                       self.group_count,
-                                                                       self.args.tc_owner)
+            message = 'Found {} indicators and {} groups in {}'.format(
+                self.indicator_count, self.group_count, self.args.tc_owner
+            )
         else:
             message = 'Found {} indicators in {}'.format(self.indicator_count, self.args.tc_owner)
 

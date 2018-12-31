@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Module to test tcinit command"""
 
 import json
 import os
@@ -8,8 +9,8 @@ import subprocess
 
 import pytest
 
-PATH_TO_TCINIT = os.path.abspath(os.path.join(os.path.dirname(__file__), "./../bin/tcinit"))
-TESTING_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "./test-app"))
+PATH_TO_TCINIT = os.path.abspath(os.path.join(os.path.dirname(__file__), './../bin/tcinit'))
+TESTING_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), './test-app'))
 FILES_TO_BE_UPDATED = ['__main__.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json']
 
 
@@ -21,21 +22,46 @@ def _run_subprocess(command_list, reset_testing_dir=True):
             shutil.rmtree(TESTING_DIR)
         # create a new directory
         os.makedirs(TESTING_DIR)
-    command = subprocess.Popen(command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=TESTING_DIR)
+    command = subprocess.Popen(
+        command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=TESTING_DIR
+    )
     results = command.communicate()
-    return {
-        'stdout': results[0],
-        'stderr': results[1]
-    }
+    return {'stdout': results[0], 'stderr': results[1]}
 
 
 def _validate_tcinit_files(app_type, action='create'):
     """Make sure that the expected files were created by the tcinit command."""
-    for path, dirs, files in os.walk(TESTING_DIR):
+    for path, dirs, files in os.walk(TESTING_DIR):  # pylint: disable=W0612
         if app_type == 'job':
-            assert set(files) == {'requirements.txt', 'run.py', 'README.md', 'tcex.json', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'app.py', 'args.py', 'job_app.py'}
+            assert set(files) == {
+                'requirements.txt',
+                'run.py',
+                'README.md',
+                'tcex.json',
+                '.gitignore',
+                'setup.cfg',
+                'tcex_json_schema.json',
+                '__main__.py',
+                'install.json',
+                'app.py',
+                'args.py',
+                'job_app.py',
+            }
         else:
-            assert set(files) == {'requirements.txt', 'README.md', 'tcex.json', 'app.py', '.gitignore', 'setup.cfg', 'tcex_json_schema.json', '__main__.py', 'install.json', 'args.py', 'playbook_app.py', 'run.py'}
+            assert set(files) == {
+                'requirements.txt',
+                'README.md',
+                'tcex.json',
+                'app.py',
+                '.gitignore',
+                'setup.cfg',
+                'tcex_json_schema.json',
+                '__main__.py',
+                'install.json',
+                'args.py',
+                'playbook_app.py',
+                'run.py',
+            }
         assert len(files) == 12
 
         # if we just updated the app, make sure the contents of all of the updated files are correct
@@ -58,7 +84,11 @@ def test_tcinit_without_args():
     output = _run_subprocess([PATH_TO_TCINIT])
     print(output)
     assert output['stdout'] == ''
-    assert 'usage: tcinit [-h] [--branch {master,develop}]\n              [--action {create,update,migrate}] --type {job,playbook}\n              [--force]\ntcinit: error: argument --type is required' in output['stderr']
+    assert (
+        'usage: tcinit [-h] [--branch {master,develop}]\n              '
+        '[--action {create,update,migrate}] --type {job,playbook}\n              '
+        '[--force]\ntcinit: error: argument --type is required' in output['stderr']
+    )
 
 
 def test_tcinit_without_proper_action():
@@ -72,14 +102,20 @@ def test_tcinit_update_on_empty_dir():
     """Run the tcinit command trying to update an app in an empty dir."""
     output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'update'])
     print(output)
-    assert 'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job --action create --branch master" to create an app.' in output['stdout']
+    assert (
+        'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job --action '
+        'create --branch master" to create an app.' in output['stdout']
+    )
 
 
 def test_tcinit_migrate_on_empty_dir():
     """Run the tcinit command trying to migrate an app in an empty dir."""
     output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'migrate'])
     print(output)
-    assert 'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job --action create --branch master" to create an app.' in output['stdout']
+    assert (
+        'RuntimeWarning: No app exists in this directory. Try using "tcinit --type job '
+        '--action create --branch master" to create an app.' in output['stdout']
+    )
 
 
 def _check_command_succeeded(subprocess_output):
@@ -110,7 +146,9 @@ def test_update_job_app():
     _change_files_before_updating()
 
     # update the app
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'update'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'update'], reset_testing_dir=False
+    )
 
     # make sure the app was updated properly
     _check_command_succeeded(output)
@@ -119,21 +157,27 @@ def test_update_job_app():
 
 def test_migrate_job_app():
     """Run the tcinit command in a non-empty dir."""
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'migrate'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'migrate'], reset_testing_dir=False
+    )
     print(output)
     assert 'Would you like to overwrite the contents of __main__.py (y/n)?' in output['stdout']
 
 
 def test_create_app_in_nonempty_dir():
     """Run the tcinit command in a non-empty dir."""
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'create'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'create'], reset_testing_dir=False
+    )
     print(output)
     assert 'Would you like to overwrite the contents of __main__.py (y/n)?' in output['stdout']
 
 
 def test_create_app_in_nonempty_dir_with_force():
     """Run the tcinit command in a non-empty dir with the --force command."""
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'job', '--action', 'create', '--force'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'job', '--action', 'create', '--force'], reset_testing_dir=False
+    )
     print(output)
     _check_command_succeeded(output)
     _validate_tcinit_files('job')
@@ -155,7 +199,9 @@ def test_update_playbook_app():
     _change_files_before_updating()
 
     # update the app
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'playbook', '--action', 'update'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'playbook', '--action', 'update'], reset_testing_dir=False
+    )
 
     # make sure the app was updated properly
     _check_command_succeeded(output)
@@ -164,14 +210,18 @@ def test_update_playbook_app():
 
 def test_migrate_playbook_app():
     """Run the tcinit command in a non-empty dir."""
-    output = _run_subprocess([PATH_TO_TCINIT, '--type', 'playbook', '--action', 'migrate'], reset_testing_dir=False)
+    output = _run_subprocess(
+        [PATH_TO_TCINIT, '--type', 'playbook', '--action', 'migrate'], reset_testing_dir=False
+    )
     print(output)
     assert 'Would you like to overwrite the contents of __main__.py (y/n)?' in output['stdout']
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def cleanup(request):
     """Cleanup the testing directory once we are finished."""
+
     def remove_test_dir():
         shutil.rmtree(TESTING_DIR)
+
     request.addfinalizer(remove_test_dir)

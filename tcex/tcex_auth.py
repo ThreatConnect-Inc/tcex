@@ -7,11 +7,12 @@ import logging
 import sys
 import time
 
-from requests import (auth, exceptions, get)
+from requests import auth, exceptions, get
 
 
 class TcExAuth(auth.AuthBase):
     """ThreatConnect Authorization Class"""
+
     def __init__(self, logger=None):
         """Initialize Class Properties"""
         self.log = self._logger()
@@ -37,6 +38,7 @@ class TcExAuth(auth.AuthBase):
 
 class TcExHmacAuth(TcExAuth):
     """ThreatConnect HMAC Authorization"""
+
     def __init__(self, access_id, secret_key, logger=None):
         """Initialize the Class properties."""
         super(TcExHmacAuth, self).__init__(logger)
@@ -48,9 +50,11 @@ class TcExHmacAuth(TcExAuth):
         timestamp = int(time.time())
         signature = '{}:{}:{}'.format(r.path_url, r.method, timestamp)
         hmac_signature = hmac.new(
-            self._secret_key.encode(), signature.encode(), digestmod=hashlib.sha256).digest()
+            self._secret_key.encode(), signature.encode(), digestmod=hashlib.sha256
+        ).digest()
         authorization = 'TC {}:{}'.format(
-            self._access_id, base64.b64encode(hmac_signature).decode())
+            self._access_id, base64.b64encode(hmac_signature).decode()
+        )
         r.headers['Authorization'] = authorization
         r.headers['Timestamp'] = timestamp
         return r
@@ -58,6 +62,7 @@ class TcExHmacAuth(TcExAuth):
 
 class TcExTokenAuth(TcExAuth):
     """ThreatConnect Token Authorization"""
+
     def __init__(self, session, token, token_expiration, token_url, logger=None):
         """Initialize Class Properties."""
         super(TcExTokenAuth, self).__init__(logger)
@@ -76,9 +81,11 @@ class TcExTokenAuth(TcExAuth):
             url = '{}/appAuth'.format(self._token_url)
             r = get(url, params=params, verify=self._session.verify)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                if (r.status_code == 401 and
-                        'application/json' in r.headers.get('content-type', '') and
-                        'Retry token is invalid' in r.json().get('message')):
+                if (
+                    r.status_code == 401
+                    and 'application/json' in r.headers.get('content-type', '')
+                    and 'Retry token is invalid' in r.json().get('message')
+                ):
                     # TODO: remove this once token renewal issue is fixed
                     self.log.error('params: {}'.format(params))
                     self.log.error('url: {}'.format(r.url))
