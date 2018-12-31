@@ -10,8 +10,8 @@ from app import App
 
 # Python 2 unicode
 if sys.version_info[0] == 2:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
 tcex = TcEx()
 
@@ -27,15 +27,7 @@ if __name__ == '__main__':
         app.start()
 
         # run the App logic
-        if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
-            try:
-                # run action method
-                getattr(app, app.args.tc_action)()
-            except AttributeError:
-                tcex.exit(1, 'Action method ({}) was not found.'.format(app.args.tc_action))
-        else:
-            # default to run method
-            app.run()
+        app.run()
 
         # perform cleanup operations
         app.done()

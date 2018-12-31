@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TcEx Common Arg Handler """
+"""TcEx Common Arg Handler"""
 from argparse import ArgumentParser
 
 
@@ -219,16 +219,16 @@ class TcExArgParser(ArgumentParser):
             '--apply_proxy_external',
             action='store_true',
             default=False,
-            help='Proxy External Connections',
             dest='tc_proxy_external',
+            help='Proxy External Connections',
         )
         self.add_argument(
             '--tc_proxy_tc',
             '--apply_proxy_tc',
             action='store_true',
             default=False,
-            help='Proxy TC Connection',
             dest='tc_proxy_tc',
+            help='Proxy TC Connection',
         )
 
         #
@@ -251,15 +251,15 @@ class TcExArgParser(ArgumentParser):
             '--logging',
             choices=['debug', 'info', 'warning', 'error', 'critical'],
             default=None,
-            help='Logging Level',
             dest='logging',
+            help='Logging Level',
             type=str.lower,
         )
         self.add_argument(
             '--tc_log_level',
             choices=['debug', 'info', 'warning', 'error', 'critical'],
             default=None,
-            help='Logging Level',
             dest='tc_log_level',
+            help='Logging Level',
             type=str.lower,
         )

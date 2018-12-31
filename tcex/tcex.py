@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TcEx Framework """
-from past.builtins import basestring  # must be imported before builtins
+"""TcEx Framework"""
 from builtins import str
 import inspect
 import json
@@ -11,14 +10,13 @@ import re
 import signal
 import sys
 import time
-from argparse import Namespace
 
 try:
     from urllib import quote  # Python 2
 except ImportError:
     from urllib.parse import quote  # Python 3
 
-from .tcex_argparser import TcExArgParser
+from .tcex_args import TcExArgs
 
 
 class TcEx(object):
@@ -37,7 +35,6 @@ class TcEx(object):
         # Property defaults
         self._error_codes = None
         self._exit_code = 0
-        self._default_args = None
         self._install_json = None
         self._install_json_params = {}
         self._indicator_associations_types_data = {}
@@ -53,11 +50,7 @@ class TcEx(object):
         self._tc_token_expires = None
 
         # Parser
-        self._parsed = False
-        self.parser = TcExArgParser()
-
-        # Ensure App is not already running with same session id.
-        # self._singular()
+        self.tcex_args = TcExArgs(self)
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -127,39 +120,6 @@ class TcEx(object):
                 self.handle_error(210, [r.text])
         return {'Authorization': authorization}
 
-    def _load_secure_params(self):
-        """Load secure params from the API.
-
-        # API Response:
-
-        .. code-block:: javascript
-            :linenos:
-            :lineno-start: 1
-
-            {
-                "inputs":
-                    {
-                        "tc_playbook_db_type": "Redis",
-                        "fail_on_error": true,
-                        "api_default_org": "TCI"
-                    }
-            }
-
-        Returns:
-            dict: Parameters ("inputs") from the TC API.
-        """
-        self.log.info('Loading secure params.')
-        # Retrieve secure params and inject them into sys.argv
-        r = self.session.get('/internal/job/execution/parameters')
-
-        # check for bad status code and response that is not JSON
-        if not r.ok or r.headers.get('content-type') != 'application/json':
-            err = r.text or r.reason
-            self.exit(1, 'Error retrieving secure params from API ({}).'.format(err))
-
-        # return secure params
-        return r.json().get('inputs', {})
-
     def _log(self):
         """Send System and App data to logs."""
         self._log_platform()
@@ -190,9 +150,7 @@ class TcEx(object):
 
     def _log_platform(self):
         """Log the current Platform."""
-        from platform import platform
-
-        self.log.info(u'Platform: {}'.format(platform()))
+        self.log.info(u'Platform: {}'.format(platform.platform()))
 
     def _log_python_version(self):
         """Log the current Python version."""
@@ -387,24 +345,7 @@ class TcEx(object):
             except Exception as e:
                 self.handle_error(220, [e])
 
-    # def _singular(self):
-    #     """There can be only one. Validate the App doesn't already have a lock file."""
-    #     lock_file = os.path.join(self.default_args.tc_temp_path, 'app.lock')
-    #     if os.path.isfile(lock_file):
-    #         # append pid to lock file and exit
-    #         self._singular_lock(lock_file)
-    #         self.exit(0)
-    #     # create new lockfile
-    #     self._singular_lock(lock_file)
-
-    # @staticmethod
-    # def _singular_lock(lock_file):
-    #     """Create or update the lock file."""
-    #     with open(lock_file, 'a') as fh:
-    #         fh.write('timestamp: {}\n'.format(time.time()))
-    #         fh.write('pid: {}\n'.format(os.getpid()))
-
-    def _signal_handler(self, signal_interupt, frame):
+    def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
         """Handle singal interrupt."""
         call_file = os.path.basename(inspect.stack()[1][0].f_code.co_filename)
         call_module = inspect.stack()[1][0].f_globals['__name__'].lstrip('Functions.')
@@ -416,15 +357,6 @@ class TcEx(object):
         )
         if signal_interupt in (2, 15):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
-
-    def _unknown_args(self, args):
-        """Log argparser unknown arguments.
-
-        Args:
-            args (list): List of unknown arguments
-        """
-        for u in args:
-            self.log.warning(u'Unsupported arg found ({}).'.format(u))
 
     @property
     def utils(self):
@@ -440,86 +372,13 @@ class TcEx(object):
 
     @property
     def args(self):
-        """The parsed args from argparser
-
-        .. Note:: Accessing args should only be done directly in the App.
-
-        Returns:
-            (namespace): ArgParser parsed arguments
-        """
-
-        if not self._parsed:
-            self._default_args, unknown = self.parser.parse_known_args()
-            # self._default_args_resolved = Namespace(**vars(self._default_args))
-            self._default_args_resolved = Namespace()
-
-            # threatconnect reserved args
-            reserved_args = [
-                'tc_token',
-                'tc_token_expires',
-                'api_access_id',
-                'api_secret_key',
-                'batch_action',
-                'batch_chunk',
-                'batch_halt_on_error',
-                'batch_poll_interval',
-                'batch_interval_max',
-                'batch_write_type',
-                'tc_playbook_db_type',
-                'tc_playbook_db_context',
-                'tc_playbook_db_path',
-                'tc_playbook_db_port',
-                'tc_playbook_out_variables',
-                'api_default_org',
-                'tc_api_path',
-                'tc_in_path',
-                'tc_log_file',
-                'tc_log_path',
-                'tc_out_path',
-                'tc_secure_params',
-                'tc_temp_path',
-                'tc_user_id',
-                'tc_proxy_host',
-                'tc_proxy_port',
-                'tc_proxy_username',
-                'tc_proxy_password',
-                'tc_proxy_external',
-                'tc_proxy_tc',
-                'tc_log_to_api',
-                'tc_log_level',
-                'logging',
-            ]
-
-            # iterate over args and resolve them
-            for arg in vars(self._default_args):
-                arg_val = getattr(self._default_args, arg)
-                if arg not in reserved_args:
-                    if isinstance(arg_val, (basestring)):
-                        arg_val = self.playbook.read(arg_val)
-                setattr(self._default_args_resolved, arg, arg_val)
-
-            self.results_tc_args()  # for local testing only
-            self._parsed = True
-
-            # log unknown arguments only once
-            self._unknown_args(unknown)
-
-        return self._default_args
+        """Argparser args Namespace."""
+        return self.tcex_args.args()
 
     @property
     def rargs(self):
-        """The parsed and resolved args from argparser / Redis
-
-        .. Note:: Accessing args should only be done directly in the App.
-
-        Returns:
-            (namespace): ArgParser parsed and resolved arguments
-        """
-
-        if not self._parsed:
-            self.args
-
-        return self._default_args_resolved
+        """Argparser args Namespace with Playbook args automatically resolved (resolved args)."""
+        return self.tcex_args.resolved_args()
 
     def authorization(self, request_prepped):
         """A method to handle the different methods of authenticating to the ThreatConnect API.
@@ -604,45 +463,6 @@ class TcEx(object):
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
-    def bulk_enabled(self, owner=None, api_path=None, authorization=None):
-        """[Deprecated] Check if bulk indicators is enabled for owner.
-
-        .. warning:: This method is deprecated and will be removed in TcEx version 0.9.0.
-
-        Using the TC API validate that bulk indicator download is enabled and
-        has successfully run for the provided owner.
-
-        Args:
-            owner (Optional [string]): Owner name to check.
-            api_path (Optional [string]): The url to the ThreatConnect API.
-            authorization (Optional [string]): The authorization header value.
-
-        Returns:
-            (boolean): True if bulk indicator download is enabled and has run
-        """
-        self.log.warning('This App is using a deprecated method (bulk_enabled).')
-        if api_path is None:
-            api_path = self.default_args.tc_api_path
-
-        # Dynamically create custom indicator class
-        request = self.request()
-        if authorization is not None:
-            request.authorization = authorization
-        if owner is not None:
-            request.owner = owner
-        request.url = '{}/v2/indicators/bulk'.format(api_path)
-
-        r = request.send()
-        if r.ok and 'application/json' in r.headers.get('content-type', ''):
-            data = r.json()
-            if data.get('status') == 'Success':
-                if (
-                    data.get('data', {}).get('bulkStatus', {}).get('jsonEnabled')
-                    and data.get('data').get('bulkStatus', {}).get('lastRun') is not None
-                ):
-                    return True
-        return False
-
     def data_filter(self, data):
         """Return an instance of the Data Filter Class.
 
@@ -667,20 +487,8 @@ class TcEx(object):
 
     @property
     def default_args(self):
-        """Parse args and return default args."""
-        if self._default_args is None:
-            self._default_args, unknown = self.parser.parse_known_args()
-            # reinitialize logger with new log level and api settings
-            self._logger()
-            if self._default_args.tc_aot_enabled:
-                # block for AOT message and get params
-                params = self.playbook.aot_blpop()
-                self.inject_params(params)
-            elif self.default_args.tc_secure_params:
-                # inject secure params from API
-                params = self._load_secure_params()
-                self.inject_params(params)
-        return self._default_args
+        """All args parsed before App args are added."""
+        return self.tcex_args.default_args
 
     @property
     def error_codes(self):
@@ -718,7 +526,7 @@ class TcEx(object):
             self.log.error(u'Invalid exit code')
             code = 1
 
-        if self._default_args.tc_aot_enabled:
+        if self.default_args.tc_aot_enabled:
             # push exit message
             self.playbook.aot_rpush(code)
 
@@ -833,59 +641,6 @@ class TcEx(object):
             self._resources(True)
         return self._indicator_types_data
 
-    def inject_params(self, params):
-        """Inject params into sys.argv from secureParams API, AOT, or user provided."""
-        default_bool_args = [
-            'apply_proxy_external',
-            'apply_proxy_ext',
-            'apply_proxy_tc',
-            'batch_halt_on_error',
-            'tc_aot_enabled',
-            'tc_log_to_api',
-            'tc_proxy_external',
-            'tc_proxy_tc',
-            'tc_secure_params',
-            'tc_verify',
-        ]
-        for arg, value in params.items():
-            cli_arg = '--{}'.format(arg)
-            if cli_arg in sys.argv:
-                # arg already passed on the command line
-                self.log.debug('skipping existing arg: {}'.format(cli_arg))
-                continue
-
-            # ThreatConnect secure/AOT params should be updated in the future to proper JSON format.
-            # MultiChoice data should be represented as JSON array and Boolean values should be a
-            # JSON boolean and not a string.
-            param_data = self.install_json_params.get(arg, {})
-            if param_data.get('type', '').lower() == 'multichoice':
-                # update "|" delimited value to a proper array for params that have type of
-                # MultiChoice.
-                value = value.split('|')
-            elif param_data.get('type', '').lower() == 'boolean':
-                # update value to be a boolean instead of string "true"/"false".
-                value = self.utils.to_bool(value)
-            elif arg in default_bool_args:
-                value = self.utils.to_bool(value)
-
-            if isinstance(value, (bool)):
-                # handle bool values as flags (e.g., --flag) with no value
-                if value:
-                    sys.argv.append(cli_arg)
-            elif isinstance(value, (list)):
-                for mcv in value:
-                    sys.argv.append(cli_arg)
-                    sys.argv.append('{}'.format(mcv))
-            else:
-                sys.argv.append(cli_arg)
-                sys.argv.append('{}'.format(value))
-
-        # reset default_args now that values have been injected into sys.argv
-        self._default_args, unknown = self.parser.parse_known_args()
-
-        # reinitialize logger with new log level and api settings
-        self._logger()
-
     @property
     def install_json(self):
         """Return contents of install.json configuration file, loading from disk if required."""
@@ -982,6 +737,11 @@ class TcEx(object):
         max_length -= len(message)
 
     @property
+    def parser(self):
+        """Instance tcex args parser."""
+        return self.tcex_args.parser
+
+    @property
     def playbook(self):
         """Include the Playbook Module.
 
@@ -1049,9 +809,8 @@ class TcEx(object):
     def request(self, session=None):
         """Return an instance of the Request Class.
 
-        A wrapper on the Python Request Module specifically for interacting with the
-        ThreatConnect API.  However, this can also be used for connecting to other
-        API endpoints.
+        A wrapper on the Python Request Module that provides a slightly different interface for
+        creating requests and logging built-in.
 
         Returns:
             (object): An instance of Request Class
@@ -1064,7 +823,7 @@ class TcEx(object):
             self.handle_error(105, [e])
 
     def request_external(self):
-        """Return an instance of the Request Class with Proxy Set
+        """Return an instance of the Request Class with Proxy values set.
 
         See :py:mod:`~tcex.tcex.TcEx.request`
 
@@ -1079,21 +838,6 @@ class TcEx(object):
                 )
             )
             r.proxies = self.proxies
-        return r
-
-    def request_tc(self):
-        """**[Deprecated]** Return an instance of the Request Class with Proxy and Authorization Set
-
-        .. warning:: This method is deprecated and will be removed in TcEx version 0.9.0. Use
-                     tcex.session instead.
-
-        See :py:mod:`~tcex.tcex.TcEx.request`
-
-        Returns:
-            (object): An instance of Request Class
-        """
-        self.log.warning('This App is using a deprecated method (request_tc).')
-        r = self.request(self.session)
         return r
 
     def resource(self, resource_type):
@@ -1150,36 +894,6 @@ class TcEx(object):
             fh.write(results)
             fh.truncate()
 
-    def results_tc_args(self):
-        """Read data from results_tc file from previous run of app.
-
-        This method is only required when not running from the with the
-        TcEX platform and is only intended for testing apps locally.
-
-        Returns:
-            (dictionary): A dictionary of values written to results_tc.
-        """
-        results = []
-        if os.access(self.default_args.tc_out_path, os.W_OK):
-            result_file = '{}/results.tc'.format(self.default_args.tc_out_path)
-        else:
-            result_file = 'results.tc'
-        if os.path.isfile(result_file):
-            with open(result_file, 'r') as rh:
-                results = rh.read().strip().split('\n')
-            os.remove(result_file)
-        for line in results:
-            if not line or ' = ' not in line:
-                continue
-            key, value = line.split(' = ')
-            if value == 'true':
-                value = True
-            elif value == 'false':
-                value = False
-            elif not value:
-                value = None
-            setattr(self.default_args, key, value)
-
     def s(self, data, errors='strict'):
         """Decode value using correct Python 2/3 method.
 
@@ -1227,40 +941,6 @@ class TcEx(object):
             except KeyError:
                 indicator = quote(bytes(indicator), safe='~')
         return indicator
-
-    def epoch_seconds(self, delta=None):
-        """**[Deprecated]** Get epoch seconds for now or using a time delta.
-
-        .. warning:: This method is deprecated and will be removed in TcEx version 0.9.0.  Use the
-                     tcex.utils date methods instead.
-
-        .. code-block:: javascript
-            :linenos:
-            :lineno-start: 1
-
-            {'days': 1}
-            {'weeks': 3}
-            {'months': 4}
-            {'days': 1, 'weeks': 3, 'months': 4}
-
-
-        .. Note:: More information can be found at
-                  https://dateutil.readthedocs.io/en/stable/relativedelta.html
-
-        Args:
-            delta (Optional [integer]): The exit code value for the app.
-        Returns:
-            (int): A integer representing epoch seconds.
-        """
-        from datetime import datetime
-        from dateutil.relativedelta import relativedelta
-
-        self.log.warning('This App is using a deprecated method (epoch seconds).')
-        epoch = datetime.now()
-        if delta is not None:
-            epoch = epoch - relativedelta(**delta)
-
-        return int(time.mktime(epoch.timetuple()))
 
     @staticmethod
     def expand_indicators(indicator):
@@ -1387,21 +1067,3 @@ class TcEx(object):
 
             self._session = TcExSession(self)
         return self._session
-
-    def to_string(self, data, errors='strict'):
-        """**[Deprecated]** Decode value using correct Python 2/3 method
-
-        .. warning:: This method is deprecated and will be removed in TcEx version 0.9.0.
-
-        Args:
-            data (any): Data to ve validated and re-encoded
-            errors (string): What method to use when dealing with errors.
-
-        Returns:
-            (string): Return decoded data
-
-        """
-        self.log.warning('This App is using a deprecated method (to_string).')
-        if data is not None and not isinstance(data, str):
-            data = str(data, 'utf-8', errors=errors)
-        return data

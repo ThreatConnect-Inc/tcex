@@ -68,11 +68,11 @@ class TcExUtils:
         try:
             # try to get the timezone from tzlocal
             tzinfo = timezone(get_localzone().zone)
-        except pytz.exceptions.UnknownTimeZoneError as e:
+        except pytz.exceptions.UnknownTimeZoneError:
             try:
                 # try to get the timezone from python's time package
                 tzinfo = timezone(time.tzname[0])
-            except pytz.exceptions.UnknownTimeZoneError as e:
+            except pytz.exceptions.UnknownTimeZoneError:
                 # seeing as all else has failed: use UTC as the timezone
                 tzinfo = timezone('UTC')
         dateutil_parser = dateutil_parser.replace(tzinfo=tzinfo)
@@ -217,7 +217,8 @@ class TcExUtils:
         """Write content to a temporary file.
 
         Args:
-            content (bytes|str): The file content. If passing binary data the mode needs to be set to 'wb'.
+            content (bytes|str): The file content. If passing binary data the mode needs to be set
+                                 to 'wb'.
             filename (str, optional): The filename to use when writing the file.
             mode (str, optional): The file write mode which could be either 'w' or 'wb'.
 
@@ -309,17 +310,16 @@ class TcExUtils:
         return dt
 
 
-"""
->>> from pytz import timezone
->>> from datetime import datetime
->>> time_input = 1229084481
->>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
->>> dt.isoformat()
-'2008-12-12T12:21:21+00:00'
->>> tz.normalize(dt).isoformat()
-'2008-12-12T06:21:21-06:00'
->>> dt.astimezone(timezone('US/Central'))
-datetime.datetime(2008, 12, 12, 6, 21, 21, tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
->>> dt.astimezone(timezone('US/Central')).isoformat()
-'2008-12-12T06:21:21-06:00'
-"""
+# >>> from pytz import timezone
+# >>> from datetime import datetime
+# >>> time_input = 1229084481
+# >>> dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
+# >>> dt.isoformat()
+# '2008-12-12T12:21:21+00:00'
+# >>> tz.normalize(dt).isoformat()
+# '2008-12-12T06:21:21-06:00'
+# >>> dt.astimezone(timezone('US/Central'))
+# datetime.datetime(2008, 12, 12, 6, 21, 21,
+#   tzinfo=<DstTzInfo 'US/Central' CST-1 day, 18:00:00 STD>)
+# >>> dt.astimezone(timezone('US/Central')).isoformat()
+# '2008-12-12T06:21:21-06:00'

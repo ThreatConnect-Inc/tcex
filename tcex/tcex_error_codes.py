@@ -10,8 +10,8 @@ class TcExErrorCodes(object):
         """TcEx defined error codes and messages.
 
         .. note:: RuntimeErrors with a code of >= 1000 are considered critical.  Those < 1000
-            are considered warning or errors and are up to the developer to determine the appropriate
-            behavior.
+            are considered warning or errors and are up to the developer to determine the
+            appropriate behavior.
         """
         return {
             # tcex general errors

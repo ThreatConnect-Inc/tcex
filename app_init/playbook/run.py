@@ -12,7 +12,6 @@ from app import App
 if sys.version_info[0] == 2:
     reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
-    get_input = raw_input  # noqa: F821; pylint: disable=E0602
 
 tcex = TcEx()
 
@@ -52,7 +51,7 @@ if __name__ == '__main__':
 
         # write requested value for downstream Apps
         tcex.playbook.write_output()
-        app.write_output()
+        app.write_output()  # pylint: disable=E1101
 
         # perform cleanup operations
         app.done()

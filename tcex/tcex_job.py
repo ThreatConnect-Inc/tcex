@@ -61,10 +61,10 @@ class TcExJob(object):
         """Split indicator list into smaller more manageable numbers."""
         try:
             for i in xrange(0, len(self._indicators), self._batch_chunk):
-                yield self._indicators[i : i + self._batch_chunk]
+                yield self._indicators[i : i + self._batch_chunk]  # noqa: E203
         except NameError:  # Python 3 uses range() instead of xrange()
             for i in range(0, len(self._indicators), self._batch_chunk):
-                yield self._indicators[i : i + self._batch_chunk]
+                yield self._indicators[i : i + self._batch_chunk]  # noqa: E203
 
     def _group_add(self, resource_type, resource_name, owner, data=None):
         """Add a group to ThreatConnect.

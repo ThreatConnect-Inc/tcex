@@ -185,7 +185,7 @@ class OnSuccess(object):
                 app (class): The instance of the App class "self".
             """
 
-            app.msg = self.msg
+            app.exit_message = self.msg
             return fn(app, *args, **kwargs)
 
         return completion
@@ -295,6 +295,7 @@ class WriteOutput(object):
         """
 
         self.key = key
+        self.overwrite = overwrite
         self.value = value
         self.variable_type = variable_type
 
@@ -320,7 +321,7 @@ class WriteOutput(object):
             if self.value is not None:
                 # store user provided data
                 app.tcex.playbook.add_output(self.key, self.value, self.variable_type)
-            elif app.tcex.playbook.output_data.get(index) and not overwrite:
+            elif app.tcex.playbook.output_data.get(index) and not self.overwrite:
                 # skip data since a previous value has already been written
                 pass
             else:

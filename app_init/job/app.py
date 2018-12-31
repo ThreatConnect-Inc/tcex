@@ -8,14 +8,14 @@ from job_app import JobApp
 class App(JobApp):
     """Job App"""
 
-    # def __init__(self, _tcex):
-    #     """Initialize class properties.
+    def __init__(self, _tcex):
+        """Initialize class properties.
 
-    #     This method can be OPTIONALLY overridden.
-    #     """
-    #     super(App, self).__init__(_tcex)
-    #     self.indicator_count = 0
-    #     self.group_count = 0
+        This method can be OPTIONALLY overridden.
+        """
+        super(App, self).__init__(_tcex)
+        self.indicator_count = 0
+        self.group_count = 0
 
     def count_indicators(self):
         """Count the indicators in the owner."""

@@ -9,13 +9,13 @@ from playbook_app import PlaybookApp
 class App(PlaybookApp):
     """Playbook App"""
 
-    # def __init__(self, _tcex):
-    #     """Initialize class properties.
+    def __init__(self, _tcex):
+        """Initialize class properties.
 
-    #     This method can be OPTIONALLY overridden.
-    #     """
-    #     super(App, self).__init__(_tcex)
-    #     self.pretty_json = {}
+        This method can be OPTIONALLY overridden.
+        """
+        super(App, self).__init__(_tcex)
+        self.pretty_json = {}
 
     # def done(self):
     #     """Perform cleanup work before after App main logic."""

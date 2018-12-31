@@ -127,9 +127,10 @@ class TcExPlaybook(object):
             else:
                 self.output_data[index].setdefault('value', []).append(value)
 
-    def aot_blpop(self):
+    def aot_blpop(self):  # pylint: disable=R1710
         """Subscribe to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
+            res = None
             try:
                 self.tcex.log.info('Blocking for AOT message.')
                 msg_data = self.db.blpop(
@@ -143,17 +144,19 @@ class TcExPlaybook(object):
                 msg_data = json.loads(msg_data[1])
                 msg_type = msg_data.get('type', 'terminate')
                 if msg_type == 'execute':
-                    return msg_data.get('params', {})
+                    res = msg_data.get('params', {})
                 elif msg_type == 'terminate':
                     self.tcex.exit(0, 'Received AOT terminate message.')
                 else:
                     self.tcex.log.warn('Unsupported AOT message type: ({}).'.format(msg_type))
-                    return self.aot_blpop()
+                    res = self.aot_blpop()
             except Exception as e:
                 self.tcex.exit(1, 'Exception during AOT subscription ({}).'.format(e))
 
+            return res
+
     def aot_rpush(self, exit_code):
-        """Subscribe to AOT action channel."""
+        """Push message to AOT action channel."""
         if self.tcex.default_args.tc_playbook_db_type == 'Redis':
             try:
                 self.db.rpush(self.tcex.default_args.tc_exit_channel, exit_code)
@@ -640,7 +643,7 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary(self, key, b64decode=True, decode=True):
+    def read_binary(self, key, b64decode=True, decode=False):
         """Read method of CRUD operation for binary data.
 
         Args:
@@ -699,7 +702,7 @@ class TcExPlaybook(object):
             self.tcex.log.warning(u'The key or value field was None.')
         return data
 
-    def read_binary_array(self, key, b64decode=True, decode=True):
+    def read_binary_array(self, key, b64decode=True, decode=False):
         """Read method of CRUD operation for binary array data.
 
         Args:

@@ -106,36 +106,35 @@ class DataFilter(object):
 
         return filtered_data
 
-    def _loop_filter(self, field, filter_value, filter_operator, field_converter=None):
-        """
+    # def _loop_filter(self, field, filter_value, filter_operator, field_converter=None):
+    #     """
 
-        Args:
-            index_data (dictionary): The indexed data for the provided field.
-            filter_value (string)
-            filter_operator (string)
-            fv_converter (method)
-        """
-        pass
+    #     Args:
+    #         index_data (dictionary): The indexed data for the provided field.
+    #         filter_value (string)
+    #         filter_operator (string)
+    #         fv_converter (method)
+    #     """
 
-        # if not isinstance(self._data, list):
-        #     raise RuntimeError('Only *List* data type is currently supported')
-        #
-        # filtered_data = []
-        # for d in self._data:
-        #     if not isinstance(d, dict):
-        #         self._tcex.log.debug(u'Can filter for non Dict type.')
-        #
-        #     for key, value in d.items():
-        #         if field != key:
-        #             continue
-        #
-        #         if fv_converter is not None:
-        #             filter_value = fv_converter(filter_value)
-        #
-        #         if filter_operator(key, filter_value):
-        #             filtered_data.append(value)
-        #
-        # return filtered_data
+    #     if not isinstance(self._data, list):
+    #         raise RuntimeError('Only *List* data type is currently supported')
+    #
+    #     filtered_data = []
+    #     for d in self._data:
+    #         if not isinstance(d, dict):
+    #             self._tcex.log.debug(u'Can filter for non Dict type.')
+    #
+    #         for key, value in d.items():
+    #             if field != key:
+    #                 continue
+    #
+    #             if fv_converter is not None:
+    #                 filter_value = fv_converter(filter_value)
+    #
+    #             if filter_operator(key, filter_value):
+    #                 filtered_data.append(value)
+    #
+    #     return filtered_data
 
     @staticmethod
     def _ni(field, filter_value):

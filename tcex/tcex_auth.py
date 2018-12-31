@@ -31,9 +31,9 @@ class TcExAuth(auth.AuthBase):
         logger.addHandler(ch)
         return logger
 
-    def __call__(self, r):
-        """Override of parent __call__ method."""
-        pass
+    # def __call__(self, r):
+    #     """Override of parent __call__ method."""
+    #     pass
 
 
 class TcExHmacAuth(TcExAuth):

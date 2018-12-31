@@ -4,6 +4,7 @@
 
 
 def get_groups(tcex):
+    """Get group resources"""
     resource = tcex.resource('Group')
     groups = []
     # paginate over results
@@ -13,6 +14,7 @@ def get_groups(tcex):
 
 
 def get_indicators(tcex):
+    """Get indicator resources"""
     resource = tcex.resource('Indicator')
     indicators = []
     # paginate over results
