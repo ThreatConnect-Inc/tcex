@@ -8,7 +8,7 @@ repos:
     -   id: double-quote-string-fixer
     -   id: end-of-file-fixer
     -   id: fix-encoding-pragma
-    # -   id: flake8
+    -   id: flake8
     -   id: pretty-format-json
         args:
         -   --autofix
@@ -18,9 +18,9 @@ repos:
     hooks:
     -   id: black
         language_version: python3.6
-# -   repo: https://github.com/pre-commit/mirrors-pylint
-#     rev: 'master'
-#     hooks:
-#     -   id: pylint
-#         args:
-#         -    --disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202
+-   repo: https://github.com/pre-commit/mirrors-pylint
+    rev: 'master'
+    hooks:
+    -   id: pylint
+        args:
+        -    --disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202
