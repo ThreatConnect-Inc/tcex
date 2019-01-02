@@ -9,7 +9,6 @@ import os
 import re
 import signal
 import sys
-import time
 
 try:
     from urllib import quote  # Python 2
@@ -88,37 +87,6 @@ class TcEx(object):
                 self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
             self.handle_error(200, [e])
-
-    def _authorization_token_renew(self):
-        """Method for handling token authorization to ThreatConnect API.
-
-        This method will automatically renew the ThreatConnect token if it has expired.
-
-        Returns:
-            (dictionary): An dictionary containing the header values for authorization to
-                          ThreatConnect.
-        """
-        authorization = 'TC-Token {}'.format(self._tc_token)
-
-        window_padding = 15  # bcs - possible configuration option
-        current_time = int(time.time()) + window_padding
-        if self._tc_token_expires < current_time:
-            # Renew Token
-            request = self.request()
-            request.add_payload('expiredToken', self._tc_token)
-            request.url = '{}/appAuth'.format(self.default_args.tc_api_path)
-            r = request.send()
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.handle_error(210, [r.text])
-            data = r.json()
-            if data['success']:
-                self.log.info(u'Expired API token has been renewed.')
-                self._tc_token = data['apiToken']  # remove str() due to newstr issue
-                self._tc_token_expires = int(data['apiTokenExpires'])
-                authorization = 'TC-Token {}'.format(data['apiToken'])
-            else:
-                self.handle_error(210, [r.text])
-        return {'Authorization': authorization}
 
     def _log(self):
         """Send System and App data to logs."""
@@ -380,74 +348,6 @@ class TcEx(object):
         """Argparser args Namespace with Playbook args automatically resolved (resolved args)."""
         return self.tcex_args.resolved_args()
 
-    def authorization(self, request_prepped):
-        """A method to handle the different methods of authenticating to the ThreatConnect API.
-
-        **Token Based Authorization**::
-
-            {'Authorization': authorization}
-
-        **HMAC Based Authorization**::
-
-            {
-                'Authorization': authorization,
-                'Timestamp': <unix timestamp>
-            }
-
-           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
-
-        Args:
-            request_prepped (object): A instance of Python Request module requests.
-                                        PreparedRequest.
-        Returns:
-            (dictionary): An dictionary containing the header values for authorization to
-                          ThreatConnect.
-        """
-        authorization = None
-
-        if self._tc_token is not None:
-            authorization = {'Authorization': 'TC-Token {}'.format(self._tc_token)}
-            if self._tc_token_expires is not None:
-                authorization = self._authorization_token_renew()
-        elif (
-            self.default_args.api_access_id is not None
-            and self.default_args.api_secret_key is not None
-        ):
-            authorization = self.authorization_hmac(request_prepped)
-
-        return authorization
-
-    def authorization_hmac(self, request_prepped):
-        """Method for handling HMAC authorization to ThreatConnect API.
-
-           http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request.
-
-        Args:
-            request_prepped (object): A instance of Python Request prepped requests.
-                                        PreparedRequest.
-        Returns:
-            (dictionary): An dictionary containing the header values for authorization to
-                          ThreatConnect.
-        """
-        import base64
-        import hashlib
-        import hmac
-
-        if request_prepped is None:
-            self.handle_error(215, [])
-
-        timestamp = int(time.time())
-        signature = '{}:{}:{}'.format(request_prepped.path_url, request_prepped.method, timestamp)
-        hmac_signature = hmac.new(
-            self.default_args.api_secret_key.strip('\'').encode(),
-            signature.encode(),
-            digestmod=hashlib.sha256,
-        ).digest()
-        authorization = 'TC {}:{}'.format(
-            self.default_args.api_access_id, base64.b64encode(hmac_signature).decode()
-        )
-        return {'Authorization': authorization, 'Timestamp': str(timestamp)}
-
     def batch(
         self,
         owner,
@@ -457,12 +357,13 @@ class TcEx(object):
         playbook_triggers_enabled=None,
     ):
         """Return instance of Batch"""
-        from .tcex_batch_v2 import TcExBatch
+        from .tcex_ti_batch import TcExBatch
 
         return TcExBatch(
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
+    # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):
         """Return an instance of the Data Filter Class.
 
@@ -554,6 +455,40 @@ class TcEx(object):
             self._exit_code = code
         else:
             self.log.warning(u'Invalid exit code')
+
+    @staticmethod
+    def expand_indicators(indicator):
+        """Process indicators expanding file hashes/custom indicators into multiple entries.
+
+        Args:
+            indicator (string): " : " delimited string
+        Returns:
+            (list): a list of indicators split on " : ".
+        """
+        if indicator.count(' : ') > 0:
+            # handle all multi-valued indicators types (file hashes and custom indicators)
+            indicator_list = []
+
+            # group 1 - lazy capture everything to first <space>:<space> or end of line
+            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
+            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
+            # group 2 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead (optional <space>):<space> or end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
+            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
+            # group 3 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
+            iregx = re.compile(iregx_pattern)
+
+            indicators = iregx.search(indicator)
+            if indicators is not None:
+                indicator_list = list(indicators.groups())
+        else:
+            # handle all single valued indicator types (address, host, etc)
+            indicator_list = [indicator]
+
+        return indicator_list
 
     @property
     def group_types(self):
@@ -671,19 +606,6 @@ class TcEx(object):
         from .tcex_job import TcExJob
 
         return TcExJob(self)
-
-    @property
-    def jobs(self):
-        """**[Deprecated]** Include the jobs Module.
-
-        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-                     tcex.batch instead.
-        """
-        if self._jobs is None:
-            from .tcex_job import TcExJob
-
-            self._jobs = TcExJob(self)
-        return self._jobs
 
     def metric(self, name, description, data_type, interval, keyed=False):
         """Get instance of the Metrics module.
@@ -809,8 +731,9 @@ class TcEx(object):
     def request(self, session=None):
         """Return an instance of the Request Class.
 
-        A wrapper on the Python Request Module that provides a slightly different interface for
-        creating requests and logging built-in.
+        A wrapper on the Python Requests module that provides a different interface for creating
+        requests. The session property of this instance has built-in logging, session level
+        retries, and preconfigured proxy configuration.
 
         Returns:
             (object): An instance of Request Class
@@ -818,27 +741,17 @@ class TcEx(object):
         try:
             from .tcex_request import TcExRequest
 
-            return TcExRequest(self, session)
+            r = TcExRequest(self, session)
+            if self.default_args.tc_proxy_external:
+                self.log.info(
+                    u'Using proxy server for external request {}:{}.'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                    )
+                )
+                r.proxies = self.proxies
+            return r
         except ImportError as e:
             self.handle_error(105, [e])
-
-    def request_external(self):
-        """Return an instance of the Request Class with Proxy values set.
-
-        See :py:mod:`~tcex.tcex.TcEx.request`
-
-        Returns:
-            (object): An instance of Request Class
-        """
-        r = self.request()
-        if self.default_args.tc_proxy_external:
-            self.log.info(
-                u'Using proxy server for external request {}:{}.'.format(
-                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                )
-            )
-            r.proxies = self.proxies
-        return r
 
     def resource(self, resource_type):
         """Get instance of Resource Class with dynamic type.
@@ -943,40 +856,6 @@ class TcEx(object):
         return indicator
 
     @staticmethod
-    def expand_indicators(indicator):
-        """Process indicators expanding file hashes/custom indicators into multiple entries.
-
-        Args:
-            indicator (string): " : " delimited string
-        Returns:
-            (list): a list of indicators split on " : ".
-        """
-        if indicator.count(' : ') > 0:
-            # handle all multi-valued indicators types (file hashes and custom indicators)
-            indicator_list = []
-
-            # group 1 - lazy capture everything to first <space>:<space> or end of line
-            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
-            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
-            # group 2 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead (optional <space>):<space> or end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
-            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
-            # group 3 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
-            iregx = re.compile(iregx_pattern)
-
-            indicators = iregx.search(indicator)
-            if indicators is not None:
-                indicator_list = list(indicators.groups())
-        else:
-            # handle all single valued indicator types (address, host, etc)
-            indicator_list = [indicator]
-
-        return indicator_list
-
-    @staticmethod
     def safe_rt(resource_type, lower=False):
         """Format the Resource Type.
 
@@ -1029,6 +908,10 @@ class TcEx(object):
         return group_name
 
     def safetag(self, tag, errors='strict'):
+        """Wrapper method for safe_tag."""
+        return self.safe_tag(tag, errors)
+
+    def safe_tag(self, tag, errors='strict'):
         """URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
@@ -1047,6 +930,10 @@ class TcEx(object):
         return tag
 
     def safeurl(self, url, errors='strict'):
+        """Wrapper method for safe_url."""
+        return self.safe_url(url, errors)
+
+    def safe_url(self, url, errors='strict'):
         """URL encode value for safe HTTP request.
 
         Args:

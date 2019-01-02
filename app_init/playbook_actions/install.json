@@ -1,0 +1,71 @@
+{
+  "allowOnDemand": true,
+  "apiUserTokenParam": true,
+  "displayName": "String Operation",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "secureParams"
+  ],
+  "languageVersion": "3.6",
+  "listDelimiter": "|",
+  "note": "Takes a String or StringArrays and perform operations to each value returning the update value. All operations are performed on the individual strings and not the array.",
+  "params": [
+    {
+      "label": "Strings",
+      "name": "input_strings",
+      "note": "The input String or StringArray.",
+      "playbookDataType": [
+        "String",
+        "StringArray"
+      ],
+      "sequence": 1,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "Operation",
+      "name": "tc_action",
+      "note": "The operation to perform on the String or StringArray. The Strip operations will strip only whitespace from the string.",
+      "required": true,
+      "sequence": 2,
+      "type": "Choice",
+      "validValues": [
+        "Capitalize",
+        "Lowercase",
+        "Reverse",
+        "Strip",
+        "Swap Case",
+        "Title Case",
+        "Uppercase"
+      ]
+    }
+  ],
+  "playbook": {
+    "outputVariables": [
+      {
+        "name": "string.operation",
+        "type": "String"
+      },
+      {
+        "name": "string.outputs",
+        "type": "StringArray"
+      },
+      {
+        "name": "string.outputs.0",
+        "type": "String"
+      },
+      {
+        "name": "string.outputs.count",
+        "type": "String"
+      }
+    ],
+    "type": "Utility"
+  },
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Playbook"
+}

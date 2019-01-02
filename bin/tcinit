@@ -19,23 +19,55 @@ if sys.version_info[0] == 2:
 else:
     get_input = input
 
+epilog = (
+    'The "tcinit" command it intended to enable quick development of ThreatConnect Exchange Apps.\n'
+    '\nJob App Templates:\n'
+    '  job              - This template provides the structure for a Job App without any logic.\n'
+    '  job_batch        - This template provides an example of downloading remote threat intel\n'
+    '                     (md5 hash indicators) and writing the data in the ThreatConnect \n'
+    '                     Platform using the tcex batch module.\n'
+    '\nPlaybook App Templates:\n'
+    '  playbook         - This template provides the structure for a Playbook App without any\n'
+    '                     logic.\n'
+    '  playbook_action  - This template provides an example of "actions" in a Playbook App. Using\n'
+    '                     the "actions" feature a single Playbook can have multiple actions to \n'
+    '                     perform different operations on the provided data.\n'
+    '  playbook_utility - This template provides a basic example of a utility App that takes an \n'
+    '                     input, reformats the data, and writes the updated data as output.\n'
+)
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
+)
 parser.add_argument('--branch', choices=['master', 'develop'], default='master', help='Git branch.')
 parser.add_argument(
     '--action',
     choices=['create', 'update', 'migrate'],
     default='create',
     help=(
-        'Whether a new app should be CREATED, an existing app should be UPDATED, or an existing '
-        'app of a different format MIGRATED to the new version.'
+        '(default: create) Choose "create" to initialize a new App, "update" to download updates '
+        'to standard App files, and "migrate" to update a non App Builder compliant App to use a '
+        'standard template.'
     ),
 )
-parser.add_argument('--type', choices=['job', 'playbook'], help='Init a new App.', required=True)
+parser.add_argument(
+    '--template',
+    choices=[
+        'job',
+        'job_batch',
+        # 'job_enrichment',
+        'playbook',
+        'playbook_actions',
+        # 'playbook_enrichment',
+        'playbook_utility',
+    ],
+    help='Choose an appropriate App template for the current project.',
+    required=True,
+)
 parser.add_argument(
     '--force',
     action='store_true',
-    help='If true, this will overwrite existing ' + 'files in a directory to create a new app.',
+    help='Enable this flag to forceably overwrite existing files in the current working directory.',
     default=False,
 )
 args, extra_args = parser.parse_known_args()
@@ -71,9 +103,9 @@ class TcInit(object):
         # if we are updating/migrating an app and the directory is empty - raise a warning
         if not any(os.listdir(self.app_path)):
             message = (
-                'No app exists in this directory. Try using "tcinit --type '
+                'No app exists in this directory. Try using "tcinit --template '
                 '{} --action create --branch {}" to create an app.'
-            ).format(self.args.type, self.args.branch)
+            ).format(self.args.template, self.args.branch)
             raise RuntimeWarning(message)
 
     @staticmethod
@@ -145,6 +177,75 @@ class TcInit(object):
         # print download status
         self._print_results(local_filename, status)
 
+    @staticmethod
+    def update_install_json():
+        """Update the install.json configuration file if exists."""
+        if not os.path.isfile('install.json'):
+            return
+
+        with open('install.json', 'r') as f:
+            install_json = json.load(f)
+
+        if install_json.get('programMain'):
+            install_json['programMain'] = 'run'
+
+        # update features
+        install_json['features'] = ['aotExecutionEnabled', 'appBuilderCompliant', 'secureParams']
+
+        with open('install.json', 'w') as f:
+            json.dump(install_json, f, indent=2, sort_keys=True)
+
+    @staticmethod
+    def update_tcex_json():
+        """Update the tcex.json configuration file if exists."""
+
+        if not os.path.isfile('tcex.json'):
+            return
+
+        with open('tcex.json', 'r') as f:
+            tcex_json = json.load(f)
+
+        # display warning on missing app_name field
+        if tcex_json.get('app_name') is None:
+            print('{}The tcex.json file is missing the "app_name" field.'.format(c.Fore.YELLOW))
+
+        # display warning on missing app_version field
+        if tcex_json.get('app_version') is None:
+            print('{}The tcex.json file is missing the "app_version" field.'.format(c.Fore.YELLOW))
+
+        # update excludes
+        excludes = [
+            '.gitignore',
+            '.pre-commit-config.yaml',
+            'pyproject.toml',
+            'setup.cfg',
+            'tcex_json_schema.json',
+            'tcex.json',
+            '*.install.json',
+            'tcex.d',
+        ]
+
+        missing_exclude = False
+        for exclude in excludes:
+            if exclude not in tcex_json.get('excludes') or []:
+                missing_exclude = True
+                break
+
+        if missing_exclude:
+            message = '\n{}The tcex.json file is missing excludes items. Update ([y]/n)? '.format(
+                c.Fore.YELLOW
+            )
+            response = (get_input(message) or 'y').lower()
+
+            if response in ['y', 'yes']:
+                # get unique list of excludes
+                tcex_json['excludes'] = list(
+                    set((tcex_json.get('excludes') or []).extend(excludes))
+                )
+
+                with open('tcex.json', 'w') as f:
+                    json.dump(tcex_json, f, indent=2, sort_keys=True)
+
 
 if __name__ == '__main__':
     try:
@@ -153,58 +254,55 @@ if __name__ == '__main__':
 
         # create a new app OR migrate an app of a different form to the new app format
         if args.action == 'create' or args.action == 'migrate':
-            # init files for a new App
+            # download common files
+            tci.download_file('.pre-commit-config.yaml')
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
+            tci.download_file('pyproject.toml')
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
             tci.download_file('tcex_json_schema.json')
 
-            if args.type == 'job':
-                tci.download_file('job/app.py', 'app.py')
-                tci.download_file('job/args.py', 'args.py')
-                tci.download_file('job/install.json', 'install.json')
+            # download type specific files
+            if args.template.startswith('job'):
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
-                tci.download_file('job/tcex.json', 'tcex.json')
-            elif args.type == 'playbook':
-                tci.download_file('playbook/app.py', 'app.py')
-                tci.download_file('playbook/args.py', 'args.py')
-                tci.download_file('playbook/install.json', 'install.json')
+            elif args.template.startswith('playbook'):
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
-                tci.download_file('playbook/tcex.json', 'tcex.json')
+
+            # download template specific files
+            tci.download_file('{}/app.py'.format(args.template), 'app.py')
+            tci.download_file('{}/args.py'.format(args.template), 'args.py')
+            tci.download_file('{}/install.json'.format(args.template), 'install.json')
+            tci.download_file('{}/tcex.json'.format(args.template), 'tcex.json')
 
             # if we are migrating, update the install.json
             if args.action == 'migrate':
-                with open('install.json', 'r') as f:
-                    install_json = json.load(f)
+                tci.update_install_json()
 
-                if install_json.get('programMain'):
-                    install_json['programMain'] = 'run'
-
-                if install_json.get('features'):
-                    if 'appBuilderCompliant' not in install_json['features']:
-                        install_json['features'].append('appBuilderCompliant')
-                else:
-                    install_json['features'] = ['appBuilderCompliant']
-
-                with open('install.json', 'w') as f:
-                    json.dump(install_json, f, indent=4, sort_keys=True)
-        # update the standard files
         elif args.action == 'update':
-            # update standard files
+            # update common files
+            tci.download_file('.pre-commit-config.yaml')
             tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
+            tci.download_file('pyproject.toml')
+            tci.download_file('README.md')
+            tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
             tci.download_file('tcex_json_schema.json')
-            if args.type == 'job':
+
+            # update type specific files
+            if args.template.startswith('job'):
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
-            elif args.type == 'playbook':
+            elif args.template.startswith('playbook'):
                 tci.download_file('playbook/playbook_app.py', 'playbook_app.py')
                 tci.download_file('playbook/run.py', 'run.py')
+
+            # update tcex.json file
+            tci.update_tcex_json()
         sys.exit()
 
     except Exception:

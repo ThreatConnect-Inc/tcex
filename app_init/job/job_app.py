@@ -20,7 +20,7 @@ class JobApp(object):
 
     def parse_args(self):
         """Parse CLI args."""
-        Args(self.tcex)
+        Args(self.tcex.parser)
         self.args = self.tcex.args
 
     def run(self):

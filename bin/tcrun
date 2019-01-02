@@ -290,7 +290,7 @@ class TcRun(object):
                 self.clear_redis(sd.get('variable'), 'auto-clear')
             elif data_type == 'redis-array':
                 self.clear_redis(sd.get('variable'), 'auto-clear')
-                for variables in sd.get('data', {}).get('variables', []):
+                for variables in sd.get('data', {}).get('variables') or []:
                     self.clear_redis(variables.get('value'), 'auto-clear')
             elif data_type == 'threatconnect':
                 # self.clear_tc(sd.get('data_owner'), sd.get('data', {}), 'auto-clear')
@@ -300,13 +300,13 @@ class TcRun(object):
                 # assuming these have already been cleared
                 pass
             elif data_type == 'threatconnect-batch':
-                for group in sd.get('data', []).get('group', []):
+                for group in sd.get('data', {}).get('group') or []:
                     self.clear_tc(sd.get('data_owner'), group, 'auto-clear')
                     self.clear_redis(group.get('variable'), 'auto-clear')
-                for indicator in sd.get('data', []).get('indicator', []):
+                for indicator in sd.get('data', {}).get('indicator') or []:
                     self.clear_tc(sd.get('data_owner'), indicator, 'auto-clear')
                     self.clear_redis(indicator.get('variable'), 'auto-clear')
-        for vd in self.profile.get('validations'):
+        for vd in self.profile.get('validations') or []:
             data_type = vd.get('data_type', 'redis')
             variable = vd.get('variable')
             if data_type == 'redis':
@@ -329,7 +329,7 @@ class TcRun(object):
           "value": "1.1.1.1"
         }
         """
-        for clear_data in self.profile.get('clear', []):
+        for clear_data in self.profile.get('clear') or []:
             if clear_data.get('data_type') == 'redis':
                 self.clear_redis(clear_data.get('variable'), 'clear')
             elif clear_data.get('data_type') == 'threatconnect':
@@ -389,7 +389,7 @@ class TcRun(object):
                 batch.indicator(tc_type, summary)
         batch_results = batch.submit()
         self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
-        for error in batch_results.get('errors', []):
+        for error in batch_results.get('errors') or []:
             self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
 
     @property
@@ -410,7 +410,7 @@ class TcRun(object):
                 self._config = json.load(data_file)
 
             # load includes
-            for directory in self._config.get('profile_include_dirs', []):
+            for directory in self._config.get('profile_include_dirs') or []:
                 self._config.setdefault('profiles', []).extend(self._load_config_include(directory))
         return self._config
 
@@ -598,7 +598,7 @@ class TcRun(object):
         # retrieve language from install.json or assume Python
         lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
         # load instance of ArgBuilder
-        profile_args = ArgBuilder(lang, profile.get('args'))
+        profile_args = ArgBuilder(lang, self.profile_args(profile.get('args')))
         # set current profile
         self._profile = profile
         # attach instance to current profile
@@ -609,6 +609,19 @@ class TcRun(object):
         self.reports.profile(profile.get('profile_name'))
         # create required directories for tcrun to function
         self._create_tc_dirs()
+
+    @staticmethod
+    def profile_args(_args):
+        """Return args for old or new structure."""
+        # TODO: clean this up in a way that works for both py2/3
+        if _args.get('app') is not None and _args.get('default') is not None:
+            # detect new args structure
+            app_args = _args.get('app', {})
+            default_args = _args.get('default', {})
+            _args = {}
+            _args.update(app_args)
+            _args.update(default_args)
+        return _args
 
     @property
     def profiles(self):
@@ -623,7 +636,7 @@ class TcRun(object):
                 profile_selected = True
             elif config.get('group') is not None and config.get('group') == self._args.group:
                 profile_selected = True
-            elif self._args.group in config.get('groups', []):
+            elif self._args.group in config.get('groups') or []:
                 profile_selected = True
 
             if profile_selected:
@@ -1071,7 +1084,7 @@ class TcRun(object):
                 out_variable = sd.get('variable')
                 # build array
                 redis_array = []
-                for var in sd.get('data', {}).get('variables', []):
+                for var in sd.get('data', {}).get('variables') or []:
                     variable = var.get('value')
                     if variable.endswith('Binary'):
                         data = self.tcex.playbook.read_binary(variable, False, False)
@@ -1099,7 +1112,7 @@ class TcRun(object):
         """Read data files and return all staging data for current profile."""
         if self._staging_data is None:
             staging_data = []
-            for staging_file in self.profile.get('data_files', []):
+            for staging_file in self.profile.get('data_files') or []:
                 if os.path.isfile(staging_file):
                     print(
                         'Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file)
@@ -1319,7 +1332,7 @@ class TcRun(object):
     def stage_tc_batch(self, owner, staging_data):
         """Stage Redis Data"""
         batch = self.tcex.batch(owner)
-        for group in staging_data.get('group', []):
+        for group in staging_data.get('group') or []:
             # add to redis
             variable = group.pop('variable', None)
             path = group.pop('path', None)
@@ -1335,7 +1348,7 @@ class TcRun(object):
             # create tcentity
             if variable is not None and data is not None:
                 self.stage_redis(variable, self.stage_tc_group_entity(data))
-        for indicator in staging_data.get('indicator', []):
+        for indicator in staging_data.get('indicator') or []:
             # add to redis
             variable = indicator.pop('variable', None)
             path = indicator.pop('path', None)
@@ -1355,7 +1368,7 @@ class TcRun(object):
         # submit batch
         batch_results = batch.submit()
         self.log.debug('[stage] Batch Results: {}'.format(batch_results))
-        for error in batch_results.get('errors', []):
+        for error in batch_results.get('errors') or []:
             self.log.error('[stage] {}'.format(error))
 
     @staticmethod
@@ -1393,7 +1406,7 @@ class TcRun(object):
     def validate(self):
         """Validate Data"""
         passed = True
-        for data in self.profile.get('validations', []):
+        for data in self.profile.get('validations') or []:
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
                 user_data = data.get('data')

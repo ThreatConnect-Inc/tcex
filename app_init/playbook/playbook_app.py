@@ -21,7 +21,7 @@ class PlaybookApp(object):
     def parse_args(self):
         """Parse CLI args."""
         self.tcex.log.info('Parsing Args.')
-        Args(self.tcex)
+        Args(self.tcex.parser)
         self.args = self.tcex.args
 
     def run(self):

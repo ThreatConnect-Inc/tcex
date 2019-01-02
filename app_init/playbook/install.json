@@ -1,66 +1,18 @@
 {
   "allowOnDemand": true,
-  "displayName": "JSON Pretty",
+  "displayName": "",
   "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
     "secureParams"
   ],
   "languageVersion": "3.6",
   "listDelimiter": "|",
-  "note": "Take raw JSON string and output \"pretty\" with provide indent level.",
-  "params": [
-    {
-      "label": "JSON Data",
-      "name": "json_data",
-      "note": "The JSON data to be formatted.",
-      "playbookDataType": [
-        "KeyValue",
-        "KeyValueArray",
-        "String",
-        "StringArray",
-        "TCEntity",
-        "TCEntityArray"
-      ],
-      "required": true,
-      "sequence": 1,
-      "type": "String",
-      "validValues": [
-        "${TEXT}"
-      ]
-    },
-    {
-      "default": "4",
-      "label": "Indent",
-      "name": "indent",
-      "note": "The number of spaces to use for indention (default: 4).",
-      "playbookDataType": [
-        "String"
-      ],
-      "sequence": 2,
-      "type": "String",
-      "validValues": [
-        "${TEXT}"
-      ]
-    },
-    {
-      "default": false,
-      "label": "Sort Keys",
-      "name": "sort_keys",
-      "note": "Indicates whether keys should be sorted.",
-      "playbookDataType": [
-        "String"
-      ],
-      "sequence": 3,
-      "type": "Boolean"
-    }
-  ],
+  "note": "",
+  "params": [],
   "playbook": {
-    "outputVariables": [
-      {
-        "name": "json.pretty",
-        "type": "String"
-      }
-    ],
-    "type": "Utility"
+    "outputVariables": [],
+    "type": ""
   },
   "programLanguage": "PYTHON",
   "programMain": "run",

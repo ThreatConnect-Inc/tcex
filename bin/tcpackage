@@ -243,15 +243,13 @@ class TcPackage(object):
             self._args.config,
             self._args.outdir,
             '__pycache__',
-            '.c9',  # C9 IDe
+            '.c9',  # C9 IDE
             '.git',  # git directory
             '.gitignore',  # git ignore
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
             'log',  # log directory
-            'tcex.json',  # tcex framework config file
-            '*.install.json',  # additional install.json files
         ]
         excludes.extend(self._args.exclude)
         excludes.extend(self.config.get('excludes', []))
@@ -372,7 +370,7 @@ class TcPackage(object):
         if self._args.bundle or self.config.get('bundle', False):
             print('{}{}'.format(c.Style.BRIGHT, '-' * 100))
             if self.config.get('bundle_packages') is not None:
-                for bundle in self.config.get('bundle_packages', []):
+                for bundle in self.config.get('bundle_packages') or []:
                     bundle_name = bundle.get('name')
                     bundle_patterns = bundle.get('patterns')
 
