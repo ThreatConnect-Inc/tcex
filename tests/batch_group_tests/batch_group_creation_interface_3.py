@@ -7,7 +7,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import cleaner  # pylint: disable=C0413
+import utility  # pylint: disable=C0413
 
 
 def adversary_create(batch_job):
@@ -16,7 +16,7 @@ def adversary_create(batch_job):
         {
             'name': 'adversary-003',
             'type': 'Adversary',
-            'xid': cleaner._create_xid('Adversary', 'adversary-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Adversary', 'adversary-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -31,7 +31,7 @@ def campaign_create(batch_job):
         {
             'name': 'campaign-003',
             'type': 'Campaign',
-            'xid': cleaner._create_xid('Campaign', 'campaign-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Campaign', 'campaign-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -48,7 +48,7 @@ def document_create(batch_job):
             'fileName': 'test.txt',
             'fileContent': 'Document content',
             'type': 'Document',
-            'xid': cleaner._create_xid('Document', 'document-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Document', 'document-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -66,7 +66,7 @@ def document_malware_create(batch_job):
             'fileContent': 'Document content',
             'type': 'Document',
             'malware': True,
-            'xid': cleaner._create_xid('Document', 'document-malware-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Document', 'document-malware-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -81,7 +81,7 @@ def email_create(batch_job):
         {
             'name': 'email-003',
             'type': 'Email',
-            'xid': cleaner._create_xid('Email', 'email-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Email', 'email-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -99,7 +99,7 @@ def event_create(batch_job):
         {
             'name': 'event-003',
             'type': 'Event',
-            'xid': cleaner._create_xid('Event', 'event-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Event', 'event-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -114,7 +114,7 @@ def incident_create(batch_job):
         {
             'name': 'incident-003',
             'type': 'Incident',
-            'xid': cleaner._create_xid('Incident', 'incident-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Incident', 'incident-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -129,7 +129,7 @@ def intrusion_set_create(batch_job):
         {
             'name': 'intrusion_set-003',
             'type': 'Intrusion Set',
-            'xid': cleaner._create_xid(  # pylint: disable=W0212
+            'xid': utility._create_xid(  # pylint: disable=W0212
                 'Intrusion Set', 'intrusion_set-003'
             ),
             'attribute': [
@@ -148,7 +148,7 @@ def report_create(batch_job):
             'fileName': 'test.txt',
             'fileContent': 'Report content',
             'type': 'Report',
-            'xid': cleaner._create_xid('Report', 'report-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Report', 'report-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -166,7 +166,7 @@ def signature_create(batch_job):
             'fileType': 'Snort',
             'fileText': 'Signature content',
             'type': 'Signature',
-            'xid': cleaner._create_xid('Signature', 'signature-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Signature', 'signature-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
@@ -181,7 +181,7 @@ def threat_create(batch_job):
         {
             'name': 'threat-003',
             'type': 'Threat',
-            'xid': cleaner._create_xid('Threat', 'threat-003'),  # pylint: disable=W0212
+            'xid': utility._create_xid('Threat', 'threat-003'),  # pylint: disable=W0212
             'attribute': [
                 {'displayed': True, 'type': 'Description', 'value': 'Example Description'}
             ],
