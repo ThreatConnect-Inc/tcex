@@ -18,9 +18,9 @@ def init_tcex(requires_tc_token=False, clean_data=True):
     """Initialize the tcex instance."""
     tcex_instance = tcex.TcEx()
     tcex_instance.log.debug(
-        'Creating content in {}. If this is not correct, pass in a different owner name using the '
-        '--api_default_org flag.'
-    ).format(tcex_instance.args.api_default_org)
+        'Creating content in {}. '.format(tcex_instance.args.api_default_org) +
+        'If this is not correct, pass in a different owner name using the --api_default_org flag.'
+    )
     tcex_instance.args.api_access_id = os.environ['API_ACCESS_ID']
     tcex_instance.args.tc_temp_path = 'log'
     # this manually sets the logging level
