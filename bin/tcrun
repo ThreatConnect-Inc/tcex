@@ -636,7 +636,7 @@ class TcRun(object):
                 profile_selected = True
             elif config.get('group') is not None and config.get('group') == self._args.group:
                 profile_selected = True
-            elif self._args.group in config.get('groups') or []:
+            elif self._args.group in config.get('groups', []):
                 profile_selected = True
 
             if profile_selected:
