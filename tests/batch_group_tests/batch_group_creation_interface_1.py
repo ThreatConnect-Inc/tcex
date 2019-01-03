@@ -7,7 +7,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import utility
+import utility  # pylint: disable=C0413
 
 
 def adversary_create(batch_job):
