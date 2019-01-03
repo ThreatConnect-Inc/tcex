@@ -7,7 +7,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import cleaner  # pylint: disable=C0413
+import utility  # pylint: disable=C0413
 
 
 def _add_indicator(batch_job, type_, summary):
@@ -21,7 +21,7 @@ def _add_indicator(batch_job, type_, summary):
             'attribute': [
                 {'type': 'Description', 'displayed': True, 'value': 'Example Description'}
             ],
-            'xid': cleaner._create_xid(type_, summary),  # pylint: disable=W0212
+            'xid': utility._create_xid(type_, summary),  # pylint: disable=W0212
         }
     )
 
