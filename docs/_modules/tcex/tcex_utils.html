@@ -5,74 +5,74 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>tcex.tcex_utils &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>tcex.tcex_utils &mdash; TcEx 0.9.0 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
 
-  
+
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="../../index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,16 +81,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
@@ -101,7 +101,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
@@ -117,27 +116,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -156,28 +155,28 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
+
       <li>tcex.tcex_utils</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <h1>Source code for tcex.tcex_utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Utilities Module&quot;&quot;&quot;</span>
@@ -196,7 +195,7 @@
 <span class="kn">import</span> <span class="nn">parsedatetime</span> <span class="k">as</span> <span class="nn">pdt</span>
 
 
-<div class="viewcode-block" id="TcExUtils"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils">[docs]</a><span class="k">class</span> <span class="nc">TcExUtils</span><span class="p">():</span>
+<div class="viewcode-block" id="TcExUtils"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils">[docs]</a><span class="k">class</span> <span class="nc">TcExUtils</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;TcEx framework Utils module&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -249,11 +248,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># try to get the timezone from tzlocal</span>
             <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">get_localzone</span><span class="p">()</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># try to get the timezone from python&#39;s time package</span>
                 <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>
                 <span class="c1"># seeing as all else has failed: use UTC as the timezone</span>
                 <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
         <span class="n">dateutil_parser</span> <span class="o">=</span> <span class="n">dateutil_parser</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
@@ -377,6 +376,7 @@
         <span class="sd">&quot;&quot;&quot;Return instance of inflect.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">inflect</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflect</span>
 
@@ -397,7 +397,8 @@
         <span class="sd">&quot;&quot;&quot;Write content to a temporary file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            content (bytes|str): The file content. If passing binary data the mode needs to be set to &#39;wb&#39;.</span>
+<span class="sd">            content (bytes|str): The file content. If passing binary data the mode needs to be set</span>
+<span class="sd">                                 to &#39;wb&#39;.</span>
 <span class="sd">            filename (str, optional): The filename to use when writing the file.</span>
 <span class="sd">            mode (str, optional): The file write mode which could be either &#39;w&#39; or &#39;wb&#39;.</span>
 
@@ -424,7 +425,7 @@
         <span class="n">time_input1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input1</span><span class="p">)</span>
         <span class="n">time_input2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">any_to_datetime</span><span class="p">(</span><span class="n">time_input2</span><span class="p">)</span>
 
-        <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_input1</span> <span class="o">-</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># timedelta</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">time_input1</span> <span class="o">-</span> <span class="n">time_input2</span>  <span class="c1"># timedelta</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">time_input1</span><span class="p">,</span> <span class="n">time_input2</span><span class="p">)</span>  <span class="c1"># relativedelta</span>
 
         <span class="c1"># totals</span>
@@ -452,7 +453,7 @@
             <span class="s1">&#39;total_hours&#39;</span><span class="p">:</span> <span class="n">total_hours</span><span class="p">,</span>
             <span class="s1">&#39;total_minutes&#39;</span><span class="p">:</span> <span class="n">total_minutes</span><span class="p">,</span>
             <span class="s1">&#39;total_seconds&#39;</span><span class="p">:</span> <span class="n">total_seconds</span><span class="p">,</span>
-            <span class="s1">&#39;total_microseconds&#39;</span><span class="p">:</span> <span class="n">total_microseconds</span>
+            <span class="s1">&#39;total_microseconds&#39;</span><span class="p">:</span> <span class="n">total_microseconds</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="TcExUtils.to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -489,29 +490,28 @@
         <span class="k">return</span> <span class="n">dt</span></div></div>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">&gt;&gt;&gt; from pytz import timezone</span>
-<span class="sd">&gt;&gt;&gt; from datetime import datetime</span>
-<span class="sd">&gt;&gt;&gt; time_input = 1229084481</span>
-<span class="sd">&gt;&gt;&gt; dt = datetime.fromtimestamp(float(time_input), tz=timezone(&#39;UTC&#39;))</span>
-<span class="sd">&gt;&gt;&gt; dt.isoformat()</span>
-<span class="sd">&#39;2008-12-12T12:21:21+00:00&#39;</span>
-<span class="sd">&gt;&gt;&gt; tz.normalize(dt).isoformat()</span>
-<span class="sd">&#39;2008-12-12T06:21:21-06:00&#39;</span>
-<span class="sd">&gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;))</span>
-<span class="sd">datetime.datetime(2008, 12, 12, 6, 21, 21, tzinfo=&lt;DstTzInfo &#39;US/Central&#39; CST-1 day, 18:00:00 STD&gt;)</span>
-<span class="sd">&gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;)).isoformat()</span>
-<span class="sd">&#39;2008-12-12T06:21:21-06:00&#39;</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># &gt;&gt;&gt; from pytz import timezone</span>
+<span class="c1"># &gt;&gt;&gt; from datetime import datetime</span>
+<span class="c1"># &gt;&gt;&gt; time_input = 1229084481</span>
+<span class="c1"># &gt;&gt;&gt; dt = datetime.fromtimestamp(float(time_input), tz=timezone(&#39;UTC&#39;))</span>
+<span class="c1"># &gt;&gt;&gt; dt.isoformat()</span>
+<span class="c1"># &#39;2008-12-12T12:21:21+00:00&#39;</span>
+<span class="c1"># &gt;&gt;&gt; tz.normalize(dt).isoformat()</span>
+<span class="c1"># &#39;2008-12-12T06:21:21-06:00&#39;</span>
+<span class="c1"># &gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;))</span>
+<span class="c1"># datetime.datetime(2008, 12, 12, 6, 21, 21,</span>
+<span class="c1">#   tzinfo=&lt;DstTzInfo &#39;US/Central&#39; CST-1 day, 18:00:00 STD&gt;)</span>
+<span class="c1"># &gt;&gt;&gt; dt.astimezone(timezone(&#39;US/Central&#39;)).isoformat()</span>
+<span class="c1"># &#39;2008-12-12T06:21:21-06:00&#39;</span>
 </pre></div>
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
 
   <hr/>
 
@@ -520,7 +520,7 @@
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -530,15 +530,15 @@
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.26',
+            VERSION:'0.9.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -549,21 +549,21 @@
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

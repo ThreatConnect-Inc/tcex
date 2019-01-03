@@ -5,76 +5,76 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>tcex.tcex module &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>tcex.tcex module &mdash; TcEx 0.9.0 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../index.html"/>
         <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/>
-        <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html"/> 
+        <link rel="next" title="tcex.tcex_app_decorators module" href="tcex.tcex_app_decorators.html"/>
+        <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html"/>
 
-  
+
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="../index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -83,16 +83,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
@@ -111,16 +110,27 @@
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_app_decorators.html">tcex.tcex_app_decorators module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_batch_v2.html">tcex.tcex_batch_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_job.html">tcex.tcex_job module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_session.html">tcex.tcex_session module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_attribute.html">tcex.tcex_ti_attribute module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_batch.html">tcex.tcex_ti_batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_group.html">tcex.tcex_ti_group module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_indicator.html">tcex.tcex_ti_indicator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_security_label.html">tcex.tcex_ti_security_label module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_tag.html">tcex.tcex_ti_tag module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
 </ul>
@@ -142,27 +152,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -181,30 +191,30 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="../index.html">Docs</a> &raquo;</li>
-        
+
           <li><a href="modules.html">tcex</a> &raquo;</li>
-        
+
           <li><a href="tcex.html">tcex package</a> &raquo;</li>
-        
+
       <li>tcex.tcex module</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <div class="section" id="module-tcex.tcex">
 <span id="tcex-tcex-module"></span><h1>tcex.tcex module<a class="headerlink" href="#module-tcex.tcex" title="Permalink to this headline">¶</a></h1>
 <p>TcEx Framework</p>
@@ -217,61 +227,6 @@
 <dt id="tcex.tcex.TcEx._association_types">
 <code class="descname">_association_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._association_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._association_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve Custom Indicator Associations types from the ThreatConnect API.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._authorization_token_renew">
-<code class="descname">_authorization_token_renew</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._authorization_token_renew"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._authorization_token_renew" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method for handling token authorization to ThreatConnect API.</p>
-<p>This method will automatically renew the ThreatConnect token if it has expired.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>An dictionary containing the header values for authorization to</dt>
-<dd>ThreatConnect.</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx._load_secure_params">
-<code class="descname">_load_secure_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._load_secure_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._load_secure_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load secure params from the API.</p>
-<p># API Response:</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;inputs&quot;</span><span class="o">:</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;tc_playbook_db_type&quot;</span><span class="o">:</span> <span class="s2">&quot;Redis&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;fail_on_error&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-            <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span>
-        <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Parameters (“inputs”) from the TC API.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -377,136 +332,16 @@ tcex.resource(‘&lt;resource name&gt;’).</p>
 <dd><p>Handle singal interrupt.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="tcex.tcex.TcEx._unknown_args">
-<code class="descname">_unknown_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._unknown_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._unknown_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log argparser unknown arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>list</em>) – List of unknown arguments</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.args">
 <code class="descname">args</code><a class="headerlink" href="#tcex.tcex.TcEx.args" title="Permalink to this definition">¶</a></dt>
-<dd><p>The parsed args from argparser</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Accessing args should only be done directly in the App.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">ArgParser parsed arguments</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(namespace)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.authorization">
-<code class="descname">authorization</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.authorization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.authorization" title="Permalink to this definition">¶</a></dt>
-<dd><p>A method to handle the different methods of authenticating to the ThreatConnect API.</p>
-<p><strong>Token Based Authorization</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>HMAC Based Authorization</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="p">{</span>
-     <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">authorization</span><span class="p">,</span>
-     <span class="s1">&#39;Timestamp&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">unix</span> <span class="n">timestamp</span><span class="o">&gt;</span>
- <span class="p">}</span>
-
-<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">python</span><span class="o">-</span><span class="n">requests</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="c1">#requests.Session.prepare_request.</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>object</em>) – A instance of Python Request module requests.
-PreparedRequest.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>An dictionary containing the header values for authorization to</dt>
-<dd>ThreatConnect.</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.authorization_hmac">
-<code class="descname">authorization_hmac</code><span class="sig-paren">(</span><em>request_prepped</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.authorization_hmac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.authorization_hmac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method for handling HMAC authorization to ThreatConnect API.</p>
-<blockquote>
-<div><a class="reference external" href="http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request">http://docs.python-requests.org/en/master/api/#requests.Session.prepare_request</a>.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_prepped</strong> (<em>object</em>) – A instance of Python Request prepped requests.
-PreparedRequest.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>An dictionary containing the header values for authorization to</dt>
-<dd>ThreatConnect.</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Argparser args Namespace.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex.TcEx.batch">
 <code class="descname">batch</code><span class="sig-paren">(</span><em>owner</em>, <em>action=None</em>, <em>attribute_write_type=None</em>, <em>halt_on_error=False</em>, <em>playbook_triggers_enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.batch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance of Batch</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.bulk_enabled">
-<code class="descname">bulk_enabled</code><span class="sig-paren">(</span><em>owner=None</em>, <em>api_path=None</em>, <em>authorization=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.bulk_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.bulk_enabled" title="Permalink to this definition">¶</a></dt>
-<dd><p>[Deprecated] Check if bulk indicators is enabled for owner.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This method is deprecated and will be removed in TcEx version 0.9.0.</p>
-</div>
-<p>Using the TC API validate that bulk indicator download is enabled and
-has successfully run for the provided owner.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>owner</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – Owner name to check.</li>
-<li><strong>api_path</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The url to the ThreatConnect API.</li>
-<li><strong>authorization</strong> (<em>Optional</em><em> [</em><em>string</em><em>]</em>) – The authorization header value.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if bulk indicator download is enabled and has run</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(boolean)</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -534,44 +369,7 @@ results required.</p>
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.default_args">
 <code class="descname">default_args</code><a class="headerlink" href="#tcex.tcex.TcEx.default_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse args and return default args.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.epoch_seconds">
-<code class="descname">epoch_seconds</code><span class="sig-paren">(</span><em>delta=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.epoch_seconds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.epoch_seconds" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Get epoch seconds for now or using a time delta.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This method is deprecated and will be removed in TcEx version 0.9.0.  Use the
-tcex.utils date methods instead.</p>
-</div>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;days&#39;</span><span class="o">:</span> <span class="mi">1</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;weeks&#39;</span><span class="o">:</span> <span class="mi">3</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;months&#39;</span><span class="o">:</span> <span class="mi">4</span><span class="p">}</span>
-<span class="p">{</span><span class="s1">&#39;days&#39;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;weeks&#39;</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="o">:</span> <span class="mi">4</span><span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">More information can be found at
-<a class="reference external" href="https://dateutil.readthedocs.io/en/stable/relativedelta.html">https://dateutil.readthedocs.io/en/stable/relativedelta.html</a></p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>delta</strong> (<em>Optional</em><em> [</em><em>integer</em><em>]</em>) – The exit code value for the app.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A integer representing epoch seconds.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-</tbody>
-</table>
+<dd><p>All args parsed before App args are added.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -710,12 +508,6 @@ during the call of this method.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="tcex.tcex.TcEx.inject_params">
-<code class="descname">inject_params</code><span class="sig-paren">(</span><em>params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.inject_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.inject_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inject params into sys.argv from secureParams API, AOT, or user provided.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.install_json">
 <code class="descname">install_json</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json" title="Permalink to this definition">¶</a></dt>
@@ -732,17 +524,6 @@ during the call of this method.</p>
 <dt id="tcex.tcex.TcEx.job">
 <code class="descname">job</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.job" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>[Deprecated]</strong> Return instance of Job module</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-tcex.batch instead.</p>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="tcex.tcex.TcEx.jobs">
-<code class="descname">jobs</code><a class="headerlink" href="#tcex.tcex.TcEx.jobs" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Include the jobs Module.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">The job module is deprecated and will be removed in TcEx version 0.9.0. Use
@@ -811,6 +592,12 @@ this limit will be truncated by this method.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="tcex.tcex.TcEx.parser">
+<code class="descname">parser</code><a class="headerlink" href="#tcex.tcex.TcEx.parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance tcex args parser.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="tcex.tcex.TcEx.playbook">
 <code class="descname">playbook</code><a class="headerlink" href="#tcex.tcex.TcEx.playbook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Include the Playbook Module.</p>
@@ -842,52 +629,19 @@ when proxy is required for remote connections.</p>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.rargs">
+<code class="descname">rargs</code><a class="headerlink" href="#tcex.tcex.TcEx.rargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argparser args Namespace with Playbook args automatically resolved (resolved args).</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex.TcEx.request">
 <code class="descname">request</code><span class="sig-paren">(</span><em>session=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of the Request Class.</p>
-<p>A wrapper on the Python Request Module specifically for interacting with the
-ThreatConnect API.  However, this can also be used for connecting to other
-API endpoints.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of Request Class</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.request_external">
-<code class="descname">request_external</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.request_external"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.request_external" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an instance of the Request Class with Proxy Set</p>
-<p>See <a class="reference internal" href="#tcex.tcex.TcEx.request" title="tcex.tcex.TcEx.request"><code class="xref py py-mod docutils literal"><span class="pre">request</span></code></a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of Request Class</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.request_tc">
-<code class="descname">request_tc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.request_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.request_tc" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Return an instance of the Request Class with Proxy and Authorization Set</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This method is deprecated and will be removed in TcEx version 0.9.0. Use
-tcex.session instead.</p>
-</div>
-<p>See <a class="reference internal" href="#tcex.tcex.TcEx.request" title="tcex.tcex.TcEx.request"><code class="xref py py-mod docutils literal"><span class="pre">request</span></code></a></p>
+<p>A wrapper on the Python Requests module that provides a different interface for creating
+requests. The session property of this instance has built-in logging, session level
+retries, and preconfigured proxy configuration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -939,28 +693,10 @@ method will store the values for TC to read and put into the Database.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx.results_tc_args">
-<code class="descname">results_tc_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.results_tc_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.results_tc_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read data from results_tc file from previous run of app.</p>
-<p>This method is only required when not running from the with the
-TcEX platform and is only intended for testing apps locally.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of values written to results_tc.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(dictionary)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="tcex.tcex.TcEx.s">
 <code class="descname">s</code><span class="sig-paren">(</span><em>data</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decode value using correct Python 2/3 method.</p>
-<p>This method is intended to replace the <a class="reference internal" href="#tcex.tcex.TcEx.to_string" title="tcex.tcex.TcEx.to_string"><code class="xref py py-meth docutils literal"><span class="pre">to_string()</span></code></a> method with
+<p>This method is intended to replace the <code class="xref py py-meth docutils literal"><span class="pre">to_string()</span></code> method with
 better logic to handle poorly encoded unicode data in Python2 and still work in Python3.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1062,8 +798,8 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx.safetag">
-<code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex.TcEx.safe_tag">
+<code class="descname">safe_tag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1080,8 +816,8 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </dd></dl>
 
 <dl class="method">
-<dt id="tcex.tcex.TcEx.safeurl">
-<code class="descname">safeurl</code><span class="sig-paren">(</span><em>url</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safeurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex.TcEx.safe_url">
+<code class="descname">safe_url</code><span class="sig-paren">(</span><em>url</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safe_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safe_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL encode value for safe HTTP request.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1097,38 +833,22 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex.TcEx.safetag">
+<code class="descname">safetag</code><span class="sig-paren">(</span><em>tag</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safetag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safetag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method for safe_tag.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx.safeurl">
+<code class="descname">safeurl</code><span class="sig-paren">(</span><em>url</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.safeurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.safeurl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper method for safe_url.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.session">
 <code class="descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.to_string">
-<code class="descname">to_string</code><span class="sig-paren">(</span><em>data</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Decode value using correct Python 2/3 method</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This method is deprecated and will be removed in TcEx version 0.9.0.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>any</em>) – Data to ve validated and re-encoded</li>
-<li><strong>errors</strong> (<em>string</em>) – What method to use when dealing with errors.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Return decoded data</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(string)</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -1148,20 +868,20 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="tcex.tcex_argparser.html" class="btn btn-neutral float-right" title="tcex.tcex_argparser module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+
+        <a href="tcex.tcex_app_decorators.html" class="btn btn-neutral float-right" title="tcex.tcex_app_decorators module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
         <a href="tcex.tcex_logger.html" class="btn btn-neutral" title="tcex.tcex_logger module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+
     </div>
-  
+
 
   <hr/>
 
@@ -1170,7 +890,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -1180,15 +900,15 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.8.26',
+            VERSION:'0.9.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -1199,21 +919,21 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

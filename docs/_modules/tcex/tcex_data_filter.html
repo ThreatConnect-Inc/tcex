@@ -5,74 +5,74 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>tcex.tcex_data_filter &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>tcex.tcex_data_filter &mdash; TcEx 0.9.0 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
 
-  
+
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="../../index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,16 +81,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
@@ -101,7 +101,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
@@ -117,27 +116,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -156,28 +155,28 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
+
       <li>tcex.tcex_data_filter</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <h1>Source code for tcex.tcex_data_filter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot; Data Filter Module &quot;&quot;&quot;</span>
@@ -287,36 +286,35 @@
 
         <span class="k">return</span> <span class="n">filtered_data</span></div>
 
-<div class="viewcode-block" id="DataFilter._loop_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._loop_filter">[docs]</a>    <span class="k">def</span> <span class="nf">_loop_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="c1"># def _loop_filter(self, field, filter_value, filter_operator, field_converter=None):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            index_data (dictionary): The indexed data for the provided field.</span>
-<span class="sd">            filter_value (string)</span>
-<span class="sd">            filter_operator (string)</span>
-<span class="sd">            fv_converter (method)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+    <span class="c1">#     Args:</span>
+    <span class="c1">#         index_data (dictionary): The indexed data for the provided field.</span>
+    <span class="c1">#         filter_value (string)</span>
+    <span class="c1">#         filter_operator (string)</span>
+    <span class="c1">#         fv_converter (method)</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
 
-        <span class="c1"># if not isinstance(self._data, list):</span>
-        <span class="c1">#     raise RuntimeError(&#39;Only *List* data type is currently supported&#39;)</span>
-        <span class="c1">#</span>
-        <span class="c1"># filtered_data = []</span>
-        <span class="c1"># for d in self._data:</span>
-        <span class="c1">#     if not isinstance(d, dict):</span>
-        <span class="c1">#         self._tcex.log.debug(u&#39;Can filter for non Dict type.&#39;)</span>
-        <span class="c1">#</span>
-        <span class="c1">#     for key, value in d.items():</span>
-        <span class="c1">#         if field != key:</span>
-        <span class="c1">#             continue</span>
-        <span class="c1">#</span>
-        <span class="c1">#         if fv_converter is not None:</span>
-        <span class="c1">#             filter_value = fv_converter(filter_value)</span>
-        <span class="c1">#</span>
-        <span class="c1">#         if filter_operator(key, filter_value):</span>
-        <span class="c1">#             filtered_data.append(value)</span>
-        <span class="c1">#</span>
-        <span class="c1"># return filtered_data</span>
+    <span class="c1">#     if not isinstance(self._data, list):</span>
+    <span class="c1">#         raise RuntimeError(&#39;Only *List* data type is currently supported&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     filtered_data = []</span>
+    <span class="c1">#     for d in self._data:</span>
+    <span class="c1">#         if not isinstance(d, dict):</span>
+    <span class="c1">#             self._tcex.log.debug(u&#39;Can filter for non Dict type.&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#         for key, value in d.items():</span>
+    <span class="c1">#             if field != key:</span>
+    <span class="c1">#                 continue</span>
+    <span class="c1">#</span>
+    <span class="c1">#             if fv_converter is not None:</span>
+    <span class="c1">#                 filter_value = fv_converter(filter_value)</span>
+    <span class="c1">#</span>
+    <span class="c1">#             if filter_operator(key, filter_value):</span>
+    <span class="c1">#                 filtered_data.append(value)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     return filtered_data</span>
 
 <div class="viewcode-block" id="DataFilter._ni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_ni</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
@@ -363,7 +361,8 @@
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_filter</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span>
+            <span class="p">)</span>
         <span class="c1"># else:</span>
         <span class="c1">#     data = self._loop_filter(field, filter_value, filter_operator)</span>
 
@@ -415,7 +414,7 @@
             <span class="s1">&#39;LE&#39;</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">,</span>
             <span class="s1">&#39;SW&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_starts_with</span><span class="p">,</span>
             <span class="s1">&#39;IN&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in</span><span class="p">,</span>
-            <span class="s1">&#39;NI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ni</span>  <span class="c1"># not in</span>
+            <span class="s1">&#39;NI&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ni</span><span class="p">,</span>  <span class="c1"># not in</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="DataFilter.results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.results">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -459,11 +458,11 @@
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
 
   <hr/>
 
@@ -472,7 +471,7 @@
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -482,15 +481,15 @@
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.26',
+            VERSION:'0.9.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -501,21 +500,21 @@
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

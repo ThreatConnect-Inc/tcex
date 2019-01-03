@@ -1,7 +1,7 @@
-tcex.tcex_batch_v2 module
+tcex.tcex_ti_batch module
 =========================
 
-.. automodule:: tcex.tcex_batch_v2
+.. automodule:: tcex.tcex_ti_batch
     :members:
     :undoc-members:
     :show-inheritance:

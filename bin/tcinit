@@ -92,8 +92,8 @@ class TcInit(object):
         if self.args.action == 'update' or self.args.action == 'migrate':
             # check if the current directory is empty (if so, a RuntimeWarning is raised)
             self._check_empty_app_dir()
-            if self.args.action == 'update':
-                self.confirm_overwrite = False
+            # if self.args.action == 'update':
+            #     self.confirm_overwrite = False
 
         if self.args.force:
             self.confirm_overwrite = False
@@ -115,6 +115,8 @@ class TcInit(object):
         status_color = c.Fore.RED
         if status == 'Success':
             status_color = c.Fore.GREEN
+        elif status == 'Skipped':
+            status_color = c.Fore.YELLOW
         print(
             '{}{!s:<20}{}{!s:<35}{}{!s:<15}{}{!s:<15}'.format(
                 c.Fore.CYAN,
@@ -133,26 +135,19 @@ class TcInit(object):
         """Check if a file at the given path exists."""
         return os.access(file_path, os.F_OK)
 
-    def _confirm_overwrite(self, file_path):
+    @staticmethod
+    def _confirm_overwrite(file_path):
         """Make sure the user would like to continue downloading a file which will overwrite a file
         in the current directory."""
-        message = '\n{}Would you like to overwrite the contents of {} (y/n)? '.format(
-            c.Fore.YELLOW, file_path
+        message = '{}Would you like to overwrite the contents of {} (y/[n])? '.format(
+            c.Fore.MAGENTA, file_path
         )
-        response = get_input(message)
+        response = get_input(message) or 'n'
         response = response.lower()
 
-        co = False
         if response in ['y', 'yes']:
-            co = True
-        elif response not in ['n', 'no']:
-            print(
-                '{}{}Please enter "y"/"yes" or "n"/"no"... try again:'.format(
-                    c.Style.BRIGHT, c.Fore.RED
-                )
-            )
-            co = self._confirm_overwrite(file_path)
-        return co
+            return True
+        return False
 
     def download_file(self, remote_filename, local_filename=None):
         """Download file from github."""
@@ -162,7 +157,8 @@ class TcInit(object):
 
         if self.confirm_overwrite and self._file_exists(local_filename):
             if not self._confirm_overwrite(local_filename):
-                print('{}{!s:<20}{}'.format(c.Fore.YELLOW, 'Skipping:', local_filename))
+                self._print_results(local_filename, 'Skipped')
+                # print('{}{!s:<20}{}'.format(c.Fore.YELLOW, 'Skipping:', local_filename))
                 return
 
         # github url
@@ -206,11 +202,11 @@ class TcInit(object):
             tcex_json = json.load(f)
 
         # display warning on missing app_name field
-        if tcex_json.get('app_name') is None:
-            print('{}The tcex.json file is missing the "app_name" field.'.format(c.Fore.YELLOW))
+        if tcex_json.get('package', {}).get('app_name') is None:
+            print('{}The tcex.json file is missing the "app_name" field.'.format(c.Fore.MAGENTA))
 
         # display warning on missing app_version field
-        if tcex_json.get('app_version') is None:
+        if tcex_json.get('package', {}).get('app_version') is None:
             print('{}The tcex.json file is missing the "app_version" field.'.format(c.Fore.YELLOW))
 
         # update excludes
@@ -227,21 +223,20 @@ class TcInit(object):
 
         missing_exclude = False
         for exclude in excludes:
-            if exclude not in tcex_json.get('excludes') or []:
+            if exclude not in tcex_json.get('package').get('excludes', []):
                 missing_exclude = True
                 break
 
         if missing_exclude:
-            message = '\n{}The tcex.json file is missing excludes items. Update ([y]/n)? '.format(
+            message = '{}The tcex.json file is missing excludes items. Update ([y]/n)? '.format(
                 c.Fore.YELLOW
             )
             response = (get_input(message) or 'y').lower()
 
             if response in ['y', 'yes']:
                 # get unique list of excludes
-                tcex_json['excludes'] = list(
-                    set((tcex_json.get('excludes') or []).extend(excludes))
-                )
+                excludes.extend(tcex_json.get('package', {}).get('excludes'))
+                tcex_json['package']['excludes'] = sorted(list(set(excludes)))
 
                 with open('tcex.json', 'w') as f:
                     json.dump(tcex_json, f, indent=2, sort_keys=True)

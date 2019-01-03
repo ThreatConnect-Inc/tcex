@@ -83,6 +83,9 @@ class TcExPlaybook(object):
             tcex.playbook.write_output()  #  writes the output stored in output_data
 
         .. code-block:: json
+            :linenos:
+            :lineno-start: 1
+
             {
                 "my_color-String": {
                     "key": "my_color",

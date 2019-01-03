@@ -50,21 +50,10 @@ log
 requirements.txt
 tcex.json
 tcex.d
-test*
+templates
 threatconnect*
 
 #-------------------------------------------------
 # Other Nonsense
 #-------------------------------------------------
 bcs*
-
-#-------------------------------------------------
-# Tests Exclusions
-#-------------------------------------------------
-# 'unignore' the files in the tests directory
-!tests/
-!tests/*
-tests/lib*
-tests/log*
-tests/__pycache__
-tests/*.pyc

@@ -1,0 +1,915 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_ti_group &mdash; TcEx 0.9.0 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
+
+
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.tcex_ti_group</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.tcex_ti_group</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">.tcex_utils</span> <span class="k">import</span> <span class="n">TcExUtils</span>
+<span class="kn">from</span> <span class="nn">.tcex_ti_attribute</span> <span class="k">import</span> <span class="n">Attribute</span>
+<span class="kn">from</span> <span class="nn">.tcex_ti_security_label</span> <span class="k">import</span> <span class="n">SecurityLabel</span>
+<span class="kn">from</span> <span class="nn">.tcex_ti_tag</span> <span class="k">import</span> <span class="n">Tag</span>
+
+
+<div class="viewcode-block" id="Group"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group">[docs]</a><span class="k">class</span> <span class="nc">Group</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Group Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [</span>
+    <span class="c1">#     &#39;_attributes&#39;,</span>
+    <span class="c1">#     &#39;_file_content&#39;,</span>
+    <span class="c1">#     &#39;_group_data&#39;,</span>
+    <span class="c1">#     &#39;_labels&#39;,</span>
+    <span class="c1">#     &#39;_name&#39;,</span>
+    <span class="c1">#     &#39;_processed&#39;,</span>
+    <span class="c1">#     &#39;_type&#39;,</span>
+    <span class="c1">#     &#39;_tags&#39;,</span>
+    <span class="c1">#     &#39;_utils&#39;]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_type (str): The ThreatConnect define Group type.</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="n">TcExUtils</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">group_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">group_type</span><span class="p">}</span>
+        <span class="c1"># process all kwargs and update metadata field names</span>
+        <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c1"># set xid to random and unique uuid4 value if not provided</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;xid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_metadata_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return metadata map for Group objects.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;date_added&#39;</span><span class="p">:</span> <span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;event_date&#39;</span><span class="p">:</span> <span class="s1">&#39;eventDate&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;file_name&#39;</span><span class="p">:</span> <span class="s1">&#39;fileName&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;file_text&#39;</span><span class="p">:</span> <span class="s1">&#39;fileText&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;file_type&#39;</span><span class="p">:</span> <span class="s1">&#39;fileType&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;first_seen&#39;</span><span class="p">:</span> <span class="s1">&#39;firstSeen&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;from_addr&#39;</span><span class="p">:</span> <span class="s1">&#39;from&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;publish_date&#39;</span><span class="p">:</span> <span class="s1">&#39;publishDate&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;to_addr&#39;</span><span class="p">:</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="Group.add_file"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a file for Document and Report types.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            document = tcex.batch.group(&#39;Document&#39;, &#39;My Document&#39;)</span>
+<span class="sd">            document.add_file(&#39;my_file.txt&#39;, &#39;my contents&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The name of the file.</span>
+<span class="sd">            file_content (bytes|method|str): The contents of the file or callback to get contents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span></div>
+
+<div class="viewcode-block" id="Group.add_key_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.add_key_value">[docs]</a>    <span class="k">def</span> <span class="nf">add_key_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add custom field to Group object.</span>
+
+<span class="sd">        .. note:: The key must be the exact name required by the batch schema.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            document = tcex.batch.group(&#39;Document&#39;, &#39;My Document&#39;)</span>
+<span class="sd">            document.add_key_value(&#39;fileName&#39;, &#39;something.pdf&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): The field key to add to the JSON batch data.</span>
+<span class="sd">            value (str): The field value to add to the JSON batch data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">,</span> <span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;firstSeen&#39;</span><span class="p">,</span> <span class="s1">&#39;publishDate&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+                <span class="n">value</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;file_content&#39;</span><span class="p">:</span>
+            <span class="c1"># file content arg is not part of Group JSON</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Group.association"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.association">[docs]</a>    <span class="k">def</span> <span class="nf">association</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_xid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add association using xid value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_xid (str): The external id of the Group to associate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;associatedGroupXid&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_xid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Group.attribute"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.attribute">[docs]</a>    <span class="k">def</span> <span class="nf">attribute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">attr_type</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">,</span> <span class="n">displayed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of Attribute</span>
+
+<span class="sd">        unique:</span>
+<span class="sd">            * False - Attribute type:value can be duplicated.</span>
+<span class="sd">            * &#39;Type&#39; - Attribute type has to be unique (e.g., only 1 Description Attribute).</span>
+<span class="sd">            * True - Attribute type:value combo must be unique.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attr_type (str): The ThreatConnect defined attribute type.</span>
+<span class="sd">            attr_value (str): The value for this attribute.</span>
+<span class="sd">            displayed (bool, default:false): If True the supported attribute will be marked for</span>
+<span class="sd">                display.</span>
+<span class="sd">            source (str, optional): The source value for this attribute.</span>
+<span class="sd">            unique (bool|string, optional): Control attribute creation.</span>
+<span class="sd">            formatter (method, optional): A method that takes a single attribute value and returns a</span>
+<span class="sd">                single formatted value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            obj: An instance of Attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">attr_type</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">,</span> <span class="n">displayed</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">formatter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unique</span> <span class="o">==</span> <span class="s1">&#39;Type&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">attribute_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attribute_data</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">attr_type</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">attribute_data</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unique</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">attribute_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attribute_data</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">attr_type</span> <span class="ow">and</span> <span class="n">attribute_data</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">attr</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="n">attr</span> <span class="o">=</span> <span class="n">attribute_data</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unique</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group data.&quot;&quot;&quot;</span>
+        <span class="c1"># add attributes</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;attribute&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># add security labels</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;securityLabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;securityLabel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># add tags</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group dateAdded.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">)</span>
+
+    <span class="nd">@date_added</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">date_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date_added</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Indicator dateAdded.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;dateAdded&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">date_added</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group file (only supported for Document and Report).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return processed value.</span>
+
+<span class="sd">        .. note:: Processed value indicates that a group with this xid has already been processed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processed</span>
+
+    <span class="nd">@processed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">processed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">processed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set processed.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processed</span> <span class="o">=</span> <span class="n">processed</span>
+
+<div class="viewcode-block" id="Group.security_label"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.security_label">[docs]</a>    <span class="k">def</span> <span class="nf">security_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of SecurityLabel.</span>
+
+<span class="sd">        .. note:: The provided security label will be create if it doesn&#39;t exist. If the security</span>
+<span class="sd">            label already exists nothing will be changed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The value for this security label.</span>
+<span class="sd">            description (str): A description for this security label.</span>
+<span class="sd">            color (str): A color (hex value) for this security label.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            obj: An instance of SecurityLabel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">SecurityLabel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">label_data</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">label_data</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label</span></div>
+
+<div class="viewcode-block" id="Group.tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.tag">[docs]</a>    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return instance of Tag.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The value for this tag.</span>
+<span class="sd">            formatter (method, optional): A method that take a tag value and returns a</span>
+<span class="sd">                formatted tag.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            obj: An instance of Tag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">Tag</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">formatter</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tag_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tag_data</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">tag_data</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tag</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">xid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group xid.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Group.__str__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation of object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Adversary"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Adversary">[docs]</a><span class="k">class</span> <span class="nc">Adversary</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Adversary</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Campaign"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Campaign">[docs]</a><span class="k">class</span> <span class="nc">Campaign</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Campaign Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            first_seen (str, kwargs): The first seen datetime expression for this Group.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Campaign</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">first_seen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Document first seen.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">)</span>
+
+    <span class="nd">@first_seen</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">first_seen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_seen</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Document first seen.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">first_seen</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Document Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = [&#39;_file_data&#39;, &#39;_group_data&#39;]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            file_name (str): The name for the attached file for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            file_content (str;method, kwargs): The file contents or callback method to retrieve</span>
+<span class="sd">                                               file content.</span>
+<span class="sd">            malware (bool, kwargs): If true the file is considered malware.</span>
+<span class="sd">            password (bool, kwargs): If malware is true a password for the zip archive is required.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="c1"># file data/content to upload</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_content&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
+
+    <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Document or Report file data.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">malware</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Document malware.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;malware&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@malware</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">malware</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">malware</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Document malware.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;malware&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">malware</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Document password.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@password</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Document password.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">password</span></div>
+
+
+<div class="viewcode-block" id="Email"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Email">[docs]</a><span class="k">class</span> <span class="nc">Email</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Email Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            subject (str): The subject for this Email.</span>
+<span class="sd">            header (str): The header for this Email.</span>
+<span class="sd">            body (str): The body for this Email.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            from_addr (str, kwargs): The **from** address for this Email.</span>
+<span class="sd">            to_addr (str, kwargs): The **to** address for this Email.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Email</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subject</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Email to.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span>
+
+    <span class="nd">@from_addr</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_addr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Email from.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_addr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Email to.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span>
+
+    <span class="nd">@score</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Email from.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Email to.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;to&#39;</span><span class="p">)</span>
+
+    <span class="nd">@to_addr</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_addr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Email to.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_addr</span></div>
+
+
+<div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Event Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Valid Values:</span>
+<span class="sd">        + Escalated</span>
+<span class="sd">        + False Positive</span>
+<span class="sd">        + Needs Review</span>
+<span class="sd">        + No Further Action</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            event_date (str, kwargs): The event datetime expression for this Group.</span>
+<span class="sd">            status (str, kwargs): The status for this Group.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Event</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Events &quot;event date&quot; value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;firstSeen&#39;</span><span class="p">)</span>
+
+    <span class="nd">@event_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the Events &quot;event date&quot; value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">event_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Events status value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
+
+    <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the Events status value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span></div>
+
+
+<div class="viewcode-block" id="Incident"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Incident">[docs]</a><span class="k">class</span> <span class="nc">Incident</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Incident Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Valid Values:</span>
+<span class="sd">        + Closed</span>
+<span class="sd">        + Containment Achieved</span>
+<span class="sd">        + Deleted</span>
+<span class="sd">        + Incident Reported</span>
+<span class="sd">        + Open</span>
+<span class="sd">        + New</span>
+<span class="sd">        + Rejected</span>
+<span class="sd">        + Restoration Achieved</span>
+<span class="sd">        + Stalled</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            event_date (str, kwargs): The event datetime expression for this Group.</span>
+<span class="sd">            status (str, kwargs): The status for this Group.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Incident</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Incident&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Incident event date.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">)</span>
+
+    <span class="nd">@event_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">event_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Incident event_date.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;eventDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">event_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Incident status.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
+
+    <span class="nd">@status</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Incident status.</span>
+
+<span class="sd">        Valid Values:</span>
+<span class="sd">        + New</span>
+<span class="sd">        + Open</span>
+<span class="sd">        + Stalled</span>
+<span class="sd">        + Containment Achieved</span>
+<span class="sd">        + Restoration Achieved</span>
+<span class="sd">        + Incident Reported</span>
+<span class="sd">        + Closed</span>
+<span class="sd">        + Rejected</span>
+<span class="sd">        + Deleted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span></div>
+
+
+<div class="viewcode-block" id="IntrusionSet"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.IntrusionSet">[docs]</a><span class="k">class</span> <span class="nc">IntrusionSet</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Adversary Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IntrusionSet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Intrusion Set&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Report"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Report">[docs]</a><span class="k">class</span> <span class="nc">Report</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Report Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            file_name (str, kwargs): The name for the attached file for this Group.</span>
+<span class="sd">            file_content (str;method, kwargs): The file contents or callback method to retrieve</span>
+<span class="sd">                                               file content.</span>
+<span class="sd">            publish_date (str, kwargs): The publish datetime expression for this Group.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Report</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Report&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># file data/content to upload</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_content&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span>
+
+    <span class="nd">@file_content</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Document or Report file data.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span> <span class="o">=</span> <span class="n">file_content</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">file_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Group files.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_content</span><span class="p">,</span>
+            <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">publish_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return Report publish date.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;publishDate&#39;</span><span class="p">)</span>
+
+    <span class="nd">@publish_date</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">publish_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">publish_date</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Report publish date&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;publishDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span>
+            <span class="n">publish_date</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Signature Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">file_text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Valid file_types:</span>
+<span class="sd">        + Snort ®</span>
+<span class="sd">        + Suricata</span>
+<span class="sd">        + YARA</span>
+<span class="sd">        + ClamAV ®</span>
+<span class="sd">        + OpenIOC</span>
+<span class="sd">        + CybOX ™</span>
+<span class="sd">        + Bro</span>
+<span class="sd">        + Regex</span>
+<span class="sd">        + SPL - Splunk ® Search Processing Language</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            file_name (str): The name for the attached signature for this Group.</span>
+<span class="sd">            file_type (str): The signature type for this Group.</span>
+<span class="sd">            file_text (str): The signature content for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Signature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Signature&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_data</span><span class="p">[</span><span class="s1">&#39;fileText&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_text</span></div>
+
+
+<div class="viewcode-block" id="Threat"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Threat">[docs]</a><span class="k">class</span> <span class="nc">Threat</span><span class="p">(</span><span class="n">Group</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ThreatConnect Batch Threat Object&quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: enable when support for py2 is dropped.</span>
+    <span class="c1"># __slots__ = []</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name for this Group.</span>
+<span class="sd">            date_added (str, kwargs): The date timestamp the Indicator was created.</span>
+<span class="sd">            xid (str, kwargs): The external id for this Group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Threat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Threat&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

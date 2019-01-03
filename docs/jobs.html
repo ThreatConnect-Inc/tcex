@@ -5,75 +5,75 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Jobs &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>Jobs &mdash; TcEx 0.9.0 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
         <link rel="next" title="Logging" href="logging.html"/>
-        <link rel="prev" title="Install JSON" href="install_json.html"/> 
+        <link rel="prev" title="Install JSON" href="install_json.html"/>
 
-  
+
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -82,16 +82,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
@@ -130,27 +130,27 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -169,41 +169,41 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="index.html">Docs</a> &raquo;</li>
-        
+
       <li>Jobs</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <div class="section" id="jobs">
 <span id="id1"></span><h1>Jobs<a class="headerlink" href="#jobs" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">This module is being deprecated and will be removed in a future release.  Please use the new Batch module as a replacement.</p>
 </div>
-<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.</p>
-<p>Once all the data has been added to the job a call to the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.process" title="tcex.tcex_job.TcExJob.process"><code class="xref py py-meth docutils literal"><span class="pre">process()</span></code></a> method will attempt to write the data to the ThreatConnect API.</p>
+<p>The ThreatConnect ™ TcEx Framework provides the <code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code> module to automate writing certain data types to the ThreatConnect API. The App developer can dynamically build a JSON data object and the Job module will handle writing the data to the ThreatConnect API.</p>
+<p>Once all the data has been added to the job a call to the <code class="xref py py-meth docutils literal"><span class="pre">process()</span></code> method will attempt to write the data to the ThreatConnect API.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Any failures will set the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> to <strong>3</strong> or partial failure, unless the error is defined as a critical failure (defined in the __init__ method of <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-meth docutils literal"><span class="pre">TcExJob()</span></code></a>.</p>
+<p class="last">Any failures will set the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> to <strong>3</strong> or partial failure, unless the error is defined as a critical failure (defined in the __init__ method of <code class="xref py py-meth docutils literal"><span class="pre">TcExJob()</span></code>.</p>
 </div>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group" title="tcex.tcex_job.TcExJob.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">group()</span></code> method accepts the following data structure. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -243,7 +243,7 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The Jobs module will make multiple API calls to push all this data to the ThreatConnect API.</p>
 </div>
-<p>The module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_results" title="tcex.tcex_job.TcExJob.group_results"><code class="xref py py-mod docutils literal"><span class="pre">group_results</span></code></a> property to get the status of each Group submitted.</p>
+<p>The module provides the <code class="xref py py-mod docutils literal"><span class="pre">group_results</span></code> property to get the status of each Group submitted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -306,7 +306,7 @@
 </div>
 <div class="section" id="group-to-indicator-associations">
 <h2>Group to Indicator Associations<a class="headerlink" href="#group-to-indicator-associations" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code> method accepts the following data structure. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -323,13 +323,13 @@
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">If more than one Group exist with the same name, the association created using
-<a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a> will only associate the indicator
+<code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code> will only associate the indicator
 to the first group found with the name.</p>
 </div>
 </div>
 <div class="section" id="group-to-group-associations">
 <h2>Group to Group Associations<a class="headerlink" href="#group-to-group-associations" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> method accepts the following data structure to create an association between two groups. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">association()</span></code> method accepts the following data structure to create an association between two groups. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -346,13 +346,13 @@ to the first group found with the name.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">If more than one Group exist with the same name, the association created using
-<a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> will only associate the indicator
+<code class="xref py py-meth docutils literal"><span class="pre">association()</span></code> will only associate the indicator
 to the first group found with the name.</p>
 </div>
 </div>
 <div class="section" id="indicators">
 <h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator" title="tcex.tcex_job.TcExJob.indicator"><code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">indicator()</span></code> method accepts the following data structure. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -410,7 +410,7 @@ to the first group found with the name.</p>
 </pre></div>
 </div>
 </div>
-<p>The module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.indicator_results" title="tcex.tcex_job.TcExJob.indicator_results"><code class="xref py py-mod docutils literal"><span class="pre">indicator_results</span></code></a> property to get the status of each Indicator submitted.</p>
+<p>The module provides the <code class="xref py py-mod docutils literal"><span class="pre">indicator_results</span></code> property to get the status of each Indicator submitted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -463,7 +463,7 @@ to the first group found with the name.</p>
 </div>
 <div class="section" id="indicator-to-indicator-associations">
 <h2>Indicator to Indicator Associations<a class="headerlink" href="#indicator-to-indicator-associations" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.association" title="tcex.tcex_job.TcExJob.association"><code class="xref py py-meth docutils literal"><span class="pre">association()</span></code></a> method accepts the following data structure to create custom, <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations">Indicator to Indicator Associations</a>. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">association()</span></code> method accepts the following data structure to create custom, <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-to-indicator-associations">Indicator to Indicator Associations</a>. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -509,7 +509,7 @@ to the first group found with the name.</p>
 </div>
 <div class="section" id="file-occurrence">
 <h2>File Occurrence<a class="headerlink" href="#file-occurrence" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.file_occurrence" title="tcex.tcex_job.TcExJob.file_occurrence"><code class="xref py py-meth docutils literal"><span class="pre">file_occurrence()</span></code></a> method accepts the following data structure. All required fields are highlighted.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">file_occurrence()</span></code> method accepts the following data structure. All required fields are highlighted.</p>
 <div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -611,7 +611,7 @@ the POST.  It is used to indicate which File Indicator to add the occurrence.</p
 <p class="first admonition-title">Note</p>
 <p class="last">The Batch API call allows for Group Associations via the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field using
 the Group Id. However, if Groups are being added in the Job the Group Id will not be known
-until after the Group is added.  The <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob.group_association" title="tcex.tcex_job.TcExJob.group_association"><code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code></a>
+until after the Group is added.  The <code class="xref py py-meth docutils literal"><span class="pre">group_association()</span></code>
 method allows the Group name to be used instead of the Group Id. If the Group Id is
 already known it can be associated using the <code class="docutils literal"><span class="pre">associatedGroup</span></code> field.</p>
 </div>
@@ -621,20 +621,20 @@ already known it can be associated using the <code class="docutils literal"><spa
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
+
         <a href="logging.html" class="btn btn-neutral float-right" title="Logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+
+
         <a href="install_json.html" class="btn btn-neutral" title="Install JSON" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+
     </div>
-  
+
 
   <hr/>
 
@@ -643,7 +643,7 @@ already known it can be associated using the <code class="docutils literal"><spa
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -653,15 +653,15 @@ already known it can be associated using the <code class="docutils literal"><spa
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.26',
+            VERSION:'0.9.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -672,21 +672,21 @@ already known it can be associated using the <code class="docutils literal"><spa
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

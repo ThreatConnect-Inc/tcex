@@ -5,75 +5,75 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Parser / Args &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>Parser / Args &mdash; TcEx 0.9.0 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
         <link rel="next" title="Playbooks" href="playbook.html"/>
-        <link rel="prev" title="Notifications" href="notifications.html"/> 
+        <link rel="prev" title="Notifications" href="notifications.html"/>
 
-  
+
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -82,16 +82,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
@@ -125,27 +124,27 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -164,29 +163,29 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="index.html">Docs</a> &raquo;</li>
-        
+
       <li>Parser / Args</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <div class="section" id="parser-args">
 <span id="parser"></span><h1>Parser / Args<a class="headerlink" href="#parser-args" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx App Framework provides the <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
+<p>The ThreatConnect ™ TcEx App Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a> property which returns and instance of <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code>. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added <code class="docutils literal"><span class="pre">args</span></code> can be access with the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
 <div class="section" id="api-arguments">
 <h2>API Arguments<a class="headerlink" href="#api-arguments" title="Permalink to this headline">¶</a></h2>
 <p>Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the <code class="docutils literal"><span class="pre">tc_token</span></code> argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.args" title="tcex.tcex.TcEx.args"><code class="xref py py-mod docutils literal"><span class="pre">args</span></code></a> property.</p>
@@ -198,7 +197,7 @@
 </div>
 <div class="section" id="batch-arguments">
 <h2>Batch Arguments<a class="headerlink" href="#batch-arguments" title="Permalink to this headline">¶</a></h2>
-<p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal"><span class="pre">install.json</span></code> configuration file.  These default values can also be overridden with methods provided in the <a class="reference internal" href="tcex_docs/tcex.tcex_job.html#tcex.tcex_job.TcExJob" title="tcex.tcex_job.TcExJob"><code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code></a> module.</p>
+<p>The ThreatConnect batch API endpoint requires a few arguments for setting the batch job.  These arguments have sane default values and are not often required to be added to the <code class="docutils literal"><span class="pre">install.json</span></code> configuration file.  These default values can also be overridden with methods provided in the <code class="xref py py-mod docutils literal"><span class="pre">TcExJob</span></code> module.</p>
 <p>The list of Batch args can be found in the <code class="xref py py-meth docutils literal"><span class="pre">_batch_arguments()</span></code> method.</p>
 </div>
 <div class="section" id="playbook-arguments">
@@ -213,7 +212,7 @@
 </div>
 <div class="section" id="custom-argument">
 <h2>Custom Argument<a class="headerlink" href="#custom-argument" title="Permalink to this headline">¶</a></h2>
-<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></p>
+<p>Custom arguments can be added to the <code class="docutils literal"><span class="pre">argparser.ArgParser</span></code> instance of <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.parser" title="tcex.tcex.TcEx.parser"><code class="xref py py-mod docutils literal"><span class="pre">parser</span></code></a></p>
 <p><strong>Example</strong></p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -238,20 +237,20 @@
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
+
         <a href="playbook.html" class="btn btn-neutral float-right" title="Playbooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+
+
         <a href="notifications.html" class="btn btn-neutral" title="Notifications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+
     </div>
-  
+
 
   <hr/>
 
@@ -260,7 +259,7 @@
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -270,15 +269,15 @@
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.8.26',
+            VERSION:'0.9.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -289,21 +288,21 @@
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

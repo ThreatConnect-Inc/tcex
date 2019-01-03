@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.0 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../index.html"/>
+        <link rel="up" title="tcex package" href="tcex.html"/>
+        <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/>
+        <link rel="prev" title="tcex.tcex module" href="tcex.tcex.html"/>
+
+
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development_tools.html">Development Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_app_decorators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_session.html">tcex.tcex_session module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_attribute.html">tcex.tcex_ti_attribute module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_batch.html">tcex.tcex_ti_batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_group.html">tcex.tcex_ti_group module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_indicator.html">tcex.tcex_ti_indicator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_security_label.html">tcex.tcex_ti_security_label module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_tag.html">tcex.tcex_ti_tag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+
+      <li>tcex.tcex_app_decorators module</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-tcex.tcex_app_decorators">
+<span id="tcex-tcex-app-decorators-module"></span><h1>tcex.tcex_app_decorators module<a class="headerlink" href="#module-tcex.tcex_app_decorators" title="Permalink to this headline">¶</a></h1>
+<p>App Decorators</p>
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.Benchmark">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Benchmark</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Benchmark a function</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.Benchmark.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.Debug">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Debug</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Debug a function</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.Debug.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.InterateOnArg">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">InterateOnArg</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#InterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.InterateOnArg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Iterate over arg data</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.InterateOnArg.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#InterateOnArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.InterateOnArg.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.OnException">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnException</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Handle Exception in function</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.OnException.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.OnSuccess">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnSuccess</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Set exit message on successful execution</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.OnSuccess.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.Output">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Set exit message on success</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.Output.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.ReadArg">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">ReadArg</code><span class="sig-paren">(</span><em>arg</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Retrieve value from Redis for arg that is a playbook variables.</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.ReadArg.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.WriteOutput">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">WriteOutput</code><span class="sig-paren">(</span><em>key</em>, <em>variable_type</em>, <em>value=None</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Set exit message on success</p>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.WriteOutput.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="tcex.tcex_argparser.html" class="btn btn-neutral float-right" title="tcex.tcex_argparser module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="tcex.tcex.html" class="btn btn-neutral" title="tcex.tcex module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.9.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

@@ -377,7 +377,17 @@ class TcProfile(object):
             profile['args']['app'] = {}
             profile['args']['default'] = {}
             for arg in self.profile_args:
-                profile['args']['app'][arg] = _args.pop(arg)
+                try:
+                    profile['args']['app'][arg] = _args.pop(arg)
+                except KeyError:
+                    # set the value to the default?
+                    # profile['args']['app'][arg] = self.profile_args.get(arg)
+                    # TODO: prompt to add missing input?
+                    print(
+                        '{}{}Profile "{}" missing input {}.'.format(
+                            c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name'), arg
+                        )
+                    )
             profile['args']['default'] = _args
 
             print(
