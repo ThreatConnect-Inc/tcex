@@ -1,0 +1,18 @@
+{
+  "appType": "Job",
+  "files": [{
+      "name": "__main__.py",
+      "editable": false
+    },
+    {
+      "name": "job_app.py",
+      "editable": false
+    },
+    {
+      "name": "run.py",
+      "editable": false
+    }
+  ],
+  "language": "Python",
+  "templateName": "Job - Blank"
+}

@@ -1,0 +1,18 @@
+{
+  "appType": "Playbook",
+  "files": [{
+      "name": "__main__.py",
+      "editable": false
+    },
+    {
+      "name": "playbook_app.py",
+      "editable": false
+    },
+    {
+      "name": "run.py",
+      "editable": false
+    }
+  ],
+  "language": "Python",
+  "templateName": "Playbook - Actions"
+}
