@@ -23,17 +23,18 @@ epilog = (
     'The "tcinit" command it intended to enable quick development of ThreatConnect Exchange Apps.\n'
     '\nJob App Templates:\n'
     '  job              - This template provides the structure for a Job App without any logic.\n'
-    '  job_batch        - This template provides an example of downloading remote threat intel\n'
-    '                     (md5 hash indicators) and writing the data in the ThreatConnect \n'
+    '  job_batch        - This template provides a working example of downloading remote threat \n'
+    '                     intel (md5 hash indicators) and writing the data in the ThreatConnect \n'
     '                     Platform using the tcex batch module.\n'
     '\nPlaybook App Templates:\n'
     '  playbook         - This template provides the structure for a Playbook App without any\n'
     '                     logic.\n'
-    '  playbook_action  - This template provides an example of "actions" in a Playbook App. Using\n'
-    '                     the "actions" feature a single Playbook can have multiple actions to \n'
-    '                     perform different operations on the provided data.\n'
-    '  playbook_utility - This template provides a basic example of a utility App that takes an \n'
-    '                     input, reformats the data, and writes the updated data as output.\n'
+    '  playbook_action  - This template provides a working example of "actions" in a Playbook \n'
+    '                     App. Using the "actions" feature a single Playbook App can have \n'
+    '                     multiple actions to perform different operations on the provided data.\n'
+    '  playbook_utility - This template provides a working example of a utility App that takes \n'
+    '                     an input, analyze or modifies the data, and writes the results as \n'
+    '                     output.\n'
 )
 
 parser = argparse.ArgumentParser(
@@ -46,7 +47,7 @@ parser.add_argument(
     default='create',
     help=(
         '(default: create) Choose "create" to initialize a new App, "update" to download updates '
-        'to standard App files, and "migrate" to update a non App Builder compliant App to use a '
+        'to App framework files, and "migrate" to update a non App Builder compliant App to use a '
         'standard template.'
     ),
 )
@@ -67,7 +68,7 @@ parser.add_argument(
 parser.add_argument(
     '--force',
     action='store_true',
-    help='Enable this flag to forceably overwrite existing files in the current working directory.',
+    help='Enable this flag to forcibly overwrite existing files in the current working directory.',
     default=False,
 )
 args, extra_args = parser.parse_known_args()
@@ -81,7 +82,7 @@ class TcInit(object):
         self.args = _arg
         self.app_path = os.getcwd()
         self.base_url = (
-            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{}/' 'app_init/'
+            'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{}/app_init/'
         ).format(self.args.branch)
         self.exit_code = 0
         self.confirm_overwrite = True

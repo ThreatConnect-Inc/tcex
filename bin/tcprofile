@@ -47,19 +47,20 @@ parser.add_argument(
     default='create',
 )
 parser.add_argument(
-    '--ij', default='install.json', help='The install.json file name (default: install.json).'
+    '--ij',
+    default='install.json',
+    help='(Advanced) The install.json file name (default: install.json).',
 )
-# parser.add_argument(
-#     '--data_file',
-#     action='store_true',
-#     help='Attempt to build data file templates for the profile.')
 parser.add_argument(
     '--outdir',
     default='tcex.d',
-    help='The *base* output directory containing the data/profiles folder.',
+    help=(
+        '(Advanced) The *base* output directory containing the data/profiles folder'
+        '(default: tcex.d).'
+    ),
 )
 parser.add_argument(
-    '--outfile', help='The filename for the profile (default: <profile name>.json).'
+    '--outfile', help='(Advanced) The filename for the profile (default: <profile name>.json).'
 )
 parser.add_argument(
     '--profile_name',
@@ -67,10 +68,8 @@ parser.add_argument(
     dest='profile_name',
     help='The profile name to create, delete, or replace_validation.',
 )
-parser.add_argument('--redis_hash', help='The redis hash.')
-parser.add_argument('--redis_host', default='localhost', help='The redis host.')
-parser.add_argument('--redis_port', default='6379', help='The redis port.')
-parser.add_argument('--replace_validation', action='store_true', help='Update existing profiles.')
+parser.add_argument('--redis_host', default='localhost', help='(Advanced) The redis host.')
+parser.add_argument('--redis_port', default='6379', help='(Advanced) The redis port.')
 parser.add_argument('--verbose', action='store_true', help='Show verbose output.')
 args, extra_args = parser.parse_known_args()
 

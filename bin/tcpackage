@@ -245,7 +245,7 @@ class TcPackage(object):
             '__pycache__',
             '.c9',  # C9 IDE
             '.git',  # git directory
-            '.gitignore',  # git ignore
+            '.gitmodules',  # git modules
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
