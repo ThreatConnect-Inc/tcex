@@ -2,15 +2,15 @@
   "appType": "Playbook",
   "description": "This template provides a basic example of a Playbook Utility App that takes an input, analyzes or modifies the data, and writes the results as output.",
   "files": [{
-      "name": "__main__.py",
+      "path": "__main__.py",
       "editable": false
     },
     {
-      "name": "playbook_app.py",
+      "path": "playbook_app.py",
       "editable": false
     },
     {
-      "name": "run.py",
+      "path": "run.py",
       "editable": false
     }
   ],

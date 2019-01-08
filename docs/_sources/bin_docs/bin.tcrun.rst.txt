@@ -1,0 +1,7 @@
+bin.tcrun module
+================
+
+.. automodule:: bin.tcrun
+    :members:
+    :undoc-members:
+    :show-inheritance:

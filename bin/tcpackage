@@ -142,9 +142,6 @@ class TcPackage(object):
 
         Args:
             app_path (str, optional): Defaults to None. The path of Python files.
-
-        Returns:
-            [type]: [description]
         """
         print('{}{}Validating File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
 

@@ -108,12 +108,14 @@ class TcProfile(object):
 
         Load on first access, otherwise return existing data.
 
-        self.profiles = {
-            <profile name>: {
-                'data': {},
-                'ij_filename': <filename>,
-                'fqfn': 'tcex.json'
-            }
+        .. code-block:: python
+
+            self.profiles = {
+                <profile name>: {
+                    'data': {},
+                    'ij_filename': <filename>,
+                    'fqfn': 'tcex.json'
+                }
         """
         if not os.path.isfile('tcex.json'):
             msg = 'The tcex.json config file is required.'
@@ -322,6 +324,7 @@ class TcProfile(object):
 
     def profile_update(self, profile):
         """Update an existing profile with new parameters or remove deprecated parameters."""
+
         # warn about missing install_json parameter
         if profile.get('install_json') is None:
             print(
@@ -342,15 +345,17 @@ class TcProfile(object):
     def profile_update_args(self, profile):
         """Update old profile args to new args structure.
 
-        "args": {
-          "app": {
-            "input_strings": "capitalize",
-            "tc_action": "Capitalize"
-        },
-        "default": {
-          "api_access_id": "$env.API_ACCESS_ID",
-          "api_default_org": "$env.API_DEFAULT_ORG",
-        },
+        .. code-block:: javascript
+
+            "args": {
+              "app": {
+                "input_strings": "capitalize",
+                "tc_action": "Capitalize"
+            },
+            "default": {
+              "api_access_id": "$env.API_ACCESS_ID",
+              "api_default_org": "$env.API_DEFAULT_ORG",
+            },
         """
         ij = self.load_install_json(profile.get('install_json', 'install.json'))
 

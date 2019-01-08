@@ -2,15 +2,15 @@
   "appType": "Playbook",
   "description": "This template provides an example of \"actions\" in a Playbook App. Using the \"actions\" feature a single Playbook App can have multiple actions to perform different operations on the provided data.",
   "files": [{
-      "name": "__main__.py",
+      "path": "__main__.py",
       "editable": false
     },
     {
-      "name": "playbook_app.py",
+      "path": "playbook_app.py",
       "editable": false
     },
     {
-      "name": "run.py",
+      "path": "run.py",
       "editable": false
     }
   ],

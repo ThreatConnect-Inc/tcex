@@ -7,11 +7,6 @@ Building Apps
 
 The ThreatConnect® TcEx Framework provides a full features SDK as well CLI tools to enable developer to rapidly develop Apps.  The following CLI tools enable the developer to walk through each step of the development process.
 
----------------
-Command Summary
----------------
-.. include:: building_apps_commands.inc
-
 -----------
 Quick Start
 -----------

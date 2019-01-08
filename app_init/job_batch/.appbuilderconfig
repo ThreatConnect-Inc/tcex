@@ -2,15 +2,15 @@
   "appType": "Job",
   "description": " This template provides an example of downloading remote threat intel (md5 hash indicators) and writing the data in the ThreatConnect Platform using the TcEx batch module.",
   "files": [{
-      "name": "__main__.py",
+      "path": "__main__.py",
       "editable": false
     },
     {
-      "name": "job_app.py",
+      "path": "job_app.py",
       "editable": false
     },
     {
-      "name": "run.py",
+      "path": "run.py",
       "editable": false
     }
   ],

@@ -2,15 +2,15 @@
   "appType": "Job",
   "description": "This template provides the structure for a Job App without any App logic.",
   "files": [{
-      "name": "__main__.py",
+      "path": "__main__.py",
       "editable": false
     },
     {
-      "name": "job_app.py",
+      "path": "job_app.py",
       "editable": false
     },
     {
-      "name": "run.py",
+      "path": "run.py",
       "editable": false
     }
   ],

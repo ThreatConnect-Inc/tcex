@@ -62,8 +62,8 @@ parser.add_argument(
         # 'playbook_enrichment',
         'playbook_utility',
     ],
+    default='playbook',
     help='Choose an appropriate App template for the current project.',
-    required=True,
 )
 parser.add_argument(
     '--force',

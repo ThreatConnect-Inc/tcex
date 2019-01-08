@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcpackage Command &mdash; TcEx 0.9.0 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 0.9.0 documentation" href="../index.html"/>
+        <link rel="up" title="CLI Commands" href="bin.html"/>
+        <link rel="next" title="tcprofile Command" href="bin.tcprofile.html"/>
+        <link rel="prev" title="tclib Command" href="bin.tclib.html"/>
+
+
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.0
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../batch.html">Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps.html">Building Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_filter.html">Data Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_json.html">Install JSON</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tcex.html">tcex package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="bin.html">CLI Commands</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="bin.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="bin.tcinit.html">tcinit Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tclib.html">tclib Command</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcpackage Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tcprofile.html">tcprofile Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tcrun.html">tcrun Command</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bin.html#module-bin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notifications.html">Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playbook.html">Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../request.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resource.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+
+          <li><a href="bin.html">CLI Commands</a> &raquo;</li>
+
+      <li>tcpackage Command</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-bin.tcpackage">
+<span id="tcpackage-command"></span><h1>tcpackage Command<a class="headerlink" href="#module-bin.tcpackage" title="Permalink to this headline">¶</a></h1>
+<p>TcEx Framework Package Module</p>
+<dl class="class">
+<dt id="bin.tcpackage.TcPackage">
+<em class="property">class </em><code class="descclassname">bin.tcpackage.</code><code class="descname">TcPackage</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Package the app for deployment</p>
+<p>This method will package the app for deployment to ThreatConnect. Validation of the
+install.json file or files will be automatically run before packaging the app.</p>
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage._load_config">
+<code class="descname">_load_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage._load_install_json">
+<em class="property">static </em><code class="descname">_load_install_json</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load install.json file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage._load_schema">
+<code class="descname">_load_schema</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load JSON schema file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage._update_install_json">
+<code class="descname">_update_install_json</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._update_install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write install.json file</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage._write_install_json">
+<em class="property">static </em><code class="descname">_write_install_json</code><span class="sig-paren">(</span><em>filename</em>, <em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._write_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._write_install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write install.json file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.bundle">
+<code class="descname">bundle</code><span class="sig-paren">(</span><em>bundle_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.bundle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.bundle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bundle App</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.bundle_apps">
+<code class="descname">bundle_apps</code><span class="sig-paren">(</span><em>bundle_name</em>, <em>bundle_apps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.bundle_apps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.bundle_apps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bundle zip (tcx) file</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage.check_ast">
+<em class="property">static </em><code class="descname">check_ast</code><span class="sig-paren">(</span><em>app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_ast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run ast on each Python file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The path of Python files.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bin.tcpackage.TcPackage.commit_hash">
+<code class="descname">commit_hash</code><a class="headerlink" href="#bin.tcpackage.TcPackage.commit_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current commit hash if available.</p>
+<p>This is not a required task so best effort is fine. In other words this is not guaranteed
+to work 100% of the time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.package">
+<code class="descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.package" title="Permalink to this definition">¶</a></dt>
+<dd><p>Package the App for deployment in TcEx</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate install.json file for required parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.zip_file">
+<code class="descname">zip_file</code><span class="sig-paren">(</span><em>app_path</em>, <em>app_name</em>, <em>tmp_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.zip_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.zip_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zip App</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="bin.tcprofile.html" class="btn btn-neutral float-right" title="tcprofile Command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="bin.tclib.html" class="btn btn-neutral" title="tclib Command" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.9.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

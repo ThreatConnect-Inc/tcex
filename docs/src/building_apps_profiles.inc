@@ -267,19 +267,4 @@ The ``tcrun`` command will run any validation rules defined in the profile. Curr
 Supported Operators
 ~~~~~~~~~~~~~~~~~~~
 
-+ deep-diff (dd): This operator can compare any object that can be represented as JSON.
-+ eq: This operator does a equal to comparison for String and StringArray variables.
-+ ends-with (ew): This operator compares the end of a String with a user provided value.
-+ ge: This operator does a greater than or equal to comparison for String variables.
-+ gt: This operator does a greater than comparison for String variables.
-+ json-compare (jc): This operator will convert a String output variable to a JSON object (dict) and compare to user provided data.
-+ key-value-compare (kva): This operator will validate that key/value data is in KeyValueArray.
-+ in: This operator will check to see if a String output variable is in an user provided array.
-+ in-user-data: This operator will validate that user provided String value is in output StringArray variable.
-+ not-in (ni): This operator will check to see if a String variable is **not** in an user provided array.
-+ is-type (it): This operator will check to see if the variable "type" is equal to the user provided "type".
-+ le: This operator does a less than or equal to comparison for String variables.
-+ lt: This operator does a less than comparison for String variables.
-+ ne: This operator does a **not** equal to comparison for String and StringArray variables.
-+ string-compare (se):
-+ starts-with (sw): This operator compares the start of a String with a user provided value.
+For a list of supported **operator** values see :py:meth:`~bin.tcrun.TcRun.operators`.
