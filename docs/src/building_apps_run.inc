@@ -1,4 +1,4 @@
-.. _building_apps_testing:
+.. _building_apps_run:
 
 Apps are called from the ThreatConnect Platform using Command Line Interface Arguments or CLI Args.  To simulate being called from ThreatConnect the TcEx ``tcrun`` command provides a method for converting a defined JSON structure to CLI Args.  Running ``tcrun`` will read the ``tcex.json`` file and parse the **args** section from the **default** profile in the ``profiles`` parameter array.  To specify a different file the ``--config`` argument can be passed (e.g. ``--config my_config.json``).  To run a specific profile the ``--profile`` argument can be passed (``--profile add-indicator``).  A group of profiles can also be run using the ``--group`` argument (e.g. ``--group run-all``).
 

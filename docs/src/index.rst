@@ -14,7 +14,6 @@ Release |version|.
    batch
    building_apps
    data_filter
-   development_tools
    exit
    examples
    install_json

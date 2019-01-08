@@ -1,0 +1,61 @@
+.. _building_apps_templates:
+
+The ``tcinit`` CLI tool enables a developer to download multiple templates to jump start App development.
+
+Usage
+-----
+
+.. code:: bash
+
+    usage: tcinit [-h] [--branch {master,develop}]
+                  [--action {create,update,migrate}] --template
+                  {job,job_batch,playbook,playbook_actions,playbook_utility}
+                  [--force]
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --branch {master,develop}
+                            Git branch.
+      --action {create,update,migrate}
+                            (default: create) Choose "create" to initialize a new
+                            App, "update" to download updates to standard App
+                            files, and "migrate" to update a non App Builder
+                            compliant App to use a standard template.
+      --template {job,job_batch,playbook,playbook_actions,playbook_utility}
+                            Choose an appropriate App template for the current
+                            project.
+      --force               Enable this flag to forcibly overwrite existing files
+                            in the current working directory.
+
+
+
+Job App Templates
+-----------------
+
+job
+~~~
+
+This template provides the structure for a Job App without any logic.  This template is intended for advanced users that only require the App structure.
+
+job_batch
+~~~~~~~~~
+
+This template provides an example of downloading remote threat intel (md5 hash indicators) and writing the data in the ThreatConnect Platform using the tcex batch module.
+
+Playbook App Templates
+----------------------
+
+playbook
+~~~~~~~~
+
+This template provides the structure for a Playbook App without any logic.  This template is intended for advanced users that only require the App structure.
+
+playbook_action
+~~~~~~~~~~~~~~~
+
+This template provides an example of "actions" in a Playbook App. Using the "actions" feature a single Playbook can have multiple actions to perform different operations on the provided data.
+
+playbook_utility
+~~~~~~~~~~~~~~~~
+
+This template provides a basic example of a utility App that takes an input, reformats the data, and writes the updated data as output.

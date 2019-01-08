@@ -816,7 +816,7 @@ Release Notes
 0.0.4
 -----
 + Update for Campaign resource type Class.
-+ Added :ref:`building_apps` and :ref:`development_tools` section to documentation.
++ Added :ref:`building_apps` section to documentation.
 
 0.0.3
 -----

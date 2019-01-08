@@ -1,4 +1,4 @@
-.. _building_apps_packaging:
+.. _building_apps_package:
 
 Running ``tcpackage`` will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate **install.json** files add the ``--bundle`` argument to build a bundle.  When using multiple **install.json** files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of **MyApp**).  During the build process validation of the **install.json** file will be handled automatically if the **tcex_json_schema.json** schema file is included in the base directory of your App.
 

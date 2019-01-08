@@ -5,17 +5,44 @@
 Building Apps
 =============
 
--------------------
-Build Local Modules
--------------------
-.. include:: building_apps_modules.rst
+The ThreatConnect® TcEx Framework provides a full features SDK as well CLI tools to enable developer to rapidly develop Apps.  The following CLI tools enable the developer to walk through each step of the development process.
 
---------------------
-Testing Apps Locally
---------------------
-.. include:: building_apps_testing.rst
+---------------
+Command Summary
+---------------
+.. include:: building_apps_commands.inc
 
-----------------
-Packaging an App
-----------------
-.. include:: building_apps_packaging.rst
+-----------
+Quick Start
+-----------
+.. include:: building_apps_quickstart.inc
+
+----------------------
+App Templates (tcinit)
+----------------------
+.. include:: building_apps_templates.inc
+
+--------------------------
+Build Dependencies (tclib)
+--------------------------
+.. include:: building_apps_dependencies.inc
+
+----------------------------------
+Creating Test Profiles (tcprofile)
+----------------------------------
+.. include:: building_apps_profiles.inc
+
+-----------------------------
+Running Test Profiles (tcrun)
+-----------------------------
+.. include:: building_apps_run.inc
+
+----------------------------
+Packaging an App (tcpackage)
+----------------------------
+.. include:: building_apps_package.inc
+
+-----------------------
+App Directory Structure
+-----------------------
+.. include:: building_apps_structure.inc

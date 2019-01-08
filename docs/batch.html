@@ -124,7 +124,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -211,16 +210,16 @@
 <p>The ThreatConnect ™ TcEx Framework provides the <code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code> module to create, delete, and update both Groups and Indicators in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.</p>
 <div class="section" id="external-id-xid">
 <h2>External ID (xid)<a class="headerlink" href="#external-id-xid" title="Permalink to this headline">¶</a></h2>
-<p>The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups and <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
-<p>The <code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code> module provides the <code class="xref py py-meth docutils literal"><span class="pre">generate_xid()</span></code> method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the preferred xid type as it allows for the same unique xid to be generated on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or [‘myapp’, ‘adversary’, ‘222’]).</p>
-<p>For Interface 1 and 2 the xid is optional, if not provided or set to True a unique xid based off the group “type-name” or indicator “type-value” will be auto-generated.  If xid is set to False a random xid will be generated. A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is best practice and allows Groups and Indicators to be easily updated.</p>
+<p>The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.  The XID <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">TcExBatch</span></code> module provides the <code class="xref py py-meth docutils literal"><span class="pre">generate_xid()</span></code> method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the <strong>preferred</strong> xid type as it allows for a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or [‘myapp’, ‘adversary’, ‘222’]).</p>
+<p>For Interface 1 and 2 the xid is optional, if not provided a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is <strong>best practice</strong> and allows Groups and Indicators to be easily updated.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">For Groups when using a unique xid value generated using “type-name” support of duplicate group name is not possible.  If having duplicate group names is a requirement then a xid should be provided for each group.</p>
+<p class="last">It is best practice to provide a unique and reproducible XID value when creating Groups. If the XID created for a new Group matches the XID for an existing Group the existing Group will be overwritten.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">submit section</a>.</p>
+<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">submit section</a>.</p>
 </div>
 </div>
 <div class="section" id="groups">
@@ -237,7 +236,7 @@
 5
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">adversary</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">adversary</span><span class="p">(</span><span class="s1">&#39;adversary-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-000&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">adversary</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
@@ -297,7 +296,7 @@
 4
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="s1">&#39;event-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">event</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Event&#39;</span><span class="p">,</span> <span class="n">date_added</span><span class="o">=</span><span class="s1">&#39;event-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;eventDate&#39;</span><span class="p">,</span> <span class="s1">&#39;yesterday&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="s1">&#39;New&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
@@ -312,7 +311,7 @@
 5
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
@@ -378,7 +377,7 @@
 3
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">address</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">address</span><span class="p">(</span><span class="s1">&#39;123.124.125.126&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">address</span><span class="o">.</span><span class="n">security_label</span><span class="p">(</span><span class="s1">&#39;TLP Green&#39;</span><span class="p">)</span>
@@ -431,7 +430,7 @@
 4
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">)</span>
+<span class="hll"><span class="n">host</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="s1">&#39;Host&#39;</span><span class="p">,</span> <span class="s1">&#39;www.badguys2.com&#39;</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;dnsActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;whoisActive&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 </span><span class="hll"><span class="n">host</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description 2&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">)</span>
@@ -440,7 +439,7 @@
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The casing of the indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">indicator types</a>.</p>
+<p class="last">The case of the indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">indicator types</a>.</p>
 </div>
 </div>
 <div class="section" id="indicator-interface-3">
@@ -549,24 +548,20 @@
 <div class="section" id="indicator">
 <h3>Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h3>
 <p>Example of Indicator -&gt; Group association.</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class="hll">        <span class="p">{</span>
-</span><span class="hll">            <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-001&quot;</span>
-</span><span class="hll">        <span class="p">}</span>
-</span><span class="hll">    <span class="p">],</span>
-</span>    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;ba60d2d6-8049-4080-9c5c-2b33d8d97767&quot;</span>
+<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="hll">    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class="hll">        <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;my-xid-001&quot;</span>
+</span><span class="hll">    <span class="p">}],</span>
+</span><span class="hll">    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD&quot;</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
+</span>    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;ba60d2d6-8049-4080-9c5c-2b33d8d97767&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>

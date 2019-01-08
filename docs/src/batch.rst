@@ -11,15 +11,15 @@ The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_batch_
 
 External ID (xid)
 =================
-The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups and **must** be unique for the entire instance of ThreatConnect.
+The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.  The XID **must** be unique for the entire instance of ThreatConnect.
 
-The :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module provides the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the preferred xid type as it allows for the same unique xid to be generated on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or ['myapp', 'adversary', '222']).
+The :py:mod:`~tcex.tcex_batch_v2.TcExBatch` module provides the :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the **preferred** xid type as it allows for a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or ['myapp', 'adversary', '222']).
 
-For Interface 1 and 2 the xid is optional, if not provided or set to True a unique xid based off the group "type-name" or indicator "type-value" will be auto-generated.  If xid is set to False a random xid will be generated. A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is best practice and allows Groups and Indicators to be easily updated.
+For Interface 1 and 2 the xid is optional, if not provided a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is **best practice** and allows Groups and Indicators to be easily updated.
 
-.. important:: For Groups when using a unique xid value generated using "type-name" support of duplicate group name is not possible.  If having duplicate group names is a requirement then a xid should be provided for each group.
+.. important:: It is best practice to provide a unique and reproducible XID value when creating Groups. If the XID created for a new Group matches the XID for an existing Group the existing Group will be overwritten.
 
-.. note:: In all of the examples below, the code to create the content is removed. You can read more about how to actually create the content in the `submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
+.. note:: In all of the examples below, the code to create the content is removed. You can read more about how to create the content in the `submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
 
 Groups
 ======
@@ -37,7 +37,7 @@ The example below passes all supported fields to adversary().
     :emphasize-lines: 2-5,7
 
     batch = tcex.batch('MyOrg')
-    adversary = batch.adversary('adversary-001', 'my-xid-000')
+    adversary = batch.adversary('adversary-001', xid='my-xid-000')
     adversary.attribute('Description', 'Example Description', True)
     adversary.tag('Example Tag')
     adversary.security_label('TLP Green')
@@ -82,7 +82,7 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
     :emphasize-lines: 2-6
 
     batch = tcex.batch('MyOrg')
-    event = batch.group('Event', 'event-001', 'my-xid-0001')
+    event = batch.group('Event', date_added='event-001', xid='my-xid-0001')
     event.add_key_value('eventDate', 'yesterday')
     event.add_key_value('status', 'New')
     event.attribute('Description', 'Example Description 2', True, 'source')
@@ -96,7 +96,7 @@ The code below demonstrates how to create a Document using this interface (and t
     :emphasize-lines: 3-7
 
     batch = tcex.batch('MyOrg')
-    document = batch_job.group('Document', 'document-001', 'my-xid-0001')
+    document = batch_job.group('Document', 'document-001', xid='my-xid-0001')
     document.add_file('test.txt', 'Document content here...')
     document.add_key_value('fileName', 'test.txt')
     document.attribute('Description', 'Example Description', True, 'Attribute source')
@@ -147,7 +147,7 @@ The first interface is for type specific access.  This interface allows for pass
     :emphasize-lines: 2-5
 
     batch = tcex.batch('MyOrg')
-    address = batch.address('123.124.125.126', '5.0', '100')
+    address = batch.address('123.124.125.126', rating='5.0', confidence='100')
     address.attribute('Description', 'Example Description', True)
     address.tag('Example Tag')
     address.security_label('TLP Green')
@@ -186,13 +186,13 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_bat
     :emphasize-lines: 2-6
 
     batch = tcex.batch('MyOrg')
-    host = batch.indicator('Host', 'www.badguys2.com', '5.0', '100')
+    host = batch.indicator('Host', 'www.badguys2.com', rating='5.0', confidence='100')
     host.add_key_value('dnsActive', True)
     host.add_key_value('whoisActive', True)
     host.attribute('Description', 'Example Description 2', True, 'source')
     host.tag('Example Tag')
 
-.. note:: The casing of the indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the `indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
+.. note:: The case of the indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the `indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
 
 Indicator Interface 3
 ---------------------
@@ -285,11 +285,9 @@ Example of Indicator -> Group association.
     :emphasize-lines: 2-6
 
     {
-        "associatedGroups": [
-            {
-                "groupXid": "my-xid-001"
-            }
-        ],
+        "associatedGroups": [{
+            "groupXid": "my-xid-001"
+        }],
         "summary": "HKEY_LOCAL_MACHINE\system : TRUE : REG_DWORD",
         "type": "Registry Key",
         "xid": "ba60d2d6-8049-4080-9c5c-2b33d8d97767"
