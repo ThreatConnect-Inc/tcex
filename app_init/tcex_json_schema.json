@@ -50,6 +50,9 @@
         }
       }
     },
+    "labels": {
+      "type": "array"
+    },
     "languageVersion": {
       "type": "string"
     },
