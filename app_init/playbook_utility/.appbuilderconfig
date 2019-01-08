@@ -1,5 +1,6 @@
 {
   "appType": "Playbook",
+  "description": "This template provides a basic example of a Playbook Utility App that takes an input, analyzes or modifies the data, and writes the results as output.",
   "files": [{
       "name": "__main__.py",
       "editable": false
@@ -14,5 +15,5 @@
     }
   ],
   "language": "Python",
-  "templateName": "Playbook - Utility"
+  "templateName": "Utility"
 }

@@ -48,9 +48,6 @@
       "label": "Sort Keys",
       "name": "sort_keys",
       "note": "Indicates whether keys should be sorted.",
-      "playbookDataType": [
-        "String"
-      ],
       "sequence": 3,
       "type": "Boolean"
     }

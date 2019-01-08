@@ -1,5 +1,6 @@
 {
   "appType": "Playbook",
+  "description": "This template provides an example of \"actions\" in a Playbook App. Using the \"actions\" feature a single Playbook App can have multiple actions to perform different operations on the provided data.",
   "files": [{
       "name": "__main__.py",
       "editable": false
@@ -14,5 +15,5 @@
     }
   ],
   "language": "Python",
-  "templateName": "Playbook - Actions"
+  "templateName": "Actions"
 }

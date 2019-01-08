@@ -1,5 +1,6 @@
 {
   "appType": "Playbook",
+  "description": "This template provides the structure for a Playbook App without any App logic.",
   "files": [{
       "name": "__main__.py",
       "editable": false
@@ -14,5 +15,5 @@
     }
   ],
   "language": "Python",
-  "templateName": "Playbook - Blank"
+  "templateName": "Basic"
 }
