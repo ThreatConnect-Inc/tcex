@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Data Filter &mdash; TcEx 0.9.0 documentation</title>
+  <title>Features &mdash; TcEx 0.9.0 documentation</title>
 
 
 
@@ -38,8 +38,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
-        <link rel="next" title="Exit" href="exit.html"/>
-        <link rel="prev" title="Building Apps" href="building_apps.html"/>
+        <link rel="next" title="Authorization (Token / HMAC)" href="authorization.html"/>
+        <link rel="prev" title="Overview" href="overview.html"/>
 
 
   <script src="_static/js/modernizr.min.js"></script>
@@ -95,11 +95,11 @@
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -160,7 +160,7 @@
 
       <li><a href="index.html">Docs</a> &raquo;</li>
 
-      <li>Data Filter</li>
+      <li>Features</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -177,10 +177,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="section" id="data-filter">
-<span id="id1"></span><h1>Data Filter<a class="headerlink" href="#data-filter" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect ™ TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter" title="tcex.tcex_data_filter.DataFilter"><code class="xref py py-mod docutils literal"><span class="pre">DataFilter</span></code></a> module to filter ThreatConnect API results further than what is supported in the API.  This module can also be used to filter data from other API providers.</p>
-<p>Coming Soon …</p>
+  <div class="section" id="features">
+<span id="id1"></span><h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Automatic authorization for HMAC and Token base authentication when using <a class="reference internal" href="resource.html#resources"><span class="std std-ref">Resources</span></a> functionality.  This allows the App to work seamlessly on both ThreatConnect Exchange Platform and the ThreatConnect Integration Server.</li>
+<li>App logger that supports both filesystem and API logging (<a class="reference internal" href="logging.html#logging"><span class="std std-ref">Logging</span></a>).</li>
+<li>Common methods for proper App execution: exit codes (<a class="reference internal" href="exit.html#exit"><span class="std std-ref">Exit</span></a>); exit messages (<a class="reference internal" href="message_tc.html#message-tc"><span class="std std-ref">Message TC</span></a>) and more</li>
+</ul>
 </div>
 
 
@@ -193,10 +196,10 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="exit.html" class="btn btn-neutral float-right" title="Exit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="authorization.html" class="btn btn-neutral float-right" title="Authorization (Token / HMAC)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="building_apps.html" class="btn btn-neutral" title="Building Apps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
