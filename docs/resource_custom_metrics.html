@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -175,14 +174,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="admonition note" id="resources-custom-metrics">
-<p class="first admonition-title">Note</p>
-<p class="last">Available in 5.4+ version of the ThreatConnect API.</p>
+  <div class="admonition important" id="resources-custom-metrics">
+<p class="first admonition-title">Important</p>
+<p class="last">The Custom Metric module requires ThreatConnect version 5.4 or higher.</p>
 </div>
-<ul class="simple">
-<li>Direct Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">tcex.resources.CustomMetric(tcex)</span></code></li>
-<li>Dynamic Access: <code class="docutils literal"><span class="pre">resource</span> <span class="pre">=</span> <span class="pre">tcex.resource('CustomMetric')</span></code></li>
-</ul>
 <div class="section" id="read-metric-configs">
 <h1>Read Metric Configs<a class="headerlink" href="#read-metric-configs" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -201,14 +196,9 @@
 14
 15
 16
-17
-18
-19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -216,7 +206,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
 </span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
@@ -305,14 +294,9 @@
 22
 23
 24
-25
-26
-27
-28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -320,7 +304,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
@@ -330,8 +313,8 @@
 </span><span class="hll">      <span class="s1">&#39;keyedValues&#39;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
 </span><span class="hll">      <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;A sum of all occurrences per Indicator Source&#39;</span>
 </span><span class="hll">    <span class="p">}</span>
-</span>    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -388,14 +371,9 @@
 15
 16
 17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -403,7 +381,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -464,14 +441,9 @@
 15
 16
 17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -479,7 +451,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">resource_name</span><span class="p">(</span><span class="s1">&#39;My Custom Metric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -552,14 +523,9 @@
 23
 24
 25
-26
-27
-28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -567,19 +533,18 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">resource_id</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">PUT</span>
-</span>    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;My Custom Metric&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;dataType&#39;</span><span class="p">:</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="s1">&#39;Hourly&#39;</span><span class="p">,</span>
-      <span class="s1">&#39;keyedValues&#39;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
-      <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;(updated) A sum of all occurrences per Indicator Source&#39;</span>
-    <span class="p">}</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="hll">      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;My Custom Metric&#39;</span><span class="p">,</span>
+</span><span class="hll">      <span class="s1">&#39;dataType&#39;</span><span class="p">:</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span>
+</span><span class="hll">      <span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="s1">&#39;Hourly&#39;</span><span class="p">,</span>
+</span><span class="hll">      <span class="s1">&#39;keyedValues&#39;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+</span><span class="hll">      <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;(updated) A sum of all occurrences per Indicator Source&#39;</span>
+</span><span class="hll">    <span class="p">}</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -651,14 +616,9 @@ use the returnValue=true query parameter.</p>
 21
 22
 23
-24
-25
-26
-27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -666,17 +626,16 @@ use the returnValue=true query parameter.</p>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class="hll">      <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-</span>      <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">1</span>
-<span class="hll">    <span class="p">}</span>
+</span><span class="hll">      <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">1</span>
+</span><span class="hll">    <span class="p">}</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-</span>    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status_code&#39;</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>    <span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status_code&#39;</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -717,14 +676,9 @@ use the returnValue=true query parameter.</p>
 21
 22
 23
-24
-25
-26
-27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -732,7 +686,6 @@ use the returnValue=true query parameter.</p>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;CustomMetric&#39;</span><span class="p">)</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
 </span><span class="hll">    <span class="n">resource</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
@@ -741,8 +694,8 @@ use the returnValue=true query parameter.</p>
 </span><span class="hll">      <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
 </span><span class="hll">      <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">1</span>
 </span><span class="hll">    <span class="p">}</span>
-</span>    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">results</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
+</span>    <span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

@@ -1,9 +1,6 @@
 .. _resources_custom_metrics:
 
-.. Note:: Available in 5.4+ version of the ThreatConnect API.
-
-+ Direct Access: ``resource = tcex.resources.CustomMetric(tcex)``
-+ Dynamic Access: ``resource = tcex.resource('CustomMetric')``
+.. important:: The Custom Metric module requires ThreatConnect version 5.4 or higher.
 
 Read Metric Configs
 ===================
@@ -11,13 +8,11 @@ Read Metric Configs
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-15
+    :emphasize-lines: 11-12
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -25,7 +20,6 @@ Read Metric Configs
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         results = resource.request()
         print(json.dumps(results.get('data'), indent=4))
@@ -72,13 +66,11 @@ Create Metric Config
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-22
+    :emphasize-lines: 11-20
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -86,7 +78,6 @@ Create Metric Config
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.http_method = 'POST'
         body = {
@@ -130,13 +121,11 @@ Read Metric Config (by ID)
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-16
+    :emphasize-lines: 11-13
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -144,7 +133,6 @@ Read Metric Config (by ID)
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.resource_id(3)
         results = resource.request()
@@ -181,13 +169,11 @@ Read Metric Config (by Name)
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-16
+    :emphasize-lines: 11-13
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -195,7 +181,6 @@ Read Metric Config (by Name)
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.resource_name('My Custom Metric')
         results = resource.request()
@@ -234,13 +219,11 @@ Update Metric Config
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-16
+    :emphasize-lines: 11-21
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -248,7 +231,6 @@ Update Metric Config
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.resource_id(3)
         resource.http_method = PUT
@@ -298,13 +280,11 @@ Create Metric Data
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-18,20-21
+    :emphasize-lines: 11-19
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -312,7 +292,6 @@ Create Metric Data
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.http_method = 'POST'
         resource.data(3)
@@ -341,13 +320,11 @@ Create Metric Data (with returnValue)
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14-19,20-21
+    :emphasize-lines: 11-19
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -355,7 +332,6 @@ Create Metric Data (with returnValue)
 
 
     def main():
-        """ """
         resource = tcex.resource('CustomMetric')
         resource.http_method = 'POST'
         resource.data(3, True)

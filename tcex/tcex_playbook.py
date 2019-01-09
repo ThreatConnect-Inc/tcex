@@ -39,7 +39,7 @@ class TcExPlaybook(object):
         """
         self._out_variables = {}
         self._out_variables_type = {}
-        if self.tcex.default_args.tc_playbook_out_variables is not None:
+        if self.tcex.default_args.tc_playbook_out_variables:
             variables = self.tcex.default_args.tc_playbook_out_variables.strip()
             for o in variables.split(','):
                 # parse the variable to get individual parts

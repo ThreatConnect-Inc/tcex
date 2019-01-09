@@ -3,32 +3,20 @@
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Indicator Direct       | resource = tcex.resources.Indicator(tcex)                |
+| Indicator              | resource = tcex.resource('Indicator')                    |
 +------------------------+----------------------------------------------------------+
-| Indicator Dynamic      | resource = tcex.resource('Indicator')                    |
+| Address                | resource =  tcex.resource('Address')                     |
 +------------------------+----------------------------------------------------------+
-| Address Direct         | resource = tcex.resources.Address(tcex)                  |
+| EmailAddress           | resource = tcex.resource('EmailAddress')                 |
 +------------------------+----------------------------------------------------------+
-| Address Dynamic        | resource =  tcex.resource('Address')                     |
+| File                   | resource = tcex.resource('File')                         |
 +------------------------+----------------------------------------------------------+
-| EmailAddress Direct    | resource = tcex.resources.EmailAddress(tcex)             |
+| Host                   | resource = tcex.resource('Host')                         |
 +------------------------+----------------------------------------------------------+
-| EmailAddress Dynamic   | resource = tcex.resource('EmailAddress')                 |
-+------------------------+----------------------------------------------------------+
-| File Direct            | resource = tcex.resources.File(tcex)                     |
-+------------------------+----------------------------------------------------------+
-| File Dynamic           | resource = tcex.resource('File')                         |
-+------------------------+----------------------------------------------------------+
-| Host Direct            | resource = tcex.resources.Host(tcex)                     |
-+------------------------+----------------------------------------------------------+
-| Host Dynamic           | resource = tcex.resource('Host')                         |
-+------------------------+----------------------------------------------------------+
-| URL Direct             | resource = tcex.resources.URL(tcex)                      |
-+------------------------+----------------------------------------------------------+
-| URL Dynamic            | resource = tcex.resource('URL')                          |
+| URL                    | resource = tcex.resource('URL')                          |
 +------------------------+----------------------------------------------------------+
 
-.. Note:: Custom Indicator types can only be accessed via the Dynamic method.
+.. Note:: Custom Indicator types can be accessed using the same method ``tcex.resource('MyCustomType`)``
 
 Retrieve All Indicators
 =======================
@@ -36,13 +24,10 @@ Retrieve All Indicators
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,18
+    :emphasize-lines: 10,14
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
     from tcex import TcEx
 
     tcex = TcEx()
@@ -50,7 +35,6 @@ Retrieve All Indicators
 
 
     def main():
-        """ """
         resource = tcex.resources.Indicator(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -101,7 +85,7 @@ Response
         "type": "Registry Key",
         "id": 603903
     },
-    <... snipped>
+    <snipped ...>
     ]
 
 
@@ -111,13 +95,11 @@ Retrieve Specific Indicator
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17,19
+    :emphasize-lines: 11,14,16
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -125,7 +107,6 @@ Retrieve Specific Indicator
 
 
     def main():
-        """ """
         resource = tcex.resource('Address')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -168,13 +149,11 @@ Retrieve Filtered Indicators
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17-18,20
+    :emphasize-lines: 11,14-15,17
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -182,7 +161,6 @@ Retrieve Filtered Indicators
 
 
     def main():
-        """ """
         resource = tcex.resource('Indicator')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -244,13 +222,11 @@ Indicator Associations
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17-18,20
+    :emphasize-lines: 11,14-15,17
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -258,7 +234,6 @@ Indicator Associations
 
 
     def main():
-        """ """
         resource = tcex.resource('Indicator')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path

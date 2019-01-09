@@ -9,13 +9,10 @@ Retrieve All Tags
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,18
+    :emphasize-lines: 10,14
 
-    """ standard """
     import json
-    from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -23,7 +20,6 @@ Retrieve All Tags
 
 
     def main():
-        """ """
         resource = tcex.resources.Tag(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -70,13 +66,10 @@ Retrieve Specific Tag
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17,19
+    :emphasize-lines: 10,13,15
 
-    """ standard """
     import json
-    from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -84,7 +77,6 @@ Retrieve Specific Tag
 
 
     def main():
-        """ """
         resource = tcex.resources.Tag(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -116,13 +108,10 @@ Retrieve Filtered Tags
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17,19
+    :emphasize-lines: 10,13,15
 
-    """ standard """
     import json
-    from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -130,7 +119,6 @@ Retrieve Filtered Tags
 
 
     def main():
-        """ """
         resource = tcex.resource('Tag')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path

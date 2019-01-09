@@ -29,7 +29,7 @@ epilog = (
     '\nPlaybook App Templates:\n'
     '  playbook         - This template provides the structure for a Playbook App without any\n'
     '                     logic.\n'
-    '  playbook_action  - This template provides a working example of "actions" in a Playbook \n'
+    '  playbook_action  - This template provides an example of "actions" in a Playbook \n'
     '                     App. Using the "actions" feature a single Playbook App can have \n'
     '                     multiple actions to perform different operations on the provided data.\n'
     '  playbook_utility - This template provides a working example of a utility App that takes \n'

@@ -22,10 +22,14 @@ After running the ``tcinit`` command the App directory/file structure will be au
 
 .. Note:: For more information on the App directory structure read the :ref:`App Structure <building_apps_structure>` section of the guide.
 
-More Details
-~~~~~~~~~~~~
+.. seealso::
 
-For more details on the ``tcinit`` command see `App Templates (tcinit)`_.
+    :ref:`App Templates <building_apps_templates>`
+        Documentation for creating App Templates.
+
+    :ref:`App Directory Structure <building_apps_structure>`
+        Documentation for App files and folders structure.
+
 
 Building the "lib" Directory
 ----------------------------
@@ -40,10 +44,10 @@ After running the ``tclib`` command a "lib_<Python version>" (e.g., lib_3.6.7) d
 
 .. Important:: This version of the lib directory should closely match the version of Python on the ThreatConnect server.  Difference in micro versions (e.g., Python version 3.6.5 / lib_3.6.7) are acceptable.
 
-More Details
-~~~~~~~~~~~~
+.. seealso::
 
-For more details on the ``tcinit`` command see `Build Dependencies (tclib)`_.
+    :ref:`App Dependencies <building_apps_dependencies>`
+        Documentation for building App dependencies.
 
 Creating a Testing Profile (Optional)
 -------------------------------------
@@ -108,6 +112,11 @@ Update the values for each variable and add to the local environment (e.g., ~/.b
 
 .. IMPORTANT:: To test that the values are available run ``echo $API_ACCESS_ID``.
 
+.. seealso::
+
+    :ref:`App Test Profiles <building_apps_profiles>`
+        Documentation for creating App testing profiles.
+
 Local Testing (Optional)
 ------------------------
 
@@ -126,7 +135,12 @@ The ``tcrun`` command logs informational messages to the screen about what actio
     Profile:                Execution:               Passed:   Failed:
     simple_data             Passed                   2         0
 
-The ``tcrun`` command log to the **log/run.log** file.  This log file is structured to help quickly discover errors with validation rules.  Any validation failure will be logged at **ERROR** level.
+The ``tcrun`` command also logs to the **run.log** file in the log directory.  This log file is structured to help quickly discover errors with validation rules.  Any validation failure will be logged at **ERROR** level.
+
+.. seealso::
+
+    :ref:`Testing App Locally <building_apps_run>`
+        Documentation for local testing of an App.
 
 Packaging an App
 ----------------
@@ -138,3 +152,8 @@ Packaging an App
 The ``tcpackage`` command will package all relevant files in the project directory into a "**.tcx**" file that can be uploaded to the ThreatConnect Platform. By default the package will be created in the **target** directory in the project directory.
 
 .. IMPORTANT:: The ``tclib`` command must be successfully ran before packaging an App. Otherwise the App will be missing any dependencies and may not function properly.
+
+.. seealso::
+
+    :ref:`App Packaging <building_apps_package>`
+        Documentation for packaging of an App.

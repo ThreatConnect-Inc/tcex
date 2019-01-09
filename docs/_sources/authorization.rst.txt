@@ -4,7 +4,7 @@
 ============================
 Authorization (Token / HMAC)
 ============================
-In general when communication with the ThreatConnect |trade| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.
+In general when communication with the ThreatConnect |copy| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.
 
 The :py:meth:`~tcex.tcex` module also has the :py:mod:`~tcex.tcex.TcEx.session` property which is a Python Requests Session (http://docs.python-requests.org/en/master/user/advanced/#session-objects) with ThreatConnect Authorization added.  API calls to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.
 

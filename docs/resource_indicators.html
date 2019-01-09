@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -186,47 +185,29 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>Indicator Direct</td>
-<td>resource = tcex.resources.Indicator(tcex)</td>
-</tr>
-<tr class="row-odd"><td>Indicator Dynamic</td>
+<tr class="row-even"><td>Indicator</td>
 <td>resource = tcex.resource(‘Indicator’)</td>
 </tr>
-<tr class="row-even"><td>Address Direct</td>
-<td>resource = tcex.resources.Address(tcex)</td>
-</tr>
-<tr class="row-odd"><td>Address Dynamic</td>
+<tr class="row-odd"><td>Address</td>
 <td>resource =  tcex.resource(‘Address’)</td>
 </tr>
-<tr class="row-even"><td>EmailAddress Direct</td>
-<td>resource = tcex.resources.EmailAddress(tcex)</td>
-</tr>
-<tr class="row-odd"><td>EmailAddress Dynamic</td>
+<tr class="row-even"><td>EmailAddress</td>
 <td>resource = tcex.resource(‘EmailAddress’)</td>
 </tr>
-<tr class="row-even"><td>File Direct</td>
-<td>resource = tcex.resources.File(tcex)</td>
-</tr>
-<tr class="row-odd"><td>File Dynamic</td>
+<tr class="row-odd"><td>File</td>
 <td>resource = tcex.resource(‘File’)</td>
 </tr>
-<tr class="row-even"><td>Host Direct</td>
-<td>resource = tcex.resources.Host(tcex)</td>
-</tr>
-<tr class="row-odd"><td>Host Dynamic</td>
+<tr class="row-even"><td>Host</td>
 <td>resource = tcex.resource(‘Host’)</td>
 </tr>
-<tr class="row-even"><td>URL Direct</td>
-<td>resource = tcex.resources.URL(tcex)</td>
-</tr>
-<tr class="row-odd"><td>URL Dynamic</td>
+<tr class="row-odd"><td>URL</td>
 <td>resource = tcex.resource(‘URL’)</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Custom Indicator types can only be accessed via the Dynamic method.</p>
+<p class="last">Custom Indicator types can be accessed using the same method <code class="docutils literal"><span class="pre">tcex.resource('MyCustomType`)</span></code></p>
 </div>
 <div class="section" id="retrieve-all-indicators">
 <h1>Retrieve All Indicators<a class="headerlink" href="#retrieve-all-indicators" title="Permalink to this headline">¶</a></h1>
@@ -252,15 +233,8 @@
 20
 21
 22
-23
-24
-25
-26
-27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -268,7 +242,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">Indicator</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>
@@ -344,7 +317,7 @@
     <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Registry Key&quot;</span><span class="p">,</span>
     <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">603903</span>
 <span class="p">},</span>
-<span class="o">&lt;</span><span class="p">...</span> <span class="nx">snipped</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">snipped</span> <span class="p">...</span><span class="o">&gt;</span>
 <span class="p">]</span>
 </pre></div>
 </td></tr></table></div>
@@ -371,14 +344,9 @@
 17
 18
 19
-20
-21
-22
-23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -386,7 +354,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;Address&#39;</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>
@@ -465,14 +432,9 @@
 23
 24
 25
-26
-27
-28
-29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -480,7 +442,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;Indicator&#39;</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>
@@ -605,14 +566,9 @@
 37
 38
 39
-40
-41
-42
-43</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; standard &quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="sd">&quot;&quot;&quot; third party &quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; custom &quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
 
 <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
@@ -620,7 +576,6 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 <span class="hll">    <span class="n">resource</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;Indicator&#39;</span><span class="p">)</span>
 </span>    <span class="n">resource</span><span class="o">.</span><span class="n">owner</span> <span class="o">=</span> <span class="s1">&#39;Acme Corp&#39;</span>
     <span class="n">resource</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">tc_api_path</span>

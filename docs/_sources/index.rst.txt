@@ -15,7 +15,6 @@ Release |version|.
    authorization
    batch
    building_apps
-   data_filter
    exit
    examples
    install_json

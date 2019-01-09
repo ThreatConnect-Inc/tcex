@@ -1,22 +1,16 @@
 .. _resources_security_labels:
 
-
-+ Direct Access: ``resource = tcex.resources.SecurityLabel(tcex)``
-+ Dynamic Access: ``resource = tcex.resource('SecurityLabel')``
-
 Retrieve All Security Labels
 ============================
 
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,18
+    :emphasize-lines: 11,15
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -24,7 +18,6 @@ Retrieve All Security Labels
 
 
     def main():
-        """ """
         resource = tcex.resources.SecurityLabel(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -64,13 +57,11 @@ Retrieve Specific Security Label
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17,19
+    :emphasize-lines: 11,14,16
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -78,7 +69,6 @@ Retrieve Specific Security Label
 
 
     def main():
-        """ """
         resource = tcex.resources.SecurityLabel(tcex)
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
@@ -111,13 +101,11 @@ Retrieve Filtered Security Labels
 .. code-block:: python
     :linenos:
     :lineno-start: 1
-    :emphasize-lines: 14,17,19
+    :emphasize-lines: 11,14,16
 
-    """ standard """
     import json
     from datetime import datetime
-    """ third party """
-    """ custom """
+
     from tcex import TcEx
 
     tcex = TcEx()
@@ -125,7 +113,6 @@ Retrieve Filtered Security Labels
 
 
     def main():
-        """ """
         resource = tcex.resource('SecurityLabel')
         resource.owner = 'Acme Corp'
         resource.url = args.tc_api_path
