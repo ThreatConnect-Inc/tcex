@@ -4,7 +4,7 @@
 ========
 Requests
 ========
-The ThreatConnect |trade| TcEx Framework provides the :py:mod:`~tcex.tcex_request.TcExRequest` module accessed using the ``tcex.request`` property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.
+The ThreatConnect |copy| TcEx Framework provides the :py:mod:`~tcex.tcex_request.TcExRequest` module accessed using the ``tcex.request`` property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.
 
 .. code-block:: python
     :linenos:

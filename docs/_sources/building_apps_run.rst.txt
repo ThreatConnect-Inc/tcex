@@ -1,5 +1,9 @@
 .. _building_apps_run:
 
+---------------------------------------
+Testing Apps - Running Profiles (tcrun)
+---------------------------------------
+
 This CLI tool provides a simple interface to run the App locally using the profiles created using the ``tcprofile`` command.  If the profile has validation rules defined the ``tcrun`` command will validate the output variables as defined in the validation rules.
 
 Usage

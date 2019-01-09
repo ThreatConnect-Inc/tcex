@@ -4,7 +4,7 @@
 =======
 Proxies
 =======
-The ThreatConnect |trade| TcEx App Framework provides the :py:const:`~tcex.tcex.TcEx.proxies` property to automatically create a dictionary with the properly formatted proxy settings used by the Python Requests module.
+The ThreatConnect |copy| TcEx App Framework provides the :py:const:`~tcex.tcex.TcEx.proxies` property to automatically create a dictionary with the properly formatted proxy settings used by the Python Requests module.
 
 .. Note:: When using the :py:meth:`~tcex.tcex_resources` module or :py:const:`~tcex.tcex.TcEx.session` property the proxies are automatically configured.
 

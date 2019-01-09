@@ -1,9 +1,9 @@
 .. include:: <isonum.txt>
-.. _batch:
+.. _module_batch:
 
-=====
-Batch
-=====
+==============
+Module - Batch
+==============
 
 .. important:: The Batch module requires ThreatConnect version 5.6 or higher.
 

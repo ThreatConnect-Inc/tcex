@@ -12,25 +12,31 @@ Release |version|.
 
    overview
    features
+   building_apps_quickstart
+   building_apps_tcinit
+   building_apps_tclib
+   building_apps_tcpackage
+   testing_apps_tcprofile
+   testing_apps_tcrun
+   app_deployment_configuration
+   app_directory_structure
+   module_batch
+   module_metrics
+   module_notifications
+   module_playbook
+   module_request
+   module_resource
+   module_utils
    authorization
-   batch
-   building_apps
    exit
    examples
-   install_json
    logging
    message_tc
-   tcex_docs/modules
-   metrics
-   notifications
    parser
-   playbook
    proxies
-   request
-   resource
    results_tc
    release_notes
-   utils
+   tcex_docs/modules
 
 Indices and tables
 ==================

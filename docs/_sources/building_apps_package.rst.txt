@@ -1,5 +1,9 @@
 .. _building_apps_package:
 
+-------------------------------------
+Building Apps - Packaging (tcpackage)
+-------------------------------------
+
 Summary
 -------
 

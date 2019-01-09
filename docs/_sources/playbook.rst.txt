@@ -4,7 +4,7 @@
 =========
 Playbooks
 =========
-The ThreatConnect |trade| TcEx App Framework provides common *helper* methods to write a Playbooks App.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides all required methods to communicate with upstream and downstream Apps.
+The ThreatConnect |copy| TcEx App Framework provides common *helper* methods to write a Playbooks App.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides all required methods to communicate with upstream and downstream Apps.
 
 Understanding Playbooks
 -----------------------

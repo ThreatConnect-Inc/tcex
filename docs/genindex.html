@@ -95,25 +95,31 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
-<li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
 </ul>
 
 
@@ -214,7 +220,7 @@
       <ul>
         <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Debug.__call__">(tcex.tcex_app_decorators.Debug method)</a>
 </li>
-        <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.InterateOnArg.__call__">(tcex.tcex_app_decorators.InterateOnArg method)</a>
+        <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.IterateOnArg.__call__">(tcex.tcex_app_decorators.IterateOnArg method)</a>
 </li>
         <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnException.__call__">(tcex.tcex_app_decorators.OnException method)</a>
 </li>
@@ -1085,13 +1091,13 @@
 </li>
       <li><a href="tcex_docs/bin.tclib.html#bin.tclib.TcLib.install_libs">install_libs() (bin.tclib.TcLib method)</a>
 </li>
-      <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.InterateOnArg">InterateOnArg (class in tcex.tcex_app_decorators)</a>
-</li>
       <li><a href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Intrusion_Set">Intrusion_Set (class in tcex.tcex_resources)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.intrusion_set">intrusion_set() (tcex.tcex_ti_batch.TcExBatch method)</a>
 </li>
       <li><a href="tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.IntrusionSet">IntrusionSet (class in tcex.tcex_ti_group)</a>
+</li>
+      <li><a href="tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.IterateOnArg">IterateOnArg (class in tcex.tcex_app_decorators)</a>
 </li>
   </ul></td>
 </tr></table>

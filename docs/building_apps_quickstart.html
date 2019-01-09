@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Initializing an App &mdash; TcEx 0.9.0 documentation</title>
+  <title>Building Apps - Quick Start &mdash; TcEx 0.9.0 documentation</title>
 
 
 
@@ -38,6 +38,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
+        <link rel="next" title="Building Apps - Templates (tcinit)" href="building_apps_tcinit.html"/>
+        <link rel="prev" title="Features" href="features.html"/>
 
 
   <script src="_static/js/modernizr.min.js"></script>
@@ -91,28 +93,39 @@
 
 
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
-<ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building Apps - Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initializing-an-app">Initializing an App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-lib-directory">Building the “lib” Directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#packaging-an-app">Packaging an App</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps.html">Building Apps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_filter.html">Data Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
-<li class="toctree-l1"><a class="reference internal" href="playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="request.html">Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
 </ul>
 
 
@@ -157,7 +170,7 @@
 
       <li><a href="index.html">Docs</a> &raquo;</li>
 
-      <li>Initializing an App</li>
+      <li>Building Apps - Quick Start</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -174,28 +187,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <p id="building-apps-quickstart">The following steps are written for development on a OSX or Linux system.  Development on a Windows system is supported and should follow similar steps. Prior to proceeding Python must be installed and if preferred a Python virtual environment should be configured. For local testing a Redis server also must be installed and running. The steps to install Python, Redis, and configure a virtual environment are outside the scope of this document.</p>
+  <div class="section" id="building-apps-quick-start">
+<span id="building-apps-quickstart"></span><h1>Building Apps - Quick Start<a class="headerlink" href="#building-apps-quick-start" title="Permalink to this headline">¶</a></h1>
+<p>The following steps are written for development on a OSX or Linux system.  Development on a Windows system is supported and should follow similar steps. Prior to proceeding Python must be installed and if preferred a Python virtual environment should be configured. For local testing a Redis server also must be installed and running. The steps to install Python, Redis, and configure a virtual environment are outside the scope of this document.</p>
 <p>This quickstart guide will walk through each step to create a working App. It will initialize a fully functioning App. Adding custom code/logic is not covered in this quickstart guide.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">This guide assumes that the workstation and ThreatConnect instance have the same version of Python installed. Writing Apps that support multiple versions of Python is supported but not covered in this quickstart.</p>
+<p class="last">This guide assumes that the workstation and ThreatConnect instance have the same version of Python installed. Writing Apps that support multiple versions of Python is supported but not covered in the quickstart guide.</p>
 </div>
 <div class="section" id="initializing-an-app">
-<h1>Initializing an App<a class="headerlink" href="#initializing-an-app" title="Permalink to this headline">¶</a></h1>
+<h2>Initializing an App<a class="headerlink" href="#initializing-an-app" title="Permalink to this headline">¶</a></h2>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">tcex</span>
 <span class="n">mkdir</span> <span class="n">TCPB_</span><span class="o">-</span><span class="n">_JsonPretty</span>
 <span class="n">cd</span> <span class="n">TCPB_</span><span class="o">-</span><span class="n">_JsonPretty</span>
 <span class="n">tcinit</span> <span class="o">--</span><span class="n">action</span> <span class="n">create</span> <span class="o">--</span><span class="n">template</span> <span class="n">playbook_utility</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The prefix of <strong>TCPB_-_</strong> (ThreatConnect PlayBook) is optional. However, it’s a helpful naming convention to distinguish PlayBook Apps from Job Apps.</p>
+</div>
 <p>After running the <code class="docutils literal"><span class="pre">tcinit</span></code> command the App directory/file structure will be autogenerated. The <strong>playbook_utility</strong> template is a working App so there is no need to change any of the files.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For more information on the App directory structure read the <a class="reference internal" href="building_apps_structure.html#building-apps-structure"><span class="std std-ref">App Structure</span></a> section of the guide.</p>
+<p class="last">When ready to create custom App logic the <code class="docutils literal"><span class="pre">run()</span></code> method of <strong>app.py</strong> file would be updated with appropriate changes. An changes to App inputs/args would be made to the <strong>install.json</strong> and <strong>args.py</strong> file.  The <code class="docutils literal"><span class="pre">param[].name</span></code> field of the install.json must match the name of the args the App is expecting (e.g., “api_key” name in install.json would pass the “–api_key” arg to the App).</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="building_apps_tcinit.html#building-apps-tcinit"><span class="std std-ref">Building Apps - Templates</span></a></dt>
+<dd>Documentation for using App Templates.</dd>
+<dt><a class="reference internal" href="app_directory_structure.html#app-directory-structure"><span class="std std-ref">App Structure</span></a></dt>
+<dd>Documentation for App files and folders structure.</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="building-the-lib-directory">
-<h1>Building the “lib” Directory<a class="headerlink" href="#building-the-lib-directory" title="Permalink to this headline">¶</a></h1>
+<h2>Building the “lib” Directory<a class="headerlink" href="#building-the-lib-directory" title="Permalink to this headline">¶</a></h2>
 <p>At a minimum all Apps require the <code class="docutils literal"><span class="pre">tcex</span></code> Python package.  If other Python packages are required the package name should be added to the requirements.txt file in the project directory. For this quickstart guide no additional packages are required.</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tclib</span>
 </pre></div>
@@ -205,79 +233,32 @@
 <p class="first admonition-title">Important</p>
 <p class="last">This version of the lib directory should closely match the version of Python on the ThreatConnect server.  Difference in micro versions (e.g., Python version 3.6.5 / lib_3.6.7) are acceptable.</p>
 </div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="building_apps_tclib.html#building-apps-tclib"><span class="std std-ref">App Dependencies</span></a></dt>
+<dd>Documentation for building App dependencies.</dd>
+</dl>
 </div>
-<div class="section" id="creating-a-testing-profile-optional">
-<h1>Creating a Testing Profile (Optional)<a class="headerlink" href="#creating-a-testing-profile-optional" title="Permalink to this headline">¶</a></h1>
-<p>This section will go over the steps to setup a test profile to facilitate the testing of the App outside of the ThreatConnect platform. Creating testing profiles is not required to build and deploy and App. However, this feature provides a faster development cycle as compared to uploading the App to the ThreatConnect platform after each change.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcprofile</span> <span class="o">--</span><span class="n">name</span> <span class="n">simple_data</span>
+</div>
+<div class="section" id="packaging-an-app">
+<h2>Packaging an App<a class="headerlink" href="#packaging-an-app" title="Permalink to this headline">¶</a></h2>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcpackage</span>
 </pre></div>
 </div>
-<p>After running the <code class="docutils literal"><span class="pre">tcprofile</span></code> a the directory <strong>tcex.d</strong> will be created in the project directory.  The <strong>tcex.d</strong> directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span>tcex.d
-├── data
-└── profiles
-    └── simple_data.json
-</pre></div>
-</div>
-<p>Now that <em>simple_data</em> profile has been created, testing value needs to be added to the <strong>simple_data.json</strong> file.  This template has 3 inputs defined in the <strong>install.json</strong> configuration files.  The <code class="docutils literal"><span class="pre">tcprofile</span></code> command will populate the values for the inputs if there is a <strong>default</strong> value defined in the <strong>install.json</strong> file.  Update the <strong>simple_data.json</strong> file with the values shown in the following code snippet.</p>
-<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;...</span> <span class="n">snipped</span><span class="o">&gt;</span>
-<span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
-  <span class="s2">&quot;app&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;indent&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;json_data&quot;</span><span class="p">:</span> <span class="s2">&quot;{</span><span class="se">\&quot;</span><span class="s2">four</span><span class="se">\&quot;</span><span class="s2">:4, </span><span class="se">\&quot;</span><span class="s2">one</span><span class="se">\&quot;</span><span class="s2">: 1, </span><span class="se">\&quot;</span><span class="s2">two</span><span class="se">\&quot;</span><span class="s2">: 2, </span><span class="se">\&quot;</span><span class="s2">three</span><span class="se">\&quot;</span><span class="s2">: 3}&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;sort_keys&quot;</span><span class="p">:</span> <span class="n">true</span>
-  <span class="p">},</span>
-<span class="o">&lt;</span><span class="n">snipped</span> <span class="o">...&gt;</span>
-</pre></div>
-</div>
-<div class="section" id="environment-variables">
-<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
-<p>An important part of local testing is setting up the appropriate environmental variables.  In each profile the <code class="docutils literal"><span class="pre">args.default</span></code> section has all the default args that will be provided to every App by the ThreatConnect Platform during execution. The values for these args can be entered directly into the configuration file, however to keep sensitive data out of VCS systems the use of environment variables is employed.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This list of environment variables can be found by running <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">-h</span></code>.</p>
-</div>
-<p>Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done the environment file will need to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span># ThreatConnect API Credential and URL
-export API_DEFAULT_ORG=MyOrg
-export API_ACCESS_ID=1234
-export API_SECRET_KEY=abc123
-export TC_API_PATH=https://maclaren.pub/api
-
-# API Token can be supplied optionally, but must be updated frequently.
-export TC_TOKEN=123-abc-456-def
-
-# Proxy settings are optional
-export TC_PROXY_HOST=10.10.10.10
-export TC_PROXY_PORT=3128
-export TC_PROXY_USERNAME=robin
-export TC_PROXY_PASSWORD=sparkles
-
-# The Redis IP/Host and Port
-export DB_PATH=localhost
-export DB_PORT=6379
-</pre></div>
-</div>
+<p>The <code class="docutils literal"><span class="pre">tcpackage</span></code> command will package all relevant files in the project directory into a “<strong>.tcx</strong>” file that can be uploaded to the ThreatConnect Platform. By default the package will be created in the <strong>target</strong> directory in the project directory.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">To test that the values are available run <code class="docutils literal"><span class="pre">echo</span> <span class="pre">$API_ACCESS_ID</span></code>.</p>
+<p class="last">The <code class="docutils literal"><span class="pre">tclib</span></code> command must be successfully ran before packaging an App. Otherwise the App will be missing any dependencies and may not function properly.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="building_apps_tcpackage.html#building-apps-tcpackage"><span class="std std-ref">App Packaging</span></a></dt>
+<dd>Documentation for packaging of an App.</dd>
+</dl>
 </div>
 </div>
-</div>
-<div class="section" id="local-testing-optional">
-<h1>Local Testing (Optional)<a class="headerlink" href="#local-testing-optional" title="Permalink to this headline">¶</a></h1>
-<p>This section will go over how to run the test profile created in the <a class="reference internal" href="#creating-a-testing-profile-optional">Creating a Testing Profile (Optional)</a> step.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">profile</span> <span class="n">simple_data</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command logs informational messages to the screen about what actions are taken and the results.  At the bottom of the output a Report is displayed with the results of the testing profile.  If the execution “Passed” and the 2 validations passed then the App profile successfully ran.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">Report</span><span class="p">:</span>
-                                                 <span class="n">Validations</span>
-<span class="n">Profile</span><span class="p">:</span>                <span class="n">Execution</span><span class="p">:</span>               <span class="n">Passed</span><span class="p">:</span>   <span class="n">Failed</span><span class="p">:</span>
-<span class="n">simple_data</span>             <span class="n">Passed</span>                   <span class="mi">2</span>         <span class="mi">0</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command log to the <strong>log/run.log</strong> file.  This log file is structured to help quickly discover errors with validation rules.  Any validation failure will be logged at <strong>ERROR</strong> level.</p>
 </div>
 
 
@@ -287,6 +268,15 @@ export DB_PORT=6379
            </div>
           </div>
           <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="building_apps_tcinit.html" class="btn btn-neutral float-right" title="Building Apps - Templates (tcinit)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="features.html" class="btn btn-neutral" title="Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
 
 
   <hr/>

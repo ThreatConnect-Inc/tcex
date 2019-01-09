@@ -1,11 +1,10 @@
 .. include:: <isonum.txt>
-.. _metrics:
+.. _module_metrics:
 
-=========
-Metrics
-=========
-The ThreatConnect |trade| TcEx App Framework provides an simple interface for Creating and adding metrics in Apps.  The :py:mod:`~tcex.tcex_metrics_v2.TcExMetricsV2` module will automatically create the Metric if it does not already exists in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics see the docs at https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics.
-
+================
+Module - Metrics
+================
+The ThreatConnect |copy| TcEx App Framework provides an simple interface for Creating and adding metrics in Apps.  The :py:mod:`~tcex.tcex_metrics_v2.TcExMetricsV2` module will automatically create the Metric if it does not already exists in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics see the docs at https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics.
 
 Metrics Instance
 ================

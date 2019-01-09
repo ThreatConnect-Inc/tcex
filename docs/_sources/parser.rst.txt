@@ -4,13 +4,13 @@
 =============
 Parser / Args
 =============
-The ThreatConnect |trade| TcEx App Framework provides the :py:mod:`~tcex.tcex.TcEx.parser` property which returns and instance of ``argparser.ArgParser``. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added ``args`` can be access with the :py:mod:`~tcex.tcex.TcEx.args` property.
+The ThreatConnect |copy| TcEx App Framework provides the :py:mod:`~tcex.tcex.TcEx.parser` property which returns and instance of ``argparser.ArgParser``. This argparser instance is an extension of the Python argparser method with predefined arguments specifically for ThreatConnect Exchange Apps. Once all custom arguments are added ``args`` can be access with the :py:mod:`~tcex.tcex.TcEx.args` property.
 
 API Arguments
 -------------
 Argument in the API argument section are provided for authorization to the ThreatConnect API.  If the ``tc_token`` argument is passed it has priority over the HMAC arguments. The TcEx Framework automatically handles all these arguments and makes them available via the :py:mod:`~tcex.tcex.TcEx.args` property.
 
-.. Note:: The ``api_access_id`` and ``api_secret_key`` arguments have to be configured in the :ref:`install_json` configuration file and configured in each job to be passed to the app.  The ``tc_token`` will automatically be passed for Apps running in the ThreatConnect Exchange Platform.
+.. Note:: The ``api_access_id`` and ``api_secret_key`` arguments have to be configured in the :ref:`app_deployment_configuration` file and configured in each job to be passed to the app.  The ``tc_token`` will automatically be passed for Apps running in the ThreatConnect Exchange Platform.
 
 The list of API args can be found in the :py:meth:`~tcex.tcex_argparser.ArgParser._api_arguments` method.
 

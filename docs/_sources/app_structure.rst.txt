@@ -1,5 +1,8 @@
-.. _building_apps_structure:
+.. _app_structure:
 
+-----------------------
+App Directory Structure
+-----------------------
 
 Playbook App Structure
 ----------------------

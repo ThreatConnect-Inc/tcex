@@ -1,10 +1,10 @@
 .. include:: <isonum.txt>
-.. _notifications:
+.. _module_notifications:
 
-=============
-Notifications
-=============
-The ThreatConnect |trade| TcEx App Framework provides a simple interface for creating Notifications within ThreatConnect.  For more information on ThreatConnect Notifications see the docs at https://docs.threatconnect.com
+======================
+Module - Notifications
+======================
+The ThreatConnect |copy| TcEx App Framework provides a simple interface for creating Notifications within ThreatConnect.  For more information on ThreatConnect Notifications see the docs at https://docs.threatconnect.com
 
 Notification Instance
 =====================

@@ -1,4 +1,8 @@
-.. _building_apps_profiles:
+.. _testing_apps_tcprofile:
+
+-----------------------------------
+Testing Apps - Profiles (tcprofile)
+-----------------------------------
 
 The ``tcprofile`` CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.
 
@@ -46,6 +50,55 @@ To create a new profile run the following command.  The profile will be created 
     tcprofile --name simple_data
 
 .. note:: The ``tcprofile`` command can be run multiple times to generate several different profiles with different input and/or output variables.
+
+Output
+~~~~~~
+
+After running the ``tcprofile`` a the directory **tcex.d** will be created in the project directory.  The **tcex.d** directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.
+
+.. code:: bash
+
+    tcex.d
+    ├── data
+    └── profiles
+        └── simple_data.json
+
+Updates
+~~~~~~~
+
+Once a profile has been created, testing value needs to be added to the JSON data.  All inputs in the ``args.apps`` section need to have values set or updated. A description can be added to define the intent of the testing profile.
+
+Environment Variables
+~~~~~~~~~~~~~~~~~~~~~
+
+An important part of local testing is setting up the appropriate environmental variables.  In each profile the ``args.default`` section has all the default args that will be provided to every App by the ThreatConnect Platform during execution. The values for these args can be entered directly into the configuration file, however to keep sensitive data out of VCS systems the use of environment variables is employed.
+
+.. NOTE:: This list of environment variables can be found by running ``tcprofile -h``.
+
+Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done the environment file will need to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).
+
+.. code:: bash
+
+    # ThreatConnect API Credential and URL
+    export API_DEFAULT_ORG=MyOrg
+    export API_ACCESS_ID=1234
+    export API_SECRET_KEY=abc123
+    export TC_API_PATH=https://maclaren.pub/api
+
+    # API Token can be supplied optionally, but must be updated frequently.
+    export TC_TOKEN=123-abc-456-def
+
+    # Proxy settings are optional
+    export TC_PROXY_HOST=10.10.10.10
+    export TC_PROXY_PORT=3128
+    export TC_PROXY_USERNAME=robin
+    export TC_PROXY_PASSWORD=sparkles
+
+    # The Redis IP/Host and Port
+    export DB_PATH=localhost
+    export DB_PORT=6379
+
+.. IMPORTANT:: To test that the values are available run ``echo $API_ACCESS_ID``.
 
 Profile Format
 --------------
@@ -267,4 +320,4 @@ The ``tcrun`` command will run any validation rules defined in the profile. Curr
 Supported Operators
 ~~~~~~~~~~~~~~~~~~~
 
-For a list of supported **operator** values see :py:meth:`~bin.tcrun.TcRun.operators`.
+For a list of supported **operator** see the :py:meth:`~bin.tcrun.TcRun.operators` property of the ``tcrun`` command.

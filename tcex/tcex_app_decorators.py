@@ -71,7 +71,7 @@ class Debug(object):
         return debug
 
 
-class InterateOnArg(object):
+class IterateOnArg(object):
     """Iterate over arg data"""
 
     def __init__(self, arg):

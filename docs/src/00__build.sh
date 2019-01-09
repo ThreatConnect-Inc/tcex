@@ -15,6 +15,9 @@ ln -fs tcpackage ../../bin/tcpackage.py
 ln -fs tcprofile ../../bin/tcprofile.py
 ln -fs tcrun ../../bin/tcrun.py
 
+# get app deployment
+wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer-docs/master/docs/deployment_config.rst --output-document=deployment_config.rst
+
 # clean old build
 rm -fr _build
 
@@ -37,3 +40,6 @@ unlink ../../bin/tclib.py
 unlink ../../bin/tcpackage.py
 unlink ../../bin/tcprofile.py
 unlink ../../bin/tcrun.py
+
+# cleanup
+rm -f deployment_config.rst

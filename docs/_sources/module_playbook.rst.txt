@@ -1,10 +1,10 @@
 .. include:: <isonum.txt>
-.. _playbooks:
+.. _module_playbooks:
 
-=========
-Playbooks
-=========
-The ThreatConnect |trade| TcEx App Framework provides common *helper* methods to write a Playbooks App.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides all required methods to communicate with upstream and downstream Apps.
+==================
+Module - Playbooks
+==================
+The ThreatConnect |copy| TcEx App Framework provides common *helper* methods to write a Playbooks App.  The :py:mod:`~tcex.tcex_playbook.TcExPlaybook` module provides all required methods to communicate with upstream and downstream Apps.
 
 Understanding Playbooks
 -----------------------
@@ -12,7 +12,7 @@ A Playbook App is a single component of a Playbook.  These Apps are intended to 
 
 Playbook Flow
 -------------
-As a Playbook starts execution each App will have input and output variables.  The input variables can be user provided data or output from an upstream App.  The Apps input and output variables are defined in the :ref:`install_json` file of the App.  A downstream App has access to all output variables from any upstream Apps.
+As a Playbook starts execution each App will have input and output variables.  The input variables can be user provided data or output from an upstream App.  The Apps input and output variables are defined in the :ref:`app_deployment_configuration` file of the App.  A downstream App has access to all output variables from any upstream Apps.
 
 .. Note:: Upstream Apps are app that have completed execution previous to the current Apps execution.
 

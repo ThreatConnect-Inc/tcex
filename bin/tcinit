@@ -22,18 +22,19 @@ else:
 epilog = (
     'The "tcinit" command it intended to enable quick development of ThreatConnect Exchange Apps.\n'
     '\nJob App Templates:\n'
-    '  job              - This template provides the structure for a Job App without any logic.\n'
+    '  job              - This template provides the structure for a Job App without any App\n'
+    '                     logic.\n'
     '  job_batch        - This template provides a working example of downloading remote threat \n'
     '                     intel (md5 hash indicators) and writing the data in the ThreatConnect \n'
     '                     Platform using the tcex batch module.\n'
     '\nPlaybook App Templates:\n'
     '  playbook         - This template provides the structure for a Playbook App without any\n'
-    '                     logic.\n'
+    '                     App logic.\n'
     '  playbook_action  - This template provides an example of "actions" in a Playbook \n'
     '                     App. Using the "actions" feature a single Playbook App can have \n'
     '                     multiple actions to perform different operations on the provided data.\n'
-    '  playbook_utility - This template provides a working example of a utility App that takes \n'
-    '                     an input, analyze or modifies the data, and writes the results as \n'
+    '  playbook_utility - This template provides a basic example of a utility App that takes \n'
+    '                     an input, analyzes or modifies the data, and writes the results as \n'
     '                     output.\n'
 )
 

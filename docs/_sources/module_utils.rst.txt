@@ -1,10 +1,10 @@
 .. include:: <isonum.txt>
-.. _utils:
+.. _module_utils:
 
-=========
-Utils
-=========
-The ThreatConnect |trade| TcEx App Framework provides common *utils* methods to assist in writing Apps.
+==============
+Module - Utils
+==============
+The ThreatConnect |copy| TcEx App Framework provides common *utils* methods to assist in writing Apps.
 
 Format Date Time
 ================

@@ -38,8 +38,6 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
-        <link rel="next" title="Exit" href="exit.html"/>
-        <link rel="prev" title="Batch" href="batch.html"/>
 
 
   <script src="_static/js/modernizr.min.js"></script>
@@ -93,130 +91,11 @@
 
 
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batch.html">Batch</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Building Apps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#initializing-an-app">Initializing an App</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#building-the-lib-directory">Building the “lib” Directory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#creating-a-testing-profile-optional">Creating a Testing Profile (Optional)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#local-testing-optional">Local Testing (Optional)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#packaging-an-app">Packaging an App</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#app-templates-tcinit">App Templates (tcinit)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#common-usage">Common Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#job-app-templates">Job App Templates</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#job-job">Job (job)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#job-ingress-job-ingress">Job Ingress (job_ingress)</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#playbook-app-templates">Playbook App Templates</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#playbook-playbook">Playbook (playbook)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#playbook-action-playbook-action">Playbook Action (playbook_action)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#playbook-utility-playbook-utility">Playbook Utility (playbook_utility)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#build-dependencies-tclib">Build Dependencies (tclib)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#building-apps-dependencies">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id4">Common Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#using-configuration-file">Using Configuration File</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-test-profiles-tcprofile">Creating Test Profiles (tcprofile)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id6">Common Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#profile-format">Profile Format</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#args-app">args.app</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#args-default">args.default</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#autoclear">autoclear</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-files">data_files</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#description">description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#exit-codes">exit_codes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#groups">groups</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-json">install_json</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#profile-name">profile_name</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#quiet">quiet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#validations">validations</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#staging-redis-data">Staging Redis Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7">Data Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-validation">Data Validation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#supported-operators">Supported Operators</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#running-test-profiles-tcrun">Running Test Profiles (tcrun)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id8">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id9">Common Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#results">Results</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">Exit Codes</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#packaging-an-app-tcpackage">Packaging an App (tcpackage)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#building-apps-package">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id12">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id13">Common Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#configuration-options">Configuration Options</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#single-app">Single App</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#multiple-bundles">Multiple Bundles</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#app-directory-structure">App Directory Structure</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#playbook-app-structure">Playbook App Structure</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#gitignore-optional">.gitignore (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pre-commit-config-yaml-optional">.pre-commit-config.yaml (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#readme-md-required">README.md (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#main-py-required">__main__.py (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#app-py-required">app.py (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#args-py-required">args.py (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-json-required">install.json (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#log-temporary">log (temporary)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#log-app-log-temporary">log/app.log (temporary)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#log-message-tc-temporary">log/message.tc (temporary)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#log-run-log-temporary">log/run.log (temporary)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#playbook-app-py-required">playbook_app.py (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pyproject-toml-optional">pyproject.toml (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#requirements-txt-required">requirements.txt (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#run-py-required">run.py (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#setup-cfg-optional">setup.cfg (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tcex-d-optional">tcex.d (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tcex-d-data-optional">tcex.d/data (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tcex-d-profiles-optional">tcex.d/profiles (optional)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tcex-json-required">tcex.json (required)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tcex-json-schema-json-optional">tcex_json_schema.json (optional)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_json.html">Install JSON</a></li>
@@ -299,7 +178,10 @@
 <p>The ThreatConnect® TcEx Framework provides a full features SDK as well CLI tools to enable developer to rapidly develop Apps.  The following CLI tools enable the developer to walk through each step of the development process.</p>
 <div class="section" id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
-<p id="building-apps-quickstart">The following steps are written for development on a OSX or Linux system.  Development on a Windows system is supported and should follow similar steps. Prior to proceeding Python must be installed and if preferred a Python virtual environment should be configured. For local testing a Redis server also must be installed and running. The steps to install Python, Redis, and configure a virtual environment are outside the scope of this document.</p>
+</div>
+<div class="section" id="building-apps-quick-start">
+<span id="building-apps-quickstart"></span><h2>Building Apps - Quick Start<a class="headerlink" href="#building-apps-quick-start" title="Permalink to this headline">¶</a></h2>
+<p>The following steps are written for development on a OSX or Linux system.  Development on a Windows system is supported and should follow similar steps. Prior to proceeding Python must be installed and if preferred a Python virtual environment should be configured. For local testing a Redis server also must be installed and running. The steps to install Python, Redis, and configure a virtual environment are outside the scope of this document.</p>
 <p>This quickstart guide will walk through each step to create a working App. It will initialize a fully functioning App. Adding custom code/logic is not covered in this quickstart guide.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -459,8 +341,11 @@ export DB_PORT=6379
 </div>
 <div class="section" id="app-templates-tcinit">
 <h2>App Templates (tcinit)<a class="headerlink" href="#app-templates-tcinit" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="building-apps-templates-tcinit">
+<span id="building-apps-templates"></span><h2>Building Apps - Templates (tcinit)<a class="headerlink" href="#building-apps-templates-tcinit" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="summary">
-<span id="building-apps-templates"></span><h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">tcinit</span></code> CLI tool provides a simple interface to kick start a new project from a template and to keep framework files updated.  There are several template that supported specific use cases. Most templates are working Apps that can be easily modified to the developers use case.</p>
 </div>
 <div class="section" id="usage">
@@ -528,8 +413,11 @@ export DB_PORT=6379
 </div>
 <div class="section" id="build-dependencies-tclib">
 <h2>Build Dependencies (tclib)<a class="headerlink" href="#build-dependencies-tclib" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="building-apps-dependencies">
-<span id="id2"></span><h3>Summary<a class="headerlink" href="#building-apps-dependencies" title="Permalink to this headline">¶</a></h3>
+<span id="id2"></span><h2>Building Apps - Templates (tcinit)<a class="headerlink" href="#building-apps-dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Summary<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">tclib</span></code> CLI tool provides a simple interface to download required Python modules in a self contained folder in the project directory.  This “lib” directory allows all dependencies to be bundled within the App. The App dependencies should be defined in the <strong>requirements.txt</strong> file in the project directory.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -540,8 +428,8 @@ export DB_PORT=6379
 </div>
 </div>
 </div>
-<div class="section" id="id3">
-<h3>Usage<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Usage<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>To get the latest usage for <code class="docutils literal"><span class="pre">tclib</span></code> run <code class="docutils literal"><span class="pre">tclib</span> <span class="pre">-h</span></code>.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -561,8 +449,8 @@ export DB_PORT=6379
                        <span class="n">downloading</span> <span class="kn">from</span> <span class="nn">PyPi.</span>
 </pre></div>
 </div>
-<div class="section" id="id4">
-<h4>Common Usage<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id5">
+<h4>Common Usage<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <p>To build the “lib” directory for the current project the following is the most common command. This command can also be used to add/remove an changes made to requirements.</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tclib</span>
 </pre></div>
@@ -624,7 +512,10 @@ export DB_PORT=6379
 </div>
 <div class="section" id="creating-test-profiles-tcprofile">
 <h2>Creating Test Profiles (tcprofile)<a class="headerlink" href="#creating-test-profiles-tcprofile" title="Permalink to this headline">¶</a></h2>
-<p id="building-apps-profiles">The <code class="docutils literal"><span class="pre">tcprofile</span></code> CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.</p>
+</div>
+<div class="section" id="building-apps-testing-profiles-tcprofile">
+<span id="building-apps-profiles"></span><h2>Building Apps - Testing Profiles (tcprofile)<a class="headerlink" href="#building-apps-testing-profiles-tcprofile" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">tcprofile</span></code> CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.</p>
 <p>By default the <code class="docutils literal"><span class="pre">tcprofile</span></code> command will add any default values defined in the <strong>install.json</strong> file to the args value.  Args without a default value will have to populated manually. For validation rules there are 2 rules created automatically for each output variables.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variables is of the correct type (e.g., String value is a &lt;str&gt; type, StringArray value is of &lt;list&gt; type.).</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -634,8 +525,8 @@ export DB_PORT=6379
 <p class="first admonition-title">Important</p>
 <p class="last">A local instance of Redis must be running to test Playbook Apps locally.</p>
 </div>
-<div class="section" id="id5">
-<h3>Usage<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Usage<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcprofile</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">delete</span><span class="p">,</span><span class="n">replace_validation</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">validate</span><span class="p">}]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">ij</span> <span class="n">IJ</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span><span class="p">]</span>
@@ -660,8 +551,8 @@ export DB_PORT=6379
   <span class="o">--</span><span class="n">verbose</span>             <span class="n">Show</span> <span class="n">verbose</span> <span class="n">output</span><span class="o">.</span>
 </pre></div>
 </div>
-<div class="section" id="id6">
-<h4>Common Usage<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id7">
+<h4>Common Usage<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <p>To create a new profile run the following command.  The profile will be created in the <strong>tcex.d/profiles</strong> directory of the project.</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcprofile</span> <span class="o">--</span><span class="n">name</span> <span class="n">simple_data</span>
 </pre></div>
@@ -758,7 +649,7 @@ export DB_PORT=6379
 </div>
 <div class="section" id="data-files">
 <h4>data_files<a class="headerlink" href="#data-files" title="Permalink to this headline">¶</a></h4>
-<p>The <code class="docutils literal"><span class="pre">data_files</span></code> section of the configuration allow an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the <a class="reference internal" href="#id7">Data Files</a> section.</p>
+<p>The <code class="docutils literal"><span class="pre">data_files</span></code> section of the configuration allow an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the <a class="reference internal" href="#id8">Data Files</a> section.</p>
 </div>
 <div class="section" id="description">
 <h4>description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
@@ -797,8 +688,8 @@ export DB_PORT=6379
 <h3>Staging Redis Data<a class="headerlink" href="#staging-redis-data" title="Permalink to this headline">¶</a></h3>
 <p>In order to test using variable inputs the data can be manually added to Redis.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command has functionality to “stage” the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.</p>
 </div>
-<div class="section" id="id7">
-<h3>Data Files<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Data Files<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Data files can contain a single data input or multiple data inputs.  If the data is reusable it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.</p>
@@ -883,9 +774,12 @@ export DB_PORT=6379
 </div>
 <div class="section" id="running-test-profiles-tcrun">
 <h2>Running Test Profiles (tcrun)<a class="headerlink" href="#running-test-profiles-tcrun" title="Permalink to this headline">¶</a></h2>
-<p id="building-apps-run">This CLI tool provides a simple interface to run the App locally using the profiles created using the <code class="docutils literal"><span class="pre">tcprofile</span></code> command.  If the profile has validation rules defined the <code class="docutils literal"><span class="pre">tcrun</span></code> command will validate the output variables as defined in the validation rules.</p>
-<div class="section" id="id8">
-<h3>Usage<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="app-builder-running-profiles-tcrun">
+<span id="building-apps-run"></span><h2>App Builder - Running Profiles (tcrun)<a class="headerlink" href="#app-builder-running-profiles-tcrun" title="Permalink to this headline">¶</a></h2>
+<p>This CLI tool provides a simple interface to run the App locally using the profiles created using the <code class="docutils literal"><span class="pre">tcprofile</span></code> command.  If the profile has validation rules defined the <code class="docutils literal"><span class="pre">tcrun</span></code> command will validate the output variables as defined in the validation rules.</p>
+<div class="section" id="id9">
+<h3>Usage<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker_image</span> <span class="n">DOCKER_IMAGE</span><span class="p">]</span>
              <span class="p">[</span><span class="o">--</span><span class="n">autoclear</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span>
              <span class="p">[</span><span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span>
@@ -917,8 +811,8 @@ export DB_PORT=6379
                         <span class="p">(</span><span class="n">default</span><span class="p">:</span> <span class="mi">5678</span><span class="p">)</span><span class="o">.</span>
 </pre></div>
 </div>
-<div class="section" id="id9">
-<h4>Common Usage<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id10">
+<h4>Common Usage<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
 <p>The following command will run the “simple-json” profile.</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">profile</span> <span class="n">simple</span><span class="o">-</span><span class="n">json</span>
 </pre></div>
@@ -943,8 +837,8 @@ export DB_PORT=6379
 <h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h3>
 <p>All Apps log to the <code class="docutils literal"><span class="pre">app.log</span></code> file in the appropriate log directory.  Any errors during execution of the App will be displayed there.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command logs to the <code class="docutils literal"><span class="pre">run.log</span></code>  in the same log directory. This log file is structure to help quickly identify problems with validations.  Any failed validation will be logged at <strong>ERROR</strong> level.</p>
 </div>
-<div class="section" id="id10">
-<h3>Exit Codes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>Exit Codes<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  Using the exit_codes parameter you can provide “bad” data to the App and ensure it exits with the proper exit code.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s2">&quot;exit_codes&quot;</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
@@ -957,8 +851,11 @@ export DB_PORT=6379
 </div>
 <div class="section" id="packaging-an-app-tcpackage">
 <h2>Packaging an App (tcpackage)<a class="headerlink" href="#packaging-an-app-tcpackage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="building-apps-package">
-<span id="id11"></span><h3>Summary<a class="headerlink" href="#building-apps-package" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="building-apps-packaging-tcpackage">
+<span id="building-apps-package"></span><h2>Building Apps - Packaging (tcpackage)<a class="headerlink" href="#building-apps-packaging-tcpackage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id12">
+<h3>Summary<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>This CLI tool provides a simple interface to package the App so that it can be easily deployed to the ThreatConnect Platform.</p>
 <p>Running <code class="docutils literal"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically if the <strong>tcex_json_schema.json</strong> schema file is included in the base directory of your App.</p>
 <div class="admonition note">
@@ -966,8 +863,8 @@ export DB_PORT=6379
 <p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files.</p>
 </div>
 </div>
-<div class="section" id="id12">
-<h3>Usage<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>Usage<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcpackage</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">bundle</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">exclude</span> <span class="n">EXCLUDE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">install_json</span> <span class="n">INSTALL_JSON</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span>
 
@@ -982,8 +879,8 @@ export DB_PORT=6379
   <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="id13">
-<h4>Common Usage<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id14">
+<h4>Common Usage<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
 <p>The following command will build the app in the <strong>target</strong> directory of the project with and extension of <em>.tcx</em>.</p>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcpackage</span>
 </pre></div>
@@ -1044,8 +941,11 @@ export DB_PORT=6379
 </div>
 <div class="section" id="app-directory-structure">
 <h2>App Directory Structure<a class="headerlink" href="#app-directory-structure" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="building-apps-structure">
+<span id="id15"></span><h2>App Directory Structure<a class="headerlink" href="#building-apps-structure" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="playbook-app-structure">
-<span id="building-apps-structure"></span><h3>Playbook App Structure<a class="headerlink" href="#playbook-app-structure" title="Permalink to this headline">¶</a></h3>
+<h3>Playbook App Structure<a class="headerlink" href="#playbook-app-structure" title="Permalink to this headline">¶</a></h3>
 <div class="code bash highlight-default"><div class="highlight"><pre><span></span>├── .gitignore
 ├── .pre-commit-config.yaml
 ├── README.md
@@ -1165,15 +1065,6 @@ export DB_PORT=6379
            </div>
           </div>
           <footer>
-
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-        <a href="exit.html" class="btn btn-neutral float-right" title="Exit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-        <a href="batch.html" class="btn btn-neutral" title="Batch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-    </div>
 
 
   <hr/>
