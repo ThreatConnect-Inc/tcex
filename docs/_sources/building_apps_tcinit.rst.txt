@@ -54,15 +54,31 @@ To update an existing App run this command from the project directory. The **upd
 Job App Templates
 -----------------
 
+The ``run()`` method is the default method that is called when an App is executed. For simple Apps the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the **app.py** file if required.
+
 Job (job)
 ~~~~~~~~~
 
 This basic template provides the structure for a Job App without any logic.  This template is intended for advanced users that only require the App structure.
 
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/job/app.py
+    :language: python
+    :linenos:
+
 Job Ingress (job_ingress)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This template provides a working example of downloading remote threat intel (md5 hash indicators) and writing the data in the ThreatConnect Platform using the tcex batch module.
+This template provides a working example of downloading remote threat intel (md5 hash indicators) and writing the data in the ThreatConnect Platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method the batch module is instantiated. Next the data is retrieved from the remote URL and written to the batch module. Finally the batch job is submitted to ThreatConnect for processing.
+
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/job_batch/app.py
+    :language: python
+    :linenos:
 
 Playbook App Templates
 ----------------------
@@ -72,12 +88,38 @@ Playbook (playbook)
 
 This template provides the structure for a Playbook App without any logic.  This template is intended for advanced users that only require the App structure.
 
-Playbook Action (playbook_action)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+app.py
+""""""
 
-This template provides a working example of "actions" in a Playbook App. Using the "actions" feature a single Playbook can have multiple actions to perform different operations on the provided data.
+.. literalinclude:: ../../app_init/playbook/app.py
+    :language: python
+    :linenos:
+
+Playbook Actions (playbook_actions)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This template provides a working example of "actions" in a Playbook App. Using the "actions" feature a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface into processing inputs for an App.
+
+.. seealso::
+
+    :py:mod:`~tcex.tcex_app_decorators`
+        Inline documentation of App decorators.
+
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/playbook_actions/app.py
+    :language: python
+    :linenos:
 
 Playbook Utility (playbook_utility)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This template provides a working example of a utility App that takes an input, analyzes or modifies the data, and writes the results as output.
+
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/playbook_utility/app.py
+    :language: python
+    :linenos:

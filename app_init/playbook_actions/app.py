@@ -5,9 +5,6 @@
 from playbook_app import PlaybookApp
 from tcex import IterateOnArg, OnException, OnSuccess, Output
 
-# Explain tc_action in detail and how it relates to install.json input.
-# Add App Decorator section to docs.
-
 
 # pylint: disable=R0201
 class App(PlaybookApp):
@@ -18,10 +15,6 @@ class App(PlaybookApp):
         super(App, self).__init__(_tcex)
         self.output_strings = []
 
-    # @IterateOnArg() -
-    # @OnException() -
-    # @OnSuccess() -
-    # @Output() -
     @IterateOnArg(arg='input_strings')
     @OnException(msg='Failed to run capitalize operation.')
     @OnSuccess(msg='Successfully ran capitalize operation.')

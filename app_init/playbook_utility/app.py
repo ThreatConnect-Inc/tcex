@@ -6,6 +6,7 @@ import json
 from playbook_app import PlaybookApp
 
 
+# pylint: disable=W0201
 class App(PlaybookApp):
     """Playbook App"""
 
@@ -20,17 +21,6 @@ class App(PlaybookApp):
     # def done(self):
     #     """Perform cleanup work before after App main logic."""
     #     self.tcex.log.debug('Running done.')
-
-    # def parse_args(self):
-    #     """Parse CLI args.
-
-    #     This method can be OPTIONALLY overridden, but using the args.py file is best practice.
-    #     """
-    #     super(App, self).parse_args()  # optionally call parent method before overriding.
-    #     self.tcex.parser.add_argument('--indent', default=4)
-    #     self.tcex.parser.add_argument('--json_data', required=True)
-    #     self.tcex.parser.add_argument('--sort_keys', action='store_true')
-    #     self.args = self.tcex.args
 
     def run(self):
         """Run the App main logic.

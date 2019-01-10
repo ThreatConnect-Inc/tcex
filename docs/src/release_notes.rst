@@ -26,6 +26,7 @@ Release Notes
 + Removed ``tcex.authorization_hmac()`` method.
 + Removed ``tcex._authorization_token_renew()`` method.
 + Updated **all** code to standard formatting and structure.
++ Updated and restructured docs.
 
 0.8.x
 =====

@@ -192,7 +192,21 @@
 
 
 <div class="viewcode-block" id="Benchmark"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Benchmark">[docs]</a><span class="k">class</span> <span class="nc">Benchmark</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Benchmark a function&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Log benchmarking times.</span>
+
+<span class="sd">    This decorator will log the time of execution (benchmark_time) to the app.log file. It can be</span>
+<span class="sd">    helpful in troubleshooting performance issues with Apps.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        import time</span>
+
+<span class="sd">        @Debug()</span>
+<span class="sd">        def my_method():</span>
+<span class="sd">            time.sleep(1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Benchmark.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Benchmark.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
@@ -227,7 +241,18 @@
 
 
 <div class="viewcode-block" id="Debug"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Debug">[docs]</a><span class="k">class</span> <span class="nc">Debug</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Debug a function&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Debug function inputs.</span>
+
+<span class="sd">    This decorator will log the inputs to the function to assist in debugging an App.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @Debug()</span>
+<span class="sd">        def my_method(arg1, args2):</span>
+<span class="sd">            print(arg1, arg2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Debug.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Debug.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
@@ -258,7 +283,24 @@
 
 
 <div class="viewcode-block" id="IterateOnArg"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.IterateOnArg">[docs]</a><span class="k">class</span> <span class="nc">IterateOnArg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Iterate over arg data&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Debug function inputs.</span>
+
+<span class="sd">    This decorator will iterate over all value of the supplied arg and return results. This feature</span>
+<span class="sd">    is helpful when processing a single value (String) or array of values (StringArray). If the App</span>
+<span class="sd">    was provided the arg ``self.args.colors`` with a value of ``[&#39;blue&#39;, &#39;green&#39;, &#39;magenta&#39;]``, then</span>
+<span class="sd">    this decorator would call the function 3 times. Each call to the function would pass one value</span>
+<span class="sd">    from the array. The return values are stored and returned all at once after the last value is</span>
+<span class="sd">    processed.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        # the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
+<span class="sd">        @iterateOnArgs(arg=&#39;colors&#39;)</span>
+<span class="sd">        def my_method(value):</span>
+<span class="sd">            return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -305,7 +347,19 @@
 
 
 <div class="viewcode-block" id="OnException"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnException">[docs]</a><span class="k">class</span> <span class="nc">OnException</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handle Exception in function&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Handle Exception in an App function.</span>
+
+<span class="sd">    This decorator will catch the generic &quot;Exception&quot; error, log the supplied error message, set</span>
+<span class="sd">    the &quot;exit_message&quot;, and exit the App with an exit code of 1.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @OnException(msg=&#39;Failed to process JSON data.&#39;)</span>
+<span class="sd">        def my_method(json_data):</span>
+<span class="sd">            json.dumps(json_data)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -343,7 +397,19 @@
 
 
 <div class="viewcode-block" id="OnSuccess"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnSuccess">[docs]</a><span class="k">class</span> <span class="nc">OnSuccess</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set exit message on successful execution&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set exit message on successful execution.</span>
+
+<span class="sd">    This decorator will set the supplied msg as the App &quot;exit_message&quot;. Typically and App would</span>
+<span class="sd">    only have 1 exit message so this decorator would typically be used in App that used &quot;actions&quot;.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @OnSuccess(msg=&#39;Successfully processed JSON data.&#39;)</span>
+<span class="sd">        def my_method(json_data):</span>
+<span class="sd">            json.dumps(json_data)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -378,7 +444,24 @@
 
 
 <div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Output">[docs]</a><span class="k">class</span> <span class="nc">Output</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set exit message on success&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Store the method return value in self.&lt;attribute&gt;.</span>
+
+<span class="sd">    This decorator will write, append, or extend the methods return value to the App attribute</span>
+<span class="sd">    provided in the ``attribute`` input. The ``attribute`` must first be defined in the</span>
+<span class="sd">    ``__init__()`` method of the App before the decorator is used.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        def __init__(self, _tcex):</span>
+<span class="sd">            super(App, self).__init__(_tcex)</span>
+<span class="sd">            self.output_strings = []  # Output decorator writes here.</span>
+
+<span class="sd">        @Output(attribute=&#39;output_strings&#39;)</span>
+<span class="sd">        def my_method(data):</span>
+<span class="sd">            return data.lowercase()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -420,7 +503,19 @@
 
 
 <div class="viewcode-block" id="ReadArg"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.ReadArg">[docs]</a><span class="k">class</span> <span class="nc">ReadArg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Retrieve value from Redis for arg that is a playbook variables.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Read value of App arg resolving any playbook variables.</span>
+
+<span class="sd">    This decorator will read the args from Redis, if it is a playbook variable, and pass the</span>
+<span class="sd">    resolved value to the function.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @ReadArg(arg=&#39;color&#39;)</span>
+<span class="sd">        def my_method(color):</span>
+<span class="sd">            print(&#39;color&#39;, color)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
@@ -464,7 +559,24 @@
 
 
 <div class="viewcode-block" id="WriteOutput"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.WriteOutput">[docs]</a><span class="k">class</span> <span class="nc">WriteOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set exit message on success&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Write the App output variables to Redis.</span>
+
+<span class="sd">    This decorator will take the functions return value and write the data to Redis using the</span>
+<span class="sd">    key and variable_type. An optional hard coded value can be passed, which will override the</span>
+<span class="sd">    return value. If multiple value are provided for the same output variable there is an option</span>
+<span class="sd">    to overwrite the previous value.</span>
+
+<span class="sd">    This decorator is intended for very simple Apps. Using the `write_output()` method of the App</span>
+<span class="sd">    template is the recommended way of writing output data.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @WriteOutput(key=&#39;color&#39;, variable_type=&#39;String&#39;)</span>
+<span class="sd">        def my_method(color):</span>
+<span class="sd">            return color.lowercase()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">variable_type</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
