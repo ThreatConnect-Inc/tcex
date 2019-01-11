@@ -150,11 +150,10 @@ class TcPackage(object):
 
         print('{!s:<60}{!s:<25}'.format('File:', 'Status:'))
         for filename in sorted(os.listdir(app_path)):
+            errors = []
             status = 'passed'
             status_color = c.Fore.GREEN
             if filename.endswith('.py'):
-                errors = []
-
                 try:
                     with open(filename, 'rb') as f:
                         ast.parse(f.read(), filename=filename)

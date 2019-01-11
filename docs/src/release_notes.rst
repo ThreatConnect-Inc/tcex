@@ -6,6 +6,11 @@ Release Notes
 0.9.x
 =====
 
+0.9.1
+-----
++ Fixed issue in ``tcpackage`` with handling errors.
++ Update install.json schema file to support feedDeployer.
+
 0.9.0
 -----
 + **Breaking Change:** Updated all optional args in batch module for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.

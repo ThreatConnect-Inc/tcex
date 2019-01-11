@@ -91,6 +91,9 @@
             },
             "type": "string"
           },
+          "feedDeployer": {
+            "type": "boolean"
+          },
           "hidden": {
             "type": "boolean"
           },
