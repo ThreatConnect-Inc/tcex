@@ -9,7 +9,10 @@ Release Notes
 0.9.1
 -----
 + Fixed issue in ``tcpackage`` with handling errors.
-+ Update install.json schema file to support feedDeployer.
++ Updated ``tcpackage`` command to validate import module for **.py** file in project root directory.
++ Updated ``tcpackage`` moving install.json validation to top level.
++ Updated ``tcpackage`` to support ``--ignore_validation`` arg. Using this flag will cause the command to not exit on validation errors.
++ Updated install.json schema file to support feedDeployer.
 
 0.9.0
 -----
