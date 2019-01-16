@@ -26,6 +26,7 @@ install_requires = [
     'redis>=2.10.6',
     'requests>=2.18.4',
     'six>=1.11.0',
+    'stdlib-list',
     'tzlocal',
 ]
 if sys.version_info < (3,):

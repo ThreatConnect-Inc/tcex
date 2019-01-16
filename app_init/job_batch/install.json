@@ -1,0 +1,27 @@
+{
+  "allowOnDemand": true,
+  "displayName": "Batch Template",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "secureParams"
+  ],
+  "languageVersion": "3.6",
+  "listDelimiter": "|",
+  "params": [
+    {
+      "label": "ThreatConnect Owner",
+      "name": "tc_owner",
+      "note": "The owner from which indicators (and maybe groups) will be counted",
+      "required": true,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Organization"
+}

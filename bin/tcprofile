@@ -42,10 +42,14 @@ parser = argparse.ArgumentParser(
     epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
 )
 parser.add_argument(
-    '--action', choices=['create', 'delete', 'replace_validation'], default='create'
+    '--action',
+    choices=['create', 'delete', 'replace_validation', 'update', 'validate'],
+    default='create',
 )
 parser.add_argument(
-    '--ij', default='install.json', help='The install.json file name (default: install.json).'
+    '--ij',
+    default='install.json',
+    help='(Advanced) The install.json file name (default: install.json).',
 )
 # parser.add_argument(
 #     '--data_file',
@@ -54,24 +58,23 @@ parser.add_argument(
 parser.add_argument(
     '--outdir',
     default='tcex.d',
-    help='The *base* output directory containing the data/profiles folder.',
+    help=(
+        '(Advanced) The *base* output directory containing the data/profiles folder'
+        '(default: tcex.d).'
+    ),
 )
 parser.add_argument(
-    '--outfile', help='The filename for the profile (default: <profile name>.json).'
+    '--outfile', help='(Advanced) The filename for the profile (default: <profile name>.json).'
 )
 parser.add_argument(
     '--profile_name',
     '--name',
     dest='profile_name',
     help='The profile name to create, delete, or replace_validation.',
-    required=True,
 )
-parser.add_argument('--redis_hash', help='The redis hash.')
-parser.add_argument('--redis_host', default='localhost', help='The redis host.')
-parser.add_argument('--redis_port', default='6379', help='The redis port.')
-parser.add_argument('--replace_validation', action='store_true', help='Update existing profiles.')
-
-parser.add_argument('--update_only', action='store_true', help='Update existing profiles.')
+parser.add_argument('--redis_host', default='localhost', help='(Advanced) The redis host.')
+parser.add_argument('--redis_port', default='6379', help='(Advanced) The redis port.')
+parser.add_argument('--verbose', action='store_true', help='Show verbose output.')
 args, extra_args = parser.parse_known_args()
 
 c.init(autoreset=True, strip=False)
@@ -82,11 +85,9 @@ class TcProfile(object):
 
     def __init__(self, _args):
         """ """
-        self._ij = None
         self._redis = None
         self.args = _args
         self.app_path = os.getcwd()
-        # self.config = None
         self.data_dir = os.path.join(self.args.outdir, 'data')
         self.profile_dir = os.path.join(self.args.outdir, 'profiles')
         self.profiles = {}
@@ -106,37 +107,19 @@ class TcProfile(object):
         if halt:
             sys.exit(1)
 
-    @property
-    def ij(self):
-        """Return the install.json file."""
-        if self._ij is None:
-            if not os.path.isfile(self.args.ij):
-                print(
-                    '{}{}Configuration file ({}) could not be found.'.format(
-                        c.Style.BRIGHT, c.Fore.CYAN, self.args.ij
-                    )
-                )
-
-            try:
-                with open(self.args.ij) as fh:
-                    self._ij = json.load(fh)
-            except IOError:
-                err = 'Could not open install.json file: {}.'.format(self.args.ij)
-                print('{}{}{}.'.format(c.Style.BRIGHT, c.Fore.RED, err))
-                sys.exit(1)
-        return self._ij
-
     def load_profiles(self):
         """Return configuration data.
 
         Load on first access, otherwise return existing data.
 
-        self.profiles = {
-            <profile name>: {
-                'data': {},
-                'ij_filename': <filename>,
-                'fqfn': 'tcex.json'
-            }
+        .. code-block:: python
+
+            self.profiles = {
+                <profile name>: {
+                    'data': {},
+                    'ij_filename': <filename>,
+                    'fqfn': 'tcex.json'
+                }
         """
         if not os.path.isfile('tcex.json'):
             msg = 'The tcex.json config file is required.'
@@ -156,7 +139,7 @@ class TcProfile(object):
                     )
                 )
 
-                for profile in data.get('profiles', []):
+                for profile in data.get('profiles') or []:
                     outfile = '{}.json'.format(
                         profile.get('profile_name').replace(' ', '_').lower()
                     )
@@ -172,7 +155,7 @@ class TcProfile(object):
             fh.truncate()
 
         # load includes
-        for directory in data.get('profile_include_dirs', []):
+        for directory in data.get('profile_include_dirs') or []:
             self.load_profile_include(directory)
 
     def load_profile_include(self, include_directory):
@@ -193,12 +176,15 @@ class TcProfile(object):
         Args:
             fqfn (str): Fully qualified file name.
         """
-        print('Loading profiles from File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, fqfn))
+        if self.args.verbose:
+            print('Loading profiles from File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, fqfn))
         with open(fqfn, 'r+') as fh:
             data = json.load(fh)
             for profile in data:
                 # force update old profiles
                 self.profile_update(profile)
+                if self.args.action == 'validate':
+                    self.validate(profile)
             fh.seek(0)
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
@@ -235,46 +221,45 @@ class TcProfile(object):
                 c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
             )
             sys.exit(1)
-        # display load status
-        print(load_output)
         return install_json
 
-    @property
-    def profile_args_defaults(self):
+    @staticmethod
+    def profile_defaults_args(ij):
         """A Default profile."""
-        profile_args = OrderedDict()
-        profile_args['api_default_org'] = '$env.API_DEFAULT_ORG'
-        profile_args['api_access_id'] = '$env.API_ACCESS_ID'
-        profile_args['api_secret_key'] = '$envs.API_SECRET_KEY'
-        profile_args['tc_api_path'] = '$env.TC_API_PATH'
-        profile_args['tc_docker'] = False
-        profile_args['tc_in_path'] = 'log'
-        profile_args['tc_log_level'] = 'debug'
-        profile_args['tc_log_path'] = 'log'
-        profile_args['tc_log_to_api'] = False
-        profile_args['tc_out_path'] = 'log'
-        profile_args['tc_proxy_external'] = False
-        profile_args['tc_proxy_host'] = '$env.TC_PROXY_HOST'
-        profile_args['tc_proxy_port'] = '$env.TC_PROXY_PORT'
-        profile_args['tc_proxy_password'] = '$envs.TC_PROXY_PASSWORD'
-        profile_args['tc_proxy_tc'] = False
-        profile_args['tc_proxy_username'] = '$env.TC_PROXY_USERNAME'
-        profile_args['tc_temp_path'] = 'log'
-        if self.ij.get('runtimeLevel') == 'Playbook':
-            profile_args['tc_playbook_db_type'] = 'Redis'
-            profile_args['tc_playbook_db_context'] = str(uuid4())
-            profile_args['tc_playbook_db_path'] = '$env.DB_PATH'
-            profile_args['tc_playbook_db_port'] = '$env.DB_PORT'
-            profile_args['tc_playbook_out_variables'] = ''
-        return profile_args
+        # build default args
+        profile_default_args = OrderedDict()
+        profile_default_args['api_default_org'] = '$env.API_DEFAULT_ORG'
+        profile_default_args['api_access_id'] = '$env.API_ACCESS_ID'
+        profile_default_args['api_secret_key'] = '$envs.API_SECRET_KEY'
+        profile_default_args['tc_api_path'] = '$env.TC_API_PATH'
+        profile_default_args['tc_docker'] = False
+        profile_default_args['tc_in_path'] = 'log'
+        profile_default_args['tc_log_level'] = 'debug'
+        profile_default_args['tc_log_path'] = 'log'
+        profile_default_args['tc_log_to_api'] = False
+        profile_default_args['tc_out_path'] = 'log'
+        profile_default_args['tc_proxy_external'] = False
+        profile_default_args['tc_proxy_host'] = '$env.TC_PROXY_HOST'
+        profile_default_args['tc_proxy_port'] = '$env.TC_PROXY_PORT'
+        profile_default_args['tc_proxy_password'] = '$envs.TC_PROXY_PASSWORD'
+        profile_default_args['tc_proxy_tc'] = False
+        profile_default_args['tc_proxy_username'] = '$env.TC_PROXY_USERNAME'
+        profile_default_args['tc_temp_path'] = 'log'
+        if ij.get('runtimeLevel') == 'Playbook':
+            profile_default_args['tc_playbook_db_type'] = 'Redis'
+            profile_default_args['tc_playbook_db_context'] = str(uuid4())
+            profile_default_args['tc_playbook_db_path'] = '$env.DB_PATH'
+            profile_default_args['tc_playbook_db_port'] = '$env.DB_PORT'
+            profile_default_args['tc_playbook_out_variables'] = ''
+        return profile_default_args
 
-    @property
-    def profile_args(self):
+    @staticmethod
+    def profile_args(ij):
         """App specific inputs as App args."""
-        profile_args = self.profile_args_defaults
+        profile_args = {}
 
         # add App specific args
-        for p in self.ij.get('params', []):
+        for p in ij.get('params') or []:
             if p.get('type') == 'Boolean':
                 profile_args[p.get('name')] = p.get('default', False)
             elif p.get('name') in ['api_access_id', 'api_secret_key']:
@@ -313,11 +298,16 @@ class TcProfile(object):
             )
             sys.exit(1)
 
+        # load the install.json file defined as a arg (default: install.json)
+        ij = self.load_install_json(self.args.ij)
+
         print(
             'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
         )
         profile = OrderedDict()
-        profile['args'] = self.profile_args
+        profile['args'] = {}
+        profile['args']['app'] = self.profile_args(ij)
+        profile['args']['default'] = self.profile_defaults_args(ij)
         profile['autoclear'] = True
         profile['clear'] = []
         profile['description'] = ''
@@ -326,19 +316,19 @@ class TcProfile(object):
         profile['groups'] = [os.environ.get('TCEX_GROUP', 'qa-build')]
         profile['install_json'] = self.args.ij
         profile['profile_name'] = self.args.profile_name
-        profile['quiet'] = True
+        profile['quiet'] = False
 
-        if self.ij.get('runtimeLevel') == 'Playbook':
+        if ij.get('runtimeLevel') == 'Playbook':
             validations = self.profile_validations
             profile['validations'] = validations.get('rules')
-            profile['args']['tc_playbook_out_variables'] = '{}'.format(
+            profile['args']['default']['tc_playbook_out_variables'] = '{}'.format(
                 ','.join(validations.get('outputs'))
             )
         return profile
 
-    @staticmethod
-    def profile_update(profile):
+    def profile_update(self, profile):
         """Update an existing profile with new parameters or remove deprecated parameters."""
+
         # warn about missing install_json parameter
         if profile.get('install_json') is None:
             print(
@@ -347,6 +337,85 @@ class TcProfile(object):
                 )
             )
 
+        # update args section to new schema
+        self.profile_update_args(profile)
+
+        # remove legacy script field
+        self.profile_update_new(profile)
+
+        # remove legacy script field
+        self.profile_remove_old(profile)
+
+    def profile_update_args(self, profile):
+        """Update old profile args to new args structure.
+
+        .. code-block:: javascript
+
+            "args": {
+              "app": {
+                "input_strings": "capitalize",
+                "tc_action": "Capitalize"
+            },
+            "default": {
+              "api_access_id": "$env.API_ACCESS_ID",
+              "api_default_org": "$env.API_DEFAULT_ORG",
+            },
+        """
+        ij = self.load_install_json(profile.get('install_json', 'install.json'))
+
+        if (
+            profile.get('args', {}).get('app') is None
+            or profile.get('args', {}).get('default') is None
+        ):
+            _args = profile.pop('args')
+            profile['args'] = {}
+            profile['args']['app'] = {}
+            profile['args']['default'] = {}
+            for arg in self.profile_args(ij):
+                try:
+                    profile['args']['app'][arg] = _args.pop(arg)
+                except KeyError:
+                    # set the value to the default?
+                    # profile['args']['app'][arg] = self.profile_args.get(arg)
+                    # TODO: prompt to add missing input?
+                    if args.verbose:
+                        print(
+                            '{}{}Input "{}" not found in profile "{}".'.format(
+                                c.Style.BRIGHT, c.Fore.YELLOW, arg, profile.get('profile_name')
+                            )
+                        )
+            profile['args']['default'] = _args
+            print(
+                '{}{}Updating args section to new schema for profile {}.'.format(
+                    c.Style.BRIGHT, c.Fore.YELLOW, profile.get('profile_name')
+                )
+            )
+
+    def validate(self, profile):
+        """Validate profiles"""
+        ij = self.load_install_json(profile.get('install_json', 'install.json'))
+        print('{}{}Profile: "{}".'.format(c.Style.BRIGHT, c.Fore.BLUE, profile.get('profile_name')))
+        for arg in self.profile_args(ij):
+            if profile.get('args', {}).get('app', {}).get(arg) is None:
+                print('{}{}Input "{}" not found.'.format(c.Style.BRIGHT, c.Fore.YELLOW, arg))
+
+    @staticmethod
+    def profile_update_new(profile):
+        """Update old profile with new fields."""
+
+        # add new autoclear field
+        if profile.get('autoclear') is None:
+            profile['autoclear'] = True
+
+        # add new "data_type" field if not there
+        for validation in profile.get('validations') or []:
+            if validation.get('data_type') is None:
+                print('{}{}Adding new "data_type" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
+                validation['data_type'] = 'redis'
+
+    @staticmethod
+    def profile_remove_old(profile):
+        """Update profile removing legacy script field."""
         # cleanup
         if profile.get('install_json') is not None and profile.get('script') is not None:
             print(
@@ -354,23 +423,14 @@ class TcProfile(object):
             )
             profile.pop('script')
 
-        # add new autoclear field
-        # if profile.get('autoclear') is None:
-        #     profile['autoclear'] = False
-
-        # update old profiles with new "data_type" field.
-        for validation in profile.get('validations', []):
-            if validation.get('data_type') is None:
-                print('{}{}Adding new "data_type" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
-                validation['data_type'] = 'redis'
-
     @property
     def profile_validations(self):
         """Profile validation rules."""
+        ij = self.load_install_json(self.args.ij)
         validations = {'rules': [], 'outputs': []}
 
         job_id = randint(1000, 9999)
-        for o in self.ij.get('playbook', {}).get('outputVariables', []):
+        for o in ij.get('playbook', {}).get('outputVariables') or []:
             variable = '#App:{}:{}!{}'.format(job_id, o.get('name'), o.get('type'))
             validations['outputs'].append(variable)
 
@@ -505,7 +565,7 @@ class TcProfile(object):
             for profile in data:
                 if profile.get('profile_name') == self.args.profile_name:
                     profile['validations'] = validations.get('rules')
-                    profile['args']['tc_playbook_out_variables'] = ','.join(
+                    profile['args']['default']['tc_playbook_out_variables'] = ','.join(
                         validations.get('outputs')
                     )
             fh.seek(0)
@@ -526,15 +586,25 @@ if __name__ == '__main__':
         tcp.load_profiles()
 
         if args.action == 'create':
+            if args.profile_name is None:
+                print(
+                    '{}{}{}'.format(
+                        c.Style.BRIGHT, c.Fore.RED, 'For action of create the "--name" is required.'
+                    )
+                )
+                sys.exit()
             profile_ = tcp.profile_create()
             tcp.profile_write(profile_, args.outfile)
         elif args.action == 'delete':
             tcp.profile_delete()
         elif args.action == 'replace_validation':
             tcp.replace_validation()
-        # elif args.action == 'update':
-        #     # profiles are automatically updated during loading process
-        #     pass
+        elif args.action == 'update':
+            # profiles are automatically updated during loading process
+            pass
+        elif args.action == 'validate':
+            # validating is run during load_profile()
+            pass
 
         # exit
         sys.exit()

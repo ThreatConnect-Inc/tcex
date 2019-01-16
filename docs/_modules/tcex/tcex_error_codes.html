@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_error_codes &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
+
+
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+
+      <li>tcex.tcex_error_codes</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for tcex.tcex_error_codes</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; TcEx Error Codes &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="TcExErrorCodes"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_error_codes.html#tcex.tcex_error_codes.TcExErrorCodes">[docs]</a><span class="k">class</span> <span class="nc">TcExErrorCodes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TcEx Framework Error Codes.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;TcEx defined error codes and messages.</span>
+
+<span class="sd">        .. note:: RuntimeErrors with a code of &gt;= 1000 are considered critical.  Those &lt; 1000</span>
+<span class="sd">            are considered warning or errors and are up to the developer to determine the</span>
+<span class="sd">            appropriate behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="c1"># tcex general errors</span>
+            <span class="mi">100</span><span class="p">:</span> <span class="s1">&#39;Generic error. See log for more details (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">105</span><span class="p">:</span> <span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">200</span><span class="p">:</span> <span class="s1">&#39;Failed retrieving Custom Indicator Associations types from API (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">210</span><span class="p">:</span> <span class="s1">&#39;Failure during token renewal (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">215</span><span class="p">:</span> <span class="s1">&#39;HMAC authorization requires a PreparedRequest Object.&#39;</span><span class="p">,</span>
+            <span class="mi">220</span><span class="p">:</span> <span class="s1">&#39;Failed retrieving indicator types from API (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="c1"># tcex resource</span>
+            <span class="mi">300</span><span class="p">:</span> <span class="s1">&#39;Failed retrieving Bulk JSON (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">305</span><span class="p">:</span> <span class="s1">&#39;An invalid action/association name (</span><span class="si">{}</span><span class="s1">) was provided.&#39;</span><span class="p">,</span>
+            <span class="mi">350</span><span class="p">:</span> <span class="s1">&#39;Data Store request failed. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="c1"># batch v2: 500-600</span>
+            <span class="mi">520</span><span class="p">:</span> <span class="s1">&#39;File Occurrences can only be added to a File. Current type: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">540</span><span class="p">:</span> <span class="s1">&#39;Failed polling batch status (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">545</span><span class="p">:</span> <span class="s1">&#39;Failed polling batch status. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">550</span><span class="p">:</span> <span class="s1">&#39;Batch status check reached timeout (</span><span class="si">{}</span><span class="s1"> seconds).&#39;</span><span class="p">,</span>
+            <span class="mi">560</span><span class="p">:</span> <span class="s1">&#39;Failed retrieving batch errors (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">580</span><span class="p">:</span> <span class="s1">&#39;Failed posting file data (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">585</span><span class="p">:</span> <span class="s1">&#39;Failed posting file data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">590</span><span class="p">:</span> <span class="s1">&#39;No hash values provided.&#39;</span><span class="p">,</span>
+            <span class="c1"># metrics</span>
+            <span class="mi">700</span><span class="p">:</span> <span class="s1">&#39;Failed to create metric. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">705</span><span class="p">:</span> <span class="s1">&#39;Error while finding metric by name. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">710</span><span class="p">:</span> <span class="s1">&#39;Failed to add metric data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">715</span><span class="p">:</span> <span class="s1">&#39;No metric ID found for &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="p">,</span>
+            <span class="c1"># batch v2 critical: 1500-1600</span>
+            <span class="mi">1500</span><span class="p">:</span> <span class="s1">&#39;Critical batch error (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">1505</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">1510</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">1520</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">1525</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="TcExErrorCodes.message"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_error_codes.html#tcex.tcex_error_codes.TcExErrorCodes.message">[docs]</a>    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the error message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (integer): The error code integer.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (string): The error message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

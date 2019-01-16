@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Building Apps - Packaging (tcpackage) &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
+        <link rel="next" title="Testing Apps - Profiles (tcprofile)" href="testing_apps_tcprofile.html"/>
+        <link rel="prev" title="Building Apps - Dependencies (tclib)" href="building_apps_tclib.html"/>
+
+
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building Apps - Packaging (tcpackage)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-usage">Common Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-options">Configuration Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-app">Single App</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-bundles">Multiple Bundles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="index.html">Docs</a> &raquo;</li>
+
+      <li>Building Apps - Packaging (tcpackage)</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="building-apps-packaging-tcpackage">
+<span id="building-apps-tcpackage"></span><h1>Building Apps - Packaging (tcpackage)<a class="headerlink" href="#building-apps-packaging-tcpackage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>This CLI tool provides a simple interface to package the App so that it can be easily deployed to the ThreatConnect Platform.</p>
+<p>Running <code class="docutils literal"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically if the <strong>tcex_json_schema.json</strong> schema file is included in the base directory of your App.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Typically the <code class="docutils literal"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcpackage</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">bundle</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">exclude</span> <span class="n">EXCLUDE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span>
+                 <span class="p">[</span><span class="o">--</span><span class="n">install_json</span> <span class="n">INSTALL_JSON</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span>
+
+<span class="n">optional</span> <span class="n">arguments</span><span class="p">:</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span>
+  <span class="o">--</span><span class="n">bundle</span>              <span class="n">Build</span> <span class="n">a</span> <span class="n">bundle</span> <span class="n">file</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">exclude</span> <span class="n">EXCLUDE</span>     <span class="n">File</span> <span class="ow">and</span> <span class="n">directories</span> <span class="n">to</span> <span class="n">exclude</span> <span class="kn">from</span> <span class="nn">build.</span>
+  <span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span>       <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">Build</span> <span class="n">configuration</span> <span class="n">file</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">tcex</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+  <span class="o">--</span><span class="n">install_json</span> <span class="n">INSTALL_JSON</span>
+                        <span class="n">The</span> <span class="n">install</span><span class="o">.</span><span class="n">json</span> <span class="n">file</span> <span class="n">name</span> <span class="k">for</span> <span class="n">the</span> <span class="n">App</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span>
+                        <span class="n">built</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span>       <span class="p">(</span><span class="n">Advanced</span><span class="p">)</span> <span class="n">Directory</span> <span class="n">to</span> <span class="n">write</span> <span class="n">the</span> <span class="n">outfile</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="n">target</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="common-usage">
+<h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
+<p>The following command will build the app in the <strong>target</strong> directory of the project with and extension of <em>.tcx</em>.</p>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcpackage</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="configuration-options">
+<h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
+<p>By default the <code class="docutils literal"><span class="pre">tcex.json</span></code> file will be loaded by <code class="docutils literal"><span class="pre">tcpackage</span></code>.  The following is an example of additional configuration that can be provided for the <code class="docutils literal"><span class="pre">tcpackage</span></code> command.</p>
+<div class="section" id="single-app">
+<h3>Single App<a class="headerlink" href="#single-app" title="Permalink to this headline">¶</a></h3>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;..</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="s2">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MyApp&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;app_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v1.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+  <span class="s2">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tcex.d&quot;</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
+<span class="p">},</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">..&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple-bundles">
+<h3>Multiple Bundles<a class="headerlink" href="#multiple-bundles" title="Permalink to this headline">¶</a></h3>
+<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;..</span><span class="n">snipped</span><span class="o">&gt;</span>
+<span class="s2">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;bundle&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+  <span class="s2">&quot;bundle_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_Palo_Alto&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bundle_packages&quot;</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_My_Bundle_Create&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;patterns&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;.*Create.*&quot;</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_My_Bundle_Delete&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;patterns&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;.*Delete.*&quot;</span>
+    <span class="p">]</span>
+  <span class="p">}],</span>
+  <span class="s2">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tcex.d&quot;</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
+<span class="p">},</span>
+<span class="o">&lt;</span><span class="n">snipped</span><span class="o">..&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="testing_apps_tcprofile.html" class="btn btn-neutral float-right" title="Testing Apps - Profiles (tcprofile)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="building_apps_tclib.html" class="btn btn-neutral" title="Building Apps - Dependencies (tclib)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

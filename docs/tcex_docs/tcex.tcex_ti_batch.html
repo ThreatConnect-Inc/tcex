@@ -1,0 +1,1570 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_ti_batch module &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
+        <link rel="up" title="tcex package" href="tcex.html"/>
+        <link rel="next" title="tcex.tcex_ti_group module" href="tcex.tcex_ti_group.html"/>
+        <link rel="prev" title="tcex.tcex_ti_attribute module" href="tcex.tcex_ti_attribute.html"/>
+
+
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_app_decorators.html">tcex.tcex_app_decorators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_session.html">tcex.tcex_session module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_attribute.html">tcex.tcex_ti_attribute module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_ti_batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_group.html">tcex.tcex_ti_group module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_indicator.html">tcex.tcex_ti_indicator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_security_label.html">tcex.tcex_ti_security_label module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_tag.html">tcex.tcex_ti_tag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+
+      <li>tcex.tcex_ti_batch module</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-tcex.tcex_ti_batch">
+<span id="tcex-tcex-ti-batch-module"></span><h1>tcex.tcex_ti_batch module<a class="headerlink" href="#module-tcex.tcex_ti_batch" title="Permalink to this headline">¶</a></h1>
+<p>ThreatConnect Batch Import Module</p>
+<dl class="class">
+<dt id="tcex.tcex_ti_batch.TcExBatch">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_batch.</code><code class="descname">TcExBatch</code><span class="sig-paren">(</span><em>tcex</em>, <em>owner</em>, <em>action=None</em>, <em>attribute_write_type=None</em>, <em>halt_on_error=True</em>, <em>playbook_triggers_enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>ThreatConnect Batch Import Module</p>
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.__len__">
+<code class="descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of groups and indicators.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string represtentation of object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch._gen_indicator_class">
+<code class="descname">_gen_indicator_class</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch._gen_indicator_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch._gen_indicator_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Custom Indicator Classes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch._gen_indicator_method">
+<code class="descname">_gen_indicator_method</code><span class="sig-paren">(</span><em>name</em>, <em>custom_class</em>, <em>value_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch._gen_indicator_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch._gen_indicator_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dynamically generate custom Indicator methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – The name of the method.</li>
+<li><strong>custom_class</strong> (<em>object</em>) – The class to add.</li>
+<li><strong>value_count</strong> (<em>int</em>) – The number of value parameters to support.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch._group">
+<code class="descname">_group</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch._group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch._group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously stored group or new group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>dict|obj</em>) – An Group dict or instance of Group object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new Group dict/object or the previously stored dict/object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict|obj</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch._indicator">
+<code class="descname">_indicator</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch._indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch._indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously stored indicator or new indicator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict|obj</em>) – An Indicator dict or instance of Indicator object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new Indicator dict/object or the previously stored dict/object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict|obj</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_ti_batch.TcExBatch._indicator_values">
+<em class="property">static </em><code class="descname">_indicator_values</code><span class="sig-paren">(</span><em>indicator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch._indicator_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch._indicator_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process indicators expanding file hashes/custom indicators into multiple entries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator</strong> (<em>str</em>) – ” : ” delimited string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of indicators split on ” : “.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.action">
+<code class="descname">action</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch action.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.add_group">
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.add_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.add_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a group to Batch Job.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Example Incident&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Incident&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;displayed&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Example Description&quot;</span>
+    <span class="p">}],</span>
+    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;associatedGroupXid&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904:58&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;China&quot;</span>
+    <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>dict</em>) – The full Group data including attributes, labels, tags, and
+associations.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.add_indicator">
+<code class="descname">add_indicator</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.add_indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.add_indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an indicator to Batch Job.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rating&quot;</span><span class="o">:</span> <span class="mf">5.00</span><span class="p">,</span>
+    <span class="s2">&quot;confidence&quot;</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;53c3609411c83f363e051d455ade78a7</span>
+<span class="s2">                : 57a49b478310e4313c54c0fee46e4d70a73dd580</span>
+<span class="s2">                : db31cb2a748b7e0046d8c97a32a7eb4efde32a0593e5dbd58e07a3b4ae6bf3d7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;displayed&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Malware Analysis provided by external AMA.&quot;</span>
+    <span class="p">}],</span>
+    <span class="s2">&quot;fileOccurrence&quot;</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;fileName&quot;</span><span class="o">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;date&quot;</span><span class="o">:</span> <span class="s2">&quot;2017-03-03T18:00:00-06:00&quot;</span>
+    <span class="p">}],</span>
+    <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;China&quot;</span>
+    <span class="p">}],</span>
+    <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;e336e2dd-5dfb-48cd-a33a-f8809e83e904:170139&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indicator_data</strong> (<em>dict</em>) – The Full Indicator data including attributes, labels, tags,
+and associations.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.address">
+<code class="descname">address</code><span class="sig-paren">(</span><em>ip</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Address data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ip</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Address.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.adversary">
+<code class="descname">adversary</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.adversary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Adversary data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Adversary.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.asn">
+<code class="descname">asn</code><span class="sig-paren">(</span><em>as_number</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.asn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.asn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add ASN data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>as_number</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of ASN.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.attribute_write_type">
+<code class="descname">attribute_write_type</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.attribute_write_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch attribute write type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.campaign">
+<code class="descname">campaign</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.campaign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Campaign data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>first_seen</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The first seen datetime expression for this Group.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Campaign.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.cidr">
+<code class="descname">cidr</code><span class="sig-paren">(</span><em>block</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.cidr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.cidr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CIDR data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>block</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of CIDR.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup batch job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the batch data to be sent to the ThreatConnect API.</p>
+<p><strong>Processing Order:</strong>
+* Process groups in memory up to max batch size.
+* Process groups in shelf to max batch size.
+* Process indicators in memory up to max batch size.
+* Process indicators in shelf up to max batch size.</p>
+<p>This method will remove the group/indicator from memory and/or shelf.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.data_group_association">
+<code class="descname">data_group_association</code><span class="sig-paren">(</span><em>xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.data_group_association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.data_group_association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return group dict array following all associations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xid</strong> (<em>str</em>) – The xid of the group to retrieve associations.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of group dicts.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.data_group_type">
+<code class="descname">data_group_type</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.data_group_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.data_group_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dict representation of group data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_data</strong> (<em>dict|obj</em>) – The group data dict or object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The group data in dict format.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.data_groups">
+<code class="descname">data_groups</code><span class="sig-paren">(</span><em>groups</em>, <em>entity_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.data_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.data_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process Group data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>groups</strong> (<em>list</em>) – The list of groups to process.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of groups including associations</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.data_indicators">
+<code class="descname">data_indicators</code><span class="sig-paren">(</span><em>indicators</em>, <em>entity_count</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.data_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.data_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process Indicator data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.debug">
+<code class="descname">debug</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return debug setting</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.document">
+<code class="descname">document</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Document data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>file_name</strong> (<em>str</em>) – The name for the attached file for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>file_content</strong> (<em>str;method</em><em>, </em><em>kwargs</em>) – The file contents or callback method to retrieve
+file content.</li>
+<li><strong>malware</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If true the file is considered malware.</li>
+<li><strong>password</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If malware is true a password for the zip archive is</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Document.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.email">
+<code class="descname">email</code><span class="sig-paren">(</span><em>name</em>, <em>subject</em>, <em>header</em>, <em>body</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Email data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>subject</strong> (<em>str</em>) – The subject for this Email.</li>
+<li><strong>header</strong> (<em>str</em>) – The header for this Email.</li>
+<li><strong>body</strong> (<em>str</em>) – The body for this Email.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>from_addr</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>from</strong> address for this Email.</li>
+<li><strong>to_addr</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The <strong>to</strong> address for this Email.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Email.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.email_address">
+<code class="descname">email_address</code><span class="sig-paren">(</span><em>address</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.email_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.email_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Email Address data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>address</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of EmailAddress.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.errors">
+<code class="descname">errors</code><span class="sig-paren">(</span><em>batch_id</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve Batch errors to ThreatConnect API.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[{</span>
+    <span class="s2">&quot;errorReason&quot;</span><span class="o">:</span> <span class="s2">&quot;Incident incident-001 has an invalid status.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;errorSource&quot;</span><span class="o">:</span> <span class="s2">&quot;incident-001 is not valid.&quot;</span>
+<span class="p">},</span> <span class="p">{</span>
+    <span class="s2">&quot;errorReason&quot;</span><span class="o">:</span> <span class="s2">&quot;Incident incident-002 has an invalid status.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;errorSource&quot;</span><span class="o">:</span><span class="s2">&quot;incident-002 is not valid.&quot;</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>batch_id</strong> (<em>str</em>) – The ID returned from the ThreatConnect API for the current batch job.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.event">
+<code class="descname">event</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Event data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>event_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The event datetime expression for this Group.</li>
+<li><strong>status</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The status for this Group.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Event.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.file">
+<code class="descname">file</code><span class="sig-paren">(</span><em>md5=None</em>, <em>sha1=None</em>, <em>sha256=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add File data to Batch object.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A least one file hash value must be specified.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>md5</strong> (<em>str</em><em>, </em><em>optional</em>) – The md5 value for this Indicator.</li>
+<li><strong>sha1</strong> (<em>str</em><em>, </em><em>optional</em>) – The sha1 value for this Indicator.</li>
+<li><strong>sha256</strong> (<em>str</em><em>, </em><em>optional</em>) – The sha256 value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>size</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The file size for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of File.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.file_len">
+<code class="descname">file_len</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.file_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of current indicators.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.files">
+<code class="descname">files</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary containing all of the file content or callbacks.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_ti_batch.TcExBatch.generate_xid">
+<em class="property">static </em><code class="descname">generate_xid</code><span class="sig-paren">(</span><em>identifier=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.generate_xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.generate_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate xid from provided identifiers.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">If no identifier is provided a unique xid will be returned, but it will
+not be reproducible. If a list of identifiers are provided they must be
+in the same order to generate a reproducible xid.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>identifier</strong> (<em>list|str</em>) – Optional <em>string</em> value(s) to be used to make a unique and
+reproducible xid.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.group">
+<code class="descname">group</code><span class="sig-paren">(</span><em>group_type</em>, <em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Group data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>group_type</strong> (<em>str</em>) – The ThreatConnect define Group type.</li>
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Group.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.group_len">
+<code class="descname">group_len</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.group_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of current groups.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.group_shelf_fqfn">
+<code class="descname">group_shelf_fqfn</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.group_shelf_fqfn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return groups shelf fully qualified filename.</p>
+<p>For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+instead of creating a new shelf file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.groups">
+<code class="descname">groups</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Groups data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.groups_shelf">
+<code class="descname">groups_shelf</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.groups_shelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Groups data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.halt_on_batch_error">
+<code class="descname">halt_on_batch_error</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_batch_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on batch error value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.halt_on_error">
+<code class="descname">halt_on_error</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch halt on error setting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.halt_on_file_error">
+<code class="descname">halt_on_file_error</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_file_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on file post error value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.halt_on_poll_error">
+<code class="descname">halt_on_poll_error</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_poll_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return halt on poll error value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.host">
+<code class="descname">host</code><span class="sig-paren">(</span><em>hostname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Email Address data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hostname</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>dns_active</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If True DNS active is enabled for this indicator.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>whois_active</strong> (<em>bool</em><em>, </em><em>kwargs</em>) – If True WhoIs active is enabled for this indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Host.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.incident">
+<code class="descname">incident</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.incident" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Incident data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>event_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The event datetime expression for this Group.</li>
+<li><strong>status</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The status for this Group.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Incident.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.indicator">
+<code class="descname">indicator</code><span class="sig-paren">(</span><em>indicator_type</em>, <em>summary</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Indicator data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>indicator_type</strong> (<em>str</em>) – The ThreatConnect define Indicator type.</li>
+<li><strong>summary</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Indicator.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.indicator_len">
+<code class="descname">indicator_len</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.indicator_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of current indicators.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.indicator_shelf_fqfn">
+<code class="descname">indicator_shelf_fqfn</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.indicator_shelf_fqfn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return indicator shelf fully qualified filename.</p>
+<p>For testing/debugging a previous shelf file can be copied into the tc_temp_path directory
+instead of creating a new shelf file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.indicators">
+<code class="descname">indicators</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Indicator data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.indicators_shelf">
+<code class="descname">indicators_shelf</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.indicators_shelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary of all Indicator data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.intrusion_set">
+<code class="descname">intrusion_set</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.intrusion_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.intrusion_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Intrusion Set data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of IntrusionSet.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.mutex">
+<code class="descname">mutex</code><span class="sig-paren">(</span><em>mutex</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.mutex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.mutex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Mutex data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mutex</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Mutex.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.poll">
+<code class="descname">poll</code><span class="sig-paren">(</span><em>batch_id</em>, <em>retry_seconds=None</em>, <em>back_off=None</em>, <em>timeout=None</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll Batch status to ThreatConnect API.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;status&quot;</span><span class="o">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;batchStatus&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mi">3505</span><span class="p">,</span>
+            <span class="s2">&quot;status&quot;</span><span class="o">:</span><span class="s2">&quot;Completed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;errorCount&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;successCount&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;unprocessCount&quot;</span><span class="o">:</span><span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>batch_id</strong> (<em>str</em>) – The ID returned from the ThreatConnect API for the current batch job.</li>
+<li><strong>retry_seconds</strong> (<em>int</em>) – The base number of seconds used for retries when job is not
+completed.</li>
+<li><strong>back_off</strong> (<em>float</em>) – A multiplier to use for backing off on each poll attempt when job has
+not completed.</li>
+<li><strong>timeout</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of seconds before the poll should timeout.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The batch status returned from the ThreatConnect API.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.poll_timeout">
+<code class="descname">poll_timeout</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.poll_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return current poll timeout value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.registry_key">
+<code class="descname">registry_key</code><span class="sig-paren">(</span><em>key_name</em>, <em>value_name</em>, <em>value_type</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.registry_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.registry_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Registry Key data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key_name</strong> (<em>str</em>) – The key_name value for this Indicator.</li>
+<li><strong>value_name</strong> (<em>str</em>) – The value_name value for this Indicator.</li>
+<li><strong>value_type</strong> (<em>str</em>) – The value_type value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Registry Key.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.report">
+<code class="descname">report</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Report data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>file_name</strong> (<em>str</em>) – The name for the attached file for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>file_content</strong> (<em>str;method</em><em>, </em><em>kwargs</em>) – The file contents or callback method to retrieve
+file content.</li>
+<li><strong>publish_date</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The publish datetime expression for this Group.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Report.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save group|indicator dict or object to shelve.</p>
+<p>Best effort to save group/indicator data to disk.  If for any reason the save fails
+the data will still be accessible from list in memory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>resource</strong> (<em>dict|obj</em>) – The Group or Indicator dict or object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.saved_groups">
+<code class="descname">saved_groups</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.saved_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if saved group files exits, else False.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.saved_indicators">
+<code class="descname">saved_indicators</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.saved_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if saved indicators files exits, else False.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.saved_xids">
+<code class="descname">saved_xids</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.saved_xids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return previously saved xids.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_batch.TcExBatch.settings">
+<code class="descname">settings</code><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return batch job settings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.signature">
+<code class="descname">signature</code><span class="sig-paren">(</span><em>name</em>, <em>file_name</em>, <em>file_type</em>, <em>file_text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.signature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Signature data to Batch object.</p>
+<p>Valid file_types:
++ Snort ®
++ Suricata
++ YARA
++ ClamAV ®
++ OpenIOC
++ CybOX ™
++ Bro
++ Regex
++ SPL - Splunk ® Search Processing Language</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>file_name</strong> (<em>str</em>) – The name for the attached signature for this Group.</li>
+<li><strong>file_type</strong> (<em>str</em>) – The signature type for this Group.</li>
+<li><strong>file_text</strong> (<em>str</em>) – The signature content for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Signature.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit">
+<code class="descname">submit</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<p>By default this method will submit the job request and data and if the size of the data
+is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
+the request synchronously and return the batch status.  If the size of the batch is greater
+than the value set the batch job will be queued.
+Errors are not retrieve automatically and need to be enabled.</p>
+<p>If any of the submit, poll, or error methods fail the entire submit will halt at the point
+of failure. The behavior can be changed by setting halt_on_error to False.</p>
+<p>Each of these methods can also be called on their own for greater control of the submit
+process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): Poll for status.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Retrieve any batch errors (only if poll is True).</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Send any document or report attachments to the API.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_all">
+<code class="descname">submit_all</code><span class="sig-paren">(</span><em>poll=True</em>, <em>errors=True</em>, <em>process_files=True</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<p>By default this method will submit the job request and data and if the size of the data
+is below the value <strong>synchronousBatchSaveLimit</strong> set in System Setting it will process
+the request synchronously and return the batch status.  If the size of the batch is greater
+than the value set the batch job will be queued.
+Errors are not retrieve automatically and need to be enabled.</p>
+<p>If any of the submit, poll, or error methods fail the entire submit will halt at the point
+of failure. The behavior can be changed by setting halt_on_error to False.</p>
+<p>Each of these methods can also be called on their own for greater control of the submit
+process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): Poll for status.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Retrieve any batch errors (only if poll is True).</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): Send any document or report attachments to the API.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload">
+<code class="descname">submit_create_and_upload</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_create_and_upload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+<dl class="docutils">
+<dt>Returns.</dt>
+<dd>dict: The Batch Status from the ThreatConnect API.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_data">
+<code class="descname">submit_data</code><span class="sig-paren">(</span><em>batch_id</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.
+:param batch_id: The batch id of the current job.
+:type batch_id: string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_file_content">
+<code class="descname">submit_file_content</code><span class="sig-paren">(</span><em>method</em>, <em>url</em>, <em>data</em>, <em>headers</em>, <em>params</em>, <em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_file_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_file_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit File Content for Documents and Reports to ThreatConnect API.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>method</strong> (<em>str</em>) – The HTTP method for the request (POST, PUT).</li>
+<li><strong>url</strong> (<em>str</em>) – The URL for the request.</li>
+<li><strong>data</strong> (<em>str;bytes;file</em>) – The body (data) for the request.</li>
+<li><strong>headers</strong> (<em>dict</em>) – The headers for the request.</li>
+<li><strong>params</strong> (<em>dict</em>) – The query string parameters for the request.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The response from the request.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">requests.models.Response</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_files">
+<code class="descname">submit_files</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Files for Documents and Reports to ThreatConnect API.</p>
+<p>Critical Errors</p>
+<ul class="simple">
+<li>There is insufficient document storage allocated to this account.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="#tcex.tcex_ti_batch.TcExBatch.halt_on_error" title="tcex.tcex_ti_batch.TcExBatch.halt_on_error"><em>halt_on_error</em></a>) – True): If True any exception will raise an error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The upload status for each xid.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.submit_job">
+<code class="descname">submit_job</code><span class="sig-paren">(</span><em>halt_on_error=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.submit_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.submit_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit Batch request to ThreatConnect API.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.threat">
+<code class="descname">threat</code><span class="sig-paren">(</span><em>name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.threat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add Threat data to Batch object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The name for this Group.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Threat.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.url">
+<code class="descname">url</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add URL Address data to Batch object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of URL.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.user_agent">
+<code class="descname">user_agent</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.user_agent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.user_agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add User Agent data to Batch object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>str</em>) – The value for this Indicator.</li>
+<li><strong>confidence</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat confidence for this Indicator.</li>
+<li><strong>date_added</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was created.</li>
+<li><strong>last_modified</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The date timestamp the Indicator was last modified.</li>
+<li><strong>rating</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The threat rating for this Indicator.</li>
+<li><strong>xid</strong> (<em>str</em><em>, </em><em>kwargs</em>) – The external id for this Indicator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of UserAgent.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_batch.TcExBatch.write_batch_json">
+<code class="descname">write_batch_json</code><span class="sig-paren">(</span><em>content</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_batch.html#TcExBatch.write_batch_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_batch.TcExBatch.write_batch_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write batch json data to a file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="tcex.tcex_ti_group.html" class="btn btn-neutral float-right" title="tcex.tcex_ti_group module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="tcex.tcex_ti_attribute.html" class="btn btn-neutral" title="tcex.tcex_ti_attribute module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

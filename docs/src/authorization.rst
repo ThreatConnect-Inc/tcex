@@ -4,19 +4,19 @@
 ============================
 Authorization (Token / HMAC)
 ============================
-In general when communication with the ThreatConnect |trade| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.
+In general when communication with the ThreatConnect |copy| API using the TcEx Framework the App developer does not need to handle authorization.  If using any of the Resource Classes in :py:mod:`~tcex.tcex_resources` the authorization headers are automatically added.  This allows the App to run from within the ThreatConnect Platform or the Integration Server without having to change any code.
 
-The :py:meth:`~tcex.tcex` module also has the :py:mod:`~tcex.tcex.TcEx.session` property which is a Python Requests Session with ThreatConnect Authorization added.  API call to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.
+The :py:meth:`~tcex.tcex` module also has the :py:mod:`~tcex.tcex.TcEx.session` property which is a Python Requests Session (http://docs.python-requests.org/en/master/user/advanced/#session-objects) with ThreatConnect Authorization added.  API calls to the ThreatConnect API can be made with the native Requests interface with authorization and token renewal built-in.
 
-.. Note:: The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The MEO server supports HMAC or Token based authorization depending on the version.
+.. Note:: The latest version of the ThreatConnect Platform supports both Token based and HMAC authorization.  The ThreatConnect Environment server supports HMAC or Token based authorization depending on the version.
 
 Token Refresh
 --------------
-Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the ``tc_token`` and ``tc_token_expires`` arguments to the App.  The TcEx Framework automatically handles the Token refresh when using the :py:meth:`~tcex.tcex.TcEx.authorization` or :py:mod:`~tcex.tcex.TcEx.session` features.
+Token based authorization requires that the Token be renewed upon token expiration.  The ThreatConnect Platform passes the ``tc_token`` and ``tc_token_expires`` arguments to the App.  The TcEx Framework automatically handles the Token refresh when using :py:mod:`~tcex.tcex.TcEx.session`.
 
 HMAC Authorization
 ------------------
-Generation of the Authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on the certain versions of the MEO server these arguments could be required.
+Using HMAC Authorization is typically only used for running Apps outside the ThreatConnect Platform.  Generation of the Authorization headers when using HMAC will utilize the ``api_access_id`` and ``api_secret_key`` arguments.  These arguments are not automatically sent by the ThreatConnect Platform and are required to be added to the :ref:install_json file.  In the ThreatConnect UI these inputs will be automatically hidden in favor of Token based authorization.  However, on certain versions of the Environment server these arguments may be required.
 
 Example install.json param section::
 

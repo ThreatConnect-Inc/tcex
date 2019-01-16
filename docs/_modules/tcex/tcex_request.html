@@ -5,74 +5,74 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>tcex.tcex_request &mdash; TcEx 0.8.26 documentation</title>
-  
 
-  
-  
-  
-  
+  <title>tcex.tcex_request &mdash; TcEx 0.9.1 documentation</title>
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
 
-  
+
+
     <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-  
 
-  
+
+
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.8.26 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
 
-  
+
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="../../index.html" class="icon icon-home"> TcEx
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.8.26
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,63 +81,68 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_utils.html">Module - Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../batch.html">Batch</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../building_apps.html">Building Apps</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../data_filter.html">Data Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../development_tools.html">Development Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../install_json.html">Install JSON</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../jobs.html">Jobs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../metrics.html">Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notifications.html">Notifications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../playbook.html">Playbooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../request.html">Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../resource.html">Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">TcEx</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -156,28 +161,28 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
+
       <li>tcex.tcex_request</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
+
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <h1>Source code for tcex.tcex_request</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot; TcEx Framework Request Module &quot;&quot;&quot;</span>
@@ -185,10 +190,10 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">b64encode</span>
 
-<span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="p">(</span><span class="n">adapters</span><span class="p">,</span> <span class="n">packages</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Session</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">requests.packages.urllib3.util.retry</span> <span class="k">import</span> <span class="n">Retry</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="n">adapters</span><span class="p">,</span> <span class="n">packages</span><span class="p">,</span> <span class="n">Session</span>
+<span class="kn">from</span> <span class="nn">requests.packages.urllib3.util.retry</span> <span class="k">import</span> <span class="n">Retry</span>  <span class="c1"># pylint: disable=E0401</span>
 
-<span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>  <span class="c1"># disable ssl warning message</span>
+<span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>  <span class="c1"># pylint: disable=E1101</span>
 
 
 <div class="viewcode-block" id="session_retry"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.session_retry">[docs]</a><span class="k">def</span> <span class="nf">session_retry</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">backoff_factor</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">status_forcelist</span><span class="o">=</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">504</span><span class="p">),</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -316,8 +321,7 @@
 
 <div class="viewcode-block" id="TcExRequest.set_basic_auth"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.set_basic_auth">[docs]</a>    <span class="k">def</span> <span class="nf">set_basic_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Manually set basic auth in the header when normal method does not work.&quot;&quot;&quot;</span>
-        <span class="n">credentials</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
-            <span class="n">b64encode</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">b64encode</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">authorization</span> <span class="o">=</span> <span class="s1">&#39;Basic </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -378,10 +382,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s1">&#39;Request Object Error: </span><span class="si">{}</span><span class="s1"> is not a valid HTTP method.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                <span class="s1">&#39;Request Object Error: </span><span class="si">{}</span><span class="s1"> is not a valid HTTP method.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="c1">#</span>
-    <span class="c1"># Send Properties</span>
+    <span class="c1"># Set Properties</span>
     <span class="c1">#</span>
 
     <span class="nd">@property</span>
@@ -390,9 +395,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span>
 
     <span class="nd">@proxies</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">proxies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxy_settings</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the proxy settings for the session.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">proxies</span> <span class="o">=</span> <span class="n">proxy_settings</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -429,6 +434,7 @@
         <span class="sd">&quot;&quot;&quot;Files setting for this request&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="n">data</span>
+
     <span class="c1">#</span>
     <span class="c1"># Send</span>
     <span class="c1">#</span>
@@ -450,9 +456,16 @@
         <span class="c1">#</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">,</span>
-                <span class="n">files</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span>
-                <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_http_method</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span>
+                <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_auth</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="p">,</span>
+                <span class="n">files</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_payload</span><span class="p">,</span>
+                <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Failed making HTTP request (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -509,11 +522,11 @@
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
 
   <hr/>
 
@@ -522,7 +535,7 @@
         &copy; Copyright 2016, ThreatConnect Inc.
 
     </p>
-  </div> 
+  </div>
 
 </footer>
 
@@ -532,15 +545,15 @@
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.8.26',
+            VERSION:'0.9.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -551,21 +564,21 @@
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

@@ -50,6 +50,9 @@
         }
       }
     },
+    "labels": {
+      "type": "array"
+    },
     "languageVersion": {
       "type": "string"
     },
@@ -87,6 +90,9 @@
               ]
             },
             "type": "string"
+          },
+          "feedDeployer": {
+            "type": "boolean"
           },
           "hidden": {
             "type": "boolean"

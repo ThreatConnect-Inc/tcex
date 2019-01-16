@@ -181,7 +181,7 @@ class TcLib(object):
 
         # create sym link to point to latest Python version lib directory
         if platform.system() != 'Windows':
-            if os.path.isfile(self.static_lib_dir):
+            if os.path.islink(self.static_lib_dir):
                 os.unlink(self.static_lib_dir)
             os.symlink('lib_{}'.format(latest_version), self.static_lib_dir)
 

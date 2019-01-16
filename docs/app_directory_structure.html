@@ -1,0 +1,1795 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>App - Directory Structure &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
+        <link rel="next" title="Module - Batch" href="module_batch.html"/>
+        <link rel="prev" title="App - Deployment Configuration" href="app_deployment_configuration.html"/>
+
+
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">App - Directory Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#gitignore-optional">.gitignore (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-commit-config-yaml-optional">.pre-commit-config.yaml (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#readme-md-required">README.md (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#main-py-required">__main__.py (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#app-py-required">app.py (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#args-py-required">args.py (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-json-required">install.json (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-temporary">log (temporary)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-app-log-temporary">log/app.log (temporary)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-message-tc-temporary">log/message.tc (temporary)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#log-run-log-temporary">log/run.log (temporary)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#playbook-app-py-required">playbook_app.py (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyproject-toml-optional">pyproject.toml (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements-txt-required">requirements.txt (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-py-required">run.py (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-cfg-optional">setup.cfg (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcex-d-optional">tcex.d (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcex-d-data-optional">tcex.d/data (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcex-d-profiles-optional">tcex.d/profiles (optional)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcex-json-required">tcex.json (required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcex-json-schema-json-optional">tcex_json_schema.json (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="index.html">Docs</a> &raquo;</li>
+
+      <li>App - Directory Structure</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="app-directory-structure">
+<span id="id1"></span><h1>App - Directory Structure<a class="headerlink" href="#app-directory-structure" title="Permalink to this headline">¶</a></h1>
+<div class="code bash highlight-default"><div class="highlight"><pre><span></span>├── .gitignore
+├── .pre-commit-config.yaml
+├── README.md
+├── __main__.py
+├── app.py
+├── args.py
+├── install.json
+├── log
+│   ├── app.log
+│   ├── message.tc
+│   ├── run.log
+├── playbook_app.py
+├── pyproject.toml
+├── requirements.txt
+├── run.py
+├── setup.cfg
+├── tcex.d
+│   ├── data
+│   └── profiles
+│       └── simple_data.json
+├── tcex.json
+└── tcex_json_schema.json
+</pre></div>
+</div>
+<div class="section" id="gitignore-optional">
+<h2>.gitignore (optional)<a class="headerlink" href="#gitignore-optional" title="Permalink to this headline">¶</a></h2>
+<p>Template file that specifies intentionally untracked files that Git should ignore. This file is part of the template update, but can be optionally updated if required.</p>
+<div class="highlight-bash"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
+<span class="c1"># Python App Template</span>
+<span class="c1"># Version: 1.0.1</span>
+<span class="c1"># Last Updated: 2017/10/04</span>
+<span class="c1">#=================================================</span>
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># Language Exclusions</span>
+<span class="c1">#-------------------------------------------------</span>
+__pycache__
+*.pyc
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># App Specific Exclusions</span>
+<span class="c1">#-------------------------------------------------</span>
+*.log
+log
+sample-*.json
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># Build Exclusions</span>
+<span class="c1">#-------------------------------------------------</span>
+build
+lib_*
+target
+temp
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># IDE Exclusions</span>
+<span class="c1">#-------------------------------------------------</span>
+.c9
+.idea
+.project
+.python-version
+.settings
+.vscode
+nbproject
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># OS Exclusions</span>
+<span class="c1">#-------------------------------------------------</span>
+.DS_Store
+
+<span class="c1">#-------------------------------------------------</span>
+<span class="c1"># Other Nonsense</span>
+<span class="c1">#-------------------------------------------------</span>
+bcs*
+
+<span class="c1">#*************************************************</span>
+<span class="c1"># Custom Exclusion (per App exclusions)</span>
+<span class="c1">#*************************************************</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="pre-commit-config-yaml-optional">
+<h2>.pre-commit-config.yaml (optional)<a class="headerlink" href="#pre-commit-config-yaml-optional" title="Permalink to this headline">¶</a></h2>
+<p>Configuration file for the <code class="docutils literal"><span class="pre">pre-commit</span></code> Python command line tool. This configuration is the same one that is used for internal development of Apps.</p>
+<div class="highlight-yaml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">repos</span><span class="p p-Indicator">:</span>
+<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
+    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
+    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">fix-encoding-pragma</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
+        <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
+<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/ambv/black</span>
+    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
+    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
+        <span class="l l-Scalar l-Scalar-Plain">language_version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">python3.6</span>
+<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
+    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="s">&#39;master&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+        <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span>    <span class="l l-Scalar l-Scalar-Plain">--disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="readme-md-required">
+<h2>README.md (required)<a class="headerlink" href="#readme-md-required" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">README.md</span></code> file should contain any relevant information for the App and the App release notes.</p>
+<div class="highlight-md"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gh">#</span> Release Notes
+
+<span class="gu">##</span> 1.0.0
+<span class="k">*</span> Initial Release
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="main-py-required">
+<h2>__main__.py (required)<a class="headerlink" href="#main-py-required" title="Permalink to this headline">¶</a></h2>
+<p>Template file that should not be modified.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Set App lib directory for current version of Python&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.0.2&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">AppLib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set App Lib Directory&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize App properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app_process</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lib_directories</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c1"># the lib directory for the current version of Python</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c1"># All Python Version that will be searched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span> <span class="o">=</span> <span class="s1">&#39;lib_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span> <span class="o">=</span> <span class="s1">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span> <span class="o">=</span> <span class="s1">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">find_lib_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the optimal lib directory.&quot;&quot;&quot;</span>
+        <span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">:</span>
+            <span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">:</span>
+            <span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">:</span>
+            <span class="n">lib_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">lv</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lib_micro_version</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_minor_version</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_major_version</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">lv</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+                        <span class="n">lib_directory</span> <span class="o">=</span> <span class="n">d</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">lib_directory</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lib_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all &quot;lib&quot; directories.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lib_directories</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lib_directories</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span>
+                <span class="c1"># ensure content starts with lib, is directory, and is readable</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;lib&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_lib_directories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lib_directories</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the App as a subprocess.&quot;&quot;&quot;</span>
+        <span class="c1"># Update system arguments</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Make sure to exit with the return value from the subprocess call</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app_process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app_process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>  <span class="c1"># returns exit code</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_environment</span><span class="p">(</span><span class="n">lib_directory</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the App as a subprocess.&quot;&quot;&quot;</span>
+        <span class="c1"># Use this if you want to include modules from a subfolder</span>
+        <span class="c1"># lib_path = os.path.realpath(</span>
+        <span class="c1">#     os.path.abspath(</span>
+        <span class="c1">#         os.path.join(</span>
+        <span class="c1">#             os.path.split(inspect.getfile(inspect.currentframe()))[0], lib_directory)))</span>
+        <span class="n">lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">lib_directory</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;PYTHONPATH&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}{}{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">lib_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lib_path</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">al</span> <span class="o">=</span> <span class="n">AppLib</span><span class="p">()</span>
+
+    <span class="c1"># find the optimal App Lib directory</span>
+    <span class="n">ld</span> <span class="o">=</span> <span class="n">al</span><span class="o">.</span><span class="n">find_lib_directory</span><span class="p">()</span>
+
+    <span class="c1"># No reason to continue if no appropriate lib directory found</span>
+    <span class="k">if</span> <span class="n">ld</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Failed to find lib directory ({}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">al</span><span class="o">.</span><span class="n">lib_directories</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># update the OS environment for lib_directory path</span>
+    <span class="n">al</span><span class="o">.</span><span class="n">update_environment</span><span class="p">(</span><span class="n">ld</span><span class="p">)</span>
+
+    <span class="c1"># run the App</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">al</span><span class="o">.</span><span class="n">run_app</span><span class="p">()</span>
+
+    <span class="c1"># exit with the Apps exit code</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="app-py-required">
+<h2>app.py (required)<a class="headerlink" href="#app-py-required" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the “main” App logic and contains the <code class="docutils literal"><span class="pre">run()</span></code> method that is called by default. It also can contain methods for <strong>tc_actions</strong>.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Playbook App&quot;&quot;&quot;</span>
+
+<span class="c1"># Import default Playbook Class (Required)</span>
+<span class="kn">from</span> <span class="nn">playbook_app</span> <span class="kn">import</span> <span class="n">PlaybookApp</span>
+
+
+<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">PlaybookApp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the App main logic.</span>
+
+<span class="sd">        This method should contain the core logic of the App.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.</span>
+
+<span class="sd">        This method should be overridden with the output variables defined in the install.json</span>
+<span class="sd">        configuration file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="args-py-required">
+<h2>args.py (required)<a class="headerlink" href="#args-py-required" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the args required for the App to function properly.  Only App args are required to be defined.  The default args are part of the TcEx framework and are added automatically.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">Args</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Playbook Args&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="install-json-required">
+<h2>install.json (required)<a class="headerlink" href="#install-json-required" title="Permalink to this headline">¶</a></h2>
+<p>This is the main configuration file for the App and controls what inputs and outputs will be presented to the user.</p>
+<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;displayName&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Pretty&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;aotExecutionEnabled&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;appBuilderCompliant&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;secureParams&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;3.6&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;listDelimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Take raw JSON string and output \&quot;pretty\&quot; with provide indent level.&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;JSON Data&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json_data&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The JSON data to be formatted.&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;TCEntityArray&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;${TEXT}&quot;</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Indent&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;indent&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;The number of spaces to use for indention (default: 4).&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;String&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;${TEXT}&quot;</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Sort Keys&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sort_keys&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates whether keys should be sorted.&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;playbook&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;outputVariables&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;json.pretty&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;String&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Utility&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="s2">&quot;run&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;Playbook&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="log-temporary">
+<h2>log (temporary)<a class="headerlink" href="#log-temporary" title="Permalink to this headline">¶</a></h2>
+<p>This directory is created when running testing profile locally. All App output is written to this directory as well as the output of the <code class="docutils literal"><span class="pre">tcrun</span></code> command.</p>
+</div>
+<div class="section" id="log-app-log-temporary">
+<h2>log/app.log (temporary)<a class="headerlink" href="#log-app-log-temporary" title="Permalink to this headline">¶</a></h2>
+<p>This log file contains the logging output of the App.</p>
+</div>
+<div class="section" id="log-message-tc-temporary">
+<h2>log/message.tc (temporary)<a class="headerlink" href="#log-message-tc-temporary" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the App exit message. The contents of this file will be displayed in the UI when the App is run in platform. For local testing the file should be verified to have content on successful App completion and on failure.</p>
+</div>
+<div class="section" id="log-run-log-temporary">
+<h2>log/run.log (temporary)<a class="headerlink" href="#log-run-log-temporary" title="Permalink to this headline">¶</a></h2>
+<p>This log file contains the output from the <code class="docutils literal"><span class="pre">tcrun</span></code> command and will contain information about validations rules.</p>
+</div>
+<div class="section" id="playbook-app-py-required">
+<h2>playbook_app.py (required)<a class="headerlink" href="#playbook-app-py-required" title="Permalink to this headline">¶</a></h2>
+<p>Template file that contains base logic for a Playbook App. This file should not be edited and will get updated when using <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Playbook App Template. &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
+
+<span class="c1"># Typically no changes are required to this file.</span>
+
+
+<span class="k">class</span> <span class="nc">PlaybookApp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Playbook App Class&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tcex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize class properties.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">_tcex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
+
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform cleanup operations and gracefully exit the App.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running done.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse CLI args.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Parsing Args.&#39;</span><span class="p">)</span>
+        <span class="n">Args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">parser</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the App main logic.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No run logic provided.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform prep/startup operations.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running start.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write the Playbook output variables.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No output variables written.&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="pyproject-toml-optional">
+<h2>pyproject.toml (optional)<a class="headerlink" href="#pyproject-toml-optional" title="Permalink to this headline">¶</a></h2>
+<p>This is a Python tool configuration file which contains the configuration for the “black” formatting tool used to format all Python code.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">black</span><span class="p">]</span>
+<span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">skip</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">normalization</span> <span class="o">=</span> <span class="n">true</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="requirements-txt-required">
+<h2>requirements.txt (required)<a class="headerlink" href="#requirements-txt-required" title="Permalink to this headline">¶</a></h2>
+<p>This file contains all the required Python dependencies for the App. The requirements.txt file is used by the <code class="docutils literal"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">0.9</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.0</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="run-py-required">
+<h2>run.py (required)<a class="headerlink" href="#run-py-required" title="Permalink to this headline">¶</a></h2>
+<p>Template file that is called by ThreatConnect and <code class="docutils literal"><span class="pre">tcrun</span></code> to launch the App. This file should not be edited and will get updated when using <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># Python 2 unicode</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>  <span class="c1"># noqa: F821; pylint: disable=E0602</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
+
+
+<span class="k">def</span> <span class="nf">_update_app_path</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Update sys path to ensure all required modules can be found.</span>
+
+<span class="sd">    All Apps must be able to access included modules, this method will ensure that the system path</span>
+<span class="sd">    has been updated to include the &quot;cwd&quot; and &quot;lib_&quot; directories.  This is normally handled by</span>
+<span class="sd">    the __main__.py file, but in some cases an App may be called directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_&#39;</span><span class="p">)</span>
+    <span class="n">lib_latest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
+
+    <span class="c1"># insert the lib_latest directory into the system Path if no other lib directory found. This</span>
+    <span class="c1"># entry will be bumped to index 1 after adding the current working directory.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">lib_dir</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lib_latest</span><span class="p">)</span>
+
+    <span class="c1"># insert the current working directory into the system Path for the App, ensuring that it is</span>
+    <span class="c1"># always the first entry in the list.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="c1"># update the path to ensure the App has access to required modules</span>
+    <span class="n">_update_app_path</span><span class="p">()</span>
+
+    <span class="c1"># import modules after path has been updated</span>
+    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
+    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>
+
+    <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># load App class</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
+
+        <span class="c1"># parse args</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+        <span class="c1"># perform prep/startup operations</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># run the App logic</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;tc_action&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c1"># if the args NameSpace has the reserved arg of &quot;tc_action&quot;, this arg value is used to</span>
+            <span class="c1"># triggers a call to the app.&lt;tc_action&gt;() method.  an exact match to the method is</span>
+            <span class="c1"># tried first, followed by a normalization of the tc_action value, and finally an</span>
+            <span class="c1"># attempt is made to find the reserved &quot;tc_action_map&quot; property to map value to method.</span>
+            <span class="n">tc_action</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span>
+            <span class="n">tc_action_formatted</span> <span class="o">=</span> <span class="n">tc_action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="n">tc_action_map</span> <span class="o">=</span> <span class="s1">&#39;tc_action_map&#39;</span>  <span class="c1"># reserved property name for action to method map</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># run action method</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">):</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">)()</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">):</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># default to run method</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+        <span class="c1"># write requested value for downstream Apps</span>
+        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">write_output</span><span class="p">()</span>  <span class="c1"># pylint: disable=E1101</span>
+
+        <span class="c1"># perform cleanup operations</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+        <span class="c1"># explicitly call the exit method</span>
+        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">exit_message</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">main_err</span> <span class="o">=</span> <span class="s1">&#39;Generic Error.  See logs for more details ({}).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">main_err</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="setup-cfg-optional">
+<h2>setup.cfg (optional)<a class="headerlink" href="#setup-cfg-optional" title="Permalink to this headline">¶</a></h2>
+<p>This file contains Python configurations data, specifically for linting ignores/excludes.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">flake8</span><span class="p">]</span>
+<span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span>
+
+<span class="p">[</span><span class="n">pep8</span><span class="p">]</span>
+<span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="tcex-d-optional">
+<h2>tcex.d (optional)<a class="headerlink" href="#tcex-d-optional" title="Permalink to this headline">¶</a></h2>
+<p>This directory is created when creating testing profile using the <code class="docutils literal"><span class="pre">tcprofile</span></code> command.  This directory hold both the staging data and profiles JSON files.</p>
+</div>
+<div class="section" id="tcex-d-data-optional">
+<h2>tcex.d/data (optional)<a class="headerlink" href="#tcex-d-data-optional" title="Permalink to this headline">¶</a></h2>
+<p>This directory contains the JSON staging files.</p>
+</div>
+<div class="section" id="tcex-d-profiles-optional">
+<h2>tcex.d/profiles (optional)<a class="headerlink" href="#tcex-d-profiles-optional" title="Permalink to this headline">¶</a></h2>
+<p>This directory contains the JSON profile files.</p>
+</div>
+<div class="section" id="tcex-json-required">
+<h2>tcex.json (required)<a class="headerlink" href="#tcex-json-required" title="Permalink to this headline">¶</a></h2>
+<p>This is the main TcEx framework configuration file. It required to run local testing and for packaging, but should not be included in the App package.</p>
+<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;package&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;app_name&quot;</span><span class="p">:</span> <span class="s2">&quot;TCPB_-_&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;app_version&quot;</span><span class="p">:</span> <span class="s2">&quot;v1.0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;.gitignore&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;.pre-commit-config.yaml&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;setup.cfg&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tcex_json_schema.json&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tcex.json&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;*.install.json&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tcex.d&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;profile_include_dirs&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;tcex.d/profiles&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="tcex-json-schema-json-optional">
+<h2>tcex_json_schema.json (optional)<a class="headerlink" href="#tcex-json-schema-json-optional" title="Permalink to this headline">¶</a></h2>
+<p>This is the JSON schema for the install.json configuration file. If this file is present the <code class="docutils literal"><span class="pre">tcpackage</span></code> command will validate the “install.json” before packaging the App.</p>
+<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;allowRunAsUser&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;apiUserTokenParam&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;displayName&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;dockerImage&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;feeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;attributesFile&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;documentStorageLimitMb&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;enableBulkJson&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;indicatorLimit&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;jobFile&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceCategory&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceDescription&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceName&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;labels&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;listDelimiter&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;minServerVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;allowMultiple&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;string&quot;</span>
+            <span class="p">]</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;encrypt&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;exposePlaybookKeyAs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;StringArray&quot;</span>
+              <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;feedDeployer&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;hidden&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;playbookDataType&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;Any&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Binary&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;BinaryArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TCEntityArray&quot;</span>
+              <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;KeyValueList&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;MultiChoice&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;StringMixed&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;viewRows&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;uniqueItems&quot;</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;playbook&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;outputVariables&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+              <span class="p">},</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                  <span class="s2">&quot;Binary&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;BinaryArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;TCEntityArray&quot;</span>
+                <span class="p">],</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;type&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;uniqueItems&quot;</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;retry&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;allowed&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;defaultDelayMinutes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;defaultMaxRetries&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programIcon&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;publishOutFiles&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;repeatingMinutes&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;runtimeContext&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;string&quot;</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;allowOnDemand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;displayName&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;params&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programLanguage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programMain&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programVersion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;runtimeLevel&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="module_batch.html" class="btn btn-neutral float-right" title="Module - Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="app_deployment_configuration.html" class="btn btn-neutral" title="App - Deployment Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

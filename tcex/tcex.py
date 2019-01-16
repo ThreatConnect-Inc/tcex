@@ -47,6 +47,12 @@ class TcEx(object):
         # Parser
         self.tcex_args = TcExArgs(self)
 
+        # NOTE: odd issue where args is not updating properly
+        if self.default_args.tc_token is not None:
+            self._tc_token = self.default_args.tc_token
+        if self.default_args.tc_token_expires is not None:
+            self._tc_token_expires = self.default_args.tc_token_expires
+
         # Log system and App data
         self._log()
 
@@ -347,12 +353,13 @@ class TcEx(object):
         playbook_triggers_enabled=None,
     ):
         """Return instance of Batch"""
-        from .tcex_batch_v2 import TcExBatch
+        from .tcex_ti_batch import TcExBatch
 
         return TcExBatch(
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
+    # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):
         """Return an instance of the Data Filter Class.
 
@@ -444,6 +451,40 @@ class TcEx(object):
             self._exit_code = code
         else:
             self.log.warning(u'Invalid exit code')
+
+    @staticmethod
+    def expand_indicators(indicator):
+        """Process indicators expanding file hashes/custom indicators into multiple entries.
+
+        Args:
+            indicator (string): " : " delimited string
+        Returns:
+            (list): a list of indicators split on " : ".
+        """
+        if indicator.count(' : ') > 0:
+            # handle all multi-valued indicators types (file hashes and custom indicators)
+            indicator_list = []
+
+            # group 1 - lazy capture everything to first <space>:<space> or end of line
+            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
+            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
+            # group 2 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead (optional <space>):<space> or end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
+            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
+            # group 3 - look behind for <space>:<space>, lazy capture everything
+            #           to look ahead end of line
+            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
+            iregx = re.compile(iregx_pattern)
+
+            indicators = iregx.search(indicator)
+            if indicators is not None:
+                indicator_list = list(indicators.groups())
+        else:
+            # handle all single valued indicator types (address, host, etc)
+            indicator_list = [indicator]
+
+        return indicator_list
 
     @property
     def group_types(self):
@@ -675,8 +716,9 @@ class TcEx(object):
     def request(self, session=None):
         """Return an instance of the Request Class.
 
-        A wrapper on the Python Request Module that provides a slightly different interface for
-        creating requests and logging built-in.
+        A wrapper on the Python Requests module that provides a different interface for creating
+        requests. The session property of this instance has built-in logging, session level
+        retries, and preconfigured proxy configuration.
 
         Returns:
             (object): An instance of Request Class
@@ -684,27 +726,17 @@ class TcEx(object):
         try:
             from .tcex_request import TcExRequest
 
-            return TcExRequest(self, session)
+            r = TcExRequest(self, session)
+            if self.default_args.tc_proxy_external:
+                self.log.info(
+                    u'Using proxy server for external request {}:{}.'.format(
+                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                    )
+                )
+                r.proxies = self.proxies
+            return r
         except ImportError as e:
             self.handle_error(105, [e])
-
-    def request_external(self):
-        """Return an instance of the Request Class with Proxy values set.
-
-        See :py:mod:`~tcex.tcex.TcEx.request`
-
-        Returns:
-            (object): An instance of Request Class
-        """
-        r = self.request()
-        if self.default_args.tc_proxy_external:
-            self.log.info(
-                u'Using proxy server for external request {}:{}.'.format(
-                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                )
-            )
-            r.proxies = self.proxies
-        return r
 
     def resource(self, resource_type):
         """Get instance of Resource Class with dynamic type.
@@ -809,40 +841,6 @@ class TcEx(object):
         return indicator
 
     @staticmethod
-    def expand_indicators(indicator):
-        """Process indicators expanding file hashes/custom indicators into multiple entries.
-
-        Args:
-            indicator (string): " : " delimited string
-        Returns:
-            (list): a list of indicators split on " : ".
-        """
-        if indicator.count(' : ') > 0:
-            # handle all multi-valued indicators types (file hashes and custom indicators)
-            indicator_list = []
-
-            # group 1 - lazy capture everything to first <space>:<space> or end of line
-            iregx_pattern = r'^(.*?(?=\s\:\s|$))?'
-            iregx_pattern += r'(?:\s\:\s)?'  # remove <space>:<space>
-            # group 2 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead (optional <space>):<space> or end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=(?:\s)?\:\s|$))?'
-            iregx_pattern += r'(?:(?:\s)?\:\s)?'  # remove (optional <space>):<space>
-            # group 3 - look behind for <space>:<space>, lazy capture everything
-            #           to look ahead end of line
-            iregx_pattern += r'((?<=\s\:\s).*?(?=$))?$'
-            iregx = re.compile(iregx_pattern)
-
-            indicators = iregx.search(indicator)
-            if indicators is not None:
-                indicator_list = list(indicators.groups())
-        else:
-            # handle all single valued indicator types (address, host, etc)
-            indicator_list = [indicator]
-
-        return indicator_list
-
-    @staticmethod
     def safe_rt(resource_type, lower=False):
         """Format the Resource Type.
 
@@ -895,6 +893,10 @@ class TcEx(object):
         return group_name
 
     def safetag(self, tag, errors='strict'):
+        """Wrapper method for safe_tag."""
+        return self.safe_tag(tag, errors)
+
+    def safe_tag(self, tag, errors='strict'):
         """URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
@@ -913,6 +915,10 @@ class TcEx(object):
         return tag
 
     def safeurl(self, url, errors='strict'):
+        """Wrapper method for safe_url."""
+        return self.safe_url(url, errors)
+
+    def safe_url(self, url, errors='strict'):
         """URL encode value for safe HTTP request.
 
         Args:

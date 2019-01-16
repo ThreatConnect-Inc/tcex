@@ -4,7 +4,7 @@
 ====
 Exit
 ====
-All ThreatConnect |trade| Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` method and :py:mod:`~tcex.tcex.TcEx.exit_code` property to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
+All ThreatConnect |copy| Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` method and :py:mod:`~tcex.tcex.TcEx.exit_code` property to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
 
 The :py:meth:`~tcex.tcex.TcEx.exit` method supports and optional ``msg`` parameter.  If provided the ``msg`` value will be logged and written to the ``message_tc`` file as the App exit message.
 

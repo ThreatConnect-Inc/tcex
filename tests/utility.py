@@ -2,16 +2,17 @@
 # -*- coding: utf-8 -*-
 """Test utility module."""
 
+import hashlib
 import logging
 import os
 import sys
+
+import tcex
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
 import validator  # pylint: disable=C0413
 import cleaner  # pylint: disable=C0413
-
-import tcex  # pylint: disable=C0413
 
 
 def init_tcex(requires_tc_token=False, clean_data=True):
@@ -19,8 +20,8 @@ def init_tcex(requires_tc_token=False, clean_data=True):
     tcex_instance = tcex.TcEx()
     tcex_instance.log.debug(
         'Creating content in {}. If this is not correct, pass in a different owner name using the '
-        '--api_default_org flag.'
-    ).format(tcex_instance.args.api_default_org)
+        '--api_default_org flag.'.format(tcex_instance.args.api_default_org)
+    )
     tcex_instance.args.api_access_id = os.environ['API_ACCESS_ID']
     tcex_instance.args.tc_temp_path = 'log'
     # this manually sets the logging level
@@ -50,3 +51,15 @@ def init_tcex(requires_tc_token=False, clean_data=True):
         validator.validate(tcex_instance, expected_groups=0, expected_indicators=0)
 
     return tcex_instance
+
+
+def _create_xid(type_, name):
+    # if given a file indicator, make sure the name is based on the first hash
+    type_ = type_.lower()
+    name = name.lower()
+
+    if type_ == 'file':
+        name = name.split(' : ')[0]
+    xid_string = '{}-{}'.format(type_, name)
+    hash_object = hashlib.sha256(xid_string.encode('utf-8'))
+    return hash_object.hexdigest()

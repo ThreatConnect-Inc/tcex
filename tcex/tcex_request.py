@@ -209,9 +209,9 @@ class TcExRequest(object):
         return self.session.proxies
 
     @proxies.setter
-    def proxies(self, data):
+    def proxies(self, proxy_settings):
         """Set the proxy settings for the session."""
-        self.session.proxies = data
+        self.session.proxies = proxy_settings
 
     @property
     def timeout(self):

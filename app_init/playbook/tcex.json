@@ -1,9 +1,15 @@
 {
   "package": {
-    "app_name": "TCPB_-_JSON_Pretty",
+    "app_name": "TCPB_-_",
     "app_version": "v1.0",
     "excludes": [
-      "requirements.txt",
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex_json_schema.json",
+      "tcex.json",
+      "*.install.json",
       "tcex.d"
     ],
     "outdir": "target"

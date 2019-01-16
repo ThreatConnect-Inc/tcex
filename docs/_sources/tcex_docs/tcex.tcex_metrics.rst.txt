@@ -1,7 +1,0 @@
-tcex.tcex_metrics module
-=========================
-
-.. automodule:: tcex.tcex_metrics
-    :members:
-    :undoc-members:
-    :show-inheritance:

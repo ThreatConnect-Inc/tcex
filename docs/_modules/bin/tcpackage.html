@@ -1,0 +1,865 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>bin.tcpackage &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/>
+
+
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+
+      <li>bin.tcpackage</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <h1>Source code for bin.tcpackage</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; TcEx Framework Package Module &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">imp</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">SchemaError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">validate</span>
+<span class="kn">from</span> <span class="nn">stdlib_list</span> <span class="k">import</span> <span class="n">stdlib_list</span>
+
+<span class="c1"># Python 2 unicode</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>  <span class="c1"># noqa: F821; pylint: disable=E0602</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--bundle&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Build a bundle file.&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s1">&#39;--exclude&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;File and directories to exclude from build.&#39;</span>
+<span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s1">&#39;--config&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tcex.json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Build configuration file. (Default: tcex.json)&#39;</span>
+<span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s1">&#39;--ignore_validation&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Do not exit on validation errors.&#39;</span>
+<span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s1">&#39;--install_json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The install.json file name for the App that should be built.&#39;</span>
+<span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s1">&#39;--outdir&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Directory to write the outfile. (Default: target)&#39;</span>
+<span class="p">)</span>
+<span class="n">args</span><span class="p">,</span> <span class="n">extra_args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+
+<span class="c1"># Load Schema</span>
+<span class="c1"># schema_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), &#39;tcex_json_schema.json&#39;)</span>
+
+
+<span class="c1"># TODO: Clean this up when time allows</span>
+<div class="viewcode-block" id="TcPackage"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage">[docs]</a><span class="k">class</span> <span class="nc">TcPackage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Package the app for deployment</span>
+
+<span class="sd">    This method will package the app for deployment to ThreatConnect. Validation of the</span>
+<span class="sd">    install.json file or files will be automatically run before packaging the app.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init Class properties&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;secureParams&#39;</span><span class="p">,</span> <span class="s1">&#39;aotExecutionEnabled&#39;</span><span class="p">]</span>
+
+        <span class="c1"># defaults</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema_file</span> <span class="o">=</span> <span class="s1">&#39;tcex_json_schema.json&#39;</span>
+
+        <span class="c1"># initialize colorama</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># load config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TcPackage._load_config"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage._load_config">[docs]</a>    <span class="k">def</span> <span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="c1"># load config</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid JSON File </span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcPackage._load_install_json"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage._load_install_json">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_load_install_json</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load install.json file&quot;&quot;&quot;</span>
+        <span class="n">install_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">install_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Could not load </span><span class="si">{}</span><span class="s1"> file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+
+        <span class="c1"># if not install_data.get(&#39;apiUserTokenParam&#39;):</span>
+        <span class="c1">#     print(&#39;{}{}The current install.json file is missing param &quot;apiUserTokenParam&quot;&#39;.format(</span>
+        <span class="c1">#         c.Style.BRIGHT, c.Fore.YELLOW))</span>
+
+        <span class="k">return</span> <span class="n">install_data</span></div>
+
+<div class="viewcode-block" id="TcPackage._update_install_json"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage._update_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">_update_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">install_json</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write install.json file&quot;&quot;&quot;</span>
+        <span class="n">updated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Update features</span>
+        <span class="n">install_json</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">):</span>
+                <span class="n">install_json</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+                <span class="n">updated</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;Updating install.json for feature: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">feature</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">install_json</span><span class="p">,</span> <span class="n">updated</span></div>
+
+<div class="viewcode-block" id="TcPackage._write_install_json"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage._write_install_json">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_write_install_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">install_json</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write install.json file&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: why check if it exists?</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Could not write </span><span class="si">{}</span><span class="s1"> file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TcPackage.bundle"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.bundle">[docs]</a>    <span class="k">def</span> <span class="nf">bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bundle App&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">bundle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
+                    <span class="n">bundle_name</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+                    <span class="n">bundle_patterns</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;patterns&#39;</span><span class="p">)</span>
+
+                    <span class="n">bundle_apps</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">app_pattern</span> <span class="ow">in</span> <span class="n">bundle_patterns</span><span class="p">:</span>
+                            <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">app_pattern</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+                                <span class="n">bundle_apps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+                    <span class="c1"># bundle app in zip</span>
+                    <span class="k">if</span> <span class="n">bundle_apps</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">bundle_apps</span><span class="p">(</span><span class="n">bundle_name</span><span class="p">,</span> <span class="n">bundle_apps</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bundle_apps</span><span class="p">(</span><span class="n">bundle_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcPackage.bundle_apps"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.bundle_apps">[docs]</a>    <span class="k">def</span> <span class="nf">bundle_apps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle_name</span><span class="p">,</span> <span class="n">bundle_apps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bundle zip (tcx) file&quot;&quot;&quot;</span>
+        <span class="n">bundle_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-bundle.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bundle_name</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s1">&#39;Creating bundle: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">bundle_file</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">bundle_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">bundle_apps</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Adding: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">app</span><span class="p">)))</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
+        <span class="n">z</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TcPackage.check_ast"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.check_ast">[docs]</a>    <span class="k">def</span> <span class="nf">check_ast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run ast on each Python file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            app_path (str, optional): Defaults to None. The path of Python files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">Validating File Syntax:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">))</span>
+
+        <span class="n">app_path</span> <span class="o">=</span> <span class="n">app_path</span> <span class="ow">or</span> <span class="s1">&#39;.&#39;</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{!s:&lt;60}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;File:&#39;</span><span class="p">,</span> <span class="s1">&#39;Status:&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">app_path</span><span class="p">)):</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
+            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
+            <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+                    <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+                    <span class="n">errors</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+                    <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># skip unsupported file types</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># display results</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!s:&lt;60}{}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">status_color</span><span class="p">,</span> <span class="n">status</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">Build failed due file(s) with invalid syntax.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">))</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcPackage.check_imports"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.check_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the projects top level directory for missing imports.</span>
+
+<span class="sd">        This method will check only files ending in **.py** and does not handle imports validation</span>
+<span class="sd">        for sub-directories.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">modules</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">missing_modules</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">fq_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fq_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># TODO: fix this</span>
+                <span class="n">code_lines</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)])</span>
+
+                <span class="k">while</span> <span class="n">code_lines</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;missing&#39;</span>
+                    <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+
+                    <span class="n">code</span><span class="p">,</span> <span class="n">lineno</span> <span class="o">=</span> <span class="n">code_lines</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>  <span class="c1"># pylint: disable=W0612</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">parsed_code</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parsed_code</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Import</span><span class="p">):</span>
+                                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                                    <span class="n">m</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                                        <span class="c1"># stdlib module, not need to proceed</span>
+                                        <span class="k">continue</span>
+                                    <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="ow">not</span> <span class="n">m_status</span><span class="p">:</span>
+                                        <span class="n">missing_modules</span> <span class="o">=</span> <span class="kc">True</span>
+                                    <span class="n">modules</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">file</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">})</span>
+                            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">ImportFrom</span><span class="p">):</span>
+                                <span class="n">m</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_import_stdlib</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+                                    <span class="c1"># stdlib module, not need to proceed</span>
+                                    <span class="k">continue</span>
+                                <span class="n">m_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_imported</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">m_status</span><span class="p">:</span>
+                                    <span class="n">missing_modules</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">modules</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">file</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">m_status</span><span class="p">})</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">Validating Imports:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{!s:&lt;30}{!s:&lt;30}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;File:&#39;</span><span class="p">,</span> <span class="s1">&#39;Module:&#39;</span><span class="p">,</span> <span class="s1">&#39;Status:&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">module_data</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
+            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">):</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+                <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{!s:&lt;30}{}{!s:&lt;30}{}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">),</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="p">,</span>
+                    <span class="n">module_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">),</span>
+                    <span class="n">status_color</span><span class="p">,</span>
+                    <span class="n">status</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">missing_modules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">Build failed due to missing required Python module(s).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcPackage.check_import_stdlib"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.check_import_stdlib">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_import_stdlib</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if module is in Python stdlib&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.4&#39;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.5&#39;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.6&#39;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.7&#39;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="TcPackage.check_imported"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.check_imported">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_imported</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the provide module can be imported (package installed).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (str): The name of the module to check availability.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the module can be imported, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">imported</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">module_info</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="c1"># TODO: update to a cleaner method that doesn&#39;t require importing the module and</span>
+        <span class="c1"># running inline code.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># block print statements in imported module</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="c1"># reset stdout</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">__stdout__</span>
+            <span class="n">module_info</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">imported</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># get module path</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">module_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">module_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">description</span><span class="p">:</span>
+            <span class="c1"># if description is None or empty string the module could not be imported</span>
+            <span class="n">imported</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">description</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">module_path</span><span class="p">:</span>
+            <span class="c1"># if description/module_path are None or empty string the module could not be imported</span>
+            <span class="n">imported</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">module_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="s1">&#39;dist-packages&#39;</span> <span class="ow">in</span> <span class="n">module_path</span> <span class="ow">or</span> <span class="s1">&#39;site-packages&#39;</span> <span class="ow">in</span> <span class="n">module_path</span>
+        <span class="p">):</span>
+            <span class="c1"># if dist-packages|site-packages in module_path the import doesn&#39;t count</span>
+            <span class="n">imported</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">imported</span></div>
+
+<div class="viewcode-block" id="TcPackage.check_install_json"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.check_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">check_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check all install.json files for valid schema.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># the install.json files can&#39;t be validates if the schema file is not present</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">Validating install.json Schema:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{!s:&lt;60}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;File:&#39;</span><span class="p">,</span> <span class="s1">&#39;Status:&#39;</span><span class="p">))</span>
+        <span class="n">invalid_schema</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">install_json</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
+            <span class="c1"># skip files that are not install.json files</span>
+            <span class="k">if</span> <span class="s1">&#39;install.json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">install_json</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">error</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
+            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                    <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">SchemaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="c1"># check_ast performs JSON validation of all JSON files. this exception should</span>
+                    <span class="c1"># never match.</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+                    <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="n">e</span>
+                    <span class="n">invalid_schema</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+                    <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span>
+                    <span class="n">invalid_schema</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!s:&lt;60}{}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">status_color</span><span class="p">,</span> <span class="n">status</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">invalid_schema</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">Build failed due to invalid schema in install.json file(s).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">commit_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current commit hash if available.</span>
+
+<span class="sd">        This is not a required task so best effort is fine. In other words this is not guaranteed</span>
+<span class="sd">        to work 100% of the time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">commit_hash</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">branch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">branch_file</span> <span class="o">=</span> <span class="s1">&#39;.git/HEAD&#39;</span>  <span class="c1"># ref: refs/heads/develop</span>
+
+        <span class="c1"># get current branch</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">branch_file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">branch_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">branch</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="c1"># get commit hash</span>
+            <span class="k">if</span> <span class="n">branch</span><span class="p">:</span>
+                <span class="n">hash_file</span> <span class="o">=</span> <span class="s1">&#39;.git/refs/heads/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">branch</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">hash_file</span><span class="p">):</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">hash_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">commit_hash</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">commit_hash</span>
+
+<div class="viewcode-block" id="TcPackage.package"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.package">[docs]</a>    <span class="k">def</span> <span class="nf">package</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Package the App for deployment in TcEx&quot;&quot;&quot;</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># create build directory</span>
+        <span class="c1">#</span>
+        <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># temp path and cleanup</span>
+        <span class="c1">#</span>
+        <span class="n">template_app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">template_app_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="c1"># cleanup any previous failed builds</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">template_app_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">Packaging App:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s1">&#39;Building App Template: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">template_app_path</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># build exclude file/directory list</span>
+        <span class="c1">#</span>
+        <span class="n">excludes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span>
+            <span class="s1">&#39;__pycache__&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;.c9&#39;</span><span class="p">,</span>  <span class="c1"># C9 IDE</span>
+            <span class="s1">&#39;.git&#39;</span><span class="p">,</span>  <span class="c1"># git directory</span>
+            <span class="s1">&#39;.gitmodules&#39;</span><span class="p">,</span>  <span class="c1"># git modules</span>
+            <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
+            <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
+            <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
+            <span class="s1">&#39;log&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
+        <span class="p">]</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;excludes&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">excludes</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Excluding: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">patterns</span><span class="p">))</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># copy project directory to temp location to use as template for multiple builds</span>
+        <span class="c1">#</span>
+        <span class="n">ignore_patterns</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="o">*</span><span class="n">excludes</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">template_app_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_patterns</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># build list of app json files</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># package app</span>
+        <span class="c1">#</span>
+        <span class="k">for</span> <span class="n">install_json</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
+            <span class="c1"># skip files that are not install.json files</span>
+            <span class="k">if</span> <span class="s1">&#39;install.json&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">install_json</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># divider</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+
+            <span class="c1"># get App Name from config, install.json prefix or directory name.</span>
+            <span class="k">if</span> <span class="n">install_json</span> <span class="o">==</span> <span class="s1">&#39;install.json&#39;</span><span class="p">:</span>
+                <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">app_name</span> <span class="o">=</span> <span class="n">install_json</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Processing: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">app_name</span><span class="p">))</span>
+
+            <span class="c1">#</span>
+            <span class="c1"># load install json</span>
+            <span class="c1">#</span>
+            <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
+
+            <span class="c1"># automatically update install.json for feature sets supported by the SDK</span>
+            <span class="n">ij</span><span class="p">,</span> <span class="n">ij_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
+
+            <span class="c1">#</span>
+            <span class="c1"># write update install.json</span>
+            <span class="c1">#</span>
+            <span class="k">if</span> <span class="n">ij_modified</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">ij</span><span class="p">)</span>
+
+            <span class="c1"># find a usable app version</span>
+            <span class="n">program_version</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0.0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">major_version</span> <span class="o">=</span> <span class="n">program_version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">minor_version</span> <span class="o">=</span> <span class="n">program_version</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">minor_version</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">app_version</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">))</span>
+            <span class="p">)</span>
+
+            <span class="c1"># !!! The name of the folder in the zip is the *key* for an App. This value must</span>
+            <span class="c1"># !!! remain consistent for the App to upgrade successfully.</span>
+            <span class="n">app_name_version</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">app_version</span><span class="p">)</span>
+
+            <span class="c1">#</span>
+            <span class="c1"># build app directory</span>
+            <span class="c1">#</span>
+            <span class="n">tmp_app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="n">app_name_version</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+                <span class="c1"># cleanup any previous failed builds</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">template_app_path</span><span class="p">,</span> <span class="n">tmp_app_path</span><span class="p">)</span>
+
+            <span class="c1"># Copy install.json</span>
+            <span class="c1"># TODO: do we need copy if writing the data in the next step?</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
+
+            <span class="c1"># Update commit hash after install.json has been copied.</span>
+            <span class="n">ij</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">),</span> <span class="n">ij</span><span class="p">)</span>
+
+            <span class="c1"># zip file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zip_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">app_name_version</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">)</span>
+            <span class="c1"># cleanup build directory</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">)</span>
+
+        <span class="c1"># bundle zips (must have more than 1 app)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_name&#39;</span><span class="p">,</span> <span class="n">app_name</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load JSON schema file&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_file</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span>
+
+<div class="viewcode-block" id="TcPackage.update_system_path"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.update_system_path">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_system_path</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Update the system path to ensure project modules and dependencies can be found.&quot;&quot;&quot;</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_&#39;</span><span class="p">)</span>
+        <span class="n">lib_latest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
+
+        <span class="c1"># insert the lib_latest directory into the system Path if no other lib directory found. This</span>
+        <span class="c1"># entry will be bumped to index 1 after adding the current working directory.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">lib_dir</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lib_latest</span><span class="p">)</span>
+
+        <span class="c1"># insert the current working directory into the system Path for the App, ensuring that it is</span>
+        <span class="c1"># always the first entry in the list.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcPackage.zip_file"><a class="viewcode-back" href="../../tcex_docs/bin.tcpackage.html#bin.tcpackage.TcPackage.zip_file">[docs]</a>    <span class="k">def</span> <span class="nf">zip_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_path</span><span class="p">,</span> <span class="n">app_name</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Zip App&quot;&quot;&quot;</span>
+        <span class="c1"># zip build directory</span>
+        <span class="n">zip_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">app_name</span><span class="p">)</span>
+        <span class="n">zip_file_zip</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span>
+        <span class="n">zip_file_tcx</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.tcx&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s1">&#39;Creating zip: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">zip_file_tcx</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">zip_file</span><span class="p">,</span> <span class="s1">&#39;zip&#39;</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">,</span> <span class="n">app_name</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">zip_file_zip</span><span class="p">,</span> <span class="n">zip_file_tcx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zip_file_tcx</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tcp</span> <span class="o">=</span> <span class="n">TcPackage</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">tcp</span><span class="o">.</span><span class="n">update_system_path</span><span class="p">()</span>
+        <span class="n">tcp</span><span class="o">.</span><span class="n">check_ast</span><span class="p">()</span>
+        <span class="n">tcp</span><span class="o">.</span><span class="n">check_imports</span><span class="p">()</span>
+        <span class="n">tcp</span><span class="o">.</span><span class="n">check_install_json</span><span class="p">()</span>
+        <span class="n">tcp</span><span class="o">.</span><span class="n">package</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">tcp</span><span class="o">.</span><span class="n">exit_code</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1"># TODO: Update this, possibly raise</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

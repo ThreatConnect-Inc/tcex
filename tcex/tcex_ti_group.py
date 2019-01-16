@@ -4,9 +4,9 @@ import json
 import uuid
 
 from .tcex_utils import TcExUtils
-from .tcex_ti_attributes import Attribute
-from .tcex_ti_security_labels import SecurityLabel
-from .tcex_ti_tags import Tag
+from .tcex_ti_attribute import Attribute
+from .tcex_ti_security_label import SecurityLabel
+from .tcex_ti_tag import Tag
 
 
 class Group(object):

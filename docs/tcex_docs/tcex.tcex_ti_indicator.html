@@ -1,0 +1,720 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_ti_indicator module &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
+        <link rel="up" title="tcex package" href="tcex.html"/>
+        <link rel="next" title="tcex.tcex_ti_security_label module" href="tcex.tcex_ti_security_label.html"/>
+        <link rel="prev" title="tcex.tcex_ti_group module" href="tcex.tcex_ti_group.html"/>
+
+
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_app_decorators.html">tcex.tcex_app_decorators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_session.html">tcex.tcex_session module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_attribute.html">tcex.tcex_ti_attribute module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_batch.html">tcex.tcex_ti_batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_group.html">tcex.tcex_ti_group module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_ti_indicator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_security_label.html">tcex.tcex_ti_security_label module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_tag.html">tcex.tcex_ti_tag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+
+      <li>tcex.tcex_ti_indicator module</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-tcex.tcex_ti_indicator">
+<span id="tcex-tcex-ti-indicator-module"></span><h1>tcex.tcex_ti_indicator module<a class="headerlink" href="#module-tcex.tcex_ti_indicator" title="Permalink to this headline">¶</a></h1>
+<p>ThreatConnect Batch Import Module</p>
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.ASN">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">ASN</code><span class="sig-paren">(</span><em>as_number</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#ASN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.ASN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch ASN Object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.Address">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">Address</code><span class="sig-paren">(</span><em>ip</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch Address Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.CIDR">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">CIDR</code><span class="sig-paren">(</span><em>block</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#CIDR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.CIDR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch CIDR Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.EmailAddress">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">EmailAddress</code><span class="sig-paren">(</span><em>address</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#EmailAddress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.EmailAddress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch EmailAddress Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.File">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">File</code><span class="sig-paren">(</span><em>md5=None</em>, <em>sha1=None</em>, <em>sha256=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch File Object</p>
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.File.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>relationship</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#File.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.File.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a File Action.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.File.md5">
+<code class="descname">md5</code><a class="headerlink" href="#tcex.tcex_ti_indicator.File.md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator md5.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.File.sha1">
+<code class="descname">sha1</code><a class="headerlink" href="#tcex.tcex_ti_indicator.File.sha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator sha1.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.File.sha256">
+<code class="descname">sha256</code><a class="headerlink" href="#tcex.tcex_ti_indicator.File.sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator sha256.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.File.size">
+<code class="descname">size</code><a class="headerlink" href="#tcex.tcex_ti_indicator.File.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator size.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.FileAction">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">FileAction</code><span class="sig-paren">(</span><em>parent_xid</em>, <em>relationship</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#FileAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.FileAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>ThreatConnect Batch FileAction Object</p>
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.FileAction.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#FileAction.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.FileAction.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string represtentation of object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.FileAction.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>relationship</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#FileAction.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.FileAction.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a nested File Action.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.FileAction.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_ti_indicator.FileAction.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return File Occurrence data.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">FileOccurrence</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>path=None</em>, <em>date=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#FileOccurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>ThreatConnect Batch FileAction Object.</p>
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#FileOccurrence.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string represtentation of object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return File Occurrence data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence.date">
+<code class="descname">date</code><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return File Occurrence date.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence.file_name">
+<code class="descname">file_name</code><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence.file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return File Occurrence file name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.FileOccurrence.path">
+<code class="descname">path</code><a class="headerlink" href="#tcex.tcex_ti_indicator.FileOccurrence.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return File Occurrence path.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.Host">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>hostname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch Host Object</p>
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Host.dns_active">
+<code class="descname">dns_active</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Host.dns_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator dns active.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Host.whois_active">
+<code class="descname">whois_active</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Host.whois_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator whois active.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.Indicator">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">Indicator</code><span class="sig-paren">(</span><em>indicator_type</em>, <em>summary</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>ThreatConnect Batch Indicator Object</p>
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string represtentation of object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.active">
+<code class="descname">active</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator active.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.add_key_value">
+<code class="descname">add_key_value</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.add_key_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.add_key_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add custom field to Indicator object.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The key must be the exact name required by the batch schema.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">file_hash</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="s1">&#39;1d878cdc391461e392678ba3fc9f6f32&#39;</span><span class="p">)</span>
+<span class="n">file_hash</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;1024&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>str</em>) – The field key to add to the JSON batch data.</li>
+<li><strong>value</strong> (<em>str</em>) – The field value to add to the JSON batch data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.association">
+<code class="descname">association</code><span class="sig-paren">(</span><em>group_xid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.association"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add association using xid value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_xid</strong> (<em>str</em>) – The external id of the Group to associate.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.attribute">
+<code class="descname">attribute</code><span class="sig-paren">(</span><em>attr_type</em>, <em>attr_value</em>, <em>displayed=False</em>, <em>source=None</em>, <em>unique=True</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of Attribute</p>
+<dl class="docutils">
+<dt>unique:</dt>
+<dd><ul class="first last simple">
+<li>False - Attribute type:value can be duplicated.</li>
+<li>Type - Attribute type has to be unique (e.g., only 1 Description Attribute).</li>
+<li>True - Attribute type:value combo must be unique.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attr_type</strong> (<em>str</em>) – The ThreatConnect defined attribute type.</li>
+<li><strong>attr_value</strong> (<em>str</em>) – The value for this attribute.</li>
+<li><strong>(</strong><strong>bool</strong><strong>, </strong><strong>default</strong> (<a class="reference internal" href="tcex.tcex_ti_attribute.html#tcex.tcex_ti_attribute.Attribute.displayed" title="tcex.tcex_ti_attribute.Attribute.displayed"><em>displayed</em></a>) – false): If True the supported attribute will be marked for
+display.</li>
+<li><strong>source</strong> (<em>str</em><em>, </em><em>optional</em>) – The source value for this attribute.</li>
+<li><strong>unique</strong> (<em>bool|string</em><em>, </em><em>optional</em>) – Control attribute creation.</li>
+<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that takes a single attribute value and returns a
+single formatted value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Attribute.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_ti_indicator.Indicator.build_summary">
+<em class="property">static </em><code class="descname">build_summary</code><span class="sig-paren">(</span><em>val1=None</em>, <em>val2=None</em>, <em>val3=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.build_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.build_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the Indicator summary using available values.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.confidence">
+<code class="descname">confidence</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.confidence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator confidence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.date_added">
+<code class="descname">date_added</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.date_added" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator dateAdded.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.last_modified">
+<code class="descname">last_modified</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.last_modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator lastModified.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.occurrence">
+<code class="descname">occurrence</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>path=None</em>, <em>date=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.occurrence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.occurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a file Occurrence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_name</strong> (<em>str</em><em>, </em><em>optional</em>) – The file name for this occurrence.</li>
+<li><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – The file path for this occurrence.</li>
+<li><strong>date</strong> (<em>str</em><em>, </em><em>optional</em>) – The datetime expression for this occurrence.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Occurrence.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.private_flag">
+<code class="descname">private_flag</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.private_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator private flag.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.rating">
+<code class="descname">rating</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.rating" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator rating.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.security_label">
+<code class="descname">security_label</code><span class="sig-paren">(</span><em>name</em>, <em>description=None</em>, <em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.security_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of SecurityLabel.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The provided security label will be create if it doesn’t exist. If the security
+label already exists nothing will be changed.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The value for this security label.</li>
+<li><strong>description</strong> (<em>str</em>) – A description for this security label.</li>
+<li><strong>color</strong> (<em>str</em>) – A color (hex value) for this security label.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of SecurityLabel.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.summary">
+<code class="descname">summary</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Indicator summary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_ti_indicator.Indicator.tag">
+<code class="descname">tag</code><span class="sig-paren">(</span><em>name</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Indicator.tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of Tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – The value for this tag.</li>
+<li><strong>formatter</strong> (<em>method</em><em>, </em><em>optional</em>) – A method that take a tag value and returns a
+formatted tag.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of Tag.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">obj</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.type">
+<code class="descname">type</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Group type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_ti_indicator.Indicator.xid">
+<code class="descname">xid</code><a class="headerlink" href="#tcex.tcex_ti_indicator.Indicator.xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Group xid.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.Mutex">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">Mutex</code><span class="sig-paren">(</span><em>mutex</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#Mutex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.Mutex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch Mutex Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.RegistryKey">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">RegistryKey</code><span class="sig-paren">(</span><em>key_name</em>, <em>value_name</em>, <em>value_type</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#RegistryKey"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.RegistryKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch Registry Key Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.URL">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">URL</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch URL Object</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_ti_indicator.UserAgent">
+<em class="property">class </em><code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">UserAgent</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#UserAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.UserAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_ti_indicator.Indicator" title="tcex.tcex_ti_indicator.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_ti_indicator.Indicator</span></code></a></p>
+<p>ThreatConnect Batch User Agent Object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tcex.tcex_ti_indicator.custom_indicator_class_factory">
+<code class="descclassname">tcex.tcex_ti_indicator.</code><code class="descname">custom_indicator_class_factory</code><span class="sig-paren">(</span><em>indicator_type</em>, <em>base_class</em>, <em>class_dict</em>, <em>value_fields</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_ti_indicator.html#custom_indicator_class_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_ti_indicator.custom_indicator_class_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method for dynamically building Custom Indicator Class.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="tcex.tcex_ti_security_label.html" class="btn btn-neutral float-right" title="tcex.tcex_ti_security_label module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="tcex.tcex_ti_group.html" class="btn btn-neutral" title="tcex.tcex_ti_group module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>

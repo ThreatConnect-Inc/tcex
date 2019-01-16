@@ -3,8 +3,50 @@
 Release Notes
 #############
 
+0.9.x
+=====
+
+0.9.1
+-----
++ Fixed issue in ``tcpackage`` with handling errors.
++ Updated ``tcpackage`` command to validate import module for **.py** file in project root directory.
++ Updated ``tcpackage`` moving install.json validation to top level.
++ Updated ``tcpackage`` to support ``--ignore_validation`` arg. Using this flag will cause the command to not exit on validation errors.
++ Updated install.json schema file to support new ``feedDeployer`` boolean field.
++ Updated ``run.py`` template file to ensure proper paths are set for an App.
+
+0.9.0
+-----
++ **Breaking Change:** Updated all optional args in batch module for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.
++ **Breaking Change:** Updated the decode arg on the read Binary/BinaryArray methods to be False by default. When set to True the ``read()`` method can't be used in some use cases.
++ **Breaking Change:** Updated the Group and Indicator object in the Batch module to only produce random and unique xids when an xid is not provided.  These objects will no longer produce a unique and reproducible xid.
++ Added new App templates and updated templates with new files and content.
++ Added :py:mod:`~tcex.tcex_args` module to include all args related methods from the :py:mod:`~tcex.tcex` module.
++ Updated :py:meth:`~tcex.tcex.TcEx.request` method to include proxy settings.
++ Updated ``tcprofile`` to include an epilog with command instructions on environment setup **(> tcprofile -h)**.
++ Updated ``tcprofile`` to split the args section to support "default" args and "app" args.
++ Updated ``tcinit`` to support templates instead of types.
++ Updated ``tcinit`` to include an epilog with template definitions **(> tcinit -h)**.
++ Updated ``tcinit`` to download additional files required for building Apps.
++ Updated ``tcrun`` to support update args schema in profiles.
++ Removed ``tcex.jobs()`` module.
++ Removed ``tcex.request_external()`` method.
++ Removed ``tcex.authorization()`` method.
++ Removed ``tcex.authorization_hmac()`` method.
++ Removed ``tcex._authorization_token_renew()`` method.
++ Updated **all** code to standard formatting and structure.
++ Updated and restructured docs.
+
 0.8.x
 =====
+
+0.8.27
+------
++ Added decorator to provide common methods for Playbook Apps.
++ Added logic to ``tcpackage`` to do basic syntax validation of ``.py`` and ``.json`` files.
++ Added :py:meth:`~tcex.tcex_playbook.TcExPlaybook.add_output` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.write_output` methods to provide an alternative way to write playbook output data.
++ Added access to resolved args.
++ Updated ``tclib`` logic for **lib_latest** symbolic link.
 
 0.8.26
 ------
@@ -784,7 +826,7 @@ Release Notes
 0.0.4
 -----
 + Update for Campaign resource type Class.
-+ Added :ref:`building_apps` and :ref:`development_tools` section to documentation.
++ Added ``building_apps`` section to documentation.
 
 0.0.3
 -----

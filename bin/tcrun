@@ -197,37 +197,6 @@ class TcRun(object):
         log.info('Logging Level: {}'.format(logging.getLevelName(level)))
         return log
 
-    @property
-    def _operators(self):
-        """Return dict of Validation Operators."""
-        return {
-            'dd': self.deep_diff,
-            'deep-diff': self.deep_diff,
-            'eq': operator.eq,
-            'ew': self.data_endswith,
-            'ends-with': self.data_endswith,
-            'ge': operator.ge,
-            'gt': operator.gt,
-            'jc': self.json_compare,
-            'json-compare': self.json_compare,
-            'kva': self.data_kva_compare,
-            'key-value-compare': self.data_kva_compare,
-            'in': self.data_in_db,
-            'in-db-data': self.data_in_db,
-            'in-user-data': self.data_in_user,
-            'ni': self.data_not_in,
-            'not-in': self.data_not_in,
-            'it': self.data_it,  # is type
-            'is-type': self.data_it,
-            'lt': operator.lt,
-            'le': operator.le,
-            'ne': operator.ne,
-            'se': self.data_string_compare,
-            'string-compare': self.data_string_compare,
-            'sw': self.data_startswith,
-            'starts-with': self.data_startswith,
-        }
-
     def _signal_handler_init(self):
         # catch interupt signals
         signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -290,7 +259,7 @@ class TcRun(object):
                 self.clear_redis(sd.get('variable'), 'auto-clear')
             elif data_type == 'redis-array':
                 self.clear_redis(sd.get('variable'), 'auto-clear')
-                for variables in sd.get('data', {}).get('variables', []):
+                for variables in sd.get('data', {}).get('variables') or []:
                     self.clear_redis(variables.get('value'), 'auto-clear')
             elif data_type == 'threatconnect':
                 # self.clear_tc(sd.get('data_owner'), sd.get('data', {}), 'auto-clear')
@@ -300,13 +269,13 @@ class TcRun(object):
                 # assuming these have already been cleared
                 pass
             elif data_type == 'threatconnect-batch':
-                for group in sd.get('data', []).get('group', []):
+                for group in sd.get('data', {}).get('group') or []:
                     self.clear_tc(sd.get('data_owner'), group, 'auto-clear')
                     self.clear_redis(group.get('variable'), 'auto-clear')
-                for indicator in sd.get('data', []).get('indicator', []):
+                for indicator in sd.get('data', {}).get('indicator') or []:
                     self.clear_tc(sd.get('data_owner'), indicator, 'auto-clear')
                     self.clear_redis(indicator.get('variable'), 'auto-clear')
-        for vd in self.profile.get('validations'):
+        for vd in self.profile.get('validations') or []:
             data_type = vd.get('data_type', 'redis')
             variable = vd.get('variable')
             if data_type == 'redis':
@@ -316,20 +285,26 @@ class TcRun(object):
         """Clear Redis and ThreatConnect data defined in profile.
 
         Redis Data:
-        {
-          "data_type": "redis",
-          "variable": "#App:4768:tc.adversary!TCEntity"
-        }
+
+        .. code-block:: javascript
+
+            {
+              "data_type": "redis",
+              "variable": "#App:4768:tc.adversary!TCEntity"
+            }
 
         ThreatConnect Data:
-        {
-          "data_type": "threatconnect",
-          "owner": "TCI",
-          "type": "Address",
-          "value": "1.1.1.1"
-        }
+
+        .. code-block:: javascript
+
+            {
+              "data_type": "threatconnect",
+              "owner": "TCI",
+              "type": "Address",
+              "value": "1.1.1.1"
+            }
         """
-        for clear_data in self.profile.get('clear', []):
+        for clear_data in self.profile.get('clear') or []:
             if clear_data.get('data_type') == 'redis':
                 self.clear_redis(clear_data.get('variable'), 'clear')
             elif clear_data.get('data_type') == 'threatconnect':
@@ -389,7 +364,7 @@ class TcRun(object):
                 batch.indicator(tc_type, summary)
         batch_results = batch.submit()
         self.log.debug('[{}] Batch Results: {}'.format(clear_type, batch_results))
-        for error in batch_results.get('errors', []):
+        for error in batch_results.get('errors') or []:
             self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
 
     @property
@@ -410,7 +385,7 @@ class TcRun(object):
                 self._config = json.load(data_file)
 
             # load includes
-            for directory in self._config.get('profile_include_dirs', []):
+            for directory in self._config.get('profile_include_dirs') or []:
                 self._config.setdefault('profiles', []).extend(self._load_config_include(directory))
         return self._config
 
@@ -570,6 +545,61 @@ class TcRun(object):
         # reset singal handlers
         self._signal_handler_init()
 
+    @property
+    def operators(self):
+        """Return dict of Validation Operators.
+
+        + deep-diff (dd): This operator can compare any object that can be represented as JSON.
+        + eq: This operator does a equal to comparison for String and StringArray variables.
+        + ends-with (ew): This operator compares the end of a String with a user provided value.
+        + ge: This operator does a greater than or equal to comparison for String variables.
+        + gt: This operator does a greater than comparison for String variables.
+        + json-compare (jc): This operator will convert a String output variable to a JSON object
+          (dict) and compare to user provided data.
+        + key-value-compare (kva): This operator will validate that key/value data is in
+          KeyValueArray.
+        + in: This operator will check to see if a String output variable is in an user provided
+          array.
+        + in-user-data: This operator will validate that user provided String value is in output
+          StringArray variable.
+        + not-in (ni): This operator will check to see if a String variable is **not** in an user
+          provided array.
+        + is-type (it): This operator will check to see if the variable "type" is equal to the user
+          provided "type".
+        + le: This operator does a less than or equal to comparison for String variables.
+        + lt: This operator does a less than comparison for String variables.
+        + ne: This operator does a **not** equal to comparison for String and StringArray variables.
+        + string-compare (se):
+        + starts-with (sw): This operator compares the start of a String with a user provided value.
+        """
+        return {
+            'dd': self.deep_diff,
+            'deep-diff': self.deep_diff,
+            'eq': operator.eq,
+            'ew': self.data_endswith,
+            'ends-with': self.data_endswith,
+            'ge': operator.ge,
+            'gt': operator.gt,
+            'jc': self.json_compare,
+            'json-compare': self.json_compare,
+            'kva': self.data_kva_compare,
+            'key-value-compare': self.data_kva_compare,
+            'in': self.data_in_db,
+            'in-db-data': self.data_in_db,
+            'in-user-data': self.data_in_user,
+            'ni': self.data_not_in,
+            'not-in': self.data_not_in,
+            'it': self.data_it,  # is type
+            'is-type': self.data_it,
+            'lt': operator.lt,
+            'le': operator.le,
+            'ne': operator.ne,
+            'se': self.data_string_compare,
+            'string-compare': self.data_string_compare,
+            'sw': self.data_startswith,
+            'starts-with': self.data_startswith,
+        }
+
     def path_data(self, variable_data, path):
         """Return jmespath data."""
         if isinstance(variable_data, string_types):
@@ -598,7 +628,7 @@ class TcRun(object):
         # retrieve language from install.json or assume Python
         lang = profile.get('install_json', {}).get('programLanguage', 'PYTHON')
         # load instance of ArgBuilder
-        profile_args = ArgBuilder(lang, profile.get('args'))
+        profile_args = ArgBuilder(lang, self.profile_args(profile.get('args')))
         # set current profile
         self._profile = profile
         # attach instance to current profile
@@ -609,6 +639,19 @@ class TcRun(object):
         self.reports.profile(profile.get('profile_name'))
         # create required directories for tcrun to function
         self._create_tc_dirs()
+
+    @staticmethod
+    def profile_args(_args):
+        """Return args for old or new structure."""
+        # TODO: clean this up in a way that works for both py2/3
+        if _args.get('app') is not None and _args.get('default') is not None:
+            # detect new args structure
+            app_args = _args.get('app', {})
+            default_args = _args.get('default', {})
+            _args = {}
+            _args.update(app_args)
+            _args.update(default_args)
+        return _args
 
     @property
     def profiles(self):
@@ -975,87 +1018,96 @@ class TcRun(object):
         """Stage Redis and ThreatConnect data defined in profile.
 
         Redis Data:
-        {
-            "data": [
-                "This is an example Source #1",
-                "This is an example Source #2"
-            ],
-            "variable": "#App:1234:source!StringArray"
-        }
+
+        .. code-block:: javascript
+
+            {
+                "data": [
+                    "This is an example Source #1",
+                    "This is an example Source #2"
+                ],
+                "variable": "#App:1234:source!StringArray"
+            }
 
         Redis Array:
-        {
-            "data": {
-                "variables": [{
-                    "value": "#App:4768:tc.adversary!TCEntity",
-                }, {
-                    "value": "#App:4768:tc.threat!TCEntity",
-                }]
+
+        .. code-block:: javascript
+
+            {
+                "data": {
+                    "variables": [{
+                        "value": "#App:4768:tc.adversary!TCEntity",
+                    }, {
+                        "value": "#App:4768:tc.threat!TCEntity",
+                    }]
+                },
+                "data_type": "redis_array",
+                "variable": "#App:4768:groups!TCEntityArray"
             },
-            "data_type": "redis_array",
-            "variable": "#App:4768:groups!TCEntityArray"
-        },
-        {
-            "data": {
-                "variables": [{
-                    "value": "#App:4768:tc.adversary!TCEntity",
-                    "path": ".name"
-                }, {
-                    "value": "#App:4768:tc.threat!TCEntity",
-                    "path": ".name"
-                }]
-            },
-            "data_type": "redis_array",
-            "variable": "#App:4768:groups!StringArray"
-        }
+            {
+                "data": {
+                    "variables": [{
+                        "value": "#App:4768:tc.adversary!TCEntity",
+                        "path": ".name"
+                    }, {
+                        "value": "#App:4768:tc.threat!TCEntity",
+                        "path": ".name"
+                    }]
+                },
+                "data_type": "redis_array",
+                "variable": "#App:4768:groups!StringArray"
+            }
 
         ThreatConnect Data:
-        {
-            "data": {
-                "group": [{
-                    "firstSeen": "2008-12-12T12:00:00Z",
-                    "name": "campaign-002",
-                    "type": "Campaign",
-                    "xid": "camp-0002",
-                    "attribute": [{
-                        "displayed": True,
-                        "type": "Description",
-                        "value": "Campaign Example Description"
-                    }],
-                    "tag": [{
-                        "name": "SafeToDelete"
-                    }],
-                    "variable": "#App:4768:tc.campaign!TCEntity"
-                }],
-                "indicator": [{
-                    "associatedGroups": [
-                        {
-                            "groupXid": "campaign-002"
-                        }
-                    ],
-                    "confidence": 100,
-                    "fileOccurrence": [
-                        {
-                            "date": "2017-02-02T01:02:03Z",
-                            "fileName": "drop1.exe",
-                            "path": "C:\\test\\"
-                        }
-                    ],
-                    "rating": 5.0,
-                    "summary": "43c3609411c83f363e051d455ade78a6",
-                    "tag": [
-                        {
+
+        .. code-block:: javascript
+
+            {
+                "data": {
+                    "group": [{
+                        "firstSeen": "2008-12-12T12:00:00Z",
+                        "name": "campaign-002",
+                        "type": "Campaign",
+                        "xid": "camp-0002",
+                        "attribute": [{
+                            "displayed": True,
+                            "type": "Description",
+                            "value": "Campaign Example Description"
+                        }],
+                        "tag": [{
                             "name": "SafeToDelete"
-                        }
-                    ],
-                    "type": "File",
-                    "xid": "55ee19565db5b16a0f511791a3b2a7ef0ccddf4d9d64e7008561329419cb675b",
-                    "variable": "#App:4768:tc.file!TCEntity"
-                }]
-            },
-            "data_owner": "TCI",
-            "data_type": "threatconnect"
-        }
+                        }],
+                        "variable": "#App:4768:tc.campaign!TCEntity"
+                    }],
+                    "indicator": [{
+                        "associatedGroups": [
+                            {
+                                "groupXid": "campaign-002"
+                            }
+                        ],
+                        "confidence": 100,
+                        "fileOccurrence": [
+                            {
+                                "date": "2017-02-02T01:02:03Z",
+                                "fileName": "drop1.exe",
+                                "path": "C:\\\\test\\\\"
+                            }
+                        ],
+                        "rating": 5.0,
+                        "summary": "43c3609411c83f363e051d455ade78a6",
+                        "tag": [
+                            {
+                                "name": "SafeToDelete"
+                            }
+                        ],
+                        "type": "File",
+                        "xid": "55ee19565db5b16a0f511791a3b2a7ef0ccddf4d9d64e7008561329419cb675b",
+                        "variable": "#App:4768:tc.file!TCEntity"
+                    }]
+                },
+                "data_owner": "TCI",
+                "data_type": "threatconnect"
+            }
         """
         for sd in self.staging_data:
             if not isinstance(sd, dict):
@@ -1071,7 +1123,7 @@ class TcRun(object):
                 out_variable = sd.get('variable')
                 # build array
                 redis_array = []
-                for var in sd.get('data', {}).get('variables', []):
+                for var in sd.get('data', {}).get('variables') or []:
                     variable = var.get('value')
                     if variable.endswith('Binary'):
                         data = self.tcex.playbook.read_binary(variable, False, False)
@@ -1099,7 +1151,7 @@ class TcRun(object):
         """Read data files and return all staging data for current profile."""
         if self._staging_data is None:
             staging_data = []
-            for staging_file in self.profile.get('data_files', []):
+            for staging_file in self.profile.get('data_files') or []:
                 if os.path.isfile(staging_file):
                     print(
                         'Staging Data: {}{}{}'.format(c.Style.BRIGHT, c.Fore.MAGENTA, staging_file)
@@ -1150,18 +1202,20 @@ class TcRun(object):
     def stage_tc(self, owner, staging_data, variable):
         """Stage ThreatConnect Data
 
-        [{
-          "data": {
-            "id": 116,
-            "value": "adversary001-build-testing",
-            "type": "Adversary",
-            "ownerName": "qa-build",
-            "dateAdded": "2017-08-16T18:35:07-04:00",
-            "webLink": "https://app.tci.ninja/auth/adversary/adversary.xhtml?adversary=116"
-          },
-          "data_type": "redis",
-          "variable": "#App:0822:adversary!TCEntity"
-        }]
+        .. code-block:: javascript
+
+            [{
+              "data": {
+                "id": 116,
+                "value": "adversary001-build-testing",
+                "type": "Adversary",
+                "ownerName": "qa-build",
+                "dateAdded": "2017-08-16T18:35:07-04:00",
+                "webLink": "https://app.tci.ninja/auth/adversary/adversary.xhtml?adversary=116"
+              },
+              "data_type": "redis",
+              "variable": "#App:0822:adversary!TCEntity"
+            }]
 
         """
         # parse resource_data
@@ -1319,7 +1373,7 @@ class TcRun(object):
     def stage_tc_batch(self, owner, staging_data):
         """Stage Redis Data"""
         batch = self.tcex.batch(owner)
-        for group in staging_data.get('group', []):
+        for group in staging_data.get('group') or []:
             # add to redis
             variable = group.pop('variable', None)
             path = group.pop('path', None)
@@ -1335,7 +1389,7 @@ class TcRun(object):
             # create tcentity
             if variable is not None and data is not None:
                 self.stage_redis(variable, self.stage_tc_group_entity(data))
-        for indicator in staging_data.get('indicator', []):
+        for indicator in staging_data.get('indicator') or []:
             # add to redis
             variable = indicator.pop('variable', None)
             path = indicator.pop('path', None)
@@ -1355,7 +1409,7 @@ class TcRun(object):
         # submit batch
         batch_results = batch.submit()
         self.log.debug('[stage] Batch Results: {}'.format(batch_results))
-        for error in batch_results.get('errors', []):
+        for error in batch_results.get('errors') or []:
             self.log.error('[stage] {}'.format(error))
 
     @staticmethod
@@ -1393,7 +1447,7 @@ class TcRun(object):
     def validate(self):
         """Validate Data"""
         passed = True
-        for data in self.profile.get('validations', []):
+        for data in self.profile.get('validations') or []:
             data_type = data.get('data_type', 'redis')  # default to redis for older data files
             if data_type == 'redis':
                 user_data = data.get('data')
@@ -1462,12 +1516,12 @@ class TcRun(object):
                 # self.log.debug('[validate] could not sort list')
                 pass
 
-        if oper not in self._operators:
+        if oper not in self.operators:
             self.log.error('Invalid operator provided ({})'.format(oper))
             return False
 
         # compare the data
-        if self._operators.get(oper)(db_data, user_data):
+        if self.operators.get(oper)(db_data, user_data):
             self.reports.profile_validation(True)
         else:
             self.reports.profile_validation(False)

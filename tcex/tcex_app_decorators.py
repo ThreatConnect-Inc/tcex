@@ -6,7 +6,21 @@ import datetime
 
 
 class Benchmark(object):
-    """Benchmark a function"""
+    """Log benchmarking times.
+
+    This decorator will log the time of execution (benchmark_time) to the app.log file. It can be
+    helpful in troubleshooting performance issues with Apps.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        import time
+
+        @Debug()
+        def my_method():
+            time.sleep(1)
+    """
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -41,7 +55,18 @@ class Benchmark(object):
 
 
 class Debug(object):
-    """Debug a function"""
+    """Debug function inputs.
+
+    This decorator will log the inputs to the function to assist in debugging an App.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @Debug()
+        def my_method(arg1, args2):
+            print(arg1, arg2)
+    """
 
     def __call__(self, fn):
         """Implement __call__ function for decorator
@@ -71,8 +96,25 @@ class Debug(object):
         return debug
 
 
-class InterateOnArg(object):
-    """Iterate over arg data"""
+class IterateOnArg(object):
+    """Debug function inputs.
+
+    This decorator will iterate over all value of the supplied arg and return results. This feature
+    is helpful when processing a single value (String) or array of values (StringArray). If the App
+    was provided the arg ``self.args.colors`` with a value of ``['blue', 'green', 'magenta']``, then
+    this decorator would call the function 3 times. Each call to the function would pass one value
+    from the array. The return values are stored and returned all at once after the last value is
+    processed.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        # the args value of "colors" refers to ``self.args.colors``.
+        @iterateOnArgs(arg='colors')
+        def my_method(value):
+            return value
+    """
 
     def __init__(self, arg):
         """Initialize Class Properties
@@ -119,7 +161,19 @@ class InterateOnArg(object):
 
 
 class OnException(object):
-    """Handle Exception in function"""
+    """Handle Exception in an App function.
+
+    This decorator will catch the generic "Exception" error, log the supplied error message, set
+    the "exit_message", and exit the App with an exit code of 1.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @OnException(msg='Failed to process JSON data.')
+        def my_method(json_data):
+            json.dumps(json_data)
+    """
 
     def __init__(self, msg=None):
         """Initialize Class Properties
@@ -157,7 +211,19 @@ class OnException(object):
 
 
 class OnSuccess(object):
-    """Set exit message on successful execution"""
+    """Set exit message on successful execution.
+
+    This decorator will set the supplied msg as the App "exit_message". Typically and App would
+    only have 1 exit message so this decorator would typically be used in App that used "actions".
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @OnSuccess(msg='Successfully processed JSON data.')
+        def my_method(json_data):
+            json.dumps(json_data)
+    """
 
     def __init__(self, msg=None):
         """Initialize Class Properties
@@ -192,7 +258,24 @@ class OnSuccess(object):
 
 
 class Output(object):
-    """Set exit message on success"""
+    """Store the method return value in self.<attribute>.
+
+    This decorator will write, append, or extend the methods return value to the App attribute
+    provided in the ``attribute`` input. The ``attribute`` must first be defined in the
+    ``__init__()`` method of the App before the decorator is used.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        def __init__(self, _tcex):
+            super(App, self).__init__(_tcex)
+            self.output_strings = []  # Output decorator writes here.
+
+        @Output(attribute='output_strings')
+        def my_method(data):
+            return data.lowercase()
+    """
 
     def __init__(self, attribute):
         """Initialize Class Properties
@@ -234,7 +317,19 @@ class Output(object):
 
 
 class ReadArg(object):
-    """Retrieve value from Redis for arg that is a playbook variables."""
+    """Read value of App arg resolving any playbook variables.
+
+    This decorator will read the args from Redis, if it is a playbook variable, and pass the
+    resolved value to the function.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @ReadArg(arg='color')
+        def my_method(color):
+            print('color', color)
+    """
 
     def __init__(self, arg, array=False):
         """Initialize Class Properties
@@ -278,7 +373,24 @@ class ReadArg(object):
 
 
 class WriteOutput(object):
-    """Set exit message on success"""
+    """Write the App output variables to Redis.
+
+    This decorator will take the functions return value and write the data to Redis using the
+    key and variable_type. An optional hard coded value can be passed, which will override the
+    return value. If multiple value are provided for the same output variable there is an option
+    to overwrite the previous value.
+
+    This decorator is intended for very simple Apps. Using the `write_output()` method of the App
+    template is the recommended way of writing output data.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @WriteOutput(key='color', variable_type='String')
+        def my_method(color):
+            return color.lowercase()
+    """
 
     def __init__(self, key, variable_type, value=None, overwrite=True):
         """Initialize Class Properties

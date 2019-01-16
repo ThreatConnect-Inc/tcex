@@ -10,32 +10,32 @@ Examples
 ----------------------
 Custom Metric Examples
 ----------------------
-.. include:: resource_custom_metrics.rst
+.. include:: resource_custom_metrics.inc
 
 .. _datastore_examples:
 
 -------------------
 Data Store Examples
 -------------------
-.. include:: resource_data_store.rst
+.. include:: resource_data_store.inc
 
 .. _indicator_examples:
 
 ---------------------------
 Indicator Resource Examples
 ---------------------------
-.. include:: resource_indicators.rst
+.. include:: resource_indicators.inc
 
 .. _security_label_examples:
 
 --------------------------------
 Security Label Resource Examples
 --------------------------------
-.. include:: resource_security_labels.rst
+.. include:: resource_security_labels.inc
 
 .. _tag_examples:
 
 ---------------------
 Tag Resource Examples
 ---------------------
-.. include:: resource_tags.rst
+.. include:: resource_tags.inc

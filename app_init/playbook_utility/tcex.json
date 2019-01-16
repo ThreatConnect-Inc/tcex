@@ -1,0 +1,20 @@
+{
+  "package": {
+    "app_name": "TCPB_-_JSON_Pretty",
+    "app_version": "v1.0",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex_json_schema.json",
+      "tcex.json",
+      "*.install.json",
+      "tcex.d"
+    ],
+    "outdir": "target"
+  },
+  "profile_include_dirs": [
+    "tcex.d/profiles"
+  ]
+}

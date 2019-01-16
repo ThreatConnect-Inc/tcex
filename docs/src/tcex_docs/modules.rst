@@ -5,3 +5,4 @@ tcex
    :maxdepth: 4
 
    tcex
+   bin

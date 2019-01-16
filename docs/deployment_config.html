@@ -1,0 +1,1442 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>App Deployment Configuration File &mdash; TcEx 0.9.1 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+
+
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+
+
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
+
+
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.1
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+
+      </nav>
+
+
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="index.html">Docs</a> &raquo;</li>
+
+      <li>App Deployment Configuration File</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="app-deployment-configuration-file">
+<h1>App Deployment Configuration File<a class="headerlink" href="#app-deployment-configuration-file" title="Permalink to this headline">¶</a></h1>
+<p>A configuration file named <code class="docutils literal"><span class="pre">install.json</span></code> is used for ThreatConnect
+apps written in:</p>
+<ul class="simple">
+<li>Python</li>
+<li>Java</li>
+<li>JavaScript (Spaces)</li>
+</ul>
+<div class="section" id="standard-section">
+<h2>Standard Section<a class="headerlink" href="#standard-section" title="Permalink to this headline">¶</a></h2>
+<p>Standard section defines required and optional properties to all apps in ThreatConnect. The required properties are properties that must be provided for any packaged app installed through the ThreatConnect platform. The optional properties provide additional information based on the type of target app.</p>
+<p>The table below lists all of the properties of the Standard section.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="9%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#allowondemand">allowOnDemand</a></td>
+<td>TRUE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#apiusertokenparam">apiUserTokenParam</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#displayname">displayName</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#feed-app-configuration">feeds</a></td>
+<td>FALSE</td>
+<td>Object</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#languageversion">languageVersion</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#listdelimiter">listDelimiter</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#minserverversion">minServerVersion</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#note">note</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#parameter-array-section">params</a></td>
+<td>TRUE</td>
+<td>Object</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#playbook-app-configuration">Playbook</a></td>
+<td>FALSE</td>
+<td>Array of objects</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#programicon">programIcon</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#programlanguage">programLanguage</a></td>
+<td>TRUE</td>
+<td><code class="docutils literal"><span class="pre">&quot;JAVA&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;PYTHON&quot;</span></code>, or <code class="docutils literal"><span class="pre">&quot;NONE&quot;</span></code></td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#programmain">programMain</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#programversion">programVersion</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#publishoutfiles">publishOutFiles</a></td>
+<td>FALSE</td>
+<td>Array of strings</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#repeatingminutes">repeatingMinutes</a></td>
+<td>FALSE</td>
+<td>Array of integers</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#runtimecontext">runtimeContext</a></td>
+<td>FALSE</td>
+<td>Array of strings</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#runtimelevel">runtimeLevel</a></td>
+<td>TRUE</td>
+<td><code class="docutils literal"><span class="pre">&quot;Organization&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;SpaceOrganization&quot;</span></code>, or <code class="docutils literal"><span class="pre">&quot;System&quot;</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="allowondemand">
+<h3>allowOnDemand<a class="headerlink" href="#allowondemand" title="Permalink to this headline">¶</a></h3>
+<p>Required property which allows or disallows an app to be run on demand using the “Run Now” button when the app is configured as a job in the ThreatConnect platform. This property only applies to Python and Java apps.</p>
+</div>
+<div class="section" id="apiusertokenparam">
+<h3>apiUserTokenParam<a class="headerlink" href="#apiusertokenparam" title="Permalink to this headline">¶</a></h3>
+<p>Optional property specifies whether or not the app should use an API user token (which allows access to the datastore).</p>
+</div>
+<div class="section" id="displayname">
+<h3>displayName<a class="headerlink" href="#displayname" title="Permalink to this headline">¶</a></h3>
+<p>Required property providing the name of the app as it will appear in the ThreatConnect Platform.</p>
+</div>
+<div class="section" id="languageversion">
+<h3>languageVersion<a class="headerlink" href="#languageversion" title="Permalink to this headline">¶</a></h3>
+<p>Optional property used purely for tracking purposes. It does <strong>not</strong> affect the version of Python or Java used by the Job Execution Engine to run the app.</p>
+</div>
+<div class="section" id="listdelimiter">
+<h3>listDelimiter<a class="headerlink" href="#listdelimiter" title="Permalink to this headline">¶</a></h3>
+<p>Optional property to set the character that will be used to delimit the values of “Select Many” attributes that are passed into an app.</p>
+</div>
+<div class="section" id="minserverversion">
+<h3>minServerVersion<a class="headerlink" href="#minserverversion" title="Permalink to this headline">¶</a></h3>
+<p>Optional string property restricting the ThreatConnect instance from installing the app if it doesn’t meet this version requirement. The notation is &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt; (example: “5.4.0”).</p>
+</div>
+<div class="section" id="note">
+<h3>note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h3>
+<p>Optional property available in Playbook apps under the “?” tooltip when the app parameters are being edited. Use this field to describe the purpose of the app in 2-3 sentences.</p>
+</div>
+<div class="section" id="programicon">
+<h3>programIcon<a class="headerlink" href="#programicon" title="Permalink to this headline">¶</a></h3>
+<p>Optional property providing the icon which will be used to represent Central Spaces apps.</p>
+</div>
+<div class="section" id="programlanguage">
+<h3>programLanguage<a class="headerlink" href="#programlanguage" title="Permalink to this headline">¶</a></h3>
+<p>Required property describing the language runtime environment used by the ThreatConnect Job Executor. It is relevant for apps that run on the Job Execution Engine (Python and Java apps) and can be set to NONE for Spaces apps.</p>
+</div>
+<div class="section" id="programmain">
+<h3>programMain<a class="headerlink" href="#programmain" title="Permalink to this headline">¶</a></h3>
+<p>Required property providing the entry point into the app. For Python apps, it is the name of the <code class="docutils literal"><span class="pre">.py</span></code> file (or exclude the extension if running it as a module). For Java apps, it is the main class the Job Execution Engine should use when calling the app using the Java Runtime Environment.</p>
+</div>
+<div class="section" id="programversion">
+<h3>programVersion<a class="headerlink" href="#programversion" title="Permalink to this headline">¶</a></h3>
+<p>Required property providing the version number for the app that will be displayed “Installed Apps” section available to a system administrator. We recommend the use of <a class="reference external" href="https://semver.org/">Semantic Versioning</a>. The Semantic Version notation is &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt; (example: “1.0.1”).</p>
+</div>
+<div class="section" id="publishoutfiles">
+<h3>publishOutFiles<a class="headerlink" href="#publishoutfiles" title="Permalink to this headline">¶</a></h3>
+<p>Optional field available for job-style apps that can be scheduled to serve files. If this array is populated, the app is responsible for writing the files to the relative “tc_output_path” parameter passed in. This will enable HTTP-based file serving of these files for as a unique URL available to the user in ThreatConnect. This parameter accepts an array of strings and can include file globs.</p>
+</div>
+<div class="section" id="repeatingminutes">
+<h3>repeatingMinutes<a class="headerlink" href="#repeatingminutes" title="Permalink to this headline">¶</a></h3>
+<p>Optional property which provides a list of minute increments to display in the “Repeat Every…” section in the “Schedule” panel in the Job Wizard. This property is relevant only for Python and Java apps for which the developer wants to control how frequently an app can be executed. If this property is not defined, the default listing is as follows: [60, 120, 240, 360, 720] .</p>
+</div>
+<div class="section" id="runtimecontext">
+<h3>runtimeContext<a class="headerlink" href="#runtimecontext" title="Permalink to this headline">¶</a></h3>
+<p>Optional property enabling Spaces apps to be context-aware (context-aware Spaces apps can be added to the <strong>Details</strong> page of an object in the ThreatConnect platform). Because this property is an array of strings, the app can be displayed in Spaces under multiple contexts within the ThreatConnect platform, including the <strong>Menu</strong> and <strong>Search</strong> pages. This property is only relevant to spaces apps.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Context-aware Spaces apps are passed contextual information via the URL query string when the app is displayed in the ThreatConnect platform. The details of those parameters are out of scope for this document.</p>
+</div>
+<p>The available runtime contexts are:</p>
+<ul class="simple">
+<li>Address</li>
+<li>Adversary</li>
+<li>ASN</li>
+<li>Campaign</li>
+<li>CIDR</li>
+<li>Document</li>
+<li>Email</li>
+<li>EmailAddress</li>
+<li>Event</li>
+<li>File</li>
+<li>Host</li>
+<li>Incident</li>
+<li>IntrusionSet</li>
+<li>Menu</li>
+<li>Mutex</li>
+<li>RegistryKey</li>
+<li>Report</li>
+<li>Search</li>
+<li>Signature</li>
+<li>Tag</li>
+<li>Threat</li>
+<li>URL</li>
+<li>UserAgent</li>
+<li>Victim</li>
+</ul>
+</div>
+<div class="section" id="runtimelevel">
+<h3>runtimeLevel<a class="headerlink" href="#runtimelevel" title="Permalink to this headline">¶</a></h3>
+<p>Required property which dictates how the app is used within the ThreatConnect platform, as detailed in the table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Organization</td>
+<td>This value is a Python or Java app that is run by the Job Execution Engine. This type of app must be provisioned to specific organizations (or “Allow All Orgs” must be selected) by the System Admin. Once provisioned, the app can be scheduled to run as part of a Job.</td>
+</tr>
+<tr class="row-odd"><td>SpaceOrganization</td>
+<td>This value is a Spaces app that is run within ThreatConnect as a Space. This type of app must be provisioned to specific organizations (or “Allow All Orgs” must be selected) by the System Admin. Once provisioned, the app can be added as a Spaces app by any user belonging to the Organization.</td>
+</tr>
+<tr class="row-even"><td>System</td>
+<td>Although not commonly used, the System level is a Python or Java app that is strictly visible by the System Admin. This app can be scheduled only in a System Job.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="feed-app-configuration">
+<h2>Feed App Configuration<a class="headerlink" href="#feed-app-configuration" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="67%" />
+<col width="14%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#attributesfile">attributesFile</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#documentstoragelimitmb">documentStorageLimitMb</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#enablebulkjson">enableBulkJson</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#indicatorlimit">indicatorLimit</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#jobfile">jobFile</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#sourcecategory">sourceCategory</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#sourcedescription">sourceDescription</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#sourcename">sourceName</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="attributesfile">
+<h3>attributesFile<a class="headerlink" href="#attributesfile" title="Permalink to this headline">¶</a></h3>
+<p>Optional property which provides the name of the CSV file with any of the custom attributes required for the feed.</p>
+</div>
+<div class="section" id="documentstoragelimitmb">
+<h3>documentStorageLimitMb<a class="headerlink" href="#documentstoragelimitmb" title="Permalink to this headline">¶</a></h3>
+<p>Optional property to set the Document storage limit.</p>
+</div>
+<div class="section" id="enablebulkjson">
+<h3>enableBulkJson<a class="headerlink" href="#enablebulkjson" title="Permalink to this headline">¶</a></h3>
+<p>Optional property which turns on or off bulk JSON capability.</p>
+</div>
+<div class="section" id="indicatorlimit">
+<h3>indicatorLimit<a class="headerlink" href="#indicatorlimit" title="Permalink to this headline">¶</a></h3>
+<p>Optional property which sets the Indicator limit.</p>
+</div>
+<div class="section" id="jobfile">
+<h3>jobFile<a class="headerlink" href="#jobfile" title="Permalink to this headline">¶</a></h3>
+<p>Optional property to provide the name of the JSON file which is used to setup and run the job to pull in content from the feed.</p>
+</div>
+<div class="section" id="sourcecategory">
+<h3>sourceCategory<a class="headerlink" href="#sourcecategory" title="Permalink to this headline">¶</a></h3>
+<p>Optional property to specify how to source should be categorized.</p>
+</div>
+<div class="section" id="sourcedescription">
+<h3>sourceDescription<a class="headerlink" href="#sourcedescription" title="Permalink to this headline">¶</a></h3>
+<p>Optional property providing the source’s description as it will appear in ThreatConnect.</p>
+</div>
+<div class="section" id="sourcename">
+<h3>sourceName<a class="headerlink" href="#sourcename" title="Permalink to this headline">¶</a></h3>
+<p>Optional property providing the name of the source in which the feed’s content will be created.</p>
+</div>
+</div>
+<div class="section" id="parameter-array-section">
+<h2>Parameter Array Section<a class="headerlink" href="#parameter-array-section" title="Permalink to this headline">¶</a></h2>
+<p>The Parameter Array section of the <strong>install.json</strong> file is the mechanism used by the Job Execution engine and the Spaces framework to pass configuration data at runtime. For Java and Python apps, the entries defined in this section dictate the <strong>Parameters</strong> panel in the Job Wizard in the ThreatConnect platform. Spaces apps have their own configuration screen as part of the user’s Space for each app.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In Python, parameters are called by using the “–param &lt;value&gt;” syntax handled by the argparse library. For Java apps, the system environment arguments are passed by using the “-Dparam=&lt;value&gt;” syntax. Discussion of app argument parsing is out of scope for this document.</p>
+</div>
+<p>The table below highlights the Parameter array properties (the <strong>params</strong> array).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="13%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#allowmultiple">allowMultiple</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#default">default</a></td>
+<td>FALSE</td>
+<td>Boolean or Integer or String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#encrypt">encrypt</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#hidden">hidden</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#label">label</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#name">name</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#note-parameter">note</a></td>
+<td>FALSE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#playbookdatatype">PlaybookDataType</a></td>
+<td>FALSE</td>
+<td>Array</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#required">required</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#sequence">sequence</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#type">type</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#validvalues">validValues</a></td>
+<td>FALSE</td>
+<td>Array</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#viewrows">viewRows</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="allowmultiple">
+<h3>allowMultiple<a class="headerlink" href="#allowmultiple" title="Permalink to this headline">¶</a></h3>
+<p>The value of this optional property is automatically set to “true” if the “MultiChoice” type is used. If a “String” type is used, this flag allows the user to define multiple values in a single input field delimited by a pipe (“|”) character.</p>
+</div>
+<div class="section" id="default">
+<h3>default<a class="headerlink" href="#default" title="Permalink to this headline">¶</a></h3>
+<p>Optional property which is the default value pre-populated for new Jobs or Spaces. The purpose of a default value is to provide the user with a guidance while allowing edits based on preference.</p>
+</div>
+<div class="section" id="encrypt">
+<h3>encrypt<a class="headerlink" href="#encrypt" title="Permalink to this headline">¶</a></h3>
+<p>This optional property designates this parameter as an encrypted value. Parameters defined as encrypted will be managed by the Keychain feature that encrypts password while at rest. This flag should be used with the “String” type and will render a password input textbox in the Job and Spaces configuration.</p>
+</div>
+<div class="section" id="hidden">
+<h3>hidden<a class="headerlink" href="#hidden" title="Permalink to this headline">¶</a></h3>
+<p>If this optional property is set to “true”, this parameter will be hidden from the Job Wizard. Hidden parameters allow the developer to persist parameters between job executions without the need to render the values in the Job Wizard. This option is valid only for Python and Java apps. Further details on persisting parameters from the app directly are out of scope for this document.</p>
+</div>
+<div class="section" id="label">
+<h3>label<a class="headerlink" href="#label" title="Permalink to this headline">¶</a></h3>
+<p>Required property providing a description of the parameter displayed in the ThreatConnect platform Job Wizard or Spaces Config dialog box.</p>
+</div>
+<div class="section" id="name">
+<h3>name<a class="headerlink" href="#name" title="Permalink to this headline">¶</a></h3>
+<p>Required property is the internal parameter name taken from the Job Wizard and passed to the app at runtime. It is the effective command-line argument name passed to the app.</p>
+</div>
+<div class="section" id="note-parameter">
+<h3>note Parameter<a class="headerlink" href="#note-parameter" title="Permalink to this headline">¶</a></h3>
+<p>Optional parameter description field available in Playbook apps under the “?” tooltip when the app parameters are being edited. Use this field to describe the purpose of the parameter in 2-3 sentences.</p>
+</div>
+<div class="section" id="playbookdatatype">
+<h3>PlaybookDataType<a class="headerlink" href="#playbookdatatype" title="Permalink to this headline">¶</a></h3>
+<p>Optional property restricting the data type of incoming playbook variables. This is different than the <code class="docutils literal"><span class="pre">type</span></code> property that controls the UI input type. The playbook data type can be any standard or custom type and is expected to be an array of strings.</p>
+<p>As of ThreatConnect 5.4, the standard Playbook types supported by the Python and Java SDK are:</p>
+<ul class="simple">
+<li>String</li>
+<li>StringArray</li>
+<li>Binary</li>
+<li>BinaryArray</li>
+<li>KeyValue</li>
+<li>KeyValueArray</li>
+<li>TCEntity</li>
+<li>TCEntityArray</li>
+<li>TCEnhancedEntity</li>
+<li>TCEnhancedEntityArray</li>
+</ul>
+</div>
+<div class="section" id="required">
+<h3>required<a class="headerlink" href="#required" title="Permalink to this headline">¶</a></h3>
+<p>Optional property designating this parameter as a required field that must be populated to save the Job or Playbook app.</p>
+</div>
+<div class="section" id="sequence">
+<h3>sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h3>
+<p>Optional number used to control the ordering of the parameters in the Job Wizard or Spaces Config dialog box. If it is not defined, the order of the parameters in the install.json file is used.</p>
+</div>
+<div class="section" id="type">
+<h3>type<a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h3>
+<p>Required property to enable the UI to display relevant components and allow the Job Executor to adapt how parameters are passed to an app at runtime. The table below lists the available types and how they affect elements within the platform.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>String</td>
+<td>This type renders an HTML Input textbox in the Job Wizard or Spaces configuration dialog box. This allows the user to enter free-form text as a parameter. Values are passed as a String to Python and Java apps.</td>
+</tr>
+<tr class="row-odd"><td>Choice</td>
+<td>This type renders an HTML Select option in the Job Wizard or Spaces configuration dialog box. This allows the user to select predefined text values as a parameter. (See the description of the “validValues” string array property in 3.) Values are passed as a String to Python and Java apps.</td>
+</tr>
+<tr class="row-even"><td>MultiChoice</td>
+<td>This type renders an HTML Multi-Checkbox Select option in the Job Wizard or Spaces configuration dialog box. This allows the user to select multiple predefined text values as a parameter. (See the description of the “validValues” string array property in 3.) The same parameter is passed multiple times for a Python app. Python apps should use the argparse “action=’append’” option to receive the parameters as an array. Java and Spaces apps will receive the parameter as a single value separated by a pipe character. Values are passed as a String to Python and Java apps. This selection must be used together with the “allowMultiple” flag defined as “true”.</td>
+</tr>
+<tr class="row-odd"><td>Boolean</td>
+<td>This type renders an HTML Checkbox in the Job Wizard or Spaces configuration dialog box. This allows the user to turn on a flag as a parameter. Values are passed as a “–flag” style parameter to Python apps. (See the “action=’store_true’” option in the argparse module.) Java and Spaces apps receive the actual Boolean value “true” or “false”. These apps should parse the string to resolve the Boolean flag value.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="validvalues">
+<h3>validValues<a class="headerlink" href="#validvalues" title="Permalink to this headline">¶</a></h3>
+<p>Optional property to be used with the “Choice” and “MultiChoice” types to restrict the possible values a user can select. For instance, to define a “loggingLevel” parameter, this field could have the following values: [“CRITICAL”, “ERROR”, “WARN”, “INFO”, “DEBUG”, “TRACE”].</p>
+</div>
+<div class="section" id="viewrows">
+<h3>viewRows<a class="headerlink" href="#viewrows" title="Permalink to this headline">¶</a></h3>
+<p>Optional property for Playbook apps to control the height of the display in the input parameter. Expects an integer value. A value of 1 is default (and will show a text input element) and anything greater than one displays a textarea input when editing the Playbook app in ThreatConnect.</p>
+</div>
+</div>
+<div class="section" id="playbook-app-configuration">
+<h2>Playbook App Configuration<a class="headerlink" href="#playbook-app-configuration" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="60%" />
+<col width="16%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#outputvariables">outputVariables</a></td>
+<td>FALSE</td>
+<td>Array</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#retry">retry</a></td>
+<td>FALSE</td>
+<td>Object</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="outputvariables">
+<h3>outputVariables<a class="headerlink" href="#outputvariables" title="Permalink to this headline">¶</a></h3>
+<p>The optional <code class="docutils literal"><span class="pre">outputVariables</span></code> property specifies the variables that a Playbook app will provide for downstream Playbooks.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="18%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#output-variable-name">name</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#output-variable-type">type</a></td>
+<td>TRUE</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="output-variable-name">
+<h4>Output Variable Name<a class="headerlink" href="#output-variable-name" title="Permalink to this headline">¶</a></h4>
+<p>Required property providing the name of the output variable which is accessible to downstream apps.</p>
+</div>
+<div class="section" id="output-variable-type">
+<h4>Output Variable Type<a class="headerlink" href="#output-variable-type" title="Permalink to this headline">¶</a></h4>
+<p>Required property specifying the type of the output variable. The valid types are:</p>
+<ul class="simple">
+<li>Binary</li>
+<li>BinaryArray</li>
+<li>KeyValue</li>
+<li>KeyValueArray</li>
+<li>String</li>
+<li>StringArray</li>
+<li>TCEntity</li>
+<li>TCEntityArray</li>
+</ul>
+</div>
+</div>
+<div class="section" id="retry">
+<h3>retry<a class="headerlink" href="#retry" title="Permalink to this headline">¶</a></h3>
+<p>The optional <code class="docutils literal"><span class="pre">retry</span></code> property can be used to allow a Playbook to retry its execution in case of failure.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="15%" />
+<col width="21%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Property</th>
+<th class="head">Required?</th>
+<th class="head">Allowed Values</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="#allowed">allowed</a></td>
+<td>FALSE</td>
+<td>Boolean</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="#defaultdelayminutes">defaultDelayMinutes</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="#defaultmaxretries">defaultMaxRetries</a></td>
+<td>FALSE</td>
+<td>Integer</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="allowed">
+<h4>allowed<a class="headerlink" href="#allowed" title="Permalink to this headline">¶</a></h4>
+<p>Optional property which specifies whether or not the Playbook app can retry its execution.</p>
+</div>
+<div class="section" id="defaultdelayminutes">
+<h4>defaultDelayMinutes<a class="headerlink" href="#defaultdelayminutes" title="Permalink to this headline">¶</a></h4>
+<p>Optional property which specifies the number of minutes between each new retry in case of failure. This property assumes that the <code class="docutils literal"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
+</div>
+<div class="section" id="defaultmaxretries">
+<h4>defaultMaxRetries<a class="headerlink" href="#defaultmaxretries" title="Permalink to this headline">¶</a></h4>
+<p>Optional property which specifies the maximum number of times the Playbook app can retry in case of failure. This property assumes that the <code class="docutils literal"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
+</div>
+</div>
+</div>
+<div class="section" id="variable-expression">
+<h2>Variable Expression<a class="headerlink" href="#variable-expression" title="Permalink to this headline">¶</a></h2>
+<p>The variable-expression feature enables developers to reference “$”
+style variables in the <strong>install.json</strong> file and have the ThreatConnect
+platform resolve the values when displayed in the Job Wizard or Spaces
+configuration dialog box. The external-variables component can go one
+step further by resolving the value at the time a Job executes. Variable
+expressions are allowed only in the <strong>params</strong> section of the
+<strong>install.json</strong> file.</p>
+<div class="section" id="internal-variables">
+<h3>Internal Variables<a class="headerlink" href="#internal-variables" title="Permalink to this headline">¶</a></h3>
+<p>Internal variables are predefined (reserved) variables that can be
+explicitly declared in the <strong>install.json</strong> file. Apps declaring these
+variables will direct the Job Wizard and Spaces configuration dialog box
+to convert the variables into literal values. Internal variables should
+be used only with the <strong>Choice</strong> and <strong>MultiChoice</strong> types. They should
+be defined in the <strong>validValues</strong> property.</p>
+<p>Example of a validValues parameter definition example:</p>
+<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Owner&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;$</span><span class="si">{OWNERS}</span><span class="s2">&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The variables listed in the table below are internal variables
+understood by the ThreatConnect platform.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="4%" />
+<col width="13%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Variable</th>
+<th class="head">Resolves As Type</th>
+<th class="head">Example of Usage</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>OWNERS</td>
+<td>String Array</td>
+<td><code class="docutils literal"><span class="pre">[&quot;${OWNERS}&quot;]</span></code></td>
+<td>The OWNERS variable resolves to the available owners to which the current user has access. Since this determination is dynamically resolved at runtime, the owners rendered depend on the user. This variable is useful when an app needs to have a defined owner passed as a parameter. The string value of the owner(s) is passed as an argument to the app.</td>
+</tr>
+<tr class="row-odd"><td>ATTRIBUTES</td>
+<td>String Array</td>
+<td><code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES}&quot;]</span></code> or <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:&lt;type&gt;}&quot;]</span></code></td>
+<td>The ATTRIBUTES variable resolves to attributes the current organization has available. This variable has a second, optional component, :&lt;type&gt;, that further refines the attributes resolved to the specific Indicator or Group type (for example: [“${ATTRIBUTES:Address}”]). The string value of the attribute(s) is passed as an argument to the app.</td>
+</tr>
+<tr class="row-even"><td>INDICATORS</td>
+<td>String Array</td>
+<td><code class="docutils literal"><span class="pre">[&quot;${INDICATOR_TYPES}&quot;]</span></code></td>
+<td>The INDICATOR_TYPES variable resolves to all of the indicator types available in the given instance of ThreatConnect. The string value of the indicator type(s) is passed as an argument to the app.</td>
+</tr>
+</tbody>
+</table>
+<p>When the <code class="docutils literal"><span class="pre">$ATTRIBUTES</span></code> internal variable is used with a <code class="docutils literal"><span class="pre">:&lt;type&gt;</span></code> suffix, the type can be any of the Indicator, Group, Task, or Victim types in the ThreatConnect platform:</p>
+<ul class="simple">
+<li>Address: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Address}&quot;]</span></code></li>
+<li>Adversary: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
+<li>ASN: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:ASN}&quot;]</span></code></li>
+<li>Campaign: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Campaign}&quot;]</span></code></li>
+<li>CIDR: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:CIDR}&quot;]</span></code></li>
+<li>Document: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Document}&quot;]</span></code></li>
+<li>Email: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Email}&quot;]</span></code></li>
+<li>EmailAddress: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:EmailAddress}&quot;]</span></code></li>
+<li>Event: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Event}&quot;]</span></code></li>
+<li>File: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:File}&quot;]</span></code></li>
+<li>Host: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Host}&quot;]</span></code></li>
+<li>Incident: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Incident}&quot;]</span></code></li>
+<li>IntrusionSet: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:IntusionSet}&quot;]</span></code></li>
+<li>Mutex: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Mutex}&quot;]</span></code></li>
+<li>RegistryKey: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:RegistryKey}&quot;]</span></code></li>
+<li>Report: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Report}&quot;]</span></code></li>
+<li>Adversary: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
+<li>Signature: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Signature}&quot;]</span></code></li>
+<li>Task: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Task}&quot;]</span></code></li>
+<li>Threat: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Threat}&quot;]</span></code></li>
+<li>URL: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
+<li>UserAgent: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
+<li>Victim: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Victim}&quot;]</span></code></li>
+</ul>
+</div>
+<div class="section" id="external-variables">
+<h3>External Variables<a class="headerlink" href="#external-variables" title="Permalink to this headline">¶</a></h3>
+<p>External variables offer the user an additional level of convenience by
+directing the Job Wizard and Spaces configuration dialog box to take
+advantage of the Variables feature.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Variables feature in the ThreatConnect platform allows any user to create variable key/value pairs. Once created, these values can be selected by the user in the Job Wizard or Spaces configuration dialog box to reduce the need to copy and paste keys and plain-text data.</p>
+</div>
+<p>Since the variable names are not known by the app developer, the generic
+form of the variables is referenced instead in a <strong>&lt;level:type&gt;</strong>
+format.</p>
+<p>For instance, to allow the user to select one of their plain-text
+variables from Organization and User levels, the <strong>install.json</strong> file
+would reference them as follows:</p>
+<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;{USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The left-hand component of the variable is the level. The level can be
+any of the options listed in the table below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Level Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>User</td>
+<td>This option displays the list of the user’s variables in the Job Wizard or Spaces configuration dialog box.</td>
+</tr>
+<tr class="row-odd"><td>Organization</td>
+<td>This option displays the list of Organization variables available to the current user in the Job wizard or Spaces configuration dialog box.</td>
+</tr>
+<tr class="row-even"><td>System</td>
+<td>This option displays the list of system variables available to the current user in the Job Wizard or Spaces configuration dialog box.</td>
+</tr>
+</tbody>
+</table>
+<p>Multiple external-variable expressions can be included in string array form.</p>
+</div>
+</div>
+<div class="section" id="install-json-schema">
+<h2>install.json Schema<a class="headerlink" href="#install-json-schema" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;apiUserTokenParam&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;displayName&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;feeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;attributesFile&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;enableBulkJson&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;documentStorageLimitMb&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;indicatorLimit&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;jobFile&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceCategory&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceDescription&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sourceName&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;listDelimiter&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;minServerVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;allowMultiple&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;string&quot;</span>
+            <span class="p">]</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;encrypt&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;hidden&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;note&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;PlaybookDataType&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;Any&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Binary&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;BinaryArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TCEntityArray&quot;</span>
+              <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;KeyValueList&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;MultiChoice&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;StringMixed&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;viewRows&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;type&quot;</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;uniqueItems&quot;</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;Playbook&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;outputVariables&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+              <span class="p">},</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span>
+                  <span class="s2">&quot;Binary&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;BinaryArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;KeyValue&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;KeyValueArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;String&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;StringArray&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;TCEntity&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;TCEntityArray&quot;</span>
+                <span class="p">],</span>
+                <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+              <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;type&quot;</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;uniqueItems&quot;</span><span class="p">:</span> <span class="kc">true</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;retry&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;allowed&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;defaultDelayMinutes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">},</span>
+            <span class="nt">&quot;defaultMaxRetries&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programIcon&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;publishOutFiles&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;repeatingMinutes&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;runtimeContext&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;string&quot;</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;allowOnDemand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;displayName&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;params&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programLanguage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programMain&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;programVersion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;runtimeLevel&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-json-file">
+<h2>Example JSON File<a class="headerlink" href="#example-json-file" title="Permalink to this headline">¶</a></h2>
+<p>This section provides an example of an <strong>install.json</strong> file for a
+Python app. The key elements are described with line-number references
+in 8, below the example.</p>
+<p>Example install.json file for a Python app:</p>
+<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+ <span class="nt">&quot;programVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+ <span class="nt">&quot;programLanguage&quot;</span><span class="p">:</span> <span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+ <span class="nt">&quot;programMain&quot;</span><span class="p">:</span> <span class="s2">&quot;auto_enrich&quot;</span><span class="p">,</span>
+ <span class="nt">&quot;languageVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;2.7&quot;</span><span class="p">,</span>
+ <span class="nt">&quot;runtimeLevel&quot;</span><span class="p">:</span> <span class="s2">&quot;Organization&quot;</span><span class="p">,</span>
+ <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+ <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">[{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;api_access_id&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Local ThreatConnect API Access ID&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;api_secret_key&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Local ThreatConnect API Secret Key&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nt">&quot;encrypt&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${USER:KEYCHAIN}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:KEYCHAIN}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Destination Owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${OWNERS}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;remote_api_access_id&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Remote ThreatConnect API Access ID&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;remote_api_secret_key&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Remote ThreatConnect API Secret Key&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="nt">&quot;encrypt&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${USER:KEYCHAIN}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:KEYCHAIN}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;remote_api_path&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Remote ThreatConnect API Path&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.threatconnect.com&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;${USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;remote_owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Remote Owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+  <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_threat_assess_rating&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply ThreatAssessRating from Remote Owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">8</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_rating&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply Rating from Remote Owner if ThreatAssessRating</span>
+<span class="s2">  is not Available &quot;</span><span class="p">,</span> <span class="nt">&quot;</span>
+<span class="nt">  type &quot;</span> <span class="p">:</span> <span class="s2">&quot;</span>
+<span class="s2">  Boolean &quot;</span><span class="p">,</span> <span class="nt">&quot;</span>
+<span class="nt">  sequence &quot;</span> <span class="p">:</span> <span class="mi">9</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_threat_assess_confidence&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply ThreatAssessConfidence from Remote Owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">10</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_confidence&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply Confidence from Remote Owner if</span>
+<span class="s2">  ThreatAssessConfidence is not Available &quot;</span><span class="p">,</span> <span class="nt">&quot;</span>
+<span class="nt">  type &quot;</span> <span class="p">:</span> <span class="s2">&quot;</span>
+<span class="s2">  Boolean &quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">11</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_tags&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply Tags from Remote Owner&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">12</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_auto_enrich_tag&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply &#39;AutoEnriched&#39; Tag&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">13</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_proxy_tc&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply Proxy to Local API Connection&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+  <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;apply_proxy_ext&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Apply Proxy to Remote API Connection&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Boolean&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+  <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span>
+ <span class="p">},</span> <span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;logging&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Logging Level&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+  <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">]</span>
+ <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="98%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Line Number</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>2</td>
+<td>The “programVersion” is 1.0.0. This value is rendered in the apps listing for System Administrators.</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>The “programMain” will direct the Job Executor to run this app as a main module.</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td>The “runtimeLevel” for this app is “Organization”. This app will allow Jobs to be configured only for an Organization (assuming the System Admin has provisioned the Org).</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>This line is the start of the “params” array. The contents in this array are purely for parameter definitions.</td>
+</tr>
+<tr class="row-even"><td>9–13</td>
+<td>This parameter describes the “api_access_id” argument for the app. The app will be passed an argument called “–api_access_id” at execution time. The label in the Job Wizard will be “Local ThreatConnect API Access ID”. Since the sequence is defined as “1”, this parameter will be the first parameter displayed in the Job Wizard. This parameter is required, and the user can benefit from User- and Organization-level plain-text variables, if defined. Otherwise, the user is allowed to enter free-form text (the default type if no variables are defined).</td>
+</tr>
+<tr class="row-odd"><td>35–40</td>
+<td>This parameter describes the “remote_api_secret_key” argument for the app. The app will be passed an argument called “–remote_api_secret_key” at execution time. The label in the Job Wizard will be “Remote ThreatConnect API Secret Key”. This parameter will be the 5th parameter in the Job Wizard “Parameters” panel. Since the parameter is set to “encrypt”, the input field will be displayed as a password with a masked value. Encrypted parameters will also be stored in encrypted form in the database. At runtime, the decrypted password will be passed to the app. Finally, the user can benefit from User- and Organization-level keychain variables, if defined. Otherwise, the user is allowed to enter free-form password text.</td>
+</tr>
+<tr class="row-even"><td>65–68</td>
+<td>This parameter describes the “apply_threat_assess_confidence” Boolean argument for the app. The app will be passed an argument called “–apply_threat_assess_confidence” at execution time only if the user selects this value in the Job Wizard. The Job Wizard will display a label called “Apply ThreatAssessRating from Remote Owner”, along with a checkbox. The argparse style flag (without an argument) and the checkbox displayed in the Job Wizard are dictated by the “Boolean” type in the parameter definition. This parameter will be the 8th parameter in the Job Wizard “Parameters” panel.</td>
+</tr>
+<tr class="row-odd"><td>98–103</td>
+<td>This parameter describes the “logging” argument for the app. The app will be passed a parameter named “–logging” with a string argument. The “Logging Level” label will be displayed in the Job Wizard. This parameter will be the 16th (and last) parameter in the Job Wizard parameter panel. The type for this parameter is “Choice”, and the definition dictates that a valid value for this parameter is one of “debug”, “info”, “warning”, “error”, or “critical”. The user will not be able to edit this drop-down list, and the default value for new Jobs will be logging level “info”.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+
+           </div>
+          </div>
+          <footer>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+
+
+
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+
+
+</body>
+</html>
