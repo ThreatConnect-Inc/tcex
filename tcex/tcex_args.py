@@ -160,7 +160,7 @@ class TcExArgs(object):
             # ThreatConnect secure/AOT params should be updated in the future to proper JSON format.
             # MultiChoice data should be represented as JSON array and Boolean values should be a
             # JSON boolean and not a string.
-            param_data = self.tcex.install_json_params.get(arg, {})
+            param_data = self.tcex.install_json_params.get(arg) or {}
             if param_data.get('type', '').lower() == 'multichoice':
                 # update "|" delimited value to a proper array for params that have type of
                 # MultiChoice.

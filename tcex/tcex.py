@@ -588,7 +588,7 @@ class TcEx(object):
     def install_json_params(self):
         """Parse params from install.json into a dict by name."""
         if not self._install_json_params:
-            for param in self.install_json.get('params', []):
+            for param in self.install_json.get('params') or []:
                 self._install_json_params[param.get('name')] = param
         return self._install_json_params
 
