@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcpackage Command &mdash; TcEx 0.9.0 documentation</title>
+  <title>tcpackage Command &mdash; TcEx 0.9.1 documentation</title>
 
 
 
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.9.0 documentation" href="../index.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
         <link rel="up" title="CLI Commands" href="bin.html"/>
         <link rel="next" title="tcprofile Command" href="bin.tcprofile.html"/>
         <link rel="prev" title="tclib Command" href="bin.tclib.html"/>
@@ -69,7 +69,7 @@
 
 
               <div class="version">
-                0.9.0
+                0.9.1
               </div>
 
 
@@ -224,12 +224,6 @@ install.json file or files will be automatically run before packaging the app.</
 </dd></dl>
 
 <dl class="method">
-<dt id="bin.tcpackage.TcPackage._load_schema">
-<code class="descname">_load_schema</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load JSON schema file</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="bin.tcpackage.TcPackage._update_install_json">
 <code class="descname">_update_install_json</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._update_install_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write install.json file</p>
@@ -253,9 +247,9 @@ install.json file or files will be automatically run before packaging the app.</
 <dd><p>Bundle zip (tcx) file</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="bin.tcpackage.TcPackage.check_ast">
-<em class="property">static </em><code class="descname">check_ast</code><span class="sig-paren">(</span><em>app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_ast" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_ast</code><span class="sig-paren">(</span><em>app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_ast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run ast on each Python file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -265,6 +259,44 @@ install.json file or files will be automatically run before packaging the app.</
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage.check_import_stdlib">
+<em class="property">static </em><code class="descname">check_import_stdlib</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if module is in Python stdlib</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage.check_imported">
+<em class="property">static </em><code class="descname">check_imported</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_imported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the provide module can be imported (package installed).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) – The name of the module to check availability.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the module can be imported, False otherwise.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.check_imports">
+<code class="descname">check_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the projects top level directory for missing imports.</p>
+<p>This method will check only files ending in <strong>.py</strong> and does not handle imports validation
+for sub-directories.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.tcpackage.TcPackage.check_install_json">
+<code class="descname">check_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all install.json files for valid schema.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -281,10 +313,16 @@ to work 100% of the time.</p>
 <dd><p>Package the App for deployment in TcEx</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate install.json file for required parameters</p>
+<dl class="attribute">
+<dt id="bin.tcpackage.TcPackage.schema">
+<code class="descname">schema</code><a class="headerlink" href="#bin.tcpackage.TcPackage.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load JSON schema file</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="bin.tcpackage.TcPackage.update_system_path">
+<em class="property">static </em><code class="descname">update_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.update_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.update_system_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the system path to ensure project modules and dependencies can be found.</p>
 </dd></dl>
 
 <dl class="method">
@@ -340,7 +378,7 @@ to work 100% of the time.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.9.0',
+            VERSION:'0.9.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

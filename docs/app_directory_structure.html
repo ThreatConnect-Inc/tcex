@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App - Directory Structure &mdash; TcEx 0.9.0 documentation</title>
+  <title>App - Directory Structure &mdash; TcEx 0.9.1 documentation</title>
 
 
 
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.0 documentation" href="index.html"/>
+    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
         <link rel="next" title="Module - Batch" href="module_batch.html"/>
         <link rel="prev" title="App - Deployment Configuration" href="app_deployment_configuration.html"/>
 
@@ -68,7 +68,7 @@
 
 
               <div class="version">
-                0.9.0
+                0.9.1
               </div>
 
 
@@ -1014,24 +1014,86 @@ bcs*
 62
 63
 64
-65</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
-
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>
-
 
 <span class="c1"># Python 2 unicode</span>
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>  <span class="c1"># noqa: F821; pylint: disable=E0602</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
 
-<span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_update_app_path</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Update sys path to ensure all required modules can be found.</span>
+
+<span class="sd">    All Apps must be able to access included modules, this method will ensure that the system path</span>
+<span class="sd">    has been updated to include the &quot;cwd&quot; and &quot;lib_&quot; directories.  This is normally handled by</span>
+<span class="sd">    the __main__.py file, but in some cases an App may be called directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_&#39;</span><span class="p">)</span>
+    <span class="n">lib_latest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
+
+    <span class="c1"># insert the lib_latest directory into the system Path if no other lib directory found. This</span>
+    <span class="c1"># entry will be bumped to index 1 after adding the current working directory.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">lib_dir</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lib_latest</span><span class="p">)</span>
+
+    <span class="c1"># insert the current working directory into the system Path for the App, ensuring that it is</span>
+    <span class="c1"># always the first entry in the list.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="c1"># update the path to ensure the App has access to required modules</span>
+    <span class="n">_update_app_path</span><span class="p">()</span>
+
+    <span class="c1"># import modules after path has been updated</span>
+    <span class="kn">from</span> <span class="nn">tcex</span> <span class="kn">import</span> <span class="n">TcEx</span>
+    <span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">App</span>
+
+    <span class="n">tcex</span> <span class="o">=</span> <span class="n">TcEx</span><span class="p">()</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># load App class</span>
         <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
@@ -1404,7 +1466,10 @@ bcs*
 241
 242
 243
-244</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+244
+245
+246
+247</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -1496,6 +1561,9 @@ bcs*
               <span class="p">]</span>
             <span class="p">},</span>
             <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;feedDeployer&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
           <span class="p">},</span>
           <span class="nt">&quot;hidden&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
@@ -1696,7 +1764,7 @@ bcs*
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.0',
+            VERSION:'0.9.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
