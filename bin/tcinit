@@ -55,6 +55,8 @@ parser.add_argument(
 parser.add_argument(
     '--template',
     choices=[
+        'external',
+        'external_ingress',
         'job',
         'job_batch',
         # 'job_enrichment',
@@ -253,16 +255,20 @@ if __name__ == '__main__':
         if args.action == 'create' or args.action == 'migrate':
             # download common files
             tci.download_file('.pre-commit-config.yaml')
-            tci.download_file('__main__.py')
             tci.download_file('gitignore', '.gitignore')
             tci.download_file('pyproject.toml')
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex_json_schema.json')
+            if not args.template.startswith('external'):
+                tci.download_file('__main__.py')
+                tci.download_file('tcex_json_schema.json')
 
             # download type specific files
-            if args.template.startswith('job'):
+            if args.template.startswith('external'):
+                tci.download_file('external/external_app.py', 'external_app.py')
+                tci.download_file('external/run.py', 'run.py')
+            elif args.template.startswith('job'):
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
             elif args.template.startswith('playbook'):
@@ -271,27 +277,34 @@ if __name__ == '__main__':
 
             # download template specific files
             tci.download_file('{}/app.py'.format(args.template), 'app.py')
-            tci.download_file('{}/args.py'.format(args.template), 'args.py')
-            tci.download_file('{}/install.json'.format(args.template), 'install.json')
-            tci.download_file('{}/tcex.json'.format(args.template), 'tcex.json')
+            if args.template.startswith('external'):
+                tci.download_file('{}/app_config.json'.format(args.template), 'tcex.json')
+            else:
+                tci.download_file('{}/args.py'.format(args.template), 'args.py')
+                tci.download_file('{}/install.json'.format(args.template), 'install.json')
+                tci.download_file('{}/tcex.json'.format(args.template), 'tcex.json')
 
             # if we are migrating, update the install.json
-            if args.action == 'migrate':
+            if not args.template.startswith('external') and args.action == 'migrate':
                 tci.update_install_json()
 
         elif args.action == 'update':
             # update common files
             tci.download_file('.pre-commit-config.yaml')
-            tci.download_file('__main__.py')
+            if args.template.startswith('external'):
+                tci.download_file('__main__.py')
+                tci.download_file('tcex_json_schema.json')
             tci.download_file('gitignore', '.gitignore')
             tci.download_file('pyproject.toml')
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex_json_schema.json')
 
             # update type specific files
-            if args.template.startswith('job'):
+            if args.template.startswith('external'):
+                tci.download_file('external/external_app.py', 'external_app.py')
+                tci.download_file('external/run.py', 'run.py')
+            elif args.template.startswith('job'):
                 tci.download_file('job/job_app.py', 'job_app.py')
                 tci.download_file('job/run.py', 'run.py')
             elif args.template.startswith('playbook'):

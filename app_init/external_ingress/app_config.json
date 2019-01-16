@@ -1,0 +1,14 @@
+{
+  "api_access_id": "$env.API_ACCESS_ID",
+  "api_default_org": "$env.API_DEFAULT_ORG",
+  "api_secret_key": "$envs.API_SECRET_KEY",
+  "tc_api_path": "$env.TC_API_PATH",
+  "tc_log_level": "debug",
+  "tc_log_path": "log",
+  "tc_owner": "MyOwner",
+  "tc_proxy_host": "$env.TC_PROXY_HOST",
+  "tc_proxy_password": "$envs.TC_PROXY_PASSWORD",
+  "tc_proxy_port": "$env.TC_PROXY_PORT",
+  "tc_proxy_tc": false,
+  "tc_proxy_username": "$env.TC_PROXY_USERNAME"
+}
