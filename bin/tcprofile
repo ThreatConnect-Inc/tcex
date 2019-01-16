@@ -51,10 +51,6 @@ parser.add_argument(
     default='install.json',
     help='(Advanced) The install.json file name (default: install.json).',
 )
-# parser.add_argument(
-#     '--data_file',
-#     action='store_true',
-#     help='Attempt to build data file templates for the profile.')
 parser.add_argument(
     '--outdir',
     default='tcex.d',
