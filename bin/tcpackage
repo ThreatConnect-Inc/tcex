@@ -302,11 +302,25 @@ class TcPackage(object):
 
     @staticmethod
     def check_imported(module):
-        """Check whether the provide module can be imported (package installed)."""
+        """Check whether the provide module can be imported (package installed).
+
+        Args:
+            module (str): The name of the module to check availability.
+
+        Returns:
+            bool: True if the module can be imported, False otherwise.
+        """
+
         imported = True
         module_info = ('', '', '')
+        # TODO: update to a cleaner method that doesn't require importing the module and
+        # running inline code.
         try:
+            # block print statements in imported module
+            sys.stdout = open(os.devnull, 'w')
             importlib.import_module(module)
+            # reset stdout
+            sys.stdout = sys.__stdout__
             module_info = imp.find_module(module)
         except ImportError:
             imported = False
