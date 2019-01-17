@@ -582,6 +582,7 @@ class TcEx(object):
                     self._install_json = json.load(fh)
             except IOError:
                 self.log.warning(u'Could not retrieve App Data.')
+                self._install_json = {}
         return self._install_json
 
     @property

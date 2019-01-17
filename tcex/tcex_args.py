@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework"""
+import json
 import os
 import sys
 from argparse import Namespace
@@ -23,6 +24,7 @@ class TcExArgs(object):
         self._parsed = False
         self._parsed_resolved = False
         self.parser = TcExArgParser()
+        self.parse_known = True
 
         # NOTE: odd issue where args is not updating properly
         # if self.default_args.tc_token is not None:
@@ -112,7 +114,10 @@ class TcExArgs(object):
         """
 
         if not self._parsed:  # only resolve once
-            self._default_args, unknown = self.parser.parse_known_args()
+            if self.parse_known:
+                self._default_args, unknown = self.parser.parse_known_args()
+            else:
+                self._default_args = self.parser.parse_args()
 
             # when running locally retrieve any args from the results.tc file.  when running in
             # platform this is done automatically.
@@ -125,6 +130,16 @@ class TcExArgs(object):
             self._parsed = True
 
         return self._default_args
+
+    def config(self, config):
+        """Load provided configuration files and inject values into sys.argv."""
+        if os.path.isfile(config):
+            self.parse_known = False  # disable paring of only known args
+            with open(config, 'r') as fh:
+                config_data = json.load(fh)
+            self.inject_params(config_data)
+        else:
+            self.tcex.log.error('Could not load configuration file "{}".'.format(config))
 
     @property
     def default_args(self):

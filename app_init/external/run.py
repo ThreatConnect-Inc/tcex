@@ -51,9 +51,6 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
-        # inject args
-        app.inject_args_from_config()
-
         # perform prep/startup operations
         app.start()
 
