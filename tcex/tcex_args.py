@@ -19,12 +19,12 @@ class TcExArgs(object):
         """
 
         self.tcex = tcex
+        self._config_data = {}
         self._default_args = None
         self._default_args_resolved = None
         self._parsed = False
         self._parsed_resolved = False
         self.parser = TcExArgParser()
-        self.parse_known = True
 
         # NOTE: odd issue where args is not updating properly
         # if self.default_args.tc_token is not None:
@@ -93,7 +93,7 @@ class TcExArgs(object):
                 value = False
             elif not value:
                 value = None
-            setattr(self.default_args, key, value)
+            setattr(self._default_args, key, value)
 
     def _unknown_args(self, args):
         """Log argparser unknown arguments.
@@ -114,10 +114,7 @@ class TcExArgs(object):
         """
 
         if not self._parsed:  # only resolve once
-            if self.parse_known:
-                self._default_args, unknown = self.parser.parse_known_args()
-            else:
-                self._default_args = self.parser.parse_args()
+            self._default_args, unknown = self.parser.parse_known_args()
 
             # when running locally retrieve any args from the results.tc file.  when running in
             # platform this is done automatically.
@@ -129,15 +126,21 @@ class TcExArgs(object):
             # set parsed bool to ensure args are only parsed once
             self._parsed = True
 
+            # update args with value from config
+            self.args_update()
+
         return self._default_args
+
+    def args_update(self):
+        """Update the argparser namespace with any data from configuration file."""
+        for key, value in self._config_data.items():
+            setattr(self._default_args, key, value)
 
     def config(self, config):
         """Load provided configuration files and inject values into sys.argv."""
         if os.path.isfile(config):
-            self.parse_known = False  # disable paring of only known args
             with open(config, 'r') as fh:
-                config_data = json.load(fh)
-            self.inject_params(config_data)
+                self._config_data = json.load(fh)
         else:
             self.tcex.log.error('Could not load configuration file "{}".'.format(config))
 
@@ -152,7 +155,7 @@ class TcExArgs(object):
                 # block for AOT message and get params
                 params = self.tcex.playbook.aot_blpop()
                 self.inject_params(params)
-            elif self.default_args.tc_secure_params:
+            elif self._default_args.tc_secure_params:
                 # inject secure params from API
                 params = self._load_secure_params()
                 self.inject_params(params)
