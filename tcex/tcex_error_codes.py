@@ -34,6 +34,12 @@ class TcExErrorCodes(object):
             580: 'Failed posting file data ({}).',
             585: 'Failed posting file data. API status code: {}, API message: {}.',
             590: 'No hash values provided.',
+            # threat intelligence
+            600: 'Failed adding group type "{}" with name "{}" ({}).',
+            605: 'Failed adding attribute type "{}" with value "{}" to group id "{}" ({}).',
+            610: 'Failed adding label "{}" to group id "{}" ({}).',
+            615: 'Failed adding tag "{}" to group id "{}" ({}).',
+            650: 'Failed adding label "{}" to attribute id "{}" ({}).',
             # metrics
             700: 'Failed to create metric. API status code: {}, API message: {}.',
             705: 'Error while finding metric by name. API status code: {}, API message: {}.',

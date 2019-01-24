@@ -46,8 +46,10 @@ class App(ExternalApp):
             else:
                 self.tcex.exit(1, 'Failed to download CSV data.')
 
-        # submit batch job
+        # submit batch job(s)
         batch_status = self.batch.submit_all()
-        print(batch_status)
+        self.tcex.log.debug(batch_status)
 
-        self.exit_message = 'Downloaded data and create batch job.'
+        # self.exit_message = 'Downloaded and created {} file hashes.'.format(
+        #     self.batch.indicator_len
+        # )
