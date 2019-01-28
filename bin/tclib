@@ -157,6 +157,7 @@ class TcLib(object):
                 and self.args.proxy_user is not None
                 and self.args.proxy_pass is not None
             ):
+                # create environmental variables with the proxy details (these are deleted later)
                 os.putenv(
                     'HTTP_PROXY',
                     'http://{}:{}@{}:{}'.format(
@@ -175,6 +176,9 @@ class TcLib(object):
                         self.args.proxy_port,
                     ),
                 )
+                # trust the pypi host to avoid ssl errors
+                exe_command.append('--trusted-host')
+                exe_command.append('pypi.org')
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(
                 exe_command,
