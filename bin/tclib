@@ -157,14 +157,23 @@ class TcLib(object):
                 and self.args.proxy_user is not None
                 and self.args.proxy_pass is not None
             ):
-                exe_command.append('--proxy')
-                exe_command.append(
-                    '{}:{}@{}:{}'.format(
+                os.putenv(
+                    'HTTP_PROXY',
+                    'http://{}:{}@{}:{}'.format(
                         self.args.proxy_user,
                         self.args.proxy_pass,
                         self.args.proxy_host,
                         self.args.proxy_port,
-                    )
+                    ),
+                )
+                os.putenv(
+                    'HTTPS_PROXY',
+                    'https://{}:{}@{}:{}'.format(
+                        self.args.proxy_user,
+                        self.args.proxy_pass,
+                        self.args.proxy_host,
+                        self.args.proxy_port,
+                    ),
                 )
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(
@@ -207,6 +216,16 @@ class TcLib(object):
         # cleanup temp file if required
         if self.requirements_temp:
             os.remove(self.requirements_file)
+
+        # clean up environment variables
+        if (
+            self.args.proxy_host is not None
+            or self.args.proxy_port is not None
+            or self.args.proxy_user is not None
+            or self.args.proxy_pass is not None
+        ):
+            os.unset('HTTP_PROXY')
+            os.unset('HTTPS_PROXY')
 
 
 if __name__ == '__main__':
