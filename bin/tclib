@@ -151,6 +151,8 @@ class TcLib(object):
             ]
             if args.no_cache_dir:
                 exe_command.append('--no-cache-dir')
+
+            # handle authenticated proxy settings
             if (
                 self.args.proxy_host is not None
                 and self.args.proxy_port is not None
@@ -179,6 +181,30 @@ class TcLib(object):
                 # trust the pypi host to avoid ssl errors
                 exe_command.append('--trusted-host')
                 exe_command.append('pypi.org')
+            # handle unauthenticated proxy settings
+            elif (
+                self.args.proxy_host is not None
+                and self.args.proxy_port is not None
+            ):
+                # create environmental variables with the proxy details (these are deleted later)
+                os.putenv(
+                    'HTTP_PROXY',
+                    'http://{}:{}'.format(
+                        self.args.proxy_host,
+                        self.args.proxy_port,
+                    ),
+                )
+                os.putenv(
+                    'HTTPS_PROXY',
+                    'https://{}:{}'.format(
+                        self.args.proxy_host,
+                        self.args.proxy_port,
+                    ),
+                )
+                # trust the pypi host to avoid ssl errors
+                exe_command.append('--trusted-host')
+                exe_command.append('pypi.org')
+
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(
                 exe_command,
