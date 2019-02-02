@@ -220,7 +220,7 @@ class TcPackage(object):
         for sub-directories.
         """
         modules = []
-        missing_modules = False
+        missing_modules = []
         for file in sorted(os.listdir(self.app_path)):
             if not file.endswith('.py'):
                 continue
@@ -246,7 +246,7 @@ class TcPackage(object):
                                         continue
                                     m_status = self.check_imported(m)
                                     if not m_status:
-                                        missing_modules = True
+                                        missing_modules.append(m)
                                     modules.append({'file': file, 'module': m, 'status': m_status})
                             elif isinstance(node, ast.ImportFrom):
                                 m = node.module.split('.')[0]
@@ -255,7 +255,7 @@ class TcPackage(object):
                                     continue
                                 m_status = self.check_imported(m)
                                 if not m_status:
-                                    missing_modules = True
+                                    missing_modules.append(m)
                                 modules.append({'file': file, 'module': m, 'status': m_status})
                             else:
                                 continue
@@ -283,7 +283,10 @@ class TcPackage(object):
         if missing_modules:
             if not self.args.ignore_validation:
                 print(
-                    '\n{}Build failed due to missing required Python module(s).'.format(c.Fore.RED)
+                    '\n{}Build failed due to missing required Python module(s). Please validate'
+                    'missing modules ({}) are added to the requirements.txt file.'.format(
+                        c.Fore.RED, missing_modules
+                    )
                 )
                 sys.exit(1)
 
@@ -291,11 +294,12 @@ class TcPackage(object):
     def check_import_stdlib(module):
         """Check if module is in Python stdlib"""
         if (
-            module in stdlib_list('2.7')
+            module in stdlib_list('2.7')  # pylint: disable=R0916
             or module in stdlib_list('3.4')
             or module in stdlib_list('3.5')
             or module in stdlib_list('3.6')
             or module in stdlib_list('3.7')
+            or module in ['app', 'args', 'playbook_app']
         ):
             return True
         return False

@@ -96,8 +96,72 @@ class Debug(object):
         return debug
 
 
+class FailOn(object):
+    """Fail App if conditions are met.
+
+    This decorator allows for the App to exit on conditions defined in the function
+    parameters.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @FailOn(arg='fail_on_false', values=['false'], msg='Operation returned a value of "false".')
+        def my_method(data):
+            return data.lowercase()
+    """
+
+    def __init__(self, arg, values, msg):
+        """Initialize Class Properties
+
+        Args:
+            arg (str): The args Namespace value that controls whether the App should exit. Arg
+                value must be a boolean.
+            values (list): The values that, if matched, would trigger an exit.
+            msg (str): The message to send to exit method.
+
+        """
+
+        self.arg = arg
+        self.msg = msg
+        self.values = values
+
+    def __call__(self, fn):
+        """Implement __call__ function for decorator
+
+        Args:
+            fn (function): The decorated function.
+
+        Returns:
+            function: The custom decorator function.
+        """
+
+        def fail(app, *args, **kwargs):
+            """Call the function and store or append return value.
+
+            Args:
+                app (class): The instance of the App class "self".
+            """
+
+            data = fn(app, *args, **kwargs)
+            # self.args (e.g., fail_on_false) controls whether the value should be checked).
+            if getattr(app.args, self.arg):
+                if isinstance(data, list):
+                    for d in data:
+                        if d in self.values:
+                            app.tcex.log.info('{} is enabled.'.format(self.arg))
+                            app.tcex.exit(1, self.msg)
+                else:
+                    if data in self.values:
+                        app.tcex.log.info('{} is enabled.'.format(self.arg))
+                        app.tcex.exit(1, self.msg)
+            return data
+
+        return fail
+
+
 class IterateOnArg(object):
-    """Debug function inputs.
+    """Iterate on values stored in ``self.args`` namespace.
 
     This decorator will iterate over all value of the supplied arg and return results. This feature
     is helpful when processing a single value (String) or array of values (StringArray). If the App
@@ -161,7 +225,7 @@ class IterateOnArg(object):
 
 
 class OnException(object):
-    """Handle Exception in an App function.
+    """Set exit message on failed execution.
 
     This decorator will catch the generic "Exception" error, log the supplied error message, set
     the "exit_message", and exit the App with an exit code of 1.

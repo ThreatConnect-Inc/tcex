@@ -278,7 +278,7 @@ if __name__ == '__main__':
             # download template specific files
             tci.download_file('{}/app.py'.format(args.template), 'app.py')
             if args.template.startswith('external'):
-                tci.download_file('{}/app_config.json'.format(args.template), 'tcex.json')
+                tci.download_file('{}/app_config.json'.format(args.template), 'app_config.json')
             else:
                 tci.download_file('{}/args.py'.format(args.template), 'args.py')
                 tci.download_file('{}/install.json'.format(args.template), 'install.json')

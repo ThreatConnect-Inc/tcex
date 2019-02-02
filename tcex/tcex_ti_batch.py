@@ -729,6 +729,7 @@ class TcExBatch(object):
 
         Returns:
             obj: An instance of File.
+
         """
         indicator_obj = File(md5, sha1, sha256, **kwargs)
         return self._indicator(indicator_obj)
