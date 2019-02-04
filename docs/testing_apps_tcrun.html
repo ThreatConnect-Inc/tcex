@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Testing Apps - Running Profiles (tcrun) &mdash; TcEx 0.9.1 documentation</title>
+  <title>Testing Apps - Running Profiles (tcrun) &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="App - Deployment Configuration" href="app_deployment_configuration.html"/>
-        <link rel="prev" title="Testing Apps - Profiles (tcprofile)" href="testing_apps_tcprofile.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="App - Deployment Configuration" href="app_deployment_configuration.html" />
+    <link rel="prev" title="Testing Apps - Profiles (tcprofile)" href="testing_apps_tcprofile.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -141,7 +132,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -149,9 +140,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -193,10 +185,10 @@
 
   <div class="section" id="testing-apps-running-profiles-tcrun">
 <span id="testing-apps-tcrun"></span><h1>Testing Apps - Running Profiles (tcrun)<a class="headerlink" href="#testing-apps-running-profiles-tcrun" title="Permalink to this headline">¶</a></h1>
-<p>This CLI tool provides a simple interface to run the App locally using the profiles created using the <a class="reference internal" href="testing_apps_tcprofile.html#testing-apps-tcprofile"><span class="std std-ref">tcprofile</span></a> command.  If the profile has validation rules defined the <code class="docutils literal"><span class="pre">tcrun</span></code> command will validate the output variables as defined in the validation rules.</p>
+<p>This CLI tool provides a simple interface to run the App locally using the profiles created using the <a class="reference internal" href="testing_apps_tcprofile.html#testing-apps-tcprofile"><span class="std std-ref">tcprofile</span></a> command.  If the profile has validation rules defined the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command will validate the output variables as defined in the validation rules.</p>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker_image</span> <span class="n">DOCKER_IMAGE</span><span class="p">]</span>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcrun</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CONFIG</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">docker_image</span> <span class="n">DOCKER_IMAGE</span><span class="p">]</span>
              <span class="p">[</span><span class="o">--</span><span class="n">autoclear</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">halt_on_fail</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">group</span> <span class="n">GROUP</span><span class="p">]</span>
              <span class="p">[</span><span class="o">--</span><span class="n">logging_level</span> <span class="n">LOGGING_LEVEL</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span> <span class="n">PROFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">quiet</span><span class="p">]</span>
              <span class="p">[</span><span class="o">--</span><span class="n">report</span> <span class="n">REPORT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">truncate</span> <span class="n">TRUNCATE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unmask</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">vscd</span><span class="p">]</span>
@@ -230,19 +222,19 @@
 <div class="section" id="common-usage">
 <h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
 <p>The following command will run the “simple-json” profile.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">profile</span> <span class="n">simple</span><span class="o">-</span><span class="n">json</span>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">profile</span> <span class="n">simple</span><span class="o">-</span><span class="n">json</span>
 </pre></div>
 </div>
 <p>The following command will run all profiles in the “qa-build” group.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">group</span> <span class="n">qa</span><span class="o">-</span><span class="n">build</span>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcrun</span> <span class="o">--</span><span class="n">group</span> <span class="n">qa</span><span class="o">-</span><span class="n">build</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="results">
 <h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command outputs a report for all profile run.  This report show whether the execution of the profile passed or failed and if the profile passed it displays the results of the validations rules.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">Report</span><span class="p">:</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command outputs a report for all profile run.  This report show whether the execution of the profile passed or failed and if the profile passed it displays the results of the validations rules.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Report</span><span class="p">:</span>
                                                        <span class="n">Validations</span>
 <span class="n">Profile</span><span class="p">:</span>                      <span class="n">Execution</span><span class="p">:</span>               <span class="n">Passed</span><span class="p">:</span>   <span class="n">Failed</span><span class="p">:</span>
 <span class="n">simple_data</span>                   <span class="n">Passed</span>                   <span class="mi">2</span>         <span class="mi">0</span>
@@ -251,12 +243,12 @@
 </div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
-<p>All Apps log to the <code class="docutils literal"><span class="pre">app.log</span></code> file in the appropriate log directory.  Any errors during execution of the App will be displayed there.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command logs to the <code class="docutils literal"><span class="pre">run.log</span></code>  in the same log directory. This log file is structure to help quickly identify problems with validations.  Any failed validation will be logged at <strong>ERROR</strong> level.</p>
+<p>All Apps log to the <code class="docutils literal notranslate"><span class="pre">app.log</span></code> file in the appropriate log directory.  Any errors during execution of the App will be displayed there.  The <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command logs to the <code class="docutils literal notranslate"><span class="pre">run.log</span></code>  in the same log directory. This log file is structure to help quickly identify problems with validations.  Any failed validation will be logged at <strong>ERROR</strong> level.</p>
 </div>
 <div class="section" id="exit-codes">
 <h2>Exit Codes<a class="headerlink" href="#exit-codes" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  Using the exit_codes parameter you can provide “bad” data to the App and ensure it exits with the proper exit code.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s2">&quot;exit_codes&quot;</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command can validate the exit code of the App.  This allows for setting up fail scenarios profiles.  All Apps should exit with a valid exit code and handle failures gracefully.  Using the exit_codes parameter you can provide “bad” data to the App and ensure it exits with the proper exit code.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;exit_codes&quot;</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -268,9 +260,7 @@
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -288,7 +278,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -306,35 +296,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

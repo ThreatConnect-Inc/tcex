@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.1 documentation</title>
+  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,28 +24,18 @@
 
 
 
-
-
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/>
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
 
 
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -67,7 +57,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -131,7 +121,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">TcEx</a>
@@ -139,9 +129,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -170,8 +161,6 @@
 
 
       <li class="wy-breadcrumbs-aside">
-
-
 
       </li>
 
@@ -282,8 +271,72 @@
         <span class="k">return</span> <span class="n">debug</span></div></div>
 
 
+<div class="viewcode-block" id="FailOn"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOn">[docs]</a><span class="k">class</span> <span class="nc">FailOn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fail App if conditions are met.</span>
+
+<span class="sd">    This decorator allows for the App to exit on conditions defined in the function</span>
+<span class="sd">    parameters.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @FailOn(arg=&#39;fail_on_false&#39;, values=[&#39;false&#39;], msg=&#39;Operation returned a value of &quot;false&quot;.&#39;)</span>
+<span class="sd">        def my_method(data):</span>
+<span class="sd">            return data.lowercase()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arg (str): The args Namespace value that controls whether the App should exit. Arg</span>
+<span class="sd">                value must be a boolean.</span>
+<span class="sd">            values (list): The values that, if matched, would trigger an exit.</span>
+<span class="sd">            msg (str): The message to send to exit method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+
+<div class="viewcode-block" id="FailOn.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOn.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fn (function): The decorated function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: The custom decorator function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Call the function and store or append return value.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># self.args (e.g., fail_on_false) controls whether the value should be checked).</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                            <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is enabled.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
+                            <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                        <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is enabled.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
+                        <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span>
+
+        <span class="k">return</span> <span class="n">fail</span></div></div>
+
+
 <div class="viewcode-block" id="IterateOnArg"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.IterateOnArg">[docs]</a><span class="k">class</span> <span class="nc">IterateOnArg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Debug function inputs.</span>
+    <span class="sd">&quot;&quot;&quot;Iterate on values stored in ``self.args`` namespace.</span>
 
 <span class="sd">    This decorator will iterate over all value of the supplied arg and return results. This feature</span>
 <span class="sd">    is helpful when processing a single value (String) or array of values (StringArray). If the App</span>
@@ -347,7 +400,7 @@
 
 
 <div class="viewcode-block" id="OnException"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnException">[docs]</a><span class="k">class</span> <span class="nc">OnException</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Handle Exception in an App function.</span>
+    <span class="sd">&quot;&quot;&quot;Set exit message on failed execution.</span>
 
 <span class="sd">    This decorator will catch the generic &quot;Exception&quot; error, log the supplied error message, set</span>
 <span class="sd">    the &quot;exit_message&quot;, and exit the App with an exit code of 1.</span>
@@ -631,9 +684,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -642,7 +693,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -660,35 +711,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex module &mdash; TcEx 0.9.1 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,30 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
-        <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_app_decorators module" href="tcex.tcex_app_decorators.html"/>
-        <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html"/>
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.tcex_app_decorators module" href="tcex.tcex_app_decorators.html" />
+    <link rel="prev" title="tcex.tcex_logger module" href="tcex.tcex_logger.html" />
 
 
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -69,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -168,7 +158,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
@@ -176,9 +166,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -228,7 +219,7 @@
 <dl class="class">
 <dt id="tcex.tcex.TcEx">
 <em class="property">class </em><code class="descclassname">tcex.tcex.</code><code class="descname">TcEx</code><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Provides basic functionality for all types of TxEx Apps.</p>
 <dl class="method">
 <dt id="tcex.tcex.TcEx._association_types">
@@ -276,9 +267,9 @@
 <dt id="tcex.tcex.TcEx._logger">
 <code class="descname">_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx._logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create TcEx app logger instance.</p>
-<p>The logger is accessible via the <code class="docutils literal"><span class="pre">tc.log.&lt;level&gt;</span></code> call.</p>
+<p>The logger is accessible via the <code class="docutils literal notranslate"><span class="pre">tc.log.&lt;level&gt;</span></code> call.</p>
 <p><strong>Logging examples</strong></p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;logging debug&#39;</span><span class="p">)</span>
@@ -328,7 +319,7 @@ build classes to support custom Indicators.  All other resources are available
 via this class.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Resource Classes can be accessed using <code class="docutils literal"><span class="pre">tcex.resources.&lt;Class&gt;</span></code> or using
+<p class="last">Resource Classes can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.resources.&lt;Class&gt;</span></code> or using
 tcex.resource(‘&lt;resource name&gt;’).</p>
 </div>
 </dd></dl>
@@ -390,7 +381,7 @@ results required.</p>
 <code class="descname">exit</code><span class="sig-paren">(</span><em>code=None</em>, <em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Application exit method with proper exit code</p>
 <p>The method will run the Python standard sys.exit() with the exit code
-previously defined via <a class="reference internal" href="#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal"><span class="pre">exit_code()</span></code></a> or provided
+previously defined via <a class="reference internal" href="#tcex.tcex.TcEx.exit_code" title="tcex.tcex.TcEx.exit_code"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit_code()</span></code></a> or provided
 during the call of this method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -610,7 +601,7 @@ this limit will be truncated by this method.</p>
 <dd><p>Include the Playbook Module.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Playbook methods can be accessed using <code class="docutils literal"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
+<p class="last">Playbook methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.playbook.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -621,7 +612,7 @@ this limit will be truncated by this method.</p>
 <p>Generates a dictionary for use with the Python Requests module format
 when proxy is required for remote connections.</p>
 <p><strong>Example Response</strong></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://user:pass@10.10.1.10:3128/&quot;</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://user:pass@10.10.1.10:3128/&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -703,7 +694,7 @@ method will store the values for TC to read and put into the Database.</p>
 <dt id="tcex.tcex.TcEx.s">
 <code class="descname">s</code><span class="sig-paren">(</span><em>data</em>, <em>errors='strict'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decode value using correct Python 2/3 method.</p>
-<p>This method is intended to replace the <code class="xref py py-meth docutils literal"><span class="pre">to_string()</span></code> method with
+<p>This method is intended to replace the <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_string()</span></code> method with
 better logic to handle poorly encoded unicode data in Python2 and still work in Python3.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -864,7 +855,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <dd><p>Include the Utils module.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Utils methods can be accessed using <code class="docutils literal"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
+<p class="last">Utils methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.utils.&lt;method&gt;</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -874,9 +865,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -894,7 +883,7 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -912,35 +901,24 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

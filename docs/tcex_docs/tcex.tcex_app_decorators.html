@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.1 documentation</title>
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,30 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
-        <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html"/>
-        <link rel="prev" title="tcex.tcex module" href="tcex.tcex.html"/>
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.tcex_argparser module" href="tcex.tcex_argparser.html" />
+    <link rel="prev" title="tcex.tcex module" href="tcex.tcex.html" />
 
 
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -69,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -168,7 +158,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
@@ -176,9 +166,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -228,11 +219,11 @@
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Benchmark">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Benchmark</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Log benchmarking times.</p>
 <p>This decorator will log the time of execution (benchmark_time) to the app.log file. It can be
 helpful in troubleshooting performance issues with Apps.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -266,10 +257,10 @@ helpful in troubleshooting performance issues with Apps.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Debug">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Debug</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Debug function inputs.</p>
 <p>This decorator will log the inputs to the function to assist in debugging an App.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@Debug</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">args2</span><span class="p">):</span>
@@ -297,17 +288,51 @@ helpful in troubleshooting performance issues with Apps.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="tcex.tcex_app_decorators.FailOn">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOn</code><span class="sig-paren">(</span><em>arg</em>, <em>values</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Fail App if conditions are met.</p>
+<p>This decorator allows for the App to exit on conditions defined in the function
+parameters.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@FailOn</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fail_on_false&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;false&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Operation returned a value of &quot;false&quot;.&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.FailOn.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOn.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOn.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="tcex.tcex_app_decorators.IterateOnArg">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Debug function inputs.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Iterate on values stored in <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>This decorator will iterate over all value of the supplied arg and return results. This feature
 is helpful when processing a single value (String) or array of values (StringArray). If the App
-was provided the arg <code class="docutils literal"><span class="pre">self.args.colors</span></code> with a value of <code class="docutils literal"><span class="pre">['blue',</span> <span class="pre">'green',</span> <span class="pre">'magenta']</span></code>, then
+was provided the arg <code class="docutils literal notranslate"><span class="pre">self.args.colors</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">['blue',</span> <span class="pre">'green',</span> <span class="pre">'magenta']</span></code>, then
 this decorator would call the function 3 times. Each call to the function would pass one value
 from the array. The return values are stored and returned all at once after the last value is
 processed.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># the args value of &quot;colors&quot; refers to ``self.args.colors``.</span>
@@ -339,11 +364,11 @@ processed.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.OnException">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnException</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Handle Exception in an App function.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Set exit message on failed execution.</p>
 <p>This decorator will catch the generic “Exception” error, log the supplied error message, set
 the “exit_message”, and exit the App with an exit code of 1.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@OnException</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Failed to process JSON data.&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
@@ -373,11 +398,11 @@ the “exit_message”, and exit the App with an exit code of 1.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.OnSuccess">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">OnSuccess</code><span class="sig-paren">(</span><em>msg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Set exit message on successful execution.</p>
 <p>This decorator will set the supplied msg as the App “exit_message”. Typically and App would
 only have 1 exit message so this decorator would typically be used in App that used “actions”.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@OnSuccess</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Successfully processed JSON data.&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">json_data</span><span class="p">):</span>
@@ -407,12 +432,12 @@ only have 1 exit message so this decorator would typically be used in App that u
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Output">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Store the method return value in self.&lt;attribute&gt;.</p>
 <p>This decorator will write, append, or extend the methods return value to the App attribute
-provided in the <code class="docutils literal"><span class="pre">attribute</span></code> input. The <code class="docutils literal"><span class="pre">attribute</span></code> must first be defined in the
-<code class="docutils literal"><span class="pre">__init__()</span></code> method of the App before the decorator is used.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+provided in the <code class="docutils literal notranslate"><span class="pre">attribute</span></code> input. The <code class="docutils literal notranslate"><span class="pre">attribute</span></code> must first be defined in the
+<code class="docutils literal notranslate"><span class="pre">__init__()</span></code> method of the App before the decorator is used.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -450,11 +475,11 @@ provided in the <code class="docutils literal"><span class="pre">attribute</span
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.ReadArg">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">ReadArg</code><span class="sig-paren">(</span><em>arg</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Read value of App arg resolving any playbook variables.</p>
 <p>This decorator will read the args from Redis, if it is a playbook variable, and pass the
 resolved value to the function.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@ReadArg</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
@@ -484,7 +509,7 @@ resolved value to the function.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.WriteOutput">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">WriteOutput</code><span class="sig-paren">(</span><em>key</em>, <em>variable_type</em>, <em>value=None</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Write the App output variables to Redis.</p>
 <p>This decorator will take the functions return value and write the data to Redis using the
 key and variable_type. An optional hard coded value can be passed, which will override the
@@ -492,7 +517,7 @@ return value. If multiple value are provided for the same output variable there 
 to overwrite the previous value.</p>
 <p>This decorator is intended for very simple Apps. Using the <cite>write_output()</cite> method of the App
 template is the recommended way of writing output data.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@WriteOutput</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="n">variable_type</span><span class="o">=</span><span class="s1">&#39;String&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
@@ -523,9 +548,7 @@ template is the recommended way of writing output data.</p>
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -543,7 +566,7 @@ template is the recommended way of writing output data.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -561,35 +584,24 @@ template is the recommended way of writing output data.</p>
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Testing Apps - Profiles (tcprofile) &mdash; TcEx 0.9.1 documentation</title>
+  <title>Testing Apps - Profiles (tcprofile) &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Testing Apps - Running Profiles (tcrun)" href="testing_apps_tcrun.html"/>
-        <link rel="prev" title="Building Apps - Packaging (tcpackage)" href="building_apps_tcpackage.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testing Apps - Running Profiles (tcrun)" href="testing_apps_tcrun.html" />
+    <link rel="prev" title="Building Apps - Packaging (tcpackage)" href="building_apps_tcpackage.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -161,7 +152,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -169,9 +160,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -213,11 +205,11 @@
 
   <div class="section" id="testing-apps-profiles-tcprofile">
 <span id="testing-apps-tcprofile"></span><h1>Testing Apps - Profiles (tcprofile)<a class="headerlink" href="#testing-apps-profiles-tcprofile" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal"><span class="pre">tcprofile</span></code> CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.</p>
-<p>By default the <code class="docutils literal"><span class="pre">tcprofile</span></code> command will add any default values defined in the <strong>install.json</strong> file to the args value.  Args without a default value will have to populated manually. For validation rules there are 2 rules created automatically for each output variables.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variables is of the correct type (e.g., String value is a &lt;str&gt; type, StringArray value is of &lt;list&gt; type.).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.</p>
+<p>By default the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command will add any default values defined in the <strong>install.json</strong> file to the args value.  Args without a default value will have to populated manually. For validation rules there are 2 rules created automatically for each output variables.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variables is of the correct type (e.g., String value is a &lt;str&gt; type, StringArray value is of &lt;list&gt; type.).</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">The generation of profiles uses the <strong>install.json</strong> file to create the <code class="docutils literal"><span class="pre">args.apps</span></code> section and the <code class="docutils literal"><span class="pre">validation</span></code> section of the profile. It is important that all inputs and outputs are defined in the <strong>install.json</strong> prior to running the <code class="docutils literal"><span class="pre">tcprofile</span></code> command.</p>
+<p class="last">The generation of profiles uses the <strong>install.json</strong> file to create the <code class="docutils literal notranslate"><span class="pre">args.apps</span></code> section and the <code class="docutils literal notranslate"><span class="pre">validation</span></code> section of the profile. It is important that all inputs and outputs are defined in the <strong>install.json</strong> prior to running the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command.</p>
 </div>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -225,7 +217,7 @@
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcprofile</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">tcprofile</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">action</span> <span class="p">{</span><span class="n">create</span><span class="p">,</span><span class="n">delete</span><span class="p">,</span><span class="n">replace_validation</span><span class="p">,</span><span class="n">update</span><span class="p">,</span><span class="n">validate</span><span class="p">}]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">ij</span> <span class="n">IJ</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outfile</span> <span class="n">OUTFILE</span><span class="p">]</span>
                  <span class="p">[</span><span class="o">--</span><span class="n">profile_name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">redis_host</span> <span class="n">REDIS_HOST</span><span class="p">]</span>
@@ -252,18 +244,18 @@
 <div class="section" id="common-usage">
 <h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
 <p>To create a new profile run the following command.  The profile will be created in the <strong>tcex.d/profiles</strong> directory of the project.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">tcprofile</span> <span class="o">--</span><span class="n">name</span> <span class="n">simple_data</span>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcprofile</span> <span class="o">--</span><span class="n">name</span> <span class="n">simple_data</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command can be run multiple times to generate several different profiles with different input and/or output variables.</p>
 </div>
 </div>
 <div class="section" id="output">
 <h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
-<p>After running the <code class="docutils literal"><span class="pre">tcprofile</span></code> a the directory <strong>tcex.d</strong> will be created in the project directory.  The <strong>tcex.d</strong> directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span>tcex.d
+<p>After running the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> a the directory <strong>tcex.d</strong> will be created in the project directory.  The <strong>tcex.d</strong> directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>tcex.d
 ├── data
 └── profiles
     └── simple_data.json
@@ -272,17 +264,17 @@
 </div>
 <div class="section" id="updates">
 <h3>Updates<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h3>
-<p>Once a profile has been created, testing value needs to be added to the JSON data.  All inputs in the <code class="docutils literal"><span class="pre">args.apps</span></code> section need to have values set or updated. A description can be added to define the intent of the testing profile.</p>
+<p>Once a profile has been created, testing value needs to be added to the JSON data.  All inputs in the <code class="docutils literal notranslate"><span class="pre">args.apps</span></code> section need to have values set or updated. A description can be added to define the intent of the testing profile.</p>
 </div>
 <div class="section" id="environment-variables">
 <h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
-<p>An important part of local testing is setting up the appropriate environmental variables.  In each profile the <code class="docutils literal"><span class="pre">args.default</span></code> section has all the default args that will be provided to every App by the ThreatConnect Platform during execution. The values for these args can be entered directly into the configuration file, however to keep sensitive data out of VCS systems the use of environment variables is employed.</p>
+<p>An important part of local testing is setting up the appropriate environmental variables.  In each profile the <code class="docutils literal notranslate"><span class="pre">args.default</span></code> section has all the default args that will be provided to every App by the ThreatConnect Platform during execution. The values for these args can be entered directly into the configuration file, however to keep sensitive data out of VCS systems the use of environment variables is employed.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This list of environment variables can be found by running <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">-h</span></code>.</p>
+<p class="last">This list of environment variables can be found by running <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">-h</span></code>.</p>
 </div>
 <p>Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done the environment file will need to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span># ThreatConnect API Credential and URL
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span># ThreatConnect API Credential and URL
 export API_DEFAULT_ORG=MyOrg
 export API_ACCESS_ID=1234
 export API_SECRET_KEY=abc123
@@ -304,14 +296,14 @@ export DB_PORT=6379
 </div>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">To test that the values are available run <code class="docutils literal"><span class="pre">echo</span> <span class="pre">$API_ACCESS_ID</span></code>.</p>
+<p class="last">To test that the values are available run <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$API_ACCESS_ID</span></code>.</p>
 </div>
 </div>
 </div>
 <div class="section" id="profile-format">
 <h2>Profile Format<a class="headerlink" href="#profile-format" title="Permalink to this headline">¶</a></h2>
 <p>Multiple testing profiles can be created in the <strong>tcex.d/profiles</strong> directory to increase testing coverage.  Each profile must include a unique <strong>profile_name</strong>. One or more groups can be added to a profile to allow testing of multiple profiles at once.</p>
-<div class="code javascript highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span>
+<div class="code javascript highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
   <span class="p">{</span>
     <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="s2">&quot;app&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -382,27 +374,27 @@ export DB_PORT=6379
 </div>
 <div class="section" id="args-app">
 <h3>args.app<a class="headerlink" href="#args-app" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">args.app</span></code> section of the profile contains all the CLI Args from the <code class="docutils literal"><span class="pre">params</span></code> section of the <strong>install.json</strong> file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">args.app</span></code> section of the profile contains all the CLI Args from the <code class="docutils literal notranslate"><span class="pre">params</span></code> section of the <strong>install.json</strong> file.</p>
 </div>
 <div class="section" id="args-default">
 <h3>args.default<a class="headerlink" href="#args-default" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">args.default</span></code> section has all the default args that are passed to all Apps by ThreatConnect. Some of these args are in the format <code class="docutils literal"><span class="pre">$env.&lt;value&gt;</span></code> or <code class="docutils literal"><span class="pre">$envs.&lt;value&gt;</span></code>. Args in this format reference environment variables defined on the local workstation. These environment variables must be created manually by the developer.  The <code class="docutils literal"><span class="pre">$envs.&lt;values&gt;</span></code> are used to represent sensitive data, such as API credentials and will be masked when printed to the screen.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">args.default</span></code> section has all the default args that are passed to all Apps by ThreatConnect. Some of these args are in the format <code class="docutils literal notranslate"><span class="pre">$env.&lt;value&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">$envs.&lt;value&gt;</span></code>. Args in this format reference environment variables defined on the local workstation. These environment variables must be created manually by the developer.  The <code class="docutils literal notranslate"><span class="pre">$envs.&lt;values&gt;</span></code> are used to represent sensitive data, such as API credentials and will be masked when printed to the screen.</p>
 </div>
 <div class="section" id="autoclear">
 <h3>autoclear<a class="headerlink" href="#autoclear" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">autoclear</span></code> boolean field enables clearing of Redis and/or ThreatConnect data when set to <strong>true</strong>. By using autoclear the developer can assure that validation rules are not using stale data. The most common use case is to leave this enabled unless using output data from previous profiles.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">autoclear</span></code> boolean field enables clearing of Redis and/or ThreatConnect data when set to <strong>true</strong>. By using autoclear the developer can assure that validation rules are not using stale data. The most common use case is to leave this enabled unless using output data from previous profiles.</p>
 </div>
 <div class="section" id="data-files">
 <h3>data_files<a class="headerlink" href="#data-files" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">data_files</span></code> section of the configuration allow an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the <a class="reference internal" href="#id1">Data Files</a> section.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">data_files</span></code> section of the configuration allow an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the <a class="reference internal" href="#id1">Data Files</a> section.</p>
 </div>
 <div class="section" id="description">
 <h3>description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">description</span></code> field allows for a helpful message that will be logged when the profile is run (e.g., “Pass test of simple JSON data.” or “Fail test when passing in null data.”).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">description</span></code> field allows for a helpful message that will be logged when the profile is run (e.g., “Pass test of simple JSON data.” or “Fail test when passing in null data.”).</p>
 </div>
 <div class="section" id="exit-codes">
 <h3>exit_codes<a class="headerlink" href="#exit-codes" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">exit_codes</span></code> section allows for one or more exit codes to be defined. If the exit code of the App matches one of the defined values then the profile was completed successfully. For “fail” testing adding an exit code of <strong>1</strong> is appropriate.  If the App exits with a <strong>1</strong> then the profile succeeded.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">exit_codes</span></code> section allows for one or more exit codes to be defined. If the exit code of the App matches one of the defined values then the profile was completed successfully. For “fail” testing adding an exit code of <strong>1</strong> is appropriate.  If the App exits with a <strong>1</strong> then the profile succeeded.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">For Job Apps there are 3 valid exit codes.  An exit code of 0 indicates success, 1 indicates failure, and 3 indicates partial success/failure.</p>
@@ -410,28 +402,28 @@ export DB_PORT=6379
 </div>
 <div class="section" id="groups">
 <h3>groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">groups</span></code> section allows for one or more group names so that the profile can be run grouped with other profiles.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">groups</span></code> section allows for one or more group names so that the profile can be run grouped with other profiles.</p>
 </div>
 <div class="section" id="install-json">
 <h3>install_json<a class="headerlink" href="#install-json" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">install_json</span></code> field defines the install.json filename of the App. This is typically <code class="docutils literal"><span class="pre">install.json</span></code> unless working in a Multi-App bundle.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">install_json</span></code> field defines the install.json filename of the App. This is typically <code class="docutils literal notranslate"><span class="pre">install.json</span></code> unless working in a Multi-App bundle.</p>
 </div>
 <div class="section" id="profile-name">
 <h3>profile_name<a class="headerlink" href="#profile-name" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">profile_name</span></code> field defines the name of the profile.  This is the name that will be used to run the profile using the <code class="docutils literal"><span class="pre">tcrun</span></code> command.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">profile_name</span></code> field defines the name of the profile.  This is the name that will be used to run the profile using the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command.</p>
 </div>
 <div class="section" id="quiet">
 <h3>quiet<a class="headerlink" href="#quiet" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">quiet</span></code> boolean field will silence all App output when set to <strong>true</strong>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">quiet</span></code> boolean field will silence all App output when set to <strong>true</strong>.</p>
 </div>
 <div class="section" id="validations">
 <h3>validations<a class="headerlink" href="#validations" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">validations</span></code> section of the configuration file defines validations rules for testing Playbook App outputs.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">validations</span></code> section of the configuration file defines validations rules for testing Playbook App outputs.</p>
 </div>
 </div>
 <div class="section" id="staging-redis-data">
 <h2>Staging Redis Data<a class="headerlink" href="#staging-redis-data" title="Permalink to this headline">¶</a></h2>
-<p>In order to test using variable inputs the data can be manually added to Redis.  The <code class="docutils literal"><span class="pre">tcrun</span></code> command has functionality to “stage” the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.</p>
+<p>In order to test using variable inputs the data can be manually added to Redis.  The <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command has functionality to “stage” the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.</p>
 </div>
 <div class="section" id="id1">
 <h2>Data Files<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -439,7 +431,7 @@ export DB_PORT=6379
 <p class="first admonition-title">Note</p>
 <p class="last">Data files can contain a single data input or multiple data inputs.  If the data is reusable it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.</p>
 </div>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[{</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
   <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">[{</span>
       <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">125</span><span class="p">,</span>
       <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;threat001-build-testing&quot;</span><span class="p">,</span>
@@ -488,9 +480,9 @@ export DB_PORT=6379
 </div>
 <div class="section" id="data-validation">
 <h2>Data Validation<a class="headerlink" href="#data-validation" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">tcrun</span></code> command will run any validation rules defined in the profile. Currently the <code class="docutils literal"><span class="pre">tcrun</span></code> command can validate the output data store in Redis by the App.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command will run any validation rules defined in the profile. Currently the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command can validate the output data store in Redis by the App.</p>
 <p><strong>Example Configuration</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="s2">&quot;validations&quot;</span><span class="o">:</span> <span class="p">[</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;validations&quot;</span><span class="o">:</span> <span class="p">[</span>
   <span class="p">{</span>
     <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
       <span class="s2">&quot;four&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
@@ -513,16 +505,14 @@ export DB_PORT=6379
 </div>
 <div class="section" id="supported-operators">
 <h3>Supported Operators<a class="headerlink" href="#supported-operators" title="Permalink to this headline">¶</a></h3>
-<p>For a list of supported <strong>operator</strong> see the <a class="reference internal" href="tcex_docs/bin.tcrun.html#bin.tcrun.TcRun.operators" title="bin.tcrun.TcRun.operators"><code class="xref py py-meth docutils literal"><span class="pre">operators()</span></code></a> property of the <code class="docutils literal"><span class="pre">tcrun</span></code> command.</p>
+<p>For a list of supported <strong>operator</strong> see the <a class="reference internal" href="tcex_docs/bin.tcrun.html#bin.tcrun.TcRun.operators" title="bin.tcrun.TcRun.operators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operators()</span></code></a> property of the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command.</p>
 </div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -540,7 +530,7 @@ export DB_PORT=6379
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -558,35 +548,24 @@ export DB_PORT=6379
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

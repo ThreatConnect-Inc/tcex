@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App - Directory Structure &mdash; TcEx 0.9.1 documentation</title>
+  <title>App - Directory Structure &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Module - Batch" href="module_batch.html"/>
-        <link rel="prev" title="App - Deployment Configuration" href="app_deployment_configuration.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module - Batch" href="module_batch.html" />
+    <link rel="prev" title="App - Deployment Configuration" href="app_deployment_configuration.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -155,7 +146,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -163,9 +154,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -207,7 +199,7 @@
 
   <div class="section" id="app-directory-structure">
 <span id="id1"></span><h1>App - Directory Structure<a class="headerlink" href="#app-directory-structure" title="Permalink to this headline">¶</a></h1>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span>├── .gitignore
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>├── .gitignore
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── __main__.py
@@ -234,7 +226,7 @@
 <div class="section" id="gitignore-optional">
 <h2>.gitignore (optional)<a class="headerlink" href="#gitignore-optional" title="Permalink to this headline">¶</a></h2>
 <p>Template file that specifies intentionally untracked files that Git should ignore. This file is part of the template update, but can be optionally updated if required.</p>
-<div class="highlight-bash"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -340,8 +332,8 @@ bcs*
 </div>
 <div class="section" id="pre-commit-config-yaml-optional">
 <h2>.pre-commit-config.yaml (optional)<a class="headerlink" href="#pre-commit-config-yaml-optional" title="Permalink to this headline">¶</a></h2>
-<p>Configuration file for the <code class="docutils literal"><span class="pre">pre-commit</span></code> Python command line tool. This configuration is the same one that is used for internal development of Apps.</p>
-<div class="highlight-yaml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<p>Configuration file for the <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> Python command line tool. This configuration is the same one that is used for internal development of Apps.</p>
+<div class="highlight-yaml notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -366,39 +358,39 @@ bcs*
 23
 24
 25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">repos</span><span class="p p-Indicator">:</span>
-<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
-    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
-    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">fix-encoding-pragma</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
-        <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">repos</span><span class="p">:</span>
+<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/pre-commit-hooks</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-json</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">double-quote-string-fixer</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fix-encoding-pragma</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pretty-format-json</span>
+        <span class="nt">args</span><span class="p">:</span>
         <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">--autofix</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
-<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/ambv/black</span>
-    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
-    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
-        <span class="l l-Scalar l-Scalar-Plain">language_version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">python3.6</span>
-<span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
-    <span class="l l-Scalar l-Scalar-Plain">rev</span><span class="p p-Indicator">:</span> <span class="s">&#39;master&#39;</span>
-    <span class="l l-Scalar l-Scalar-Plain">hooks</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span>   <span class="l l-Scalar l-Scalar-Plain">id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
-        <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trailing-whitespace</span>
+<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/ambv/black</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
+        <span class="nt">language_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python3.6</span>
+<span class="p p-Indicator">-</span>   <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/pre-commit/mirrors-pylint</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="s">&#39;master&#39;</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span>   <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pylint</span>
+        <span class="nt">args</span><span class="p">:</span>
         <span class="p p-Indicator">-</span>    <span class="l l-Scalar l-Scalar-Plain">--disable=C0103,C0302,C0330,E0401,R0205,R0801,R0902,R0903,R0904,R0912,R0913,R0914,R0915,R1702,W0212,W0511,W0703,W1202</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="readme-md-required">
 <h2>README.md (required)<a class="headerlink" href="#readme-md-required" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">README.md</span></code> file should contain any relevant information for the App and the App release notes.</p>
-<div class="highlight-md"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file should contain any relevant information for the App and the App release notes.</p>
+<div class="highlight-md notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gh">#</span> Release Notes
@@ -411,7 +403,7 @@ bcs*
 <div class="section" id="main-py-required">
 <h2>__main__.py (required)<a class="headerlink" href="#main-py-required" title="Permalink to this headline">¶</a></h2>
 <p>Template file that should not be modified.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
   4
@@ -623,8 +615,8 @@ bcs*
 </div>
 <div class="section" id="app-py-required">
 <h2>app.py (required)<a class="headerlink" href="#app-py-required" title="Permalink to this headline">¶</a></h2>
-<p>This file contains the “main” App logic and contains the <code class="docutils literal"><span class="pre">run()</span></code> method that is called by default. It also can contain methods for <strong>tc_actions</strong>.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<p>This file contains the “main” App logic and contains the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method that is called by default. It also can contain methods for <strong>tc_actions</strong>.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -673,7 +665,7 @@ bcs*
 <div class="section" id="args-py-required">
 <h2>args.py (required)<a class="headerlink" href="#args-py-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains the args required for the App to function properly.  Only App args are required to be defined.  The default args are part of the TcEx framework and are added automatically.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -696,7 +688,7 @@ bcs*
 <div class="section" id="install-json-required">
 <h2>install.json (required)<a class="headerlink" href="#install-json-required" title="Permalink to this headline">¶</a></h2>
 <p>This is the main configuration file for the App and controls what inputs and outputs will be presented to the user.</p>
-<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -836,7 +828,7 @@ bcs*
 </div>
 <div class="section" id="log-temporary">
 <h2>log (temporary)<a class="headerlink" href="#log-temporary" title="Permalink to this headline">¶</a></h2>
-<p>This directory is created when running testing profile locally. All App output is written to this directory as well as the output of the <code class="docutils literal"><span class="pre">tcrun</span></code> command.</p>
+<p>This directory is created when running testing profile locally. All App output is written to this directory as well as the output of the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command.</p>
 </div>
 <div class="section" id="log-app-log-temporary">
 <h2>log/app.log (temporary)<a class="headerlink" href="#log-app-log-temporary" title="Permalink to this headline">¶</a></h2>
@@ -848,12 +840,12 @@ bcs*
 </div>
 <div class="section" id="log-run-log-temporary">
 <h2>log/run.log (temporary)<a class="headerlink" href="#log-run-log-temporary" title="Permalink to this headline">¶</a></h2>
-<p>This log file contains the output from the <code class="docutils literal"><span class="pre">tcrun</span></code> command and will contain information about validations rules.</p>
+<p>This log file contains the output from the <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command and will contain information about validations rules.</p>
 </div>
 <div class="section" id="playbook-app-py-required">
 <h2>playbook_app.py (required)<a class="headerlink" href="#playbook-app-py-required" title="Permalink to this headline">¶</a></h2>
-<p>Template file that contains base logic for a Playbook App. This file should not be edited and will get updated when using <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<p>Template file that contains base logic for a Playbook App. This file should not be edited and will get updated when using <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -932,7 +924,7 @@ bcs*
 <div class="section" id="pyproject-toml-optional">
 <h2>pyproject.toml (optional)<a class="headerlink" href="#pyproject-toml-optional" title="Permalink to this headline">¶</a></h2>
 <p>This is a Python tool configuration file which contains the configuration for the “black” formatting tool used to format all Python code.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">black</span><span class="p">]</span>
 <span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
@@ -942,15 +934,15 @@ bcs*
 </div>
 <div class="section" id="requirements-txt-required">
 <h2>requirements.txt (required)<a class="headerlink" href="#requirements-txt-required" title="Permalink to this headline">¶</a></h2>
-<p>This file contains all the required Python dependencies for the App. The requirements.txt file is used by the <code class="docutils literal"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">0.9</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.0</span>
+<p>This file contains all the required Python dependencies for the App. The requirements.txt file is used by the <code class="docutils literal notranslate"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">0.9</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.0</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="run-py-required">
 <h2>run.py (required)<a class="headerlink" href="#run-py-required" title="Permalink to this headline">¶</a></h2>
-<p>Template file that is called by ThreatConnect and <code class="docutils literal"><span class="pre">tcrun</span></code> to launch the App. This file should not be edited and will get updated when using <code class="docutils literal"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<p>Template file that is called by ThreatConnect and <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to launch the App. This file should not be edited and will get updated when using <code class="docutils literal notranslate"><span class="pre">tcprofile</span> <span class="pre">--action</span> <span class="pre">update</span> <span class="pre">--template</span> <span class="pre">&lt;template</span> <span class="pre">name&gt;</span></code> command.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -1121,7 +1113,7 @@ bcs*
                     <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
                 <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
                     <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                 <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># default to run method</span>
@@ -1147,7 +1139,7 @@ bcs*
 <div class="section" id="setup-cfg-optional">
 <h2>setup.cfg (optional)<a class="headerlink" href="#setup-cfg-optional" title="Permalink to this headline">¶</a></h2>
 <p>This file contains Python configurations data, specifically for linting ignores/excludes.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -1165,7 +1157,7 @@ bcs*
 </div>
 <div class="section" id="tcex-d-optional">
 <h2>tcex.d (optional)<a class="headerlink" href="#tcex-d-optional" title="Permalink to this headline">¶</a></h2>
-<p>This directory is created when creating testing profile using the <code class="docutils literal"><span class="pre">tcprofile</span></code> command.  This directory hold both the staging data and profiles JSON files.</p>
+<p>This directory is created when creating testing profile using the <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command.  This directory hold both the staging data and profiles JSON files.</p>
 </div>
 <div class="section" id="tcex-d-data-optional">
 <h2>tcex.d/data (optional)<a class="headerlink" href="#tcex-d-data-optional" title="Permalink to this headline">¶</a></h2>
@@ -1178,7 +1170,7 @@ bcs*
 <div class="section" id="tcex-json-required">
 <h2>tcex.json (required)<a class="headerlink" href="#tcex-json-required" title="Permalink to this headline">¶</a></h2>
 <p>This is the main TcEx framework configuration file. It required to run local testing and for packaging, but should not be included in the App package.</p>
-<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -1222,8 +1214,8 @@ bcs*
 </div>
 <div class="section" id="tcex-json-schema-json-optional">
 <h2>tcex_json_schema.json (optional)<a class="headerlink" href="#tcex-json-schema-json-optional" title="Permalink to this headline">¶</a></h2>
-<p>This is the JSON schema for the install.json configuration file. If this file is present the <code class="docutils literal"><span class="pre">tcpackage</span></code> command will validate the “install.json” before packaging the App.</p>
-<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+<p>This is the JSON schema for the install.json configuration file. If this file is present the <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> command will validate the “install.json” before packaging the App.</p>
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
   4
@@ -1723,9 +1715,7 @@ bcs*
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -1743,7 +1733,7 @@ bcs*
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -1761,35 +1751,24 @@ bcs*
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

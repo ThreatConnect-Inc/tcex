@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Message TC &mdash; TcEx 0.9.1 documentation</title>
+  <title>Message TC &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Parser / Args" href="parser.html"/>
-        <link rel="prev" title="Logging" href="logging.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parser / Args" href="parser.html" />
+    <link rel="prev" title="Logging" href="logging.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -132,7 +123,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -140,9 +131,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -184,21 +176,21 @@
 
   <div class="section" id="message-tc">
 <span id="id1"></span><h1>Message TC<a class="headerlink" href="#message-tc" title="Permalink to this headline">¶</a></h1>
-<p>All ThreatConnect © Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal"><span class="pre">message_tc()</span></code></a> method to handle writing this message.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
+<p>All ThreatConnect © Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.message_tc" title="tcex.tcex.TcEx.message_tc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">message_tc()</span></code></a> method to handle writing this message.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">The Message TC exit message only supports up to 255 characters.  All data added after that will be truncated.</p>
 </div>
 <div class="admonition hint">
 <p class="first admonition-title">Hint</p>
-<p class="last">A successful execution might output: <code class="docutils literal"><span class="pre">A</span> <span class="pre">total</span> <span class="pre">of</span> <span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">were</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
+<p class="last">A successful execution might output: <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">total</span> <span class="pre">of</span> <span class="pre">132</span> <span class="pre">Indicators</span> <span class="pre">were</span> <span class="pre">written</span> <span class="pre">to</span> <span class="pre">Acme</span> <span class="pre">Corp.</span></code></p>
 </div>
 <div class="admonition hint">
 <p class="first admonition-title">Hint</p>
-<p class="last">A failed execution might output: <code class="docutils literal"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
+<p class="last">A failed execution might output: <code class="docutils literal notranslate"><span class="pre">Invalid</span> <span class="pre">API</span> <span class="pre">key</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">remote</span> <span class="pre">service.</span></code></p>
 </div>
 <p><strong>Example Exit Message</strong></p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -233,9 +225,7 @@
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -253,7 +243,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -271,35 +261,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module - Utils &mdash; TcEx 0.9.1 documentation</title>
+  <title>Module - Utils &mdash; TcEx 0.9.2 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Authorization (Token / HMAC)" href="authorization.html"/>
-        <link rel="prev" title="Module - Resources" href="module_resource.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Authorization (Token / HMAC)" href="authorization.html" />
+    <link rel="prev" title="Module - Resources" href="module_resource.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.2
               </div>
 
 
@@ -151,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -159,9 +150,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -206,7 +198,7 @@
 <p>The ThreatConnect © TcEx App Framework provides common <em>utils</em> methods to assist in writing Apps.</p>
 <div class="section" id="format-date-time">
 <h2>Format Date Time<a class="headerlink" href="#format-date-time" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime" title="tcex.tcex_utils.TcExUtils.format_datetime"><code class="xref py py-mod docutils literal"><span class="pre">format_datetime</span></code></a> method accepts multiple input types and returns an ISO formated datetime string by default.  Optionally the timezone of the timestamp can be provided as well as the <strong>strftime</strong> format.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime" title="tcex.tcex_utils.TcExUtils.format_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">format_datetime</span></code></a> method accepts multiple input types and returns an ISO formated datetime string by default.  Optionally the timezone of the timestamp can be provided as well as the <strong>strftime</strong> format.</p>
 <p>Accepted Formats:</p>
 <ol class="arabic simple">
 <li>Human Input (e.g 30 days ago, last friday)</li>
@@ -216,11 +208,11 @@
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This module supports using <code class="docutils literal"><span class="pre">%s</span></code> to retrieve the datetime in Unix format.</p>
+<p class="last">This module supports using <code class="docutils literal notranslate"><span class="pre">%s</span></code> to retrieve the datetime in Unix format.</p>
 </div>
 <div class="section" id="unix-timestamp-integer">
 <h3>Unix Timestamp Integer<a class="headerlink" href="#unix-timestamp-integer" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="mi">1510052400</span><span class="p">)</span>
@@ -230,7 +222,7 @@
 </div>
 <div class="section" id="unix-timestamp-string">
 <h3>Unix Timestamp String<a class="headerlink" href="#unix-timestamp-string" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;1510686617.298753&#39;</span><span class="p">)</span>
@@ -240,7 +232,7 @@
 </div>
 <div class="section" id="iso-8601-date-zulu">
 <h3>ISO 8601 Date (Zulu)<a class="headerlink" href="#iso-8601-date-zulu" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">)</span>
@@ -250,7 +242,7 @@
 </div>
 <div class="section" id="iso-8601-date-zulu-in-us-eastern-time">
 <h3>ISO 8601 Date (Zulu) in US/Eastern Time<a class="headerlink" href="#iso-8601-date-zulu-in-us-eastern-time" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42Z&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
@@ -260,7 +252,7 @@
 </div>
 <div class="section" id="iso-8601-date-w-tz-offset">
 <h3>ISO 8601 Date w/ TZ Offset<a class="headerlink" href="#iso-8601-date-w-tz-offset" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-05:00&#39;</span><span class="p">)</span>
@@ -270,7 +262,7 @@
 </div>
 <div class="section" id="iso-8601-date-w-tz-offset-in-us-eastern-time">
 <h3>ISO 8601 Date w/ TZ Offset in US/Eastern Time<a class="headerlink" href="#iso-8601-date-w-tz-offset-in-us-eastern-time" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;2017-11-08T16:52:42-00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">)</span>
@@ -280,7 +272,7 @@
 </div>
 <div class="section" id="now-utc-unix-timestamp">
 <h3>Now UTC Unix timestamp<a class="headerlink" href="#now-utc-unix-timestamp" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -290,7 +282,7 @@
 </div>
 <div class="section" id="now-central">
 <h3>Now Central<a class="headerlink" href="#now-central" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Central&#39;</span><span class="p">)</span>
@@ -300,7 +292,7 @@
 </div>
 <div class="section" id="tomorrow-at-6-am">
 <h3>Tomorrow at 6 AM<a class="headerlink" href="#tomorrow-at-6-am" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;tomorrow at 6 am&#39;</span><span class="p">)</span>
@@ -310,7 +302,7 @@
 </div>
 <div class="section" id="next-monday-at-noon">
 <h3>Next Monday at noon<a class="headerlink" href="#next-monday-at-noon" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;next monday at noon&#39;</span><span class="p">)</span>
@@ -320,7 +312,7 @@
 </div>
 <div class="section" id="weeks-ago-us-eastern-formatted-for-threatconnect">
 <h3>3 Weeks Ago US/Eastern Formatted for ThreatConnect<a class="headerlink" href="#weeks-ago-us-eastern-formatted-for-threatconnect" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;...</span><span class="n">snipped</span><span class="o">&gt;</span>
 <span class="hll"><span class="n">tcex</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">format_datetime</span><span class="p">(</span><span class="s1">&#39;3 weeks ago&#39;</span><span class="p">,</span> <span class="s1">&#39;US/Eastern&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%SZ&#39;</span><span class="p">)</span>
@@ -331,11 +323,11 @@
 </div>
 <div class="section" id="date-to-datetime">
 <h2>Date to Datetime<a class="headerlink" href="#date-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime" title="tcex.tcex_utils.TcExUtils.date_to_datetime"><code class="xref py py-mod docutils literal"><span class="pre">date_to_datetime</span></code></a> method uses the dateutil module to parse the provided data and return a datetime.datetime object.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime" title="tcex.tcex_utils.TcExUtils.date_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">date_to_datetime</span></code></a> method uses the dateutil module to parse the provided data and return a datetime.datetime object.</p>
 </div>
 <div class="section" id="human-time-to-datetime">
 <h2>Human Time to Datetime<a class="headerlink" href="#human-time-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="tcex.tcex_utils.TcExUtils.human_date_to_datetime"><code class="xref py py-mod docutils literal"><span class="pre">human_date_to_datetime</span></code></a> method uses the parsedatetime module to parse the provided data and return a datetime.datetime object.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.human_date_to_datetime" title="tcex.tcex_utils.TcExUtils.human_date_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">human_date_to_datetime</span></code></a> method uses the parsedatetime module to parse the provided data and return a datetime.datetime object.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li>August 25th, 2008</li>
@@ -360,7 +352,7 @@
 </div>
 <div class="section" id="unix-time-to-datetime">
 <h2>Unix Time to Datetime<a class="headerlink" href="#unix-time-to-datetime" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="tcex.tcex_utils.TcExUtils.unix_time_to_datetime"><code class="xref py py-mod docutils literal"><span class="pre">unix_time_to_datetime</span></code></a> method converts a unix timestamp to a datetime.datetime object.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.unix_time_to_datetime" title="tcex.tcex_utils.TcExUtils.unix_time_to_datetime"><code class="xref py py-mod docutils literal notranslate"><span class="pre">unix_time_to_datetime</span></code></a> method converts a unix timestamp to a datetime.datetime object.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li>1510686617</li>
@@ -371,9 +363,7 @@
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -391,7 +381,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -409,35 +399,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>
