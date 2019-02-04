@@ -178,9 +178,12 @@ class TcLib(object):
                         self.args.proxy_port,
                     ),
                 )
-                # trust the pypi host to avoid ssl errors
-                exe_command.append('--trusted-host')
-                exe_command.append('pypi.org')
+                # trust the pypi hosts to avoid ssl errors
+                trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
+
+                for host in trusted_hosts:
+                    exe_command.append('--trusted-host')
+                    exe_command.append(host)
             # handle unauthenticated proxy settings
             elif (
                 self.args.proxy_host is not None
