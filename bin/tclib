@@ -254,8 +254,8 @@ class TcLib(object):
             or self.args.proxy_user is not None
             or self.args.proxy_pass is not None
         ):
-            os.unset('HTTP_PROXY')
-            os.unset('HTTPS_PROXY')
+            os.unsetenv('HTTP_PROXY')
+            os.unsetenv('HTTPS_PROXY')
 
 
 if __name__ == '__main__':
