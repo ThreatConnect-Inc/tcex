@@ -413,6 +413,7 @@ class TcExPlaybook(object):
             if data is not None:
                 data = [data]
             else:
+                # TODO: Should "None" value be added to list?
                 data = []
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))

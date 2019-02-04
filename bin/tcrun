@@ -798,12 +798,18 @@ class TcRun(object):
                 command = [python_exe, '.', program_main]
 
             # exe command
-            cli_command = command + self.profile.get('profile_args').standard
+            cli_command = [str(s) for s in command + self.profile.get('profile_args').standard]
 
             # print command
-            print_command = ' '.join(command + self.profile.get('profile_args').masked)
+            # print_command = ' '.join(command + self.profile.get('profile_args').masked)
+            print_command = ' '.join(
+                str(s) for s in command + self.profile.get('profile_args').masked
+            )
             if self._args.unmask:
-                print_command = ' '.join(command + self.profile.get('profile_args').quoted)
+                # print_command = ' '.join(command + self.profile.get('profile_args').quoted)
+                print_command = ' '.join(
+                    str(s) for s in command + self.profile.get('profile_args').quoted
+                )
 
         elif program_language == 'java':
             if self._args.docker:
