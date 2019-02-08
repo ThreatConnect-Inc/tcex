@@ -95,11 +95,6 @@ class TcExValidate(object):
                 # skip unsupported file types
                 continue
 
-            # display results
-            errors = []
-            for line in errors:
-                errors.append(line)
-
             # store status for this file
             self.validation_data['fileSyntax'].append(
                 {
