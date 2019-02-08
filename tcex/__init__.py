@@ -13,3 +13,5 @@ except ImportError as e:
 
 from .tcex_argparser import TcExArgParser  # noqa: F401; pylint: disable=C0413
 from .tcex_app_decorators import *  # noqa: F401,F403; pylint: disable=C0413
+from .tcex_bin_package import TcExPackage  # noqa: F401,F403; pylint: disable=C0413
+from .tcex_bin_validate import TcExValidate  # noqa: F401,F403; pylint: disable=C0413
