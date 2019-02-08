@@ -42,6 +42,8 @@ scripts = [
     'bin/tcprofile.cmd',
     'bin/tcrun',
     'bin/tcrun.cmd',
+    'bin/tcvalidate',
+    'bin/tcvalidate.cmd',
 ]
 
 setup(

@@ -283,9 +283,9 @@ class TcPackage(object):
         if missing_modules:
             if not self.args.ignore_validation:
                 print(
-                    '\n{}Build failed due to missing required Python module(s). Please validate'
+                    '\n{}Build failed due to missing required Python module(s). Please validate '
                     'missing modules ({}) are added to the requirements.txt file.'.format(
-                        c.Fore.RED, missing_modules
+                        c.Fore.RED, ', '.join(missing_modules)
                     )
                 )
                 sys.exit(1)
