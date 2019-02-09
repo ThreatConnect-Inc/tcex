@@ -12,6 +12,12 @@ Submodules
    tcex.tcex_argparser
    tcex.tcex_args
    tcex.tcex_auth
+   tcex.tcex_bin_init
+   tcex.tcex_bin_lib
+   tcex.tcex_bin_package
+   tcex.tcex_bin_profile
+   tcex.tcex_bin_run
+   tcex.tcex_bin_validate
    tcex.tcex_data_filter
    tcex.tcex_error_codes
    tcex.tcex_key_value

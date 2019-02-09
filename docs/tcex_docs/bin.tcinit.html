@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcinit Command &mdash; TcEx 0.9.2 documentation</title>
+  <title>tcinit Command &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.2
+                0.9.3
               </div>
 
 
@@ -120,6 +120,7 @@
 <li class="toctree-l4"><a class="reference internal" href="bin.tcpackage.html">tcpackage Command</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bin.tcprofile.html">tcprofile Command</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bin.tcrun.html">tcrun Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tcvalidate.html">tcvalidate Command</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="bin.html#module-bin">Module contents</a></li>
@@ -195,57 +196,7 @@
 
   <div class="section" id="module-bin.tcinit">
 <span id="tcinit-command"></span><h1>tcinit Command<a class="headerlink" href="#module-bin.tcinit" title="Permalink to this headline">¶</a></h1>
-<p>TcEx App Init</p>
-<dl class="class">
-<dt id="bin.tcinit.TcInit">
-<em class="property">class </em><code class="descclassname">bin.tcinit.</code><code class="descname">TcInit</code><span class="sig-paren">(</span><em>_arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Install Required Modules for App</p>
-<dl class="method">
-<dt id="bin.tcinit.TcInit._check_empty_app_dir">
-<code class="descname">_check_empty_app_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit._check_empty_app_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit._check_empty_app_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the directory in which the app is going to be created is empty.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcinit.TcInit._confirm_overwrite">
-<em class="property">static </em><code class="descname">_confirm_overwrite</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit._confirm_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit._confirm_overwrite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make sure the user would like to continue downloading a file which will overwrite a file
-in the current directory.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcinit.TcInit._file_exists">
-<em class="property">static </em><code class="descname">_file_exists</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit._file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit._file_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if a file at the given path exists.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcinit.TcInit._print_results">
-<em class="property">static </em><code class="descname">_print_results</code><span class="sig-paren">(</span><em>file</em>, <em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit._print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit._print_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the download results.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcinit.TcInit.download_file">
-<code class="descname">download_file</code><span class="sig-paren">(</span><em>remote_filename</em>, <em>local_filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit.download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit.download_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download file from github.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcinit.TcInit.update_install_json">
-<em class="property">static </em><code class="descname">update_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit.update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit.update_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the install.json configuration file if exists.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcinit.TcInit.update_tcex_json">
-<em class="property">static </em><code class="descname">update_tcex_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcinit.html#TcInit.update_tcex_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcinit.TcInit.update_tcex_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the tcex.json configuration file if exists.</p>
-</dd></dl>
-
-</dd></dl>
-
+<p>TcEx App Init.</p>
 </div>
 
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Building Apps - Packaging (tcpackage) &mdash; TcEx 0.9.2 documentation</title>
+  <title>Building Apps - Packaging (tcpackage) &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.2
+                0.9.3
               </div>
 
 
@@ -191,7 +191,7 @@
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>This CLI tool provides a simple interface to package the App so that it can be easily deployed to the ThreatConnect Platform.</p>
-<p>Running <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal notranslate"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically if the <strong>tcex_json_schema.json</strong> schema file is included in the base directory of your App.</p>
+<p>Running <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> will build a zip package of your App that can be installed directly in the ThreatConnect Platform.  For Apps packages that contain multiple Apps using separate <strong>install.json</strong> files add the <code class="docutils literal notranslate"><span class="pre">--bundle</span></code> argument to build a bundle.  When using multiple <strong>install.json</strong> files the prefix of the filename is the App name (e.g. MyApp.install.json will have an App name of <strong>MyApp</strong>).  During the build process validation of the <strong>install.json</strong> file will be handled automatically.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Typically the <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> command would be run with no arguments or using the <code class="docutils literal notranslate"><span class="pre">--bundle</span></code> flag for packages with multiple install.json files.</p>

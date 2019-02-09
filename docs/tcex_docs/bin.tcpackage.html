@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcpackage Command &mdash; TcEx 0.9.2 documentation</title>
+  <title>tcpackage Command &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.2
+                0.9.3
               </div>
 
 
@@ -120,6 +120,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcpackage Command</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bin.tcprofile.html">tcprofile Command</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bin.tcrun.html">tcrun Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tcvalidate.html">tcvalidate Command</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="bin.html#module-bin">Module contents</a></li>
@@ -196,134 +197,6 @@
   <div class="section" id="module-bin.tcpackage">
 <span id="tcpackage-command"></span><h1>tcpackage Command<a class="headerlink" href="#module-bin.tcpackage" title="Permalink to this headline">¶</a></h1>
 <p>TcEx Framework Package Module</p>
-<dl class="class">
-<dt id="bin.tcpackage.TcPackage">
-<em class="property">class </em><code class="descclassname">bin.tcpackage.</code><code class="descname">TcPackage</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Package the app for deployment</p>
-<p>This method will package the app for deployment to ThreatConnect. Validation of the
-install.json file or files will be automatically run before packaging the app.</p>
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage._load_config">
-<code class="descname">_load_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcpackage.TcPackage._load_install_json">
-<em class="property">static </em><code class="descname">_load_install_json</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._load_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._load_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load install.json file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage._update_install_json">
-<code class="descname">_update_install_json</code><span class="sig-paren">(</span><em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._update_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._update_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write install.json file</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcpackage.TcPackage._write_install_json">
-<em class="property">static </em><code class="descname">_write_install_json</code><span class="sig-paren">(</span><em>filename</em>, <em>install_json</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage._write_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage._write_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write install.json file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.bundle">
-<code class="descname">bundle</code><span class="sig-paren">(</span><em>bundle_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.bundle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.bundle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bundle App</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.bundle_apps">
-<code class="descname">bundle_apps</code><span class="sig-paren">(</span><em>bundle_name</em>, <em>bundle_apps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.bundle_apps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.bundle_apps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bundle zip (tcx) file</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.check_ast">
-<code class="descname">check_ast</code><span class="sig-paren">(</span><em>app_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_ast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run ast on each Python file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The path of Python files.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcpackage.TcPackage.check_import_stdlib">
-<em class="property">static </em><code class="descname">check_import_stdlib</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if module is in Python stdlib</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcpackage.TcPackage.check_imported">
-<em class="property">static </em><code class="descname">check_imported</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_imported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_imported" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether the provide module can be imported (package installed).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) – The name of the module to check availability.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the module can be imported, False otherwise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.check_imports">
-<code class="descname">check_imports</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_imports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the projects top level directory for missing imports.</p>
-<p>This method will check only files ending in <strong>.py</strong> and does not handle imports validation
-for sub-directories.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.check_install_json">
-<code class="descname">check_install_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.check_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.check_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check all install.json files for valid schema.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcpackage.TcPackage.commit_hash">
-<code class="descname">commit_hash</code><a class="headerlink" href="#bin.tcpackage.TcPackage.commit_hash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current commit hash if available.</p>
-<p>This is not a required task so best effort is fine. In other words this is not guaranteed
-to work 100% of the time.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.package">
-<code class="descname">package</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.package"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.package" title="Permalink to this definition">¶</a></dt>
-<dd><p>Package the App for deployment in TcEx</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcpackage.TcPackage.schema">
-<code class="descname">schema</code><a class="headerlink" href="#bin.tcpackage.TcPackage.schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load JSON schema file</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcpackage.TcPackage.update_system_path">
-<em class="property">static </em><code class="descname">update_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.update_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.update_system_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the system path to ensure project modules and dependencies can be found.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcpackage.TcPackage.zip_file">
-<code class="descname">zip_file</code><span class="sig-paren">(</span><em>app_path</em>, <em>app_name</em>, <em>tmp_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcpackage.html#TcPackage.zip_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcpackage.TcPackage.zip_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Zip App</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 

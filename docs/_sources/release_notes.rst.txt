@@ -6,6 +6,11 @@ Release Notes
 0.9.x
 =====
 
+0.9.3
+-----
++ Added new ``tcvalidate`` command for App Builder.
++ Added validation of layout.json schema, inputs, and outputs.
+
 0.9.2
 -----
 + Added new ``FailOn`` App decorator.

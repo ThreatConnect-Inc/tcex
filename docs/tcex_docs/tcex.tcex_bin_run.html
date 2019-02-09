@@ -1,0 +1,1003 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>tcex.tcex_bin_run module &mdash; TcEx 0.9.3 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.tcex_bin_validate module" href="tcex.tcex_bin_validate.html" />
+    <link rel="prev" title="tcex.tcex_bin_profile module" href="tcex.tcex_bin_profile.html" />
+
+
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="../index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                0.9.3
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_quickstart.html">Building Apps - Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_deployment_configuration.html">App - Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_directory_structure.html">App - Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_batch.html">Module - Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_metrics.html">Module - Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_notifications.html">Module - Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_playbook.html">Module - Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_request.html">Module - Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_resource.html">Module - Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_utils.html">Module - Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_app_decorators.html">tcex.tcex_app_decorators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_init.html">tcex.tcex_bin_init module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_lib.html">tcex.tcex_bin_lib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_package.html">tcex.tcex_bin_package module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_profile.html">tcex.tcex_bin_profile module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tcex.tcex_bin_run module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_validate.html">tcex.tcex_bin_validate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_metrics_v2.html">tcex.tcex_metrics_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_notification_v2.html">tcex.tcex_notification_v2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_playbook.html">tcex.tcex_playbook module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_redis.html">tcex.tcex_redis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_request.html">tcex.tcex_request module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_resources.html">tcex.tcex_resources module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_session.html">tcex.tcex_session module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_attribute.html">tcex.tcex_ti_attribute module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_batch.html">tcex.tcex_ti_batch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_group.html">tcex.tcex_ti_group module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_indicator.html">tcex.tcex_ti_indicator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_security_label.html">tcex.tcex_ti_security_label module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_ti_tag.html">tcex.tcex_ti_tag module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_vault.html">tcex.tcex_vault module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_utils.html">tcex.tcex_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+
+          <li><a href="modules.html">tcex</a> &raquo;</li>
+
+          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+
+      <li>tcex.tcex_bin_run module</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-tcex.tcex_bin_run">
+<span id="tcex-tcex-bin-run-module"></span><h1>tcex.tcex_bin_run module<a class="headerlink" href="#module-tcex.tcex_bin_run" title="Permalink to this headline">¶</a></h1>
+<p>TcEx Framework App Testing Module.</p>
+<dl class="class">
+<dt id="tcex.tcex_bin_run.ArgBuilder">
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">ArgBuilder</code><span class="sig-paren">(</span><em>lang</em>, <em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object container for CLI Args.</p>
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder._add_arg">
+<code class="descname">_add_arg</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLI Arg for the correct language.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
+<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
+<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder._add_arg_java">
+<code class="descname">_add_arg_java</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_java"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_java" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLI Arg formatted specifically for Java.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
+<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
+<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder._add_arg_python">
+<code class="descname">_add_arg_python</code><span class="sig-paren">(</span><em>key</em>, <em>value=None</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder._add_arg_python"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder._add_arg_python" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLI Arg formatted specifically for Python.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
+<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
+<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add CLI Arg to lists value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
+<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.ArgBuilder.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all data formatted for the provided language.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>profile_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load provided CLI Args.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>dict</em>) – Dictionary of args in key/value format.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.ArgBuilder.masked">
+<code class="descname">masked</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.masked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all args formatted for the provided language with sensitive data masked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.ArgBuilder.quote">
+<code class="descname">quote</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#ArgBuilder.quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quote any parameters that contain spaces or special character.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">String containing parameters wrapped in double quotes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.ArgBuilder.quoted">
+<code class="descname">quoted</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.quoted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all args formatted for the provided language with appropriate args quoted.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.ArgBuilder.standard">
+<code class="descname">standard</code><a class="headerlink" href="#tcex.tcex_bin_run.ArgBuilder.standard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all args formatted for the provided language.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_bin_run.Report">
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Report Object for a single profile.</p>
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Report.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Report.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Report.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return report as a string.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.Report.data">
+<code class="descname">data</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the report data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.Report.execution_success">
+<code class="descname">execution_success</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.execution_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the profile/report execution_success.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.Report.exit_code">
+<code class="descname">exit_code</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.exit_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the profile/report exit_code.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.Report.name">
+<code class="descname">name</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the profile/report name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.Report.selected">
+<code class="descname">selected</code><a class="headerlink" href="#tcex.tcex_bin_run.Report.selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the profile/report name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_bin_run.Reports">
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">Reports</code><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object to hold the run report.</p>
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.__iter__">
+<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interate over all report profiles.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return reports as a string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.add_profile">
+<code class="descname">add_profile</code><span class="sig-paren">(</span><em>profile</em>, <em>selected</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.add_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add profile to report.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.exit_code">
+<code class="descname">exit_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.exit_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the exit code on the selected profile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.increment_total">
+<code class="descname">increment_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.increment_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.increment_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return run total value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.profile">
+<code class="descname">profile</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a specific profile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.profile_execution">
+<code class="descname">profile_execution</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_execution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_execution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return run total value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.profile_validation">
+<code class="descname">profile_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.profile_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.profile_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return run total value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.Reports.report_validation">
+<code class="descname">report_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#Reports.report_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.Reports.report_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return run total value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_bin_run.TcExRun">
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_run.</code><code class="descname">TcExRun</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Run profiles for App.</p>
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun._create_tc_dirs">
+<code class="descname">_create_tc_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._create_tc_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._create_tc_dirs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create app directories for logs and data files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun._load_config_include">
+<code class="descname">_load_config_include</code><span class="sig-paren">(</span><em>include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._load_config_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._load_config_include" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load included configuration files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun._logger">
+<code class="descname">_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create logger instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">logger</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun._signal_handler">
+<code class="descname">_signal_handler</code><span class="sig-paren">(</span><em>signal_interupt</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun._signal_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle singal interrupt.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.autoclear">
+<code class="descname">autoclear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.autoclear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.autoclear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear Redis and ThreatConnect data from staging data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear Redis and ThreatConnect data defined in profile.</p>
+<p>Redis Data:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>ThreatConnect Data:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;threatconnect&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;owner&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;1.1.1.1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.clear_redis">
+<code class="descname">clear_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_redis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete redis data for provided variable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.clear_tc">
+<code class="descname">clear_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>data</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.clear_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.clear_tc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete ThreatConnect data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.TcExRun.config">
+<code class="descname">config</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return configuration data.</p>
+<p>Load on first access, otherwise return existing data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_endswith">
+<em class="property">static </em><code class="descname">data_endswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data ends with user data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_in_db">
+<em class="property">static </em><code class="descname">data_in_db</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate db data in user data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_in_user">
+<em class="property">static </em><code class="descname">data_in_user</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_in_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_in_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate user data in db data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_it">
+<em class="property">static </em><code class="descname">data_it</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_it" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data is Type.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_kva_compare">
+<em class="property">static </em><code class="descname">data_kva_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_kva_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_kva_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate key/value data in KeyValueArray.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_not_in">
+<em class="property">static </em><code class="descname">data_not_in</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_not_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_not_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data not in user data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_startswith">
+<em class="property">static </em><code class="descname">data_startswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data starts with user data.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.data_string_compare">
+<em class="property">static </em><code class="descname">data_string_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.data_string_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.data_string_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate string removing all white space before comparison.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.deep_diff">
+<code class="descname">deep_diff</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.deep_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.deep_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data in user data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.json_compare">
+<code class="descname">json_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.json_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.json_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data in user data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.load_install_json">
+<code class="descname">load_install_json</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.load_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.load_install_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return install.json data.</p>
+<p>Load on first access, otherwise return existing data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.load_tcex">
+<code class="descname">load_tcex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.load_tcex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.load_tcex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject required TcEx CLI Args.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.TcExRun.operators">
+<code class="descname">operators</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.operators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dict of Validation Operators.</p>
+<ul class="simple">
+<li>deep-diff (dd): This operator can compare any object that can be represented as JSON.</li>
+<li>eq: This operator does a equal to comparison for String and StringArray variables.</li>
+<li>ends-with (ew): This operator compares the end of a String with a user provided value.</li>
+<li>ge: This operator does a greater than or equal to comparison for String variables.</li>
+<li>gt: This operator does a greater than comparison for String variables.</li>
+<li>json-compare (jc): This operator will convert a String output variable to a JSON object
+(dict) and compare to user provided data.</li>
+<li>key-value-compare (kva): This operator will validate that key/value data is in
+KeyValueArray.</li>
+<li>in: This operator will check to see if a String output variable is in an user provided
+array.</li>
+<li>in-user-data: This operator will validate that user provided String value is in output
+StringArray variable.</li>
+<li>not-in (ni): This operator will check to see if a String variable is <strong>not</strong> in an user
+provided array.</li>
+<li>is-type (it): This operator will check to see if the variable “type” is equal to the user
+provided “type”.</li>
+<li>le: This operator does a less than or equal to comparison for String variables.</li>
+<li>lt: This operator does a less than comparison for String variables.</li>
+<li>ne: This operator does a <strong>not</strong> equal to comparison for String and StringArray variables.</li>
+<li>string-compare (se):</li>
+<li>starts-with (sw): This operator compares the start of a String with a user provided value.</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.path_data">
+<code class="descname">path_data</code><span class="sig-paren">(</span><em>variable_data</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.path_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.path_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return jmespath data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.TcExRun.profile">
+<code class="descname">profile</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current profile.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.profile_args">
+<em class="property">static </em><code class="descname">profile_args</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.profile_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profile_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return args for old or new structure.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.TcExRun.profiles">
+<code class="descname">profiles</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all selected profiles.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.report">
+<code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format and output report data to screen.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the App using the current profile.</p>
+<p>The current profile has the install_json and args pre-loaded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_commands">
+<code class="descname">run_commands</code><span class="sig-paren">(</span><em>program_language</em>, <em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the run Print Command.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_display_app_errors">
+<code class="descname">run_display_app_errors</code><span class="sig-paren">(</span><em>err</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle the exit code for the current run.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_display_app_output">
+<code class="descname">run_display_app_output</code><span class="sig-paren">(</span><em>out</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_app_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_app_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print any App output.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_display_description">
+<code class="descname">run_display_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print profile name with programMain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_display_profile">
+<code class="descname">run_display_profile</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_display_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_display_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print profile name with programMain.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_docker">
+<code class="descname">run_docker</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_docker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_docker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run App in Docker Container.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_exit_code">
+<code class="descname">run_exit_code</code><span class="sig-paren">(</span><em>returncode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_exit_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle the exit code for the current run.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_local">
+<code class="descname">run_local</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the App on local system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.run_validate_program_main">
+<code class="descname">run_validate_program_main</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.run_validate_program_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.run_validate_program_main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the program main file exists.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage">
+<code class="descname">stage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stage Redis and ThreatConnect data defined in profile.</p>
+<p>Redis Data:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;This is an example Source #1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;This is an example Source #2&quot;</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:1234:source!StringArray&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Redis Array:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;variables&quot;</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span><span class="p">,</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.threat!TCEntity&quot;</span><span class="p">,</span>
+        <span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:groups!TCEntityArray&quot;</span>
+<span class="p">},</span>
+<span class="p">{</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;variables&quot;</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;.name&quot;</span>
+        <span class="p">},</span> <span class="p">{</span>
+            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.threat!TCEntity&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;.name&quot;</span>
+        <span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:groups!StringArray&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>ThreatConnect Data:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;group&quot;</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;firstSeen&quot;</span><span class="o">:</span> <span class="s2">&quot;2008-12-12T12:00:00Z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;campaign-002&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Campaign&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;camp-0002&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s2">&quot;displayed&quot;</span><span class="o">:</span> <span class="nx">True</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Campaign Example Description&quot;</span>
+            <span class="p">}],</span>
+            <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[{</span>
+                <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;SafeToDelete&quot;</span>
+            <span class="p">}],</span>
+            <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.campaign!TCEntity&quot;</span>
+        <span class="p">}],</span>
+        <span class="s2">&quot;indicator&quot;</span><span class="o">:</span> <span class="p">[{</span>
+            <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;campaign-002&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;confidence&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="s2">&quot;fileOccurrence&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;date&quot;</span><span class="o">:</span> <span class="s2">&quot;2017-02-02T01:02:03Z&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;fileName&quot;</span><span class="o">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;C:\\test\\&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;rating&quot;</span><span class="o">:</span> <span class="mf">5.0</span><span class="p">,</span>
+            <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;43c3609411c83f363e051d455ade78a6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;SafeToDelete&quot;</span>
+                <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;55ee19565db5b16a0f511791a3b2a7ef0ccddf4d9d64e7008561329419cb675b&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.file!TCEntity&quot;</span>
+        <span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;data_owner&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;threatconnect&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_redis">
+<code class="descname">stage_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_redis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stage data in Redis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc">
+<code class="descname">stage_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em>, <em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stage data using ThreatConnect API.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
+  <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">116</span><span class="p">,</span>
+    <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;adversary001-build-testing&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Adversary&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ownerName&quot;</span><span class="o">:</span> <span class="s2">&quot;qa-build&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dateAdded&quot;</span><span class="o">:</span> <span class="s2">&quot;2017-08-16T18:35:07-04:00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;webLink&quot;</span><span class="o">:</span> <span class="s2">&quot;https://app.tci.ninja/auth/adversary/adversary.xhtml?adversary=116&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:0822:adversary!TCEntity&quot;</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_associations">
+<code class="descname">stage_tc_associations</code><span class="sig-paren">(</span><em>entity1</em>, <em>entity2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_associations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_associations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an attribute to a resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_batch">
+<code class="descname">stage_tc_batch</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stage data in Redis.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid">
+<em class="property">static </em><code class="descname">stage_tc_batch_xid</code><span class="sig-paren">(</span><em>xid_type</em>, <em>xid_value</em>, <em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_batch_xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an xid for a batch job.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute">
+<code class="descname">stage_tc_create_attribute</code><span class="sig-paren">(</span><em>attribute_type</em>, <em>attribute_value</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an attribute to a resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label">
+<code class="descname">stage_tc_create_security_label</code><span class="sig-paren">(</span><em>label</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a security label to a resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_create_tag">
+<code class="descname">stage_tc_create_tag</code><span class="sig-paren">(</span><em>tag</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_create_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_create_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a tag to a resource.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_group_entity">
+<code class="descname">stage_tc_group_entity</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_group_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_group_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert JSON data to TCEntity.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity">
+<code class="descname">stage_tc_indicator_entity</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.stage_tc_indicator_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert JSON data to TCEntity.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex_bin_run.TcExRun.staging_data">
+<code class="descname">staging_data</code><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.staging_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data files and return all staging data for current profile.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_run.TcExRun.update_environment">
+<em class="property">static </em><code class="descname">update_environment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.update_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.update_environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the App as a subprocess.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.validate">
+<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data in Redis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.validate_log_output">
+<code class="descname">validate_log_output</code><span class="sig-paren">(</span><em>passed</em>, <em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_log_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_log_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format the validation log output to be easier to read.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_run.TcExRun.validate_redis">
+<code class="descname">validate_redis</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_run.html#TcExRun.validate_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_run.TcExRun.validate_redis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate data in Redis.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="tcex.tcex_bin_validate.html" class="btn btn-neutral float-right" title="tcex.tcex_bin_validate module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="tcex.tcex_bin_profile.html" class="btn btn-neutral" title="tcex.tcex_bin_profile module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+
+
+
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+</body>
+</html>
