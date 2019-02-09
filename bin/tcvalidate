@@ -14,6 +14,9 @@ if sys.version_info[0] == 2:
     reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
+# autoreset colorama
+c.init(autoreset=True, strip=False)
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '--ignore_validation', action='store_true', help='Do not exit on validation errors.'

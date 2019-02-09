@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Setup for TCEX Module"""
+"""Setup for TCEX Module."""
 import re
 import sys
 from setuptools import setup, find_packages

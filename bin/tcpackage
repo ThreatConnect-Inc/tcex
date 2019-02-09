@@ -15,6 +15,9 @@ if sys.version_info[0] == 2:
     reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
+# autoreset colorama
+c.init(autoreset=True, strip=False)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', action='store_true', help='Build a bundle file.')
 parser.add_argument(
