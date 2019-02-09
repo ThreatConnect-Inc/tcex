@@ -30,8 +30,6 @@ class TcExPackage(object):
         # defaults
         self._app_packages = []
         self.config = {}
-        self._schema = None
-        # self.schema_file = 'tcex_json_schema.json'
         self.package_data = {'errors': [], 'updates': [], 'bundle': [], 'package': []}
         self.validation_data = {}
 

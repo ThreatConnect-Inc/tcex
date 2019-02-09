@@ -44,9 +44,10 @@ if __name__ == '__main__':
         # validate App
         tcv = TcExValidate(args)
         tcv.update_system_path()
-        tcv.check_ast()
+        tcv.check_syntax()
         tcv.check_imports()
         tcv.check_install_json()
+        tcv.check_layout_json()
         if not args.json_output:
             tcv.print_results()
         if tcv.exit_code != 0:

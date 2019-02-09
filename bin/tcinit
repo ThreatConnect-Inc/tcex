@@ -89,7 +89,6 @@ if __name__ == '__main__':
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex_json_schema.json')
 
             # download type specific files
             if args.template.startswith('job'):
@@ -118,7 +117,6 @@ if __name__ == '__main__':
             tci.download_file('README.md')
             tci.download_file('requirements.txt')
             tci.download_file('setup.cfg')
-            tci.download_file('tcex_json_schema.json')
 
             # update type specific files
             if args.template.startswith('job'):

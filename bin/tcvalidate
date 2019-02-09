@@ -34,9 +34,10 @@ if __name__ == '__main__':
         if args.interactive:
             tcv.interactive()
         else:
-            tcv.check_ast()
+            tcv.check_syntax()
             tcv.check_imports()
             tcv.check_install_json()
+            tcv.check_layout_json()
             tcv.print_results()
         sys.exit(tcv.exit_code)
     except Exception:

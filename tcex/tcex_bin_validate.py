@@ -10,6 +10,7 @@ import os
 import sys
 import traceback
 from collections import deque
+import pkg_resources
 
 import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
@@ -41,15 +42,22 @@ class TcExValidate(object):
 
     def __init__(self, _args):
         """Init Class properties."""
+        # params
         self.args = _args
-        self.app_path = os.getcwd()
-        self.exit_code = 0
 
-        # defaults
+        # class properties
         self._app_packages = []
+        self._install_json_schema = None
+        self._layout_json_schema = None
+        self.app_path = os.getcwd()
         self.config = {}
-        self._schema = None
-        self.schema_file = 'tcex_json_schema.json'
+        self.exit_code = 0
+        self.install_json_schema_file = pkg_resources.resource_filename(
+            __name__, '/'.join(['schema', 'install-json-schema.json'])
+        )
+        self.layout_json_schema_file = pkg_resources.resource_filename(
+            __name__, '/'.join(['schema', 'layout-json-schema.json'])
+        )
         self.validation_data = self._validation_data
 
         # initialize colorama
@@ -57,58 +65,7 @@ class TcExValidate(object):
 
     @property
     def _validation_data(self):
-        return {'errors': [], 'fileSyntax': [], 'moduleImports': [], 'schema': []}
-
-    def check_ast(self, app_path=None):
-        """Run ast on each Python file.
-
-        Args:
-            app_path (str, optional): Defaults to None. The path of Python files.
-        """
-
-        app_path = app_path or '.'
-        error = False
-
-        for filename in sorted(os.listdir(app_path)):
-            errors = []
-            status = 'passed'
-            status_color = c.Fore.GREEN
-            if filename.endswith('.py'):
-                try:
-                    with open(filename, 'rb') as f:
-                        ast.parse(f.read(), filename=filename)
-                except SyntaxError:
-                    status = 'failed'
-                    status_color = c.Fore.RED
-                    errors = traceback.format_exc().split('\n')[-5:-2]
-                    error = True
-
-            elif filename.endswith('.json'):
-                try:
-                    with open(filename, 'r') as fh:
-                        json.load(fh)
-                except Exception:
-                    status = 'failed'
-                    status_color = c.Fore.RED
-                    error = True
-            else:
-                # skip unsupported file types
-                continue
-
-            # store status for this file
-            self.validation_data['fileSyntax'].append(
-                {
-                    'filename': filename,
-                    'status_color': status_color,
-                    'status': status,
-                    'errors': errors,
-                }
-            )
-
-        if error:
-            self.validation_data['errors'].append(
-                'Build failed due to file(s) with invalid syntax.'
-            )
+        return {'errors': [], 'fileSyntax': [], 'layouts': [], 'moduleImports': [], 'schema': []}
 
     def check_imports(self):
         """Check the projects top level directory for missing imports.
@@ -117,20 +74,17 @@ class TcExValidate(object):
         for sub-directories.
         """
         modules = []
-        missing_modules = []
-        for file in sorted(os.listdir(self.app_path)):
-            if not file.endswith('.py'):
+        for filename in sorted(os.listdir(self.app_path)):
+            if not filename.endswith('.py'):
                 continue
 
-            fq_path = os.path.join(self.app_path, file)
+            fq_path = os.path.join(self.app_path, filename)
             with open(fq_path, 'rb') as f:
                 # TODO: fix this
                 code_lines = deque([(f.read(), 1)])
 
                 while code_lines:
-                    status = 'missing'
-                    status_color = c.Fore.RED
-
+                    m_status = True
                     code, lineno = code_lines.popleft()  # pylint: disable=W0612
                     try:
                         parsed_code = ast.parse(code)
@@ -142,48 +96,39 @@ class TcExValidate(object):
                                         # stdlib module, not need to proceed
                                         continue
                                     m_status = self.check_imported(m)
-                                    if not m_status:
-                                        missing_modules.append(m)
-                                    modules.append({'file': file, 'module': m, 'status': m_status})
+                                    modules.append(
+                                        {'file': filename, 'module': m, 'status': m_status}
+                                    )
                             elif isinstance(node, ast.ImportFrom):
                                 m = node.module.split('.')[0]
                                 if self.check_import_stdlib(m):
                                     # stdlib module, not need to proceed
                                     continue
                                 m_status = self.check_imported(m)
-                                if not m_status:
-                                    missing_modules.append(m)
-                                modules.append({'file': file, 'module': m, 'status': m_status})
+                                modules.append({'file': filename, 'module': m, 'status': m_status})
                             else:
                                 continue
                     except SyntaxError:
                         pass
 
         for module_data in modules:
-            status = 'passed'
-            status_color = c.Fore.GREEN
+            status = True
             if not module_data.get('status'):
-                status = 'failed'
-                status_color = c.Fore.RED
+                status = False
+                # update validation data errors
+                self.validation_data['errors'].append(
+                    'Module validation failed for {} (module "{}" could not be imported).'.format(
+                        module_data.get('file'), module_data.get('module')
+                    )
+                )
             # update validation data for module
             self.validation_data['moduleImports'].append(
                 {
                     'filename': module_data.get('file'),
                     'module': module_data.get('module'),
-                    'status_color': status_color,
                     'status': status,
-                    'missing_modules': missing_modules,
                 }
             )
-
-        if missing_modules:
-            err = (
-                'Build failed due to the following missing Python module(s) '
-                '(not in requirements.txt?).\n'
-            )
-            for mm in missing_modules:
-                err += '  * {}\n'.format(mm)
-            self.validation_data['errors'].append(err)
 
     @staticmethod
     def check_import_stdlib(module):
@@ -213,8 +158,8 @@ class TcExValidate(object):
 
         imported = True
         module_info = ('', '', '')
-        # TODO: update to a cleaner method that doesn't require importing the module and
-        # running inline code.
+        # TODO: if possible, update to a cleaner method that doesn't require importing the module
+        # and running inline code.
         try:
             importlib.import_module(module)
             module_info = imp.find_module(module)
@@ -241,7 +186,7 @@ class TcExValidate(object):
     def check_install_json(self):
         """Check all install.json files for valid schema."""
         # the install.json files can't be validates if the schema file is not present
-        if self.schema is None:
+        if self.install_json_schema is None:
             return
 
         if self.args.install_json is not None:
@@ -249,53 +194,164 @@ class TcExValidate(object):
         else:
             contents = os.listdir(self.app_path)
 
-        invalid_schema = False
         for install_json in sorted(contents):
             # skip files that are not install.json files
             if 'install.json' not in install_json:
                 continue
 
             error = None
-            status = 'passed'
-            status_color = c.Fore.GREEN
+            status = True
 
-            if self.schema is not None:
-                try:
-                    with open(install_json) as fh:
-                        data = json.loads(fh.read())
-                    validate(data, self.schema)
-                except SchemaError as e:
-                    # check_ast performs JSON validation of all JSON files. this exception should
-                    # never match.
-                    status = 'failed'
-                    status_color = c.Fore.RED
-                    error = e
-                    invalid_schema = True
-                except ValidationError as e:
-                    status = 'failed'
-                    status_color = c.Fore.RED
-                    error = e.message
-                    invalid_schema = True
-                except Exception as e:
-                    status = 'failed'
-                    status_color = c.Fore.RED
-                    error = e
-                    invalid_schema = True
+            try:
+                with open(install_json) as fh:
+                    data = json.loads(fh.read())
+                validate(data, self.install_json_schema)
+            except SchemaError as e:
+                status = False
+                error = e
+            except ValidationError as e:
+                status = False
+                error = e.message
+            except ValueError:
+                # any JSON decode error will be caught during syntax validation
+                return
+
+            if error:
+                # update validation data errors
+                self.validation_data['errors'].append(
+                    'Schema validation failed for {} ({}).'.format(install_json, error)
+                )
+
             # update validation data for module
-            self.validation_data['schema'].append(
-                {
-                    'filename': install_json,
-                    'status_color': status_color,
-                    'status': status,
-                    'invalid_schema': invalid_schema,
-                    'error': error,
-                }
-            )
+            self.validation_data['schema'].append({'filename': install_json, 'status': status})
 
-        if invalid_schema:
+    def check_layout_json(self):
+        """Check all layout.json files for valid schema."""
+        # the install.json files can't be validates if the schema file is not present
+        layout_json_file = 'layout.json'
+        if self.layout_json_schema is None or not os.path.isfile(layout_json_file):
+            return
+
+        error = None
+        status = True
+        try:
+            with open(layout_json_file) as fh:
+                data = json.loads(fh.read())
+            validate(data, self.layout_json_schema)
+        except SchemaError as e:
+            status = False
+            error = e
+        except ValidationError as e:
+            status = False
+            error = e.message
+        except ValueError:
+            # any JSON decode error will be caught during syntax validation
+            return
+
+        # update validation data for module
+        self.validation_data['schema'].append({'filename': layout_json_file, 'status': status})
+
+        if error:
+            # update validation data errors
             self.validation_data['errors'].append(
-                'Build failed due to invalid schema in install.json file(s).'
+                'Schema validation failed for {} ({}).'.format(layout_json_file, error)
             )
+        else:
+            self.check_layout_params(data)
+
+    def check_layout_params(self, layout_json_data):
+        """Check that the layout.json is consistent with install.json.
+
+        The layout.json files references the params.name from the install.json file.  The method
+        will validate that no reference appear for inputs in install.json that don't exist.
+
+        """
+        ij_input_names = []
+        ij_output_names = []
+        if os.path.isfile('install.json'):
+            try:
+                with open('install.json') as fh:
+                    ij = json.loads(fh.read())
+                for p in ij.get('params', []):
+                    ij_input_names.append(p.get('name'))
+                for o in ij.get('playbook', {}).get('outputVariables', []):
+                    ij_output_names.append(o.get('name'))
+            except Exception:
+                # checking parameters isn't possible if install.json can't be parsed
+                return
+
+        # inputs
+        status = True
+        for i in layout_json_data.get('inputs', []):
+            for p in i.get('parameters'):
+                if p.get('name') not in ij_input_names:
+                    # update validation data errors
+                    self.validation_data['errors'].append(
+                        'Layouts input validations failed ({} is defined in layout.json, but not '
+                        'found in install.json).'.format(p.get('name'))
+                    )
+                    status = False
+
+        # update validation data for module
+        self.validation_data['layouts'].append({'params': 'inputs', 'status': status})
+
+        # outputs
+        status = True
+        for o in layout_json_data.get('outputs', []):
+            if o.get('name') not in ij_output_names:
+                # update validation data errors
+                self.validation_data['errors'].append(
+                    'Layouts output validations failed ({} is defined in layout.json, but not '
+                    'found in install.json).'.format(o.get('name'))
+                )
+                status = False
+
+        # update validation data for module
+        self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
+
+    def check_syntax(self, app_path=None):
+        """Run syntax on each ".py" and ".json" file.
+
+        Args:
+            app_path (str, optional): Defaults to None. The path of Python files.
+        """
+
+        app_path = app_path or '.'
+
+        for filename in sorted(os.listdir(app_path)):
+            error = None
+            status = True
+            if filename.endswith('.py'):
+                try:
+                    with open(filename, 'rb') as f:
+                        ast.parse(f.read(), filename=filename)
+                except SyntaxError:
+                    status = False
+                    # cleanup output
+                    e = []
+                    for line in traceback.format_exc().split('\n')[-5:-2]:
+                        e.append(line.strip())
+                    error = ' '.join(e)
+
+            elif filename.endswith('.json'):
+                try:
+                    with open(filename, 'r') as fh:
+                        json.load(fh)
+                except ValueError as e:
+                    status = True
+                    error = e
+            else:
+                # skip unsupported file types
+                continue
+
+            if error:
+                # update validation data errors
+                self.validation_data['errors'].append(
+                    'Syntax validation failed for {} ({}).'.format(filename, error)
+                )
+
+            # store status for this file
+            self.validation_data['fileSyntax'].append({'filename': filename, 'status': status})
 
     def interactive(self):
         """Run in interactive mode."""
@@ -304,57 +360,87 @@ class TcExValidate(object):
             if line == 'quit':
                 sys.exit()
             elif line == 'validate':
-                self.check_ast()
+                self.check_syntax()
                 self.check_imports()
                 self.check_install_json()
+                self.check_layout_json()
                 self.print_json()
 
             # reset validation_data
             self.validation_data = self._validation_data
 
+    @property
+    def layout_json_schema(self):
+        """Load layout.json schema file."""
+        if self._layout_json_schema is None:
+            if os.path.isfile(self.layout_json_schema_file):
+                with open(self.layout_json_schema_file) as fh:
+                    self._layout_json_schema = json.load(fh)
+        return self._layout_json_schema
+
     def print_json(self):
         """Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
 
+    @staticmethod
+    def status_color(status):
+        """Return the appropriate status color."""
+        status_color = c.Fore.GREEN
+        if not status:
+            status_color = c.Fore.RED
+        return status_color
+
+    @staticmethod
+    def status_value(status):
+        """Return the appropriate status color."""
+        status_value = 'passed'
+        if not status:
+            status_value = 'failed'
+        return status_value
+
     def print_results(self):
         """Print results."""
         # Validating Syntax
-        print('\n{}{}Validated File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-        print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
-        for f in self.validation_data.get('fileSyntax'):
-            print(
-                '{!s:<60}{}{!s:<25}'.format(
-                    f.get('filename'), f.get('status_color'), f.get('status')
-                )
-            )
-            for e in f.get('errors'):
-                print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e))
+        if self.validation_data.get('fileSyntax'):
+            print('\n{}{}Validated File Syntax:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
+            for f in self.validation_data.get('fileSyntax'):
+                status_color = self.status_color(f.get('status'))
+                status_value = self.status_value(f.get('status'))
+                print('{!s:<60}{}{!s:<25}'.format(f.get('filename'), status_color, status_value))
 
         # Validating Imports
-        print('\n{}{}Validated Imports:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-        print('{}{!s:<30}{!s:<30}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Module:', 'Status:'))
-        for f in self.validation_data.get('moduleImports'):
+        if self.validation_data.get('moduleImports'):
+            print('\n{}{}Validated Imports:'.format(c.Style.BRIGHT, c.Fore.BLUE))
             print(
-                '{!s:<30}{}{!s:<30}{}{!s:<25}'.format(
-                    f.get('filename'),
-                    c.Fore.WHITE,
-                    f.get('module'),
-                    f.get('status_color'),
-                    f.get('status'),
-                )
+                '{}{!s:<30}{!s:<30}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Module:', 'Status:')
             )
+            for f in self.validation_data.get('moduleImports'):
+                status_color = self.status_color(f.get('status'))
+                status_value = self.status_value(f.get('status'))
+                print(
+                    '{!s:<30}{}{!s:<30}{}{!s:<25}'.format(
+                        f.get('filename'), c.Fore.WHITE, f.get('module'), status_color, status_value
+                    )
+                )
 
         # Validating Schema
-        print('\n{}{}Validated install.json Schema:'.format(c.Style.BRIGHT, c.Fore.BLUE))
-        print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
-        for f in self.validation_data.get('schema'):
-            print(
-                '{!s:<60}{}{!s:<25}'.format(
-                    f.get('filename'), f.get('status_color'), f.get('status')
-                )
-            )
-            if f.get('error'):
-                print('  {}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, f.get('error')))
+        if self.validation_data.get('schema'):
+            print('\n{}{}Validated Schema:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'File:', 'Status:'))
+            for f in self.validation_data.get('schema'):
+                status_color = self.status_color(f.get('status'))
+                status_value = self.status_value(f.get('status'))
+                print('{!s:<60}{}{!s:<25}'.format(f.get('filename'), status_color, status_value))
+
+        # Validating Layouts
+        if self.validation_data.get('layouts'):
+            print('\n{}{}Validated Layouts:'.format(c.Style.BRIGHT, c.Fore.BLUE))
+            print('{}{!s:<60}{!s:<25}'.format(c.Style.BRIGHT, 'Params:', 'Status:'))
+            for f in self.validation_data.get('layouts'):
+                status_color = self.status_color(f.get('status'))
+                status_value = self.status_value(f.get('status'))
+                print('{!s:<60}{}{!s:<25}'.format(f.get('params'), status_color, status_value))
 
         # ignore exit code
         if not self.args.ignore_validation:
@@ -362,17 +448,22 @@ class TcExValidate(object):
                 print('\n')  # separate errors from normal output
             # print all errors
             for error in self.validation_data.get('errors'):
-                print('{}{}'.format(c.Fore.RED, error))
+                print('* {}{}'.format(c.Fore.RED, error))
                 self.exit_code = 1
 
     @property
-    def schema(self):
-        """Load JSON schema file."""
-        if self._schema is None:
-            if os.path.isfile(self.schema_file):
-                with open(self.schema_file) as fh:
-                    self._schema = json.load(fh)
-        return self._schema
+    def install_json_schema(self):
+        """Load install.json schema file."""
+        if self._install_json_schema is None:
+            # rename old schema file
+            if os.path.isfile('tcex_json_schema.json'):
+                # this file is not part of tcex.
+                os.remove(self.install_json_schema_file)
+
+            if os.path.isfile(self.install_json_schema_file):
+                with open(self.install_json_schema_file) as fh:
+                    self._install_json_schema = json.load(fh)
+        return self._install_json_schema
 
     @staticmethod
     def update_system_path():

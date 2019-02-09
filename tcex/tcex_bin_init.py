@@ -160,7 +160,6 @@ class TcExInit(object):
             '.pre-commit-config.yaml',
             'pyproject.toml',
             'setup.cfg',
-            'tcex_json_schema.json',
             'tcex.json',
             '*.install.json',
             'tcex.d',

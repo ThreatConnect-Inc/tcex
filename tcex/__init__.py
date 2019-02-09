@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework module init file."""
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.9.2'
+__version__ = '0.9.3'
 __license__ = 'Apache License, Version 2'
 name = 'tcex'
 
@@ -13,6 +13,8 @@ except ImportError as e:
 
 from .tcex_argparser import TcExArgParser  # noqa: F401; pylint: disable=C0413
 from .tcex_app_decorators import *  # noqa: F401,F403; pylint: disable=C0413
+
+# import cli modules for bin commands
 from .tcex_bin_init import TcExInit  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_lib import TcExLib  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_package import TcExPackage  # noqa: F401,F403; pylint: disable=C0413
