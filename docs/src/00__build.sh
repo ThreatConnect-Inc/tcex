@@ -45,3 +45,4 @@ unlink ../../bin/tcvalidate.py
 
 # cleanup
 rm -f deployment_config.rst
+rm -fr ../_static/fonts/Lato/
