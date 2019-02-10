@@ -19,17 +19,6 @@ from datetime import datetime
 from six import string_types
 import colorama as c
 
-# not including these libraries as a dependencies since they are only required for local testing.
-try:
-    from deepdiff import DeepDiff
-except ImportError:
-    print('Could not import DeepDiff module (try "pip install deepdiff").')
-    sys.exit(1)
-try:
-    import jmespath
-except ImportError:
-    print('Could not import jmespath module (try "pip install jmespath").')
-    sys.exit(1)
 
 from tcex import TcEx
 
@@ -39,6 +28,7 @@ class TcExRun(object):
 
     def __init__(self, _args):
         """Initialize Class properties."""
+
         self.args = _args
         self._signal_handler_init()
         self._config = None
@@ -432,6 +422,14 @@ class TcExRun(object):
 
     def deep_diff(self, db_data, user_data):
         """Validate data in user data."""
+        # NOTE: tcex does include the deepdiff library as a dependencies since it is only
+        # required for local testing.
+        try:
+            from deepdiff import DeepDiff
+        except ImportError:
+            print('Could not import DeepDiff module (try "pip install deepdiff").')
+            sys.exit(1)
+
         try:
             ddiff = DeepDiff(db_data, user_data, ignore_order=True)
         except KeyError:
@@ -555,6 +553,14 @@ class TcExRun(object):
 
     def path_data(self, variable_data, path):
         """Return jmespath data."""
+        # NOTE: tcex does include the jmespath library as a dependencies since it is only
+        # required for local testing.
+        try:
+            import jmespath
+        except ImportError:
+            print('Could not import jmespath module (try "pip install jmespath").')
+            sys.exit(1)
+
         if isinstance(variable_data, string_types):
             # try to convert string into list/dict before using expression
             try:
