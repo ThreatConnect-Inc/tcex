@@ -6,6 +6,7 @@
     "appBuilderCompliant",
     "secureParams"
   ],
+  "labels": [],
   "languageVersion": "3.6",
   "listDelimiter": "|",
   "note": "",

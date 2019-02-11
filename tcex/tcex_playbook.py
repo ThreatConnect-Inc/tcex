@@ -32,7 +32,6 @@ class TcExPlaybook(object):
 
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
-
         **Example Variable Format**::
 
             #App:1234:status!String,#App:1234:status_code!String
@@ -413,6 +412,7 @@ class TcExPlaybook(object):
             if data is not None:
                 data = [data]
             else:
+                # TODO: Should "None" value be added to list?
                 data = []
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))

@@ -215,6 +215,9 @@
     "programMain": {
       "type": "string"
     },
+    "programName": {
+      "type": "string"
+    },
     "programVersion": {
       "type": "string"
     },

@@ -14,6 +14,7 @@ ln -fs tclib ../../bin/tclib.py
 ln -fs tcpackage ../../bin/tcpackage.py
 ln -fs tcprofile ../../bin/tcprofile.py
 ln -fs tcrun ../../bin/tcrun.py
+ln -fs tcvalidate ../../bin/tcvalidate.py
 
 # get app deployment
 wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer-docs/master/docs/deployment_config.rst --output-document=deployment_config.rst
@@ -40,6 +41,8 @@ unlink ../../bin/tclib.py
 unlink ../../bin/tcpackage.py
 unlink ../../bin/tcprofile.py
 unlink ../../bin/tcrun.py
+unlink ../../bin/tcvalidate.py
 
 # cleanup
 rm -f deployment_config.rst
+rm -fr ../_static/fonts/Lato/

@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+""" TcEx Framework Package Module """
+import argparse
+import sys
+import traceback
+
+import colorama as c
+
+from tcex import TcExValidate
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
+
+# autoreset colorama
+c.init(autoreset=True, strip=False)
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--ignore_validation', action='store_true', help='Do not exit on validation errors.'
+)
+parser.add_argument('--install_json', help='The install.json file to user during validation.')
+parser.add_argument('--interactive', action='store_true', help='Keep running and listen for stdin.')
+args, extra_args = parser.parse_known_args()
+
+
+if __name__ == '__main__':
+    try:
+        tcv = TcExValidate(args)
+        tcv.update_system_path()
+        # run in interactive
+        if args.interactive:
+            tcv.interactive()
+        else:
+            tcv.check_syntax()
+            tcv.check_imports()
+            tcv.check_install_json()
+            tcv.check_layout_json()
+            tcv.print_results()
+        sys.exit(tcv.exit_code)
+    except Exception:
+        # TODO: Update this, possibly raise
+        print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, traceback.format_exc()))
+        sys.exit(1)

@@ -11,6 +11,7 @@ Submodules
    bin.tcpackage
    bin.tcprofile
    bin.tcrun
+   bin.tcvalidate
 
 Module contents
 ---------------

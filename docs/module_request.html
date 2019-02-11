@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module - Requests &mdash; TcEx 0.9.1 documentation</title>
+  <title>Module - Requests &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Module - Resources" href="module_resource.html"/>
-        <link rel="prev" title="Module - Playbooks" href="module_playbook.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module - Resources" href="module_resource.html" />
+    <link rel="prev" title="Module - Playbooks" href="module_playbook.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.3
               </div>
 
 
@@ -136,7 +127,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -144,9 +135,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -188,8 +180,8 @@
 
   <div class="section" id="module-requests">
 <span id="id1"></span><h1>Module - Requests<a class="headerlink" href="#module-requests" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect © TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal"><span class="pre">TcExRequest</span></code></a> module accessed using the <code class="docutils literal"><span class="pre">tcex.request</span></code> property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The ThreatConnect © TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest" title="tcex.tcex_request.TcExRequest"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExRequest</span></code></a> module accessed using the <code class="docutils literal notranslate"><span class="pre">tcex.request</span></code> property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -206,8 +198,8 @@
 </td></tr></table></div>
 <div class="section" id="request-external">
 <h2>Request External<a class="headerlink" href="#request-external" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Framework provides the <code class="xref py py-meth docutils literal"><span class="pre">request_external()</span></code> method that returns a TcExRequest instance with the proxy information automatically configured.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The TcEx Framework provides the <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_external()</span></code> method that returns a TcExRequest instance with the proxy information automatically configured.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -227,8 +219,8 @@
 </div>
 <div class="section" id="request-tc">
 <h2>Request TC<a class="headerlink" href="#request-tc" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Framework provides the <code class="xref py py-meth docutils literal"><span class="pre">request_tc()</span></code> method that returns an TcExRequest instance with the proxy and authorization information automatically configured.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The TcEx Framework provides the <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_tc()</span></code> method that returns an TcExRequest instance with the proxy and authorization information automatically configured.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
@@ -248,9 +240,7 @@
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -268,7 +258,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -286,35 +276,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

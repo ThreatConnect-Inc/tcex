@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_resources module &mdash; TcEx 0.9.1 documentation</title>
+  <title>tcex.tcex_resources module &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -24,30 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
-        <link rel="up" title="tcex package" href="tcex.html"/>
-        <link rel="next" title="tcex.tcex_session module" href="tcex.tcex_session.html"/>
-        <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html"/>
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcex.tcex_session module" href="tcex.tcex_session.html" />
+    <link rel="prev" title="tcex.tcex_request module" href="tcex.tcex_request.html" />
 
 
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -69,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.3
               </div>
 
 
@@ -130,6 +120,12 @@
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_argparser.html">tcex.tcex_argparser module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_args.html">tcex.tcex_args module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_auth.html">tcex.tcex_auth module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_init.html">tcex.tcex_bin_init module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_lib.html">tcex.tcex_bin_lib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_package.html">tcex.tcex_bin_package module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_profile.html">tcex.tcex_bin_profile module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_run.html">tcex.tcex_bin_run module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcex.tcex_bin_validate.html">tcex.tcex_bin_validate module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_data_filter.html">tcex.tcex_data_filter module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_error_codes.html">tcex.tcex_error_codes module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_key_value.html">tcex.tcex_key_value module</a></li>
@@ -168,7 +164,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
@@ -176,9 +172,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -228,7 +225,7 @@
 <dl class="class">
 <dt id="tcex.tcex_resources.Address">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Address</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Address" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>Address Resource Class</p>
 <p>This resource class will return indicators of type Address (ipv4 and/or
 ipv6). To filter on specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong>
@@ -253,7 +250,7 @@ methods provided in the parent Class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Adversary">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Adversary</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Adversary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Adversary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Adversary Resource Class</p>
 <p>This resource class will return groups of type Adversary. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -277,7 +274,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Batch">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Batch</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Batch Resource Class</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Batch.batch_id">
@@ -312,14 +309,14 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Bulk">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Bulk</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Bulk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Bulk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>Bulk Resource Class</p>
 <p>This resource class will return bulk status or bulk indicators via the Bulk
 API endpoint.  The base URL will return a status of bulk generation (see
 example below), while the <strong>/csv</strong> and <strong>/json</strong> endpoints will return the
 indicator is the selected format.</p>
 <p>Base response:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span>
     <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;bulkStatus&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -371,7 +368,7 @@ ThreatConnect platform under System settings.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Campaign">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Campaign</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Campaign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Campaign" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Campaign Resource Class</p>
 <p>This resource class will return groups of type Campaign. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -395,7 +392,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.CustomMetric">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">CustomMetric</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#CustomMetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.CustomMetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Custom Metric Class</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -416,7 +413,7 @@ the parent class.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;My Custom Metric&quot;</span><span class="p">,</span>
   <span class="s2">&quot;dataType&quot;</span><span class="o">:</span> <span class="s2">&quot;Sum&quot;</span><span class="p">,</span>
   <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;Hourly&quot;</span><span class="p">,</span>
@@ -448,7 +445,7 @@ the parent class.</p>
 </table>
 <p class="rubric">Example</p>
 <p>The weight value is optional.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
   <span class="s2">&quot;weight&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">}</span>
@@ -456,7 +453,7 @@ the parent class.</p>
 </div>
 <p><strong>Keyed Example</strong></p>
 <p>The weight value is optional.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
   <span class="s2">&quot;weight&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
   <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;src1&quot;</span>
@@ -572,7 +569,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.DataStore">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">DataStore</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#DataStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.DataStore" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>DataStore Class</p>
 <p>This resource class will return DataStore.</p>
 <dl class="staticmethod">
@@ -609,7 +606,7 @@ this resource verbatim.</li>
 <dd><p>Add a key value pair to payload for this request.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For <code class="docutils literal"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
+<p class="last">For <code class="docutils literal notranslate"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -714,7 +711,7 @@ this resource verbatim.</li>
 <dl class="class">
 <dt id="tcex.tcex_resources.Document">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Document" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Document Resource Class</p>
 <p>This resource class will return groups of type Document. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -756,7 +753,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Email">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Email</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Email" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Email Resource Class</p>
 <p>This resource class will return groups of type Email. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -766,7 +763,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.EmailAddress">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">EmailAddress</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#EmailAddress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.EmailAddress" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>EmailAddress Resource Class</p>
 <p>This resource class will return indicators of type Email. To filter on
 specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
@@ -776,7 +773,7 @@ in the parent Class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Event">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Event Resource Class</p>
 <p>This resource class will return groups of type Event. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -800,7 +797,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.File">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">File</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.File" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>File Resource Class</p>
 <p>This resource class will return indicators of type File (e.g md5, sha1,
 sha256). To filter on specific indicators use the <strong>indicator</strong> or
@@ -852,31 +849,31 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>File Archive</td>
-<td><code class="docutils literal"><span class="pre">/archive</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/archive</span></code></td>
 <td>File</td>
 </tr>
 <tr class="row-odd"><td>File Drop</td>
-<td><code class="docutils literal"><span class="pre">/drop</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/drop</span></code></td>
 <td>File</td>
 </tr>
 <tr class="row-even"><td>File Traffic</td>
-<td><code class="docutils literal"><span class="pre">/traffic</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/traffic</span></code></td>
 <td>Address, Host, URL</td>
 </tr>
 <tr class="row-odd"><td>File Mutex</td>
-<td><code class="docutils literal"><span class="pre">/mutex</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/mutex</span></code></td>
 <td>Mutex</td>
 </tr>
 <tr class="row-even"><td>File Registry Key</td>
-<td><code class="docutils literal"><span class="pre">/registryKey</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/registryKey</span></code></td>
 <td>Registry Key</td>
 </tr>
 <tr class="row-odd"><td>File User Agent</td>
-<td><code class="docutils literal"><span class="pre">/userAgent</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/userAgent</span></code></td>
 <td>User Agent</td>
 </tr>
 <tr class="row-even"><td>File DNS Query</td>
-<td><code class="docutils literal"><span class="pre">/dnsQuery</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">/dnsQuery</span></code></td>
 <td>Host</td>
 </tr>
 </tbody>
@@ -963,7 +960,7 @@ sha256). To filter on specific indicators use the <strong>indicator</strong> or
 <dl class="class">
 <dt id="tcex.tcex_resources.Group">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Group Resource Class</p>
 <p>This resource class is the base for all groups and will return groups of
 all types.  For specific group types use the child class of the type
@@ -1001,7 +998,7 @@ required.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Host">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Host" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>Host Resource Class</p>
 <p>This resource class will return indicators of type Host. To filter on
 specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
@@ -1025,7 +1022,7 @@ in the parent Class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Incident">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Incident</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Incident"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Incident" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Incident Resource Class</p>
 <p>This resource class will return groups of type Incident. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -1067,7 +1064,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Indicator">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Indicator</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Indicator Resource Class</p>
 <p>This resource class is the base for all indicators and will return
 indicators of all types.  For specific indicator types use the child
@@ -1082,7 +1079,7 @@ dynamically and are not defined here.</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Indicator.entity_body">
 <code class="descname">entity_body</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Indicator.entity_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Indicator.entity_body" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias to <a class="reference internal" href="#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal"><span class="pre">indicator_body()</span></code></a> method.</p>
+<dd><p>Alias to <a class="reference internal" href="#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator_body()</span></code></a> method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1149,7 +1146,7 @@ indicator values.</p>
 <strong>sha256</strong>) are supported.</p>
 <p>For indicators that have only one value such as <strong>ip</strong> or <strong>hostName</strong> the generator will
 only return the one result.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># the individual indicator JSON from the API</span>
@@ -1165,10 +1162,10 @@ the indicator while using the summary field.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For <code class="docutils literal"><span class="pre">/v2/indicators</span></code> and <code class="docutils literal"><span class="pre">/v2/indicators/bulk/json</span></code> API endpoints only one
+<p class="last">For <code class="docutils literal notranslate"><span class="pre">/v2/indicators</span></code> and <code class="docutils literal notranslate"><span class="pre">/v2/indicators/bulk/json</span></code> API endpoints only one
 hash is returned for a file Indicator even if there are multiple in the platform.
-If all hashes are required the <code class="docutils literal"><span class="pre">/v2/indicators/files</span></code> or
-<code class="docutils literal"><span class="pre">/v2/indicators/files/&lt;hash&gt;</span></code> endpoints will provide all hashes.</p>
+If all hashes are required the <code class="docutils literal notranslate"><span class="pre">/v2/indicators/files</span></code> or
+<code class="docutils literal notranslate"><span class="pre">/v2/indicators/files/&lt;hash&gt;</span></code> endpoints will provide all hashes.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1229,7 +1226,7 @@ the actual indicator id stored in ThreatConnect.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Intrusion_Set">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Intrusion_Set</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Intrusion_Set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Intrusion_Set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Intrusion Set Resource Class</p>
 <p>This resource class will return groups of type Intrusion Set. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -1253,7 +1250,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Notification">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Notification</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Notification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Notification" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Custom Notification Class</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1271,7 +1268,7 @@ the parent class.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;notificationType&quot;</span><span class="o">:</span> <span class="s2">&quot;App Success&quot;</span><span class="p">,</span>
     <span class="s2">&quot;priority&quot;</span><span class="o">:</span> <span class="s2">&quot;High&quot;</span><span class="p">,</span>
     <span class="s2">&quot;message&quot;</span><span class="o">:</span> <span class="s2">&quot;App worked just fine.&quot;</span><span class="p">,</span>
@@ -1286,7 +1283,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Owner">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Owner</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Owner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Owner Class</p>
 <p>This resource class will return Owners.</p>
 <dl class="method">
@@ -1322,7 +1319,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Report">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Report Resource Class</p>
 <p>This resource class will return groups of type Report. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -1364,7 +1361,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Resource">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Resource</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Resource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Common settings for All ThreatConnect API Endpoints</p>
 <dl class="method">
 <dt id="tcex.tcex_resources.Resource.__iter__">
@@ -1542,7 +1539,7 @@ the parent class.</p>
 <dd><p>Add a key value pair to payload for this request.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For <code class="docutils literal"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
+<p class="last">For <code class="docutils literal notranslate"><span class="pre">_search</span></code> you can pass a search argument. (e.g. _search?summary=1.1.1.1).</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1567,7 +1564,7 @@ the parent class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <strong>addresses</strong> endpoint from <code class="docutils literal"><span class="pre">/v2/indicators/addresses/</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <strong>addresses</strong> endpoint from <code class="docutils literal notranslate"><span class="pre">/v2/indicators/addresses/</span></code>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(str)</td>
 </tr>
@@ -1584,8 +1581,8 @@ the parent class.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>The <strong>indicators</strong> endpoint from <code class="docutils literal"><span class="pre">/v2/indicators</span></code> or</dt>
-<dd><code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</dd>
+<dt>The <strong>indicators</strong> endpoint from <code class="docutils literal notranslate"><span class="pre">/v2/indicators</span></code> or</dt>
+<dd><code class="docutils literal notranslate"><span class="pre">/v2/indicators/addresses</span></code>.</dd>
 </dl>
 </td>
 </tr>
@@ -1603,7 +1600,7 @@ the parent class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <strong>address</strong> JSON entity from JSON response to <code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The <strong>address</strong> JSON entity from JSON response to <code class="docutils literal notranslate"><span class="pre">/v2/indicators/addresses</span></code>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(str)</td>
 </tr>
@@ -1619,7 +1616,7 @@ the parent class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The API URI endpoint <code class="docutils literal"><span class="pre">/v2/indicators/addresses</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The API URI endpoint <code class="docutils literal notranslate"><span class="pre">/v2/indicators/addresses</span></code>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
 </tr>
@@ -2629,7 +2626,7 @@ etc) for this resource that are associated with the provided victim id.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.SecurityLabel">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">SecurityLabel</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#SecurityLabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.SecurityLabel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Security Label Class</p>
 <p>This resource class will return Security Labels.</p>
 <dl class="method">
@@ -2666,7 +2663,7 @@ etc) for this resource that are associated with the provided victim id.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Signature">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Signature</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Signature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Signature Resource Class</p>
 <p>This resource class will return groups of type Signature. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -2704,7 +2701,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Tag">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Tag</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Tag Class</p>
 <p>This resource class will return Tags.</p>
 <dl class="method">
@@ -2741,7 +2738,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Task">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Task</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Task" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Task Class</p>
 <p>This resource class will return Tasks.</p>
 <dl class="method">
@@ -2836,7 +2833,7 @@ DELETE: /v2/tasks/{uniqueId}/escalatees/{escalateeId}</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Threat">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Threat</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Threat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Group" title="tcex.tcex_resources.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Group</span></code></a></p>
 <p>Threat Resource Class</p>
 <p>This resource class will return groups of type Threat. To filter on
 specific groups use the <strong>group_id</strong> or <strong>resource_id</strong> methods provided in
@@ -2860,7 +2857,7 @@ the parent class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.URL">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">URL</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.URL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Indicator" title="tcex.tcex_resources.Indicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Indicator</span></code></a></p>
 <p>URL Resource Class</p>
 <p>This resource class will return indicators of type URL. To filter on
 specific indicators use the <strong>indicator</strong> or <strong>resource_id</strong> methods provided
@@ -2870,7 +2867,7 @@ in the parent Class.</p>
 <dl class="class">
 <dt id="tcex.tcex_resources.Victim">
 <em class="property">class </em><code class="descclassname">tcex.tcex_resources.</code><code class="descname">Victim</code><span class="sig-paren">(</span><em>tcex</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_resources.html#Victim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_resources.Victim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_resources.Resource</span></code></a></p>
 <p>Victim Class</p>
 <p>This resource class will return Victims.</p>
 <dl class="method">
@@ -2914,9 +2911,7 @@ in the parent Class.</p>
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -2934,7 +2929,7 @@ in the parent Class.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -2952,35 +2947,24 @@ in the parent Class.</p>
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

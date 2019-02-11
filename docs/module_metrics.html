@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module - Metrics &mdash; TcEx 0.9.1 documentation</title>
+  <title>Module - Metrics &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
-        <link rel="next" title="Module - Notifications" href="module_notifications.html"/>
-        <link rel="prev" title="Module - Batch" href="module_batch.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module - Notifications" href="module_notifications.html" />
+    <link rel="prev" title="Module - Batch" href="module_batch.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.3
               </div>
 
 
@@ -137,7 +128,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -145,9 +136,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -189,18 +181,18 @@
 
   <div class="section" id="module-metrics">
 <span id="id1"></span><h1>Module - Metrics<a class="headerlink" href="#module-metrics" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect © TcEx App Framework provides an simple interface for Creating and adding metrics in Apps.  The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2" title="tcex.tcex_metrics_v2.TcExMetricsV2"><code class="xref py py-mod docutils literal"><span class="pre">TcExMetricsV2</span></code></a> module will automatically create the Metric if it does not already exists in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics see the docs at <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics">https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics</a>.</p>
+<p>The ThreatConnect © TcEx App Framework provides an simple interface for Creating and adding metrics in Apps.  The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2" title="tcex.tcex_metrics_v2.TcExMetricsV2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExMetricsV2</span></code></a> module will automatically create the Metric if it does not already exists in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics see the docs at <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics">https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics</a>.</p>
 <div class="section" id="metrics-instance">
 <h2>Metrics Instance<a class="headerlink" href="#metrics-instance" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">tcex.metrics()</span></code> method has required fields of name, description, data_type, interval, and keyed as parameters.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcex.metrics()</span></code> method has required fields of name, description, data_type, interval, and keyed as parameters.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 <div class="section" id="add-metrics">
 <h2>Add Metrics<a class="headerlink" href="#add-metrics" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add" title="tcex.tcex_metrics_v2.TcExMetricsV2.add"><code class="xref py py-meth docutils literal"><span class="pre">add()</span></code></a> method has a required field of value. It also accepts an option fields for <strong>date</strong>, <strong>return_value</strong>, and <strong>key</strong>.  If no date is provided the current datetime will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.  The <strong>key</strong> arg is only used for Keyed Metrics or the <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed" title="tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed"><code class="xref py py-meth docutils literal"><span class="pre">add_keyed()</span></code></a> method can be used.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add" title="tcex.tcex_metrics_v2.TcExMetricsV2.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> method has a required field of value. It also accepts an option fields for <strong>date</strong>, <strong>return_value</strong>, and <strong>key</strong>.  If no date is provided the current datetime will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.  The <strong>key</strong> arg is only used for Keyed Metrics or the <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed" title="tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code></a> method can be used.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 </pre></div>
@@ -208,8 +200,8 @@
 </div>
 <div class="section" id="add-keyed-metrics">
 <h2>Add Keyed Metrics<a class="headerlink" href="#add-keyed-metrics" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed" title="tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed"><code class="xref py py-meth docutils literal"><span class="pre">add_keyed()</span></code></a> method has a required field of value and key. It also accepts an option fields for <strong>date</strong>, and <strong>return_value</strong>.  If no date is provided the current datetime will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_metrics_v2.html#tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed" title="tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_keyed()</span></code></a> method has a required field of value and key. It also accepts an option fields for <strong>date</strong>, and <strong>return_value</strong>.  If no date is provided the current datetime will be used.  The <strong>return_value</strong> field will tell the API to return the value for the current interval.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="s1">&#39;My Keyed Metric&#39;</span><span class="p">,</span> <span class="s1">&#39;TcEx Keyed Metric Testing&#39;</span><span class="p">,</span> <span class="s1">&#39;Sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Daily&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 <span class="n">address_results</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;2019-03-28T12:25:40Z&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -221,9 +213,7 @@
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -241,7 +231,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -259,35 +249,24 @@
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

@@ -26,8 +26,7 @@ App - Directory Structure
     │   ├── data
     │   └── profiles
     │       └── simple_data.json
-    ├── tcex.json
-    └── tcex_json_schema.json
+    └── tcex.json
 
 .gitignore (optional)
 ~~~~~~~~~~~~~~~~~~~~~
@@ -178,14 +177,5 @@ tcex.json (required)
 This is the main TcEx framework configuration file. It required to run local testing and for packaging, but should not be included in the App package.
 
 .. literalinclude:: ../../app_init/playbook/tcex.json
-    :language: json
-    :linenos:
-
-tcex_json_schema.json (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This is the JSON schema for the install.json configuration file. If this file is present the ``tcpackage`` command will validate the "install.json" before packaging the App.
-
-.. literalinclude:: ../../app_init/tcex_json_schema.json
     :language: json
     :linenos:

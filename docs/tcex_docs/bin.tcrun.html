@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcrun Command &mdash; TcEx 0.9.1 documentation</title>
+  <title>tcrun Command &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -24,29 +24,20 @@
 
 
 
-
-
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="../genindex.html"/>
-        <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="../index.html"/>
-        <link rel="up" title="CLI Commands" href="bin.html"/>
-        <link rel="prev" title="tcprofile Command" href="bin.tcprofile.html"/>
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tcvalidate Command" href="bin.tcvalidate.html" />
+    <link rel="prev" title="tcprofile Command" href="bin.tcprofile.html" />
 
 
   <script src="../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -68,7 +59,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.3
               </div>
 
 
@@ -129,6 +120,7 @@
 <li class="toctree-l4"><a class="reference internal" href="bin.tcpackage.html">tcpackage Command</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bin.tcprofile.html">tcprofile Command</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tcrun Command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bin.tcvalidate.html">tcvalidate Command</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="bin.html#module-bin">Module contents</a></li>
@@ -147,7 +139,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">TcEx</a>
@@ -155,9 +147,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -204,735 +197,17 @@
   <div class="section" id="module-bin.tcrun">
 <span id="tcrun-command"></span><h1>tcrun Command<a class="headerlink" href="#module-bin.tcrun" title="Permalink to this headline">¶</a></h1>
 <p>TcEx Framework App Testing Module</p>
-<dl class="class">
-<dt id="bin.tcrun.ArgBuilder">
-<em class="property">class </em><code class="descclassname">bin.tcrun.</code><code class="descname">ArgBuilder</code><span class="sig-paren">(</span><em>lang</em>, <em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Build CLI Args</p>
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder._add_arg">
-<code class="descname">_add_arg</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder._add_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder._add_arg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add CLI Arg for the correct language.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder._add_arg_java">
-<code class="descname">_add_arg_java</code><span class="sig-paren">(</span><em>key</em>, <em>value</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder._add_arg_java"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder._add_arg_java" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add CLI Arg formatted specifically for Java.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder._add_arg_python">
-<code class="descname">_add_arg_python</code><span class="sig-paren">(</span><em>key</em>, <em>value=None</em>, <em>mask=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder._add_arg_python"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder._add_arg_python" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add CLI Arg formatted specifically for Python.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-<li><strong>(</strong><strong>boolean</strong><strong>, </strong><strong>default</strong> (<em>mask</em>) – False): Indicates whether no mask value.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add CLI Arg to lists value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> (<em>string</em>) – The CLI Args key (e.g., –name).</li>
-<li><strong>value</strong> (<em>string</em>) – The CLI Args value (e.g., bob).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.ArgBuilder.data">
-<code class="descname">data</code><a class="headerlink" href="#bin.tcrun.ArgBuilder.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all data formatted for the provided language.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>profile_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load provided CLI Args.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>dict</em>) – Dictionary of args in key/value format.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.ArgBuilder.masked">
-<code class="descname">masked</code><a class="headerlink" href="#bin.tcrun.ArgBuilder.masked" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all args formatted for the provided language with sensitive data masked.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.ArgBuilder.quote">
-<code class="descname">quote</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#ArgBuilder.quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.ArgBuilder.quote" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quote any parameters that contain spaces or special character</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">String containing parameters wrapped in double quotes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(string)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.ArgBuilder.quoted">
-<code class="descname">quoted</code><a class="headerlink" href="#bin.tcrun.ArgBuilder.quoted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all args formatted for the provided language with appropriate args quoted.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.ArgBuilder.standard">
-<code class="descname">standard</code><a class="headerlink" href="#bin.tcrun.ArgBuilder.standard" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all args formatted for the provided language.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="bin.tcrun.Report">
-<em class="property">class </em><code class="descclassname">bin.tcrun.</code><code class="descname">Report</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Report Object for a single profile.</p>
-<dl class="method">
-<dt id="bin.tcrun.Report.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Report.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Report.__str__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return report as a string.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.Report.data">
-<code class="descname">data</code><a class="headerlink" href="#bin.tcrun.Report.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the report data.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.Report.execution_success">
-<code class="descname">execution_success</code><a class="headerlink" href="#bin.tcrun.Report.execution_success" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the profile/report execution_success.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.Report.exit_code">
-<code class="descname">exit_code</code><a class="headerlink" href="#bin.tcrun.Report.exit_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the profile/report exit_code.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.Report.name">
-<code class="descname">name</code><a class="headerlink" href="#bin.tcrun.Report.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the profile/report name.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.Report.selected">
-<code class="descname">selected</code><a class="headerlink" href="#bin.tcrun.Report.selected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the profile/report name.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="bin.tcrun.Reports">
-<em class="property">class </em><code class="descclassname">bin.tcrun.</code><code class="descname">Reports</code><a class="reference internal" href="../_modules/bin/tcrun.html#Reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Run Report</p>
-<dl class="method">
-<dt id="bin.tcrun.Reports.__iter__">
-<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.__iter__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interate over all report profiles.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.__str__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return reports as a string.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.add_profile">
-<code class="descname">add_profile</code><span class="sig-paren">(</span><em>profile</em>, <em>selected</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.add_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.add_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add profile to report.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.exit_code">
-<code class="descname">exit_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.exit_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the exit code on the selected profile.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.increment_total">
-<code class="descname">increment_total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.increment_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.increment_total" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return run total value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.profile">
-<code class="descname">profile</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a specific profile.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.profile_execution">
-<code class="descname">profile_execution</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.profile_execution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.profile_execution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return run total value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.profile_validation">
-<code class="descname">profile_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.profile_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.profile_validation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return run total value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.Reports.report_validation">
-<code class="descname">report_validation</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#Reports.report_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.Reports.report_validation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return run total value.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="bin.tcrun.TcRun">
-<em class="property">class </em><code class="descclassname">bin.tcrun.</code><code class="descname">TcRun</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Run profiles for App</p>
-<dl class="method">
-<dt id="bin.tcrun.TcRun._create_tc_dirs">
-<code class="descname">_create_tc_dirs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun._create_tc_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun._create_tc_dirs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create app directories for logs and data files.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun._load_config_include">
-<code class="descname">_load_config_include</code><span class="sig-paren">(</span><em>include_directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun._load_config_include"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun._load_config_include" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load included configuration files.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun._logger">
-<code class="descname">_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun._logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun._logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create logger instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An instance of logging</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">logger</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun._signal_handler">
-<code class="descname">_signal_handler</code><span class="sig-paren">(</span><em>signal_interupt</em>, <em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun._signal_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun._signal_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle singal interrupt.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.autoclear">
-<code class="descname">autoclear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.autoclear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.autoclear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear Redis and ThreatConnect data from staging data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.clear">
-<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear Redis and ThreatConnect data defined in profile.</p>
-<p>Redis Data:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>ThreatConnect Data:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;threatconnect&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;owner&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;1.1.1.1&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.clear_redis">
-<code class="descname">clear_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.clear_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.clear_redis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete redis data for provided variable.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.clear_tc">
-<code class="descname">clear_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>data</em>, <em>clear_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.clear_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.clear_tc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete ThreatConnect data.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.TcRun.config">
-<code class="descname">config</code><a class="headerlink" href="#bin.tcrun.TcRun.config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return configuration data.</p>
-<p>Load on first access, otherwise return existing data.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_endswith">
-<em class="property">static </em><code class="descname">data_endswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_endswith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data ends with user data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_in_db">
-<em class="property">static </em><code class="descname">data_in_db</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_in_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_in_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate db data in user data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_in_user">
-<em class="property">static </em><code class="descname">data_in_user</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_in_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_in_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate user data in db data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_it">
-<em class="property">static </em><code class="descname">data_it</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_it"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_it" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data is Type</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_kva_compare">
-<em class="property">static </em><code class="descname">data_kva_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_kva_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_kva_compare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate key/value data in KeyValueArray</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_not_in">
-<em class="property">static </em><code class="descname">data_not_in</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_not_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_not_in" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data not in user data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_startswith">
-<em class="property">static </em><code class="descname">data_startswith</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_startswith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data starts with user data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.data_string_compare">
-<em class="property">static </em><code class="descname">data_string_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.data_string_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.data_string_compare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate string removing all white space before comparison</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.deep_diff">
-<code class="descname">deep_diff</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.deep_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.deep_diff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data in user data</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.json_compare">
-<code class="descname">json_compare</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.json_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.json_compare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data in user data</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.load_install_json">
-<code class="descname">load_install_json</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.load_install_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.load_install_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return install.json data.</p>
-<p>Load on first access, otherwise return existing data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.load_tcex">
-<code class="descname">load_tcex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.load_tcex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.load_tcex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inject required TcEx CLI Args.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.TcRun.operators">
-<code class="descname">operators</code><a class="headerlink" href="#bin.tcrun.TcRun.operators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return dict of Validation Operators.</p>
-<ul class="simple">
-<li>deep-diff (dd): This operator can compare any object that can be represented as JSON.</li>
-<li>eq: This operator does a equal to comparison for String and StringArray variables.</li>
-<li>ends-with (ew): This operator compares the end of a String with a user provided value.</li>
-<li>ge: This operator does a greater than or equal to comparison for String variables.</li>
-<li>gt: This operator does a greater than comparison for String variables.</li>
-<li>json-compare (jc): This operator will convert a String output variable to a JSON object
-(dict) and compare to user provided data.</li>
-<li>key-value-compare (kva): This operator will validate that key/value data is in
-KeyValueArray.</li>
-<li>in: This operator will check to see if a String output variable is in an user provided
-array.</li>
-<li>in-user-data: This operator will validate that user provided String value is in output
-StringArray variable.</li>
-<li>not-in (ni): This operator will check to see if a String variable is <strong>not</strong> in an user
-provided array.</li>
-<li>is-type (it): This operator will check to see if the variable “type” is equal to the user
-provided “type”.</li>
-<li>le: This operator does a less than or equal to comparison for String variables.</li>
-<li>lt: This operator does a less than comparison for String variables.</li>
-<li>ne: This operator does a <strong>not</strong> equal to comparison for String and StringArray variables.</li>
-<li>string-compare (se):</li>
-<li>starts-with (sw): This operator compares the start of a String with a user provided value.</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.path_data">
-<code class="descname">path_data</code><span class="sig-paren">(</span><em>variable_data</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.path_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.path_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return jmespath data.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.TcRun.profile">
-<code class="descname">profile</code><a class="headerlink" href="#bin.tcrun.TcRun.profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current profile.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.profile_args">
-<em class="property">static </em><code class="descname">profile_args</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.profile_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.profile_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return args for old or new structure.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.TcRun.profiles">
-<code class="descname">profiles</code><a class="headerlink" href="#bin.tcrun.TcRun.profiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all selected profiles.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.report">
-<code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.report" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format and output report data to screen.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the App using the current profile.</p>
-<p>The current profile has the install_json and args pre-loaded.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_commands">
-<code class="descname">run_commands</code><span class="sig-paren">(</span><em>program_language</em>, <em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_commands" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the run Print Command.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_display_app_errors">
-<code class="descname">run_display_app_errors</code><span class="sig-paren">(</span><em>err</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_display_app_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_display_app_errors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle the exit code for the current run.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_display_app_output">
-<code class="descname">run_display_app_output</code><span class="sig-paren">(</span><em>out</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_display_app_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_display_app_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print any App output.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_display_description">
-<code class="descname">run_display_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_display_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_display_description" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print profile name with programMain.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_display_profile">
-<code class="descname">run_display_profile</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_display_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_display_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print profile name with programMain.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_docker">
-<code class="descname">run_docker</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_docker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_docker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run App in Docker Container</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_exit_code">
-<code class="descname">run_exit_code</code><span class="sig-paren">(</span><em>returncode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_exit_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_exit_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle the exit code for the current run.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_local">
-<code class="descname">run_local</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_local" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the App on local system.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.run_validate_program_main">
-<code class="descname">run_validate_program_main</code><span class="sig-paren">(</span><em>program_main</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.run_validate_program_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.run_validate_program_main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate the program main file exists.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage">
-<code class="descname">stage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stage Redis and ThreatConnect data defined in profile.</p>
-<p>Redis Data:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">[</span>
-        <span class="s2">&quot;This is an example Source #1&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;This is an example Source #2&quot;</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:1234:source!StringArray&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>Redis Array:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="s2">&quot;variables&quot;</span><span class="o">:</span> <span class="p">[{</span>
-            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span><span class="p">,</span>
-        <span class="p">},</span> <span class="p">{</span>
-            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.threat!TCEntity&quot;</span><span class="p">,</span>
-        <span class="p">}]</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis_array&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:groups!TCEntityArray&quot;</span>
-<span class="p">},</span>
-<span class="p">{</span>
-    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="s2">&quot;variables&quot;</span><span class="o">:</span> <span class="p">[{</span>
-            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.adversary!TCEntity&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;.name&quot;</span>
-        <span class="p">},</span> <span class="p">{</span>
-            <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.threat!TCEntity&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;.name&quot;</span>
-        <span class="p">}]</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis_array&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:groups!StringArray&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>ThreatConnect Data:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
-        <span class="s2">&quot;group&quot;</span><span class="o">:</span> <span class="p">[{</span>
-            <span class="s2">&quot;firstSeen&quot;</span><span class="o">:</span> <span class="s2">&quot;2008-12-12T12:00:00Z&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;campaign-002&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Campaign&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;camp-0002&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;attribute&quot;</span><span class="o">:</span> <span class="p">[{</span>
-                <span class="s2">&quot;displayed&quot;</span><span class="o">:</span> <span class="nx">True</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;Campaign Example Description&quot;</span>
-            <span class="p">}],</span>
-            <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[{</span>
-                <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;SafeToDelete&quot;</span>
-            <span class="p">}],</span>
-            <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.campaign!TCEntity&quot;</span>
-        <span class="p">}],</span>
-        <span class="s2">&quot;indicator&quot;</span><span class="o">:</span> <span class="p">[{</span>
-            <span class="s2">&quot;associatedGroups&quot;</span><span class="o">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;groupXid&quot;</span><span class="o">:</span> <span class="s2">&quot;campaign-002&quot;</span>
-                <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;confidence&quot;</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
-            <span class="s2">&quot;fileOccurrence&quot;</span><span class="o">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;date&quot;</span><span class="o">:</span> <span class="s2">&quot;2017-02-02T01:02:03Z&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;fileName&quot;</span><span class="o">:</span> <span class="s2">&quot;drop1.exe&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;path&quot;</span><span class="o">:</span> <span class="s2">&quot;C:\\test\\&quot;</span>
-                <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;rating&quot;</span><span class="o">:</span> <span class="mf">5.0</span><span class="p">,</span>
-            <span class="s2">&quot;summary&quot;</span><span class="o">:</span> <span class="s2">&quot;43c3609411c83f363e051d455ade78a6&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tag&quot;</span><span class="o">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;SafeToDelete&quot;</span>
-                <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;xid&quot;</span><span class="o">:</span> <span class="s2">&quot;55ee19565db5b16a0f511791a3b2a7ef0ccddf4d9d64e7008561329419cb675b&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:4768:tc.file!TCEntity&quot;</span>
-        <span class="p">}]</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;data_owner&quot;</span><span class="o">:</span> <span class="s2">&quot;TCI&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;threatconnect&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_redis">
-<code class="descname">stage_redis</code><span class="sig-paren">(</span><em>variable</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_redis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stage Redis Data</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc">
-<code class="descname">stage_tc</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em>, <em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stage ThreatConnect Data</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[{</span>
-  <span class="s2">&quot;data&quot;</span><span class="o">:</span> <span class="p">{</span>
-    <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">116</span><span class="p">,</span>
-    <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;adversary001-build-testing&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Adversary&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ownerName&quot;</span><span class="o">:</span> <span class="s2">&quot;qa-build&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dateAdded&quot;</span><span class="o">:</span> <span class="s2">&quot;2017-08-16T18:35:07-04:00&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;webLink&quot;</span><span class="o">:</span> <span class="s2">&quot;https://app.tci.ninja/auth/adversary/adversary.xhtml?adversary=116&quot;</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;data_type&quot;</span><span class="o">:</span> <span class="s2">&quot;redis&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;variable&quot;</span><span class="o">:</span> <span class="s2">&quot;#App:0822:adversary!TCEntity&quot;</span>
-<span class="p">}]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_associations">
-<code class="descname">stage_tc_associations</code><span class="sig-paren">(</span><em>entity1</em>, <em>entity2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_associations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_associations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add Attribute to a Resource</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_batch">
-<code class="descname">stage_tc_batch</code><span class="sig-paren">(</span><em>owner</em>, <em>staging_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stage Redis Data</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.stage_tc_batch_xid">
-<em class="property">static </em><code class="descname">stage_tc_batch_xid</code><span class="sig-paren">(</span><em>xid_type</em>, <em>xid_value</em>, <em>owner</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_batch_xid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_batch_xid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an xid for a batch job.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_create_attribute">
-<code class="descname">stage_tc_create_attribute</code><span class="sig-paren">(</span><em>attribute_type</em>, <em>attribute_value</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_create_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_create_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add Attribute to a Resource</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_create_security_label">
-<code class="descname">stage_tc_create_security_label</code><span class="sig-paren">(</span><em>label</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_create_security_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_create_security_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a Tag to a Resource</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_create_tag">
-<code class="descname">stage_tc_create_tag</code><span class="sig-paren">(</span><em>tag</em>, <em>resource</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_create_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_create_tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a Tag to a Resource</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_group_entity">
-<code class="descname">stage_tc_group_entity</code><span class="sig-paren">(</span><em>group_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_group_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_group_entity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert JSON data to TCEntity.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.stage_tc_indicator_entity">
-<code class="descname">stage_tc_indicator_entity</code><span class="sig-paren">(</span><em>indicator_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.stage_tc_indicator_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.stage_tc_indicator_entity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert JSON data to TCEntity.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bin.tcrun.TcRun.staging_data">
-<code class="descname">staging_data</code><a class="headerlink" href="#bin.tcrun.TcRun.staging_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read data files and return all staging data for current profile.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="bin.tcrun.TcRun.update_environment">
-<em class="property">static </em><code class="descname">update_environment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.update_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.update_environment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the App as a subprocess.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.validate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate Data</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.validate_log_output">
-<code class="descname">validate_log_output</code><span class="sig-paren">(</span><em>passed</em>, <em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.validate_log_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.validate_log_output" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format the validation log output to be easier to read.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bin.tcrun.TcRun.validate_redis">
-<code class="descname">validate_redis</code><span class="sig-paren">(</span><em>db_data</em>, <em>user_data</em>, <em>oper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bin/tcrun.html#TcRun.validate_redis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.tcrun.TcRun.validate_redis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate data in Redis.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="bin.tcvalidate.html" class="btn btn-neutral float-right" title="tcvalidate Command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
         <a href="bin.tcprofile.html" class="btn btn-neutral" title="tcprofile Command" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -944,7 +219,7 @@ provided “type”.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -962,35 +237,24 @@ provided “type”.</li>
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

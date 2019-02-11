@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App Deployment Configuration File &mdash; TcEx 0.9.1 documentation</title>
+  <title>App Deployment Configuration File &mdash; TcEx 0.9.3 documentation</title>
 
 
 
@@ -24,27 +24,18 @@
 
 
 
-
-
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-
-
-    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
-
-
-
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="TcEx 0.9.1 documentation" href="index.html"/>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
 
   <div class="wy-grid-for-nav">
@@ -66,7 +57,7 @@
 
 
               <div class="version">
-                0.9.1
+                0.9.3
               </div>
 
 
@@ -130,7 +121,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
 
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">TcEx</a>
@@ -138,9 +129,10 @@
       </nav>
 
 
-
       <div class="wy-nav-content">
+
         <div class="rst-content">
+
 
 
 
@@ -182,7 +174,7 @@
 
   <div class="section" id="app-deployment-configuration-file">
 <h1>App Deployment Configuration File<a class="headerlink" href="#app-deployment-configuration-file" title="Permalink to this headline">¶</a></h1>
-<p>A configuration file named <code class="docutils literal"><span class="pre">install.json</span></code> is used for ThreatConnect
+<p>A configuration file named <code class="docutils literal notranslate"><span class="pre">install.json</span></code> is used for ThreatConnect
 apps written in:</p>
 <ul class="simple">
 <li>Python</li>
@@ -252,7 +244,7 @@ apps written in:</p>
 </tr>
 <tr class="row-odd"><td><a class="reference external" href="#programlanguage">programLanguage</a></td>
 <td>TRUE</td>
-<td><code class="docutils literal"><span class="pre">&quot;JAVA&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;PYTHON&quot;</span></code>, or <code class="docutils literal"><span class="pre">&quot;NONE&quot;</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">&quot;JAVA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;PYTHON&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;NONE&quot;</span></code></td>
 </tr>
 <tr class="row-even"><td><a class="reference external" href="#programmain">programMain</a></td>
 <td>TRUE</td>
@@ -276,7 +268,7 @@ apps written in:</p>
 </tr>
 <tr class="row-odd"><td><a class="reference external" href="#runtimelevel">runtimeLevel</a></td>
 <td>TRUE</td>
-<td><code class="docutils literal"><span class="pre">&quot;Organization&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;SpaceOrganization&quot;</span></code>, or <code class="docutils literal"><span class="pre">&quot;System&quot;</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">&quot;Organization&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;SpaceOrganization&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;System&quot;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -318,7 +310,7 @@ apps written in:</p>
 </div>
 <div class="section" id="programmain">
 <h3>programMain<a class="headerlink" href="#programmain" title="Permalink to this headline">¶</a></h3>
-<p>Required property providing the entry point into the app. For Python apps, it is the name of the <code class="docutils literal"><span class="pre">.py</span></code> file (or exclude the extension if running it as a module). For Java apps, it is the main class the Job Execution Engine should use when calling the app using the Java Runtime Environment.</p>
+<p>Required property providing the entry point into the app. For Python apps, it is the name of the <code class="docutils literal notranslate"><span class="pre">.py</span></code> file (or exclude the extension if running it as a module). For Java apps, it is the main class the Job Execution Engine should use when calling the app using the Java Runtime Environment.</p>
 </div>
 <div class="section" id="programversion">
 <h3>programVersion<a class="headerlink" href="#programversion" title="Permalink to this headline">¶</a></h3>
@@ -581,7 +573,7 @@ apps written in:</p>
 </div>
 <div class="section" id="playbookdatatype">
 <h3>PlaybookDataType<a class="headerlink" href="#playbookdatatype" title="Permalink to this headline">¶</a></h3>
-<p>Optional property restricting the data type of incoming playbook variables. This is different than the <code class="docutils literal"><span class="pre">type</span></code> property that controls the UI input type. The playbook data type can be any standard or custom type and is expected to be an array of strings.</p>
+<p>Optional property restricting the data type of incoming playbook variables. This is different than the <code class="docutils literal notranslate"><span class="pre">type</span></code> property that controls the UI input type. The playbook data type can be any standard or custom type and is expected to be an array of strings.</p>
 <p>As of ThreatConnect 5.4, the standard Playbook types supported by the Python and Java SDK are:</p>
 <ul class="simple">
 <li>String</li>
@@ -669,7 +661,7 @@ apps written in:</p>
 </table>
 <div class="section" id="outputvariables">
 <h3>outputVariables<a class="headerlink" href="#outputvariables" title="Permalink to this headline">¶</a></h3>
-<p>The optional <code class="docutils literal"><span class="pre">outputVariables</span></code> property specifies the variables that a Playbook app will provide for downstream Playbooks.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">outputVariables</span></code> property specifies the variables that a Playbook app will provide for downstream Playbooks.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="56%" />
@@ -714,7 +706,7 @@ apps written in:</p>
 </div>
 <div class="section" id="retry">
 <h3>retry<a class="headerlink" href="#retry" title="Permalink to this headline">¶</a></h3>
-<p>The optional <code class="docutils literal"><span class="pre">retry</span></code> property can be used to allow a Playbook to retry its execution in case of failure.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">retry</span></code> property can be used to allow a Playbook to retry its execution in case of failure.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="64%" />
@@ -748,11 +740,11 @@ apps written in:</p>
 </div>
 <div class="section" id="defaultdelayminutes">
 <h4>defaultDelayMinutes<a class="headerlink" href="#defaultdelayminutes" title="Permalink to this headline">¶</a></h4>
-<p>Optional property which specifies the number of minutes between each new retry in case of failure. This property assumes that the <code class="docutils literal"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
+<p>Optional property which specifies the number of minutes between each new retry in case of failure. This property assumes that the <code class="docutils literal notranslate"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
 </div>
 <div class="section" id="defaultmaxretries">
 <h4>defaultMaxRetries<a class="headerlink" href="#defaultmaxretries" title="Permalink to this headline">¶</a></h4>
-<p>Optional property which specifies the maximum number of times the Playbook app can retry in case of failure. This property assumes that the <code class="docutils literal"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
+<p>Optional property which specifies the maximum number of times the Playbook app can retry in case of failure. This property assumes that the <code class="docutils literal notranslate"><span class="pre">allowed</span></code> property is set true to allow the app to retry.</p>
 </div>
 </div>
 </div>
@@ -774,7 +766,7 @@ to convert the variables into literal values. Internal variables should
 be used only with the <strong>Choice</strong> and <strong>MultiChoice</strong> types. They should
 be defined in the <strong>validValues</strong> property.</p>
 <p>Example of a validValues parameter definition example:</p>
-<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="code json highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span>
    <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;Owner&quot;</span><span class="p">,</span>
    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
@@ -801,46 +793,46 @@ understood by the ThreatConnect platform.</p>
 <tbody valign="top">
 <tr class="row-even"><td>OWNERS</td>
 <td>String Array</td>
-<td><code class="docutils literal"><span class="pre">[&quot;${OWNERS}&quot;]</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">[&quot;${OWNERS}&quot;]</span></code></td>
 <td>The OWNERS variable resolves to the available owners to which the current user has access. Since this determination is dynamically resolved at runtime, the owners rendered depend on the user. This variable is useful when an app needs to have a defined owner passed as a parameter. The string value of the owner(s) is passed as an argument to the app.</td>
 </tr>
 <tr class="row-odd"><td>ATTRIBUTES</td>
 <td>String Array</td>
-<td><code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES}&quot;]</span></code> or <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:&lt;type&gt;}&quot;]</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES}&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:&lt;type&gt;}&quot;]</span></code></td>
 <td>The ATTRIBUTES variable resolves to attributes the current organization has available. This variable has a second, optional component, :&lt;type&gt;, that further refines the attributes resolved to the specific Indicator or Group type (for example: [“${ATTRIBUTES:Address}”]). The string value of the attribute(s) is passed as an argument to the app.</td>
 </tr>
 <tr class="row-even"><td>INDICATORS</td>
 <td>String Array</td>
-<td><code class="docutils literal"><span class="pre">[&quot;${INDICATOR_TYPES}&quot;]</span></code></td>
+<td><code class="docutils literal notranslate"><span class="pre">[&quot;${INDICATOR_TYPES}&quot;]</span></code></td>
 <td>The INDICATOR_TYPES variable resolves to all of the indicator types available in the given instance of ThreatConnect. The string value of the indicator type(s) is passed as an argument to the app.</td>
 </tr>
 </tbody>
 </table>
-<p>When the <code class="docutils literal"><span class="pre">$ATTRIBUTES</span></code> internal variable is used with a <code class="docutils literal"><span class="pre">:&lt;type&gt;</span></code> suffix, the type can be any of the Indicator, Group, Task, or Victim types in the ThreatConnect platform:</p>
+<p>When the <code class="docutils literal notranslate"><span class="pre">$ATTRIBUTES</span></code> internal variable is used with a <code class="docutils literal notranslate"><span class="pre">:&lt;type&gt;</span></code> suffix, the type can be any of the Indicator, Group, Task, or Victim types in the ThreatConnect platform:</p>
 <ul class="simple">
-<li>Address: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Address}&quot;]</span></code></li>
-<li>Adversary: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
-<li>ASN: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:ASN}&quot;]</span></code></li>
-<li>Campaign: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Campaign}&quot;]</span></code></li>
-<li>CIDR: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:CIDR}&quot;]</span></code></li>
-<li>Document: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Document}&quot;]</span></code></li>
-<li>Email: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Email}&quot;]</span></code></li>
-<li>EmailAddress: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:EmailAddress}&quot;]</span></code></li>
-<li>Event: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Event}&quot;]</span></code></li>
-<li>File: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:File}&quot;]</span></code></li>
-<li>Host: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Host}&quot;]</span></code></li>
-<li>Incident: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Incident}&quot;]</span></code></li>
-<li>IntrusionSet: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:IntusionSet}&quot;]</span></code></li>
-<li>Mutex: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Mutex}&quot;]</span></code></li>
-<li>RegistryKey: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:RegistryKey}&quot;]</span></code></li>
-<li>Report: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Report}&quot;]</span></code></li>
-<li>Adversary: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
-<li>Signature: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Signature}&quot;]</span></code></li>
-<li>Task: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Task}&quot;]</span></code></li>
-<li>Threat: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Threat}&quot;]</span></code></li>
-<li>URL: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
-<li>UserAgent: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
-<li>Victim: <code class="docutils literal"><span class="pre">[&quot;${ATTRIBUTES:Victim}&quot;]</span></code></li>
+<li>Address: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Address}&quot;]</span></code></li>
+<li>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
+<li>ASN: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:ASN}&quot;]</span></code></li>
+<li>Campaign: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Campaign}&quot;]</span></code></li>
+<li>CIDR: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:CIDR}&quot;]</span></code></li>
+<li>Document: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Document}&quot;]</span></code></li>
+<li>Email: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Email}&quot;]</span></code></li>
+<li>EmailAddress: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:EmailAddress}&quot;]</span></code></li>
+<li>Event: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Event}&quot;]</span></code></li>
+<li>File: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:File}&quot;]</span></code></li>
+<li>Host: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Host}&quot;]</span></code></li>
+<li>Incident: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Incident}&quot;]</span></code></li>
+<li>IntrusionSet: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:IntusionSet}&quot;]</span></code></li>
+<li>Mutex: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Mutex}&quot;]</span></code></li>
+<li>RegistryKey: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:RegistryKey}&quot;]</span></code></li>
+<li>Report: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Report}&quot;]</span></code></li>
+<li>Adversary: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Adversary}&quot;]</span></code></li>
+<li>Signature: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Signature}&quot;]</span></code></li>
+<li>Task: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Task}&quot;]</span></code></li>
+<li>Threat: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Threat}&quot;]</span></code></li>
+<li>URL: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
+<li>UserAgent: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:URL}&quot;]</span></code></li>
+<li>Victim: <code class="docutils literal notranslate"><span class="pre">[&quot;${ATTRIBUTES:Victim}&quot;]</span></code></li>
 </ul>
 </div>
 <div class="section" id="external-variables">
@@ -858,7 +850,7 @@ format.</p>
 <p>For instance, to allow the user to select one of their plain-text
 variables from Organization and User levels, the <strong>install.json</strong> file
 would reference them as follows:</p>
-<div class="code json highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;{USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
+<div class="code json highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;validValues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;{USER:TEXT}&quot;</span><span class="p">,</span> <span class="s2">&quot;${ORGANIZATION:TEXT}&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>The left-hand component of the variable is the level. The level can be
@@ -890,7 +882,7 @@ any of the options listed in the table below.</p>
 </div>
 <div class="section" id="install-json-schema">
 <h2>install.json Schema<a class="headerlink" href="#install-json-schema" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;allowOnDemand&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -1122,7 +1114,7 @@ any of the options listed in the table below.</p>
 Python app. The key elements are described with line-number references
 in 8, below the example.</p>
 <p>Example install.json file for a Python app:</p>
-<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+<div class="highlight-json notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
   4
@@ -1379,9 +1371,7 @@ in 8, below the example.</p>
 
 
            </div>
-           <div class="articleComments">
 
-           </div>
           </div>
           <footer>
 
@@ -1390,7 +1380,7 @@ in 8, below the example.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, ThreatConnect Inc.
+        &copy; Copyright 2016, ThreatConnect Inc
 
     </p>
   </div>
@@ -1408,35 +1398,24 @@ in 8, below the example.</p>
 
 
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.9.1',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
 
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
-
 
 </body>
 </html>

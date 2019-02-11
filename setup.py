@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Setup for TCEX Module"""
+"""Setup for TCEX Module."""
 import re
 import sys
 from setuptools import setup, find_packages
@@ -42,6 +42,8 @@ scripts = [
     'bin/tcprofile.cmd',
     'bin/tcrun',
     'bin/tcrun.cmd',
+    'bin/tcvalidate',
+    'bin/tcvalidate.cmd',
 ]
 
 setup(
@@ -49,13 +51,15 @@ setup(
     author_email='support@threatconnect.com',
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
+    include_package_data=True,
     install_requires=install_requires,
     license='Apache License, Version 2',
     name='tcex',
     packages=find_packages(),
-    package_data={'': ['tcex_json_schema.json']},
+    package_data={'': ['*.json']},
     scripts=scripts,
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,
     version=version,
+    zip_safe=True,
 )

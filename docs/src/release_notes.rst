@@ -6,6 +6,18 @@ Release Notes
 0.9.x
 =====
 
+0.9.3
+-----
++ Added new ``tcvalidate`` command for App Builder.
++ Added validation of layout.json schema, inputs, and outputs.
+
+0.9.2
+-----
++ Added new ``FailOn`` App decorator.
++ Updated run.py in Playbook templates to handle TypeError on incorrect action.
++ Updated ``tcpackage`` command to suggest proper fix for missing modules.
++ Updated ``tcrun`` to handle null value in args.
+
 0.9.1
 -----
 + Fixed issue in ``tcpackage`` with handling errors.
