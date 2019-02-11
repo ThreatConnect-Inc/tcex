@@ -7,6 +7,7 @@ import imp
 import importlib
 import json
 import os
+import sqlite3
 import sys
 import traceback
 from collections import deque
@@ -62,6 +63,42 @@ class TcExValidate(object):
 
         # initialize colorama
         c.init(autoreset=True, strip=False)
+
+    @staticmethod
+    def _create_connection():
+        """Create a temporary in memory DB and return the connection."""
+
+        conn = None
+        try:
+            conn = sqlite3.connect(':memory:')
+        except sqlite3.Error as e:
+            sys.exit(1, e)
+
+        return conn
+
+    @staticmethod
+    def _create_table(conn, table_name, columns):
+        """Create a temporary DB table.
+
+        Arguments:
+            conn (object): DB Connection
+            table_name (str): The name of the table.
+            columns (list): List of columns to add to the DB.
+        """
+
+        formatted_columns = ''
+        for col in set(columns):
+            formatted_columns += '"{}" text NOT NULL, '.format(col)
+        formatted_columns = formatted_columns.strip(', ')
+
+        create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
+            table_name, formatted_columns
+        )
+        try:
+            cr = conn.cursor()
+            cr.execute(create_table_sql)
+        except sqlite3.Error as e:
+            sys.exit(1, e)
 
     @property
     def _validation_data(self):
@@ -266,6 +303,8 @@ class TcExValidate(object):
         will validate that no reference appear for inputs in install.json that don't exist.
 
         """
+        conn = self._create_connection()
+
         ij_input_names = []
         ij_output_names = []
         if os.path.isfile('install.json'):
@@ -280,6 +319,10 @@ class TcExValidate(object):
                 # checking parameters isn't possible if install.json can't be parsed
                 return
 
+        # create temporary inputs tables
+        input_table = 'inputs'
+        self._create_table(conn, input_table, ij_input_names)
+
         # inputs
         status = True
         for i in layout_json_data.get('inputs', []):
@@ -287,13 +330,30 @@ class TcExValidate(object):
                 if p.get('name') not in ij_input_names:
                     # update validation data errors
                     self.validation_data['errors'].append(
-                        'Layouts input validations failed ({} is defined in layout.json, but not '
-                        'found in install.json).'.format(p.get('name'))
+                        'Layouts input.parameters[].name validations failed ("{}" is defined in '
+                        'layout.json, but not found in install.json).'.format(p.get('name'))
                     )
                     status = False
 
+                if p.get('display'):
+                    display_query = 'select * from {} where {}'.format(
+                        input_table, p.get('display')
+                    )
+                    try:
+                        conn.execute(display_query)
+                    except sqlite3.Error:
+                        self.validation_data['errors'].append(
+                            'Layouts input.parameters[].display validations failed ("{}" query is '
+                            'an invalid statement).'.format(p.get('display'))
+                        )
+                        status = False
+
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'inputs', 'status': status})
+
+        # # create temporary outputs tables
+        output_table = 'outputs'
+        self._create_table(conn, output_table, ij_output_names)
 
         # outputs
         status = True
@@ -306,8 +366,21 @@ class TcExValidate(object):
                 )
                 status = False
 
+            if o.get('display'):
+                display_query = 'select * from {} where {}'.format(output_table, o.get('display'))
+                try:
+                    conn.execute(display_query)
+                except sqlite3.Error:
+                    self.validation_data['errors'].append(
+                        'Layouts outputs.display validations failed ("{}" query is '
+                        'an invalid statement).'.format(o.get('display'))
+                    )
+                    status = False
+
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
+
+        # self.check_layout_sql(layout_json_data, ij_input_names, ij_output_names)
 
     def check_syntax(self, app_path=None):
         """Run syntax on each ".py" and ".json" file.
