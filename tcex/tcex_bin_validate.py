@@ -531,7 +531,7 @@ class TcExValidate(object):
             # rename old schema file
             if os.path.isfile('tcex_json_schema.json'):
                 # this file is not part of tcex.
-                os.remove(self.install_json_schema_file)
+                os.remove('tcex_json_schema.json')
 
             if os.path.isfile(self.install_json_schema_file):
                 with open(self.install_json_schema_file) as fh:
