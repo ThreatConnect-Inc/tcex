@@ -6,6 +6,10 @@ Release Notes
 0.9.x
 =====
 
+0.9.4
+-----
++ Switch from setup.py package_data to MANIFEST.in for JSON schema files.
+
 0.9.3
 -----
 + Added new ``tcvalidate`` command for App Builder.
