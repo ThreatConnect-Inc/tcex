@@ -6,9 +6,13 @@ Release Notes
 0.9.x
 =====
 
+0.9.5
+-----
++ Enabled package_data in setup.py for JSON schema files.
+
 0.9.4
 -----
-+ Switch from setup.py package_data to MANIFEST.in for JSON schema files.
++ Switched from setup.py package_data to MANIFEST.in for JSON schema files.
 
 0.9.3
 -----
