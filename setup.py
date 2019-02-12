@@ -16,7 +16,7 @@ if not version:
 
 install_requires = [
     'colorama>=0.3.9',
-    'future',
+    # 'future',
     'hvac>=0.3.0',
     'inflect>=0.2.5',
     'jsonschema>=2.6.0',
@@ -31,6 +31,7 @@ install_requires = [
 ]
 if sys.version_info < (3,):
     install_requires.extend(['ipaddress'])
+
 scripts = [
     'bin/tcinit',
     'bin/tcinit.cmd',
@@ -51,12 +52,12 @@ setup(
     author_email='support@threatconnect.com',
     description='ThreatConnect Exchange App Framework',
     download_url='https://github.com/ThreatConnect-Inc/tcex/tarball/{}'.format(version),
-    include_package_data=True,
+    # include_package_data=True,
     install_requires=install_requires,
     license='Apache License, Version 2',
     name='tcex',
     packages=find_packages(),
-    package_data={'': ['*.json']},
+    # package_data={'': ['*.json']},
     scripts=scripts,
     url='https://github.com/ThreatConnect-Inc/tcex',
     use_2to3=True,
