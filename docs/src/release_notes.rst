@@ -10,6 +10,7 @@ Release Notes
 -----
 + Added new ``tcvalidate`` command for App Builder.
 + Added validation of layout.json schema, inputs, and outputs.
++ Migrated JSON validation files from App to TcEx.
 
 0.9.2
 -----

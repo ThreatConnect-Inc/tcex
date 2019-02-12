@@ -234,6 +234,31 @@
 <li>layout.json schema</li>
 </ul>
 <dl class="staticmethod">
+<dt id="tcex.tcex_bin_validate.TcExValidate._create_connection">
+<em class="property">static </em><code class="descname">_create_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate._create_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate._create_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a temporary in memory DB and return the connection.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="tcex.tcex_bin_validate.TcExValidate._create_table">
+<em class="property">static </em><code class="descname">_create_table</code><span class="sig-paren">(</span><em>conn</em>, <em>table_name</em>, <em>columns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate._create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate._create_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a temporary DB table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>conn</strong> (<em>object</em>) – DB Connection</li>
+<li><strong>table_name</strong> (<em>str</em>) – The name of the table.</li>
+<li><strong>columns</strong> (<em>list</em>) – List of columns to add to the DB.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_import_stdlib">
 <em class="property">static </em><code class="descname">check_import_stdlib</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if module is in Python stdlib.</p>
