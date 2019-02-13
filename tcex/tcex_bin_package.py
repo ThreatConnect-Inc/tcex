@@ -25,9 +25,9 @@ class TcExPackage(object):
         self.args = _args
         self.app_path = os.getcwd()
         self.exit_code = 0
-        self.features = ['secureParams', 'aotExecutionEnabled']
+        self.features = ['aotExecutionEnabled', 'secureParams']
 
-        # defaults
+        # properties
         self._app_packages = []
         self.config = {}
         self.package_data = {'errors': [], 'updates': [], 'bundle': [], 'package': []}

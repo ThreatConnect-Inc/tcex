@@ -91,6 +91,14 @@ class TcExLib(object):
             matches = re.findall(env_var, lib_dir)
             if matches:
                 env_val = os.environ.get(matches[0])
+                if env_val is None:
+                    print(
+                        '{}{}"{}" env variable set in tcex.json, but could not be resolved.'.format(
+                            c.Style.BRIGHT, c.Fore.RED, matches[0]
+                        )
+                    )
+                    sys.exit(1)
+
                 lib_dir = re.sub(env_var, env_val, lib_dir)
 
             lib_dir_fq = os.path.join(self.app_path, lib_dir)

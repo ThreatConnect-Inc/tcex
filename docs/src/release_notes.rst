@@ -9,6 +9,9 @@ Release Notes
 0.9.6
 -----
 + Fix for ``tcvalidate`` output display statement validation.
++ Updated install.json schema file.
++ Updated ``tclib`` to error when environment variables are not available.
++ Updated batch module to handle xid as str for py2 Apps.
 
 0.9.5
 -----

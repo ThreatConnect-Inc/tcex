@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""ThreatConnect Batch Import Module"""
+"""ThreatConnect Batch Import Module."""
 import hashlib
 import json
 import math
 import os
 import re
 import shelve
+import sys
 import time
 import uuid
 
@@ -185,6 +186,10 @@ class TcExBatch(object):
         else:
             # get xid from object
             xid = group_data.xid
+
+        if sys.version_info[0] == 2 and hasattr(xid, 'encode'):
+            # py2 fix
+            xid = xid.encode('utf-8')
 
         if self.groups.get(xid) is not None:
             # return existing group from memory

@@ -88,7 +88,7 @@ class TcExValidate(object):
 
         formatted_columns = ''
         for col in set(columns):
-            formatted_columns += '"{}" text NOT NULL, '.format(col)
+            formatted_columns += '"{}" text NOT NULL, '.format(col.strip('"').strip('\''))
         formatted_columns = formatted_columns.strip(', ')
 
         create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
@@ -340,7 +340,7 @@ class TcExValidate(object):
                         input_table, p.get('display')
                     )
                     try:
-                        conn.execute(display_query)
+                        conn.execute(display_query.replace('"', ''))
                     except sqlite3.Error:
                         self.validation_data['errors'].append(
                             'Layouts input.parameters[].display validations failed ("{}" query is '
@@ -369,7 +369,7 @@ class TcExValidate(object):
             if o.get('display'):
                 display_query = 'select * from {} where {}'.format(output_table, o.get('display'))
                 try:
-                    conn.execute(display_query)
+                    conn.execute(display_query.replace('"', ''))
                 except sqlite3.Error:
                     self.validation_data['errors'].append(
                         'Layouts outputs.display validations failed ("{}" query is '
@@ -426,6 +426,20 @@ class TcExValidate(object):
             # store status for this file
             self.validation_data['fileSyntax'].append({'filename': filename, 'status': status})
 
+    @property
+    def install_json_schema(self):
+        """Load install.json schema file."""
+        if self._install_json_schema is None:
+            # rename old schema file
+            if os.path.isfile('tcex_json_schema.json'):
+                # this file is not part of tcex.
+                os.remove('tcex_json_schema.json')
+
+            if os.path.isfile(self.install_json_schema_file):
+                with open(self.install_json_schema_file) as fh:
+                    self._install_json_schema = json.load(fh)
+        return self._install_json_schema
+
     def interactive(self):
         """Run in interactive mode."""
         while True:
@@ -454,22 +468,6 @@ class TcExValidate(object):
     def print_json(self):
         """Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
-
-    @staticmethod
-    def status_color(status):
-        """Return the appropriate status color."""
-        status_color = c.Fore.GREEN
-        if not status:
-            status_color = c.Fore.RED
-        return status_color
-
-    @staticmethod
-    def status_value(status):
-        """Return the appropriate status color."""
-        status_value = 'passed'
-        if not status:
-            status_value = 'failed'
-        return status_value
 
     def print_results(self):
         """Print results."""
@@ -515,28 +513,31 @@ class TcExValidate(object):
                 status_value = self.status_value(f.get('status'))
                 print('{!s:<60}{}{!s:<25}'.format(f.get('params'), status_color, status_value))
 
-        # ignore exit code
-        if not self.args.ignore_validation:
-            if self.validation_data.get('errors'):
-                print('\n')  # separate errors from normal output
+        if self.validation_data.get('errors'):
+            print('\n')  # separate errors from normal output
+        for error in self.validation_data.get('errors'):
             # print all errors
-            for error in self.validation_data.get('errors'):
-                print('* {}{}'.format(c.Fore.RED, error))
+            print('* {}{}'.format(c.Fore.RED, error))
+
+            # ignore exit code
+            if not self.args.ignore_validation:
                 self.exit_code = 1
 
-    @property
-    def install_json_schema(self):
-        """Load install.json schema file."""
-        if self._install_json_schema is None:
-            # rename old schema file
-            if os.path.isfile('tcex_json_schema.json'):
-                # this file is not part of tcex.
-                os.remove('tcex_json_schema.json')
+    @staticmethod
+    def status_color(status):
+        """Return the appropriate status color."""
+        status_color = c.Fore.GREEN
+        if not status:
+            status_color = c.Fore.RED
+        return status_color
 
-            if os.path.isfile(self.install_json_schema_file):
-                with open(self.install_json_schema_file) as fh:
-                    self._install_json_schema = json.load(fh)
-        return self._install_json_schema
+    @staticmethod
+    def status_value(status):
+        """Return the appropriate status color."""
+        status_value = 'passed'
+        if not status:
+            status_value = 'failed'
+        return status_value
 
     @staticmethod
     def update_system_path():
