@@ -6,6 +6,10 @@ Release Notes
 0.9.x
 =====
 
+0.9.6
+-----
++ Fix for ``tcvalidate`` output display statement validation.
+
 0.9.5
 -----
 + Enabled package_data in setup.py for JSON schema files.

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TcEx Framework module init file."""
 __author__ = 'ThreatConnect (support@threatconnect.com)'
-__version__ = '0.9.5'
+__version__ = '0.9.6'
 __license__ = 'Apache License, Version 2'
 name = 'tcex'
 

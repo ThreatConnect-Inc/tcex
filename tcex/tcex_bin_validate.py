@@ -353,7 +353,7 @@ class TcExValidate(object):
 
         # # create temporary outputs tables
         output_table = 'outputs'
-        self._create_table(conn, output_table, ij_output_names)
+        self._create_table(conn, output_table, ij_input_names)
 
         # outputs
         status = True
