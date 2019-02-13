@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Validate Module."""
-import argparse
 import ast
 import imp
 import importlib
@@ -16,20 +15,6 @@ import pkg_resources
 import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
 from stdlib_list import stdlib_list
-
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--ignore_validation', action='store_true', help='Do not exit on validation errors.'
-)
-parser.add_argument('--install_json', help='The install.json file to user during validation.')
-parser.add_argument('--interactive', action='store_true', help='Keep running and listen for stdin.')
-parser.add_argument('--json_output', action='store_true', help='Do not exit on validation errors.')
-args, extra_args = parser.parse_known_args()
 
 
 class TcExValidate(object):
