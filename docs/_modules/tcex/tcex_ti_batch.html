@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_batch &mdash; TcEx 0.9.5 documentation</title>
+  <title>tcex.tcex_ti_batch &mdash; TcEx 0.9.6 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.5
+                0.9.6
               </div>
 
 
@@ -174,13 +174,14 @@
 
   <h1>Source code for tcex.tcex_ti_batch</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;ThreatConnect Batch Import Module.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shelve</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
@@ -360,6 +361,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># get xid from object</span>
             <span class="n">xid</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">xid</span>
+
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="s1">&#39;encode&#39;</span><span class="p">):</span>
+            <span class="c1"># py2 fix</span>
+            <span class="n">xid</span> <span class="o">=</span> <span class="n">xid</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># return existing group from memory</span>

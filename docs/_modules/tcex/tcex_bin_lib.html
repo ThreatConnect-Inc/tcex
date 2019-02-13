@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.5 documentation</title>
+  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.6 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.5
+                0.9.6
               </div>
 
 
@@ -266,6 +266,14 @@
             <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">env_var</span><span class="p">,</span> <span class="n">lib_dir</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
                 <span class="n">env_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">env_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&quot;</span><span class="si">{}</span><span class="s1">&quot; env variable set in tcex.json, but could not be resolved.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
                 <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">env_var</span><span class="p">,</span> <span class="n">env_val</span><span class="p">,</span> <span class="n">lib_dir</span><span class="p">)</span>
 
             <span class="n">lib_dir_fq</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">lib_dir</span><span class="p">)</span>
