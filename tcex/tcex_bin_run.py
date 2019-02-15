@@ -1599,22 +1599,25 @@ class ArgBuilder(object):
             value (string): The CLI Args value (e.g., bob).
             mask (boolean, default:False): Indicates whether no mask value.
         """
-        if value is False:
-            # boolean values are flags and should only be included when True
-            return
         self._data[key] = value
-        self._args.append('--{}'.format(key))
-        self._args_quoted.append('--{}'.format(key))
-        self._args_masked.append('--{}'.format(key))
-        if value is not True:
-            # boolean values are flags and cli arg should not have a value
-            self._args.append(value)
-            self._args_quoted.append(self.quote(value))
+        if not value:
+            # both false boolean values (flags) and empty values should not be added.
+            pass
+        elif value is True:
+            # true boolean values are flags and should not contain a value
+            self._args.append('--{}'.format(key))
+            self._args_quoted.append('--{}'.format(key))
+            self._args_masked.append('--{}'.format(key))
+        else:
+            self._args.append('--{}={}'.format(key, value))
             if mask:
+                # mask sensitive values
                 value = 'x' * len(str(value))
             else:
+                # quote all values that would get displayed
                 value = self.quote(value)
-            self._args_masked.append(value)
+            self._args_quoted.append('--{}={}'.format(key, value))
+            self._args_masked.append('--{}={}'.format(key, value))
 
     def _add_arg_java(self, key, value, mask=False):
         """Add CLI Arg formatted specifically for Java.
@@ -1688,7 +1691,7 @@ class ArgBuilder(object):
         elif self.lang == 'java':
             quote_char = "'"
 
-        if re.findall(r'[!\-\s\$\&]{1,}', str(data)):
+        if re.findall(r'[!\-\=\s\$\&]{1,}', str(data)):
             data = '{0}{1}{0}'.format(quote_char, data)
         return data
 

@@ -6,6 +6,11 @@ Release Notes
 0.9.x
 =====
 
+0.9.7
+-----
++ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space.
++ Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of space.
+
 0.9.6
 -----
 + Fix for ``tcvalidate`` output display statement validation.
