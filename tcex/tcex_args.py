@@ -171,9 +171,10 @@ class TcExArgs(object):
             elif arg in self.tc_bool_args:
                 value = self.tcex.utils.to_bool(value)
 
-            if value is True:
+            if isinstance(value, (bool)):
                 # handle bool values as flags (e.g., --flag) with no value
-                sys.argv.append(cli_arg)
+                if value is True:
+                    sys.argv.append(cli_arg)
             elif isinstance(value, (list)):
                 for mcv in value:
                     sys.argv.append('{}={}'.format(cli_arg, mcv))
