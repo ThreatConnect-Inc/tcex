@@ -11,16 +11,26 @@ import redis
 
 
 class TcExBin(object):
-    """Create profiles for App."""
+    """Base Class for ThreatConnect command line tools.
+
+    Args:
+        _args (namespace): The argparser args Namespace.
+    """
 
     def __init__(self, _args):
-        """Init Class properties."""
+        """Initialize Class properties.
+
+        Args:
+            _args (namespace): The argparser args Namespace.
+        """
+
         self.args = _args
 
         # properties
         self._db_conn = None
         self._install_json = None
         self._install_json_params = None
+        self._install_json_output_variables = None
         self._layout_json = None
         self._layout_json_names = None
         self._layout_json_params = None
@@ -32,6 +42,7 @@ class TcExBin(object):
     @property
     def db_conn(self):
         """Create a temporary in memory DB and return the connection."""
+
         if self._db_conn is None:
             try:
                 self._db_conn = sqlite3.connect(':memory:')
@@ -62,35 +73,42 @@ class TcExBin(object):
         except sqlite3.Error as e:
             sys.exit(1, e)
 
-    def db_insert_record(self, table, fields):
-        """Insert records into DB."""
-        bindings = ('?,' * len(fields)).strip(',')
-        values = [None] * len(fields)
-        # print('len(fields)', len(fields))
-        # print('len(values)', len(values))
-        sql = 'INSERT INTO {} ({}) VALUES ({})'.format(table, ', '.join(fields), bindings)
-        # print('sql', sql)
-        # print('value', values)
+    def db_insert_record(self, table_name, columns):
+        """Insert records into DB.
+
+        Args:
+            table_name (str): The name of the table.
+            columns (list): List of columns for insert statement.
+        """
+
+        bindings = ('?,' * len(columns)).strip(',')
+        values = [None] * len(columns)
+        sql = 'INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join(columns), bindings)
         cur = self.db_conn.cursor()
         cur.execute(sql, values)
 
-        # print('lastrowid', cur.lastrowid)
-        # return cur.lastrowid
+    def db_update_record(self, table_name, column, value):
+        """Insert records into DB.
 
-    def db_update_record(self, table, field, value):
-        """Insert records into DB."""
-        # row_id = 1
-        # sql = 'UPDATE {} SET {} = {} WHERE row_id = {}'.format(
-        #     table, field, value, row_id
-        # )
-        sql = 'UPDATE {} SET {} = \'{}\''.format(table, field, value)
-        # print('sql', sql)
+        Args:
+            table_name (str): The name of the table.
+            column (str): The column name in which the value is to be updated.
+            value (str): The value to update in the column.
+        """
+
+        sql = 'UPDATE {} SET {} = \'{}\''.format(table_name, column, value)
         cur = self.db_conn.cursor()
         cur.execute(sql)
 
     @staticmethod
     def handle_error(err, halt=True):
-        """Print errors message and optionally exit."""
+        """Print errors message and optionally exit.
+
+        Args:
+            err (str): The error message to print.
+            halt (bool, optional): Defaults to True. If True the script will exit.
+        """
+
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
         if halt:
             sys.exit(1)
@@ -98,6 +116,7 @@ class TcExBin(object):
     @property
     def install_json(self):
         """Return install.json contents."""
+
         install_json_filename = 'install.json'
         if self._install_json is None and os.path.isfile(install_json_filename):
             load_output = 'Load install.json: {}{}{}{}'.format(
@@ -108,20 +127,48 @@ class TcExBin(object):
             load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
         return self._install_json
 
-    @property
-    def install_json_params(self):
-        """Return install.json params in a dict with name param as key."""
+    def install_json_params(self, ij=None):
+        """Return install.json params in a dict with name param as key.
+
+        Args:
+            ij (dict, optional): Defaults to None. The install.json contents.
+
+        Returns:
+            dict: A dictionary containing the install.json input params with name as key.
+        """
+
         if self._install_json_params is None:
             self._install_json_params = {}
             # TODO: support for projects with multiple install.json files is not supported
-            ij = self.load_install_json('install.json')
+            if ij is None:
+                ij = self.install_json
             for p in ij.get('params') or []:
                 self._install_json_params.setdefault(p.get('name'), p)
         return self._install_json_params
 
+    def install_json_output_variables(self, ij=None):
+        """Return install.json output variables in a dict with name param as key.
+
+        Args:
+            ij (dict, optional): Defaults to None. The install.json contents.
+
+        Returns:
+            dict: A dictionary containing the install.json output variables with name as key.
+        """
+
+        if self._install_json_output_variables is None:
+            self._install_json_output_variables = {}
+            # TODO: support for projects with multiple install.json files is not supported
+            if ij is None:
+                ij = self.install_json
+            for p in ij.get('playbook', {}).get('outputVariables') or []:
+                self._install_json_output_variables.setdefault(p.get('name'), p)
+        return self._install_json_output_variables
+
     @property
     def layout_json(self):
         """Return layout.json contents."""
+
         layout_json_filename = 'layout.json'
         if self._layout_json is None and os.path.isfile(layout_json_filename):
             load_output = 'Load layout.json: {}{}{}{}'.format(
@@ -135,6 +182,7 @@ class TcExBin(object):
     @property
     def layout_json_params(self):
         """Return layout.json params in a flattened dict with name param as key."""
+
         if self._layout_json_params is None:
             self._layout_json_params = {}
             for i in self.layout_json.get('inputs', []):
@@ -144,16 +192,27 @@ class TcExBin(object):
 
     @property
     def layout_json_names(self):
-        """Return layout.json params in a flattened dict with name param as key."""
+        """Return layout.json names."""
+
         if self._layout_json_names is None:
-            self._layout_json_names = []
-            for name in self.layout_json_params:
-                self._layout_json_names.append(name)
+            self._layout_json_names = self.layout_json_params.keys()
         return self._layout_json_names
 
     @staticmethod
-    def load_install_json(filename):
-        """Return install.json data."""
+    def load_install_json(filename=None):
+        """Return install.json data.
+
+        Args:
+            filename (str, optional): Defaults to None. The install.json filename (for bundled
+                Apps).
+
+        Returns:
+            dict: The contents of the install.json file.
+        """
+
+        if filename is None:
+            filename = 'install.json'
+
         install_json = None
         load_output = 'Load install.json: {}{}{}{}'.format(
             c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
@@ -172,6 +231,7 @@ class TcExBin(object):
     @property
     def redis(self):
         """Return instance of Redis."""
+
         if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis
