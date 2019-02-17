@@ -3,23 +3,26 @@
 """TcEx Framework Profile Generation Module."""
 import json
 import os
+import sqlite3
 import sys
 from uuid import uuid4
 from collections import OrderedDict
 from random import randint
 
 import colorama as c
-import redis
+
+from .tcex_bin import TcExBin
 
 
-class TcExProfile(object):
+class TcExProfile(TcExBin):
     """Create profiles for App."""
 
     def __init__(self, _args):
         """Init Class properties."""
-        self._redis = None
-        self.args = _args
-        self.app_path = os.getcwd()
+        super(TcExProfile, self).__init__(_args)
+
+        # properties
+        self._permutations = []
         self.data_dir = os.path.join(self.args.outdir, 'data')
         self.profile_dir = os.path.join(self.args.outdir, 'profiles')
         self.profiles = {}
@@ -33,11 +36,66 @@ class TcExProfile(object):
                 os.makedirs(d)
 
     @staticmethod
-    def _handle_error(err, halt=True):
-        """Print errors message and optionally exit."""
-        print('{}{}{}.'.format(c.Style.BRIGHT, c.Fore.RED, err))
-        if halt:
-            sys.exit(1)
+    def expand_valid_values(valid_values):
+        """Expand supported playbook variables to their full list."""
+        if '${GROUP_TYPES}' in valid_values:
+            valid_values.remove('${GROUP_TYPES}')
+            valid_values.extend(
+                [
+                    'Adversary',
+                    'Campaign',
+                    'Document',
+                    'Email',
+                    'Event',
+                    'Incident',
+                    'Intrusion Set',
+                    'Signature',
+                    'Task',
+                    'Threat',
+                ]
+            )
+        elif '${OWNERS}' in valid_values:
+            valid_values.remove('${OWNERS}')
+            valid_values.append('')
+        elif '${USERS}' in valid_values:
+            valid_values.remove('${USERS}')
+            valid_values.append('')
+        return valid_values
+
+    def gen_permutations(self, index=0, args=None):
+        """Iterate recursively over layout.json parameter names."""
+        if args is None:
+            args = []
+        try:
+            name = self.layout_json_names[index]
+            display = self.layout_json_params.get(name, {}).get('display')
+            input_type = self.install_json_params.get(name, {}).get('type')
+            if self.validate_layout_display(self.input_table, display):
+                if input_type.lower() == 'boolean':
+                    for val in [True, False]:
+                        args.append({'name': name, 'value': val})
+                        self.db_update_record(self.input_table, name, val)
+                        self.gen_permutations(index + 1, list(args))
+                        # remove the previous arg before next iteration
+                        args.pop()
+                elif input_type.lower() == 'choice':
+                    valid_values = self.expand_valid_values(
+                        self.install_json_params.get(name, {}).get('validValues', [])
+                    )
+                    for val in valid_values:
+                        args.append({'name': name, 'value': val})
+                        self.db_update_record(self.input_table, name, val)
+                        self.gen_permutations(index + 1, list(args))
+                        # remove the previous arg before next iteration
+                        args.pop()
+                else:
+                    args.append({'name': name, 'value': None})
+                    self.gen_permutations(index + 1, list(args))
+            else:
+                self.gen_permutations(index + 1, list(args))
+
+        except IndexError:
+            self._permutations.append(args)
 
     def load_profiles(self):
         """Return configuration data.
@@ -90,18 +148,6 @@ class TcExProfile(object):
         for directory in data.get('profile_include_dirs') or []:
             self.load_profile_include(directory)
 
-    def load_profile_include(self, include_directory):
-        """Load included configuration files."""
-        include_directory = os.path.join(self.app_path, include_directory)
-        if not os.path.isdir(include_directory):
-            msg = 'Provided include directory does not exist ({}).'.format(include_directory)
-            sys.exit(msg)
-
-        for filename in sorted(os.listdir(include_directory)):
-            if filename.endswith('.json'):
-                fqfn = os.path.join(include_directory, filename)
-                self.load_profiles_from_file(fqfn)
-
     def load_profiles_from_file(self, fqfn):
         """Load profiles from file.
 
@@ -134,26 +180,114 @@ class TcExProfile(object):
                 {'data': d, 'ij_filename': d.get('install_json'), 'fqfn': fqfn},
             )
 
-    @staticmethod
-    def load_install_json(filename):
-        """Return install.json data.
+    def load_profile_include(self, include_directory):
+        """Load included configuration files."""
+        include_directory = os.path.join(self.app_path, include_directory)
+        if not os.path.isdir(include_directory):
+            msg = 'Provided include directory does not exist ({}).'.format(include_directory)
+            sys.exit(msg)
 
-        Load on first access, otherwise return existing data.
-        """
-        install_json = None
-        load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
-        )
-        if filename is not None and os.path.isfile(filename):
-            with open(filename) as config_data:
-                install_json = json.load(config_data)
-            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+        for filename in sorted(os.listdir(include_directory)):
+            if filename.endswith('.json'):
+                fqfn = os.path.join(include_directory, filename)
+                self.load_profiles_from_file(fqfn)
+
+    def permutations(self):
+        """Process layout.json names/display to get all permutations of args."""
+        self.db_create_table(self.input_table, self.install_json_params.keys())
+        self.db_insert_record(self.input_table, self.install_json_params.keys())
+        self.gen_permutations()
+        self.print_permutations()
+
+    def print_permutations(self):
+        """Print all valid permutations."""
+        index = 0
+        for p in self._permutations:
+            print('{!s:<5}{}'.format(index, json.dumps(p, indent=2)))
+            index += 1
+
+    def profile_args(self, ij):
+        """App specific inputs as App args."""
+        profile_args = {}
+        if self.args.permutation_id:
+            self.db_create_table(self.input_table, self.install_json_params.keys())
+            self.db_insert_record(self.input_table, self.install_json_params.keys())
+            self.gen_permutations()
+            try:
+                for pn in self._permutations[self.args.permutation_id]:
+                    p = self.install_json_params.get(pn.get('name'))
+                    if p.get('type').lower() == 'boolean':
+                        # use the value generated in the permutation
+                        profile_args[p.get('name')] = pn.get('value')
+                    elif p.get('type').lower() == 'choice':
+                        # use the value generated in the permutation
+                        profile_args[p.get('name')] = pn.get('value')
+                    elif p.get('name') in ['api_access_id', 'api_secret_key']:
+                        # leave these parameters set to the value defined in defaults
+                        pass
+                    else:
+                        # add type stub for values
+                        types = '|'.join(p.get('playbookDataType', []))
+                        if types:
+                            profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
+                        else:
+                            profile_args[p.get('name')] = p.get('default', '')
+            except IndexError:
+                self.handle_error('Invalid permutation index provided.')
+
         else:
-            load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
+            # add App specific args
+            for p in ij.get('params') or []:
+                if p.get('type').lower() == 'boolean':
+                    profile_args[p.get('name')] = p.get('default', False)
+                elif p.get('type').lower() == 'choice':
+                    valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
+                    profile_args[p.get('name')] = '[{}]'.format(valid_values)
+                elif p.get('type').lower() == 'multichoice':
+                    profile_args[p.get('name')] = p.get('validValues', [])
+                elif p.get('name') in ['api_access_id', 'api_secret_key']:
+                    # leave these parameters set to the value defined in defaults
+                    pass
+                else:
+                    types = '|'.join(p.get('playbookDataType', []))
+                    if types:
+                        profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
+                    else:
+                        profile_args[p.get('name')] = p.get('default', '')
+        return profile_args
+
+    def profile_create(self):
+        """Create a profile."""
+        if self.args.profile_name in self.profiles:
+            self.handle_error('Profile "{}" already exists.'.format(self.args.profile_name))
+
+        # load the install.json file defined as a arg (default: install.json)
+        ij = self.load_install_json(self.args.ij)
+
+        print(
+            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
+        )
+        profile = OrderedDict()
+        profile['args'] = {}
+        profile['args']['app'] = self.profile_args(ij)
+        profile['args']['default'] = self.profile_defaults_args(ij)
+        profile['autoclear'] = True
+        profile['clear'] = []
+        profile['description'] = ''
+        profile['data_files'] = []
+        profile['exit_codes'] = [0]
+        profile['groups'] = [os.environ.get('TCEX_GROUP', 'qa-build')]
+        profile['install_json'] = self.args.ij
+        profile['profile_name'] = self.args.profile_name
+        profile['quiet'] = False
+
+        if ij.get('runtimeLevel') == 'Playbook':
+            validations = self.profile_validations
+            profile['validations'] = validations.get('rules')
+            profile['args']['default']['tc_playbook_out_variables'] = '{}'.format(
+                ','.join(validations.get('outputs'))
             )
-            sys.exit(1)
-        return install_json
+        return profile
 
     @staticmethod
     def profile_defaults_args(ij):
@@ -185,22 +319,6 @@ class TcExProfile(object):
             profile_default_args['tc_playbook_out_variables'] = ''
         return profile_default_args
 
-    @staticmethod
-    def profile_args(ij):
-        """App specific inputs as App args."""
-        profile_args = {}
-
-        # add App specific args
-        for p in ij.get('params') or []:
-            if p.get('type') == 'Boolean':
-                profile_args[p.get('name')] = p.get('default', False)
-            elif p.get('name') in ['api_access_id', 'api_secret_key']:
-                # leave these parameters set to the value defined above
-                pass
-            else:
-                profile_args[p.get('name')] = p.get('default', '')
-        return profile_args
-
     def profile_delete(self):
         """Delete a profile."""
         self.validate_profile_exists()
@@ -220,43 +338,15 @@ class TcExProfile(object):
             # remove empty file
             os.remove(fqfn)
 
-    def profile_create(self):
-        """Create a profile."""
-        if self.args.profile_name in self.profiles:
+    @staticmethod
+    def profile_remove_old(profile):
+        """Update profile removing legacy script field."""
+        # cleanup
+        if profile.get('install_json') is not None and profile.get('script') is not None:
             print(
-                '{}{}Profile "{}" already exists.'.format(
-                    c.Style.BRIGHT, c.Fore.RED, self.args.profile_name
-                )
+                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW)
             )
-            sys.exit(1)
-
-        # load the install.json file defined as a arg (default: install.json)
-        ij = self.load_install_json(self.args.ij)
-
-        print(
-            'Building Profile: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.profile_name)
-        )
-        profile = OrderedDict()
-        profile['args'] = {}
-        profile['args']['app'] = self.profile_args(ij)
-        profile['args']['default'] = self.profile_defaults_args(ij)
-        profile['autoclear'] = True
-        profile['clear'] = []
-        profile['description'] = ''
-        profile['data_files'] = []
-        profile['exit_codes'] = [0]
-        profile['groups'] = [os.environ.get('TCEX_GROUP', 'qa-build')]
-        profile['install_json'] = self.args.ij
-        profile['profile_name'] = self.args.profile_name
-        profile['quiet'] = False
-
-        if ij.get('runtimeLevel') == 'Playbook':
-            validations = self.profile_validations
-            profile['validations'] = validations.get('rules')
-            profile['args']['default']['tc_playbook_out_variables'] = '{}'.format(
-                ','.join(validations.get('outputs'))
-            )
-        return profile
+            profile.pop('script')
 
     def profile_update(self, profile):
         """Update an existing profile with new parameters or remove deprecated parameters."""
@@ -322,14 +412,6 @@ class TcExProfile(object):
                 )
             )
 
-    def validate(self, profile):
-        """Validate profiles."""
-        ij = self.load_install_json(profile.get('install_json', 'install.json'))
-        print('{}{}Profile: "{}".'.format(c.Style.BRIGHT, c.Fore.BLUE, profile.get('profile_name')))
-        for arg in self.profile_args(ij):
-            if profile.get('args', {}).get('app', {}).get(arg) is None:
-                print('{}{}Input "{}" not found.'.format(c.Style.BRIGHT, c.Fore.YELLOW, arg))
-
     @staticmethod
     def profile_update_new(profile):
         """Update old profile with new fields."""
@@ -342,16 +424,6 @@ class TcExProfile(object):
             if validation.get('data_type') is None:
                 print('{}{}Adding new "data_type" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
                 validation['data_type'] = 'redis'
-
-    @staticmethod
-    def profile_remove_old(profile):
-        """Update profile removing legacy script field."""
-        # cleanup
-        if profile.get('install_json') is not None and profile.get('script') is not None:
-            print(
-                '{}{}Removing deprecated "script" parameter.'.format(c.Style.BRIGHT, c.Fore.YELLOW)
-            )
-            profile.pop('script')
 
     @property
     def profile_validations(self):
@@ -431,31 +503,24 @@ class TcExProfile(object):
                 data = [profile]
                 fh.write(json.dumps(data, indent=2, sort_keys=True))
 
-    @property
-    def redis(self):
-        """Return instance of Redis."""
-        if self._redis is None:
-            self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
-        return self._redis
-
     def replace_validation(self):
         """Replace the validation configuration in the selected profile."""
         self.validate_profile_exists()
         profile_data = self.profiles.get(self.args.profile_name)
 
         # check redis
-        if redis is None:
-            self._handle_error('Could not get connection to Redis')
+        # if redis is None:
+        #     self.handle_error('Could not get connection to Redis')
 
         # load hash
         redis_hash = profile_data.get('data', {}).get('args', {}).get('tc_playbook_db_context')
         if redis_hash is None:
-            self._handle_error('Could not find redis hash (db context).')
+            self.handle_error('Could not find redis hash (db context).')
 
         # load data
         data = self.redis.hgetall(redis_hash)
         if data is None:
-            self._handle_error('Could not load data for hash {}.'.format(redis_hash))
+            self.handle_error('Could not load data for hash {}.'.format(redis_hash))
         validations = {'rules': [], 'outputs': []}
         for v, d in data.items():
             variable = v.decode('utf-8')
@@ -502,7 +567,41 @@ class TcExProfile(object):
             fh.write(json.dumps(data, indent=2, sort_keys=True))
             fh.truncate()
 
+    def validate(self, profile):
+        """Validate profiles."""
+        ij = self.load_install_json(profile.get('install_json', 'install.json'))
+        print('{}{}Profile: "{}".'.format(c.Style.BRIGHT, c.Fore.BLUE, profile.get('profile_name')))
+        for arg in self.profile_args(ij):
+            if profile.get('args', {}).get('app', {}).get(arg) is None:
+                print('{}{}Input "{}" not found.'.format(c.Style.BRIGHT, c.Fore.YELLOW, arg))
+
+    def validate_layout_display(self, table, display_condition):
+        """Check to see if the display condition passes."""
+        display = False
+        if display_condition is None:
+            display = True
+        else:
+            display_query = 'select count(*) from {} where {}'.format(table, display_condition)
+            # print('display_query', display_query)
+            try:
+                cur = self.db_conn.cursor()
+                cur.execute(display_query.replace('"', ''))
+                rows = cur.fetchall()
+                if rows[0][0] > 0:
+                    display = True
+                # print('count', count)
+                # print('rows[0]', rows[0])
+                # print('len(rows)', len(rows))
+                # for row in rows:
+                #     print('row', row)
+                # sys.exit()
+            except sqlite3.Error as e:
+                print('"{}" query returned an error: ({}).'.format(display_query, e))
+                sys.exit(1)
+        # print('display', display)
+        return display
+
     def validate_profile_exists(self):
         """Validate the provided profiles name exists."""
         if self.args.profile_name not in self.profiles:
-            self._handle_error('Could not find profile "{}"'.format(self.args.profile_name))
+            self.handle_error('Could not find profile "{}"'.format(self.args.profile_name))

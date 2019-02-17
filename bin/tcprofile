@@ -62,6 +62,16 @@ parser.add_argument(
     '--outfile', help='(Advanced) The filename for the profile (default: <profile name>.json).'
 )
 parser.add_argument(
+    '--permutations',
+    action='store_true',
+    help='Instead of building a profile, list all possible permutations for layout.json.',
+)
+parser.add_argument(
+    '--permutation_id',
+    help='The ID from the "--permutations" option to use for generating the profile.',
+    type=int,
+)
+parser.add_argument(
     '--profile_name',
     '--name',
     dest='profile_name',
@@ -80,7 +90,9 @@ if __name__ == '__main__':
         # load all profiles
         tcp.load_profiles()
 
-        if args.action == 'create':
+        if args.permutations:
+            tcp.permutations()
+        elif args.action == 'create':
             if args.profile_name is None:
                 print(
                     '{}{}{}'.format(
