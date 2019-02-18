@@ -23,7 +23,6 @@ class TcExBin(object):
         Args:
             _args (namespace): The argparser args Namespace.
         """
-
         self.args = _args
 
         # properties
@@ -35,9 +34,14 @@ class TcExBin(object):
         self._layout_json_names = None
         self._layout_json_params = None
         self._redis = None
+        self._tcex_json = None
         self.app_path = os.getcwd()
+        self.exit_code = 0
         self.input_table = 'inputs'
-        # self.output_table = 'outputs'
+        self.output = []
+
+        # initialize colorama
+        c.init(autoreset=True, strip=False)
 
     @property
     def db_conn(self):
@@ -66,7 +70,6 @@ class TcExBin(object):
         create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
             table_name, formatted_columns
         )
-        # print('create_table_sql', create_table_sql)
         try:
             cr = self.db_conn.cursor()
             cr.execute(create_table_sql)
@@ -119,12 +122,11 @@ class TcExBin(object):
 
         install_json_filename = 'install.json'
         if self._install_json is None and os.path.isfile(install_json_filename):
-            load_output = 'Load install.json: {}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, install_json_filename, c.Style.RESET_ALL
-            )
-            with open(install_json_filename, 'r') as fh:
-                self._install_json = json.load(fh)
-            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+            try:
+                with open(install_json_filename, 'r') as fh:
+                    self._install_json = json.load(fh)
+            except ValueError as e:
+                self.handle_error('Failed to load {} file ({}).'.format(install_json_filename, e))
         return self._install_json
 
     def install_json_params(self, ij=None):
@@ -171,12 +173,11 @@ class TcExBin(object):
 
         layout_json_filename = 'layout.json'
         if self._layout_json is None and os.path.isfile(layout_json_filename):
-            load_output = 'Load layout.json: {}{}{}{}'.format(
-                c.Style.BRIGHT, c.Fore.CYAN, layout_json_filename, c.Style.RESET_ALL
-            )
-            with open(layout_json_filename, 'r') as fh:
-                self._layout_json = json.load(fh)
-            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+            try:
+                with open(layout_json_filename, 'r') as fh:
+                    self._layout_json = json.load(fh)
+            except ValueError as e:
+                self.handle_error('Failed to load {} file ({}).'.format(layout_json_filename, e))
         return self._layout_json
 
     @property
@@ -198,8 +199,7 @@ class TcExBin(object):
             self._layout_json_names = self.layout_json_params.keys()
         return self._layout_json_names
 
-    @staticmethod
-    def load_install_json(filename=None):
+    def load_install_json(self, filename=None):
         """Return install.json data.
 
         Args:
@@ -214,18 +214,14 @@ class TcExBin(object):
             filename = 'install.json'
 
         install_json = None
-        load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
-        )
         if filename is not None and os.path.isfile(filename):
-            with open(filename) as config_data:
-                install_json = json.load(config_data)
-            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
+            try:
+                with open(filename) as fh:
+                    install_json = json.load(fh)
+            except ValueError as e:
+                self.handle_error('Failed to load {} file ({}).'.format(filename, e))
         else:
-            load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
-            )
-            sys.exit(1)
+            self.handle_error('File "{}" could not be found.'.format(filename))
         return install_json
 
     @property
@@ -235,3 +231,37 @@ class TcExBin(object):
         if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis
+
+    @property
+    def tcex_json(self):
+        """Return tcex.json file contents."""
+        tcex_json_fqpn = os.path.join(self.app_path, 'tcex.json')
+        if self._tcex_json is None and os.path.isfile(tcex_json_fqpn):
+            try:
+                with open(tcex_json_fqpn, 'r') as fh:
+                    self._tcex_json = json.load(fh)
+            except ValueError as e:
+                self.handle_error('Failed to load "{}" file ({}).'.format(tcex_json_fqpn, e))
+        else:
+            self.handle_error('File "{}" could not be found.'.format(tcex_json_fqpn))
+        return self._tcex_json
+
+    @staticmethod
+    def update_system_path():
+        """Update the system path to ensure project modules and dependencies can be found."""
+        cwd = os.getcwd()
+        lib_dir = os.path.join(os.getcwd(), 'lib_')
+        lib_latest = os.path.join(os.getcwd(), 'lib_latest')
+
+        # insert the lib_latest directory into the system Path if no other lib directory found. This
+        # entry will be bumped to index 1 after adding the current working directory.
+        if not [p for p in sys.path if lib_dir in p]:
+            sys.path.insert(0, lib_latest)
+
+        # insert the current working directory into the system Path for the App, ensuring that it is
+        # always the first entry in the list.
+        try:
+            sys.path.remove(cwd)
+        except ValueError:
+            pass
+        sys.path.insert(0, cwd)

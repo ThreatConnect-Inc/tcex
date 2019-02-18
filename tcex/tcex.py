@@ -703,29 +703,22 @@ class TcEx(object):
                 tc_proxy_username = quote(self.default_args.tc_proxy_username, safe='~')
                 tc_proxy_password = quote(self.default_args.tc_proxy_password, safe='~')
 
-                proxies = {
-                    'http': 'http://{}:{}@{}:{}'.format(
-                        tc_proxy_username,
-                        tc_proxy_password,
-                        self.default_args.tc_proxy_host,
-                        self.default_args.tc_proxy_port,
-                    ),
-                    'https': 'https://{}:{}@{}:{}'.format(
-                        tc_proxy_username,
-                        tc_proxy_password,
-                        self.default_args.tc_proxy_host,
-                        self.default_args.tc_proxy_port,
-                    ),
-                }
+                # proxy url with auth
+                proxy_url = '{}:{}@{}:{}'.format(
+                    tc_proxy_username,
+                    tc_proxy_password,
+                    self.default_args.tc_proxy_host,
+                    self.default_args.tc_proxy_port,
+                )
             else:
-                proxies = {
-                    'http': 'http://{}:{}'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    ),
-                    'https': 'https://{}:{}'.format(
-                        self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                    ),
-                }
+                # proxy url without auth
+                proxy_url = '{}:{}'.format(
+                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
+                )
+            proxies = {
+                'http': 'http://{}'.format(proxy_url),
+                'https': 'https://{}'.format(proxy_url),
+            }
         return proxies
 
     def request(self, session=None):

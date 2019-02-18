@@ -24,9 +24,6 @@ parser.add_argument(
     '--exclude', action='append', default=[], help='File and directories to exclude from build.'
 )
 parser.add_argument(
-    '--config', default='tcex.json', help='Build configuration file. (Default: tcex.json)'
-)
-parser.add_argument(
     '--ignore_validation', action='store_true', help='Do not exit on validation errors.'
 )
 parser.add_argument('--json_output', action='store_true', help='Return output in JSON format.')

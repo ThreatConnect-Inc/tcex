@@ -20,11 +20,6 @@ c.init(autoreset=True, strip=False)
 parser = argparse.ArgumentParser()
 parser.add_argument('--app_name', help='(Advanced) Fully qualified name of App.')
 parser.add_argument('--app_path', help='(Advanced) Fully qualified path of App.')
-parser.add_argument(
-    '--config',
-    help='(Advanced) Configuration file for gen lib. (Default: tcex.json)',
-    default='tcex.json',
-)
 parser.add_argument('--no_cache_dir', action='store_true', help='Do not use pip cache directory.')
 parser.add_argument(
     '--branch', help='Build tcex from specified git branch instead of downloading from PyPi.'

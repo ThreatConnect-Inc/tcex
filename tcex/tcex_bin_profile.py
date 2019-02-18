@@ -15,7 +15,7 @@ from .tcex_bin import TcExBin
 
 
 class TcExProfile(TcExBin):
-    """Create profiles for ThreatConnect Job or Playbook Apps.
+    """Create profiles for ThreatConnect Job or Playbook App.
 
     Args:
         _args (namespace): The argparser args Namespace.
@@ -330,7 +330,8 @@ class TcExProfile(TcExBin):
         profile_args = {}
         # add App specific args
         for p in ij.get('params') or []:
-            if p.get('required', False) != required:
+            # TODO: fix this required logic
+            if p.get('required', False) != required and required is not None:
                 continue
             if p.get('type').lower() == 'boolean':
                 profile_args[p.get('name')] = p.get('default', False)
@@ -592,6 +593,7 @@ class TcExProfile(TcExBin):
             for arg in self.profile_settings_args_install_json(ij, None):
                 ijp = self.install_json_params(ij)
                 required = ijp.get(arg).get('required', False)
+
                 try:
                     if required:
                         profile['args']['app']['required'][arg] = app_args.pop(arg)

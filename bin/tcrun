@@ -22,9 +22,6 @@ c.init(autoreset=True, strip=False)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    '--config', default='tcex.json', help='The configuration file. (default: "tcex.json")'
-)
-parser.add_argument(
     '--docker', action='store_true', help='(Experimental) Run the App in a docker container.'
 )
 parser.add_argument(
@@ -82,7 +79,7 @@ if __name__ == '__main__':
 
             # sleep between profiles
             if profile_count > 0:
-                sleep = tcr.profile.get('sleep', tcr.config.get('sleep', tcr.sleep))
+                sleep = tcr.profile.get('sleep', tcr.tcex_json.get('sleep', tcr.sleep))
                 print('Sleep: {}{}{} seconds'.format(c.Style.BRIGHT, c.Fore.YELLOW, sleep))
                 time.sleep(sleep)
             profile_count += 1

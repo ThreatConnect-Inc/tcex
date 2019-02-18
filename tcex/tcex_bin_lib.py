@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Library Builder."""
-import json
 import os
 import re
 import platform
@@ -10,78 +9,156 @@ import subprocess
 import sys
 from distutils.version import StrictVersion  # pylint: disable=E0611
 
+try:
+    from urllib import quote  # Python 2
+except ImportError:
+    from urllib.parse import quote  # Python 3
+
 import colorama as c
 
+from .tcex_bin import TcExBin
 
-class TcExLib(object):
-    """Install Required Modules for App."""
 
-    def __init__(self, _arg):
-        """Init TcLib Module."""
-        self.args = _arg
-        self.app_path = os.getcwd()
-        self.exit_code = 0
-        self.requirements_file = 'requirements.txt'
-        self.requirements_temp = False
-        self.static_lib_dir = 'lib_latest'
+class TcExLib(TcExBin):
+    """Install Required Modules for App.
 
-        # initialize colorama
-        c.init(autoreset=True, strip=False)
+    Args:
+        _args (namespace): The argparser args Namespace.
+    """
 
-    def install_libs(self):
-        """Install Required Libraries using easy install."""
-        using = 'Default'
-        # default or current python version
-        lib_directory = 'lib_{}.{}.{}'.format(
+    def __init__(self, _args):
+        """Initialize Class properties.
+
+        Args:
+            _args (namespace): The argparser args Namespace.
+        """
+        super(TcExLib, self).__init__(_args)
+
+        # properties
+        self.latest_version = None
+        self.lib_directory = 'lib_{}.{}.{}'.format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
-        lib_data = [{'python_executable': sys.executable, 'lib_dir': lib_directory}]
+        self.requirements_file = 'requirements.txt'
+        self.static_lib_dir = 'lib_latest'
+        self.use_temp_requirements_file = False
+
+    def _build_command(self, python_executable, lib_dir_fq):
+        """Build the pip command for installing dependencies.
+
+        Args:
+            python_executable (str): The fully qualified path of the Python executable.
+            lib_dir_fq (str): The fully qualified path of the lib directory.
+
+        Returns:
+            list: The Python pip command with all required args.
+        """
+        exe_command = [
+            os.path.expanduser(python_executable),
+            '-m',
+            'pip',
+            'install',
+            '-r',
+            self.requirements_file,
+            '--ignore-installed',
+            '--quiet',
+            '--target',
+            lib_dir_fq,
+        ]
+        if self.args.no_cache_dir:
+            exe_command.append('--no-cache-dir')
+
+        # trust the pypi hosts to avoid ssl errors
+        trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
+
+        for host in trusted_hosts:
+            exe_command.append('--trusted-host')
+            exe_command.append(host)
+
+        return exe_command
+
+    def _configure_proxy(self):
+        """Configure proxy settings using environment variables."""
+        if os.getenv('HTTP_PROXY') or os.getenv('HTTPS_PROXY'):
+            # don't change proxy settings if they OS already has them configured.
+            return
+
+        if self.args.proxy_host is not None and self.args.proxy_port is not None:
+            if self.args.proxy_user is not None and self.args.proxy_pass is not None:
+                proxy_user = quote(self.args.proxy_user, safe='~')
+                proxy_pass = quote(self.args.proxy_pass, safe='~')
+
+                # proxy url with auth
+                proxy_url = '{}:{}@{}:{}'.format(
+                    proxy_user, proxy_pass, self.args.proxy_host, self.args.proxy_port
+                )
+            else:
+                # proxy url without auth
+                proxy_url = '{}:{}'.format(self.args.proxy_host, self.args.proxy_port)
+
+            os.putenv('HTTP_PROXY', 'http://{}'.format(proxy_url))
+            os.putenv('HTTPS_PROXY', 'https://{}'.format(proxy_url))
+
+            print(
+                'Using Proxy Server: {}{}:{}.'.format(
+                    c.Fore.CYAN, self.args.proxy_host, self.args.proxy_port
+                )
+            )
+
+    def _create_lib_latest(self):
+        """Create the lib_latest symlink for App Builder."""
+        # TODO: Update this method to copy latest lib directory on Windows.
+        if platform.system() != 'Windows':
+            if os.path.islink(self.static_lib_dir):
+                os.unlink(self.static_lib_dir)
+            os.symlink('lib_{}'.format(self.latest_version), self.static_lib_dir)
+
+    def _create_temp_requirements(self):
+        """Create a temporary requirements.txt.
+
+        This allows testing again a git branch instead of pulling from pypi.
+        """
+        self.use_temp_requirements_file = True
+        # Replace tcex version with develop branch of tcex
+        with open(self.requirements_file, 'r') as fh:
+            current_requirements = fh.read().strip().split('\n')
+
+        self.requirements_file = 'temp-{}'.format(self.requirements_file)
+        with open(self.requirements_file, 'w') as fh:
+            new_requirements = ''
+            for line in current_requirements:
+                if not line:
+                    continue
+                if line.startswith('tcex'):
+                    line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@{}#egg=tcex'
+                    line = line.format(self.args.branch)
+                # print('line', line)
+                new_requirements += '{}\n'.format(line)
+            fh.write(new_requirements)
+
+    def install_libs(self):
+        """Install Required Libraries using pip."""
+        using = 'Default'
+        # default or current python version
+        lib_data = [{'python_executable': sys.executable, 'lib_dir': self.lib_directory}]
 
         # check for requirements.txt
         if not os.path.isfile(self.requirements_file):
-            print(
-                '{}{}A requirements.txt file is required to install modules.'.format(
-                    c.Style.BRIGHT, c.Fore.RED
-                )
-            )
-            sys.exit(1)
+            self.handle_error('A requirements.txt file is required to install modules.')
 
+        # if branch arg is provide use git branch instead of pypi
         if self.args.branch is not None:
-            self.requirements_temp = True
-            # Replace tcex version with develop branch of tcex
-            with open(self.requirements_file, 'r') as fh:
-                current_requirements = fh.read().strip().split('\n')
-
-            self.requirements_file = 'temp-{}'.format(self.requirements_file)
-            with open(self.requirements_file, 'w') as fh:
-                new_requirements = ''
-                for line in current_requirements:
-                    if not line:
-                        continue
-                    if line.startswith('tcex'):
-                        line = 'git+https://github.com/ThreatConnect-Inc/tcex.git@{}#egg=tcex'
-                        line = line.format(self.args.branch)
-                    # print('line', line)
-                    new_requirements += '{}\n'.format(line)
-                fh.write(new_requirements)
-
-        # load configuration
-        config_data = {}
-        file_path = os.path.join(self.app_path, self.args.config)
-        if os.path.isfile(file_path):
-            print(
-                'Loading Config File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.config)
-            )
-            with open(file_path, 'r') as fh:
-                config_data = json.load(fh)
+            self._create_temp_requirements()
 
         # overwrite default with config data
-        if config_data.get('lib_versions'):
-            lib_data = config_data.get('lib_versions')
+        if self.tcex_json.get('lib_versions'):
+            lib_data = self.tcex_json.get('lib_versions')
             using = 'Config'
 
+        # configure proxy settings
+        self._configure_proxy()
+
         # install all requested lib directories
-        latest_version = None
         for data in lib_data:
             # pattern to match env vars in data
             env_var = re.compile(r'\$env\.([a-zA-Z0-9]+)')
@@ -92,15 +169,12 @@ class TcExLib(object):
             if matches:
                 env_val = os.environ.get(matches[0])
                 if env_val is None:
-                    print(
-                        '{}{}"{}" env variable set in tcex.json, but could not be resolved.'.format(
-                            c.Style.BRIGHT, c.Fore.RED, matches[0]
+                    self.handle_error(
+                        '"{}" env variable set in tcex.json, but could not be resolved.'.format(
+                            matches[0]
                         )
                     )
-                    sys.exit(1)
-
                 lib_dir = re.sub(env_var, env_val, lib_dir)
-
             lib_dir_fq = os.path.join(self.app_path, lib_dir)
 
             if os.access(lib_dir_fq, os.W_OK):
@@ -119,66 +193,7 @@ class TcExLib(object):
                     c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq, using
                 )
             )
-            exe_command = [
-                os.path.expanduser(python_executable),
-                '-m',
-                'pip',
-                'install',
-                '-r',
-                self.requirements_file,
-                '--ignore-installed',
-                '--quiet',
-                '--target',
-                lib_dir_fq,
-            ]
-            if self.args.no_cache_dir:
-                exe_command.append('--no-cache-dir')
-
-            # handle authenticated proxy settings
-            if (
-                self.args.proxy_host is not None
-                and self.args.proxy_port is not None
-                and self.args.proxy_user is not None
-                and self.args.proxy_pass is not None
-            ):
-                # create environmental variables with the proxy details (these are deleted later)
-                os.putenv(
-                    'HTTP_PROXY',
-                    'http://{}:{}@{}:{}'.format(
-                        self.args.proxy_user,
-                        self.args.proxy_pass,
-                        self.args.proxy_host,
-                        self.args.proxy_port,
-                    ),
-                )
-                os.putenv(
-                    'HTTPS_PROXY',
-                    'https://{}:{}@{}:{}'.format(
-                        self.args.proxy_user,
-                        self.args.proxy_pass,
-                        self.args.proxy_host,
-                        self.args.proxy_port,
-                    ),
-                )
-                # trust the pypi hosts to avoid ssl errors
-                trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
-
-                for host in trusted_hosts:
-                    exe_command.append('--trusted-host')
-                    exe_command.append(host)
-            # handle unauthenticated proxy settings
-            elif self.args.proxy_host is not None and self.args.proxy_port is not None:
-                # create environmental variables with the proxy details (these are deleted later)
-                os.putenv(
-                    'HTTP_PROXY', 'http://{}:{}'.format(self.args.proxy_host, self.args.proxy_port)
-                )
-                os.putenv(
-                    'HTTPS_PROXY',
-                    'https://{}:{}'.format(self.args.proxy_host, self.args.proxy_port),
-                )
-                # trust the pypi host to avoid ssl errors
-                exe_command.append('--trusted-host')
-                exe_command.append('pypi.org')
+            exe_command = self._build_command(python_executable, lib_dir_fq)
 
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(
@@ -199,25 +214,17 @@ class TcExLib(object):
             try:
                 python_version = lib_dir.split('_', 1)[1]
             except IndexError:
-                print(
-                    '{}{}{}'.format(
-                        c.Style.BRIGHT, c.Fore.RED, 'Could not determine version from lib string.'
-                    )
-                )
-                sys.exit(1)
+                self.handle_error('Could not determine version from lib string.')
 
             # track the latest Python version
-            if latest_version is None:
-                latest_version = python_version
-            elif StrictVersion(python_version) > StrictVersion(latest_version):
-                latest_version = python_version
-
-        # create sym link to point to latest Python version lib directory
-        if platform.system() != 'Windows':
-            if os.path.islink(self.static_lib_dir):
-                os.unlink(self.static_lib_dir)
-            os.symlink('lib_{}'.format(latest_version), self.static_lib_dir)
+            if self.latest_version is None:
+                self.latest_version = python_version
+            elif StrictVersion(python_version) > StrictVersion(self.latest_version):
+                self.latest_version = python_version
 
         # cleanup temp file if required
-        if self.requirements_temp:
+        if self.use_temp_requirements_file:
             os.remove(self.requirements_file)
+
+        # create lib_latest
+        self._create_lib_latest()

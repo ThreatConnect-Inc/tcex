@@ -79,6 +79,10 @@ if __name__ == '__main__':
         tci = TcExInit(args)
         print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
 
+        if args.action == 'update' or args.action == 'migrate':
+            # check if the current directory is empty
+            tci.check_empty_app_dir()
+
         # create a new app OR migrate an app of a different form to the new app format
         if args.action == 'create' or args.action == 'migrate':
             # download common files
