@@ -119,14 +119,16 @@ class TcExBin(object):
     @property
     def install_json(self):
         """Return install.json contents."""
-
-        install_json_filename = 'install.json'
-        if self._install_json is None and os.path.isfile(install_json_filename):
-            try:
-                with open(install_json_filename, 'r') as fh:
-                    self._install_json = json.load(fh)
-            except ValueError as e:
-                self.handle_error('Failed to load {} file ({}).'.format(install_json_filename, e))
+        file_fqpn = os.path.join(self.app_path, 'install.json')
+        if self._install_json is None:
+            if os.path.isfile(file_fqpn):
+                try:
+                    with open(file_fqpn, 'r') as fh:
+                        self._install_json = json.load(fh)
+                except ValueError as e:
+                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
+            else:
+                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
         return self._install_json
 
     def install_json_params(self, ij=None):
@@ -170,14 +172,16 @@ class TcExBin(object):
     @property
     def layout_json(self):
         """Return layout.json contents."""
-
-        layout_json_filename = 'layout.json'
-        if self._layout_json is None and os.path.isfile(layout_json_filename):
-            try:
-                with open(layout_json_filename, 'r') as fh:
-                    self._layout_json = json.load(fh)
-            except ValueError as e:
-                self.handle_error('Failed to load {} file ({}).'.format(layout_json_filename, e))
+        file_fqpn = os.path.join(self.app_path, 'layout.json')
+        if self._layout_json is None:
+            if os.path.isfile(file_fqpn):
+                try:
+                    with open(file_fqpn, 'r') as fh:
+                        self._layout_json = json.load(fh)
+                except ValueError as e:
+                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
+            else:
+                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
         return self._layout_json
 
     @property
@@ -209,19 +213,19 @@ class TcExBin(object):
         Returns:
             dict: The contents of the install.json file.
         """
-
         if filename is None:
             filename = 'install.json'
 
+        file_fqpn = os.path.join(self.app_path, filename)
         install_json = None
-        if filename is not None and os.path.isfile(filename):
+        if os.path.isfile(file_fqpn):
             try:
-                with open(filename) as fh:
+                with open(file_fqpn, 'r') as fh:
                     install_json = json.load(fh)
             except ValueError as e:
-                self.handle_error('Failed to load {} file ({}).'.format(filename, e))
+                self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
         else:
-            self.handle_error('File "{}" could not be found.'.format(filename))
+            self.handle_error('File "{}" could not be found.'.format(file_fqpn))
         return install_json
 
     @property
@@ -235,15 +239,16 @@ class TcExBin(object):
     @property
     def tcex_json(self):
         """Return tcex.json file contents."""
-        tcex_json_fqpn = os.path.join(self.app_path, 'tcex.json')
-        if self._tcex_json is None and os.path.isfile(tcex_json_fqpn):
-            try:
-                with open(tcex_json_fqpn, 'r') as fh:
-                    self._tcex_json = json.load(fh)
-            except ValueError as e:
-                self.handle_error('Failed to load "{}" file ({}).'.format(tcex_json_fqpn, e))
-        else:
-            self.handle_error('File "{}" could not be found.'.format(tcex_json_fqpn))
+        file_fqpn = os.path.join(self.app_path, 'tcex.json')
+        if self._tcex_json is None:
+            if os.path.isfile(file_fqpn):
+                try:
+                    with open(file_fqpn, 'r') as fh:
+                        self._tcex_json = json.load(fh)
+                except ValueError as e:
+                    self.handle_error('Failed to load "{}" file ({}).'.format(file_fqpn, e))
+            else:
+                self.handle_error('File "{}" could not be found.'.format(file_fqpn))
         return self._tcex_json
 
     @staticmethod

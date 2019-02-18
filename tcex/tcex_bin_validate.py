@@ -358,7 +358,7 @@ class TcExValidate(TcExBin):
                     with open(filename, 'r') as fh:
                         json.load(fh)
                 except ValueError as e:
-                    status = True
+                    status = False
                     error = e
             else:
                 # skip unsupported file types

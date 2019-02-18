@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx App Init."""
-
 import json
 import os
-from builtins import input
 
-import requests
 import colorama as c
+import requests
 
 from .tcex_bin import TcExBin
 
@@ -48,7 +46,7 @@ class TcExInit(TcExBin):
         elif status == 'Skipped':
             status_color = c.Fore.YELLOW
         print(
-            '{}{!s:<20}{}{!s:<35}{}{!s:<15}{}{!s:<15}'.format(
+            '{}{!s:<13}{}{!s:<35}{}{!s:<8}{}{}'.format(
                 c.Fore.CYAN,
                 'Downloading:',
                 file_color,
@@ -77,7 +75,8 @@ class TcExInit(TcExBin):
         message = '{}Would you like to overwrite the contents of {} (y/[n])? '.format(
             c.Fore.MAGENTA, filename
         )
-        response = input(message) or 'n'
+        # 2to3 fixes this for py3
+        response = raw_input(message)  # noqa: F821, pylint: disable=E0602
         response = response.lower()
 
         if response in ['y', 'yes']:

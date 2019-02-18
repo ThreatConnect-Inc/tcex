@@ -138,7 +138,6 @@ class TcExLib(TcExBin):
 
     def install_libs(self):
         """Install Required Libraries using pip."""
-        using = 'Default'
         # default or current python version
         lib_data = [{'python_executable': sys.executable, 'lib_dir': self.lib_directory}]
 
@@ -153,7 +152,7 @@ class TcExLib(TcExBin):
         # overwrite default with config data
         if self.tcex_json.get('lib_versions'):
             lib_data = self.tcex_json.get('lib_versions')
-            using = 'Config'
+            print('{}Using "lib" directories defined in tcex.json file.'.format(c.Style.BRIGHT))
 
         # configure proxy settings
         self._configure_proxy()
@@ -188,11 +187,7 @@ class TcExLib(TcExBin):
                 env_val = os.environ.get(matches[0])
                 python_executable = re.sub(env_var, env_val, python_executable)
 
-            print(
-                'Building Lib Dir: {}{}{} ({})'.format(
-                    c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq, using
-                )
-            )
+            print('Building Lib Dir: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq))
             exe_command = self._build_command(python_executable, lib_dir_fq)
 
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
