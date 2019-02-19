@@ -88,9 +88,9 @@ class TcExPackage(TcExBin):
         Args:
             bundle_name (str): The output name of the bundle zip file.
         """
-        if self.args.bundle or self.tcex_json.get('bundle', False):
-            if self.tcex_json.get('bundle_packages') is not None:
-                for bundle in self.tcex_json.get('bundle_packages') or []:
+        if self.args.bundle or self.tcex_json.get('package', {}).get('bundle', False):
+            if self.tcex_json.get('package', {}).get('bundle_packages') is not None:
+                for bundle in self.tcex_json.get('package', {}).get('bundle_packages') or []:
                     bundle_name = bundle.get('name')
                     bundle_patterns = bundle.get('patterns')
 
@@ -189,7 +189,7 @@ class TcExPackage(TcExBin):
             'log',  # log directory
         ]
         excludes.extend(self.args.exclude)
-        excludes.extend(self.tcex_json.get('excludes', []))
+        excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))
         # update package data
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
 
@@ -211,7 +211,9 @@ class TcExPackage(TcExBin):
 
             # get App Name from config, install.json prefix or directory name.
             if install_json == 'install.json':
-                app_name = self.tcex_json.get('app_name', os.path.basename(self.app_path))
+                app_name = self.tcex_json.get('package', {}).get(
+                    'app_name', os.path.basename(self.app_path)
+                )
             else:
                 app_name = install_json.split('.')[0]
 
@@ -236,7 +238,9 @@ class TcExPackage(TcExBin):
             except IndexError:
                 minor_version = 0
             app_version = '{}'.format(
-                self.tcex_json.get('app_version', 'v{}.{}'.format(major_version, minor_version))
+                self.tcex_json.get('package', {}).get(
+                    'app_version', 'v{}.{}'.format(major_version, minor_version)
+                )
             )
 
             # update package data
@@ -276,7 +280,7 @@ class TcExPackage(TcExBin):
 
         # bundle zips (must have more than 1 app)
         if len(self._app_packages) > 1:
-            self.bundle(self.tcex_json.get('bundle_name', app_name))
+            self.bundle(self.tcex_json.get('package', {}).get('bundle_name', app_name))
 
     def print_json(self):
         """Print JSON output containing results of the package command."""
