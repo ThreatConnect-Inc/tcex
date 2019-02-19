@@ -8,8 +8,10 @@ Release Notes
 
 0.9.7
 -----
-+ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space.
 + Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of space.
++ Updated ``tcprofile`` command to support permutations logic for Apps with layout.json conditional input parameters.
++ Updated ``tcprofile`` command to update the profile schema to v3. **app.arg** is now **app.arg.optional** and **app.arg.required**.
++ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space.
 
 0.9.6
 -----

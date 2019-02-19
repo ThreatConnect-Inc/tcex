@@ -238,13 +238,13 @@ class TcExProfile(TcExBin):
     def print_permutations(self):
         """Print all valid permutations."""
         index = 0
-        with open('permutations.txt', 'w') as fh:
-            for p in self._input_permutations:
-                fh.write('{}\n'.format('Index: {}'.format(index)))
-                fh.write('{}\n'.format('-' * 10))
-                fh.write('{}\n\n'.format(json.dumps(p, indent=2)))
-                index += 1
-        print('All permutations written to the "permutations.txt" file.')
+        permutations = []
+        for p in self._input_permutations:
+            permutations.append({'index': index, 'args': p})
+            index += 1
+        with open('permutations.json', 'w') as fh:
+            json.dump(permutations, fh, indent=2)
+        print('All permutations written to the "permutations.json" file.')
 
     def profile_create(self):
         """Create a profile."""

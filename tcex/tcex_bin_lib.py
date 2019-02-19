@@ -43,7 +43,7 @@ class TcExLib(TcExBin):
         self.static_lib_dir = 'lib_latest'
         self.use_temp_requirements_file = False
 
-    def _build_command(self, python_executable, lib_dir_fq):
+    def _build_command(self, python_executable, lib_dir_fq, proxy_enabled):
         """Build the pip command for installing dependencies.
 
         Args:
@@ -68,21 +68,24 @@ class TcExLib(TcExBin):
         if self.args.no_cache_dir:
             exe_command.append('--no-cache-dir')
 
-        # trust the pypi hosts to avoid ssl errors
-        trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
+        if proxy_enabled:
+            # trust the pypi hosts to avoid ssl errors
+            trusted_hosts = ['pypi.org', 'pypi.python.org', 'files.pythonhosted.org']
 
-        for host in trusted_hosts:
-            exe_command.append('--trusted-host')
-            exe_command.append(host)
+            for host in trusted_hosts:
+                exe_command.append('--trusted-host')
+                exe_command.append(host)
 
         return exe_command
 
     def _configure_proxy(self):
         """Configure proxy settings using environment variables."""
         if os.getenv('HTTP_PROXY') or os.getenv('HTTPS_PROXY'):
+            # TODO: is this appropriate?
             # don't change proxy settings if they OS already has them configured.
-            return
+            return True
 
+        proxy_enabled = False
         if self.args.proxy_host is not None and self.args.proxy_port is not None:
             if self.args.proxy_user is not None and self.args.proxy_pass is not None:
                 proxy_user = quote(self.args.proxy_user, safe='~')
@@ -104,6 +107,8 @@ class TcExLib(TcExBin):
                     c.Fore.CYAN, self.args.proxy_host, self.args.proxy_port
                 )
             )
+            proxy_enabled = True
+        return proxy_enabled
 
     def _create_lib_latest(self):
         """Create the lib_latest symlink for App Builder."""
@@ -155,7 +160,7 @@ class TcExLib(TcExBin):
             print('{}Using "lib" directories defined in tcex.json file.'.format(c.Style.BRIGHT))
 
         # configure proxy settings
-        self._configure_proxy()
+        proxy_enabled = self._configure_proxy()
 
         # install all requested lib directories
         for data in lib_data:
@@ -188,7 +193,7 @@ class TcExLib(TcExBin):
                 python_executable = re.sub(env_var, env_val, python_executable)
 
             print('Building Lib Dir: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, lib_dir_fq))
-            exe_command = self._build_command(python_executable, lib_dir_fq)
+            exe_command = self._build_command(python_executable, lib_dir_fq, proxy_enabled)
 
             print('Running: {}{}{}'.format(c.Style.BRIGHT, c.Fore.GREEN, ' '.join(exe_command)))
             p = subprocess.Popen(

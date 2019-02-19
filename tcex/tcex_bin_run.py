@@ -518,6 +518,14 @@ class TcExRun(TcExBin):
             return False
         return True
 
+    @property
+    def included_profiles(self):
+        """Load all profiles."""
+        profiles = []
+        for directory in self.tcex_json.get('profile_include_dirs') or []:
+            profiles.extend(self._load_config_include(directory))
+        return profiles
+
     def json_compare(self, db_data, user_data):
         """Validate data in user data.
 
@@ -710,8 +718,7 @@ class TcExRun(TcExBin):
     def profiles(self):
         """Return all selected profiles."""
         selected_profiles = []
-        for config in self.tcex_json.get('profiles'):
-
+        for config in self.included_profiles:
             profile_selected = False
             profile_name = config.get('profile_name')
 
