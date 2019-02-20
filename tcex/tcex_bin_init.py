@@ -137,21 +137,17 @@ class TcExInit(TcExBin):
         with open('install.json', 'w') as f:
             json.dump(install_json, f, indent=2, sort_keys=True)
 
-    @staticmethod
-    def update_tcex_json():
+    def update_tcex_json(self):
         """Update the tcex.json configuration file if exists."""
         if not os.path.isfile('tcex.json'):
             return
 
-        with open('tcex.json', 'r') as f:
-            tcex_json = json.load(f)
-
         # display warning on missing app_name field
-        if tcex_json.get('package', {}).get('app_name') is None:
+        if self.tcex_json.get('package', {}).get('app_name') is None:
             print('{}The tcex.json file is missing the "app_name" field.'.format(c.Fore.MAGENTA))
 
         # display warning on missing app_version field
-        if tcex_json.get('package', {}).get('app_version') is None:
+        if self.tcex_json.get('package', {}).get('app_version') is None:
             print('{}The tcex.json file is missing the "app_version" field.'.format(c.Fore.YELLOW))
 
         # update excludes
@@ -165,9 +161,21 @@ class TcExInit(TcExBin):
             'tcex.d',
         ]
 
+        if 'requirements.txt' in self.tcex_json.get('package').get('excludes', []):
+            message = (
+                '{}The tcex.json file excludes "requirements.txt". This file is required to be App '
+                'Builder compliant. Remove entry ([y]/n)? '.format(c.Fore.YELLOW)
+            )
+            response = raw_input(message) or 'y'  # noqa: F821, pylint: disable=E0602
+            if response in ['y', 'yes']:
+                self.tcex_json.get('package', {}).get('excludes', []).remove('requirements.txt')
+
+                with open('tcex.json', 'w') as f:
+                    json.dump(self.tcex_json, f, indent=2, sort_keys=True)
+
         missing_exclude = False
         for exclude in excludes:
-            if exclude not in tcex_json.get('package').get('excludes', []):
+            if exclude not in self.tcex_json.get('package', {}).get('excludes', []):
                 missing_exclude = True
                 break
 
@@ -175,12 +183,12 @@ class TcExInit(TcExBin):
             message = '{}The tcex.json file is missing excludes items. Update ([y]/n)? '.format(
                 c.Fore.YELLOW
             )
-            response = (input(message) or 'y').lower()
+            response = raw_input(message) or 'y'  # noqa: F821, pylint: disable=E0602
 
             if response in ['y', 'yes']:
                 # get unique list of excludes
-                excludes.extend(tcex_json.get('package', {}).get('excludes'))
-                tcex_json['package']['excludes'] = sorted(list(set(excludes)))
+                excludes.extend(self.tcex_json.get('package', {}).get('excludes'))
+                self.tcex_json['package']['excludes'] = sorted(list(set(excludes)))
 
                 with open('tcex.json', 'w') as f:
-                    json.dump(tcex_json, f, indent=2, sort_keys=True)
+                    json.dump(self.tcex_json, f, indent=2, sort_keys=True)
