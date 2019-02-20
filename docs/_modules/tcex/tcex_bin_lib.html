@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.6 documentation</title>
+  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.7 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.6
+                0.9.7
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -176,7 +177,6 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Library Builder.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">platform</span>
@@ -185,78 +185,160 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">distutils.version</span> <span class="k">import</span> <span class="n">StrictVersion</span>  <span class="c1"># pylint: disable=E0611</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 2</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">quote</span>  <span class="c1"># Python 3</span>
+
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
+<span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
 
-<div class="viewcode-block" id="TcExLib"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib">[docs]</a><span class="k">class</span> <span class="nc">TcExLib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Install Required Modules for App.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_arg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init TcLib Module.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_arg</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span> <span class="o">=</span> <span class="s1">&#39;requirements.txt&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">requirements_temp</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span> <span class="o">=</span> <span class="s1">&#39;lib_latest&#39;</span>
+<div class="viewcode-block" id="TcExLib"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib">[docs]</a><span class="k">class</span> <span class="nc">TcExLib</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Install Required Modules for App.</span>
 
-        <span class="c1"># initialize colorama</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        _args (namespace): The argparser args Namespace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="TcExLib.install_libs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib.install_libs">[docs]</a>    <span class="k">def</span> <span class="nf">install_libs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Install Required Libraries using easy install.&quot;&quot;&quot;</span>
-        <span class="n">using</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span>
-        <span class="c1"># default or current python version</span>
-        <span class="n">lib_directory</span> <span class="o">=</span> <span class="s1">&#39;lib_</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _args (namespace): The argparser args Namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExLib</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lib_directory</span> <span class="o">=</span> <span class="s1">&#39;lib_</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span>
         <span class="p">)</span>
-        <span class="n">lib_data</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;python_executable&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;lib_dir&#39;</span><span class="p">:</span> <span class="n">lib_directory</span><span class="p">}]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span> <span class="o">=</span> <span class="s1">&#39;requirements.txt&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span> <span class="o">=</span> <span class="s1">&#39;lib_latest&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_temp_requirements_file</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="TcExLib._build_command"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib._build_command">[docs]</a>    <span class="k">def</span> <span class="nf">_build_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">python_executable</span><span class="p">,</span> <span class="n">lib_dir_fq</span><span class="p">,</span> <span class="n">proxy_enabled</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build the pip command for installing dependencies.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            python_executable (str): The fully qualified path of the Python executable.</span>
+<span class="sd">            lib_dir_fq (str): The fully qualified path of the lib directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: The Python pip command with all required args.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exe_command</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">python_executable</span><span class="p">),</span>
+            <span class="s1">&#39;-m&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pip&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;install&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-r&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span>
+            <span class="s1">&#39;--ignore-installed&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--target&#39;</span><span class="p">,</span>
+            <span class="n">lib_dir_fq</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">no_cache_dir</span><span class="p">:</span>
+            <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--no-cache-dir&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">proxy_enabled</span><span class="p">:</span>
+            <span class="c1"># trust the pypi hosts to avoid ssl errors</span>
+            <span class="n">trusted_hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pypi.org&#39;</span><span class="p">,</span> <span class="s1">&#39;pypi.python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;files.pythonhosted.org&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">trusted_hosts</span><span class="p">:</span>
+                <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--trusted-host&#39;</span><span class="p">)</span>
+                <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">exe_command</span></div>
+
+<div class="viewcode-block" id="TcExLib._configure_proxy"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib._configure_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">_configure_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure proxy settings using environment variables.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HTTP_PROXY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HTTPS_PROXY&#39;</span><span class="p">):</span>
+            <span class="c1"># TODO: is this appropriate?</span>
+            <span class="c1"># don&#39;t change proxy settings if they OS already has them configured.</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">proxy_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_pass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">proxy_user</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_user</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+                <span class="n">proxy_pass</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_pass</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+
+                <span class="c1"># proxy url with auth</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">proxy_user</span><span class="p">,</span> <span class="n">proxy_pass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># proxy url without auth</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">)</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span><span class="s1">&#39;HTTP_PROXY&#39;</span><span class="p">,</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span><span class="s1">&#39;HTTPS_PROXY&#39;</span><span class="p">,</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">))</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s1">&#39;Using Proxy Server: </span><span class="si">{}{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">proxy_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">proxy_enabled</span></div>
+
+<div class="viewcode-block" id="TcExLib._create_lib_latest"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib._create_lib_latest">[docs]</a>    <span class="k">def</span> <span class="nf">_create_lib_latest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the lib_latest symlink for App Builder.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Update this method to copy latest lib directory on Windows.</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="s1">&#39;lib_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExLib._create_temp_requirements"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib._create_temp_requirements">[docs]</a>    <span class="k">def</span> <span class="nf">_create_temp_requirements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a temporary requirements.txt.</span>
+
+<span class="sd">        This allows testing again a git branch instead of pulling from pypi.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_temp_requirements_file</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Replace tcex version with develop branch of tcex</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">current_requirements</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span> <span class="o">=</span> <span class="s1">&#39;temp-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">new_requirements</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">current_requirements</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;git+https://github.com/ThreatConnect-Inc/tcex.git@</span><span class="si">{}</span><span class="s1">#egg=tcex&#39;</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
+                <span class="c1"># print(&#39;line&#39;, line)</span>
+                <span class="n">new_requirements</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_requirements</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcExLib.install_libs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_lib.html#tcex.tcex_bin_lib.TcExLib.install_libs">[docs]</a>    <span class="k">def</span> <span class="nf">install_libs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Install Required Libraries using pip.&quot;&quot;&quot;</span>
+        <span class="c1"># default or current python version</span>
+        <span class="n">lib_data</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;python_executable&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s1">&#39;lib_dir&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lib_directory</span><span class="p">}]</span>
 
         <span class="c1"># check for requirements.txt</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">A requirements.txt file is required to install modules.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;A requirements.txt file is required to install modules.&#39;</span><span class="p">)</span>
 
+        <span class="c1"># if branch arg is provide use git branch instead of pypi</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">requirements_temp</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="c1"># Replace tcex version with develop branch of tcex</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">current_requirements</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span> <span class="o">=</span> <span class="s1">&#39;temp-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">new_requirements</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">current_requirements</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;tcex&#39;</span><span class="p">):</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;git+https://github.com/ThreatConnect-Inc/tcex.git@</span><span class="si">{}</span><span class="s1">#egg=tcex&#39;</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">branch</span><span class="p">)</span>
-                    <span class="c1"># print(&#39;line&#39;, line)</span>
-                    <span class="n">new_requirements</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">new_requirements</span><span class="p">)</span>
-
-        <span class="c1"># load configuration</span>
-        <span class="n">config_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;Loading Config File: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">config_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_temp_requirements</span><span class="p">()</span>
 
         <span class="c1"># overwrite default with config data</span>
-        <span class="k">if</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lib_versions&#39;</span><span class="p">):</span>
-            <span class="n">lib_data</span> <span class="o">=</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lib_versions&#39;</span><span class="p">)</span>
-            <span class="n">using</span> <span class="o">=</span> <span class="s1">&#39;Config&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lib_versions&#39;</span><span class="p">):</span>
+            <span class="n">lib_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lib_versions&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">Using &quot;lib&quot; directories defined in tcex.json file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">))</span>
+
+        <span class="c1"># configure proxy settings</span>
+        <span class="n">proxy_enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configure_proxy</span><span class="p">()</span>
 
         <span class="c1"># install all requested lib directories</span>
-        <span class="n">latest_version</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">lib_data</span><span class="p">:</span>
             <span class="c1"># pattern to match env vars in data</span>
             <span class="n">env_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\$env\.([a-zA-Z0-9]+)&#39;</span><span class="p">)</span>
@@ -267,15 +349,12 @@
             <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
                 <span class="n">env_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">env_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&quot;</span><span class="si">{}</span><span class="s1">&quot; env variable set in tcex.json, but could not be resolved.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span>
+                        <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; env variable set in tcex.json, but could not be resolved.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
                 <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">env_var</span><span class="p">,</span> <span class="n">env_val</span><span class="p">,</span> <span class="n">lib_dir</span><span class="p">)</span>
-
             <span class="n">lib_dir_fq</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">lib_dir</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">lib_dir_fq</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
@@ -289,71 +368,8 @@
                 <span class="n">env_val</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="n">python_executable</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">env_var</span><span class="p">,</span> <span class="n">env_val</span><span class="p">,</span> <span class="n">python_executable</span><span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;Building Lib Dir: </span><span class="si">{}{}{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">lib_dir_fq</span><span class="p">,</span> <span class="n">using</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">exe_command</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">python_executable</span><span class="p">),</span>
-                <span class="s1">&#39;-m&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;pip&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;install&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;-r&#39;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">,</span>
-                <span class="s1">&#39;--ignore-installed&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;--quiet&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;--target&#39;</span><span class="p">,</span>
-                <span class="n">lib_dir_fq</span><span class="p">,</span>
-            <span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">no_cache_dir</span><span class="p">:</span>
-                <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--no-cache-dir&#39;</span><span class="p">)</span>
-
-            <span class="c1"># handle authenticated proxy settings</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_pass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="p">):</span>
-                <span class="c1"># create environmental variables with the proxy details (these are deleted later)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span>
-                    <span class="s1">&#39;HTTP_PROXY&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_user</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_pass</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">,</span>
-                    <span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span>
-                    <span class="s1">&#39;HTTPS_PROXY&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_user</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_pass</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">,</span>
-                    <span class="p">),</span>
-                <span class="p">)</span>
-                <span class="c1"># trust the pypi hosts to avoid ssl errors</span>
-                <span class="n">trusted_hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pypi.org&#39;</span><span class="p">,</span> <span class="s1">&#39;pypi.python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;files.pythonhosted.org&#39;</span><span class="p">]</span>
-
-                <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">trusted_hosts</span><span class="p">:</span>
-                    <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--trusted-host&#39;</span><span class="p">)</span>
-                    <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
-            <span class="c1"># handle unauthenticated proxy settings</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># create environmental variables with the proxy details (these are deleted later)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span>
-                    <span class="s1">&#39;HTTP_PROXY&#39;</span><span class="p">,</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">putenv</span><span class="p">(</span>
-                    <span class="s1">&#39;HTTPS_PROXY&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="c1"># trust the pypi host to avoid ssl errors</span>
-                <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--trusted-host&#39;</span><span class="p">)</span>
-                <span class="n">exe_command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pypi.org&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Building Lib Dir: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">lib_dir_fq</span><span class="p">))</span>
+            <span class="n">exe_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_command</span><span class="p">(</span><span class="n">python_executable</span><span class="p">,</span> <span class="n">lib_dir_fq</span><span class="p">,</span> <span class="n">proxy_enabled</span><span class="p">)</span>
 
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exe_command</span><span class="p">)))</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
@@ -374,28 +390,20 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">python_version</span> <span class="o">=</span> <span class="n">lib_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="s1">&#39;Could not determine version from lib string.&#39;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Could not determine version from lib string.&#39;</span><span class="p">)</span>
 
             <span class="c1"># track the latest Python version</span>
-            <span class="k">if</span> <span class="n">latest_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">latest_version</span> <span class="o">=</span> <span class="n">python_version</span>
-            <span class="k">elif</span> <span class="n">StrictVersion</span><span class="p">(</span><span class="n">python_version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">StrictVersion</span><span class="p">(</span><span class="n">latest_version</span><span class="p">):</span>
-                <span class="n">latest_version</span> <span class="o">=</span> <span class="n">python_version</span>
-
-        <span class="c1"># create sym link to point to latest Python version lib directory</span>
-        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">)</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="s1">&#39;lib_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">latest_version</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_lib_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span> <span class="o">=</span> <span class="n">python_version</span>
+            <span class="k">elif</span> <span class="n">StrictVersion</span><span class="p">(</span><span class="n">python_version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">StrictVersion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">latest_version</span> <span class="o">=</span> <span class="n">python_version</span>
 
         <span class="c1"># cleanup temp file if required</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">requirements_temp</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_temp_requirements_file</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requirements_file</span><span class="p">)</span>
+
+        <span class="c1"># create lib_latest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_lib_latest</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

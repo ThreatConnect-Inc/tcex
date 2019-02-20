@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_validate module &mdash; TcEx 0.9.6 documentation</title>
+  <title>tcex.tcex_bin_validate module &mdash; TcEx 0.9.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.6
+                0.9.7
               </div>
 
 
@@ -111,8 +111,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
@@ -150,9 +150,9 @@
 <li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -198,9 +198,9 @@
 
       <li><a href="../index.html">Docs</a> &raquo;</li>
 
-          <li><a href="modules.html">tcex</a> &raquo;</li>
+          <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
-          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
 
       <li>tcex.tcex_bin_validate module</li>
 
@@ -225,7 +225,7 @@
 <dl class="class">
 <dt id="tcex.tcex_bin_validate.TcExValidate">
 <em class="property">class </em><code class="descclassname">tcex.tcex_bin_validate.</code><code class="descname">TcExValidate</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
 <p>Validate syntax, imports, and schemas.</p>
 <ul class="simple">
 <li>Python and JSON file syntax</li>
@@ -233,35 +233,30 @@
 <li>install.json schema</li>
 <li>layout.json schema</li>
 </ul>
-<dl class="staticmethod">
-<dt id="tcex.tcex_bin_validate.TcExValidate._create_connection">
-<em class="property">static </em><code class="descname">_create_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate._create_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate._create_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a temporary in memory DB and return the connection.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_bin_validate.TcExValidate._create_table">
-<em class="property">static </em><code class="descname">_create_table</code><span class="sig-paren">(</span><em>conn</em>, <em>table_name</em>, <em>columns</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate._create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate._create_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a temporary DB table.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>conn</strong> (<em>object</em>) – DB Connection</li>
-<li><strong>table_name</strong> (<em>str</em>) – The name of the table.</li>
-<li><strong>columns</strong> (<em>list</em>) – List of columns to add to the DB.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
 <dl class="staticmethod">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_import_stdlib">
 <em class="property">static </em><code class="descname">check_import_stdlib</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_import_stdlib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_import_stdlib" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if module is in Python stdlib.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) – The name of the module to check.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns True if the module is in the stdlib or template.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -304,7 +299,7 @@ for sub-directories.</p>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_validate.TcExValidate.check_layout_params">
-<code class="descname">check_layout_params</code><span class="sig-paren">(</span><em>layout_json_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_params" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_layout_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.check_layout_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.check_layout_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that the layout.json is consistent with install.json.</p>
 <p>The layout.json files references the params.name from the install.json file.  The method
 will validate that no reference appear for inputs in install.json that don’t exist.</p>
@@ -364,12 +359,6 @@ will validate that no reference appear for inputs in install.json that don’t e
 <dt id="tcex.tcex_bin_validate.TcExValidate.status_value">
 <em class="property">static </em><code class="descname">status_value</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.status_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.status_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate status color.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_bin_validate.TcExValidate.update_system_path">
-<em class="property">static </em><code class="descname">update_system_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_validate.html#TcExValidate.update_system_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_validate.TcExValidate.update_system_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the system path to ensure project modules and dependencies can be found.</p>
 </dd></dl>
 
 </dd></dl>

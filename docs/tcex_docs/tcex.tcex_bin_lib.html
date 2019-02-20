@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_lib module &mdash; TcEx 0.9.6 documentation</title>
+  <title>tcex.tcex_bin_lib module &mdash; TcEx 0.9.7 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.6
+                0.9.7
               </div>
 
 
@@ -111,8 +111,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
@@ -150,9 +150,9 @@
 <li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -198,9 +198,9 @@
 
       <li><a href="../index.html">Docs</a> &raquo;</li>
 
-          <li><a href="modules.html">tcex</a> &raquo;</li>
+          <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
-          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
 
       <li>tcex.tcex_bin_lib module</li>
 
@@ -224,13 +224,64 @@
 <p>TcEx Library Builder.</p>
 <dl class="class">
 <dt id="tcex.tcex_bin_lib.TcExLib">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_lib.</code><code class="descname">TcExLib</code><span class="sig-paren">(</span><em>_arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_lib.</code><code class="descname">TcExLib</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
 <p>Install Required Modules for App.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="tcex.tcex_bin_lib.TcExLib._build_command">
+<code class="descname">_build_command</code><span class="sig-paren">(</span><em>python_executable</em>, <em>lib_dir_fq</em>, <em>proxy_enabled</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib._build_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib._build_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the pip command for installing dependencies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>python_executable</strong> (<em>str</em>) – The fully qualified path of the Python executable.</li>
+<li><strong>lib_dir_fq</strong> (<em>str</em>) – The fully qualified path of the lib directory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Python pip command with all required args.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_lib.TcExLib._configure_proxy">
+<code class="descname">_configure_proxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib._configure_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib._configure_proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure proxy settings using environment variables.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_lib.TcExLib._create_lib_latest">
+<code class="descname">_create_lib_latest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib._create_lib_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib._create_lib_latest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the lib_latest symlink for App Builder.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_lib.TcExLib._create_temp_requirements">
+<code class="descname">_create_temp_requirements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib._create_temp_requirements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib._create_temp_requirements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a temporary requirements.txt.</p>
+<p>This allows testing again a git branch instead of pulling from pypi.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="tcex.tcex_bin_lib.TcExLib.install_libs">
 <code class="descname">install_libs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_lib.html#TcExLib.install_libs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_lib.TcExLib.install_libs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Install Required Libraries using easy install.</p>
+<dd><p>Install Required Libraries using pip.</p>
 </dd></dl>
 
 </dd></dl>

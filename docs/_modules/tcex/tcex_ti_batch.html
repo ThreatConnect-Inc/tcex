@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_batch &mdash; TcEx 0.9.6 documentation</title>
+  <title>tcex.tcex_ti_batch &mdash; TcEx 0.9.7 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.6
+                0.9.7
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -181,7 +182,6 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shelve</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
@@ -244,6 +244,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_write_type</span> <span class="o">=</span> <span class="n">attribute_write_type</span> <span class="ow">or</span> <span class="s1">&#39;Replace&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_batch_max_chunk</span> <span class="o">=</span> <span class="mi">5000</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_halt_on_error</span> <span class="o">=</span> <span class="n">halt_on_error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span> <span class="o">=</span> <span class="n">owner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="o">=</span> <span class="n">playbook_triggers_enabled</span>
 
@@ -361,10 +363,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># get xid from object</span>
             <span class="n">xid</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">xid</span>
-
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">xid</span><span class="p">,</span> <span class="s1">&#39;encode&#39;</span><span class="p">):</span>
-            <span class="c1"># py2 fix</span>
-            <span class="n">xid</span> <span class="o">=</span> <span class="n">xid</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xid</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># return existing group from memory</span>
@@ -913,6 +911,14 @@
         <span class="n">indicator_obj</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">md5</span><span class="p">,</span> <span class="n">sha1</span><span class="p">,</span> <span class="n">sha256</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator</span><span class="p">(</span><span class="n">indicator_obj</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExBatch.file_merge_mode"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.file_merge_mode">[docs]</a>    <span class="k">def</span> <span class="nf">file_merge_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the file merge mode for the entire batch job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): A value of Distribute or Merge.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span> <span class="o">=</span> <span class="n">value</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return dictionary containing all of the file content or callbacks.&quot;&quot;&quot;</span>
@@ -1028,6 +1034,15 @@
         <span class="sd">&quot;&quot;&quot;Set batch halt on poll error value.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_halt_on_poll_error</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="TcExBatch.hash_collision_mode"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.hash_collision_mode">[docs]</a>    <span class="k">def</span> <span class="nf">hash_collision_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the file hash collision mode for the entire batch job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): A value of Split, IgnoreIncoming, IgnoreExisting, FavorIncoming,</span>
+<span class="sd">                and FavorExisting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span> <span class="o">=</span> <span class="n">value</span></div>
 
 <div class="viewcode-block" id="TcExBatch.host"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.host">[docs]</a>    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add Email Address data to Batch object.</span>
@@ -1415,6 +1430,10 @@
         <span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;playbookTriggersEnabled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_playbook_triggers_enabled</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;hashCollisionMode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_collision_mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_settings</span><span class="p">[</span><span class="s1">&#39;fileMergeMode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_merge_mode</span>
         <span class="k">return</span> <span class="n">_settings</span>
 
 <div class="viewcode-block" id="TcExBatch.signature"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.signature">[docs]</a>    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">file_text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

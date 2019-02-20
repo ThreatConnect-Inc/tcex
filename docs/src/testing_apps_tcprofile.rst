@@ -320,4 +320,4 @@ The ``tcrun`` command will run any validation rules defined in the profile. Curr
 Supported Operators
 ~~~~~~~~~~~~~~~~~~~
 
-For a list of supported **operator** see the :py:meth:`~bin.tcrun.TcRun.operators` property of the ``tcrun`` command.
+For a list of supported **operator** see the :py:meth:`~tcex.tcex_bin_run.TcExRun.operators` property of the ``tcrun`` command.

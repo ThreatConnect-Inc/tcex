@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_run &mdash; TcEx 0.9.6 documentation</title>
+  <title>tcex.tcex_bin_run &mdash; TcEx 0.9.7 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.6
+                0.9.7
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -196,15 +197,25 @@
 
 
 <span class="kn">from</span> <span class="nn">tcex</span> <span class="k">import</span> <span class="n">TcEx</span>
+<span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
 
 
-<div class="viewcode-block" id="TcExRun"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun">[docs]</a><span class="k">class</span> <span class="nc">TcExRun</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run profiles for App.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TcExRun"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun">[docs]</a><span class="k">class</span> <span class="nc">TcExRun</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run profiles for ThreatConnect Job or Playbook Apps.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        _args (namespace): The argparser args Namespace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class properties.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_args</span>
+<span class="sd">        Args:</span>
+<span class="sd">            _args (namespace): The argparser args Namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExRun</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
+
+        <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler_init</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="p">{}</span>
@@ -218,8 +229,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_redis_tracker</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">json_report</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_diff</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span> <span class="o">=</span> <span class="mi">0</span>
@@ -234,9 +243,6 @@
         <span class="c1"># if platform.system() == &#39;Windows&#39;:</span>
         <span class="c1">#    self.shell = True</span>
 
-        <span class="c1"># initialize colorama</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
 <div class="viewcode-block" id="TcExRun._create_tc_dirs"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun._create_tc_dirs">[docs]</a>    <span class="k">def</span> <span class="nf">_create_tc_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create app directories for logs and data files.&quot;&quot;&quot;</span>
         <span class="n">tc_log_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tc_log_path&#39;</span><span class="p">)</span>
@@ -250,7 +256,14 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tc_tmp_path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun._load_config_include"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun._load_config_include">[docs]</a>    <span class="k">def</span> <span class="nf">_load_config_include</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_directory</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load included configuration files.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Load included configuration files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            include_directory (str): The name of the config include directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: A list of all profiles for the current App.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">include_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="n">include_directory</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">include_directory</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Provided include directory does not exist (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">include_directory</span><span class="p">)</span>
@@ -275,7 +288,6 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            logger: An instance of logging</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">log_level</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;debug&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
@@ -315,14 +327,19 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logging Level: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">log</span></div>
 
-    <span class="k">def</span> <span class="nf">_signal_handler_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># catch interupt signals</span>
+<div class="viewcode-block" id="TcExRun._signal_handler_init"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun._signal_handler_init">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Catch interupt signals.&quot;&quot;&quot;</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_IGN</span><span class="p">)</span>
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
-        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal_handler</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun._signal_handler"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun._signal_handler">[docs]</a>    <span class="k">def</span> <span class="nf">_signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal_interupt</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>  <span class="c1"># pylint: disable=W0613</span>
-        <span class="sd">&quot;&quot;&quot;Handle singal interrupt.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Handle singal interrupt.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            signal_interupt ([type]): [Description]</span>
+<span class="sd">            frame ([type]): [Description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">Stopping docker container.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
@@ -429,7 +446,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">clear_tc</span><span class="p">(</span><span class="n">clear_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">),</span> <span class="n">clear_data</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.clear_redis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.clear_redis">[docs]</a>    <span class="k">def</span> <span class="nf">clear_redis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">clear_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete redis data for provided variable.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Delete Redis data for provided variable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (str): The Redis variable to delete.</span>
+<span class="sd">            clear_type (str): The type of clear action.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clear_redis_tracker</span><span class="p">:</span>
@@ -442,7 +464,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_redis_tracker</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.clear_tc"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.clear_tc">[docs]</a>    <span class="k">def</span> <span class="nf">clear_tc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">clear_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete ThreatConnect data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Delete threat intel from ThreatConnect platform.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            owner (str): The ThreatConnect owner.</span>
+<span class="sd">            data (dict): The data for the threat intel to clear.</span>
+<span class="sd">            clear_type (str): The type of clear action.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;Delete&#39;</span><span class="p">)</span>
         <span class="n">tc_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
@@ -485,38 +513,32 @@
         <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">batch_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">] Batch Error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clear_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return configuration data.</span>
-
-<span class="sd">        Load on first access, otherwise return existing data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Provided config file does not exist (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="s1">&#39;Configuration File: </span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
-
-            <span class="c1"># load includes</span>
-            <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_include_dirs&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_config_include</span><span class="p">(</span><span class="n">directory</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
-
 <div class="viewcode-block" id="TcExRun.data_endswith"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_endswith">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_endswith</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data ends with user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data ends with user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">db_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">db_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">user_data</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExRun.data_in_db"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_in_db">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_in_db</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate db data in user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate db data in user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (list): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">db_data</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -524,14 +546,30 @@
 
 <div class="viewcode-block" id="TcExRun.data_in_user"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_in_user">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_in_user</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate user data in db data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate user data in db data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (list): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">user_data</span> <span class="ow">in</span> <span class="n">db_data</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExRun.data_it"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_it">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_it</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data is Type.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data is type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (dict|str|list): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data_type</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;array&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">list</span><span class="p">),</span>
             <span class="c1"># &#39;binary&#39;: (string_types),</span>
@@ -564,7 +602,15 @@
 
 <div class="viewcode-block" id="TcExRun.data_kva_compare"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_kva_compare">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_kva_compare</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate key/value data in KeyValueArray.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate key/value data in KeyValueArray.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (list): The data store in Redis.</span>
+<span class="sd">            user_data (dict): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">kv_data</span> <span class="ow">in</span> <span class="n">db_data</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kv_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">kv_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">):</span>
@@ -573,7 +619,15 @@
 
 <div class="viewcode-block" id="TcExRun.data_not_in"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_not_in">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_not_in</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data not in user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data not in user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (list): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">db_data</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -581,14 +635,30 @@
 
 <div class="viewcode-block" id="TcExRun.data_startswith"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_startswith">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_startswith</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data starts with user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data starts with user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">db_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">db_data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">user_data</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExRun.data_string_compare"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.data_string_compare">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">data_string_compare</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate string removing all white space before comparison.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate string removing all white space before comparison.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">db_data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">db_data</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
         <span class="n">user_data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_data</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">operator</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
@@ -596,7 +666,15 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="TcExRun.deep_diff"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.deep_diff">[docs]</a>    <span class="k">def</span> <span class="nf">deep_diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data in user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data in user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (dict|str|list): The data store in Redis.</span>
+<span class="sd">            user_data (dict|str|list): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># NOTE: tcex does include the deepdiff library as a dependencies since it is only</span>
         <span class="c1"># required for local testing.</span>
         <span class="k">try</span><span class="p">:</span>
@@ -616,36 +694,29 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">included_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load all profiles.&quot;&quot;&quot;</span>
+        <span class="n">profiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_include_dirs&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
+            <span class="n">profiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_config_include</span><span class="p">(</span><span class="n">directory</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">profiles</span>
+
 <div class="viewcode-block" id="TcExRun.json_compare"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.json_compare">[docs]</a>    <span class="k">def</span> <span class="nf">json_compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data in user data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data in user data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">)):</span>
             <span class="n">db_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">db_data</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">)):</span>
             <span class="n">user_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">user_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deep_diff</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcExRun.load_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.load_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">load_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return install.json data.</span>
-
-<span class="sd">        Load on first access, otherwise return existing data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">install_json</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">load_output</span> <span class="o">=</span> <span class="s1">&#39;Load install.json: </span><span class="si">{}{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Loading install.json: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_data</span><span class="p">:</span>
-                <span class="n">install_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_data</span><span class="p">)</span>
-            <span class="n">load_output</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}{}</span><span class="s1">(Loaded)</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">load_output</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}{}</span><span class="s1">(Not Found)</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span>
-            <span class="p">)</span>
-
-        <span class="c1"># display load status</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">load_output</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">install_json</span></div>
 
 <div class="viewcode-block" id="TcExRun.load_tcex"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.load_tcex">[docs]</a>    <span class="k">def</span> <span class="nf">load_tcex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inject required TcEx CLI Args.&quot;&quot;&quot;</span>
@@ -727,7 +798,15 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="TcExRun.path_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.path_data">[docs]</a>    <span class="k">def</span> <span class="nf">path_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_data</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return jmespath data.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return JMESPath data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable_data (str): The JSON data to run path expression.</span>
+<span class="sd">            path (str): The JMESPath expression.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The resulting data from JMESPath.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># NOTE: tcex does include the jmespath library as a dependencies since it is only</span>
         <span class="c1"># required for local testing.</span>
         <span class="k">try</span><span class="p">:</span>
@@ -756,7 +835,11 @@
 
     <span class="nd">@profile</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the current profile.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the current profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            profile (dict): The profile data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># clear staging data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_staging_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># retrieve language from install.json or assume Python</span>
@@ -776,23 +859,42 @@
 
 <div class="viewcode-block" id="TcExRun.profile_args"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.profile_args">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">profile_args</span><span class="p">(</span><span class="n">_args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return args for old or new structure.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return args for v1, v2, or v3 structure.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _args (dict): The args section from the profile.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A collapsed version of the args dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: clean this up in a way that works for both py2/3</span>
-        <span class="k">if</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># detect new args structure</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="c1"># detect v3 schema</span>
+            <span class="n">app_args_optional</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">app_args_required</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">default_args</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">_args</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">app_args_optional</span><span class="p">)</span>
+            <span class="n">_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">app_args_required</span><span class="p">)</span>
+            <span class="n">_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># detect v2 schema</span>
             <span class="n">app_args</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">default_args</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">_args</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">app_args</span><span class="p">)</span>
             <span class="n">_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_args</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">_args</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return all selected profiles.&quot;&quot;&quot;</span>
         <span class="n">selected_profiles</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">):</span>
-
+        <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">included_profiles</span><span class="p">:</span>
             <span class="n">profile_selected</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">profile_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile_name&#39;</span><span class="p">)</span>
 
@@ -905,7 +1007,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_local</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_commands"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_commands">[docs]</a>    <span class="k">def</span> <span class="nf">run_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program_language</span><span class="p">,</span> <span class="n">program_main</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the run Print Command.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the run Print Command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            program_language (str): The language of the current App/Project.</span>
+<span class="sd">            program_main (str): The executable name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary containing the run command and a printable version of the command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># build the command</span>
         <span class="k">if</span> <span class="n">program_language</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
             <span class="n">python_exe</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
@@ -947,12 +1057,12 @@
 
         <span class="k">elif</span> <span class="n">program_language</span> <span class="o">==</span> <span class="s1">&#39;java&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">docker</span><span class="p">:</span>
-                <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;java&#39;</span><span class="p">,</span> <span class="s1">&#39;-cp&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class_path&#39;</span><span class="p">,</span> <span class="s1">&#39;./target/*&#39;</span><span class="p">)]</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;java&#39;</span><span class="p">,</span> <span class="s1">&#39;-cp&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class_path&#39;</span><span class="p">,</span> <span class="s1">&#39;./target/*&#39;</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">command</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;java_path&#39;</span><span class="p">,</span> <span class="n">program_language</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;java_path&#39;</span><span class="p">,</span> <span class="n">program_language</span><span class="p">),</span>
                     <span class="s1">&#39;-cp&#39;</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class_path&#39;</span><span class="p">,</span> <span class="s1">&#39;./target/*&#39;</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class_path&#39;</span><span class="p">,</span> <span class="s1">&#39;./target/*&#39;</span><span class="p">),</span>
                 <span class="p">]</span>
 
             <span class="c1"># exe command</span>
@@ -969,7 +1079,14 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;cli_command&#39;</span><span class="p">:</span> <span class="n">cli_command</span><span class="p">,</span> <span class="s1">&#39;print_command&#39;</span><span class="p">:</span> <span class="n">print_command</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_local"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_local">[docs]</a>    <span class="k">def</span> <span class="nf">run_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run the App on local system.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Run the App on local system.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            commands (dict): A dictionary of the CLI commands.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The exit code of the subprocess command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
             <span class="n">commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cli_command&#39;</span><span class="p">),</span>
             <span class="n">shell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shell</span><span class="p">,</span>
@@ -988,7 +1105,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_exit_code</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">returncode</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_docker"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_docker">[docs]</a>    <span class="k">def</span> <span class="nf">run_docker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run App in Docker Container.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Run App in Docker Container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            commands (dict): A dictionary of the CLI commands.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The exit code of the subprocess command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">docker</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -1067,14 +1191,22 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_exit_code</span><span class="p">(</span><span class="n">status_code</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_display_app_errors"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_display_app_errors">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_app_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle the exit code for the current run.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Handle the exit code for the current run.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            err (str): One or more lines of errors messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">e_</span> <span class="ow">in</span> <span class="n">err</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">e_</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[tcrun] App error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e_</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_display_app_output"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_display_app_output">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_app_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print any App output.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Print any App output.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            out (str): One or more lines of output messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;App Output:&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
@@ -1092,7 +1224,11 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_display_profile"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_display_profile">[docs]</a>    <span class="k">def</span> <span class="nf">run_display_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program_main</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print profile name with programMain.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Print profile name with programMain.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            program_main (str): The executable name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">install_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;Profile: &#39;</span>
@@ -1114,7 +1250,17 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_exit_code"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_exit_code">[docs]</a>    <span class="k">def</span> <span class="nf">run_exit_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returncode</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handle the exit code for the current run.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Handle the exit code for the current run.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            returncode (int): The return exit code.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raise on invalid exit code if halt_on_fail is True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if exit code is a valid exit code, else False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">exit_status</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[run] Exit Code </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">returncode</span><span class="p">))</span>
 
@@ -1144,7 +1290,11 @@
         <span class="k">return</span> <span class="n">exit_status</span></div>
 
 <div class="viewcode-block" id="TcExRun.run_validate_program_main"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.run_validate_program_main">[docs]</a>    <span class="k">def</span> <span class="nf">run_validate_program_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program_main</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate the program main file exists.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate the program main file exists.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            program_main (str): The executable name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">program_language</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;programLanguage&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">program_language</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">program_main</span><span class="p">)):</span>
             <span class="nb">print</span><span class="p">(</span>
@@ -1310,7 +1460,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_staging_data</span>
 
 <div class="viewcode-block" id="TcExRun.stage_redis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_redis">[docs]</a>    <span class="k">def</span> <span class="nf">stage_redis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Stage data in Redis.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Stage data in Redis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            variable (str): The Redis variable name.</span>
+<span class="sd">            data (dict|list|str): The data to store in Redis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># handle binary</span>
@@ -1357,6 +1512,10 @@
 <span class="sd">              &quot;variable&quot;: &quot;#App:0822:adversary!TCEntity&quot;</span>
 <span class="sd">            }]</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            owner (str): The ThreatConnect owner name.</span>
+<span class="sd">            staging_data (dict): A dict containing the ThreatConnect threat intel.</span>
+<span class="sd">            variable (str): A variable name to write to Redis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># parse resource_data</span>
         <span class="n">resource_type</span> <span class="o">=</span> <span class="n">staging_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
@@ -1425,7 +1584,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[stage] Unsupported resource type </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource_type</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_create_attribute"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_create_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute_type</span><span class="p">,</span> <span class="n">attribute_value</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add an attribute to a resource.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Add an attribute to a resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attribute_type (str): The attribute type (e.g., Description).</span>
+<span class="sd">            attribute_value (str): The attribute value.</span>
+<span class="sd">            resource (obj): An instance of tcex resource class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">attribute_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">attribute_type</span><span class="p">),</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">attribute_value</span><span class="p">)}</span>
         <span class="c1"># handle default description and source</span>
         <span class="k">if</span> <span class="n">attribute_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Source&#39;</span><span class="p">]:</span>
@@ -1445,7 +1610,12 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_create_security_label"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_create_security_label">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_security_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a security label to a resource.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Add a security label to a resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            label (str): The security label (must exit in ThreatConnect).</span>
+<span class="sd">            resource (obj): An instance of tcex resource class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sl_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">security_labels</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="n">sl_resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
         <span class="n">sl_response</span> <span class="o">=</span> <span class="n">sl_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -1457,7 +1627,12 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_create_tag"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_create_tag">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_create_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">resource</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a tag to a resource.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Add a tag to a resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag (str): The tag to be added to the resource.</span>
+<span class="sd">            resource (obj): An instance of tcex resource class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tag_resource</span> <span class="o">=</span> <span class="n">resource</span><span class="o">.</span><span class="n">tags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">safetag</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
         <span class="n">tag_resource</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="s1">&#39;POST&#39;</span>
         <span class="n">t_response</span> <span class="o">=</span> <span class="n">tag_resource</span><span class="o">.</span><span class="n">request</span><span class="p">()</span>
@@ -1467,7 +1642,12 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_associations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_associations">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_associations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity1</span><span class="p">,</span> <span class="n">entity2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add an attribute to a resource.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Add an attribute to a resource.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity1 (str): A Redis variable containing a TCEntity.</span>
+<span class="sd">            entity2 (str): A Redis variable containing a TCEntity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># resource 1</span>
         <span class="n">entity1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">entity1</span><span class="p">)</span>
         <span class="n">entity1_id</span> <span class="o">=</span> <span class="n">entity1</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
@@ -1510,7 +1690,12 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_batch"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_batch">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">staging_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Stage data in Redis.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Stage data in ThreatConnect Platform using batch API.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            owner (str): The ThreatConnect owner to submit batch job.</span>
+<span class="sd">            staging_data (dict): A dict of ThreatConnect batch data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">staging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
             <span class="c1"># add to redis</span>
@@ -1553,18 +1738,41 @@
 
 <div class="viewcode-block" id="TcExRun.stage_tc_batch_xid"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_batch_xid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">stage_tc_batch_xid</span><span class="p">(</span><span class="n">xid_type</span><span class="p">,</span> <span class="n">xid_value</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an xid for a batch job.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create an xid for a batch job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            xid_type (str): [description]</span>
+<span class="sd">            xid_value (str): [description]</span>
+<span class="sd">            owner (str): [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xid_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xid_type</span><span class="p">,</span> <span class="n">xid_value</span><span class="p">,</span> <span class="n">owner</span><span class="p">)</span>
         <span class="n">hash_object</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">xid_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">hash_object</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_group_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_group_entity">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_group_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert JSON data to TCEntity.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert JSON data to TCEntity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_data (str): [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;@.{name: name, type: type, ownerName: ownerName}&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_data</span><span class="p">(</span><span class="n">group_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExRun.stage_tc_indicator_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.stage_tc_indicator_entity">[docs]</a>    <span class="k">def</span> <span class="nf">stage_tc_indicator_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indicator_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert JSON data to TCEntity.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert JSON data to TCEntity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indicator_data (str): [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;@.{value: summary, &#39;</span>
         <span class="n">path</span> <span class="o">+=</span> <span class="s1">&#39;type: type, &#39;</span>
         <span class="n">path</span> <span class="o">+=</span> <span class="s1">&#39;ownerName: ownerName, &#39;</span>
@@ -1632,7 +1840,16 @@
         <span class="k">return</span> <span class="n">passed</span></div>
 
 <div class="viewcode-block" id="TcExRun.validate_redis"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.validate_redis">[docs]</a>    <span class="k">def</span> <span class="nf">validate_redis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">,</span> <span class="n">oper</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate data in Redis.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Validate data in Redis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+<span class="sd">            oper (str): The comparison operator.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the data passed validation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">passed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># convert any int to string since playbooks don&#39;t support int values</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
@@ -1672,7 +1889,17 @@
         <span class="k">return</span> <span class="n">passed</span></div>
 
 <div class="viewcode-block" id="TcExRun.validate_log_output"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.TcExRun.validate_log_output">[docs]</a>    <span class="k">def</span> <span class="nf">validate_log_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passed</span><span class="p">,</span> <span class="n">db_data</span><span class="p">,</span> <span class="n">user_data</span><span class="p">,</span> <span class="n">oper</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Format the validation log output to be easier to read.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Format the validation log output to be easier to read.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            passed (bool): The results of the validation test.</span>
+<span class="sd">            db_data (str): The data store in Redis.</span>
+<span class="sd">            user_data (str): The user provided data.</span>
+<span class="sd">            oper (str): The comparison operator.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Raise error on validation failure if halt_on_fail is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">truncate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">truncate</span>
         <span class="k">if</span> <span class="n">db_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">passed</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_data</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">db_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">truncate</span><span class="p">:</span>
@@ -1774,22 +2001,25 @@
 <span class="sd">            value (string): The CLI Args value (e.g., bob).</span>
 <span class="sd">            mask (boolean, default:False): Indicates whether no mask value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="c1"># boolean values are flags and should only be included when True</span>
-            <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="c1"># boolean values are flags and cli arg should not have a value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="c1"># both false boolean values (flags) and empty values should not be added.</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># true boolean values are flags and should not contain a value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
+                <span class="c1"># mask sensitive values</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># quote all values that would get displayed</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_quoted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_args_masked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;--</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="ArgBuilder._add_arg_java"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_run.html#tcex.tcex_bin_run.ArgBuilder._add_arg_java">[docs]</a>    <span class="k">def</span> <span class="nf">_add_arg_java</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add CLI Arg formatted specifically for Java.</span>
@@ -1863,7 +2093,7 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s1">&#39;java&#39;</span><span class="p">:</span>
             <span class="n">quote_char</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span>
 
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[!\-\s\$\&amp;]{1,}&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[!\-\=\s\$\&amp;]{1,}&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote_char</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
