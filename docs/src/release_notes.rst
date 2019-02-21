@@ -8,6 +8,7 @@ Release Notes
 
 0.9.8
 -----
++ Fixed issue with ``sqlite`` being imported while not required for Apps.
 + Updated ``tcprofile`` to better support App bundle projects.
 
 0.9.7

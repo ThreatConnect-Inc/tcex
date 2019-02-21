@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_validate &mdash; TcEx 0.9.7 documentation</title>
+  <title>tcex.tcex_bin_validate &mdash; TcEx 0.9.8 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.7
+                0.9.8
               </div>
 
 
@@ -182,11 +182,16 @@
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="c1"># this module is only required for certain CLI commands</span>
+    <span class="k">pass</span>
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">SchemaError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">validate</span>
@@ -434,6 +439,7 @@
 <span class="sd">        The layout.json files references the params.name from the install.json file.  The method</span>
 <span class="sd">        will validate that no reference appear for inputs in install.json that don&#39;t exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">ij_input_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ij_output_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">):</span>
@@ -448,8 +454,9 @@
                 <span class="c1"># checking parameters isn&#39;t possible if install.json can&#39;t be parsed</span>
                 <span class="k">return</span>
 
-        <span class="c1"># create temporary inputs tables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">ij_input_names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="c1"># create temporary inputs tables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">ij_input_names</span><span class="p">)</span>
 
         <span class="c1"># inputs</span>
         <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
@@ -463,18 +470,19 @@
                     <span class="p">)</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
-                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
-                    <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-                    <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="s1">&#39;Layouts input.parameters[].display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query is &#39;</span>
-                            <span class="s1">&#39;an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
+                        <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
                         <span class="p">)</span>
-                        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="s1">&#39;Layouts input.parameters[].display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query &#39;</span>
+                                <span class="s1">&#39;is an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+                            <span class="p">)</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># update validation data for module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;layouts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span>
@@ -490,18 +498,19 @@
                 <span class="p">)</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
-            <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
-                <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-                <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="s1">&#39;Layouts outputs.display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query is &#39;</span>
-                        <span class="s1">&#39;an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
+                    <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
                     <span class="p">)</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s1">&#39;Layouts outputs.display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query is &#39;</span>
+                            <span class="s1">&#39;an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+                        <span class="p">)</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># update validation data for module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;layouts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span></div>

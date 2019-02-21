@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_profile &mdash; TcEx 0.9.7 documentation</title>
+  <title>tcex.tcex_bin_profile &mdash; TcEx 0.9.8 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.7
+                0.9.8
               </div>
 
 
@@ -179,11 +179,16 @@
 <span class="sd">&quot;&quot;&quot;TcEx Framework Profile Generation Module.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="c1"># this module is only required for certain CLI commands</span>
+    <span class="k">pass</span>
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
@@ -266,7 +271,6 @@
 <span class="sd">            index (int, optional): The current index position in the layout names list.</span>
 <span class="sd">            args (list, optional): Defaults to None. The current list of args.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
@@ -406,6 +410,10 @@
 
 <div class="viewcode-block" id="TcExProfile.permutations"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.permutations">[docs]</a>    <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process layout.json names/display to get all permutations of args.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The sqlite3 module needs to be build-in to Python for this feature.&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db_insert_record</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">()</span>
@@ -487,6 +495,9 @@
 <span class="sd">            dict: Dictionary of required or optional App args.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The sqlite3 module needs to be build-in to Python for this feature.&#39;</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">profile_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_layout_json</span><span class="p">(</span><span class="n">required</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">profile_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="n">required</span><span class="p">)</span>
@@ -755,8 +766,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            profile (dict): The dictionary containting the profile settings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;install_json&#39;</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
+        <span class="n">ijp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">profile</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -767,7 +778,6 @@
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">][</span><span class="s1">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;app&#39;</span><span class="p">][</span><span class="s1">&#39;required&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_settings_args_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">ijp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_params</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
                 <span class="n">required</span> <span class="o">=</span> <span class="n">ijp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
                 <span class="k">try</span><span class="p">:</span>
@@ -951,7 +961,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the row count is greater than 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">display</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">display_condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">display</span> <span class="o">=</span> <span class="kc">True</span>
