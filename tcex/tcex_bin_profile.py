@@ -8,6 +8,12 @@ from uuid import uuid4
 from collections import OrderedDict
 from random import randint
 
+try:
+    import sqlite3
+except ModuleNotFoundError:
+    # this module is only required for certain CLI commands
+    pass
+
 import colorama as c
 
 from .tcex_bin import TcExBin
@@ -89,7 +95,6 @@ class TcExProfile(TcExBin):
             index (int, optional): The current index position in the layout names list.
             args (list, optional): Defaults to None. The current list of args.
         """
-
         if args is None:
             args = []
         try:
@@ -229,6 +234,10 @@ class TcExProfile(TcExBin):
 
     def permutations(self):
         """Process layout.json names/display to get all permutations of args."""
+        if 'sqlite3' not in sys.modules:
+            print('The sqlite3 module needs to be build-in to Python for this feature.')
+            sys.exit(1)
+
         self.db_create_table(self.input_table, self.install_json_params().keys())
         self.db_insert_record(self.input_table, self.install_json_params().keys())
         self.gen_permutations()
@@ -310,6 +319,9 @@ class TcExProfile(TcExBin):
             dict: Dictionary of required or optional App args.
         """
         if self.args.permutation_id:
+            if 'sqlite3' not in sys.modules:
+                print('The sqlite3 module needs to be build-in to Python for this feature.')
+                sys.exit(1)
             profile_args = self.profile_settings_args_layout_json(required)
         else:
             profile_args = self.profile_settings_args_install_json(ij, required)
@@ -773,9 +785,6 @@ class TcExProfile(TcExBin):
         Returns:
             bool: True if the row count is greater than 0.
         """
-        # only import this module is using this method
-        import sqlite3
-
         display = False
         if display_condition is None:
             display = True

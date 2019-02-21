@@ -8,7 +8,8 @@ import sys
 try:
     import sqlite3
 except ModuleNotFoundError:
-    print('The sqlite3 module needs to be build-in to Python for this feature.')
+    # this module is only required for certain CLI commands
+    pass
 
 import colorama as c
 import redis

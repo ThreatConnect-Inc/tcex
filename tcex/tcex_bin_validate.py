@@ -11,6 +11,12 @@ import traceback
 from collections import deque
 import pkg_resources
 
+try:
+    import sqlite3
+except ModuleNotFoundError:
+    # this module is only required for certain CLI commands
+    pass
+
 import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
 from stdlib_list import stdlib_list
@@ -257,8 +263,6 @@ class TcExValidate(TcExBin):
         The layout.json files references the params.name from the install.json file.  The method
         will validate that no reference appear for inputs in install.json that don't exist.
         """
-        # only import this module is using this method
-        import sqlite3
 
         ij_input_names = []
         ij_output_names = []
@@ -274,8 +278,9 @@ class TcExValidate(TcExBin):
                 # checking parameters isn't possible if install.json can't be parsed
                 return
 
-        # create temporary inputs tables
-        self.db_create_table(self.input_table, ij_input_names)
+        if 'sqlite3' in sys.modules:
+            # create temporary inputs tables
+            self.db_create_table(self.input_table, ij_input_names)
 
         # inputs
         status = True
@@ -289,18 +294,19 @@ class TcExValidate(TcExBin):
                     )
                     status = False
 
-                if p.get('display'):
-                    display_query = 'SELECT * FROM {} WHERE {}'.format(
-                        self.input_table, p.get('display')
-                    )
-                    try:
-                        self.db_conn.execute(display_query.replace('"', ''))
-                    except sqlite3.Error:
-                        self.validation_data['errors'].append(
-                            'Layouts input.parameters[].display validations failed ("{}" query is '
-                            'an invalid statement).'.format(p.get('display'))
+                if 'sqlite3' in sys.modules:
+                    if p.get('display'):
+                        display_query = 'SELECT * FROM {} WHERE {}'.format(
+                            self.input_table, p.get('display')
                         )
-                        status = False
+                        try:
+                            self.db_conn.execute(display_query.replace('"', ''))
+                        except sqlite3.Error:
+                            self.validation_data['errors'].append(
+                                'Layouts input.parameters[].display validations failed ("{}" query '
+                                'is an invalid statement).'.format(p.get('display'))
+                            )
+                            status = False
 
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'inputs', 'status': status})
@@ -316,18 +322,19 @@ class TcExValidate(TcExBin):
                 )
                 status = False
 
-            if o.get('display'):
-                display_query = 'SELECT * FROM {} WHERE {}'.format(
-                    self.input_table, o.get('display')
-                )
-                try:
-                    self.db_conn.execute(display_query.replace('"', ''))
-                except sqlite3.Error:
-                    self.validation_data['errors'].append(
-                        'Layouts outputs.display validations failed ("{}" query is '
-                        'an invalid statement).'.format(o.get('display'))
+            if 'sqlite3' in sys.modules:
+                if o.get('display'):
+                    display_query = 'SELECT * FROM {} WHERE {}'.format(
+                        self.input_table, o.get('display')
                     )
-                    status = False
+                    try:
+                        self.db_conn.execute(display_query.replace('"', ''))
+                    except sqlite3.Error:
+                        self.validation_data['errors'].append(
+                            'Layouts outputs.display validations failed ("{}" query is '
+                            'an invalid statement).'.format(o.get('display'))
+                        )
+                        status = False
 
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
