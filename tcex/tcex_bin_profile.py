@@ -3,7 +3,6 @@
 """TcEx Framework Profile Generation Module."""
 import json
 import os
-import sqlite3
 import sys
 from uuid import uuid4
 from collections import OrderedDict
@@ -774,6 +773,8 @@ class TcExProfile(TcExBin):
         Returns:
             bool: True if the row count is greater than 0.
         """
+        # only import this module is using this method
+        import sqlite3
 
         display = False
         if display_condition is None:

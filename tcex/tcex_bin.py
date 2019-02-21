@@ -3,8 +3,12 @@
 """TcEx Framework Bin Command Base Module."""
 import json
 import os
-import sqlite3
 import sys
+
+try:
+    import sqlite3
+except ModuleNotFoundError:
+    print('The sqlite3 module needs to be build-in to Python for this feature.')
 
 import colorama as c
 import redis

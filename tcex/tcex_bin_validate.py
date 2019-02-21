@@ -6,7 +6,6 @@ import imp
 import importlib
 import json
 import os
-import sqlite3
 import sys
 import traceback
 from collections import deque
@@ -258,6 +257,9 @@ class TcExValidate(TcExBin):
         The layout.json files references the params.name from the install.json file.  The method
         will validate that no reference appear for inputs in install.json that don't exist.
         """
+        # only import this module is using this method
+        import sqlite3
+
         ij_input_names = []
         ij_output_names = []
         if os.path.isfile('install.json'):
