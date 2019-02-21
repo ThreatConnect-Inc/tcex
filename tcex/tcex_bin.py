@@ -46,7 +46,6 @@ class TcExBin(object):
     @property
     def db_conn(self):
         """Create a temporary in memory DB and return the connection."""
-
         if self._db_conn is None:
             try:
                 self._db_conn = sqlite3.connect(':memory:')
@@ -61,7 +60,6 @@ class TcExBin(object):
             table_name (str): The name of the table.
             columns (list): List of columns to add to the DB.
         """
-
         formatted_columns = ''
         for col in set(columns):
             formatted_columns += '"{}" text, '.format(col.strip('"').strip('\''))
@@ -83,7 +81,6 @@ class TcExBin(object):
             table_name (str): The name of the table.
             columns (list): List of columns for insert statement.
         """
-
         bindings = ('?,' * len(columns)).strip(',')
         values = [None] * len(columns)
         sql = 'INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join(columns), bindings)
@@ -98,7 +95,6 @@ class TcExBin(object):
             column (str): The column name in which the value is to be updated.
             value (str): The value to update in the column.
         """
-
         sql = 'UPDATE {} SET {} = \'{}\''.format(table_name, column, value)
         cur = self.db_conn.cursor()
         cur.execute(sql)
@@ -111,7 +107,6 @@ class TcExBin(object):
             err (str): The error message to print.
             halt (bool, optional): Defaults to True. If True the script will exit.
         """
-
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
         if halt:
             sys.exit(1)
@@ -140,8 +135,7 @@ class TcExBin(object):
         Returns:
             dict: A dictionary containing the install.json input params with name as key.
         """
-
-        if self._install_json_params is None:
+        if self._install_json_params is None or ij is not None:
             self._install_json_params = {}
             # TODO: support for projects with multiple install.json files is not supported
             if ij is None:
@@ -159,8 +153,7 @@ class TcExBin(object):
         Returns:
             dict: A dictionary containing the install.json output variables with name as key.
         """
-
-        if self._install_json_output_variables is None:
+        if self._install_json_output_variables is None or ij is not None:
             self._install_json_output_variables = {}
             # TODO: support for projects with multiple install.json files is not supported
             if ij is None:
@@ -187,7 +180,6 @@ class TcExBin(object):
     @property
     def layout_json_params(self):
         """Return layout.json params in a flattened dict with name param as key."""
-
         if self._layout_json_params is None:
             self._layout_json_params = {}
             for i in self.layout_json.get('inputs', []):
@@ -198,7 +190,6 @@ class TcExBin(object):
     @property
     def layout_json_names(self):
         """Return layout.json names."""
-
         if self._layout_json_names is None:
             self._layout_json_names = self.layout_json_params.keys()
         return self._layout_json_names
@@ -231,7 +222,6 @@ class TcExBin(object):
     @property
     def redis(self):
         """Return instance of Redis."""
-
         if self._redis is None:
             self._redis = redis.StrictRedis(host=self.args.redis_host, port=self.args.redis_port)
         return self._redis

@@ -579,8 +579,8 @@ class TcExProfile(TcExBin):
         Args:
             profile (dict): The dictionary containting the profile settings.
         """
-
         ij = self.load_install_json(profile.get('install_json', 'install.json'))
+        ijp = self.install_json_params(ij)
 
         if (
             profile.get('args', {}).get('app', {}).get('optional') is None
@@ -591,7 +591,6 @@ class TcExProfile(TcExBin):
             profile['args']['app']['optional'] = {}
             profile['args']['app']['required'] = {}
             for arg in self.profile_settings_args_install_json(ij, None):
-                ijp = self.install_json_params(ij)
                 required = ijp.get(arg).get('required', False)
 
                 try:

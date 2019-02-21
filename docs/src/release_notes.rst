@@ -6,6 +6,10 @@ Release Notes
 0.9.x
 =====
 
+0.9.8
+-----
++ Updated ``tcprofile`` to better support App bundle projects.
+
 0.9.7
 -----
 + Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of space.
