@@ -183,6 +183,8 @@ class TcExPackage(TcExBin):
             '.c9',  # C9 IDE
             '.git',  # git directory
             '.gitmodules',  # git modules
+            '.idea',  # PyCharm
+            '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code

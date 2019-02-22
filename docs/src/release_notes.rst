@@ -6,6 +6,10 @@ Release Notes
 0.9.x
 =====
 
+0.9.9
+-----
++ Updated App templates ignore/exclude definitions.
+
 0.9.8
 -----
 + Fixed issue with ``sqlite`` being imported while not required for Apps.
