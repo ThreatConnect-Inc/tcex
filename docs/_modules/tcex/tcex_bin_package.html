@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_package &mdash; TcEx 0.9.8 documentation</title>
+  <title>tcex.tcex_bin_package &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.8
+                0.9.9
               </div>
 
 
@@ -359,6 +359,8 @@
             <span class="s1">&#39;.c9&#39;</span><span class="p">,</span>  <span class="c1"># C9 IDE</span>
             <span class="s1">&#39;.git&#39;</span><span class="p">,</span>  <span class="c1"># git directory</span>
             <span class="s1">&#39;.gitmodules&#39;</span><span class="p">,</span>  <span class="c1"># git modules</span>
+            <span class="s1">&#39;.idea&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm</span>
+            <span class="s1">&#39;*.iml&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm files</span>
             <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
             <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
             <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
@@ -440,7 +442,8 @@
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
 
             <span class="c1"># Update commit hash after install.json has been copied.</span>
-            <span class="n">ij</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ij</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">),</span> <span class="n">ij</span><span class="p">)</span>
 
             <span class="c1"># update package data</span>

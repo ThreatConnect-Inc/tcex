@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex module &mdash; TcEx 0.9.8 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.8
+                0.9.9
               </div>
 
 
@@ -349,6 +349,34 @@ tcex.resource(‘&lt;resource name&gt;’).</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="tcex.tcex.TcEx.cache">
+<code class="descname">cache</code><span class="sig-paren">(</span><em>domain</em>, <em>data_type</em>, <em>ttl_minutes=None</em>, <em>mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get instance of the Cache module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
+“organization” the data store can be accessed by any Application in the entire org,
+while “local” access is restricted to the App writing the data. The “system” option
+should not be used in almost all cases.</li>
+<li><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</li>
+<li><strong>ttl_minutes</strong> (<em>int</em>) – The number of minutes the cache is valid.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of the Cache Class.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="tcex.tcex.TcEx.data_filter">
 <code class="descname">data_filter</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.data_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.data_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of the Data Filter Class.</p>
@@ -365,6 +393,33 @@ results required.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of DataFilter Class</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(object)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex.TcEx.datastore">
+<code class="descname">datastore</code><span class="sig-paren">(</span><em>domain</em>, <em>data_type</em>, <em>mapping=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.datastore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.datastore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get instance of the DataStore module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>domain</strong> (<em>str</em>) – The domain can be either “system”, “organization”, or “local”. When using
+“organization” the data store can be accessed by any Application in the entire org,
+while “local” access is restricted to the App writing the data. The “system” option
+should not be used in almost all cases.</li>
+<li><strong>data_type</strong> (<em>str</em>) – The data type descriptor (e.g., tc:whois:cache).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An instance of the DataStore Class.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
 </tr>
 </tbody>
 </table>
