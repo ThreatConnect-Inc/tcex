@@ -363,6 +363,24 @@ class TcEx(object):
             self, owner, action, attribute_write_type, halt_on_error, playbook_triggers_enabled
         )
 
+    def cache(self, domain, data_type, ttl_minutes=None, mapping=None):
+        """Get instance of the Cache module.
+
+        Args:
+            domain (str): The domain can be either "system", "organization", or "local". When using
+                "organization" the data store can be accessed by any Application in the entire org,
+                while "local" access is restricted to the App writing the data. The "system" option
+                should not be used in almost all cases.
+            data_type (str): The data type descriptor (e.g., tc:whois:cache).
+            ttl_minutes (int): The number of minutes the cache is valid.
+
+        Returns:
+            object: An instance of the Cache Class.
+        """
+        from .tcex_cache import TcExCache
+
+        return TcExCache(self, domain, data_type, ttl_minutes, mapping)
+
     # TODO: remove this method and use JMESPath instead.
     def data_filter(self, data):
         """Return an instance of the Data Filter Class.
@@ -385,6 +403,23 @@ class TcEx(object):
         except ImportError as e:
             warn = u'Required Module is not installed ({}).'.format(e)
             self.log.warning(warn)
+
+    def datastore(self, domain, data_type, mapping=None):
+        """Get instance of the DataStore module.
+
+        Args:
+            domain (str): The domain can be either "system", "organization", or "local". When using
+                "organization" the data store can be accessed by any Application in the entire org,
+                while "local" access is restricted to the App writing the data. The "system" option
+                should not be used in almost all cases.
+            data_type (str): The data type descriptor (e.g., tc:whois:cache).
+
+        Returns:
+            object: An instance of the DataStore Class.
+        """
+        from .tcex_datastore import TcExDataStore
+
+        return TcExDataStore(self, domain, data_type, mapping)
 
     @property
     def default_args(self):

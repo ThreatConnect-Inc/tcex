@@ -9,7 +9,12 @@ import os
 import sys
 import traceback
 from collections import deque
-import pkg_resources
+
+try:
+    import pkg_resources
+except PermissionError:
+    # this module is only required for certain CLI commands
+    pass
 
 try:
     import sqlite3
@@ -49,12 +54,18 @@ class TcExValidate(TcExBin):
         self._install_json_schema = None
         self._layout_json_schema = None
         self.config = {}
-        self.install_json_schema_file = pkg_resources.resource_filename(
-            __name__, '/'.join(['schema', 'install-json-schema.json'])
-        )
-        self.layout_json_schema_file = pkg_resources.resource_filename(
-            __name__, '/'.join(['schema', 'layout-json-schema.json'])
-        )
+
+        if 'pkg_resources' in sys.modules:
+            # only set these if pkg_resource module is available
+            self.install_json_schema_file = pkg_resources.resource_filename(
+                __name__, '/'.join(['schema', 'install-json-schema.json'])
+            )
+            self.layout_json_schema_file = pkg_resources.resource_filename(
+                __name__, '/'.join(['schema', 'layout-json-schema.json'])
+            )
+        else:
+            self.install_json_schema_file = None
+            self.layout_json_schema_file = None
         self.validation_data = self._validation_data
 
     @property
@@ -185,10 +196,12 @@ class TcExValidate(TcExBin):
 
     def check_install_json(self):
         """Check all install.json files for valid schema."""
+        if self.install_json_schema is None:
+            return
+
+        contents = os.listdir(self.app_path)
         if self.args.install_json is not None:
             contents = [self.args.install_json]
-        else:
-            contents = os.listdir(self.app_path)
 
         for install_json in sorted(contents):
             # skip files that are not install.json files
@@ -385,7 +398,7 @@ class TcExValidate(TcExBin):
     @property
     def install_json_schema(self):
         """Load install.json schema file."""
-        if self._install_json_schema is None:
+        if self._install_json_schema is None and self.install_json_schema_file is not None:
             # remove old schema file
             if os.path.isfile('tcex_json_schema.json'):
                 # this file is now part of tcex.
@@ -415,7 +428,7 @@ class TcExValidate(TcExBin):
     @property
     def layout_json_schema(self):
         """Load layout.json schema file."""
-        if self._layout_json_schema is None:
+        if self._layout_json_schema is None and self.layout_json_schema_file is not None:
             if os.path.isfile(self.layout_json_schema_file):
                 with open(self.layout_json_schema_file) as fh:
                     self._layout_json_schema = json.load(fh)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" TcEx Metrics Module """
+"""TcEx Framework Module for working with Metrics in the ThreatConnect Platform."""
 
 
 class TcExMetricsV2(object):

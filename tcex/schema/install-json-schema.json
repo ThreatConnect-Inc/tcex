@@ -10,6 +10,9 @@
     "apiUserTokenParam": {
       "type": "boolean"
     },
+    "commitHash": {
+      "type": "string"
+    },
     "displayName": {
       "type": "string"
     },

@@ -32,6 +32,7 @@ class TcExPlaybook(object):
 
     def _parse_out_variable(self):
         """Internal method to parse the tc_playbook_out_variable arg.
+
         **Example Variable Format**::
 
             #App:1234:status!String,#App:1234:status_code!String

@@ -39,6 +39,9 @@ class TcExErrorCodes(object):
             705: 'Error while finding metric by name. API status code: {}, API message: {}.',
             710: 'Failed to add metric data. API status code: {}, API message: {}.',
             715: 'No metric ID found for "{}".',
+            # datastore
+            800: 'Failed to create index. API status code: {}, API message: {}.',
+            805: 'Failed to {} record data. API status code: {}, API message: {}.',
             # batch v2 critical: 1500-1600
             1500: 'Critical batch error ({}).',
             1505: 'Failed submitting batch job requests ({}).',

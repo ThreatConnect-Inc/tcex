@@ -8,7 +8,13 @@ Release Notes
 
 0.9.9
 -----
++ Added new ``cache`` module.
++ Added new ``datastore`` module.
 + Updated App templates ignore/exclude definitions.
++ Updated ``tcprofile`` permutation_id to handle 0 index.
++ Updated ``tcpackage`` command to not add commitHash if value is None.
++ Updated ``tcvalidate`` command to handle permission error when using pkg_resources.
++ Updated install.json schema to include commitHash.
 
 0.9.8
 -----

@@ -266,7 +266,8 @@ class TcExPackage(TcExBin):
             shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
 
             # Update commit hash after install.json has been copied.
-            ij.setdefault('commitHash', self.commit_hash)
+            if self.commit_hash is not None:
+                ij.setdefault('commitHash', self.commit_hash)
             self._write_install_json(os.path.join(tmp_app_path, 'install.json'), ij)
 
             # update package data

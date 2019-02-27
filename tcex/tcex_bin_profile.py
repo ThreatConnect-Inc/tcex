@@ -318,7 +318,7 @@ class TcExProfile(TcExBin):
         Returns:
             dict: Dictionary of required or optional App args.
         """
-        if self.args.permutation_id:
+        if self.args.permutation_id is not None:
             if 'sqlite3' not in sys.modules:
                 print('The sqlite3 module needs to be build-in to Python for this feature.')
                 sys.exit(1)
