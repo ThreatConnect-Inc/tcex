@@ -6,6 +6,10 @@ Release Notes
 0.9.x
 =====
 
+0.9.10
+------
++ Updated App templates to call ``parse_args()`` from init method.
+
 0.9.9
 -----
 + Added new ``cache`` module.

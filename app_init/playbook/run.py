@@ -51,9 +51,6 @@ if __name__ == '__main__':
         # load App class
         app = App(tcex)
 
-        # parse args
-        app.parse_args()
-
         # perform prep/startup operations
         app.start()
 
