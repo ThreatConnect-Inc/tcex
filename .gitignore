@@ -46,6 +46,7 @@ nbproject
 __main__.py
 lib*
 *.log
+local-*
 log
 requirements.txt
 tcex.json
@@ -56,4 +57,3 @@ threatconnect*
 #-------------------------------------------------
 # Other Nonsense
 #-------------------------------------------------
-bcs*

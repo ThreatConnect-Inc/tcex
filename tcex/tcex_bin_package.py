@@ -5,67 +5,50 @@ import json
 import os
 import re
 import shutil
-import sys
 import zipfile
 from builtins import range
-from collections import OrderedDict
 
 import colorama as c
 
+from .tcex_bin import TcExBin
 
-class TcExPackage(object):
-    """Package the App for deployment.
+
+class TcExPackage(TcExBin):
+    """Package ThreatConnect Job or Playbook App for deployment.
 
     This method will package the app for deployment to ThreatConnect. Validation of the
     install.json file or files will be automatically run before packaging the app.
+
+    Args:
+        _args (namespace): The argparser args Namespace.
     """
 
     def __init__(self, _args):
-        """Init Class properties."""
-        self.args = _args
-        self.app_path = os.getcwd()
-        self.exit_code = 0
-        self.features = ['secureParams', 'aotExecutionEnabled']
+        """Initialize Class properties.
 
-        # defaults
+        Args:
+            _args (namespace): The argparser args Namespace.
+        """
+        super(TcExPackage, self).__init__(_args)
+
+        # properties
+        self.features = ['aotExecutionEnabled', 'secureParams']
+
+        # properties
         self._app_packages = []
-        self.config = {}
         self.package_data = {'errors': [], 'updates': [], 'bundle': [], 'package': []}
         self.validation_data = {}
 
-        # initialize colorama
-        c.init(autoreset=True, strip=False)
-
-        # load config
-        self._load_config()
-
-    def _load_config(self):
-        """Load the tcex.conf file."""
-        # load config
-        if os.path.isfile(self.args.config):
-            with open(self.args.config, 'r') as fh:
-                try:
-                    self.config = json.load(fh).get('package', {})
-                except ValueError as e:
-                    err = 'Invalid JSON File ({}).'.format(e)
-                    # update package data
-                    print('{}{}({})'.format(c.Style.BRIGHT, c.Fore.RED, err))
-                    sys.exit(1)
-
-    def _load_install_json(self, file):
-        """Load install.json file."""
-        install_data = {}
-        if os.path.isfile(file):
-            with open(file) as fh:
-                install_data = json.load(fh, object_pairs_hook=OrderedDict)
-        else:
-            # update package data
-            self.package_data['errors'].append('Could not load {} file.'.format(file))
-
-        return install_data
-
     def _update_install_json(self, install_json):
-        """Write install.json file."""
+        """Write install.json file.
+
+        Args:
+            install_json (dict): The contents of the install.json file.
+
+        Returns:
+            dict, bool: The contents of the install.json file and boolean value that is True if
+                an update was made.
+        """
         updated = False
         # Update features
         install_json.setdefault('features', [])
@@ -81,7 +64,15 @@ class TcExPackage(object):
         return install_json, updated
 
     def _write_install_json(self, filename, install_json):
-        """Write install.json file."""
+        """Write install.json file.
+
+        Some projects have bundles App with multiple install.json files.  Typically these files are
+        prefixed with the App name (e.g., MyApp.install.json).
+
+        Args:
+            filename (str): The install.json file name.
+            install_json (dict): The contents of the install.json file.
+        """
         # TODO: why check if it exists?
         if os.path.isfile(filename):
             with open(filename, 'w') as fh:
@@ -92,10 +83,14 @@ class TcExPackage(object):
             self.package_data['errors'].append(err)
 
     def bundle(self, bundle_name):
-        """Bundle Apps."""
-        if self.args.bundle or self.config.get('bundle', False):
-            if self.config.get('bundle_packages') is not None:
-                for bundle in self.config.get('bundle_packages') or []:
+        """Bundle multiple Job or Playbook Apps into a single zip file.
+
+        Args:
+            bundle_name (str): The output name of the bundle zip file.
+        """
+        if self.args.bundle or self.tcex_json.get('package', {}).get('bundle', False):
+            if self.tcex_json.get('package', {}).get('bundle_packages') is not None:
+                for bundle in self.tcex_json.get('package', {}).get('bundle_packages') or []:
                     bundle_name = bundle.get('name')
                     bundle_patterns = bundle.get('patterns')
 
@@ -113,7 +108,12 @@ class TcExPackage(object):
                 self.bundle_apps(bundle_name, self._app_packages)
 
     def bundle_apps(self, bundle_name, bundle_apps):
-        """Bundle zip (tcx) file."""
+        """Bundle multiple Job or Playbook Apps (.tcx files) into a single zip file.
+
+        Args:
+            bundle_name (str): The output name of the bundle zip file.
+            bundle_apps (list): A list of Apps to include in the bundle.
+        """
         bundle_file = os.path.join(
             self.app_path, self.args.outdir, '{}-bundle.zip'.format(bundle_name)
         )
@@ -177,19 +177,21 @@ class TcExPackage(object):
 
         # build exclude file/directory list
         excludes = [
-            self.args.config,
+            'tcex.json',
             self.args.outdir,
             '__pycache__',
             '.c9',  # C9 IDE
             '.git',  # git directory
             '.gitmodules',  # git modules
+            '.idea',  # PyCharm
+            '*.iml',  # PyCharm files
             '*.pyc',  # any pyc file
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
             'log',  # log directory
         ]
         excludes.extend(self.args.exclude)
-        excludes.extend(self.config.get('excludes', []))
+        excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))
         # update package data
         self.package_data['package'].append({'action': 'Excluded Files:', 'output': excludes})
 
@@ -211,7 +213,9 @@ class TcExPackage(object):
 
             # get App Name from config, install.json prefix or directory name.
             if install_json == 'install.json':
-                app_name = self.config.get('app_name', os.path.basename(self.app_path))
+                app_name = self.tcex_json.get('package', {}).get(
+                    'app_name', os.path.basename(self.app_path)
+                )
             else:
                 app_name = install_json.split('.')[0]
 
@@ -219,7 +223,7 @@ class TcExPackage(object):
             self.package_data['package'].append({'action': 'App Name:', 'output': app_name})
 
             # load install json
-            ij = self._load_install_json(install_json)
+            ij = self.load_install_json(install_json)
 
             # automatically update install.json for feature sets supported by the SDK
             ij, ij_modified = self._update_install_json(ij)
@@ -236,7 +240,9 @@ class TcExPackage(object):
             except IndexError:
                 minor_version = 0
             app_version = '{}'.format(
-                self.config.get('app_version', 'v{}.{}'.format(major_version, minor_version))
+                self.tcex_json.get('package', {}).get(
+                    'app_version', 'v{}.{}'.format(major_version, minor_version)
+                )
             )
 
             # update package data
@@ -260,7 +266,8 @@ class TcExPackage(object):
             shutil.copy(install_json, os.path.join(tmp_app_path, 'install.json'))
 
             # Update commit hash after install.json has been copied.
-            ij.setdefault('commitHash', self.commit_hash)
+            if self.commit_hash is not None:
+                ij.setdefault('commitHash', self.commit_hash)
             self._write_install_json(os.path.join(tmp_app_path, 'install.json'), ij)
 
             # update package data
@@ -276,16 +283,16 @@ class TcExPackage(object):
 
         # bundle zips (must have more than 1 app)
         if len(self._app_packages) > 1:
-            self.bundle(self.config.get('bundle_name', app_name))
+            self.bundle(self.tcex_json.get('package', {}).get('bundle_name', app_name))
 
     def print_json(self):
-        """Print JSON output."""
+        """Print JSON output containing results of the package command."""
         print(
             json.dumps({'package_data': self.package_data, 'validation_data': self.validation_data})
         )
 
     def print_results(self):
-        """Print results."""
+        """Print results of the package command."""
         # Updates
         if self.package_data.get('updates'):
             print('\n{}{}Updates:'.format(c.Style.BRIGHT, c.Fore.BLUE))
@@ -342,28 +349,14 @@ class TcExPackage(object):
                 print('{}{}'.format(c.Fore.RED, error))
                 self.exit_code = 1
 
-    @staticmethod
-    def update_system_path():
-        """Update the system path to ensure project modules and dependencies can be found."""
-        cwd = os.getcwd()
-        lib_dir = os.path.join(os.getcwd(), 'lib_')
-        lib_latest = os.path.join(os.getcwd(), 'lib_latest')
-
-        # insert the lib_latest directory into the system Path if no other lib directory found. This
-        # entry will be bumped to index 1 after adding the current working directory.
-        if not [p for p in sys.path if lib_dir in p]:
-            sys.path.insert(0, lib_latest)
-
-        # insert the current working directory into the system Path for the App, ensuring that it is
-        # always the first entry in the list.
-        try:
-            sys.path.remove(cwd)
-        except ValueError:
-            pass
-        sys.path.insert(0, cwd)
-
     def zip_file(self, app_path, app_name, tmp_path):
-        """Zip the App with tcex extension."""
+        """Zip the App with tcex extension.
+
+        Args:
+            app_path (str): The path of the current project.
+            app_name (str): The name of the App.
+            tmp_path (str): The temp output path for the zip.
+        """
         # zip build directory
         zip_file = os.path.join(app_path, self.args.outdir, app_name)
         zip_file_zip = '{}.zip'.format(zip_file)

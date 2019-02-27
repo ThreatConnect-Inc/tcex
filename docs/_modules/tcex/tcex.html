@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 0.9.3 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.3
+                0.9.9
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -538,6 +539,24 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">attribute_write_type</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">,</span> <span class="n">playbook_triggers_enabled</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcEx.cache"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.cache">[docs]</a>    <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of the Cache module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            domain (str): The domain can be either &quot;system&quot;, &quot;organization&quot;, or &quot;local&quot;. When using</span>
+<span class="sd">                &quot;organization&quot; the data store can be accessed by any Application in the entire org,</span>
+<span class="sd">                while &quot;local&quot; access is restricted to the App writing the data. The &quot;system&quot; option</span>
+<span class="sd">                should not be used in almost all cases.</span>
+<span class="sd">            data_type (str): The data type descriptor (e.g., tc:whois:cache).</span>
+<span class="sd">            ttl_minutes (int): The number of minutes the cache is valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            object: An instance of the Cache Class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.tcex_cache</span> <span class="k">import</span> <span class="n">TcExCache</span>
+
+        <span class="k">return</span> <span class="n">TcExCache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">ttl_minutes</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
+
     <span class="c1"># TODO: remove this method and use JMESPath instead.</span>
 <div class="viewcode-block" id="TcEx.data_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.data_filter">[docs]</a>    <span class="k">def</span> <span class="nf">data_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an instance of the Data Filter Class.</span>
@@ -560,6 +579,23 @@
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">warn</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Required Module is not installed (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TcEx.datastore"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.datastore">[docs]</a>    <span class="k">def</span> <span class="nf">datastore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get instance of the DataStore module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            domain (str): The domain can be either &quot;system&quot;, &quot;organization&quot;, or &quot;local&quot;. When using</span>
+<span class="sd">                &quot;organization&quot; the data store can be accessed by any Application in the entire org,</span>
+<span class="sd">                while &quot;local&quot; access is restricted to the App writing the data. The &quot;system&quot; option</span>
+<span class="sd">                should not be used in almost all cases.</span>
+<span class="sd">            data_type (str): The data type descriptor (e.g., tc:whois:cache).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            object: An instance of the DataStore Class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.tcex_datastore</span> <span class="k">import</span> <span class="n">TcExDataStore</span>
+
+        <span class="k">return</span> <span class="n">TcExDataStore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">mapping</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">default_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -878,29 +914,22 @@
                 <span class="n">tc_proxy_username</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_username</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
                 <span class="n">tc_proxy_password</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_password</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
 
-                <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">tc_proxy_username</span><span class="p">,</span>
-                        <span class="n">tc_proxy_password</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">,</span>
-                    <span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">tc_proxy_username</span><span class="p">,</span>
-                        <span class="n">tc_proxy_password</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">,</span>
-                    <span class="p">),</span>
-                <span class="p">}</span>
+                <span class="c1"># proxy url with auth</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">@</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">tc_proxy_username</span><span class="p">,</span>
+                    <span class="n">tc_proxy_password</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                    <span class="p">),</span>
-                    <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
-                    <span class="p">),</span>
-                <span class="p">}</span>
+                <span class="c1"># proxy url without auth</span>
+                <span class="n">proxy_url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
+                <span class="p">)</span>
+            <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">),</span>
+                <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">proxy_url</span><span class="p">),</span>
+            <span class="p">}</span>
         <span class="k">return</span> <span class="n">proxies</span>
 
 <div class="viewcode-block" id="TcEx.request"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.request">[docs]</a>    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

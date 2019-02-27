@@ -191,15 +191,13 @@ class TcExArgs(object):
 
             if isinstance(value, (bool)):
                 # handle bool values as flags (e.g., --flag) with no value
-                if value:
+                if value is True:
                     sys.argv.append(cli_arg)
             elif isinstance(value, (list)):
                 for mcv in value:
-                    sys.argv.append(cli_arg)
-                    sys.argv.append('{}'.format(mcv))
+                    sys.argv.append('{}={}'.format(cli_arg, mcv))
             else:
-                sys.argv.append(cli_arg)
-                sys.argv.append('{}'.format(value))
+                sys.argv.append('{}={}'.format(cli_arg, value))
 
         # reset default_args now that values have been injected into sys.argv
         self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612

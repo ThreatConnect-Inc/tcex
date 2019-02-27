@@ -1,107 +1,76 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """TcEx Framework Validate Module."""
-import argparse
 import ast
 import imp
 import importlib
 import json
 import os
-import sqlite3
 import sys
 import traceback
 from collections import deque
-import pkg_resources
+
+try:
+    import pkg_resources
+except PermissionError:
+    # this module is only required for certain CLI commands
+    pass
+
+try:
+    import sqlite3
+except ModuleNotFoundError:
+    # this module is only required for certain CLI commands
+    pass
 
 import colorama as c
 from jsonschema import SchemaError, ValidationError, validate
 from stdlib_list import stdlib_list
 
-# Python 2 unicode
-if sys.version_info[0] == 2:
-    reload(sys)  # noqa: F821; pylint: disable=E0602
-    sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--ignore_validation', action='store_true', help='Do not exit on validation errors.'
-)
-parser.add_argument('--install_json', help='The install.json file to user during validation.')
-parser.add_argument('--interactive', action='store_true', help='Keep running and listen for stdin.')
-parser.add_argument('--json_output', action='store_true', help='Do not exit on validation errors.')
-args, extra_args = parser.parse_known_args()
+from .tcex_bin import TcExBin
 
 
-class TcExValidate(object):
+class TcExValidate(TcExBin):
     """Validate syntax, imports, and schemas.
 
     * Python and JSON file syntax
     * Python import modules
     * install.json schema
     * layout.json schema
+
+    Args:
+        _args (namespace): The argparser args Namespace.
     """
 
     def __init__(self, _args):
-        """Init Class properties."""
-        # params
-        self.args = _args
+        """Init Class properties.
+
+        Args:
+            _args (namespace): The argparser args Namespace.
+        """
+        super(TcExValidate, self).__init__(_args)
 
         # class properties
         self._app_packages = []
         self._install_json_schema = None
         self._layout_json_schema = None
-        self.app_path = os.getcwd()
         self.config = {}
-        self.exit_code = 0
-        self.install_json_schema_file = pkg_resources.resource_filename(
-            __name__, '/'.join(['schema', 'install-json-schema.json'])
-        )
-        self.layout_json_schema_file = pkg_resources.resource_filename(
-            __name__, '/'.join(['schema', 'layout-json-schema.json'])
-        )
+
+        if 'pkg_resources' in sys.modules:
+            # only set these if pkg_resource module is available
+            self.install_json_schema_file = pkg_resources.resource_filename(
+                __name__, '/'.join(['schema', 'install-json-schema.json'])
+            )
+            self.layout_json_schema_file = pkg_resources.resource_filename(
+                __name__, '/'.join(['schema', 'layout-json-schema.json'])
+            )
+        else:
+            self.install_json_schema_file = None
+            self.layout_json_schema_file = None
         self.validation_data = self._validation_data
-
-        # initialize colorama
-        c.init(autoreset=True, strip=False)
-
-    @staticmethod
-    def _create_connection():
-        """Create a temporary in memory DB and return the connection."""
-
-        conn = None
-        try:
-            conn = sqlite3.connect(':memory:')
-        except sqlite3.Error as e:
-            sys.exit(1, e)
-
-        return conn
-
-    @staticmethod
-    def _create_table(conn, table_name, columns):
-        """Create a temporary DB table.
-
-        Arguments:
-            conn (object): DB Connection
-            table_name (str): The name of the table.
-            columns (list): List of columns to add to the DB.
-        """
-
-        formatted_columns = ''
-        for col in set(columns):
-            formatted_columns += '"{}" text NOT NULL, '.format(col)
-        formatted_columns = formatted_columns.strip(', ')
-
-        create_table_sql = 'CREATE TABLE IF NOT EXISTS {} ({});'.format(
-            table_name, formatted_columns
-        )
-        try:
-            cr = conn.cursor()
-            cr.execute(create_table_sql)
-        except sqlite3.Error as e:
-            sys.exit(1, e)
 
     @property
     def _validation_data(self):
+        """Return structure for validation data."""
         return {'errors': [], 'fileSyntax': [], 'layouts': [], 'moduleImports': [], 'schema': []}
 
     def check_imports(self):
@@ -169,7 +138,14 @@ class TcExValidate(object):
 
     @staticmethod
     def check_import_stdlib(module):
-        """Check if module is in Python stdlib."""
+        """Check if module is in Python stdlib.
+
+        Args:
+            module (str): The name of the module to check.
+
+        Returns:
+            bool: Returns True if the module is in the stdlib or template.
+        """
         if (
             module in stdlib_list('2.7')  # pylint: disable=R0916
             or module in stdlib_list('3.4')
@@ -190,9 +166,7 @@ class TcExValidate(object):
 
         Returns:
             bool: True if the module can be imported, False otherwise.
-
         """
-
         imported = True
         module_info = ('', '', '')
         # TODO: if possible, update to a cleaner method that doesn't require importing the module
@@ -222,14 +196,12 @@ class TcExValidate(object):
 
     def check_install_json(self):
         """Check all install.json files for valid schema."""
-        # the install.json files can't be validates if the schema file is not present
         if self.install_json_schema is None:
             return
 
+        contents = os.listdir(self.app_path)
         if self.args.install_json is not None:
             contents = [self.args.install_json]
-        else:
-            contents = os.listdir(self.app_path)
 
         for install_json in sorted(contents):
             # skip files that are not install.json files
@@ -240,6 +212,7 @@ class TcExValidate(object):
             status = True
 
             try:
+                # loading explicitly here to keep all error catching in this file
                 with open(install_json) as fh:
                     data = json.loads(fh.read())
                 validate(data, self.install_json_schema)
@@ -272,6 +245,7 @@ class TcExValidate(object):
         error = None
         status = True
         try:
+            # loading explicitly here to keep all error catching in this file
             with open(layout_json_file) as fh:
                 data = json.loads(fh.read())
             validate(data, self.layout_json_schema)
@@ -294,16 +268,14 @@ class TcExValidate(object):
                 'Schema validation failed for {} ({}).'.format(layout_json_file, error)
             )
         else:
-            self.check_layout_params(data)
+            self.check_layout_params()
 
-    def check_layout_params(self, layout_json_data):
+    def check_layout_params(self):
         """Check that the layout.json is consistent with install.json.
 
         The layout.json files references the params.name from the install.json file.  The method
         will validate that no reference appear for inputs in install.json that don't exist.
-
         """
-        conn = self._create_connection()
 
         ij_input_names = []
         ij_output_names = []
@@ -319,13 +291,13 @@ class TcExValidate(object):
                 # checking parameters isn't possible if install.json can't be parsed
                 return
 
-        # create temporary inputs tables
-        input_table = 'inputs'
-        self._create_table(conn, input_table, ij_input_names)
+        if 'sqlite3' in sys.modules:
+            # create temporary inputs tables
+            self.db_create_table(self.input_table, ij_input_names)
 
         # inputs
         status = True
-        for i in layout_json_data.get('inputs', []):
+        for i in self.layout_json.get('inputs', []):
             for p in i.get('parameters'):
                 if p.get('name') not in ij_input_names:
                     # update validation data errors
@@ -335,29 +307,26 @@ class TcExValidate(object):
                     )
                     status = False
 
-                if p.get('display'):
-                    display_query = 'select * from {} where {}'.format(
-                        input_table, p.get('display')
-                    )
-                    try:
-                        conn.execute(display_query)
-                    except sqlite3.Error:
-                        self.validation_data['errors'].append(
-                            'Layouts input.parameters[].display validations failed ("{}" query is '
-                            'an invalid statement).'.format(p.get('display'))
+                if 'sqlite3' in sys.modules:
+                    if p.get('display'):
+                        display_query = 'SELECT * FROM {} WHERE {}'.format(
+                            self.input_table, p.get('display')
                         )
-                        status = False
+                        try:
+                            self.db_conn.execute(display_query.replace('"', ''))
+                        except sqlite3.Error:
+                            self.validation_data['errors'].append(
+                                'Layouts input.parameters[].display validations failed ("{}" query '
+                                'is an invalid statement).'.format(p.get('display'))
+                            )
+                            status = False
 
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'inputs', 'status': status})
 
-        # # create temporary outputs tables
-        output_table = 'outputs'
-        self._create_table(conn, output_table, ij_output_names)
-
         # outputs
         status = True
-        for o in layout_json_data.get('outputs', []):
+        for o in self.layout_json.get('outputs', []):
             if o.get('name') not in ij_output_names:
                 # update validation data errors
                 self.validation_data['errors'].append(
@@ -366,21 +335,22 @@ class TcExValidate(object):
                 )
                 status = False
 
-            if o.get('display'):
-                display_query = 'select * from {} where {}'.format(output_table, o.get('display'))
-                try:
-                    conn.execute(display_query)
-                except sqlite3.Error:
-                    self.validation_data['errors'].append(
-                        'Layouts outputs.display validations failed ("{}" query is '
-                        'an invalid statement).'.format(o.get('display'))
+            if 'sqlite3' in sys.modules:
+                if o.get('display'):
+                    display_query = 'SELECT * FROM {} WHERE {}'.format(
+                        self.input_table, o.get('display')
                     )
-                    status = False
+                    try:
+                        self.db_conn.execute(display_query.replace('"', ''))
+                    except sqlite3.Error:
+                        self.validation_data['errors'].append(
+                            'Layouts outputs.display validations failed ("{}" query is '
+                            'an invalid statement).'.format(o.get('display'))
+                        )
+                        status = False
 
         # update validation data for module
         self.validation_data['layouts'].append({'params': 'outputs', 'status': status})
-
-        # self.check_layout_sql(layout_json_data, ij_input_names, ij_output_names)
 
     def check_syntax(self, app_path=None):
         """Run syntax on each ".py" and ".json" file.
@@ -388,7 +358,6 @@ class TcExValidate(object):
         Args:
             app_path (str, optional): Defaults to None. The path of Python files.
         """
-
         app_path = app_path or '.'
 
         for filename in sorted(os.listdir(app_path)):
@@ -411,7 +380,7 @@ class TcExValidate(object):
                     with open(filename, 'r') as fh:
                         json.load(fh)
                 except ValueError as e:
-                    status = True
+                    status = False
                     error = e
             else:
                 # skip unsupported file types
@@ -425,6 +394,20 @@ class TcExValidate(object):
 
             # store status for this file
             self.validation_data['fileSyntax'].append({'filename': filename, 'status': status})
+
+    @property
+    def install_json_schema(self):
+        """Load install.json schema file."""
+        if self._install_json_schema is None and self.install_json_schema_file is not None:
+            # remove old schema file
+            if os.path.isfile('tcex_json_schema.json'):
+                # this file is now part of tcex.
+                os.remove('tcex_json_schema.json')
+
+            if os.path.isfile(self.install_json_schema_file):
+                with open(self.install_json_schema_file) as fh:
+                    self._install_json_schema = json.load(fh)
+        return self._install_json_schema
 
     def interactive(self):
         """Run in interactive mode."""
@@ -445,7 +428,7 @@ class TcExValidate(object):
     @property
     def layout_json_schema(self):
         """Load layout.json schema file."""
-        if self._layout_json_schema is None:
+        if self._layout_json_schema is None and self.layout_json_schema_file is not None:
             if os.path.isfile(self.layout_json_schema_file):
                 with open(self.layout_json_schema_file) as fh:
                     self._layout_json_schema = json.load(fh)
@@ -454,22 +437,6 @@ class TcExValidate(object):
     def print_json(self):
         """Print JSON output."""
         print(json.dumps({'validation_data': self.validation_data}))
-
-    @staticmethod
-    def status_color(status):
-        """Return the appropriate status color."""
-        status_color = c.Fore.GREEN
-        if not status:
-            status_color = c.Fore.RED
-        return status_color
-
-    @staticmethod
-    def status_value(status):
-        """Return the appropriate status color."""
-        status_value = 'passed'
-        if not status:
-            status_value = 'failed'
-        return status_value
 
     def print_results(self):
         """Print results."""
@@ -515,45 +482,28 @@ class TcExValidate(object):
                 status_value = self.status_value(f.get('status'))
                 print('{!s:<60}{}{!s:<25}'.format(f.get('params'), status_color, status_value))
 
-        # ignore exit code
-        if not self.args.ignore_validation:
-            if self.validation_data.get('errors'):
-                print('\n')  # separate errors from normal output
+        if self.validation_data.get('errors'):
+            print('\n')  # separate errors from normal output
+        for error in self.validation_data.get('errors'):
             # print all errors
-            for error in self.validation_data.get('errors'):
-                print('* {}{}'.format(c.Fore.RED, error))
+            print('* {}{}'.format(c.Fore.RED, error))
+
+            # ignore exit code
+            if not self.args.ignore_validation:
                 self.exit_code = 1
 
-    @property
-    def install_json_schema(self):
-        """Load install.json schema file."""
-        if self._install_json_schema is None:
-            # rename old schema file
-            if os.path.isfile('tcex_json_schema.json'):
-                # this file is not part of tcex.
-                os.remove(self.install_json_schema_file)
-
-            if os.path.isfile(self.install_json_schema_file):
-                with open(self.install_json_schema_file) as fh:
-                    self._install_json_schema = json.load(fh)
-        return self._install_json_schema
+    @staticmethod
+    def status_color(status):
+        """Return the appropriate status color."""
+        status_color = c.Fore.GREEN
+        if not status:
+            status_color = c.Fore.RED
+        return status_color
 
     @staticmethod
-    def update_system_path():
-        """Update the system path to ensure project modules and dependencies can be found."""
-        cwd = os.getcwd()
-        lib_dir = os.path.join(os.getcwd(), 'lib_')
-        lib_latest = os.path.join(os.getcwd(), 'lib_latest')
-
-        # insert the lib_latest directory into the system Path if no other lib directory found. This
-        # entry will be bumped to index 1 after adding the current working directory.
-        if not [p for p in sys.path if lib_dir in p]:
-            sys.path.insert(0, lib_latest)
-
-        # insert the current working directory into the system Path for the App, ensuring that it is
-        # always the first entry in the list.
-        try:
-            sys.path.remove(cwd)
-        except ValueError:
-            pass
-        sys.path.insert(0, cwd)
+    def status_value(status):
+        """Return the appropriate status color."""
+        status_value = 'passed'
+        if not status:
+            status_value = 'failed'
+        return status_value

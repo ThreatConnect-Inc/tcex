@@ -31,6 +31,7 @@ install_requires = [
 ]
 if sys.version_info < (3,):
     install_requires.extend(['ipaddress'])
+
 scripts = [
     'bin/tcinit',
     'bin/tcinit.cmd',

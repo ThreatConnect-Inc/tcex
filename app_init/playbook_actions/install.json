@@ -19,6 +19,7 @@
         "String",
         "StringArray"
       ],
+      "required": true,
       "sequence": 1,
       "type": "String",
       "validValues": [

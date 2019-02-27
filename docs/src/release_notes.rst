@@ -6,10 +6,49 @@ Release Notes
 0.9.x
 =====
 
+0.9.9
+-----
++ Added new ``cache`` module.
++ Added new ``datastore`` module.
++ Updated App templates ignore/exclude definitions.
++ Updated ``tcprofile`` permutation_id to handle 0 index.
++ Updated ``tcpackage`` command to not add commitHash if value is None.
++ Updated ``tcvalidate`` command to handle permission error when using pkg_resources.
++ Updated install.json schema to include commitHash.
+
+0.9.8
+-----
++ Fixed issue with ``sqlite`` being imported while not required for Apps.
++ Updated ``tcprofile`` to better support App bundle projects.
+
+0.9.7
+-----
++ Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of space.
++ Updated ``tcprofile`` command to support permutations logic for Apps with layout.json conditional input parameters.
++ Updated ``tcprofile`` command to update the profile schema to v3. **app.arg** is now **app.arg.optional** and **app.arg.required**.
++ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space.
++ Updated batch module to support new 5.8+ merge of file hash feature.
+
+0.9.6
+-----
++ Fix for ``tcvalidate`` output display statement validation.
++ Updated install.json schema file.
++ Updated ``tclib`` to error when environment variables are not available.
++ Updated batch module to handle xid as str for py2 Apps.
+
+0.9.5
+-----
++ Enabled package_data in setup.py for JSON schema files.
+
+0.9.4
+-----
++ Switched from setup.py package_data to MANIFEST.in for JSON schema files.
+
 0.9.3
 -----
 + Added new ``tcvalidate`` command for App Builder.
 + Added validation of layout.json schema, inputs, and outputs.
++ Migrated JSON validation files from App to TcEx.
 
 0.9.2
 -----

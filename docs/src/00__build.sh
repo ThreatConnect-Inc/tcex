@@ -46,3 +46,7 @@ unlink ../../bin/tcvalidate.py
 # cleanup
 rm -f deployment_config.rst
 rm -fr ../_static/fonts/Lato/
+
+cd ../../
+pre-commit run pretty-format-json --all-files
+pre-commit run end-of-file-fixer --all-files

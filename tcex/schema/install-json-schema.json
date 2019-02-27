@@ -10,6 +10,9 @@
     "apiUserTokenParam": {
       "type": "boolean"
     },
+    "commitHash": {
+      "type": "string"
+    },
     "displayName": {
       "type": "string"
     },
@@ -117,7 +120,9 @@
                 "String",
                 "StringArray",
                 "TCEntity",
-                "TCEntityArray"
+                "TCEntityArray",
+                "TCEnhancedEntity",
+                "TCEnhancedEntityArray"
               ]
             },
             "type": "array"
@@ -127,6 +132,9 @@
           },
           "sequence": {
             "type": "integer"
+          },
+          "setup": {
+            "type": "boolean"
           },
           "type": {
             "enum": [
@@ -174,7 +182,9 @@
                   "String",
                   "StringArray",
                   "TCEntity",
-                  "TCEntityArray"
+                  "TCEntityArray",
+                  "TCEnhancedEntity",
+                  "TCEnhancedEntityArray"
                 ],
                 "type": "string"
               }

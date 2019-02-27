@@ -1,5 +1,5 @@
-tcex package
-============
+TcEx Module
+===========
 
 Submodules
 ----------

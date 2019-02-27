@@ -29,7 +29,7 @@ epilog = (
     '\nPlaybook App Templates:\n'
     '  playbook         - This template provides the structure for a Playbook App without any\n'
     '                     App logic.\n'
-    '  playbook_action  - This template provides an example of "actions" in a Playbook \n'
+    '  playbook_actions - This template provides an example of "actions" in a Playbook \n'
     '                     App. Using the "actions" feature a single Playbook App can have \n'
     '                     multiple actions to perform different operations on the provided data.\n'
     '  playbook_utility - This template provides a basic example of a utility App that takes \n'
@@ -80,6 +80,10 @@ if __name__ == '__main__':
     try:
         tci = TcExInit(args)
         print('{}{}Using files from "{}" branch'.format(c.Style.BRIGHT, c.Fore.WHITE, args.branch))
+
+        if args.action == 'update' or args.action == 'migrate':
+            # check if the current directory is empty
+            tci.check_empty_app_dir()
 
         # create a new app OR migrate an app of a different form to the new app format
         if args.action == 'create' or args.action == 'migrate':

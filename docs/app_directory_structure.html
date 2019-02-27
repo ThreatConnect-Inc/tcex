@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App - Directory Structure &mdash; TcEx 0.9.3 documentation</title>
+  <title>App - Directory Structure &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.3
+                0.9.9
               </div>
 
 
@@ -133,7 +133,8 @@
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -274,9 +275,10 @@
 48
 49
 50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
 <span class="c1"># Python App Template</span>
-<span class="c1"># Version: 1.0.1</span>
+<span class="c1"># Version: 1.0.2</span>
 <span class="c1"># Last Updated: 2017/10/04</span>
 <span class="c1">#=================================================</span>
 
@@ -290,6 +292,7 @@ __pycache__
 <span class="c1"># App Specific Exclusions</span>
 <span class="c1">#-------------------------------------------------</span>
 *.log
+local-*
 log
 sample-*.json
 
@@ -310,6 +313,7 @@ temp
 .python-version
 .settings
 .vscode
+*.iml
 nbproject
 
 <span class="c1">#-------------------------------------------------</span>
@@ -320,7 +324,6 @@ nbproject
 <span class="c1">#-------------------------------------------------</span>
 <span class="c1"># Other Nonsense</span>
 <span class="c1">#-------------------------------------------------</span>
-bcs*
 
 <span class="c1">#*************************************************</span>
 <span class="c1"># Custom Exclusion (per App exclusions)</span>
@@ -1137,19 +1140,25 @@ bcs*
 <div class="section" id="setup-cfg-optional">
 <h2>setup.cfg (optional)<a class="headerlink" href="#setup-cfg-optional" title="Permalink to this headline">¶</a></h2>
 <p>This file contains Python configurations data, specifically for linting ignores/excludes.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">flake8</span><span class="p">]</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">flake8</span><span class="p">]</span>
 <span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
 
 <span class="p">[</span><span class="n">pep8</span><span class="p">]</span>
 <span class="nb">max</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">ignore</span> <span class="o">=</span> <span class="n">E402</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">E203</span><span class="p">,</span><span class="n">E402</span><span class="p">,</span><span class="n">W503</span>
+
+<span class="p">[</span><span class="n">pydocstyle</span><span class="p">]</span>
+<span class="n">ignore</span> <span class="o">=</span> <span class="n">D202</span><span class="p">,</span><span class="n">D203</span><span class="p">,</span><span class="n">D213</span><span class="p">,</span><span class="n">D301</span><span class="p">,</span><span class="n">D406</span><span class="p">,</span><span class="n">D407</span><span class="p">,</span><span class="n">D413</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -1194,9 +1203,9 @@ bcs*
     <span class="nt">&quot;excludes&quot;</span><span class="p">:</span> <span class="p">[</span>
       <span class="s2">&quot;.gitignore&quot;</span><span class="p">,</span>
       <span class="s2">&quot;.pre-commit-config.yaml&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;local-*&quot;</span><span class="p">,</span>
       <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
       <span class="s2">&quot;setup.cfg&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;tcex_json_schema.json&quot;</span><span class="p">,</span>
       <span class="s2">&quot;tcex.json&quot;</span><span class="p">,</span>
       <span class="s2">&quot;*.install.json&quot;</span><span class="p">,</span>
       <span class="s2">&quot;tcex.d&quot;</span>

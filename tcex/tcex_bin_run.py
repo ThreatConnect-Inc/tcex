@@ -21,15 +21,25 @@ import colorama as c
 
 
 from tcex import TcEx
+from .tcex_bin import TcExBin
 
 
-class TcExRun(object):
-    """Run profiles for App."""
+class TcExRun(TcExBin):
+    """Run profiles for ThreatConnect Job or Playbook Apps.
+
+    Args:
+        _args (namespace): The argparser args Namespace.
+    """
 
     def __init__(self, _args):
-        """Initialize Class properties."""
+        """Initialize Class properties.
 
-        self.args = _args
+        Args:
+            _args (namespace): The argparser args Namespace.
+        """
+        super(TcExRun, self).__init__(_args)
+
+        # properties
         self._signal_handler_init()
         self._config = None
         self._profile = {}
@@ -43,8 +53,6 @@ class TcExRun(object):
         self.log = self._logger()
 
         self._clear_redis_tracker = []
-        self.app_path = os.getcwd()
-        self.exit_code = 0
         self.json_report = {}
         self.max_diff = 10
         self.sleep = 0
@@ -59,9 +67,6 @@ class TcExRun(object):
         # if platform.system() == 'Windows':
         #    self.shell = True
 
-        # initialize colorama
-        c.init(autoreset=True, strip=False)
-
     def _create_tc_dirs(self):
         """Create app directories for logs and data files."""
         tc_log_path = self.profile.get('args', {}).get('tc_log_path')
@@ -75,7 +80,14 @@ class TcExRun(object):
             os.makedirs(tc_tmp_path)
 
     def _load_config_include(self, include_directory):
-        """Load included configuration files."""
+        """Load included configuration files.
+
+        Args:
+            include_directory (str): The name of the config include directory.
+
+        Returns:
+            list: A list of all profiles for the current App.
+        """
         include_directory = os.path.join(self.app_path, include_directory)
         if not os.path.isdir(include_directory):
             msg = 'Provided include directory does not exist ({}).'.format(include_directory)
@@ -100,7 +112,6 @@ class TcExRun(object):
 
         Returns:
             logger: An instance of logging
-
         """
         log_level = {
             'debug': logging.DEBUG,
@@ -141,13 +152,18 @@ class TcExRun(object):
         return log
 
     def _signal_handler_init(self):
-        # catch interupt signals
+        """Catch interupt signals."""
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
     def _signal_handler(self, signal_interupt, frame):  # pylint: disable=W0613
-        """Handle singal interrupt."""
+        """Handle singal interrupt.
+
+        Args:
+            signal_interupt ([type]): [Description]
+            frame ([type]): [Description]
+        """
         if self.container is not None:
             print('{}{}Stopping docker container.'.format(c.Style.BRIGHT, c.Fore.YELLOW))
             self.container.stop()
@@ -254,7 +270,12 @@ class TcExRun(object):
                 self.clear_tc(clear_data.get('owner'), clear_data, 'clear')
 
     def clear_redis(self, variable, clear_type):
-        """Delete redis data for provided variable."""
+        """Delete Redis data for provided variable.
+
+        Args:
+            variable (str): The Redis variable to delete.
+            clear_type (str): The type of clear action.
+        """
         if variable is None:
             return
         if variable in self._clear_redis_tracker:
@@ -267,7 +288,13 @@ class TcExRun(object):
         self._clear_redis_tracker.append(variable)
 
     def clear_tc(self, owner, data, clear_type):
-        """Delete ThreatConnect data."""
+        """Delete threat intel from ThreatConnect platform.
+
+        Args:
+            owner (str): The ThreatConnect owner.
+            data (dict): The data for the threat intel to clear.
+            clear_type (str): The type of clear action.
+        """
         batch = self.tcex.batch(owner, action='Delete')
         tc_type = data.get('type')
         path = data.get('path')
@@ -310,38 +337,32 @@ class TcExRun(object):
         for error in batch_results.get('errors') or []:
             self.log.error('[{}] Batch Error: {}'.format(clear_type, error))
 
-    @property
-    def config(self):
-        """Return configuration data.
-
-        Load on first access, otherwise return existing data.
-        """
-        if self._config is None:
-            if not os.path.isfile(self.args.config):
-                msg = 'Provided config file does not exist ({}).'.format(self.args.config)
-                sys.exit(msg)
-
-            print(
-                'Configuration File: {}{}{}'.format(c.Style.BRIGHT, c.Fore.CYAN, self.args.config)
-            )
-            with open(self.args.config) as data_file:
-                self._config = json.load(data_file)
-
-            # load includes
-            for directory in self._config.get('profile_include_dirs') or []:
-                self._config.setdefault('profiles', []).extend(self._load_config_include(directory))
-        return self._config
-
     @staticmethod
     def data_endswith(db_data, user_data):
-        """Validate data ends with user data."""
+        """Validate data ends with user data.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if db_data is not None and db_data.endswith(user_data):
             return True
         return False
 
     @staticmethod
     def data_in_db(db_data, user_data):
-        """Validate db data in user data."""
+        """Validate db data in user data.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (list): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if isinstance(user_data, list):
             if db_data in user_data:
                 return True
@@ -349,14 +370,30 @@ class TcExRun(object):
 
     @staticmethod
     def data_in_user(db_data, user_data):
-        """Validate user data in db data."""
+        """Validate user data in db data.
+
+        Args:
+            db_data (list): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if user_data in db_data:
             return True
         return False
 
     @staticmethod
     def data_it(db_data, user_type):
-        """Validate data is Type."""
+        """Validate data is type.
+
+        Args:
+            db_data (dict|str|list): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         data_type = {
             'array': (list),
             # 'binary': (string_types),
@@ -389,7 +426,15 @@ class TcExRun(object):
 
     @staticmethod
     def data_kva_compare(db_data, user_data):
-        """Validate key/value data in KeyValueArray."""
+        """Validate key/value data in KeyValueArray.
+
+        Args:
+            db_data (list): The data store in Redis.
+            user_data (dict): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         for kv_data in db_data:
             if kv_data.get('key') == user_data.get('key'):
                 if kv_data.get('value') == user_data.get('value'):
@@ -398,7 +443,15 @@ class TcExRun(object):
 
     @staticmethod
     def data_not_in(db_data, user_data):
-        """Validate data not in user data."""
+        """Validate data not in user data.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (list): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if isinstance(user_data, list):
             if db_data not in user_data:
                 return True
@@ -406,14 +459,30 @@ class TcExRun(object):
 
     @staticmethod
     def data_startswith(db_data, user_data):
-        """Validate data starts with user data."""
+        """Validate data starts with user data.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if db_data is not None and db_data.startswith(user_data):
             return True
         return False
 
     @staticmethod
     def data_string_compare(db_data, user_data):
-        """Validate string removing all white space before comparison."""
+        """Validate string removing all white space before comparison.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         db_data = ''.join(db_data.split())
         user_data = ''.join(user_data.split())
         if operator.eq(db_data, user_data):
@@ -421,7 +490,15 @@ class TcExRun(object):
         return False
 
     def deep_diff(self, db_data, user_data):
-        """Validate data in user data."""
+        """Validate data in user data.
+
+        Args:
+            db_data (dict|str|list): The data store in Redis.
+            user_data (dict|str|list): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         # NOTE: tcex does include the deepdiff library as a dependencies since it is only
         # required for local testing.
         try:
@@ -441,36 +518,29 @@ class TcExRun(object):
             return False
         return True
 
+    @property
+    def included_profiles(self):
+        """Load all profiles."""
+        profiles = []
+        for directory in self.tcex_json.get('profile_include_dirs') or []:
+            profiles.extend(self._load_config_include(directory))
+        return profiles
+
     def json_compare(self, db_data, user_data):
-        """Validate data in user data."""
+        """Validate data in user data.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         if isinstance(db_data, (string_types)):
             db_data = json.loads(db_data)
         if isinstance(user_data, (string_types)):
             user_data = json.loads(user_data)
         return self.deep_diff(db_data, user_data)
-
-    def load_install_json(self, filename):
-        """Return install.json data.
-
-        Load on first access, otherwise return existing data.
-        """
-        install_json = {}
-        load_output = 'Load install.json: {}{}{}{}'.format(
-            c.Style.BRIGHT, c.Fore.CYAN, filename, c.Style.RESET_ALL
-        )
-        self.log.info('Loading install.json: {}'.format(filename))
-        if filename is not None and os.path.isfile(filename):
-            with open(filename) as config_data:
-                install_json = json.load(config_data)
-            load_output += ' {}{}(Loaded){}'.format(c.Style.BRIGHT, c.Fore.GREEN, c.Style.RESET_ALL)
-        else:
-            load_output += ' {}{}(Not Found){}'.format(
-                c.Style.BRIGHT, c.Fore.YELLOW, c.Style.RESET_ALL
-            )
-
-        # display load status
-        print(load_output)
-        return install_json
 
     def load_tcex(self):
         """Inject required TcEx CLI Args."""
@@ -552,7 +622,15 @@ class TcExRun(object):
         }
 
     def path_data(self, variable_data, path):
-        """Return jmespath data."""
+        """Return JMESPath data.
+
+        Args:
+            variable_data (str): The JSON data to run path expression.
+            path (str): The JMESPath expression.
+
+        Returns:
+            dict: The resulting data from JMESPath.
+        """
         # NOTE: tcex does include the jmespath library as a dependencies since it is only
         # required for local testing.
         try:
@@ -581,7 +659,11 @@ class TcExRun(object):
 
     @profile.setter
     def profile(self, profile):
-        """Set the current profile."""
+        """Set the current profile.
+
+        Args:
+            profile (dict): The profile data.
+        """
         # clear staging data
         self._staging_data = None
         # retrieve language from install.json or assume Python
@@ -601,23 +683,42 @@ class TcExRun(object):
 
     @staticmethod
     def profile_args(_args):
-        """Return args for old or new structure."""
+        """Return args for v1, v2, or v3 structure.
+
+        Args:
+            _args (dict): The args section from the profile.
+
+        Returns:
+            dict: A collapsed version of the args dict.
+        """
         # TODO: clean this up in a way that works for both py2/3
-        if _args.get('app') is not None and _args.get('default') is not None:
-            # detect new args structure
+        if (
+            _args.get('app', {}).get('optional') is not None
+            and _args.get('app', {}).get('required') is not None
+        ):
+            # detect v3 schema
+            app_args_optional = _args.get('app', {}).get('optional', {})
+            app_args_required = _args.get('app', {}).get('required', {})
+            default_args = _args.get('default', {})
+            _args = {}
+            _args.update(app_args_optional)
+            _args.update(app_args_required)
+            _args.update(default_args)
+        elif _args.get('app') is not None and _args.get('default') is not None:
+            # detect v2 schema
             app_args = _args.get('app', {})
             default_args = _args.get('default', {})
             _args = {}
             _args.update(app_args)
             _args.update(default_args)
+
         return _args
 
     @property
     def profiles(self):
         """Return all selected profiles."""
         selected_profiles = []
-        for config in self.config.get('profiles'):
-
+        for config in self.included_profiles:
             profile_selected = False
             profile_name = config.get('profile_name')
 
@@ -730,7 +831,15 @@ class TcExRun(object):
         return self.run_local(commands)
 
     def run_commands(self, program_language, program_main):
-        """Return the run Print Command."""
+        """Return the run Print Command.
+
+        Args:
+            program_language (str): The language of the current App/Project.
+            program_main (str): The executable name.
+
+        Returns:
+            dict: A dictionary containing the run command and a printable version of the command.
+        """
         # build the command
         if program_language == 'python':
             python_exe = sys.executable
@@ -772,12 +881,12 @@ class TcExRun(object):
 
         elif program_language == 'java':
             if self.args.docker:
-                command = ['java', '-cp', self.config.get('class_path', './target/*')]
+                command = ['java', '-cp', self.tcex_json.get('class_path', './target/*')]
             else:
                 command = [
-                    self.config.get('java_path', program_language),
+                    self.tcex_json.get('java_path', program_language),
                     '-cp',
-                    self.config.get('class_path', './target/*'),
+                    self.tcex_json.get('class_path', './target/*'),
                 ]
 
             # exe command
@@ -794,7 +903,14 @@ class TcExRun(object):
         return {'cli_command': cli_command, 'print_command': print_command}
 
     def run_local(self, commands):
-        """Run the App on local system."""
+        """Run the App on local system.
+
+        Args:
+            commands (dict): A dictionary of the CLI commands.
+
+        Returns:
+            int: The exit code of the subprocess command.
+        """
         process = subprocess.Popen(
             commands.get('cli_command'),
             shell=self.shell,
@@ -813,7 +929,14 @@ class TcExRun(object):
         return self.run_exit_code(process.returncode)
 
     def run_docker(self, commands):
-        """Run App in Docker Container."""
+        """Run App in Docker Container.
+
+        Args:
+            commands (dict): A dictionary of the CLI commands.
+
+        Returns:
+            int: The exit code of the subprocess command.
+        """
         try:
             import docker
         except ImportError:
@@ -892,14 +1015,22 @@ class TcExRun(object):
         return self.run_exit_code(status_code)
 
     def run_display_app_errors(self, err):
-        """Handle the exit code for the current run."""
+        """Handle the exit code for the current run.
+
+        Args:
+            err (str): One or more lines of errors messages.
+        """
         if err is not None and err:
             for e_ in err.decode('utf-8').split('\n'):
                 print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, e_))
                 self.log.error('[tcrun] App error: {}'.format(e_))
 
     def run_display_app_output(self, out):
-        """Print any App output."""
+        """Print any App output.
+
+        Args:
+            out (str): One or more lines of output messages.
+        """
         if not self.profile.get('quiet') and not self.args.quiet:
             print('App Output:')
             for o in out.decode('utf-8').split('\n'):
@@ -917,7 +1048,11 @@ class TcExRun(object):
             )
 
     def run_display_profile(self, program_main):
-        """Print profile name with programMain."""
+        """Print profile name with programMain.
+
+        Args:
+            program_main (str): The executable name.
+        """
         install_json = self.profile.get('install_json')
 
         output = 'Profile: '
@@ -939,7 +1074,17 @@ class TcExRun(object):
         print(output)
 
     def run_exit_code(self, returncode):
-        """Handle the exit code for the current run."""
+        """Handle the exit code for the current run.
+
+        Args:
+            returncode (int): The return exit code.
+
+        Raises:
+            RuntimeError: Raise on invalid exit code if halt_on_fail is True.
+
+        Returns:
+            bool: True if exit code is a valid exit code, else False.
+        """
         exit_status = False
         self.log.info('[run] Exit Code {}'.format(returncode))
 
@@ -969,7 +1114,11 @@ class TcExRun(object):
         return exit_status
 
     def run_validate_program_main(self, program_main):
-        """Validate the program main file exists."""
+        """Validate the program main file exists.
+
+        Args:
+            program_main (str): The executable name.
+        """
         program_language = self.profile.get('install_json').get('programLanguage', 'python').lower()
         if program_language == 'python' and not os.path.isfile('{}.py'.format(program_main)):
             print(
@@ -1135,7 +1284,12 @@ class TcExRun(object):
         return self._staging_data
 
     def stage_redis(self, variable, data):
-        """Stage data in Redis."""
+        """Stage data in Redis.
+
+        Args:
+            variable (str): The Redis variable name.
+            data (dict|list|str): The data to store in Redis.
+        """
         if isinstance(data, int):
             data = str(data)
         # handle binary
@@ -1182,6 +1336,10 @@ class TcExRun(object):
               "variable": "#App:0822:adversary!TCEntity"
             }]
 
+        Args:
+            owner (str): The ThreatConnect owner name.
+            staging_data (dict): A dict containing the ThreatConnect threat intel.
+            variable (str): A variable name to write to Redis.
         """
         # parse resource_data
         resource_type = staging_data.pop('type')
@@ -1250,7 +1408,13 @@ class TcExRun(object):
             self.log.error('[stage] Unsupported resource type {}.'.format(resource_type))
 
     def stage_tc_create_attribute(self, attribute_type, attribute_value, resource):
-        """Add an attribute to a resource."""
+        """Add an attribute to a resource.
+
+        Args:
+            attribute_type (str): The attribute type (e.g., Description).
+            attribute_value (str): The attribute value.
+            resource (obj): An instance of tcex resource class.
+        """
         attribute_data = {'type': str(attribute_type), 'value': str(attribute_value)}
         # handle default description and source
         if attribute_type in ['Description', 'Source']:
@@ -1270,7 +1434,12 @@ class TcExRun(object):
             )
 
     def stage_tc_create_security_label(self, label, resource):
-        """Add a security label to a resource."""
+        """Add a security label to a resource.
+
+        Args:
+            label (str): The security label (must exit in ThreatConnect).
+            resource (obj): An instance of tcex resource class.
+        """
         sl_resource = resource.security_labels(label)
         sl_resource.http_method = 'POST'
         sl_response = sl_resource.request()
@@ -1282,7 +1451,12 @@ class TcExRun(object):
             )
 
     def stage_tc_create_tag(self, tag, resource):
-        """Add a tag to a resource."""
+        """Add a tag to a resource.
+
+        Args:
+            tag (str): The tag to be added to the resource.
+            resource (obj): An instance of tcex resource class.
+        """
         tag_resource = resource.tags(self.tcex.safetag(tag))
         tag_resource.http_method = 'POST'
         t_response = tag_resource.request()
@@ -1292,7 +1466,12 @@ class TcExRun(object):
             )
 
     def stage_tc_associations(self, entity1, entity2):
-        """Add an attribute to a resource."""
+        """Add an attribute to a resource.
+
+        Args:
+            entity1 (str): A Redis variable containing a TCEntity.
+            entity2 (str): A Redis variable containing a TCEntity.
+        """
         # resource 1
         entity1 = self.tcex.playbook.read(entity1)
         entity1_id = entity1.get('id')
@@ -1335,7 +1514,12 @@ class TcExRun(object):
             )
 
     def stage_tc_batch(self, owner, staging_data):
-        """Stage data in Redis."""
+        """Stage data in ThreatConnect Platform using batch API.
+
+        Args:
+            owner (str): The ThreatConnect owner to submit batch job.
+            staging_data (dict): A dict of ThreatConnect batch data.
+        """
         batch = self.tcex.batch(owner)
         for group in staging_data.get('group') or []:
             # add to redis
@@ -1378,18 +1562,41 @@ class TcExRun(object):
 
     @staticmethod
     def stage_tc_batch_xid(xid_type, xid_value, owner):
-        """Create an xid for a batch job."""
+        """Create an xid for a batch job.
+
+        Args:
+            xid_type (str): [description]
+            xid_value (str): [description]
+            owner (str): [description]
+
+        Returns:
+            [type]: [description]
+        """
         xid_string = '{}-{}-{}'.format(xid_type, xid_value, owner)
         hash_object = hashlib.sha256(xid_string.encode('utf-8'))
         return hash_object.hexdigest()
 
     def stage_tc_group_entity(self, group_data):
-        """Convert JSON data to TCEntity."""
+        """Convert JSON data to TCEntity.
+
+        Args:
+            group_data (str): [description]
+
+        Returns:
+            [type]: [description]
+        """
         path = '@.{name: name, type: type, ownerName: ownerName}'
         return self.path_data(group_data, path)
 
     def stage_tc_indicator_entity(self, indicator_data):
-        """Convert JSON data to TCEntity."""
+        """Convert JSON data to TCEntity.
+
+        Args:
+            indicator_data (str): [description]
+
+        Returns:
+            [type]: [description]
+        """
         path = '@.{value: summary, '
         path += 'type: type, '
         path += 'ownerName: ownerName, '
@@ -1457,7 +1664,16 @@ class TcExRun(object):
         return passed
 
     def validate_redis(self, db_data, user_data, oper):
-        """Validate data in Redis."""
+        """Validate data in Redis.
+
+        Args:
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+            oper (str): The comparison operator.
+
+        Returns:
+            bool: True if the data passed validation.
+        """
         passed = True
         # convert any int to string since playbooks don't support int values
         if isinstance(db_data, int):
@@ -1497,7 +1713,17 @@ class TcExRun(object):
         return passed
 
     def validate_log_output(self, passed, db_data, user_data, oper):
-        """Format the validation log output to be easier to read."""
+        """Format the validation log output to be easier to read.
+
+        Args:
+            passed (bool): The results of the validation test.
+            db_data (str): The data store in Redis.
+            user_data (str): The user provided data.
+            oper (str): The comparison operator.
+
+        Raises:
+            RuntimeError: Raise error on validation failure if halt_on_fail is True.
+        """
         truncate = self.args.truncate
         if db_data is not None and passed:
             if isinstance(db_data, (string_types)) and len(db_data) > truncate:
@@ -1599,22 +1825,25 @@ class ArgBuilder(object):
             value (string): The CLI Args value (e.g., bob).
             mask (boolean, default:False): Indicates whether no mask value.
         """
-        if value is False:
-            # boolean values are flags and should only be included when True
-            return
         self._data[key] = value
-        self._args.append('--{}'.format(key))
-        self._args_quoted.append('--{}'.format(key))
-        self._args_masked.append('--{}'.format(key))
-        if value is not True:
-            # boolean values are flags and cli arg should not have a value
-            self._args.append(value)
-            self._args_quoted.append(self.quote(value))
+        if not value:
+            # both false boolean values (flags) and empty values should not be added.
+            pass
+        elif value is True:
+            # true boolean values are flags and should not contain a value
+            self._args.append('--{}'.format(key))
+            self._args_quoted.append('--{}'.format(key))
+            self._args_masked.append('--{}'.format(key))
+        else:
+            self._args.append('--{}={}'.format(key, value))
             if mask:
+                # mask sensitive values
                 value = 'x' * len(str(value))
             else:
+                # quote all values that would get displayed
                 value = self.quote(value)
-            self._args_masked.append(value)
+            self._args_quoted.append('--{}={}'.format(key, value))
+            self._args_masked.append('--{}={}'.format(key, value))
 
     def _add_arg_java(self, key, value, mask=False):
         """Add CLI Arg formatted specifically for Java.
@@ -1688,7 +1917,7 @@ class ArgBuilder(object):
         elif self.lang == 'java':
             quote_char = "'"
 
-        if re.findall(r'[!\-\s\$\&]{1,}', str(data)):
+        if re.findall(r'[!\-\=\s\$\&]{1,}', str(data)):
             data = '{0}{1}{0}'.format(quote_char, data)
         return data
 

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_validate &mdash; TcEx 0.9.3 documentation</title>
+  <title>tcex.tcex_bin_validate &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.3
+                0.9.9
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -176,7 +177,6 @@
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;TcEx Framework Validate Module.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">import</span> <span class="nn">imp</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
@@ -185,61 +185,68 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">deque</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="k">except</span> <span class="ne">PermissionError</span><span class="p">:</span>
+    <span class="c1"># this module is only required for certain CLI commands</span>
+    <span class="k">pass</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="c1"># this module is only required for certain CLI commands</span>
+    <span class="k">pass</span>
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">SchemaError</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">validate</span>
 <span class="kn">from</span> <span class="nn">stdlib_list</span> <span class="k">import</span> <span class="n">stdlib_list</span>
 
-<span class="c1"># Python 2 unicode</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="n">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>  <span class="c1"># noqa: F821; pylint: disable=E0602</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=E1101</span>
-
-<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-    <span class="s1">&#39;--ignore_validation&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Do not exit on validation errors.&#39;</span>
-<span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--install_json&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The install.json file to user during validation.&#39;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--interactive&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Keep running and listen for stdin.&#39;</span><span class="p">)</span>
-<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--json_output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Do not exit on validation errors.&#39;</span><span class="p">)</span>
-<span class="n">args</span><span class="p">,</span> <span class="n">extra_args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
 
 
-<div class="viewcode-block" id="TcExValidate"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate">[docs]</a><span class="k">class</span> <span class="nc">TcExValidate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExValidate"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate">[docs]</a><span class="k">class</span> <span class="nc">TcExValidate</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate syntax, imports, and schemas.</span>
 
 <span class="sd">    * Python and JSON file syntax</span>
 <span class="sd">    * Python import modules</span>
 <span class="sd">    * install.json schema</span>
 <span class="sd">    * layout.json schema</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        _args (namespace): The argparser args Namespace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init Class properties.&quot;&quot;&quot;</span>
-        <span class="c1"># params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_args</span>
+        <span class="sd">&quot;&quot;&quot;Init Class properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _args (namespace): The argparser args Namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExValidate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
 
         <span class="c1"># class properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_layout_json_schema</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
-            <span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;schema&#39;</span><span class="p">,</span> <span class="s1">&#39;install-json-schema.json&#39;</span><span class="p">])</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
-            <span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;schema&#39;</span><span class="p">,</span> <span class="s1">&#39;layout-json-schema.json&#39;</span><span class="p">])</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_data</span>
 
-        <span class="c1"># initialize colorama</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;pkg_resources&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="c1"># only set these if pkg_resource module is available</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
+                <span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;schema&#39;</span><span class="p">,</span> <span class="s1">&#39;install-json-schema.json&#39;</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
+                <span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;schema&#39;</span><span class="p">,</span> <span class="s1">&#39;layout-json-schema.json&#39;</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_data</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_validation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return structure for validation data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;fileSyntax&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;layouts&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;moduleImports&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
 <div class="viewcode-block" id="TcExValidate.check_imports"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.check_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -307,7 +314,14 @@
 
 <div class="viewcode-block" id="TcExValidate.check_import_stdlib"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.check_import_stdlib">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">check_import_stdlib</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if module is in Python stdlib.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Check if module is in Python stdlib.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (str): The name of the module to check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Returns True if the module is in the stdlib or template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;2.7&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=R0916</span>
             <span class="ow">or</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">stdlib_list</span><span class="p">(</span><span class="s1">&#39;3.4&#39;</span><span class="p">)</span>
@@ -328,9 +342,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the module can be imported, False otherwise.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">imported</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">module_info</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="c1"># TODO: if possible, update to a cleaner method that doesn&#39;t require importing the module</span>
@@ -360,14 +372,12 @@
 
 <div class="viewcode-block" id="TcExValidate.check_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.check_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">check_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check all install.json files for valid schema.&quot;&quot;&quot;</span>
-        <span class="c1"># the install.json files can&#39;t be validates if the schema file is not present</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">install_json</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">install_json</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
             <span class="c1"># skip files that are not install.json files</span>
@@ -378,6 +388,7 @@
             <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># loading explicitly here to keep all error catching in this file</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
                 <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema</span><span class="p">)</span>
@@ -410,6 +421,7 @@
         <span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># loading explicitly here to keep all error catching in this file</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">layout_json_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
             <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema</span><span class="p">)</span>
@@ -432,15 +444,15 @@
                 <span class="s1">&#39;Schema validation failed for </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">layout_json_file</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">check_layout_params</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_layout_params</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TcExValidate.check_layout_params"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.check_layout_params">[docs]</a>    <span class="k">def</span> <span class="nf">check_layout_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout_json_data</span><span class="p">):</span>
+<div class="viewcode-block" id="TcExValidate.check_layout_params"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.check_layout_params">[docs]</a>    <span class="k">def</span> <span class="nf">check_layout_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check that the layout.json is consistent with install.json.</span>
 
 <span class="sd">        The layout.json files references the params.name from the install.json file.  The method</span>
 <span class="sd">        will validate that no reference appear for inputs in install.json that don&#39;t exist.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">ij_input_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ij_output_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;install.json&#39;</span><span class="p">):</span>
@@ -455,24 +467,42 @@
                 <span class="c1"># checking parameters isn&#39;t possible if install.json can&#39;t be parsed</span>
                 <span class="k">return</span>
 
+        <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="c1"># create temporary inputs tables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">ij_input_names</span><span class="p">)</span>
+
         <span class="c1"># inputs</span>
         <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">layout_json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="p">[]):</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ij_input_names</span><span class="p">:</span>
                     <span class="c1"># update validation data errors</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="s1">&#39;Layouts input validations failed (</span><span class="si">{}</span><span class="s1"> is defined in layout.json, but not &#39;</span>
-                        <span class="s1">&#39;found in install.json).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+                        <span class="s1">&#39;Layouts input.parameters[].name validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; is defined in &#39;</span>
+                        <span class="s1">&#39;layout.json, but not found in install.json).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                     <span class="p">)</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
+                        <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="s1">&#39;Layouts input.parameters[].display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query &#39;</span>
+                                <span class="s1">&#39;is an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+                            <span class="p">)</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># update validation data for module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;layouts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span>
 
         <span class="c1"># outputs</span>
         <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">layout_json_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="p">[]):</span>
             <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ij_output_names</span><span class="p">:</span>
                 <span class="c1"># update validation data errors</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -480,6 +510,20 @@
                     <span class="s1">&#39;found in install.json).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
                 <span class="p">)</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="s1">&#39;sqlite3&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">):</span>
+                    <span class="n">display_query</span> <span class="o">=</span> <span class="s1">&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">db_conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">display_query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s1">&#39;Layouts outputs.display validations failed (&quot;</span><span class="si">{}</span><span class="s1">&quot; query is &#39;</span>
+                            <span class="s1">&#39;an invalid statement).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">))</span>
+                        <span class="p">)</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># update validation data for module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;layouts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span></div>
@@ -490,7 +534,6 @@
 <span class="sd">        Args:</span>
 <span class="sd">            app_path (str, optional): Defaults to None. The path of Python files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">app_path</span> <span class="o">=</span> <span class="n">app_path</span> <span class="ow">or</span> <span class="s1">&#39;.&#39;</span>
 
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">app_path</span><span class="p">)):</span>
@@ -513,7 +556,7 @@
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                         <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="n">error</span> <span class="o">=</span> <span class="n">e</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># skip unsupported file types</span>
@@ -527,6 +570,20 @@
 
             <span class="c1"># store status for this file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">[</span><span class="s1">&#39;fileSyntax&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">})</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">install_json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load install.json schema file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># remove old schema file</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;tcex_json_schema.json&#39;</span><span class="p">):</span>
+                <span class="c1"># this file is now part of tcex.</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;tcex_json_schema.json&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span><span class="p">):</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span>
 
 <div class="viewcode-block" id="TcExValidate.interactive"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.interactive">[docs]</a>    <span class="k">def</span> <span class="nf">interactive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run in interactive mode.&quot;&quot;&quot;</span>
@@ -547,7 +604,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">layout_json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load layout.json schema file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_json_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout_json_schema</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span><span class="p">):</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_json_schema_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_layout_json_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
@@ -556,22 +613,6 @@
 <div class="viewcode-block" id="TcExValidate.print_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.print_json">[docs]</a>    <span class="k">def</span> <span class="nf">print_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print JSON output.&quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;validation_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">}))</span></div>
-
-<div class="viewcode-block" id="TcExValidate.status_color"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.status_color">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">status_color</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
-        <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
-            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
-        <span class="k">return</span> <span class="n">status_color</span></div>
-
-<div class="viewcode-block" id="TcExValidate.status_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.status_value">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">status_value</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
-        <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
-            <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
-        <span class="k">return</span> <span class="n">status_value</span></div>
 
 <div class="viewcode-block" id="TcExValidate.print_results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print results.&quot;&quot;&quot;</span>
@@ -617,48 +658,31 @@
                 <span class="n">status_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_value</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{!s:&lt;60}{}{!s:&lt;25}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">),</span> <span class="n">status_color</span><span class="p">,</span> <span class="n">status_value</span><span class="p">))</span>
 
-        <span class="c1"># ignore exit code</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># separate errors from normal output</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># separate errors from normal output</span>
+        <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
             <span class="c1"># print all errors</span>
-            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;errors&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;* </span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;* </span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+
+            <span class="c1"># ignore exit code</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ignore_validation</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">install_json_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load install.json schema file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># rename old schema file</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;tcex_json_schema.json&#39;</span><span class="p">):</span>
-                <span class="c1"># this file is not part of tcex.</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span><span class="p">)</span>
+<div class="viewcode-block" id="TcExValidate.status_color"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.status_color">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">status_color</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
+        <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+            <span class="n">status_color</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+        <span class="k">return</span> <span class="n">status_color</span></div>
 
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_json_schema_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_schema</span>
-
-<div class="viewcode-block" id="TcExValidate.update_system_path"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.update_system_path">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">update_system_path</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Update the system path to ensure project modules and dependencies can be found.&quot;&quot;&quot;</span>
-        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_&#39;</span><span class="p">)</span>
-        <span class="n">lib_latest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
-
-        <span class="c1"># insert the lib_latest directory into the system Path if no other lib directory found. This</span>
-        <span class="c1"># entry will be bumped to index 1 after adding the current working directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">lib_dir</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lib_latest</span><span class="p">)</span>
-
-        <span class="c1"># insert the current working directory into the system Path for the App, ensuring that it is</span>
-        <span class="c1"># always the first entry in the list.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="TcExValidate.status_value"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_validate.html#tcex.tcex_bin_validate.TcExValidate.status_value">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">status_value</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the appropriate status color.&quot;&quot;&quot;</span>
+        <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;passed&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+            <span class="n">status_value</span> <span class="o">=</span> <span class="s1">&#39;failed&#39;</span>
+        <span class="k">return</span> <span class="n">status_value</span></div></div>
 </pre></div>
 
            </div>

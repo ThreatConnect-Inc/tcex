@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ThreatConnect Batch Import Module"""
+"""ThreatConnect Batch Import Module."""
 import hashlib
 import json
 import math
@@ -68,6 +68,8 @@ class TcExBatch(object):
         self._attribute_write_type = attribute_write_type or 'Replace'
         self._batch_max_chunk = 5000
         self._halt_on_error = halt_on_error
+        self._hash_collision_mode = None
+        self._file_merge_mode = None
         self._owner = owner
         self._playbook_triggers_enabled = playbook_triggers_enabled
 
@@ -734,6 +736,14 @@ class TcExBatch(object):
         indicator_obj = File(md5, sha1, sha256, **kwargs)
         return self._indicator(indicator_obj)
 
+    def file_merge_mode(self, value):
+        """Set the file merge mode for the entire batch job.
+
+        Args:
+            value (str): A value of Distribute or Merge.
+        """
+        self._file_merge_mode = value
+
     @property
     def files(self):
         """Return dictionary containing all of the file content or callbacks."""
@@ -849,6 +859,15 @@ class TcExBatch(object):
         """Set batch halt on poll error value."""
         if isinstance(value, bool):
             self._halt_on_poll_error = value
+
+    def hash_collision_mode(self, value):
+        """Set the file hash collision mode for the entire batch job.
+
+        Args:
+            value (str): A value of Split, IgnoreIncoming, IgnoreExisting, FavorIncoming,
+                and FavorExisting.
+        """
+        self._hash_collision_mode = value
 
     def host(self, hostname, **kwargs):
         """Add Email Address data to Batch object.
@@ -1236,6 +1255,10 @@ class TcExBatch(object):
         }
         if self._playbook_triggers_enabled is not None:
             _settings['playbookTriggersEnabled'] = str(self._playbook_triggers_enabled).lower()
+        if self._hash_collision_mode is not None:
+            _settings['hashCollisionMode'] = self._hash_collision_mode
+        if self._file_merge_mode is not None:
+            _settings['fileMergeMode'] = self._file_merge_mode
         return _settings
 
     def signature(self, name, file_name, file_type, file_text, **kwargs):

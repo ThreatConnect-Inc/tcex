@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_package &mdash; TcEx 0.9.3 documentation</title>
+  <title>tcex.tcex_bin_package &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.3
+                0.9.9
               </div>
 
 
@@ -109,7 +109,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">tcex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -180,67 +181,50 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">range</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 
 <span class="kn">import</span> <span class="nn">colorama</span> <span class="k">as</span> <span class="nn">c</span>
 
+<span class="kn">from</span> <span class="nn">.tcex_bin</span> <span class="k">import</span> <span class="n">TcExBin</span>
 
-<div class="viewcode-block" id="TcExPackage"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage">[docs]</a><span class="k">class</span> <span class="nc">TcExPackage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Package the App for deployment.</span>
+
+<div class="viewcode-block" id="TcExPackage"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage">[docs]</a><span class="k">class</span> <span class="nc">TcExPackage</span><span class="p">(</span><span class="n">TcExBin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Package ThreatConnect Job or Playbook App for deployment.</span>
 
 <span class="sd">    This method will package the app for deployment to ThreatConnect. Validation of the</span>
 <span class="sd">    install.json file or files will be automatically run before packaging the app.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        _args (namespace): The argparser args Namespace.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Init Class properties.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">_args</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;secureParams&#39;</span><span class="p">,</span> <span class="s1">&#39;aotExecutionEnabled&#39;</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class properties.</span>
 
-        <span class="c1"># defaults</span>
+<span class="sd">        Args:</span>
+<span class="sd">            _args (namespace): The argparser args Namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TcExPackage</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
+
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;aotExecutionEnabled&#39;</span><span class="p">,</span> <span class="s1">&#39;secureParams&#39;</span><span class="p">]</span>
+
+        <span class="c1"># properties</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;updates&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;bundle&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;package&#39;</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># initialize colorama</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># load config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">()</span>
-
-<div class="viewcode-block" id="TcExPackage._load_config"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage._load_config">[docs]</a>    <span class="k">def</span> <span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load the tcex.conf file.&quot;&quot;&quot;</span>
-        <span class="c1"># load config</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Invalid JSON File (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="c1"># update package data</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="TcExPackage._load_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage._load_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">_load_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load install.json file.&quot;&quot;&quot;</span>
-        <span class="n">install_data</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="n">install_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># update package data</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Could not load </span><span class="si">{}</span><span class="s1"> file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">install_data</span></div>
-
 <div class="viewcode-block" id="TcExPackage._update_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage._update_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">_update_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">install_json</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write install.json file.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Write install.json file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            install_json (dict): The contents of the install.json file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict, bool: The contents of the install.json file and boolean value that is True if</span>
+<span class="sd">                an update was made.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">updated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># Update features</span>
         <span class="n">install_json</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="p">[])</span>
@@ -256,7 +240,15 @@
         <span class="k">return</span> <span class="n">install_json</span><span class="p">,</span> <span class="n">updated</span></div>
 
 <div class="viewcode-block" id="TcExPackage._write_install_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage._write_install_json">[docs]</a>    <span class="k">def</span> <span class="nf">_write_install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">install_json</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write install.json file.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Write install.json file.</span>
+
+<span class="sd">        Some projects have bundles App with multiple install.json files.  Typically these files are</span>
+<span class="sd">        prefixed with the App name (e.g., MyApp.install.json).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (str): The install.json file name.</span>
+<span class="sd">            install_json (dict): The contents of the install.json file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: why check if it exists?</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
@@ -267,10 +259,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExPackage.bundle"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.bundle">[docs]</a>    <span class="k">def</span> <span class="nf">bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Bundle Apps.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">bundle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
+        <span class="sd">&quot;&quot;&quot;Bundle multiple Job or Playbook Apps into a single zip file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bundle_name (str): The output name of the bundle zip file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">bundle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_packages&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
                     <span class="n">bundle_name</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
                     <span class="n">bundle_patterns</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;patterns&#39;</span><span class="p">)</span>
 
@@ -288,7 +284,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">bundle_apps</span><span class="p">(</span><span class="n">bundle_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExPackage.bundle_apps"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.bundle_apps">[docs]</a>    <span class="k">def</span> <span class="nf">bundle_apps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle_name</span><span class="p">,</span> <span class="n">bundle_apps</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Bundle zip (tcx) file.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Bundle multiple Job or Playbook Apps (.tcx files) into a single zip file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bundle_name (str): The output name of the bundle zip file.</span>
+<span class="sd">            bundle_apps (list): A list of Apps to include in the bundle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bundle_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-bundle.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bundle_name</span><span class="p">)</span>
         <span class="p">)</span>
@@ -352,19 +353,21 @@
 
         <span class="c1"># build exclude file/directory list</span>
         <span class="n">excludes</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+            <span class="s1">&#39;tcex.json&#39;</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span>
             <span class="s1">&#39;__pycache__&#39;</span><span class="p">,</span>
             <span class="s1">&#39;.c9&#39;</span><span class="p">,</span>  <span class="c1"># C9 IDE</span>
             <span class="s1">&#39;.git&#39;</span><span class="p">,</span>  <span class="c1"># git directory</span>
             <span class="s1">&#39;.gitmodules&#39;</span><span class="p">,</span>  <span class="c1"># git modules</span>
+            <span class="s1">&#39;.idea&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm</span>
+            <span class="s1">&#39;*.iml&#39;</span><span class="p">,</span>  <span class="c1"># PyCharm files</span>
             <span class="s1">&#39;*.pyc&#39;</span><span class="p">,</span>  <span class="c1"># any pyc file</span>
             <span class="s1">&#39;.python-version&#39;</span><span class="p">,</span>  <span class="c1"># pyenv</span>
             <span class="s1">&#39;.vscode&#39;</span><span class="p">,</span>  <span class="c1"># Visual Studio Code</span>
             <span class="s1">&#39;log&#39;</span><span class="p">,</span>  <span class="c1"># log directory</span>
         <span class="p">]</span>
         <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
-        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;excludes&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">excludes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;excludes&#39;</span><span class="p">,</span> <span class="p">[]))</span>
         <span class="c1"># update package data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;Excluded Files:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">excludes</span><span class="p">})</span>
 
@@ -386,7 +389,9 @@
 
             <span class="c1"># get App Name from config, install.json prefix or directory name.</span>
             <span class="k">if</span> <span class="n">install_json</span> <span class="o">==</span> <span class="s1">&#39;install.json&#39;</span><span class="p">:</span>
-                <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">))</span>
+                <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s1">&#39;app_name&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_path</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">app_name</span> <span class="o">=</span> <span class="n">install_json</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -394,7 +399,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">[</span><span class="s1">&#39;package&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;App Name:&#39;</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">app_name</span><span class="p">})</span>
 
             <span class="c1"># load install json</span>
-            <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
+            <span class="n">ij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_install_json</span><span class="p">(</span><span class="n">install_json</span><span class="p">)</span>
 
             <span class="c1"># automatically update install.json for feature sets supported by the SDK</span>
             <span class="n">ij</span><span class="p">,</span> <span class="n">ij_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_install_json</span><span class="p">(</span><span class="n">ij</span><span class="p">)</span>
@@ -411,7 +416,9 @@
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="n">minor_version</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">app_version</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s1">&#39;app_version&#39;</span><span class="p">,</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">major_version</span><span class="p">,</span> <span class="n">minor_version</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
             <span class="c1"># update package data</span>
@@ -435,7 +442,8 @@
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">install_json</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">))</span>
 
             <span class="c1"># Update commit hash after install.json has been copied.</span>
-            <span class="n">ij</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ij</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;commitHash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">commit_hash</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_install_json</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp_app_path</span><span class="p">,</span> <span class="s1">&#39;install.json&#39;</span><span class="p">),</span> <span class="n">ij</span><span class="p">)</span>
 
             <span class="c1"># update package data</span>
@@ -451,16 +459,16 @@
 
         <span class="c1"># bundle zips (must have more than 1 app)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_app_packages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_name&#39;</span><span class="p">,</span> <span class="n">app_name</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tcex_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_name&#39;</span><span class="p">,</span> <span class="n">app_name</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TcExPackage.print_json"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.print_json">[docs]</a>    <span class="k">def</span> <span class="nf">print_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print JSON output.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Print JSON output containing results of the package command.&quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;package_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="p">,</span> <span class="s1">&#39;validation_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_data</span><span class="p">})</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExPackage.print_results"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print results.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Print results of the package command.&quot;&quot;&quot;</span>
         <span class="c1"># Updates</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;updates&#39;</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">Updates:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">BLUE</span><span class="p">))</span>
@@ -517,28 +525,14 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="TcExPackage.update_system_path"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.update_system_path">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">update_system_path</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Update the system path to ensure project modules and dependencies can be found.&quot;&quot;&quot;</span>
-        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-        <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_&#39;</span><span class="p">)</span>
-        <span class="n">lib_latest</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;lib_latest&#39;</span><span class="p">)</span>
-
-        <span class="c1"># insert the lib_latest directory into the system Path if no other lib directory found. This</span>
-        <span class="c1"># entry will be bumped to index 1 after adding the current working directory.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">lib_dir</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lib_latest</span><span class="p">)</span>
-
-        <span class="c1"># insert the current working directory into the system Path for the App, ensuring that it is</span>
-        <span class="c1"># always the first entry in the list.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="TcExPackage.zip_file"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_package.html#tcex.tcex_bin_package.TcExPackage.zip_file">[docs]</a>    <span class="k">def</span> <span class="nf">zip_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_path</span><span class="p">,</span> <span class="n">app_name</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Zip the App with tcex extension.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Zip the App with tcex extension.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            app_path (str): The path of the current project.</span>
+<span class="sd">            app_name (str): The name of the App.</span>
+<span class="sd">            tmp_path (str): The temp output path for the zip.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># zip build directory</span>
         <span class="n">zip_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">app_name</span><span class="p">)</span>
         <span class="n">zip_file_zip</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zip_file</span><span class="p">)</span>

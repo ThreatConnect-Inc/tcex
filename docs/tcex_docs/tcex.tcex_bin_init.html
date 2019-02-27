@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_init module &mdash; TcEx 0.9.3 documentation</title>
+  <title>tcex.tcex_bin_init module &mdash; TcEx 0.9.9 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.3
+                0.9.9
               </div>
 
 
@@ -111,8 +111,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tcex</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">tcex package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">TcEx Package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tcex.html">TcEx Module</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="tcex.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex_logger.html">tcex.tcex_logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="tcex.tcex.html">tcex.tcex module</a></li>
@@ -150,9 +150,9 @@
 <li class="toctree-l3"><a class="reference internal" href="tcex.html#module-tcex">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="bin.html">CLI Commands</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html#tcex-cli">TcEx CLI</a></li>
 </ul>
 
 
@@ -198,9 +198,9 @@
 
       <li><a href="../index.html">Docs</a> &raquo;</li>
 
-          <li><a href="modules.html">tcex</a> &raquo;</li>
+          <li><a href="modules.html">TcEx Package</a> &raquo;</li>
 
-          <li><a href="tcex.html">tcex package</a> &raquo;</li>
+          <li><a href="tcex.html">TcEx Module</a> &raquo;</li>
 
       <li>tcex.tcex_bin_init module</li>
 
@@ -224,39 +224,78 @@
 <p>TcEx App Init.</p>
 <dl class="class">
 <dt id="tcex.tcex_bin_init.TcExInit">
-<em class="property">class </em><code class="descclassname">tcex.tcex_bin_init.</code><code class="descname">TcExInit</code><span class="sig-paren">(</span><em>_arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Install Required Modules for App.</p>
-<dl class="method">
-<dt id="tcex.tcex_bin_init.TcExInit._check_empty_app_dir">
-<code class="descname">_check_empty_app_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit._check_empty_app_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit._check_empty_app_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see if the directory in which the app is going to be created is empty.</p>
-</dd></dl>
-
+<em class="property">class </em><code class="descclassname">tcex.tcex_bin_init.</code><code class="descname">TcExInit</code><span class="sig-paren">(</span><em>_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tcex.tcex_bin.TcExBin</span></code></p>
+<p>Install required modules for ThreatConnect Job or Playbook App.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_args</strong> (<em>namespace</em>) – The argparser args Namespace.</td>
+</tr>
+</tbody>
+</table>
 <dl class="staticmethod">
 <dt id="tcex.tcex_bin_init.TcExInit._confirm_overwrite">
-<em class="property">static </em><code class="descname">_confirm_overwrite</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit._confirm_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit._confirm_overwrite" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">_confirm_overwrite</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit._confirm_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit._confirm_overwrite" title="Permalink to this definition">¶</a></dt>
 <dd><p>Confirm overwrite of template files.</p>
 <p>Make sure the user would like to continue downloading a file which will overwrite a file
 in the current directory.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_bin_init.TcExInit._file_exists">
-<em class="property">static </em><code class="descname">_file_exists</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit._file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit._file_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if a file at the given path exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – The name of the file to overwrite.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the user specifies a “yes” response.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="tcex.tcex_bin_init.TcExInit._print_results">
 <em class="property">static </em><code class="descname">_print_results</code><span class="sig-paren">(</span><em>file</em>, <em>status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit._print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit._print_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the download results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file</strong> (<em>str</em>) – The filename.</li>
+<li><strong>status</strong> (<em>str</em>) – The file download status.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_bin_init.TcExInit.check_empty_app_dir">
+<code class="descname">check_empty_app_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit.check_empty_app_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit.check_empty_app_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see if the directory in which the app is going to be created is empty.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="tcex.tcex_bin_init.TcExInit.download_file">
 <code class="descname">download_file</code><span class="sig-paren">(</span><em>remote_filename</em>, <em>local_filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit.download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit.download_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download file from github.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>remote_filename</strong> (<em>str</em>) – The name of the file as defined in git repository.</li>
+<li><strong>local_filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. The name of the file as it should be
+be written to local filesystem.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -265,9 +304,9 @@ in the current directory.</p>
 <dd><p>Update the install.json configuration file if exists.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="tcex.tcex_bin_init.TcExInit.update_tcex_json">
-<em class="property">static </em><code class="descname">update_tcex_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit.update_tcex_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit.update_tcex_json" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_tcex_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_bin_init.html#TcExInit.update_tcex_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_bin_init.TcExInit.update_tcex_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the tcex.json configuration file if exists.</p>
 </dd></dl>
 
