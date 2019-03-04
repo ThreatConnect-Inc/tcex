@@ -1440,11 +1440,11 @@ class TcExBatch(object):
                 params = {'includeAdditional': 'true'}
                 r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
                 self.tcex.log.debug('Batch Status Code: {}'.format(r.status_code))
+                if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
+                    self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+                return r.json()
             except Exception as e:
                 self.tcex.handle_error(1505, [e], halt_on_error)
-            if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
-            return r.json()
         return {}
 
     def submit_data(self, batch_id, halt_on_error=True):

@@ -52,6 +52,14 @@ class TcExProfile(TcExBin):
                 os.makedirs(d)
 
     @staticmethod
+    def _to_bool(value):
+        """Convert string value to bool."""
+        bool_value = False
+        if str(value).lower() in ['1', 'true']:
+            bool_value = True
+        return bool_value
+
+    @staticmethod
     def expand_valid_values(valid_values):
         """Expand supported playbook variables to their full list.
 
@@ -345,7 +353,7 @@ class TcExProfile(TcExBin):
             if p.get('required', False) != required and required is not None:
                 continue
             if p.get('type').lower() == 'boolean':
-                profile_args[p.get('name')] = p.get('default', False)
+                profile_args[p.get('name')] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
                 valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
                 profile_args[p.get('name')] = '[{}]'.format(valid_values)
