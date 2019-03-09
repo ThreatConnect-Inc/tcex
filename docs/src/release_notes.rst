@@ -9,6 +9,9 @@ Release Notes
 0.9.10
 ------
 + Updated App templates to call ``parse_args()`` from init method.
++ Updated ``IterateOnArg`` decorator to take an addition default value.
++ Updated ``TcExRun`` module to detect V3 profile args section by either optional or required field.
++ Updated ``TcExProfile`` module to use new layout.json output logic and always display output variables unless display value exists and return negative validation.
 
 0.9.9
 -----

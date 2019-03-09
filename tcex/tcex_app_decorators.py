@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""App Decorators"""
+"""App Decorators Module."""
 import datetime
 
 # import time
@@ -23,7 +23,7 @@ class Benchmark(object):
     """
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -69,7 +69,7 @@ class Debug(object):
     """
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -112,7 +112,7 @@ class FailOn(object):
     """
 
     def __init__(self, arg, values, msg):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             arg (str): The args Namespace value that controls whether the App should exit. Arg
@@ -127,7 +127,7 @@ class FailOn(object):
         self.values = values
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -180,19 +180,20 @@ class IterateOnArg(object):
             return value
     """
 
-    def __init__(self, arg):
-        """Initialize Class Properties
+    def __init__(self, arg, default=None):
+        """Initialize Class Properties.
 
         Args:
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
+            default (str): Default value to pass to method if arg value is None.
         """
-
         self.arg = arg
+        self.default = default
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -211,6 +212,9 @@ class IterateOnArg(object):
             # retrieve data from Redis if variable and always return and array.
             r = []
             for s in app.tcex.playbook.read(getattr(app.args, self.arg), True):
+                if s is None:
+                    # set value passed to method to default if value is None.
+                    s = self.default
                 # update the first item in the tuple
                 args_list = list(args)
                 try:
@@ -240,7 +244,7 @@ class OnException(object):
     """
 
     def __init__(self, msg=None):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             msg (str): The message to send to exit method.
@@ -249,7 +253,7 @@ class OnException(object):
         self.msg = msg
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -290,7 +294,7 @@ class OnSuccess(object):
     """
 
     def __init__(self, msg=None):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             msg (str): The message to send to exit method.
@@ -299,7 +303,7 @@ class OnSuccess(object):
         self.msg = msg
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -342,7 +346,7 @@ class Output(object):
     """
 
     def __init__(self, attribute):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             attribute (str): The name of the App attribute to write data.
@@ -351,7 +355,7 @@ class Output(object):
         self.attribute = attribute
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -396,7 +400,7 @@ class ReadArg(object):
     """
 
     def __init__(self, arg, array=False):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             arg (str): The arg name from the App which contains the input. This input can be
@@ -408,7 +412,7 @@ class ReadArg(object):
         self.arg = arg
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.
@@ -457,7 +461,7 @@ class WriteOutput(object):
     """
 
     def __init__(self, key, variable_type, value=None, overwrite=True):
-        """Initialize Class Properties
+        """Initialize Class Properties.
 
         Args:
             key (str): The name of the playbook output variable.
@@ -476,7 +480,7 @@ class WriteOutput(object):
         self.variable_type = variable_type
 
     def __call__(self, fn):
-        """Implement __call__ function for decorator
+        """Implement __call__ function for decorator.
 
         Args:
             fn (function): The decorated function.

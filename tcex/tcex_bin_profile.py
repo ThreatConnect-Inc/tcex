@@ -134,13 +134,21 @@ class TcExProfile(TcExBin):
                 self.gen_permutations(index + 1, list(args))
 
         except IndexError:
+            # when IndexError is reached all data has been processed.
             self._input_permutations.append(args)
             outputs = []
-            for output in self.layout_json.get('outputs'):
-                display = output.get('display')
-                if self.validate_layout_display(self.input_table, display):
-                    output_variable = self.install_json_output_variables().get(output.get('name'))
-                    outputs.append(output_variable)
+
+            # collect layout.json output variable definitions
+            layout_output_variables = {}
+            for o in self.layout_json.get('outputs'):
+                layout_output_variables[o.get('name')] = o.get('display')
+
+            for o_name, o_data in self.install_json_output_variables().items():
+                if o_name in layout_output_variables:
+                    display = o_data.get('display')
+                    if not self.validate_layout_display(self.input_table, display):
+                        continue
+                outputs.append(self.install_json_output_variables().get(o_name))
             self._output_permutations.append(outputs)
 
     def load_profiles(self):
