@@ -14,6 +14,9 @@ class PlaybookApp(object):
         self.args = None
         self.exit_message = 'Success'
 
+        # automatically parse args on init
+        self.parse_args()
+
     def done(self):
         """Perform cleanup operations and gracefully exit the App."""
         self.tcex.log.debug('Running done.')

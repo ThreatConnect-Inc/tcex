@@ -52,6 +52,14 @@ class TcExProfile(TcExBin):
                 os.makedirs(d)
 
     @staticmethod
+    def _to_bool(value):
+        """Convert string value to bool."""
+        bool_value = False
+        if str(value).lower() in ['1', 'true']:
+            bool_value = True
+        return bool_value
+
+    @staticmethod
     def expand_valid_values(valid_values):
         """Expand supported playbook variables to their full list.
 
@@ -126,13 +134,21 @@ class TcExProfile(TcExBin):
                 self.gen_permutations(index + 1, list(args))
 
         except IndexError:
+            # when IndexError is reached all data has been processed.
             self._input_permutations.append(args)
             outputs = []
-            for output in self.layout_json.get('outputs'):
-                display = output.get('display')
-                if self.validate_layout_display(self.input_table, display):
-                    output_variable = self.install_json_output_variables().get(output.get('name'))
-                    outputs.append(output_variable)
+
+            # collect layout.json output variable definitions
+            layout_output_variables = {}
+            for o in self.layout_json.get('outputs'):
+                layout_output_variables[o.get('name')] = o.get('display')
+
+            for o_name, o_data in self.install_json_output_variables().items():
+                if o_name in layout_output_variables:
+                    display = o_data.get('display')
+                    if not self.validate_layout_display(self.input_table, display):
+                        continue
+                outputs.append(self.install_json_output_variables().get(o_name))
             self._output_permutations.append(outputs)
 
     def load_profiles(self):
@@ -345,7 +361,7 @@ class TcExProfile(TcExBin):
             if p.get('required', False) != required and required is not None:
                 continue
             if p.get('type').lower() == 'boolean':
-                profile_args[p.get('name')] = p.get('default', False)
+                profile_args[p.get('name')] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':
                 valid_values = '|'.join(self.expand_valid_values(p.get('validValues', [])))
                 profile_args[p.get('name')] = '[{}]'.format(valid_values)

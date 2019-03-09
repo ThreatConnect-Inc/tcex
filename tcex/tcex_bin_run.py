@@ -694,7 +694,7 @@ class TcExRun(TcExBin):
         # TODO: clean this up in a way that works for both py2/3
         if (
             _args.get('app', {}).get('optional') is not None
-            and _args.get('app', {}).get('required') is not None
+            or _args.get('app', {}).get('required') is not None
         ):
             # detect v3 schema
             app_args_optional = _args.get('app', {}).get('optional', {})

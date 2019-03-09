@@ -55,7 +55,7 @@ class TcExBin(object):
             try:
                 self._db_conn = sqlite3.connect(':memory:')
             except sqlite3.Error as e:
-                sys.exit(1, e)
+                self.handle_error(e)
         return self._db_conn
 
     def db_create_table(self, table_name, columns):
@@ -77,7 +77,7 @@ class TcExBin(object):
             cr = self.db_conn.cursor()
             cr.execute(create_table_sql)
         except sqlite3.Error as e:
-            sys.exit(1, e)
+            self.handle_error(e)
 
     def db_insert_record(self, table_name, columns):
         """Insert records into DB.
