@@ -390,7 +390,7 @@ class TcExPlaybook(object):
         Returns:
             (any): Results retrieved from DB
         """
-        self.tcex.log.debug(u'read variable {}'.format(key))
+        self.tcex.log.debug('read variable {}'.format(key))
         data = None
         if key is not None:
             key = key.strip()
@@ -414,7 +414,7 @@ class TcExPlaybook(object):
                 data = [data]
             else:
                 # TODO: Should "None" value be added to list?
-                data = []
+                data = [None]
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
