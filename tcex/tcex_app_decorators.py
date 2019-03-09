@@ -211,7 +211,11 @@ class IterateOnArg(object):
 
             # retrieve data from Redis if variable and always return and array.
             r = []
-            for s in app.tcex.playbook.read(getattr(app.args, self.arg), True):
+            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), True)
+            if not arg_data:
+                app.tcex.log.warning('No data retrieved for arg ({}).'.format(self.arg))
+
+            for s in arg_data:
                 if s is None:
                     # set value passed to method to default if value is None.
                     s = self.default
