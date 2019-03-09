@@ -180,17 +180,21 @@ class IterateOnArg(object):
             return value
     """
 
-    def __init__(self, arg, default=None):
+    def __init__(self, arg, default=None, fail_on_empty=True):
         """Initialize Class Properties.
 
         Args:
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
-            default (str): Default value to pass to method if arg value is None.
+            default ([type], optional): Defaults to None. Default value to pass to method if arg
+                value is None.
+            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty String or
+                StringArray.
         """
         self.arg = arg
         self.default = default
+        self.fail_on_empty = fail_on_empty
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -213,7 +217,10 @@ class IterateOnArg(object):
             r = []
             arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), True)
             if not arg_data:
-                app.tcex.log.warning('No data retrieved for arg ({}).'.format(self.arg))
+                msg = 'No data retrieved for arg ({}).'.format(self.arg)
+                if self.fail_on_empty:
+                    app.tcex.exit(1, msg)
+                app.tcex.log.warning(msg)
 
             for s in arg_data:
                 if s is None:

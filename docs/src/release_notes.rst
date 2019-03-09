@@ -10,6 +10,7 @@ Release Notes
 ------
 + Updated App templates to call ``parse_args()`` from init method.
 + Updated ``IterateOnArg`` decorator to take an addition default value.
++ Updated ``IterateOnArg`` to exit or log when no data is retrieved from Redis.
 + Updated ``TcExRun`` module to detect V3 profile args section by either optional or required field.
 + Updated ``TcExProfile`` module to use new layout.json output logic and always display output variables unless display value exists and return negative validation.
 
