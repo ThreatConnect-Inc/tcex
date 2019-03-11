@@ -1,0 +1,82 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect Batch Import Module"""
+from tcex.tcex_ti.write.mappings.tcex_ti_mappings import TIMappings
+
+
+class Group(TIMappings):
+    def __init__(self, tcex, sub_type):
+        super(Group, self).__init__(tcex, 'Group')
+        self._data['type'] = 'groups'
+        self._data['sub_type'] = sub_type
+
+    @property
+    def _metadata_map(self):
+        """Return metadata map for Group objects."""
+        return {
+            'date_added': 'dateAdded',
+            'event_date': 'eventDate',
+            'file_name': 'fileName',
+            'file_text': 'fileText',
+            'file_type': 'fileType',
+            'first_seen': 'firstSeen',
+            'from_addr': 'from',
+            'publish_date': 'publishDate',
+            'to_addr': 'to',
+        }
+
+    def can_create(self):
+        if not self.data.get('name', None):
+            return False
+        return True
+
+    def add_key_value(self, key, value):
+        """Add custom field to Group object.
+
+       .. note:: The key must be the exact name required by the batch schema.
+
+       Example::
+
+           document = tcex.batch.group('Document', 'My Document')
+           document.add_key_value('fileName', 'something.pdf')
+
+       Args:
+           :param key (str): The field key to add to the JSON batch data.
+           :param value (str): The field value to add to the JSON batch data.
+       """
+        key = self._metadata_map.get(key, key)
+        if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
+            self._data[key] = self._utils.format_datetime(
+                value, date_format='%Y-%m-%dT%H:%M:%SZ'
+            )
+        elif key == 'file_content':
+            # file content arg is not part of Group JSON
+            pass
+        elif key == 'confidence':
+            self._data[key] = int(value)
+        elif key == 'rating':
+            self._data[key] = float(value)
+        else:
+            self._data[key] = value
+
+    @property
+    def name(self):
+        """Return Group name."""
+        return self._data.get('name')
+
+    @staticmethod
+    def sub_types():
+        """All supported ThreatConnect Group types."""
+        return {
+            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+            'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+        }
+
+

@@ -27,8 +27,8 @@ def verify_association_created(tcex):
 def test_indicator_associations():
     """."""
     tcex = utility.init_tcex()
-    tcex.jobs.indicator({'summary': '4.5.6.7', 'type': 'Address'})
-    tcex.jobs.indicator({'summary': 'ASN1234', 'type': tcex.safe_rt('ASN', lower=False)})
+    tcex.jobs._indicator({'summary': '4.5.6.7', 'type': 'Address'})
+    tcex.jobs._indicator({'summary': 'ASN1234', 'type': tcex.safe_rt('ASN', lower=False)})
     tcex.jobs.association(
         {
             'association_value': 'ASN1234',

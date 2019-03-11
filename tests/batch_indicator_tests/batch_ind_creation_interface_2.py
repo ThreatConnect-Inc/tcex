@@ -13,7 +13,7 @@ import utility  # pylint: disable=C0413
 def address_create(batch_job):
     """Test address creation"""
     xid = utility._create_xid('address', '123.124.125.126')
-    address = batch_job.indicator(
+    address = batch_job._indicator(
         'Address', '123.124.125.126', rating='5.0', confidence='100', xid=xid
     )
     address.attribute('Description', 'Example Description', True)
@@ -24,7 +24,7 @@ def address_create(batch_job):
 def email_address_create(batch_job):
     """Test email address creation"""
     xid = utility._create_xid('email address', 'bad@dfadsfaddsfa.com')
-    email_address = batch_job.indicator(
+    email_address = batch_job._indicator(
         'EmailAddress', 'bad@dfadsfaddsfa.com', rating='5.0', confidence='100', xid=xid
     )
     email_address.attribute('Description', 'Example Description', True)
@@ -35,7 +35,7 @@ def email_address_create(batch_job):
 def file_create(batch_job):
     """Test file creation"""
     xid = utility._create_xid('file', 'a' * 32)
-    file = batch_job.indicator(
+    file = batch_job._indicator(
         'File',
         '{} : {} : {}'.format('a' * 32, 'b' * 40, 'c' * 64),
         rating='5.0',
@@ -50,7 +50,7 @@ def file_create(batch_job):
 def host_create(batch_job):
     """Test host creation"""
     xid = utility._create_xid('host', 'dfadsfaddsfa.com')
-    host = batch_job.indicator('Host', 'dfadsfaddsfa.com', rating='5.0', confidence='100', xid=xid)
+    host = batch_job._indicator('Host', 'dfadsfaddsfa.com', rating='5.0', confidence='100', xid=xid)
     host.attribute('Description', 'Example Description', True)
     host.tag('Example Tag')
     host.security_label('TLP Green')
@@ -59,7 +59,7 @@ def host_create(batch_job):
 def url_create(batch_job):
     """Test url creation"""
     xid = utility._create_xid('url', 'https://dfadsfaddsfa.com/index.html')
-    url = batch_job.indicator(
+    url = batch_job._indicator(
         'Url', 'https://dfadsfaddsfa.com/index.html', rating='5.0', confidence='100', xid=xid
     )
     url.attribute('Description', 'Example Description', True)
