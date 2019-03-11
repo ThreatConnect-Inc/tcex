@@ -187,10 +187,9 @@ class IterateOnArg(object):
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
-            default ([type], optional): Defaults to None. Default value to pass to method if arg
-                value is None.
-            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty String or
-                StringArray.
+            default (str, optional): Defaults to None. Default value to pass to method if arg
+                value is None. Only supported for String or StringArray.
+            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
         """
         self.arg = arg
         self.default = default
@@ -413,6 +412,7 @@ class ReadArg(object):
             print('color', color)
     """
 
+    # def __init__(self, arg, array=False, default=None, fail_on_empty=True):
     def __init__(self, arg, array=False):
         """Initialize Class Properties.
 
@@ -420,10 +420,16 @@ class ReadArg(object):
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
+            array (bool, optional): Defaults to False. If True the arg value will always be
+                returned as an array.
+            default (str, optional): Defaults to None. Default value to pass to method if arg
+                value is None. Only supported for String or StringArray.
+            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
         """
-
         self.array = array
         self.arg = arg
+        # self.default = default
+        # self.fail_on_empty = fail_on_empty
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.

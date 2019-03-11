@@ -138,17 +138,14 @@ class TcExProfile(TcExBin):
             self._input_permutations.append(args)
             outputs = []
 
-            # collect layout.json output variable definitions
-            layout_output_variables = {}
-            for o in self.layout_json.get('outputs'):
-                layout_output_variables[o.get('name')] = o.get('display')
-
-            for o_name, o_data in self.install_json_output_variables().items():
-                if o_name in layout_output_variables:
-                    display = o_data.get('display')
-                    if not self.validate_layout_display(self.input_table, display):
+            for o_name in self.install_json_output_variables():
+                if self.layout_json_outputs.get(o_name) is not None:
+                    display = self.layout_json_outputs.get(o_name, {}).get('display')
+                    valid = self.validate_layout_display(self.input_table, display)
+                    if display is None or not valid:
                         continue
-                outputs.append(self.install_json_output_variables().get(o_name))
+                for ov in self.install_json_output_variables().get(o_name):
+                    outputs.append(ov)
             self._output_permutations.append(outputs)
 
     def load_profiles(self):
@@ -468,7 +465,7 @@ class TcExProfile(TcExBin):
 
         job_id = randint(1000, 9999)
         output_variables = ij.get('playbook', {}).get('outputVariables') or []
-        if self.args.permutation_id:
+        if self.args.permutation_id is not None:
             output_variables = self._output_permutations[self.args.permutation_id]
         # for o in ij.get('playbook', {}).get('outputVariables') or []:
         for o in output_variables:
