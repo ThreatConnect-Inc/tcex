@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_playbook &mdash; TcEx 0.9.9 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 0.9.10 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.10
               </div>
 
 
@@ -566,7 +566,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (any): Results retrieved from DB</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;read variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;read variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -590,7 +590,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># TODO: Should &quot;None&quot; value be added to list?</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
 
         <span class="c1"># self.tcex.log.debug(u&#39;read data {}&#39;.format(self.tcex.s(data)))</span>
         <span class="k">return</span> <span class="n">data</span></div>

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App - Directory Structure &mdash; TcEx 0.9.9 documentation</title>
+  <title>App - Directory Structure &mdash; TcEx 0.9.10 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.10
               </div>
 
 
@@ -882,7 +882,10 @@ nbproject
 34
 35
 36
-37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+37
+38
+39
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot; Playbook App Template. &quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">args</span> <span class="kn">import</span> <span class="n">Args</span>
 
@@ -897,6 +900,9 @@ nbproject
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span> <span class="o">=</span> <span class="n">_tcex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="s1">&#39;Success&#39;</span>
+
+        <span class="c1"># automatically parse args on init</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform cleanup operations and gracefully exit the App.&quot;&quot;&quot;</span>
@@ -1037,8 +1043,7 @@ nbproject
 92
 93
 94
-95
-96</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+95</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
@@ -1091,9 +1096,6 @@ nbproject
         <span class="c1"># load App class</span>
         <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="n">tcex</span><span class="p">)</span>
 
-        <span class="c1"># parse args</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-
         <span class="c1"># perform prep/startup operations</span>
         <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
@@ -1114,6 +1116,8 @@ nbproject
                     <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
                 <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
                     <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                 <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>

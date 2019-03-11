@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_profile &mdash; TcEx 0.9.9 documentation</title>
+  <title>tcex.tcex_bin_profile &mdash; TcEx 0.9.10 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.10
               </div>
 
 
@@ -227,6 +227,14 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TcExProfile._to_bool"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile._to_bool">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_to_bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert string value to bool.&quot;&quot;&quot;</span>
+        <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">]:</span>
+            <span class="n">bool_value</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">bool_value</span></div>
+
 <div class="viewcode-block" id="TcExProfile.expand_valid_values"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.expand_valid_values">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">expand_valid_values</span><span class="p">(</span><span class="n">valid_values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Expand supported playbook variables to their full list.</span>
@@ -302,13 +310,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">gen_permutations</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
 
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="c1"># when IndexError is reached all data has been processed.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">):</span>
-                <span class="n">display</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">):</span>
-                    <span class="n">output_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_output_variables</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-                    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_variable</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">o_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_output_variables</span><span class="p">():</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">display</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_json_outputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display&#39;</span><span class="p">)</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_layout_display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_table</span><span class="p">,</span> <span class="n">display</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">display</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">ov</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json_output_variables</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">o_name</span><span class="p">):</span>
+                    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ov</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcExProfile.load_profiles"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_bin_profile.html#tcex.tcex_bin_profile.TcExProfile.load_profiles">[docs]</a>    <span class="k">def</span> <span class="nf">load_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -521,7 +534,7 @@
             <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="n">required</span> <span class="ow">and</span> <span class="n">required</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
-                <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_bool</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;choice&#39;</span><span class="p">:</span>
                 <span class="n">valid_values</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expand_valid_values</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;validValues&#39;</span><span class="p">,</span> <span class="p">[])))</span>
                 <span class="n">profile_args</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span>
@@ -628,7 +641,7 @@
 
         <span class="n">job_id</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
         <span class="n">output_variables</span> <span class="o">=</span> <span class="n">ij</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;playbook&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputVariables&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">output_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_permutations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">permutation_id</span><span class="p">]</span>
         <span class="c1"># for o in ij.get(&#39;playbook&#39;, {}).get(&#39;outputVariables&#39;) or []:</span>
         <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">output_variables</span><span class="p">:</span>

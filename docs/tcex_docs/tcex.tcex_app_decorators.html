@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.9 documentation</title>
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.10 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.10
               </div>
 
 
@@ -221,7 +221,7 @@
 
   <div class="section" id="module-tcex.tcex_app_decorators">
 <span id="tcex-tcex-app-decorators-module"></span><h1>tcex.tcex_app_decorators module<a class="headerlink" href="#module-tcex.tcex_app_decorators" title="Permalink to this headline">¶</a></h1>
-<p>App Decorators</p>
+<p>App Decorators Module.</p>
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.Benchmark">
 <em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">Benchmark</code><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark" title="Permalink to this definition">¶</a></dt>
@@ -243,7 +243,7 @@ helpful in troubleshooting performance issues with Apps.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Benchmark.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Benchmark.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Benchmark.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -276,7 +276,7 @@ helpful in troubleshooting performance issues with Apps.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Debug.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Debug.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Debug.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -310,7 +310,7 @@ parameters.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.FailOn.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOn.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOn.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -329,7 +329,7 @@ parameters.</p>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.IterateOnArg">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em>, <em>default=None</em>, <em>fail_on_empty=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Iterate on values stored in <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>This decorator will iterate over all value of the supplied arg and return results. This feature
@@ -350,7 +350,7 @@ processed.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.IterateOnArg.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -384,7 +384,7 @@ the “exit_message”, and exit the App with an exit code of 1.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.OnException.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnException.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnException.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -418,7 +418,7 @@ only have 1 exit message so this decorator would typically be used in App that u
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.OnSuccess.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#OnSuccess.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.OnSuccess.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -461,7 +461,7 @@ provided in the <code class="docutils literal notranslate"><span class="pre">att
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.Output.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#Output.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.Output.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -495,7 +495,7 @@ resolved value to the function.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.ReadArg.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -533,7 +533,7 @@ template is the recommended way of writing output data.</p>
 <dl class="method">
 <dt id="tcex.tcex_app_decorators.WriteOutput.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#WriteOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.WriteOutput.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement __call__ function for decorator</p>
+<dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
