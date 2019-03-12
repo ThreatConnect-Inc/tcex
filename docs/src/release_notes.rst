@@ -8,7 +8,7 @@ Release Notes
 
 0.9.11
 ------
-+ Reverted change to read method for null value returned when Array is True.
++ Reverted change to playbook module ``read()`` method for null value returned when Array is True.
 
 0.9.10
 ------
