@@ -413,8 +413,9 @@ class TcExPlaybook(object):
             if data is not None:
                 data = [data]
             else:
-                # TODO: Should "None" value be added to list?
-                data = [None]
+                # Adding none value to list breaks App logic. It's better to not request Array
+                # and build array externally if None values are required.
+                data = []
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))
         return data
