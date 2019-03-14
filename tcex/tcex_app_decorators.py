@@ -215,6 +215,7 @@ class IterateOnArg(object):
             # retrieve data from Redis if variable and always return and array.
             r = []
             arg_data = app.tcex.playbook.read(getattr(app.args, self.arg))
+            arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
             if not isinstance(arg_data, list):
                 arg_data = [arg_data]
 
@@ -225,9 +226,23 @@ class IterateOnArg(object):
                 app.tcex.log.warning(msg)
 
             for s in arg_data:
-                if s is None:
+                if s is None and self.default is not None:
                     # set value passed to method to default if value is None.
                     s = self.default
+                    app.tcex.log.debug(
+                        'a null value was passed, using default value "{}" instead.'.format(s)
+                    )
+
+                # Add logging for debug/troubleshooting
+                if (
+                    arg_type not in ['Binary', 'BinaryArray']
+                    and app.tcex.log.getEffectiveLevel() == 10
+                ):
+                    log_string = str(s)
+                    if len(log_string) > 100:
+                        log_string = '{} ...'.format(log_string[:100])
+                    app.tcex.log.debug('input value: {}'.format(log_string))
+
                 # update the first item in the tuple
                 args_list = list(args)
                 try:
