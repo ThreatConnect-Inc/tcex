@@ -23,6 +23,7 @@ from tcex.tcex_ti.mappings.group.group_types.report import Report
 from tcex.tcex_ti.mappings.group.group_types.signature import Signature
 from tcex.tcex_ti.mappings.group.group_types.threat import Threat
 from tcex.tcex_ti.mappings.victim import Victim
+from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 p = inflect.engine()
 
 try:
@@ -56,6 +57,10 @@ class TcExTi(object):
     def host(self, hostname, **kwargs):
         return Host(self.tcex, hostname, **kwargs)
 
+    def indicator(self, type=None, **kwargs):
+        if not type:
+            return Indicator(self.tcex, None, None, **kwargs)
+
     # Verify that these two are needed since they ARE custom indicator types.
     # def asn(self, as_number, **kwargs):
     #     return ASN(self.tcex, as_number, **kwargs)
@@ -63,6 +68,33 @@ class TcExTi(object):
     # def cidr(self, block, **kwargs):
     #     return CIDR(self.tcex, block, **kwargs)
     ##########################################################################
+
+    def group(self, type=None, **kwargs):
+        if not type:
+            return Group(self.tcex, None, None, **kwargs)
+
+        type = type.upper()
+        if type == 'ADVERSARY':
+            return Adversary(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'CAMPAIGN':
+            return Campaign(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'DOCUMENT':
+            return Document(self.tcex, kwargs.pop('name', None), kwargs.pop('file_name', None), **kwargs)
+        if type == 'EVENT':
+            return Event(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'EMAIL':
+            return Email(self.tcex, kwargs.pop('name', None), kwargs.pop('subject', None), kwargs.pop('header', None),
+                         kwargs.pop('body', None), **kwargs)
+        if type == 'INCIDENT':
+            return Incident(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'INTRUSTION SET':
+            return IntrusionSet(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'REPORT':
+            return Report(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'SIGNATURE':
+            return Signature(self.tcex, kwargs.pop('name', None), **kwargs)
+        if type == 'THREAT':
+            return Threat(self.tcex, kwargs.pop('name', None), **kwargs)
 
     def adversary(self, name, **kwargs):
         return Adversary(self.tcex, name, **kwargs)

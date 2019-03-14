@@ -47,9 +47,10 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
 class Indicator(TIMappings):
     def __init__(self, tcex, sub_type, summary, **kwargs):
-        super(Indicator, self).__init__(tcex, 'Indicator', 'indicators',  sub_type, **kwargs)
+        super(Indicator, self).__init__(tcex, 'Indicator', 'indicators',  sub_type, 'indicator', **kwargs)
 
-        self._data['summary'] = summary
+        if summary:
+            self._data['summary'] = summary
         # is this needed for all indicators or just URL?
 
         for arg, value in kwargs.items():

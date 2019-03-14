@@ -15,6 +15,7 @@ class TiTcRequest:
 
     def __init__(self, tcex):
         self.tcex = tcex
+        self.result_limit = 10000
 
     def create(self, type, sub_type, data, owner):
         if not owner:
@@ -25,6 +26,8 @@ class TiTcRequest:
             url = '/v2/{}'.format(type)
         else:
             url = '/v2/{}/{}'.format(type, sub_type)
+
+        print(url)
 
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
@@ -52,12 +55,46 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}'.format(type, sub_type, unique_id)
         return self.tcex.session.get(url, params=params)
 
-    def many(self, type, sub_type, **kwargs):
+    def many(self, type, sub_type, api_entity, **kwargs):
         params = self.construct_params(kwargs.items())
+
         if not sub_type:
             url = '/v2/{}'.format(type)
         else:
             url = '/v2/{}/{}'.format(type, sub_type)
+
+        yield from self._iterate(url, params, api_entity)
+
+    def _iterate(self, url, params, api_entity):
+        params['resultLimit'] = self.result_limit
+        should_iterate = True
+        result_offset = 0
+        while should_iterate:
+            params['resultOffset'] = result_offset
+            response = self.tcex.session.get(url, params=params)
+            if not self.success(response):
+                """
+                STILL NEED TO HANDLE THIS
+                """
+                should_iterate = False
+            data = response.json().get('data').get(api_entity)
+
+            if len(data) < self.result_limit:
+                should_iterate = False
+            result_offset += self.result_limit
+
+            for result in data:
+                yield result
+
+    def request(self, type, sub_type, result_limit, result_offset, **kwargs):
+        params = self.construct_params(kwargs.items())
+        params['resultLimit'] = result_limit
+        params['resultOffset'] = result_offset
+        if not sub_type:
+            url = '/v2/{}'.format(type)
+        else:
+            url = '/v2/{}/{}'.format(type, sub_type)
+
         return self.tcex.session.get(url, params=params)
 
     def upload(self, type, sub_type, unique_id, data, update_if_exists=True):
@@ -126,29 +163,53 @@ class TiTcRequest:
 
         return self.tcex.session.get(url, params=params)
 
-    def indicator_associations(self, type, sub_type, unique_id):
+    def indicator_associations(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/indicators'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/indicators'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'indicator')
 
-    def group_associations(self, type, sub_type, unique_id):
+    def group_associations(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/groups'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/groups'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'group')
 
-    def victim_asset_associations(self, type, sub_type, unique_id):
+    def victim_asset_associations(self, type, sub_type, unique_id, branch_type, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
-            url = '/v2/{}/{}/victimAssets'.format(type, unique_id)
+            url = '/v2/{}/{}/victimAssets/{}'.format(type, unique_id, branch_type)
         else:
-            url = '/v2/{}/{}/{}/victimAssets'.format(type, sub_type, unique_id)
+            url = '/v2/{}/{}/{}/victimAssets/{}'.format(type, sub_type, unique_id, branch_type)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimAsset')
+
+    def indicator_associations_types(self, type, sub_type, unique_id, association_type, api_branch=None, api_entity=None):
+        api_branch = api_branch or association_type.api_sub_type
+        api_entity = api_entity or association_type.api_entity
+        if not sub_type:
+            url = '/v2/{}/{}/indicators/{}'.format(type, unique_id, api_branch)
+        else:
+            url = '/v2/{}/{}/{}/indicators/{}'.format(type, sub_type, unique_id, api_branch)
+
+        yield from self._iterate(url, {}, api_entity)
+
+    def group_associations_types(self, type, sub_type, unique_id, association_type, api_branch=None, api_entity=None):
+        api_branch = api_branch or association_type.api_sub_type
+        api_entity = api_entity or association_type.api_entity
+
+        if not sub_type:
+            url = '/v2/{}/{}/groups/{}'.format(type, unique_id, api_branch)
+        else:
+            url = '/v2/{}/{}/{}/groups/{}'.format(type, sub_type, unique_id, api_branch)
+
+        yield from self._iterate(url, {}, api_entity)
 
     def add_association(self, type, sub_type, unique_id, target_type, target_sub_type, target_unique_id):
         return self._association(type, sub_type, unique_id, target_type, target_sub_type, target_unique_id)
@@ -228,61 +289,68 @@ class TiTcRequest:
 
         return self.tcex.session.get(url)
 
-    def victims(self, type, sub_type, unique_id):
+    def victims(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victims'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victims'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victim')
 
-    def victim_assets(self, type, sub_type, unique_id):
+    def victim_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimAssets')
 
-    def victim_email_assets(self, type, sub_type, unique_id):
+    def victim_email_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/emailAddresses'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets/emailAddresses'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimEmail')
 
-    def victim_network_assets(self, type, sub_type, unique_id):
+    def victim_network_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/networkAccounts'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets/networkAccounts'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimNetwork')
 
-    def victim_phone_assets(self, type, sub_type, unique_id):
+    def victim_phone_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/phoneNumbers'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets/phoneNumbers'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimPhone')
 
-    def victim_social_assets(self, type, sub_type, unique_id):
+    def victim_social_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/socialNetworks'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets/socialNetworks'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimSocial')
 
-    def victim_web_assets(self, type, sub_type, unique_id):
+    def victim_web_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/webSites'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/victimAssets/webSites'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'victimWeb')
 
     def victim_email_asset(self, type, sub_type, unique_id, asset_id, action='GET'):
         if not sub_type:
@@ -396,21 +464,23 @@ class TiTcRequest:
     def get_tag(self, type, sub_type, unique_id, tag):
         return self.tag(type, sub_type, unique_id, tag)
 
-    def tags(self, type, sub_type, unique_id):
+    def tags(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/tags'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/tags'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'tag')
 
-    def labels(self, type, sub_type, unique_id):
+    def labels(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/securityLabels'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/securityLabels'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'securityLabel')
 
     def add_label(self, type, sub_type, unique_id, label):
         return self.label(type, sub_type, unique_id, label, action='ADD')
@@ -440,19 +510,15 @@ class TiTcRequest:
 
         return None
 
-    def attributes(self, type, sub_type, unique_id, includes=None, include_additional=False):
-        params = {}
-        if includes:
-            params['includes'] = includes.join(',')
-        if include_additional:
-            params['includeAdditional'] = include_additional
+    def attributes(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
 
         if not sub_type:
             url = '/v2/{}/{}/attributes'.format(type, unique_id)
         else:
             url = '/v2/{}/{}/{}/attributes'.format(type, sub_type, unique_id)
 
-        return self.tcex.session.get(url, params=params)
+        yield from self._iterate(url, params, 'attribute')
 
     def attribute(self, type, sub_type, unique_id, attribute_id, action='GET'):
         action = action.upper()
@@ -483,13 +549,14 @@ class TiTcRequest:
 
         return self.tcex.session.post(url, json={'type': attribute_type, 'value': attribute_value})
 
-    def attribute_labels(self, type, sub_type, unique_id, attribute_id):
+    def attribute_labels(self, type, sub_type, unique_id, attribute_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         if not sub_type:
             url = '/v2/{}/{}/attributes/{}/securityLabels'.format(type, unique_id, attribute_id)
         else:
             url = '/v2/{}/{}/{}/attributes/{}/securityLabels'.format(type, sub_type, unique_id, attribute_id)
 
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'securityLabel')
 
     def attribute_label(self, type, sub_type, unique_id, attribute_id, label, action='GET'):
         action = action.upper()
@@ -519,21 +586,25 @@ class TiTcRequest:
     def add_attribute_label(self, type, sub_type, unique_id, attribute_id, label):
         return self.attribute_label(type, sub_type, unique_id, attribute_id, label, action='ADD')
 
-    def adversary_assets(self, type, sub_type, unique_id):
+    def adversary_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/adversaryAssets'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'adversaryAsset')
 
-    def adversary_handle_assets(self, type, sub_type, unique_id):
+    def adversary_handle_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/adversaryAssets/handles'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'adversaryHandle')
 
-    def adversary_phone_assets(self, type, sub_type, unique_id):
+    def adversary_phone_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/adversaryAssets/phoneNumbers'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'adversaryPhone')
 
-    def adversary_url_assets(self, type, sub_type, unique_id):
+    def adversary_url_assets(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/adversaryAssets/urls'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'adversaryUrl')
 
     def adversary_url_asset(self, type, sub_type, unique_id, asset_id, action='GET'):
         url = '/v2/{}/{}/{}/adversaryAssets/urls/{}'.format(type, sub_type, unique_id, asset_id)
@@ -592,9 +663,10 @@ class TiTcRequest:
         asset = {'handle': name}
         return self.tcex.session.post(asset_url, json=asset)
 
-    def assignees(self, type, sub_type, unique_id):
+    def assignees(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/assignees'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'assignee')
 
     def assignee(self, type, sub_type, unique_id, assignee_id, action='GET'):
         url = '/v2/{}/{}/{}/assignees/{}'.format(type, sub_type, unique_id, assignee_id)
@@ -614,9 +686,10 @@ class TiTcRequest:
     def add_assignee(self, type, sub_type, unique_id, assignee_id):
         return self.assignee(type, sub_type, unique_id, assignee_id, action='ADD')
 
-    def escalatees(self, type, sub_type, unique_id):
+    def escalatees(self, type, sub_type, unique_id, **kwargs):
+        params = self.construct_params(kwargs.items())
         url = '/v2/{}/{}/{}/escalatees'.format(type, sub_type, unique_id)
-        return self.tcex.session.get(url)
+        yield from self._iterate(url, params, 'escalatee')
 
     def escalatee(self, type, sub_type, unique_id, escalatee_id, action='GET'):
         url = '/v2/{}/{}/{}/escalatees/{}'.format(type, sub_type, unique_id, escalatee_id)

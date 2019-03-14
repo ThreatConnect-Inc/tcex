@@ -1,4 +1,4 @@
-from tcex.tcex_ti.mappings import Indicator
+from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
 
 class Mutex(Indicator):

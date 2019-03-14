@@ -4,7 +4,7 @@ from tcex.tcex_utils import TcExUtils
 
 
 class TIMappings(object):
-    def __init__(self, tcex, type, api_type, sub_type, **kwargs):
+    def __init__(self, tcex, type, api_type, sub_type, api_entity, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,6 +20,7 @@ class TIMappings(object):
         self._api_sub_type = sub_type
         self._api_type = api_type
         self._unique_id = None
+        self._api_entity = api_entity
 
         self._utils = TcExUtils()
         self._tc_requests = TiTcRequest(self._tcex)
@@ -51,6 +52,15 @@ class TIMappings(object):
     def api_type(self):
         """Return Group type."""
         return self._api_type
+
+    @property
+    def api_entity(self):
+        """Return Group type."""
+        return self._api_entity
+
+    @api_entity.setter
+    def api_entity(self, api_entity):
+        self._api_entity = api_entity
 
     @api_type.setter
     def api_type(self, api_type):
@@ -97,6 +107,15 @@ class TIMappings(object):
             return
 
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, self._data)
+
+    def single(self, **kwargs):
+        return self.tc_requests.single(self.api_type, self.api_sub_type, self.unique_id, **kwargs)
+
+    def many(self, **kwargs):
+        yield from self.tc_requests.many(self.api_type, self.api_sub_type, self.api_entity, **kwargs)
+
+    def request(self, result_limit, result_offset, **kwargs):
+        return self.tc_requests.request(self.api_type, self.api_sub_type, result_limit, result_offset, **kwargs)
 
     def tags(self):
         if not self.can_update():
@@ -190,6 +209,25 @@ class TIMappings(object):
             return
 
         return self.tc_requests.victim_asset_associations(self.api_type, self.api_sub_type, self.unique_id)
+
+    def indicator_associations_types(self, type):
+        if not self.can_update():
+            return
+
+        return self.tc_requests.indicator_associations_types(self.api_type, self.api_sub_type, self.unique_id, type)
+
+    def group_associations_types(self, type, api_entity=None, api_branch=None):
+        if not self.can_update():
+            return
+
+        return self.tc_requests.group_associations_types(self.api_type, self.api_sub_type, self.unique_id, type,
+                                                        api_entity=api_entity, api_branch=api_branch)
+
+    def victim_asset_associations_type(self, type):
+        if not self.can_update():
+            return
+
+        return self.tc_requests.victim_asset_associations(self.api_type, self.api_sub_type, self.unique_id, type)
 
     def add_association(self, target):
         if not self.can_update():

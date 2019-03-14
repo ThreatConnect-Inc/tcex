@@ -1,4 +1,4 @@
-from tcex.tcex_ti.mappings.group import Group
+from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Document(Group):
@@ -22,6 +22,7 @@ class Document(Group):
         """
         super(Document, self).__init__(tcex, 'documents', name, **kwargs)
         self._data['fileName'] = file_name
+        self.api_entity = 'document'
         # file data/content to upload
 
     def file_content(self, file_content, update_if_exists=True):

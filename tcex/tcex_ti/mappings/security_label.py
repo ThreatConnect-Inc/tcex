@@ -9,7 +9,7 @@ module = __import__(__name__)
 
 class SecurityLabel(TIMappings):
     def __init__(self, tcex, name, **kwargs):
-        super(SecurityLabel, self).__init__(tcex, 'SecurityLabel', **kwargs)
+        super(SecurityLabel, self).__init__(tcex, 'SecurityLabel', 'securitylabels', **kwargs)
         self._data['type'] = 'securityLabels'
         self._data['sub_type'] = None
         self._data['name'] = name

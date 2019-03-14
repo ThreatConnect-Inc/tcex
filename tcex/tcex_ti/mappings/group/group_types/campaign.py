@@ -1,4 +1,4 @@
-from tcex.tcex_ti.mappings.group import Group
+from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Campaign(Group):
@@ -17,6 +17,7 @@ class Campaign(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Campaign, self).__init__(tcex, 'campaigns', name, **kwargs)
+        self.api_entity = 'campaign'
 
     def first_seen(self, first_seen):
         """Set Document first seen."""

@@ -21,6 +21,7 @@ class Address(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         super(Address, self).__init__(tcex, 'addresses', ip, **kwargs)
+        self._api_entity = 'address'
         self._data['ip'] = ip
 
     def dns_resolution(self):

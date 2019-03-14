@@ -9,8 +9,9 @@ except ImportError:
 
 class Group(TIMappings):
     def __init__(self, tcex, sub_type, name, **kwargs):
-        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, **kwargs)
-        self._data['name'] = name
+        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group', **kwargs)
+        if name:
+            self._data['name'] = name
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)

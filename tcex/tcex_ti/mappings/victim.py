@@ -9,7 +9,7 @@ module = __import__(__name__)
 
 class Victim(TIMappings):
     def __init__(self, tcex, name, **kwargs):
-        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, **kwargs)
+        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim', **kwargs)
         self._data['name'] = name
 
         for arg, value in kwargs.items():

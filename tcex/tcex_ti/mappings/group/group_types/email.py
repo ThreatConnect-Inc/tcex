@@ -1,4 +1,4 @@
-from tcex.tcex_ti.mappings.group import Group
+from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Email(Group):
