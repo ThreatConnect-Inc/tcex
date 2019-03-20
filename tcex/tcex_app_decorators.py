@@ -96,8 +96,8 @@ class Debug(object):
         return debug
 
 
-class FailOn(object):
-    """Fail App if conditions are met.
+class FailOnInput(object):
+    """Fail App if input value conditions are met.
 
     This decorator allows for the App to exit on conditions defined in the function
     parameters.
@@ -106,7 +106,69 @@ class FailOn(object):
         :linenos:
         :lineno-start: 1
 
-        @FailOn(arg='fail_on_false', values=['false'], msg='Operation returned a value of "false".')
+        @FailOnInput(values=[None, ''], msg='Invalid input provided.', arg=None)
+        def my_method(data):
+            return data.lowercase()
+    """
+
+    def __init__(self, values, msg, arg=None):
+        """Initialize Class Properties.
+
+        Args:
+            values (list): The values that, if matched, would trigger an exit.
+            msg (str): The message to send to exit method.
+            arg (str, optional): Defaults to None. The args Namespace value to use for the
+                condition. If None the first value passed to the function will be used.
+        """
+        self.arg = arg
+        self.msg = msg
+        self.values = values
+
+    def __call__(self, fn):
+        """Implement __call__ function for decorator.
+
+        Args:
+            fn (function): The decorated function.
+
+        Returns:
+            function: The custom decorator function.
+        """
+
+        def fail(app, *args, **kwargs):
+            """Call the function and store or append return value.
+
+            Args:
+                app (class): The instance of the App class "self".
+            """
+
+            if self.arg is None:
+                # grab the first arg passed to function to use in condition
+                conditional_value = app.tcex.playbook.read(list(args)[0])
+            else:
+                # grab the arg from the args names space to use in condition
+                conditional_value = app.tcex.playbook.read(getattr(app.args, self.arg))
+
+            if conditional_value in self.values:
+                app.tcex.exit(1, self.msg)
+
+            return fn(app, *args, **kwargs)
+
+        return fail
+
+
+class FailOnOutput(object):
+    """Fail App if return value (output) value conditions are met.
+
+    This decorator allows for the App to exit on conditions defined in the function
+    parameters.
+
+    .. code-block:: python
+        :linenos:
+        :lineno-start: 1
+
+        @FailOnOutput(
+            arg='fail_on_false', values=['false'], msg='Operation returned a value of "false".'
+        )
         def my_method(data):
             return data.lowercase()
     """
@@ -121,7 +183,6 @@ class FailOn(object):
             msg (str): The message to send to exit method.
 
         """
-
         self.arg = arg
         self.msg = msg
         self.values = values
@@ -277,7 +338,6 @@ class OnException(object):
         Args:
             msg (str): The message to send to exit method.
         """
-
         self.msg = msg
 
     def __call__(self, fn):
@@ -346,7 +406,6 @@ class OnSuccess(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             app.exit_message = self.msg
             return fn(app, *args, **kwargs)
 
@@ -398,7 +457,6 @@ class Output(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             data = fn(app, *args, **kwargs)
             attr = getattr(app, self.attribute)
             if isinstance(data, list) and isinstance(attr, list):
@@ -462,7 +520,6 @@ class ReadArg(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             # retrieve data from Redis and call decorated function
             args_list = list(args)
             try:
@@ -508,7 +565,6 @@ class WriteOutput(object):
             overwrite (bool): When True and more than one value is provided for the same variable
                 the previous value will be overwritten.
         """
-
         self.key = key
         self.overwrite = overwrite
         self.value = value
@@ -530,7 +586,6 @@ class WriteOutput(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             data = fn(app, *args, **kwargs)
             index = '{}-{}'.format(self.key, self.variable_type)
             if self.value is not None:
