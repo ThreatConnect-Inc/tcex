@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.11 documentation</title>
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.12 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.11
+                0.9.12
               </div>
 
 
@@ -294,22 +294,60 @@ helpful in troubleshooting performance issues with Apps.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="tcex.tcex_app_decorators.FailOn">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOn</code><span class="sig-paren">(</span><em>arg</em>, <em>values</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOn" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_app_decorators.FailOnInput">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOnInput</code><span class="sig-paren">(</span><em>enable</em>, <em>values</em>, <em>msg</em>, <em>arg=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Fail App if conditions are met.</p>
+<p>Fail App if input value conditions are met.</p>
 <p>This decorator allows for the App to exit on conditions defined in the function
 parameters.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@FailOn</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fail_on_false&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;false&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Operation returned a value of &quot;false&quot;.&#39;</span><span class="p">)</span>
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@FailOnInput</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Invalid input provided.&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
 <dl class="method">
-<dt id="tcex.tcex_app_decorators.FailOn.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOn.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOn.__call__" title="Permalink to this definition">¶</a></dt>
+<dt id="tcex.tcex_app_decorators.FailOnInput.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnInput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnInput.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement __call__ function for decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<em>function</em>) – The decorated function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The custom decorator function.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tcex.tcex_app_decorators.FailOnOutput">
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">FailOnOutput</code><span class="sig-paren">(</span><em>enable</em>, <em>values</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Fail App if return value (output) value conditions are met.</p>
+<p>This decorator allows for the App to exit on conditions defined in the function
+parameters.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@FailOnOutput</span><span class="p">(</span>
+    <span class="n">arg</span><span class="o">=</span><span class="s1">&#39;fail_on_false&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;false&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Operation returned a value of &quot;false&quot;.&#39;</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lowercase</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="method">
+<dt id="tcex.tcex_app_decorators.FailOnOutput.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#FailOnOutput.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.FailOnOutput.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement __call__ function for decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
