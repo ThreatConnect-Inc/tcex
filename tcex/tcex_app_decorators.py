@@ -187,10 +187,9 @@ class IterateOnArg(object):
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
-            default ([type], optional): Defaults to None. Default value to pass to method if arg
-                value is None.
-            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty String or
-                StringArray.
+            default (str, optional): Defaults to None. Default value to pass to method if arg
+                value is None. Only supported for String or StringArray.
+            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
         """
         self.arg = arg
         self.default = default
@@ -215,7 +214,11 @@ class IterateOnArg(object):
 
             # retrieve data from Redis if variable and always return and array.
             r = []
-            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), True)
+            arg_data = app.tcex.playbook.read(getattr(app.args, self.arg))
+            arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
+            if not isinstance(arg_data, list):
+                arg_data = [arg_data]
+
             if not arg_data:
                 msg = 'No data retrieved for arg ({}).'.format(self.arg)
                 if self.fail_on_empty:
@@ -223,9 +226,23 @@ class IterateOnArg(object):
                 app.tcex.log.warning(msg)
 
             for s in arg_data:
-                if s is None:
+                if s is None and self.default is not None:
                     # set value passed to method to default if value is None.
                     s = self.default
+                    app.tcex.log.debug(
+                        'a null input was provided, using default value "{}" instead.'.format(s)
+                    )
+
+                # Add logging for debug/troubleshooting
+                if (
+                    arg_type not in ['Binary', 'BinaryArray']
+                    and app.tcex.log.getEffectiveLevel() == 10
+                ):
+                    log_string = str(s)
+                    if len(log_string) > 100:
+                        log_string = '{} ...'.format(log_string[:100])
+                    app.tcex.log.debug('input value: {}'.format(log_string))
+
                 # update the first item in the tuple
                 args_list = list(args)
                 try:
@@ -410,6 +427,7 @@ class ReadArg(object):
             print('color', color)
     """
 
+    # def __init__(self, arg, array=False, default=None, fail_on_empty=True):
     def __init__(self, arg, array=False):
         """Initialize Class Properties.
 
@@ -417,10 +435,16 @@ class ReadArg(object):
             arg (str): The arg name from the App which contains the input. This input can be
                 a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or
                 TCEntityArray.
+            array (bool, optional): Defaults to False. If True the arg value will always be
+                returned as an array.
+            default (str, optional): Defaults to None. Default value to pass to method if arg
+                value is None. Only supported for String or StringArray.
+            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
         """
-
         self.array = array
         self.arg = arg
+        # self.default = default
+        # self.fail_on_empty = fail_on_empty
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.

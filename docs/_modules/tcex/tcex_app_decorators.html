@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.9 documentation</title>
+  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.11 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.11
               </div>
 
 
@@ -175,7 +175,7 @@
 
   <h1>Source code for tcex.tcex_app_decorators</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;App Decorators&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;App Decorators Module.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="c1"># import time</span>
@@ -199,7 +199,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Benchmark.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Benchmark.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -245,7 +245,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Debug.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Debug.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -288,7 +288,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            arg (str): The args Namespace value that controls whether the App should exit. Arg</span>
@@ -303,7 +303,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 
 <div class="viewcode-block" id="FailOn.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOn.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -356,19 +356,23 @@
 <span class="sd">            return value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fail_on_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            arg (str): The arg name from the App which contains the input. This input can be</span>
 <span class="sd">                a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or</span>
 <span class="sd">                TCEntityArray.</span>
+<span class="sd">            default (str, optional): Defaults to None. Default value to pass to method if arg</span>
+<span class="sd">                value is None. Only supported for String or StringArray.</span>
+<span class="sd">            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_empty</span> <span class="o">=</span> <span class="n">fail_on_empty</span>
 
 <div class="viewcode-block" id="IterateOnArg.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.IterateOnArg.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -386,7 +390,20 @@
 
             <span class="c1"># retrieve data from Redis if variable and always return and array.</span>
             <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">),</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">arg_data</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">arg_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg_data</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arg_data</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No data retrieved for arg (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail_on_empty</span><span class="p">:</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># set value passed to method to default if value is None.</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
                 <span class="c1"># update the first item in the tuple</span>
                 <span class="n">args_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -416,7 +433,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            msg (str): The message to send to exit method.</span>
@@ -425,7 +442,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
 
 <div class="viewcode-block" id="OnException.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnException.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -466,7 +483,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            msg (str): The message to send to exit method.</span>
@@ -475,7 +492,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
 
 <div class="viewcode-block" id="OnSuccess.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnSuccess.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -518,7 +535,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            attribute (str): The name of the App attribute to write data.</span>
@@ -527,7 +544,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attribute</span> <span class="o">=</span> <span class="n">attribute</span>
 
 <div class="viewcode-block" id="Output.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.Output.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -571,20 +588,27 @@
 <span class="sd">            print(&#39;color&#39;, color)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># def __init__(self, arg, array=False, default=None, fail_on_empty=True):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            arg (str): The arg name from the App which contains the input. This input can be</span>
 <span class="sd">                a Binary, BinaryArray, KeyValue, KeyValueArray, String, StringArray, TCEntity, or</span>
 <span class="sd">                TCEntityArray.</span>
+<span class="sd">            array (bool, optional): Defaults to False. If True the arg value will always be</span>
+<span class="sd">                returned as an array.</span>
+<span class="sd">            default (str, optional): Defaults to None. Default value to pass to method if arg</span>
+<span class="sd">                value is None. Only supported for String or StringArray.</span>
+<span class="sd">            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">array</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="c1"># self.default = default</span>
+        <span class="c1"># self.fail_on_empty = fail_on_empty</span>
 
 <div class="viewcode-block" id="ReadArg.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.ReadArg.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
@@ -633,7 +657,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">variable_type</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize Class Properties</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): The name of the playbook output variable.</span>
@@ -652,7 +676,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span> <span class="o">=</span> <span class="n">variable_type</span>
 
 <div class="viewcode-block" id="WriteOutput.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.WriteOutput.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fn (function): The decorated function.</span>
