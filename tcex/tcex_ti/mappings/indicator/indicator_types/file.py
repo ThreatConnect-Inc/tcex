@@ -26,16 +26,24 @@ class File(Indicator):
             size (str, kwargs): The file size for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        summary = self.build_summary(md5, sha1, sha256)  # build the indicator summary
-        super(File, self).__init__(tcex, 'files', summary, **kwargs)
+        super(File, self).__init__(tcex, 'files', **kwargs)
+        self.api_entity = 'file'
         if md5:
-            self._data['md5'] = md5
+            self.data['md5'] = md5
         if sha1:
-            self._data['sha1'] = sha1
+            self.data['sha1'] = sha1
         if sha256:
-            self._data['sha256'] = sha256
-        if 'size' not in self._data:
-            self._data['size'] = '0'
+            self.data['sha256'] = sha256
+        if 'size' not in self.data:
+            self.data['size'] = 0
+
+    def can_create(self):
+        if self.data.get('md5') or self.data.get('sha1') or self.data.get('sha256'):
+            return True
+        return False
+
+    def _set_unique_id(self, json_response):
+        self.unique_id = json_response.get('md5') or json_response.get('sha1') or json_response.get('sha256') or ''
 
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):

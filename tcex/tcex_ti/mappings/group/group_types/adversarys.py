@@ -16,6 +16,7 @@ class Adversary(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Adversary, self).__init__(tcex, 'adversaries', name, **kwargs)
+        self.api_entity = 'adversary'
 
     def add_asset(self, type, asset_name):
         if type == 'PHONE':

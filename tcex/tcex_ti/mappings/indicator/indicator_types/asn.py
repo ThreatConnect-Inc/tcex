@@ -20,6 +20,15 @@ class ASN(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(ASN, self).__init__(tcex, 'asns', as_number, **kwargs)
+        super(ASN, self).__init__(tcex, 'asns', **kwargs)
+        self._api_entity = 'asn'
         self._data['as_number'] = as_number
+
+        def can_create(self):
+            if self.data.get('as_number'):
+                return True
+            return False
+
+        def _set_unique_id(self, json_response):
+            self.unique_id = json_response.get('as_number', '')
 

@@ -29,6 +29,7 @@ class Incident(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Incident, self).__init__(tcex, 'incidents', name, **kwargs)
+        self.api_entity = 'incident'
 
     def status(self, status):
         """Return Email to."""

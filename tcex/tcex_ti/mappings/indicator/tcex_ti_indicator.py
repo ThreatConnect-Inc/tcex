@@ -46,20 +46,18 @@ def custom_indicator_class_factory(indicator_type, base_class, class_dict, value
 
 
 class Indicator(TIMappings):
-    def __init__(self, tcex, sub_type, summary, **kwargs):
+    def __init__(self, tcex, sub_type, **kwargs):
         super(Indicator, self).__init__(tcex, 'Indicator', 'indicators',  sub_type, 'indicator', **kwargs)
 
-        if summary:
-            self._data['summary'] = summary
+        # if summary:
+        #     self._data['summary'] = summary
         # is this needed for all indicators or just URL?
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
     def can_create(self):
-        if self._data.get('summary'):
-            return True
-        return False
+        return True
 
     @property
     def _metadata_map(self):
@@ -150,5 +148,6 @@ class Indicator(TIMappings):
     def __str__(self):
         """Return string represtentation of object"""
         return json.dumps(self._data, indent=4)
+
 
 

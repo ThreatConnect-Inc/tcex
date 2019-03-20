@@ -21,6 +21,7 @@ class Report(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Report, self).__init__(tcex, 'reports', name, **kwargs)
+        self.api_entity = 'report'
         # file data/content to upload
 
     def file_content(self, file_content, update_if_exists=True):

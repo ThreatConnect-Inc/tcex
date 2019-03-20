@@ -7,7 +7,7 @@ class CIDR(Indicator):
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
-    def __init__(self, block, **kwargs):
+    def __init__(self, tcex, block, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,5 +20,14 @@ class CIDR(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(CIDR, self).__init__('CIDR', block, **kwargs)
+        super(CIDR, self).__init__(tcex, 'CIDR', **kwargs)
+        self.api_entity = 'cidr'
         self._data['block'] = block
+
+        def can_create(self):
+            if self.data.get('block'):
+                return True
+            return False
+
+    def _set_unique_id(self, json_response):
+        self.unique_id = json_response.get('block', '')

@@ -30,6 +30,7 @@ class Signature(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Signature, self).__init__(tcex, 'signatures', name, **kwargs)
+        self.api_entity = 'signature'
         self._data['fileName'] = file_name
         self._data['fileType'] = file_type
         self._data['fileText'] = file_text

@@ -22,8 +22,17 @@ class Host(Indicator):
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Host, self).__init__(tcex, 'hosts', hostname, **kwargs)
+        super(Host, self).__init__(tcex, 'hosts', **kwargs)
+        self.api_entity = 'host'
         self._data['hostName'] = hostname
+
+    def can_create(self):
+        if self.data.get('hostName'):
+            return True
+        return False
+
+    def _set_unique_id(self, json_response):
+        self.unique_id = json_response.get('hostName', '')
 
     def dns_resolution(self):
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

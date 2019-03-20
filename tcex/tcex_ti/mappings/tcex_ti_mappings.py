@@ -94,6 +94,9 @@ class TIMappings(object):
 
         response = self.tc_requests.create(self.api_type, self.api_sub_type, self._data, owner)
 
+        if self.tc_requests.success(response):
+            self._set_unique_id(response.json().get('data').get(self.api_entity))
+
         return response
 
     def delete(self):
@@ -123,7 +126,7 @@ class TIMappings(object):
 
         return self.tc_requests.tags(self.api_type, self.api_sub_type, self.unique_id)
 
-    def tag(self, name, action='GET'):
+    def tag(self, name, action='ADD'):
         if not self.can_update():
             return
 
@@ -160,7 +163,7 @@ class TIMappings(object):
 
         return self.tc_requests.labels(self.api_type, self.api_sub_type, self.unique_id)
 
-    def label(self, label, action='GET'):
+    def label(self, label, action='ADD'):
         if not self.can_update():
             return
         if action == 'GET':
@@ -330,6 +333,10 @@ class TIMappings(object):
         if self.unique_id:
             return True
         return False
+
+    """ Over ridden by the sub classes"""
+    def _set_unique_id(self, response_json):
+        pass
 
     def __str__(self):
         """Return string representation of object."""

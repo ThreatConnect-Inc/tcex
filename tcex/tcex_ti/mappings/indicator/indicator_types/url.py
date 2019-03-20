@@ -20,5 +20,16 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__(tcex, 'urls', text, **kwargs)
-        self._data['text'] = text
+        super(URL, self).__init__(tcex, 'urls', **kwargs)
+        self.api_entity = 'url'
+        self.data['text'] = text
+
+        def can_create(self):
+            if self.data.get('text'):
+                return True
+            return False
+
+        def _set_unique_id(self, json_response):
+            self.unique_id = json_response.get('text', '')
+
+

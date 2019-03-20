@@ -23,6 +23,9 @@ class Victim(TIMappings):
     def add_key_value(self, key, value):
         self._data[key] = value
 
+    def _set_unique_id(self, json_response):
+        self.unique_id = json_response.get('id', '')
+
     @property
     def name(self):
         """Return Indicator summary."""

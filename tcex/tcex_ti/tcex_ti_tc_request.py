@@ -28,6 +28,7 @@ class TiTcRequest:
             url = '/v2/{}/{}'.format(type, sub_type)
 
         print(url)
+        print(data)
 
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 

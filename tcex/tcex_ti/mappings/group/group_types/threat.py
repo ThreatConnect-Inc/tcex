@@ -16,4 +16,5 @@ class Threat(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Threat, self).__init__(tcex, 'threats', name, **kwargs)
+        self.api_entity = 'threat'
 

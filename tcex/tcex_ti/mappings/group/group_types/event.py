@@ -24,6 +24,7 @@ class Event(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Event, self).__init__(tcex, 'events', name, **kwargs)
+        self.api_entity = 'event'
 
     def status(self, status):
         """Return Email to."""

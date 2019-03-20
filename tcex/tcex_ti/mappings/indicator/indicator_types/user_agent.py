@@ -7,7 +7,7 @@ class UserAgent(Indicator):
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
-    def __init__(self, text, **kwargs):
+    def __init__(self, tcex, text, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,4 +20,14 @@ class UserAgent(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(UserAgent, self).__init__('userAgents', text, **kwargs)
+        super(UserAgent, self).__init__(tcex, 'userAgents', **kwargs)
+        self.data['text'] = text
+        self.api_entity = 'userAgent'
+
+        def can_create(self):
+            if self.data.get('text'):
+                return True
+            return False
+
+        def _set_unique_id(self, json_response):
+            self.unique_id = json_response.get('text', '')

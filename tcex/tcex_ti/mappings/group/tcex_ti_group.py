@@ -72,6 +72,9 @@ class Group(TIMappings):
         """Return Group name."""
         return self._data.get('name')
 
+    def _set_unique_id(self, json_response):
+        self.unique_id = json_response.get('id', '')
+
     @staticmethod
     def sub_types():
         """All supported ThreatConnect Group types."""

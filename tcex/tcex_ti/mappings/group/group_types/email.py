@@ -21,6 +21,7 @@ class Email(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Email, self).__init__(tcex, 'emails', name, **kwargs)
+        self.api_entity = 'email'
         self._data['subject'] = subject
         self._data['header'] = header
         self._data['body'] = body

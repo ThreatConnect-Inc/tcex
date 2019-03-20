@@ -7,7 +7,7 @@ class Mutex(Indicator):
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
-    def __init__(self, mutex, **kwargs):
+    def __init__(self, tcex, mutex, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,4 +20,15 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Mutex, self).__init__('mutexes', mutex, **kwargs)
+        super(Mutex, self).__init__(tcex, 'mutexes', **kwargs)
+        self.data['mutex'] = mutex
+        self.api_entity = 'mutex'
+
+        def can_create(self):
+            if self.data.get('mutex'):
+                return True
+            return False
+
+        def _set_unique_id(self, json_response):
+            self.unique_id = json_response.get('mutex', '')
+

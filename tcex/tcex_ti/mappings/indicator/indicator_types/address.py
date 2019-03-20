@@ -20,9 +20,17 @@ class Address(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(Address, self).__init__(tcex, 'addresses', ip, **kwargs)
+        super(Address, self).__init__(tcex, 'addresses', **kwargs)
         self._api_entity = 'address'
-        self._data['ip'] = ip
+        self.data['ip'] = ip
+
+        def can_create(self):
+            if self.data.get('ip'):
+                return True
+            return False
+
+        def _set_unique_id(self, json_response):
+            self.unique_id = json_response.get('ip', '')
 
     def dns_resolution(self):
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

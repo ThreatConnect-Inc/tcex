@@ -7,7 +7,7 @@ class RegistryKey(Indicator):
     # TODO: enable when support for py2 is dropped.
     # __slots__ = []
 
-    def __init__(self, key_name, value_name, value_type, **kwargs):
+    def __init__(self, tcex, key_name, value_name, value_type, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -22,5 +22,4 @@ class RegistryKey(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        summary = self.build_summary(key_name, value_name, value_type)
-        super(RegistryKey, self).__init__('Registry Key', summary, **kwargs)
+        super(RegistryKey, self).__init__(tcex, 'Registry Key', **kwargs)

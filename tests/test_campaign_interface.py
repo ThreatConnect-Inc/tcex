@@ -94,6 +94,8 @@ ti = TcExTi(tcex)
 #     campaign = ti.campaign(summary)
 #     response = campaign.create('System')
 #     assert response.json().get('status') == 'Success'
+#     response = campaign.add_tag('testing tag')
+#     assert response.json().get('status') == 'Success'
 
 # def test_campaign_create_1():
 #     """Test campaign creation"""
