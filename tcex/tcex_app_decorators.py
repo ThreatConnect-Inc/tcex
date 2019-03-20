@@ -106,21 +106,26 @@ class FailOnInput(object):
         :linenos:
         :lineno-start: 1
 
-        @FailOnInput(values=[None, ''], msg='Invalid input provided.', arg=None)
+        @FailOnInput(enable=True, values=[None, ''], msg='Invalid input provided.', arg=None)
         def my_method(data):
             return data.lowercase()
     """
 
-    def __init__(self, values, msg, arg=None):
+    def __init__(self, enable, values, msg, arg=None):
         """Initialize Class Properties.
 
         Args:
+            enable (boolean|str): Accepts a boolean or string value.  If a boolean value is
+                provided that value will control enabling/disabling this feature. A string
+                value should reference an item in the args namespace which resolves to a boolean.
+                The value of this boolean will control enabling/disabling this feature.
             values (list): The values that, if matched, would trigger an exit.
             msg (str): The message to send to exit method.
             arg (str, optional): Defaults to None. The args Namespace value to use for the
                 condition. If None the first value passed to the function will be used.
         """
         self.arg = arg
+        self.enable = enable
         self.msg = msg
         self.values = values
 
@@ -141,20 +146,33 @@ class FailOnInput(object):
                 app (class): The instance of the App class "self".
             """
 
-            if self.arg is None:
-                # grab the first arg passed to function to use in condition
-                arg_name = 'input'
-                conditional_value = app.tcex.playbook.read(list(args)[0])
+            # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
+            if isinstance(self.enable, bool):
+                enabled = self.enable
+                app.tcex.log.info('Fail on input is ({}).'.format(self.enable))
             else:
-                # grab the arg from the args names space to use in condition
-                arg_name = self.arg
-                conditional_value = app.tcex.playbook.read(getattr(app.args, self.arg))
+                enabled = getattr(app.args, self.enable)
+                app.tcex.log.info('Fail on input is ({}) for ({}).'.format(enabled, self.enable))
+                if not isinstance(enabled, bool):
+                    app.tcex.playbook.exit(
+                        1, 'The enable value must be a boolean for fail on input.'
+                    )
 
-            if conditional_value in self.values:
-                app.tcex.log.error(
-                    'Invalid value ({}) provided for ({}).'.format(conditional_value, arg_name)
-                )
-                app.tcex.exit(1, self.msg)
+            if enabled is True:
+                if self.arg is None:
+                    # grab the first arg passed to function to use in condition
+                    arg_name = 'input'
+                    conditional_value = app.tcex.playbook.read(list(args)[0])
+                else:
+                    # grab the arg from the args names space to use in condition
+                    arg_name = self.arg
+                    conditional_value = app.tcex.playbook.read(getattr(app.args, self.arg))
+
+                if conditional_value in self.values:
+                    app.tcex.log.error(
+                        'Invalid value ({}) provided for ({}).'.format(conditional_value, arg_name)
+                    )
+                    app.tcex.exit(1, self.msg)
 
             return fn(app, *args, **kwargs)
 
@@ -178,17 +196,19 @@ class FailOnOutput(object):
             return data.lowercase()
     """
 
-    def __init__(self, arg, values, msg):
+    def __init__(self, enable, values, msg):
         """Initialize Class Properties.
 
         Args:
-            arg (str): The args Namespace value that controls whether the App should exit. Arg
-                value must be a boolean.
+            enable (boolean|str): Accepts a boolean or string value.  If a boolean value is
+                provided that value will control enabling/disabling this feature. A string
+                value should reference an item in the args namespace which resolves to a boolean.
+                The value of this boolean will control enabling/disabling this feature.
             values (list): The values that, if matched, would trigger an exit.
             msg (str): The message to send to exit method.
 
         """
-        self.arg = arg
+        self.enable = enable
         self.msg = msg
         self.values = values
 
@@ -208,19 +228,32 @@ class FailOnOutput(object):
             Args:
                 app (class): The instance of the App class "self".
             """
-
             data = fn(app, *args, **kwargs)
-            # self.args (e.g., fail_on_false) controls whether the value should be checked).
-            if getattr(app.args, self.arg):
+            # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
+            if isinstance(self.enable, bool):
+                enabled = self.enable
+                app.tcex.log.info('Fail on output is ({}).'.format(self.enable))
+            else:
+                enabled = getattr(app.args, self.enable)
+                app.tcex.log.info('Fail on output is ({}) for ({}).'.format(enabled, self.enable))
+                if not isinstance(enabled, bool):
+                    app.tcex.playbook.exit(
+                        1, 'The enable value must be a boolean for fail on output.'
+                    )
+
+            failed = False
+            if enabled is True:
                 if isinstance(data, list):
+                    # validate each value in the list of results.
                     for d in data:
                         if d in self.values:
-                            app.tcex.log.info('{} is enabled.'.format(self.arg))
-                            app.tcex.exit(1, self.msg)
+                            failed = True
                 else:
                     if data in self.values:
-                        app.tcex.log.info('{} is enabled.'.format(self.arg))
-                        app.tcex.exit(1, self.msg)
+                        failed = True
+
+                if failed:
+                    app.tcex.exit(1, self.msg)
             return data
 
         return fail
