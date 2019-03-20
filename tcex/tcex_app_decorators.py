@@ -230,7 +230,7 @@ class IterateOnArg(object):
                     # set value passed to method to default if value is None.
                     s = self.default
                     app.tcex.log.debug(
-                        'a null value was passed, using default value "{}" instead.'.format(s)
+                        'a null input was provided, using default value "{}" instead.'.format(s)
                     )
 
                 # Add logging for debug/troubleshooting
