@@ -6,6 +6,14 @@ Release Notes
 0.9.x
 =====
 
+0.9.12
+------
++ Added additional logging to IterateOnArg decorator.
+
+0.9.11
+------
++ Reverted change to playbook module ``read()`` method for null value returned when Array is True.
+
 0.9.10
 ------
 + Updated App templates to call ``parse_args()`` from init method.

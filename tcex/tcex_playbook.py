@@ -390,7 +390,7 @@ class TcExPlaybook(object):
         Returns:
             (any): Results retrieved from DB
         """
-        self.tcex.log.debug(u'read variable {}'.format(key))
+        self.tcex.log.debug('read variable {}'.format(key))
         data = None
         if key is not None:
             key = key.strip()
@@ -413,7 +413,8 @@ class TcExPlaybook(object):
             if data is not None:
                 data = [data]
             else:
-                # TODO: Should "None" value be added to list?
+                # Adding none value to list breaks App logic. It's better to not request Array
+                # and build array externally if None values are required.
                 data = []
 
         # self.tcex.log.debug(u'read data {}'.format(self.tcex.s(data)))

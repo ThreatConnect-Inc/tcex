@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_run &mdash; TcEx 0.9.9 documentation</title>
+  <title>tcex.tcex_bin_run &mdash; TcEx 0.9.11 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.9
+                0.9.11
               </div>
 
 
@@ -870,7 +870,7 @@
         <span class="c1"># TODO: clean this up in a way that works for both py2/3</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">):</span>
             <span class="c1"># detect v3 schema</span>
             <span class="n">app_args_optional</span> <span class="o">=</span> <span class="n">_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optional&#39;</span><span class="p">,</span> <span class="p">{})</span>
