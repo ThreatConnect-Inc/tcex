@@ -12,36 +12,62 @@ from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 module = __import__(__name__)
 
 
-def custom_indicator_class_factory(indicator_type, base_class, class_dict, value_fields):
+def custom_indicator_class_factory(indicator_type, entity_type, base_class, class_dict, value_fields):
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
     def init_1(self, tcex, value1, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with one value"""
-        summary = self.build_summary(value1)  # build the indicator summary
-        base_class.__init__(self, tcex, indicator_type, summary, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, **kwargs)
+        self.api_entity = entity_type
         self._data[value_fields[0]] = value1
         # for k, v in class_dict.items():
         #     setattr(self, k, v)
+    def _set_unique_id_1(self, value1):
+        self.unique_id = value1
+
+    def can_create_1(self, value1):
+        if value1:
+            return True
+        return False
 
     def init_2(self, tcex, value1, value2, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with two values."""
-        summary = self.build_summary(value1, value2)  # build the indicator summary
-        base_class.__init__(self, tcex, indicator_type, summary, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, **kwargs)
+        self.api_entity = entity_type
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
 
+    def _set_unique_id_2(self, value1, value2):
+        self.unique_id = value1 or value2
+
+    def can_create_2(self, value1, value2):
+        if value1 or value2:
+            return True
+        return False
+
     def init_3(self, tcex, value1, value2, value3, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with three values."""
-        summary = self.build_summary(value1, value2, value3)  # build the indicator summary
-        base_class.__init__(self, tcex, indicator_type, summary, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, **kwargs)
+        self.api_entity = entity_type
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
 
+    def _set_unique_id_3(self, value1, value2, value3):
+        self.unique_id = value1 or value2 or value3
+
+    def can_create_3(self, value1, value2, value3):
+        if value1 or value2 or value3:
+            return True
+        return False
+
     class_name = indicator_type.replace(' ', '')
     init_method = locals()['init_{}'.format(value_count)]
-    new_class = type(str(class_name), (base_class,), {'__init__': init_method})
+    set_unique_id_method = locals()['_set_unique_id_{}'.format(value_count)]
+    can_create_method = locals()['can_create_{}'.format(value_count)]
+    new_class = type(str(class_name), (base_class,), {'__init__': init_method, '_set_unique_id': set_unique_id_method,
+                                                      'can_create': can_create_method})
     return new_class
 
 

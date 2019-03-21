@@ -166,7 +166,8 @@ class TcExTi(object):
 
             class_data = {}
             # Add Class for each Custom Indicator type to this module
-            custom_class = custom_indicator_class_factory(entry.get('apiBranch'), Indicator, class_data, value_fields)
+            custom_class = custom_indicator_class_factory(entry.get('apiBranch'), entry.get('apiEntity'),
+                                                          Indicator, class_data, value_fields)
 
             setattr(module, class_name, custom_class)
 
