@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Test the TcEx app.."""
-
 import os
 import sys
 from tcex.tcex_ti.tcex_ti import TcExTi
@@ -29,14 +28,17 @@ ti = TcExTi(tcex)
 #     value1 = 'AAAAAAAAAABAAAAAAAAAAAAAAAAAAA'
 #     value2 = 'AAAAAAAAAABAABAAAAAAAAAAAAAAAABBBBBBBBBB'
 #     value3 = 'AAAAAAAAAABAAAAAAAAAABAAAAAAAABBBBBBBBBBAAAAAAAAAAAAAAAAAAAAAAAA'
-#     custom_indicator_type = ti.write.custom_indicator_type(value1, value2, value3, rating=4, confidence=90)
+#     custom_indicator_type = ti.write.custom_indicator_type(
+#         value1, value2, value3, rating=4, confidence=90)
 #     response = custom_indicator_type.create('System')
 #     assert response.json().get('status') == 'Success'
 
 # def test_custom_indicator_type_update_0():
 #     """Test custom_indicator_type creation"""
-#     unique_id = 'AAAAAAAAAABAAAAAAAAAAAAAAAAAAA : AAAAAAAAAABAABAAAAAAAAAAAAAAAABBBBBBBBBB : AAAAAAAAAABAAAAAAAAAABAAAAAAAABBBBBBBBBBAAAAAAAAAAAAAAAAAAAAAAAA'
-#     custom_indicator_type = ti.write.custom_indicator_type(None, None, None, id=unique_id, rating=3)
+#     unique_id = 'AAAAAAAAAABAAAAAAAAAAAAAAAAAAA : AAAAAAAAAABAABAAAAAAAAAAAAAAAABBBBBBBBBB : ' \
+#                 'AAAAAAAAAABAAAAAAAAAABAAAAAAAABBBBBBBBBBAAAAAAAAAAAAAAAAAAAAAAAA'
+#     custom_indicator_type = ti.write.custom_indicator_type(
+#         None, None, None, id=unique_id, rating=3)
 #     response = custom_indicator_type.update()
 #     print(response.json())
 #     assert response.json().get('status') == 'Success'
@@ -124,4 +126,3 @@ ti = TcExTi(tcex)
 #     response = custom_indicator_type.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

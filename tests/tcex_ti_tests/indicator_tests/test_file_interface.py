@@ -77,6 +77,7 @@ ti = TcExTi(tcex)
 #     response = file.delete_label('TLP:AMBER')
 #     assert response.json().get('status') == 'Success'
 
+
 def test_file_delete_0():
     sha256 = 'FA2242E1421DA17E02FC7B2B5C9C9ACD0423686380C18CF06628EAE0AA755517'
     file = ti.write.file(unique_id=sha256)

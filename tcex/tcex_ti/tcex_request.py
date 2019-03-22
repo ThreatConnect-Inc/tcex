@@ -31,8 +31,10 @@ def session_retry(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 504
 class TcExRequest(object):
     """Wrapper on Python Requests Module with API logging."""
 
-    def __init__(self, tcex, session=None, url=None, http_method='GET', payload={}, json=None):
+    def __init__(self, tcex, session=None, url=None, http_method='GET', payload=None, json=None):
         """Initialize the Class properties."""
+        if payload is None:
+            payload = {}
         self.tcex = tcex
 
         self._basic_auth = None
@@ -59,18 +61,34 @@ class TcExRequest(object):
     #
 
     def add_dependent_requests(self, requests):
+        """
+
+        :param requests:
+        """
         for request in requests:
             self.add_dependent_request(request)
 
     def delete_dependent_requests(self, requests):
+        """
+
+        :param requests:
+        """
         for request in requests:
             self.remove_dependent_request(request)
 
     def add_dependent_request(self, request):
+        """
+
+        :param request:
+        """
         self.dependent_requests.append(request)
 
     def remove_dependent_request(self, request):
-        del[self.dependent_requests[request]]
+        """
+
+        :param request:
+        """
+        del [self.dependent_requests[request]]
 
     @property
     def body(self):

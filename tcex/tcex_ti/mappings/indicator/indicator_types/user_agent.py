@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI User Agent"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
 
 class UserAgent(Indicator):
-    """ThreatConnect Batch User Agent Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for UserAgent API Endpoints"""
 
     def __init__(self, tcex, text, **kwargs):
         """Initialize Class Properties.
@@ -24,10 +23,18 @@ class UserAgent(Indicator):
         self.data['text'] = text
         self.api_entity = 'userAgent'
 
-        def can_create(self):
-            if self.data.get('text'):
-                return True
-            return False
+    def can_create(self):
+        """
+        Determines if the required data that the API endpoint is expecting is present.
+        :return: Boolean
+        """
+        if self.data.get('text'):
+            return True
+        return False
 
-        def _set_unique_id(self, json_response):
-            self.unique_id = json_response.get('text', '')
+    def _set_unique_id(self, json_response):
+        """
+
+        :param json_response:
+        """
+        self.unique_id = json_response.get('text', '')

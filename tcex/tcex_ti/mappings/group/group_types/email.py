@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Email """
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Email(Group):
-    """ThreatConnect Batch Email Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for Email API Endpoints"""
 
     def __init__(self, tcex, name, subject, header, body, **kwargs):
         """Initialize Class Properties.
@@ -28,38 +27,55 @@ class Email(Group):
         self._data['score'] = kwargs.get('score', 0)
 
     def to(self, to):
-        """Set Document first seen."""
+        """Set Document first seen.
+        :param to:
+        :return:
+        """
         self._data['to'] = to
         request = {'to': to}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def from_addr(self, from_addr):
-        """Return Email to."""
+        """Return Email to.
+        :param from_addr:
+        :return:
+        """
         self._data['from'] = from_addr
         request = {'from': from_addr}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def score(self, score):
-        """Return Email to."""
+        """Return Email to.
+        :param score:
+        :return:
+        """
         self._data['score'] = score
         request = {'score': score}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def subject(self, subject):
-        """Return Email to."""
+        """Return Email to.
+        :param subject:
+        :return:
+        """
         self._data['subject'] = subject
         request = {'subject': subject}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def header(self, header):
-        """Return Email to."""
+        """Return Email to.
+        :param header:
+        :return:
+        """
         self._data['header'] = header
         request = {'header': header}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def body(self, body):
-        """Return Email to."""
+        """Return Email to.
+        :param body:
+        :return:
+        """
         self._data['body'] = body
         request = {'body': body}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
-

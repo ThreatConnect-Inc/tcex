@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Signature"""
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Signature(Group):
-    """ThreatConnect Batch Signature Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for Signature API Endpoints"""
 
     def __init__(self, tcex, name, file_name, file_type, file_text, **kwargs):
         """Initialize Class Properties.
@@ -36,6 +35,8 @@ class Signature(Group):
         self._data['fileText'] = file_text
 
     def download(self):
+        """
+
+        :return:
+        """
         return self.tc_requests.download(self.api_type, self.api_sub_type, self.unique_id)
-
-

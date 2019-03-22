@@ -9,7 +9,6 @@ from tcex.tcex_ti.tcex_ti import TcExTi
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
 import utility  # pylint: disable=C0413
-import urllib
 
 
 tcex = utility.init_tcex(clean_data=False)

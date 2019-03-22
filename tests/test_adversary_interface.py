@@ -120,4 +120,3 @@ ti = TcExTi(tcex)
 #     response = adversary.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

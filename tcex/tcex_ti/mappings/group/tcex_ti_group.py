@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""ThreatConnect Batch Import Module"""
+"""ThreatConnect TI Group"""
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
+
 try:
     from urllib import quote_plus  # Python 2
 except ImportError:
@@ -8,8 +9,10 @@ except ImportError:
 
 
 class Group(TIMappings):
+    """Unique API calls for Group API Endpoints"""
+
     def __init__(self, tcex, sub_type, name, **kwargs):
-        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group', **kwargs)
+        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group')
         if name:
             self._data['name'] = name
 
@@ -47,14 +50,12 @@ class Group(TIMappings):
            document.add_key_value('fileName', 'something.pdf')
 
        Args:
-           :param key (str): The field key to add to the JSON batch data.
-           :param value (str): The field value to add to the JSON batch data.
+           :param value:
+           :param key:
        """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
-            self._data[key] = self._utils.format_datetime(
-                value, date_format='%Y-%m-%dT%H:%M:%SZ'
-            )
+            self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')
         elif key == 'file_content':
             # file content arg is not part of Group JSON
             pass
@@ -90,5 +91,3 @@ class Group(TIMappings):
             'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
             'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
         }
-
-

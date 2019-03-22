@@ -28,6 +28,7 @@ def test_custom_indicator_type_create_0():
     print(response.json())
     assert response.json().get('status') == 'Success'
 
+
 # def test_custom_indicator_type_create_1():
 #     """Test custom_indicator_type creation"""
 #     value1 = 'AAAAAAAAAABAAAAAAAAAAAAAAAAAAA'
@@ -128,4 +129,3 @@ def test_custom_indicator_type_create_0():
 #     response = custom_indicator_type.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

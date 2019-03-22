@@ -100,4 +100,3 @@ ti = TcExTi(tcex)
 #     address = ti.write.address(None, unique_id=unique_id)
 #     response = address.delete()
 #     assert response.json().get('status') == 'Success'
-

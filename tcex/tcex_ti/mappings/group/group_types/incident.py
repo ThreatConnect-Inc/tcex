@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Incident """
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class Incident(Group):
-    """ThreatConnect Batch Incident Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for Incident API Endpoints"""
 
     def __init__(self, tcex, name, **kwargs):
         """Initialize Class Properties.
@@ -39,9 +38,7 @@ class Incident(Group):
 
     def event_date(self, event_date):
         """Return Email to."""
-        event_date = self._utils.format_datetime(
-            event_date, date_format='%Y-%m-%dT%H:%M:%SZ'
-        )
+        event_date = self._utils.format_datetime(event_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)

@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Intrusion Set """
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 
 
 class IntrusionSet(Group):
-    """ThreatConnect Batch Adversary Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for IntrustionSet API Endpoints"""
 
     def __init__(self, tcex, name, **kwargs):
         """Initialize Class Properties.
@@ -17,5 +16,3 @@ class IntrusionSet(Group):
         """
         super(IntrusionSet, self).__init__(tcex, 'intrusionSets', name, **kwargs)
         self.api_entity = 'intrusionSet'
-
-

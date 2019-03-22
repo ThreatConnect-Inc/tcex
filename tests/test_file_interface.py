@@ -14,16 +14,8 @@ tcex = utility.init_tcex(clean_data=False)
 ti = TcExTi(tcex)
 
 
-def test_file_create_0():
-    """Test file creation"""
-    md5 = 'E5B902F68A0EBBD0502C4F9677BB2EDB'
-    file = ti.file(md5=md5)
-    response = file.create('System')
-    print(response)
-    assert response.json().get('status') == 'Success'
-    file.add_tag('file tag')
-    assert response.json().get('status') == 'Success'
-
+#
+#
 # def test_file_create_1():
 #     """Test file creation"""
 #     md5 = 'E5B902F68A0EBBD0502C4F9677CB2EDC'

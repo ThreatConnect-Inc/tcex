@@ -90,7 +90,9 @@ def report_create(batch_job):
     """Test report creation"""
     name = 'report-001'
     xid = utility._create_xid('report', name)
-    report = batch_job.report(name, file_content='example file content', file_name='report', xid=xid)
+    report = batch_job.report(
+        name, file_content='example file content', file_name='report', xid=xid
+    )
     report.attribute('Description', 'Example Description', True)
     report.tag('Example Tag')
 

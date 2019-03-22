@@ -128,27 +128,29 @@ ti = TcExTi(tcex)
 #     response = victim.create_social_networks_asset('social_network_name', 'social_network_type')
 #     assert response.json().get('status') == 'Success'
 #
-#     response = victim.create_network_accounts_asset('network_accounts_name', 'network_accounts_type')
+# response = victim.create_network_accounts_asset(
+#     'network_accounts_name', 'network_accounts_type')
 #     assert response.json().get('status') == 'Success'
-
-def test_victim_delete_assets():
-    victim_id = 4
-    victim = ti.write.victim(None, unique_id=victim_id)
-    response = victim.delete_phone_asset(14)
-    assert response.json().get('status') == 'Success'
-
-    response = victim.delete_website_asset(15)
-    assert response.json().get('status') == 'Success'
-
-    response = victim.delete_email_asset(16)
-    assert response.json().get('status') == 'Success'
-
-    response = victim.delete_social_networks_asset(17)
-    assert response.json().get('status') == 'Success'
-
-    response = victim.delete_network_accounts_asset(18)
-    assert response.json().get('status') == 'Success'
-
+#
+#
+# def test_victim_delete_assets():
+#     victim_id = 4
+#     victim = ti.victim(None, unique_id=victim_id)
+#     response = victim.delete_phone_asset(14)
+#     assert response.json().get('status') == 'Success'
+#
+#     response = victim.delete_web_asset(15)
+#     assert response.json().get('status') == 'Success'
+#
+#     response = victim.delete_email_asset(16)
+#     assert response.json().get('status') == 'Success'
+#
+#     response = victim.delete_social_asset(17)
+#     assert response.json().get('status') == 'Success'
+#
+#     response = victim.delete_network_asset(18)
+#     assert response.json().get('status') == 'Success'
+#
 
 # def test_victim_update_6():
 #     victim_id = 142722
@@ -157,4 +159,3 @@ def test_victim_delete_assets():
 #     response = victim.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Email Address"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
 
 class EmailAddress(Indicator):
-    """ThreatConnect Batch EmailAddress Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for Email Address API Endpoints"""
 
     def __init__(self, tcex, address, **kwargs):
         """Initialize Class Properties.
@@ -25,9 +24,17 @@ class EmailAddress(Indicator):
         self._data['address'] = address
 
     def can_create(self):
+        """
+        Determines if the required data that the API endpoint is expecting is present.
+        :return: Boolean
+        """
         if self.data.get('address'):
             return True
         return False
 
     def _set_unique_id(self, json_response):
+        """
+
+        :param json_response:
+        """
         self.unique_id = json_response.get('emailAddress', '')

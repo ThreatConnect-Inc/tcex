@@ -1,11 +1,10 @@
+# -*- coding: utf-8 -*-
+"""ThreatConnect TI Address"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
 
 class Address(Indicator):
-    """ThreatConnect Batch Address Object"""
-
-    # TODO: enable when support for py2 is dropped.
-    # __slots__ = []
+    """Unique API calls for Address API Endpoints"""
 
     def __init__(self, tcex, ip, **kwargs):
         """Initialize Class Properties.
@@ -24,14 +23,25 @@ class Address(Indicator):
         self._api_entity = 'address'
         self.data['ip'] = ip
 
-        def can_create(self):
-            if self.data.get('ip'):
-                return True
-            return False
+    def can_create(self):
+        """
+        Determines if the required data that the API endpoint is expecting is present.
+        :return: Boolean
+        """
+        if self.data.get('ip'):
+            return True
+        return False
 
-        def _set_unique_id(self, json_response):
-            self.unique_id = json_response.get('ip', '')
+    def _set_unique_id(self, json_response):
+        """
+
+        :param json_response:
+        """
+        self.unique_id = json_response.get('ip', '')
 
     def dns_resolution(self):
-        return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)
+        """
 
+        :return:
+        """
+        return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

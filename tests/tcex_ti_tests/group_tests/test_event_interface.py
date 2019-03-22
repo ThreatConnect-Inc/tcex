@@ -29,11 +29,11 @@ ti = TcExTi(tcex)
 
 # def test_event_update_0():
 #     weblink: 'https://127.0.0.1/auth/event/event.xhtml?event=142722'
-    # event_id = 142722
-    # summary = 'event-002'
-    # event = ti.write.event(summary, id=event_id)
-    # response = event.update()
-    # assert response.json().get('status') == 'Success'
+# event_id = 142722
+# summary = 'event-002'
+# event = ti.write.event(summary, id=event_id)
+# response = event.update()
+# assert response.json().get('status') == 'Success'
 
 # def test_event_update_1():
 #     event_id = 142722
@@ -78,4 +78,3 @@ ti = TcExTi(tcex)
 #     response = event.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

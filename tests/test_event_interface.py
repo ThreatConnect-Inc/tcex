@@ -46,13 +46,15 @@ ti = TcExTi(tcex)
 #     event = ti.write.event(None, unique_id=event_id)
 #     response = event.tag('test_tag_1')
 #     assert response.json().get('status') == 'Success'
-
-def test_event_update_2():
-    event_id = 142739
-    event = ti.write.event(None, unique_id=event_id)
-    response = event.delete_tag('test_tag_1')
-    assert response.json().get('status') == 'Success'
-
+#
+#
+# def test_event_update_2():
+#     event_id = 142739
+#     event = ti.event(None, unique_id=event_id)
+#     response = event.delete_tag('test_tag_1')
+#     assert response.json().get('status') == 'Success'
+#
+#
 # def test_event_update_3():
 #     event_id = 142739
 #     event = ti.write.event(None, unique_id=event_id)
@@ -82,4 +84,3 @@ def test_event_update_2():
 #     response = event.delete_attribute_labels(attribute_id, 'TLP:AMBER')
 #     print(response)
 #     assert response.json().get('status') == 'Success'
-

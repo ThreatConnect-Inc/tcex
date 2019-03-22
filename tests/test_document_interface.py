@@ -22,8 +22,6 @@ ti = TcExTi(tcex)
 #     response = document.create('System')
 #     assert response.json().get('status') == 'Success'
 
-# IyEvYmluL2Jhc2gKCmNkIFVzZXJzL2JwdXJkeS1hZC9wcm9qZWN0cy90aHJlYXRjb25uZWN0LWluc3RhbGxlci90aHJlYXRjb25uZWN0L2FwcApteXNxbCAtdSByb290IC1wIHBhc3N3b3JkIHRocmVhdGNvbm5lY3QgPCAnREVMRVRFIEZST00gYHRocmVhdGNvbm5lY3RgLmBsaWNlbnNlYDsnCi4vc2V0dXAuc2ggPCB+L0RvY3VtZW50cy9mdWxsX3NlcnZlcl9pbnB1dC50eHQgIApjcCAuLi90aHJlYXRjb25uZWN0LnhtbCB+L0Rvd25sb2Fkcy9lYXAvc3RhbmRhbG9uZS9jb25maWd1cmF0aW9uLwpzdGFydF9qYm9zcwpzbGVlcCAzMAppZiBbIC1lIH4vRG93bmxvYWRzL2VhcC9zdGFuZGFsb25lL2RlcGxveW1lbnRzL3RocmVhdGNvbm5lY3QuZWFyIF07IHRoZW4KICAgIGVjaG8gIkZ1bGwgZGVwbG95bWVudCBzdWNjZXNzZnVsIgplbHNlCiAgZWNobyAiRnVsbCBkZXBsb3ltZW50IHVuc3VjY2Vzc2Z1bCIKICBleGl0IDEKZmkKCg==
-
 # def test_document_create_1():
 #     """Test document creation"""
 #     summary = 'document3'
@@ -37,7 +35,16 @@ ti = TcExTi(tcex)
 #     """Test document creation"""
 #     unique_id = '142736'
 #     document = ti.write.document(None, None, unique_id=unique_id)
-#     file_content =  'IyEvYmluL2Jhc2gKCmNkIFVzZXJzL2JwdXJkeS1hZC9wcm9qZWN0cy90aHJlYXRjb25uZWN0LWluc3RhbGxlci90aHJlYXRjb25uZWN0L2FwcApteXNxbCAtdSByb290IC1wIHBhc3N3b3JkIHRocmVhdGNvbm5lY3QgPCAnREVMRVRFIEZST00gYHRocmVhdGNvbm5lY3RgLmBsaWNlbnNlYDsnCi4vc2V0dXAuc2ggPCB+L0RvY3VtZW50cy9mdWxsX3NlcnZlcl9pbnB1dC50eHQgIApjcCAuLi90aHJlYXRjb25uZWN0LnhtbCB+L0Rvd25sb2Fkcy9lYXAvc3RhbmRhbG9uZS9jb25maWd1cmF0aW9uLwpzdGFydF9qYm9zcwpzbGVlcCAzMAppZiBbIC1lIH4vRG93bmxvYWRzL2VhcC9zdGFuZGFsb25lL2RlcGxveW1lbnRzL3RocmVhdGNvbm5lY3QuZWFyIF07IHRoZW4KICAgIGVjaG8gIkZ1bGwgZGVwbG95bWVudCBzdWNjZXNzZnVsIgplbHNlCiAgZWNobyAiRnVsbCBkZXBsb3ltZW50IHVuc3VjY2Vzc2Z1bCIKICBleGl0IDEKZmkKCg=='
+#     file_content =  'IyEvYmluL2Jhc2gKCmNkIFVzZXJzL2JwdXJkeS1hZC9wcm9qZWN0cy90aHJlYXR' \
+#                     'jb25uZWN0LWluc3RhbGxlci90aHJlYXRjb25uZWN0L2FwcApteXNxbCAtdSByb2' \
+#                     '90IC1wIHBhc3N3b3JkIHRocmVhdGNvbm5lY3QgPCAnREVMRVRFIEZST00gYHRoc' \
+#                     'mVhdGNvbm5lY3RgLmBsaWNlbnNlYDsnCi4vc2V0dXAuc2ggPCB+L0RvY3VtZW50' \
+#                     'cy9mdWxsX3NlcnZlcl9pbnB1dC50eHQgIApjcCAuLi90aHJlYXRjb25uZWN0Lnh' \
+#                     'tbCB+L0Rvd25sb2Fkcy9lYXAvc3RhbmRhbG9uZS9jb25maWd1cmF0aW9uLwpzdG' \
+#                     'FydF9qYm9zcwpzbGVlcCAzMAppZiBbIC1lIH4vRG93bmxvYWRzL2VhcC9zdGFuZ' \
+#                     'GFsb25lL2RlcGxveW1lbnRzL3RocmVhdGNvbm5lY3QuZWFyIF07IHRoZW4KICAg' \
+#                     'IGVjaG8gIkZ1bGwgZGVwbG95bWVudCBzdWNjZXNzZnVsIgplbHNlCiAgZWNobyA' \
+#                     'iRnVsbCBkZXBsb3ltZW50IHVuc3VjY2Vzc2Z1bCIKICBleGl0IDEKZmkKCg=='
 #     response = document.file_content(file_content)
 #     assert response.json().get('status') == 'Success'
 
