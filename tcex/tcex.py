@@ -43,6 +43,7 @@ class TcEx(object):
         self._playbook = None
         self._session = None
         self._utils = None
+        self._ti = None
 
         # Parser
         self.tcex_args = TcExArgs(self)
@@ -968,3 +969,15 @@ class TcEx(object):
 
             self._session = TcExSession(self)
         return self._session
+
+    @property
+    def ti(self):
+        """Include the Threat Intel Module.
+
+        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.<method>``.
+        """
+        if self._ti is None:
+            from .tcex_ti import TcExTi
+
+            self._ti = TcExTi(self)
+        return self._ti

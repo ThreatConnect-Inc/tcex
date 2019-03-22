@@ -8,6 +8,8 @@ Release Notes
 
 0.9.12
 ------
++ Added new FailOnInput decorator.
++ Changed FailOn decorator to FailOnError with arg input changes to enable.
 + Added additional logging to IterateOnArg decorator.
 
 0.9.11

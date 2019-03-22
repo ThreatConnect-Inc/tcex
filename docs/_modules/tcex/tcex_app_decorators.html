@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.11 documentation</title>
+  <title>tcex.tcex_app_decorators &mdash; TcEx 0.9.12 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.11
+                0.9.12
               </div>
 
 
@@ -272,8 +272,8 @@
         <span class="k">return</span> <span class="n">debug</span></div></div>
 
 
-<div class="viewcode-block" id="FailOn"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOn">[docs]</a><span class="k">class</span> <span class="nc">FailOn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fail App if conditions are met.</span>
+<div class="viewcode-block" id="FailOnInput"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOnInput">[docs]</a><span class="k">class</span> <span class="nc">FailOnInput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fail App if input value conditions are met.</span>
 
 <span class="sd">    This decorator allows for the App to exit on conditions defined in the function</span>
 <span class="sd">    parameters.</span>
@@ -282,27 +282,30 @@
 <span class="sd">        :linenos:</span>
 <span class="sd">        :lineno-start: 1</span>
 
-<span class="sd">        @FailOn(arg=&#39;fail_on_false&#39;, values=[&#39;false&#39;], msg=&#39;Operation returned a value of &quot;false&quot;.&#39;)</span>
+<span class="sd">        @FailOnInput(enable=True, values=[None, &#39;&#39;], msg=&#39;Invalid input provided.&#39;, arg=None)</span>
 <span class="sd">        def my_method(data):</span>
 <span class="sd">            return data.lowercase()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            arg (str): The args Namespace value that controls whether the App should exit. Arg</span>
-<span class="sd">                value must be a boolean.</span>
+<span class="sd">            enable (boolean|str): Accepts a boolean or string value.  If a boolean value is</span>
+<span class="sd">                provided that value will control enabling/disabling this feature. A string</span>
+<span class="sd">                value should reference an item in the args namespace which resolves to a boolean.</span>
+<span class="sd">                The value of this boolean will control enabling/disabling this feature.</span>
 <span class="sd">            values (list): The values that, if matched, would trigger an exit.</span>
 <span class="sd">            msg (str): The message to send to exit method.</span>
-
+<span class="sd">            arg (str, optional): Defaults to None. The args Namespace value to use for the</span>
+<span class="sd">                condition. If None the first value passed to the function will be used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="n">enable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
 
-<div class="viewcode-block" id="FailOn.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOn.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+<div class="viewcode-block" id="FailOnInput.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOnInput.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
 
 <span class="sd">        Args:</span>
@@ -319,18 +322,114 @@
 <span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
 
+            <span class="c1"># self.enable (e.g., True or &#39;fail_on_false&#39;) enables/disables this feature</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Fail on input is (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">)</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Fail on input is (</span><span class="si">{}</span><span class="s1">) for (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">enabled</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enabled</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                        <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The enable value must be a boolean for fail on input.&#39;</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">enabled</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># grab the first arg passed to function to use in condition</span>
+                    <span class="n">arg_name</span> <span class="o">=</span> <span class="s1">&#39;input&#39;</span>
+                    <span class="n">conditional_value</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># grab the arg from the args names space to use in condition</span>
+                    <span class="n">arg_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span>
+                    <span class="n">conditional_value</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">conditional_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s1">&#39;Invalid value (</span><span class="si">{}</span><span class="s1">) provided for (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conditional_value</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fail</span></div></div>
+
+
+<div class="viewcode-block" id="FailOnOutput"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOnOutput">[docs]</a><span class="k">class</span> <span class="nc">FailOnOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fail App if return value (output) value conditions are met.</span>
+
+<span class="sd">    This decorator allows for the App to exit on conditions defined in the function</span>
+<span class="sd">    parameters.</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+<span class="sd">        :lineno-start: 1</span>
+
+<span class="sd">        @FailOnOutput(</span>
+<span class="sd">            arg=&#39;fail_on_false&#39;, values=[&#39;false&#39;], msg=&#39;Operation returned a value of &quot;false&quot;.&#39;</span>
+<span class="sd">        )</span>
+<span class="sd">        def my_method(data):</span>
+<span class="sd">            return data.lowercase()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Class Properties.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            enable (boolean|str): Accepts a boolean or string value.  If a boolean value is</span>
+<span class="sd">                provided that value will control enabling/disabling this feature. A string</span>
+<span class="sd">                value should reference an item in the args namespace which resolves to a boolean.</span>
+<span class="sd">                The value of this boolean will control enabling/disabling this feature.</span>
+<span class="sd">            values (list): The values that, if matched, would trigger an exit.</span>
+<span class="sd">            msg (str): The message to send to exit method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="n">enable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+
+<div class="viewcode-block" id="FailOnOutput.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.FailOnOutput.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement __call__ function for decorator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fn (function): The decorated function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            function: The custom decorator function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Call the function and store or append return value.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="c1"># self.args (e.g., fail_on_false) controls whether the value should be checked).</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">):</span>
+            <span class="c1"># self.enable (e.g., True or &#39;fail_on_false&#39;) enables/disables this feature</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Fail on output is (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">)</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Fail on output is (</span><span class="si">{}</span><span class="s1">) for (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">enabled</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enabled</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                        <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;The enable value must be a boolean for fail on output.&#39;</span>
+                    <span class="p">)</span>
+
+            <span class="n">failed</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">enabled</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># validate each value in the list of results.</span>
                     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-                            <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is enabled.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
-                            <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+                            <span class="n">failed</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-                        <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is enabled.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
-                        <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="n">failed</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="k">return</span> <span class="n">fail</span></div></div>
@@ -391,6 +490,7 @@
             <span class="c1"># retrieve data from Redis if variable and always return and array.</span>
             <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">arg_data</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
+            <span class="n">arg_type</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">))</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="n">arg_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg_data</span><span class="p">]</span>
 
@@ -401,9 +501,23 @@
                 <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">arg_data</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># set value passed to method to default if value is None.</span>
                     <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s1">&#39;a null input was provided, using default value &quot;</span><span class="si">{}</span><span class="s1">&quot; instead.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="c1"># Add logging for debug/troubleshooting</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">arg_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Binary&#39;</span><span class="p">,</span> <span class="s1">&#39;BinaryArray&#39;</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">10</span>
+                <span class="p">):</span>
+                    <span class="n">log_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">log_string</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+                        <span class="n">log_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_string</span><span class="p">[:</span><span class="mi">100</span><span class="p">])</span>
+                    <span class="n">app</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;input value: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_string</span><span class="p">))</span>
+
                 <span class="c1"># update the first item in the tuple</span>
                 <span class="n">args_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -438,7 +552,6 @@
 <span class="sd">        Args:</span>
 <span class="sd">            msg (str): The message to send to exit method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
 
 <div class="viewcode-block" id="OnException.__call__"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_app_decorators.html#tcex.tcex_app_decorators.OnException.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
@@ -507,7 +620,6 @@
 <span class="sd">            Args:</span>
 <span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-
             <span class="n">app</span><span class="o">.</span><span class="n">exit_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -559,7 +671,6 @@
 <span class="sd">            Args:</span>
 <span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-
             <span class="n">data</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -623,7 +734,6 @@
 <span class="sd">            Args:</span>
 <span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-
             <span class="c1"># retrieve data from Redis and call decorated function</span>
             <span class="n">args_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -669,7 +779,6 @@
 <span class="sd">            overwrite (bool): When True and more than one value is provided for the same variable</span>
 <span class="sd">                the previous value will be overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">overwrite</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
@@ -691,7 +800,6 @@
 <span class="sd">            Args:</span>
 <span class="sd">                app (class): The instance of the App class &quot;self&quot;.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-
             <span class="n">data</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">index</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
