@@ -279,7 +279,7 @@ class IterateOnArg(object):
             return value
     """
 
-    def __init__(self, arg, default=None, fail_on_empty=True):
+    def __init__(self, arg, default=None, fail_on=None):
         """Initialize Class Properties.
 
         Args:
@@ -288,11 +288,11 @@ class IterateOnArg(object):
                 TCEntityArray.
             default (str, optional): Defaults to None. Default value to pass to method if arg
                 value is None. Only supported for String or StringArray.
-            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
+            fail_on (list, optional): Defaults to None. Fail if data read from Redis is in list.
         """
         self.arg = arg
         self.default = default
-        self.fail_on_empty = fail_on_empty
+        self.fail_on = fail_on
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -319,10 +319,7 @@ class IterateOnArg(object):
                 arg_data = [arg_data]
 
             if not arg_data:
-                msg = 'No data retrieved for arg ({}).'.format(self.arg)
-                if self.fail_on_empty:
-                    app.tcex.exit(1, msg)
-                app.tcex.log.warning(msg)
+                app.tcex.exit(1, 'No data retrieved for arg ({}).'.format(self.arg))
 
             for s in arg_data:
                 if s is None and self.default is not None:
@@ -331,6 +328,15 @@ class IterateOnArg(object):
                     app.tcex.log.debug(
                         'a null input was provided, using default value "{}" instead.'.format(s)
                     )
+
+                if self.fail_on is not None:
+                    if s in self.fail_on:
+                        app.tcex.playbook.exit(
+                            1,
+                            'Arg value for IterateOnArg matched fail_on value ({}).'.format(
+                                self.fail_on
+                            ),
+                        )
 
                 # Add logging for debug/troubleshooting
                 if (
