@@ -523,8 +523,7 @@ class ReadArg(object):
             print('color', color)
     """
 
-    # def __init__(self, arg, array=False, default=None, fail_on_empty=True):
-    def __init__(self, arg, array=False):
+    def __init__(self, arg, array=False, default=None, fail_on=None):
         """Initialize Class Properties.
 
         Args:
@@ -535,12 +534,12 @@ class ReadArg(object):
                 returned as an array.
             default (str, optional): Defaults to None. Default value to pass to method if arg
                 value is None. Only supported for String or StringArray.
-            fail_on_empty (bool, optional): Defaults to True. Fail if data is an empty Array.
+            fail_on (list, optional): Defaults to None. Fail if data read from Redis is in list.
         """
-        self.array = array
         self.arg = arg
-        # self.default = default
-        # self.fail_on_empty = fail_on_empty
+        self.array = array
+        self.default = default
+        self.fail_on = fail_on
 
     def __call__(self, fn):
         """Implement __call__ function for decorator.
@@ -561,7 +560,18 @@ class ReadArg(object):
             # retrieve data from Redis and call decorated function
             args_list = list(args)
             try:
-                args_list[0] = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+                value = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+                if self.default is not None and value is None:
+                    value = self.default
+                if self.fail_on is not None:
+                    if value in self.fail_on:
+                        app.tcex.playbook.exit(
+                            1,
+                            'Arg value for ReadArg matched fail_on value ({}).'.format(
+                                self.fail_on
+                            ),
+                        )
+                args_list[0] = value
             except IndexError:
                 args_list.append(app.tcex.playbook.read(getattr(app.args, self.arg), self.array))
             args = tuple(args_list)
