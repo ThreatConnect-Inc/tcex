@@ -38,6 +38,18 @@ class TcExSession(Session):
             )
         # Add Retry
         self.retry()
+        # auth_request_session = requests.Session()
+
+        # # Using an adapter to make HTTP requests robust to network errors.
+        # # This adapter retrys HTTP requests when network errors occur
+        # # and the requests seems safely retryable.
+        # retry_adapter = requests.adapters.HTTPAdapter(max_retries=3)
+        # auth_request_session.mount("https://", retry_adapter)
+
+        # # Do not pass `self` as the session here, as it can lead to
+        # # infinite recursion.
+        # auth_request = Request(auth_request_session)
+
         # Verify
         self.verify = self.args.tc_verify
 

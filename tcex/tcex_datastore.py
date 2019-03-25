@@ -113,6 +113,7 @@ class TcExDataStore(object):
         headers = {'Content-Type': 'application/json', 'DB-Method': 'DELETE'}
         url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
         r = self.tcex.session.post(url, headers=headers)
+        self.tcex.log.debug('datastore delete status code: {}'.format(r.status_code))
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:
@@ -120,12 +121,12 @@ class TcExDataStore(object):
             self.tcex.handle_error(805, ['delete', r.status_code, error], raise_on_error)
         return response_data
 
-    def get(self, rid, data=None, raise_on_error=True):
+    def get(self, rid=None, data=None, raise_on_error=True):
         """Get data from the DataStore.
 
         Args:
-            rid (str): The record identifier.
-            data (dict): A search query
+            rid (str, Optional): Defaults to None. The record identifier.
+            data (dict, Optional): Defaults to None. A search query
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
 
         Returns:
@@ -133,8 +134,12 @@ class TcExDataStore(object):
         """
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'GET'}
-        url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+        if rid is None:
+            url = '/v2/exchange/db/{}/{}/'.format(self.domain, self.data_type)
+        else:
+            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
         r = self.tcex.session.post(url, json=data, headers=headers)
+        self.tcex.log.debug('datastore get status code: {}'.format(r.status_code))
         if 'application/json' in r.headers.get('content-type', ''):
             # as long as the content is JSON set the value
             response_data = r.json()
@@ -147,7 +152,8 @@ class TcExDataStore(object):
         """Write data to the DataStore.
 
         Args:
-            rid (str): The record identifier.
+            rid (str): The record identifier. If a value of None is passed an identifier elastic
+                search will automatically generate a id.
             data (dict): The record data.
             raise_on_error (bool): If True and not r.ok this method will raise a RunTimeError.
 
@@ -156,8 +162,12 @@ class TcExDataStore(object):
         """
         response_data = None
         headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
-        url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
+        if rid is None:
+            url = '/v2/exchange/db/{}/{}/'.format(self.domain, self.data_type)
+        else:
+            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
         r = self.tcex.session.post(url, json=data, headers=headers)
+        self.tcex.log.debug('datastore post status code: {}'.format(r.status_code))
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:
@@ -180,6 +190,7 @@ class TcExDataStore(object):
         headers = {'Content-Type': 'application/json', 'DB-Method': 'PUT'}
         url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
         r = self.tcex.session.post(url, json=data, headers=headers)
+        self.tcex.log.debug('datastore put status code: {}'.format(r.status_code))
         if r.ok and 'application/json' in r.headers.get('content-type', ''):
             response_data = r.json()
         else:
