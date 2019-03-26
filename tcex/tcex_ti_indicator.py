@@ -122,9 +122,21 @@ class Indicator(object):
                 value, date_format='%Y-%m-%dT%H:%M:%SZ'
             )
         elif key == 'confidence':
-            self._indicator_data[key] = int(value)
+            try:
+                self._indicator_data[key] = int(value)
+            except ValueError as e:
+                raise ValueError(
+                    'The given confidence rating ({}) cannot be converted into an'.format(value)
+                    + ' integer. Please enter a whole number between 0 and 100 (inclusive).'
+                )
         elif key == 'rating':
-            self._indicator_data[key] = float(value)
+            try:
+                self._indicator_data[key] = float(value)
+            except ValueError as e:
+                raise ValueError(
+                    'The given threat rating ({}) cannot be converted into a float.'.format(value)
+                    + ' Please enter a number between 0 and 5 (inclusive).'
+                )
         else:
             self._indicator_data[key] = value
 
