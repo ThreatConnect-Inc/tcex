@@ -425,23 +425,22 @@ class TiTcRequest:
         yield from self._iterate(url, params, api_entity)
 
     def group_associations_types(
-            self, main_type, sub_type, unique_id, association_type, api_branch=None,
-            api_entity=None,
-            params=None
+            self, main_type, sub_type, unique_id, target, api_branch=None,
+            api_entity=None, params=None
     ):
         """
         :param params:
         :param main_type:
         :param sub_type:
         :param unique_id:
-        :param association_type:
+        :param target:
         :param api_branch:
         :param api_entity:
         """
         if params is None:
             params = {}
-        api_branch = api_branch or association_type.api_sub_type
-        api_entity = api_entity or association_type.api_entity
+        api_branch = api_branch or target.api_sub_type
+        api_entity = api_entity or target.api_entity
 
         if not sub_type:
             url = '/v2/{}/{}/groups/{}'.format(main_type, unique_id, api_branch)

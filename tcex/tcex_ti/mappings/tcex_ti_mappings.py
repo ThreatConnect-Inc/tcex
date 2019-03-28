@@ -402,11 +402,12 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.indicator_associations_types(
+        target = self._tcex.ti.indicator(indicator_type)
+        yield from self.tc_requests.indicator_associations_types(
             self.api_type,
             self.api_sub_type,
             self.unique_id,
-            indicator_type,
+            target,
             api_entity=api_entity,
             api_branch=api_branch,
             params=params
@@ -426,11 +427,13 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.group_associations_types(
+        target = self._tcex.ti.group(group_type)
+
+        yield from self.tc_requests.group_associations_types(
             self.api_type,
             self.api_sub_type,
             self.unique_id,
-            group_type,
+            target,
             api_entity=api_entity,
             api_branch=api_branch,
             params=params

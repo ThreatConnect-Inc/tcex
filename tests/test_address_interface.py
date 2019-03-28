@@ -27,10 +27,13 @@ def test_address_create_1():
     """Test address creation"""
     summary = '221.123.32.14'
     tag = ti.tag('one_to_many_tag')
-    for group in tag.groups(group_type='Adversary'):
+    adversary = ti.adversary(None, unique_id=142761)
+    for group in adversary.group_associations_types('Adversary'):
         print(group)
-    for group in tag.indicators(indicator_type='Address'):
-        print(group)
+    for indicator in adversary.indicator_associations_types('Address'):
+        print(indicator)
+    for victim in adversary.victim_asset_associations_type('EmailAddress'):
+        print(victim)
 
 
 # def test_address_update_0():
