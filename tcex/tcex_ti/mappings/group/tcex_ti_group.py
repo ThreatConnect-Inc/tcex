@@ -19,6 +19,10 @@ class Group(TIMappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @staticmethod
+    def is_group():
+        return True
+
     @property
     def _metadata_map(self):
         """Return metadata map for Group objects."""

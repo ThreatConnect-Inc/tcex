@@ -144,6 +144,10 @@ class Indicator(TIMappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @staticmethod
+    def is_indicator():
+        return True
+
     def can_create(self):
         """
         Determines if the required data that the API endpoint is expecting is present.

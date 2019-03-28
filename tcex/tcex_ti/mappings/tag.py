@@ -27,13 +27,18 @@ class Tag(object):
         self._utils = TcExUtils()
         self._tc_requests = TiTcRequest(self._tcex)
 
+    @staticmethod
+    def is_tag():
+        return True
+
     def groups(self, group_type=None):
         """
 
         :param group_type:
         :return:
         """
-        yield from self.tc_requests.groups_from_tag(group_type, self.name)
+        group = self._tcex.ti.group(group_type)
+        yield from self.tc_requests.groups_from_tag(group, self.name)
 
     def indicators(self, indicator_type=None):
         """
@@ -41,7 +46,8 @@ class Tag(object):
         :param indicator_type:
         :return:
         """
-        yield from self.tc_requests.indicators_from_tag(indicator_type, self.name)
+        indicator = self._tcex.ti.indicator(indicator_type)
+        yield from self.tc_requests.indicators_from_tag(indicator, self.name)
 
     def victims(self):
         """

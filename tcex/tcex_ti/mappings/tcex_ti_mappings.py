@@ -665,6 +665,26 @@ class TIMappings(object):
             return True
         return False
 
+    @staticmethod
+    def is_indicator():
+        return False
+
+    @staticmethod
+    def is_group():
+        return False
+
+    @staticmethod
+    def is_victim():
+        return False
+
+    @staticmethod
+    def is_tag():
+        return False
+
+    @staticmethod
+    def is_security_label():
+        return False
+
     def _set_unique_id(self, json_response):
         """
 

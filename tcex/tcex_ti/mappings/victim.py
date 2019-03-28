@@ -17,6 +17,10 @@ class Victim(TIMappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @staticmethod
+    def is_victim():
+        return True
+
     def can_create(self):
         """
 

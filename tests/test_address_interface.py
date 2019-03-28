@@ -26,11 +26,11 @@ ti = TcExTi(tcex)
 def test_address_create_1():
     """Test address creation"""
     summary = '221.123.32.14'
-    address = ti.indicator('Address', unique_id=summary)
-    adversary = ti.group('Adversary', unique_id=142761)
-    response = adversary.add_association(address)
-    print(response)
-    assert response.json().get('status') == 'Success'
+    tag = ti.tag('one_to_many_tag')
+    for group in tag.groups(group_type='Adversary'):
+        print(group)
+    for group in tag.indicators(indicator_type='Address'):
+        print(group)
 
 
 # def test_address_update_0():

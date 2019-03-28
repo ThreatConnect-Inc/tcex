@@ -295,7 +295,7 @@ class TiTcRequest:
 
         return self.tcex.session.get(url, params=params)
 
-    def pivot_from_tag(self, main_type, sub_type, tag_name, params=None):
+    def pivot_from_tag(self, target, tag_name, params=None):
         """
 
         :param params:
@@ -303,15 +303,20 @@ class TiTcRequest:
         :param sub_type:
         :param tag_name:
         """
+        main_type = target.type
+        sub_type = target.api_sub_type
+        api_type = target.api_type
+        api_entity = target.api_entity
         if params is None:
             params = {}
         if sub_type:
-            url = '/v2/tags/{}/{}/{}'.format(tag_name, main_type, sub_type)
+            url = '/v2/tags/{}/{}/{}'.format(tag_name, api_type, sub_type)
         else:
-            url = '/v2/tags/{}/{}/'.format(tag_name, main_type)
-        yield from self._iterate(url, params, 'indicator')
+            url = '/v2/tags/{}/{}/'.format(tag_name, api_type)
+        print(url)
+        yield from self._iterate(url, params, api_entity)
 
-    def groups_from_tag(self, group_type, tag_name, params=None):
+    def groups_from_tag(self, group, tag_name, params=None):
         """
 
         :param params:
@@ -320,9 +325,9 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag('groups', group_type, tag_name, params=params)
+        yield from self.pivot_from_tag(group, tag_name, params=params)
 
-    def indicators_from_tag(self, indicator_type, tag_name, params=None):
+    def indicators_from_tag(self, indicator, tag_name, params=None):
         """
         :param params:
         :param indicator_type:
@@ -330,7 +335,7 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag('indicators', indicator_type, tag_name, params=params)
+        yield from self.pivot_from_tag(indicator, tag_name, params=params)
 
     def victims_from_tag(self, tag_name, params=None):
         """
