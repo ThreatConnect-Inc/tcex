@@ -88,7 +88,7 @@ class TcExTi(object):
         """
         return Host(self.tcex, hostname, **kwargs)
 
-    def indicator(self, indicator_type=None, **kwargs):
+    def indicator(self, indicator_type, **kwargs):
         """
 
         :param indicator_type:
@@ -99,17 +99,27 @@ class TcExTi(object):
 
         upper_indicator_type = indicator_type.upper()
 
+
+        # group method:
+        # def group(self, group_type, **kwargs):
+        # if group_type == 'ADVERSARY':
+        #     group = Adversary(self.tcex, kwargs.pop('name', None), **kwargs)
+        # ADDRESS INIT
+        # def __init__(self, tcex, ip, **kwargs):
+        # Adversary INIT
+        # def __init__(self, tcex, name, **kwargs):
+
         indicator = None
         if upper_indicator_type == 'ADDRESS':
-            indicator = Address(self.tcex, **kwargs.pop('ip'), **kwargs)
+            indicator = Address(self.tcex, kwargs.pop('ip', None), **kwargs)
         elif upper_indicator_type == 'EMAILADDRESS':
-            indicator = EmailAddress(self.tcex, **kwargs.pop('address'), **kwargs)
+            indicator = EmailAddress(self.tcex, kwargs.pop('address', None), **kwargs)
         elif upper_indicator_type == 'FILE':
             indicator = File(self.tcex, **kwargs)
         elif upper_indicator_type == 'HOST':
-            indicator = Host(self.tcex, **kwargs.pop('hostname'), **kwargs)
+            indicator = Host(self.tcex, kwargs.pop('hostname', None), **kwargs)
         elif upper_indicator_type == 'URL':
-            indicator = URL(self.tcex, **kwargs.pop('url'), **kwargs)
+            indicator = URL(self.tcex, kwargs.pop('url', None), **kwargs)
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
@@ -128,7 +138,6 @@ class TcExTi(object):
                 return None
         return indicator
 
-
     # Verify that these two are needed since they ARE custom indicator types.
     # def asn(self, as_number, **kwargs):
     #     return ASN(self.tcex, as_number, **kwargs)
@@ -137,7 +146,7 @@ class TcExTi(object):
     #     return CIDR(self.tcex, block, **kwargs)
     ##########################################################################
 
-    def group(self, group_type=None, **kwargs):
+    def group(self, group_type, **kwargs):
         """
 
         :param group_type:
@@ -330,7 +339,7 @@ class TcExTi(object):
                 value_fields.append(entry['value3Label'])
             value_count = len(value_fields)
 
-            if len(value_fields) == 0:
+            if value_fields:
                 continue
 
             class_data = {}
@@ -339,9 +348,11 @@ class TcExTi(object):
                 entry.get('apiBranch'), entry.get('apiEntity'), Indicator, class_data, value_fields
             )
 
-            custom_indicator_data = {'branch': entry.get('apiBranch'),
-                                     'entry': entry.get('apiEntry'),
-                                     'value_fields': value_fields}
+            custom_indicator_data = {
+                'branch': entry.get('apiBranch'),
+                'entry': entry.get('apiEntry'),
+                'value_fields': value_fields,
+            }
             self._custom_indicator_classes[entry.get('name').upper()] = custom_indicator_data
 
             setattr(module, class_name, custom_class)

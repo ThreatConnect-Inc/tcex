@@ -22,13 +22,13 @@ ti = TcExTi(tcex)
 #     print(response)
 #     assert response.json().get('status') == 'Success'
 
-# def test_address_create_1():
-#     """Test address creation"""
-#     summary = '221.123.32.14'
-#     address = ti.write.address(summary, rating=4, confidence=90)
-#     response = address.create('System')
-#     print(response)
-#     assert response.json().get('status') == 'Success'
+def test_address_create_1():
+    """Test address creation"""
+    summary = '221.123.32.14'
+    address = ti.indicator('Address', ip=summary, unique_id=summary)
+    response = address.create('System')
+    print(response)
+    assert response.json().get('status') == 'Success'
 
 # def test_address_update_0():
 #     """Test address creation"""
