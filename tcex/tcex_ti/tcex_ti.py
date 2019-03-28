@@ -99,7 +99,6 @@ class TcExTi(object):
 
         upper_indicator_type = indicator_type.upper()
 
-
         # group method:
         # def group(self, group_type, **kwargs):
         # if group_type == 'ADVERSARY':

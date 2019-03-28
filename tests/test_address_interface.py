@@ -22,6 +22,7 @@ ti = TcExTi(tcex)
 #     print(response)
 #     assert response.json().get('status') == 'Success'
 
+
 def test_address_create_1():
     """Test address creation"""
     summary = '221.123.32.14'
@@ -29,6 +30,7 @@ def test_address_create_1():
     response = address.create('System')
     print(response)
     assert response.json().get('status') == 'Success'
+
 
 # def test_address_update_0():
 #     """Test address creation"""
