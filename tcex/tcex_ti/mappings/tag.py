@@ -33,7 +33,7 @@ class Tag(object):
         :param group_type:
         :return:
         """
-        return self.tc_requests.groups_from_tag(group_type, self.name)
+        yield from self.tc_requests.groups_from_tag(group_type, self.name)
 
     def indicators(self, indicator_type=None):
         """
@@ -41,13 +41,13 @@ class Tag(object):
         :param indicator_type:
         :return:
         """
-        return self.tc_requests.indicators_from_tag(indicator_type, self.name)
+        yield from self.tc_requests.indicators_from_tag(indicator_type, self.name)
 
     def victims(self):
         """
         :return:
         """
-        return self.tc_requests.victims_from_tag(self.name)
+        yield from self.tc_requests.victims_from_tag(self.name)
 
     @property
     def name(self):
