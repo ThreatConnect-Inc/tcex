@@ -156,33 +156,40 @@ class TIMappings(object):
 
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, self._data)
 
-    def single(self, **kwargs):
+    def single(self, params=None):
         """
 
-        :param kwargs:
+        :param params:
         :return:
         """
-        return self.tc_requests.single(self.api_type, self.api_sub_type, self.unique_id, **kwargs)
+        if params is None:
+            params = {}
+        return self.tc_requests.single(self.api_type, self.api_sub_type, self.unique_id,
+                                       params=params)
 
-    def many(self, **kwargs):
+    def many(self, params=None):
         """
 
-        :param kwargs:
+        :param params:
         """
+        if params is None:
+            params = {}
         yield from self.tc_requests.many(
-            self.api_type, self.api_sub_type, self.api_entity, **kwargs
+            self.api_type, self.api_sub_type, self.api_entity, params
         )
 
-    def request(self, result_limit, result_offset, **kwargs):
+    def request(self, result_limit, result_offset, params=None):
         """
 
+        :param params:
         :param result_limit:
         :param result_offset:
-        :param kwargs:
         :return:
         """
+        if params is None:
+            params = {}
         return self.tc_requests.request(
-            self.api_type, self.api_sub_type, result_limit, result_offset, **kwargs
+            self.api_type, self.api_sub_type, result_limit, result_offset, params
         )
 
     def tags(self):
@@ -195,19 +202,23 @@ class TIMappings(object):
 
         return self.tc_requests.tags(self.api_type, self.api_sub_type, self.unique_id)
 
-    def tag(self, name, action='ADD'):
+    def tag(self, name, action='ADD', params=None):
         """
 
+        :param params:
         :param name:
         :param action:
         :return:
         """
+        if params is None:
+            params = {}
+
         if not self.can_update():
             return None
 
         if action == 'GET':
             return self.tc_requests.tag(
-                self.api_type, self.api_sub_type, self.unique_id, name, action=action
+                self.api_type, self.api_sub_type, self.unique_id, name, action=action, params=params
             )
 
         if action == 'ADD':
@@ -232,16 +243,21 @@ class TIMappings(object):
 
         return self.tc_requests.add_tag(self.api_type, self.api_sub_type, self.unique_id, name)
 
-    def get_tag(self, name):
+    def get_tag(self, name, params=None):
         """
 
+        :param params:
         :param name:
         :return:
         """
+        if params is None:
+            params = {}
+
         if not self.can_update():
             return None
 
-        return self.tc_requests.tag(self.api_type, self.api_sub_type, self.unique_id, name)
+        return self.tc_requests.tag(self.api_type, self.api_sub_type, self.unique_id,
+                                    name, params=params)
 
     def delete_tag(self, name):
         """
@@ -301,16 +317,20 @@ class TIMappings(object):
 
         return self.tc_requests.add_label(self.api_type, self.api_sub_type, self.unique_id, label)
 
-    def get_label(self, label):
+    def get_label(self, label, params=None):
         """
 
+        :param params:
         :param label:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
-        return self.tc_requests.get_label(self.api_type, self.api_sub_type, self.unique_id, label)
+        return self.tc_requests.get_label(self.api_type, self.api_sub_type, self.unique_id,
+                                          label, params)
 
     def delete_label(self, label):
         """
@@ -325,48 +345,60 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, self.unique_id, label
         )
 
-    def indicator_associations(self):
+    def indicator_associations(self, params=None):
         """
 
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         return self.tc_requests.indicator_associations(
-            self.api_type, self.api_sub_type, self.unique_id
+            self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 
-    def group_associations(self):
+    def group_associations(self, params=None):
         """
 
         :return:
         """
+        if params is None:
+            params = {}
+
         if not self.can_update():
             return None
 
-        return self.tc_requests.group_associations(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.group_associations(self.api_type, self.api_sub_type, self.unique_id,
+                                                   params=params)
 
-    def victim_asset_associations(self):
+    def victim_asset_associations(self, params=None):
         """
 
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         return self.tc_requests.victim_asset_associations(
-            self.api_type, self.api_sub_type, self.unique_id
+            self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 
-    def indicator_associations_types(self, indicator_type, api_entity=None, api_branch=None):
+    def indicator_associations_types(self, indicator_type, api_entity=None, api_branch=None,
+                                     params=None):
         """
 
+        :param params:
         :param indicator_type:
         :param api_entity:
         :param api_branch:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
@@ -377,16 +409,20 @@ class TIMappings(object):
             indicator_type,
             api_entity=api_entity,
             api_branch=api_branch,
+            params=params
         )
 
-    def group_associations_types(self, group_type, api_entity=None, api_branch=None):
+    def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
         """
 
+        :param params:
         :param group_type:
         :param api_entity:
         :param api_branch:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
@@ -397,19 +433,23 @@ class TIMappings(object):
             group_type,
             api_entity=api_entity,
             api_branch=api_branch,
+            params=params
         )
 
-    def victim_asset_associations_type(self, victim_asset_type):
+    def victim_asset_associations_type(self, victim_asset_type, params=None):
         """
 
+        :param params:
         :param victim_asset_type:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         return self.tc_requests.victim_asset_associations(
-            self.api_type, self.api_sub_type, self.unique_id, victim_asset_type
+            self.api_type, self.api_sub_type, self.unique_id, victim_asset_type, params=params
         )
 
     def add_association(self, target, api_type=None, api_sub_type=None, unique_id=None):
@@ -485,29 +525,35 @@ class TIMappings(object):
 
         return self.tc_requests.add_false_positive(self.api_type, self.api_sub_type, self.unique_id)
 
-    def attributes(self):
+    def attributes(self, params=None):
         """
 
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
-        return self.tc_requests.attributes(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.attributes(self.api_type, self.api_sub_type, self.unique_id,
+                                           params=params)
 
-    def attribute(self, attribute_id, action='GET'):
+    def attribute(self, attribute_id, action='GET', params=None):
         """
 
+        :param params:
         :param attribute_id:
         :param action:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         if action == 'GET':
             return self.tc_requests.get_attribute(
-                self.api_type, self.api_sub_type, self.unique_id, attribute_id
+                self.api_type, self.api_sub_type, self.unique_id, attribute_id, params=params
             )
 
         if action == 'DELETE':
@@ -531,33 +577,39 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, self.unique_id, attribute_type, attribute_value
         )
 
-    def attribute_labels(self, attribute_id):
+    def attribute_labels(self, attribute_id, params=None):
         """
 
+        :param params:
         :param attribute_id:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         return self.tc_requests.attribute_labels(
-            self.api_type, self.api_sub_type, self.unique_id, attribute_id
+            self.api_type, self.api_sub_type, self.unique_id, attribute_id, params=params
         )
 
-    def attribute_label(self, attribute_id, label, action='GET'):
+    def attribute_label(self, attribute_id, label, action='GET', params=None):
         """
 
+        :param params:
         :param attribute_id:
         :param label:
         :param action:
         :return:
         """
+        if params is None:
+            params = {}
         if not self.can_update():
             return None
 
         if action == 'GET':
             return self.tc_requests.get_attribute_label(
-                self.api_type, self.api_sub_type, self.unique_id, attribute_id, label
+                self.api_type, self.api_sub_type, self.unique_id, attribute_id, label, params=params
             )
         if action == 'DELETE':
             return self.tc_requests.delete_attribute_label(
