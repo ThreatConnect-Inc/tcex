@@ -25,15 +25,11 @@ ti = TcExTi(tcex)
 
 def test_address_create_1():
     """Test address creation"""
-    summary = '221.123.32.14'
-    tag = ti.tag('one_to_many_tag')
-    adversary = ti.adversary(None, unique_id=142761)
-    for group in adversary.group_associations_types('Adversary'):
-        print(group)
-    for indicator in adversary.indicator_associations_types('Address'):
-        print(indicator)
-    for victim in adversary.victim_asset_associations_type('EmailAddress'):
-        print(victim)
+    kwargs = {'file_type': 'jpg', 'file_content': 'signature_content_1', 'file_name': 'signature_file_name_1'}
+    group_name='signature_1'
+    group_type='Signature'
+    group = ti.group(name=group_name, group_type=group_type, **kwargs)
+    print(group.create('System'))
 
 
 # def test_address_update_0():

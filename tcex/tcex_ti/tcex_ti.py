@@ -179,7 +179,7 @@ class TcExTi(object):
             )
         if group_type == 'INCIDENT':
             group = Incident(self.tcex, kwargs.pop('name', None), **kwargs)
-        if group_type == 'INTRUSTION SET':
+        if group_type == 'INTRUSION SET':
             group = IntrusionSet(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'REPORT':
             group = Report(self.tcex, kwargs.pop('name', None), **kwargs)

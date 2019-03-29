@@ -38,6 +38,7 @@ class Group(TIMappings):
             'to_addr': 'to',
         }
 
+
     def can_create(self):
         if not self.data.get('name', None):
             return False
