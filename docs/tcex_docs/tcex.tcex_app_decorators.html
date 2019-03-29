@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.12 documentation</title>
+  <title>tcex.tcex_app_decorators module &mdash; TcEx 0.9.13 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.12
+                0.9.13
               </div>
 
 
@@ -367,7 +367,7 @@ parameters.</p>
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.IterateOnArg">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em>, <em>default=None</em>, <em>fail_on_empty=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">IterateOnArg</code><span class="sig-paren">(</span><em>arg</em>, <em>default=None</em>, <em>fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#IterateOnArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.IterateOnArg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Iterate on values stored in <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
 <p>This decorator will iterate over all value of the supplied arg and return results. This feature
@@ -518,7 +518,7 @@ provided in the <code class="docutils literal notranslate"><span class="pre">att
 
 <dl class="class">
 <dt id="tcex.tcex_app_decorators.ReadArg">
-<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">ReadArg</code><span class="sig-paren">(</span><em>arg</em>, <em>array=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">tcex.tcex_app_decorators.</code><code class="descname">ReadArg</code><span class="sig-paren">(</span><em>arg</em>, <em>array=False</em>, <em>default=None</em>, <em>fail_on=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_app_decorators.html#ReadArg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_app_decorators.ReadArg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Read value of App arg resolving any playbook variables.</p>
 <p>This decorator will read the args from Redis, if it is a playbook variable, and pass the

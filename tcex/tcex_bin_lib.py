@@ -82,7 +82,7 @@ class TcExLib(TcExBin):
         """Configure proxy settings using environment variables."""
         if os.getenv('HTTP_PROXY') or os.getenv('HTTPS_PROXY'):
             # TODO: is this appropriate?
-            # don't change proxy settings if they OS already has them configured.
+            # don't change proxy settings if the OS already has them configured.
             return True
 
         proxy_enabled = False

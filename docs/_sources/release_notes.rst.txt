@@ -6,6 +6,12 @@ Release Notes
 0.9.x
 =====
 
+0.9.13
+------
++ Updated ReadArg decorator to support ``fail_on`` parameter.
++ Updated IterateOnArg decorator to support ``fail_on`` parameter and removed ``fail_on_empty``.
++ Updated ``datastore`` module to support no Id for POST and GET methods.
+
 0.9.12
 ------
 + Added new FailOnInput decorator.

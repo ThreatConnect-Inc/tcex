@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.12 documentation</title>
+  <title>tcex.tcex_bin_lib &mdash; TcEx 0.9.13 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.12
+                0.9.13
               </div>
 
 
@@ -258,7 +258,7 @@
         <span class="sd">&quot;&quot;&quot;Configure proxy settings using environment variables.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HTTP_PROXY&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HTTPS_PROXY&#39;</span><span class="p">):</span>
             <span class="c1"># TODO: is this appropriate?</span>
-            <span class="c1"># don&#39;t change proxy settings if they OS already has them configured.</span>
+            <span class="c1"># don&#39;t change proxy settings if the OS already has them configured.</span>
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="n">proxy_enabled</span> <span class="o">=</span> <span class="kc">False</span>
