@@ -403,8 +403,14 @@ class TiTcRequest:
         yield from self._iterate(url, params, 'victimAsset')
 
     def indicator_associations_types(
-            self, main_type, sub_type, unique_id, association_type, api_branch=None,
-            api_entity=None, params=None
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        association_type,
+        api_branch=None,
+        api_entity=None,
+        params=None,
     ):
         """
 
@@ -428,8 +434,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, api_entity)
 
     def group_associations_types(
-            self, main_type, sub_type, unique_id, target, api_branch=None,
-            api_entity=None, params=None
+        self, main_type, sub_type, unique_id, target, api_branch=None, api_entity=None, params=None
     ):
         """
         :param params:
@@ -453,7 +458,7 @@ class TiTcRequest:
         yield from self._iterate(url, params, api_entity)
 
     def add_association(
-            self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
+        self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
     ):
         """
 
@@ -470,7 +475,7 @@ class TiTcRequest:
         )
 
     def delete_association(
-            self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
+        self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
     ):
         """
 
@@ -493,14 +498,14 @@ class TiTcRequest:
         )
 
     def _association(
-            self,
-            main_type,
-            sub_type,
-            unique_id,
-            target_type,
-            target_sub_type,
-            target_unique_id,
-            action='ADD',
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        target_type,
+        target_sub_type,
+        target_unique_id,
+        action='ADD',
     ):
         """
 
@@ -792,8 +797,9 @@ class TiTcRequest:
 
         yield from self._iterate(url, params, 'victimWeb')
 
-    def victim_email_asset(self, main_type, sub_type, unique_id, asset_id,
-                           action='GET', params=None):
+    def victim_email_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param main_type:
@@ -819,8 +825,9 @@ class TiTcRequest:
             return self.tcex.session.get(url)
         return None
 
-    def victim_network_asset(self, main_type, sub_type, unique_id, asset_id,
-                             action='GET', params=None):
+    def victim_network_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param main_type:
@@ -846,8 +853,9 @@ class TiTcRequest:
             return self.tcex.session.get(url)
         return None
 
-    def victim_phone_asset(self, main_type, sub_type, unique_id, asset_id,
-                           action='GET', params=None):
+    def victim_phone_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param params:
@@ -873,8 +881,9 @@ class TiTcRequest:
             return self.tcex.session.get(url)
         return None
 
-    def victim_social_asset(self, main_type, sub_type, unique_id, asset_id,
-                            action='GET', params=None):
+    def victim_social_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param main_type:
@@ -900,8 +909,7 @@ class TiTcRequest:
             return self.tcex.session.get(url)
         return None
 
-    def victim_web_asset(self, main_type, sub_type, unique_id, asset_id,
-                         action='GET', params=None):
+    def victim_web_asset(self, main_type, sub_type, unique_id, asset_id, action='GET', params=None):
         """
 
         :param params:
@@ -1146,7 +1154,7 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/securityLabels'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'securityLabel', )
+        yield from self._iterate(url, params, 'securityLabel')
 
     def add_label(self, main_type, sub_type, unique_id, label):
         """
@@ -1326,8 +1334,9 @@ class TiTcRequest:
 
         yield from self._iterate(url, params, 'securityLabel')
 
-    def attribute_label(self, main_type, sub_type, unique_id, attribute_id, label, action='GET',
-                        params=None):
+    def attribute_label(
+        self, main_type, sub_type, unique_id, attribute_id, label, action='GET', params=None
+    ):
         """
 
         :param params:
@@ -1375,8 +1384,9 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        return self.attribute_label(main_type, sub_type, unique_id, attribute_id, label,
-                                    params=params)
+        return self.attribute_label(
+            main_type, sub_type, unique_id, attribute_id, label, params=params
+        )
 
     def delete_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label):
         """
@@ -1458,8 +1468,9 @@ class TiTcRequest:
         url = '/v2/{}/{}/{}/adversaryAssets/urls'.format(main_type, sub_type, unique_id)
         yield from self._iterate(url, params, 'adversaryUrl')
 
-    def adversary_url_asset(self, main_type, sub_type, unique_id, asset_id,
-                            action='GET', params=None):
+    def adversary_url_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param params:
@@ -1520,8 +1531,9 @@ class TiTcRequest:
         asset = {'url': name}
         return self.tcex.session.post(asset_url, json=asset)
 
-    def adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id,
-                              action='GET', params=None):
+    def adversary_phone_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param params:
@@ -1582,8 +1594,9 @@ class TiTcRequest:
         asset = {'phoneNumber': name}
         return self.tcex.session.post(asset_url, json=asset)
 
-    def adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id,
-                                action='GET', params=None):
+    def adversary_handler_asset(
+        self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
+    ):
         """
 
         :param params:

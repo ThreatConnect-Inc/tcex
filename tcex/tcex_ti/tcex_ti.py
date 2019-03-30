@@ -186,18 +186,26 @@ class TcExTi(object):
             group = Report(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'SIGNATURE':
 
-            group = Signature(self.tcex, kwargs.pop('name', None),
-                              kwargs.pop('file_name', None),
-                              kwargs.pop('file_type', None),
-                              kwargs.pop('file_text', None),
-                              **kwargs)
+            group = Signature(
+                self.tcex,
+                kwargs.pop('name', None),
+                kwargs.pop('file_name', None),
+                kwargs.pop('file_type', None),
+                kwargs.pop('file_text', None),
+                **kwargs
+            )
         if group_type == 'THREAT':
             group = Threat(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'TASK':
-            group = Task(self.tcex, kwargs.pop('name', None),
-                         kwargs.pop('status', 'Not Started'), kwargs.pop('due_date', None),
-                         kwargs.pop('reminder_date', None), kwargs.pop('escalation_date', None),
-                         **kwargs)
+            group = Task(
+                self.tcex,
+                kwargs.pop('name', None),
+                kwargs.pop('status', 'Not Started'),
+                kwargs.pop('due_date', None),
+                kwargs.pop('reminder_date', None),
+                kwargs.pop('escalation_date', None),
+                **kwargs
+            )
         return group
 
     def adversary(self, name, **kwargs):
