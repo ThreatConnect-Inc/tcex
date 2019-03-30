@@ -6,6 +6,7 @@ try:
 except ImportError:
     from urllib.parse import quote  # Python
     from urllib.parse import quote_plus  # Python
+import json
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -39,6 +40,8 @@ class TiTcRequest:
             url = '/v2/{}'.format(main_type)
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
+
+        print(self.tcex.session.post(url, json=data, params={'owner': owner}).text)
 
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
@@ -1656,7 +1659,7 @@ class TiTcRequest:
         url = '/v2/{}/{}/{}/assignees'.format(main_type, sub_type, unique_id)
         yield from self._iterate(url, params, 'assignee')
 
-    def assignee(self, main_type, sub_type, unique_id, assignee_id, action='GET', params=None):
+    def assignee(self, main_type, sub_type, unique_id, assignee_id, action='ADD', params=None):
         """
 
         :param params:
@@ -1673,9 +1676,9 @@ class TiTcRequest:
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
         if action == 'DELETE':
-            return self.tcex.session.get(url)
+            return self.tcex.session.delete(url)
         if action == 'ADD':
-            return self.tcex.session.get(url)
+            return self.tcex.session.post(url)
         return None
 
     def get_assignee(self, main_type, sub_type, unique_id, assignee_id, params=None):

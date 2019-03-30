@@ -16,6 +16,7 @@ from tcex.tcex_ti.mappings.group.group_types.adversarys import Adversary
 from tcex.tcex_ti.mappings.group.group_types.campaign import Campaign
 from tcex.tcex_ti.mappings.group.group_types.document import Document
 from tcex.tcex_ti.mappings.group.group_types.email import Email
+from tcex.tcex_ti.mappings.task import Task
 from tcex.tcex_ti.mappings.group.group_types.event import Event
 from tcex.tcex_ti.mappings.group.group_types.incident import Incident
 from tcex.tcex_ti.mappings.group.group_types.intrusion_set import IntrusionSet
@@ -192,6 +193,11 @@ class TcExTi(object):
                               **kwargs)
         if group_type == 'THREAT':
             group = Threat(self.tcex, kwargs.pop('name', None), **kwargs)
+        if group_type == 'TASK':
+            group = Task(self.tcex, kwargs.pop('name', None),
+                         kwargs.pop('status', 'Not Started'), kwargs.pop('due_date', None),
+                         kwargs.pop('reminder_date', None), kwargs.pop('escalation_date', None),
+                         **kwargs)
         return group
 
     def adversary(self, name, **kwargs):

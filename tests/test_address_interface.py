@@ -25,9 +25,9 @@ ti = TcExTi(tcex)
 
 def test_address_create_1():
     """Test address creation"""
-    kwargs = {'file_type': 'jpg', 'file_content': 'signature_content_1', 'file_name': 'signature_file_name_1'}
-    group_name='signature_1'
-    group_type='Signature'
+    kwargs = {'due_date': '2019-04-28T20:00:00-04:00'}
+    group_name = 'task_11234'
+    group_type = 'Task'
     group = ti.group(name=group_name, group_type=group_type, **kwargs)
     print(group.create('System'))
 
