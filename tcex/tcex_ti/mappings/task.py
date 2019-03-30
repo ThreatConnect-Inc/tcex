@@ -26,6 +26,10 @@ class Task(TIMappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @staticmethod
+    def is_task():
+        return True
+
     def status(self, status):
         """
 

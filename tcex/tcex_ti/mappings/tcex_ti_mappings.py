@@ -688,6 +688,10 @@ class TIMappings(object):
     def is_security_label():
         return False
 
+    @staticmethod
+    def is_task():
+        return False
+
     def _set_unique_id(self, json_response):
         """
 
