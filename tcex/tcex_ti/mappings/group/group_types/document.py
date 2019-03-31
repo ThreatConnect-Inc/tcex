@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Document(Group):
     """Unique API calls for Document API Endpoints"""
 
-    def __init__(self, tcex, name, file_name, file_content, **kwargs):
+    def __init__(self, tcex, name, file_name, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -21,7 +21,6 @@ class Document(Group):
         """
         super(Document, self).__init__(tcex, 'documents', name, **kwargs)
         self._data['fileName'] = file_name or kwargs.get('file_name')
-        self._data['fileContent'] = file_content or kwargs.get('file_content')
         self.api_entity = 'document'
         # file data/content to upload
 
@@ -33,8 +32,8 @@ class Document(Group):
         """
 
         self._data['fileContent'] = file_content
-        request = {'fileContent': file_content, 'update_if_exists': update_if_exists}
-        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id,
+                                       file_content, update_if_exists=update_if_exists)
 
     def file_name(self, file_name):
         """Return Email to.
@@ -43,7 +42,7 @@ class Document(Group):
         """
         self._data['fileName'] = file_name
         request = {'fileName': file_name}
-        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def file_size(self, file_size):
         """Return Email to.
@@ -52,7 +51,7 @@ class Document(Group):
         """
         self._data['fileSize'] = file_size
         request = {'fileSize': file_size}
-        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def status(self, status):
         """Return Email to.
@@ -61,7 +60,7 @@ class Document(Group):
         """
         self._data['status'] = status
         request = {'status': status}
-        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
 
     def malware(self, malware, password, file_name):
         """
@@ -75,4 +74,4 @@ class Document(Group):
         self._data['password'] = password
         self._data['fileName'] = file_name
         request = {'malware': malware, 'password': password, 'fileName': file_name}
-        return self.tc_requests.upload(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)

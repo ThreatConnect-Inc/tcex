@@ -41,6 +41,9 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
 
+        print(url)
+        print(data)
+
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
     def delete(self, main_type, sub_type, unique_id):
@@ -165,11 +168,15 @@ class TiTcRequest:
         :param update_if_exists:
         :return:
         """
-        update_if_exists = data.get('update_if_exists', update_if_exists)
+        if type(data) is not bytes:
+            data = bytes(data, 'utf-8')
+
         url = '/v2/{}/{}/{}/upload?updateIfExists={}'.format(
             main_type, sub_type, unique_id, update_if_exists
         )
-        return self.tcex.session.post(url)
+        print(data)
+        print(url)
+        return self.tcex.session.post(url, data=data)
 
     def add_false_positive(self, main_type, sub_type, unique_id):
         """

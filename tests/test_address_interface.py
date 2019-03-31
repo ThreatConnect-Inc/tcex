@@ -25,12 +25,15 @@ ti = TcExTi(tcex)
 
 def test_address_create_1():
     """Test address creation"""
-    kwargs = {'due_date': '2019-04-28T20:00:00-04:00'}
-    group_name = 'task_11234'
-    group_type = 'Task'
-    group = ti.group(name=group_name, group_type=group_type, unique_id=142865, **kwargs)
-    # print(group.create('System'))
-    print(group.add_attribute('Description', 'Dummy_text'))
+    group_name = 'document_1'
+    group_type = 'Document'
+    unique_id = 142887
+    kwargs = {'file_name': 'document_filename_1.txt', 'malware': False,
+              'unique_id':unique_id}
+    group = ti.group(name=group_name, group_type=group_type, **kwargs)
+    print(group.create('System'))
+    print(group.file_content('file_content_1', update_if_exists=False).text)
+    # print(group.add_attribute('Description', 'Dummy_text'))
 
 
 # def test_address_update_0():
