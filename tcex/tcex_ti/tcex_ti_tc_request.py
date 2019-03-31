@@ -6,7 +6,6 @@ try:
 except ImportError:
     from urllib.parse import quote  # Python
     from urllib.parse import quote_plus  # Python
-import json
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -128,7 +127,9 @@ class TiTcRequest:
             if not self.success(response):
                 # STILL NEED TO HANDLE THIS
                 should_iterate = False
-            data = response.json().get('data').get(api_entity)
+                data = []
+            else:
+                data = response.json().get('data').get(api_entity)
 
             if len(data) < self.result_limit:
                 should_iterate = False
@@ -168,7 +169,7 @@ class TiTcRequest:
         :param update_if_exists:
         :return:
         """
-        if type(data) is not bytes:
+        if not isinstance(data, bytes):
             data = bytes(data, 'utf-8')
 
         url = '/v2/{}/{}/{}/upload?updateIfExists={}'.format(
@@ -311,7 +312,6 @@ class TiTcRequest:
         :param sub_type:
         :param tag_name:
         """
-        main_type = target.type
         sub_type = target.api_sub_type
         api_type = target.api_type
         api_entity = target.api_entity
@@ -321,12 +321,12 @@ class TiTcRequest:
             url = '/v2/tags/{}/{}/{}'.format(tag_name, api_type, sub_type)
         else:
             url = '/v2/tags/{}/{}/'.format(tag_name, api_type)
-        print(url)
         yield from self._iterate(url, params, api_entity)
 
     def groups_from_tag(self, group, tag_name, params=None):
         """
 
+        :param group:
         :param params:
         :param group_type:
         :param tag_name:
@@ -337,6 +337,7 @@ class TiTcRequest:
 
     def indicators_from_tag(self, indicator, tag_name, params=None):
         """
+        :param indicator:
         :param params:
         :param indicator_type:
         :param tag_name:

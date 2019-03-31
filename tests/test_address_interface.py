@@ -25,12 +25,13 @@ ti = TcExTi(tcex)
 
 def test_address_create_1():
     """Test address creation"""
-    group_name = 'document_1'
-    group_type = 'Document'
-    unique_id = 142887
+    # group_name = 'document_1'
+    # group_type = 'Document'
+    unique_id = 761
     kwargs = {'file_name': 'document_filename_1.txt', 'malware': False, 'unique_id': unique_id}
-    group = ti.group(name=group_name, group_type=group_type, **kwargs)
-    print(group.file_content('file_content_1', update_if_exists=False).text)
+    group = ti.group(name=None, group_type='Adversary', **kwargs)
+    for association in group.group_associations_types('Adversary'):
+        print(association)
     # print(group.add_attribute('Description', 'Dummy_text'))
 
 
