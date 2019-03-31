@@ -122,7 +122,7 @@ class TIMappings(object):
 
     def create(self, owner):
         """
-
+        Creates the Group in the given Owner
         :param owner:
         :return:
         """
@@ -164,8 +164,9 @@ class TIMappings(object):
         """
         if params is None:
             params = {}
-        return self.tc_requests.single(self.api_type, self.api_sub_type, self.unique_id,
-                                       params=params)
+        return self.tc_requests.single(
+            self.api_type, self.api_sub_type, self.unique_id, params=params
+        )
 
     def many(self, params=None):
         """
@@ -174,9 +175,7 @@ class TIMappings(object):
         """
         if params is None:
             params = {}
-        yield from self.tc_requests.many(
-            self.api_type, self.api_sub_type, self.api_entity, params
-        )
+        yield from self.tc_requests.many(self.api_type, self.api_sub_type, self.api_entity, params)
 
     def request(self, result_limit, result_offset, params=None):
         """
@@ -256,8 +255,9 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.tag(self.api_type, self.api_sub_type, self.unique_id,
-                                    name, params=params)
+        return self.tc_requests.tag(
+            self.api_type, self.api_sub_type, self.unique_id, name, params=params
+        )
 
     def delete_tag(self, name):
         """
@@ -329,8 +329,9 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.get_label(self.api_type, self.api_sub_type, self.unique_id,
-                                          label, params)
+        return self.tc_requests.get_label(
+            self.api_type, self.api_sub_type, self.unique_id, label, params
+        )
 
     def delete_label(self, label):
         """
@@ -370,8 +371,9 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.group_associations(self.api_type, self.api_sub_type, self.unique_id,
-                                                   params=params)
+        return self.tc_requests.group_associations(
+            self.api_type, self.api_sub_type, self.unique_id, params=params
+        )
 
     def victim_asset_associations(self, params=None):
         """
@@ -387,8 +389,9 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 
-    def indicator_associations_types(self, indicator_type, api_entity=None, api_branch=None,
-                                     params=None):
+    def indicator_associations_types(
+        self, indicator_type, api_entity=None, api_branch=None, params=None
+    ):
         """
 
         :param params:
@@ -400,7 +403,7 @@ class TIMappings(object):
         if params is None:
             params = {}
         if not self.can_update():
-            return None
+            yield []
 
         target = self._tcex.ti.indicator(indicator_type)
         yield from self.tc_requests.indicator_associations_types(
@@ -410,7 +413,7 @@ class TIMappings(object):
             target,
             api_entity=api_entity,
             api_branch=api_branch,
-            params=params
+            params=params,
         )
 
     def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
@@ -425,7 +428,7 @@ class TIMappings(object):
         if params is None:
             params = {}
         if not self.can_update():
-            return None
+            yield []
 
         target = self._tcex.ti.group(group_type)
 
@@ -436,7 +439,7 @@ class TIMappings(object):
             target,
             api_entity=api_entity,
             api_branch=api_branch,
-            params=params
+            params=params,
         )
 
     def victim_asset_associations_type(self, victim_asset_type, params=None):
@@ -538,8 +541,9 @@ class TIMappings(object):
         if not self.can_update():
             return None
 
-        return self.tc_requests.attributes(self.api_type, self.api_sub_type, self.unique_id,
-                                           params=params)
+        return self.tc_requests.attributes(
+            self.api_type, self.api_sub_type, self.unique_id, params=params
+        )
 
     def attribute(self, attribute_id, action='GET', params=None):
         """
@@ -643,7 +647,7 @@ class TIMappings(object):
         """
         return {'unique_id': self.unique_id, 'type': self.api_type, 'sub_type': self.api_sub_type}
 
-    def can_create(self):
+    def can_create(self):  # pylint: disable=R0201
         """
         Determines if the required data that the API endpoint is expecting is present.
         :return: Boolean
@@ -670,26 +674,50 @@ class TIMappings(object):
 
     @staticmethod
     def is_indicator():
+        """
+        Indicates if Object is a Indicator
+        :return:
+        """
         return False
 
     @staticmethod
     def is_group():
+        """
+        Indicates if Object is a Group
+        :return:
+        """
         return False
 
     @staticmethod
     def is_victim():
+        """
+        Indicates if Object is a Victim
+        :return:
+        """
         return False
 
     @staticmethod
     def is_tag():
+        """
+        Indicates if Object is a Tag
+        :return:
+        """
         return False
 
     @staticmethod
     def is_security_label():
+        """
+        Indicates if Object is a Security Label
+        :return:
+        """
         return False
 
     @staticmethod
     def is_task():
+        """
+        Indicates if Object is a Task
+        :return:
+        """
         return False
 
     def _set_unique_id(self, json_response):

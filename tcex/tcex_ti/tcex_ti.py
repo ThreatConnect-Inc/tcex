@@ -123,7 +123,6 @@ class TcExTi(object):
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
-                    print('[{}]'.format(indicator_type))
                     custom_indicator_details = self._custom_indicator_classes[indicator_type]
                     value_fields = custom_indicator_details.get('value_fields')
                     c = getattr(module, custom_indicator_details.get('branch'))
@@ -133,8 +132,7 @@ class TcExTi(object):
                         indicator = c(value_fields[0], value_fields[1], **kwargs)
                     elif len(value_fields) == 3:
                         indicator = c(value_fields[0], value_fields[2], **kwargs)
-            except:
-                print('[{}]'.format(globals()))
+            except Exception:
                 return None
         return indicator
 
@@ -165,8 +163,8 @@ class TcExTi(object):
             group = Campaign(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'DOCUMENT':
             group = Document(
-                self.tcex, kwargs.pop('name', None),
-                kwargs.pop('file_name', None), **kwargs)
+                self.tcex, kwargs.pop('name', None), kwargs.pop('file_name', None), **kwargs
+            )
         if group_type == 'EVENT':
             group = Event(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'EMAIL':
