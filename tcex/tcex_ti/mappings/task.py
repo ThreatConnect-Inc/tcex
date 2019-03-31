@@ -2,6 +2,11 @@
 """ThreatConnect TI Adversary """
 from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class Task(TIMappings):
     """Unique API calls for Tasks API Endpoints"""
@@ -177,4 +182,11 @@ class Task(TIMappings):
         :param key:
         :param value:
         """
+        if key == 'unique_id':
+            self._unique_id = quote_plus(str(value))
         self._data[key] = value
+
+    def can_create(self):
+        if not self.data.get('name', None):
+            return False
+        return True

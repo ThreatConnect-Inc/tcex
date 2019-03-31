@@ -1074,14 +1074,17 @@ class TiTcRequest:
         if params is None:
             params = {}
         action = action.upper()
-        tag_url = '/v2/{}/{}/{}/tags/{}'.format(main_type, sub_type, unique_id, quote(tag))
+        if sub_type:
+            url = '/v2/{}/{}/{}/tags/{}'.format(main_type, sub_type, unique_id, quote(tag))
+        else:
+            url = '/v2/{}/{}/tags/{}'.format(main_type, unique_id, quote(tag))
         response = None
         if action == 'ADD':
-            response = self.tcex.session.post(tag_url)
+            response = self.tcex.session.post(url)
         elif action == 'DELETE':
-            response = self.tcex.session.delete(tag_url)
+            response = self.tcex.session.delete(url)
         elif action == 'GET':
-            response = self.tcex.session.get(tag_url, params=params)
+            response = self.tcex.session.get(url, params=params)
         else:
             self.tcex.log.error('_tags error')
         return response
