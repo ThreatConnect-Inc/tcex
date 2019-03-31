@@ -165,8 +165,9 @@ class TcExTi(object):
             group = Campaign(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'DOCUMENT':
             group = Document(
-                self.tcex, kwargs.pop('name', None), kwargs.pop('file_name', None), **kwargs
-            )
+                self.tcex, kwargs.pop('name', None),
+                kwargs.pop('file_name', None),
+                kwargs.pop('file_content', None), **kwargs)
         if group_type == 'EVENT':
             group = Event(self.tcex, kwargs.pop('name', None), **kwargs)
         if group_type == 'EMAIL':

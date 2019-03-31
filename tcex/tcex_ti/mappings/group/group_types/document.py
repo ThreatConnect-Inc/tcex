@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Document(Group):
     """Unique API calls for Document API Endpoints"""
 
-    def __init__(self, tcex, name, file_name, **kwargs):
+    def __init__(self, tcex, name, file_name, file_content, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,7 +20,8 @@ class Document(Group):
             xid (str, kwargs): The external id for this Group.
         """
         super(Document, self).__init__(tcex, 'documents', name, **kwargs)
-        self._data['fileName'] = file_name
+        self._data['fileName'] = file_name or kwargs.get('file_name')
+        self._data['fileContent'] = file_content or kwargs.get('file_content')
         self.api_entity = 'document'
         # file data/content to upload
 
