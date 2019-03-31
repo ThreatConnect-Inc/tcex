@@ -28,8 +28,9 @@ def test_address_create_1():
     kwargs = {'due_date': '2019-04-28T20:00:00-04:00'}
     group_name = 'task_11234'
     group_type = 'Task'
-    group = ti.group(name=None, group_type='Task', unique_id=142824)
-    print(group.add_tag('testing'))
+    group = ti.group(name=group_name, group_type=group_type, unique_id=142865, **kwargs)
+    # print(group.create('System'))
+    print(group.add_attribute('Description', 'Dummy_text'))
 
 
 # def test_address_update_0():

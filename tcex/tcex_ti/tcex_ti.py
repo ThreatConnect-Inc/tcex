@@ -173,9 +173,11 @@ class TcExTi(object):
             group = Email(
                 self.tcex,
                 kwargs.pop('name', None),
+                kwargs.pop('to', None),
+                kwargs.pop('from_addr', None),
                 kwargs.pop('subject', None),
-                kwargs.pop('header', None),
                 kwargs.pop('body', None),
+                kwargs.pop('header', None),
                 **kwargs
             )
         if group_type == 'INCIDENT':
