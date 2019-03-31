@@ -41,8 +41,6 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
 
-        print(self.tcex.session.post(url, json=data, params={'owner': owner}).text)
-
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
     def delete(self, main_type, sub_type, unique_id):
