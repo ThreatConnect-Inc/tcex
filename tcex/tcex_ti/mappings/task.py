@@ -86,7 +86,7 @@ class Task(TIMappings):
         :return:
         """
         if not self.can_update():
-            return
+            yield []
 
         yield from self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id)
 
@@ -98,7 +98,7 @@ class Task(TIMappings):
         :return:
         """
         if not self.can_update():
-            return
+            return None
 
         return self.tc_requests.assignee(
             self.api_type, self.api_sub_type, self.unique_id, assignee_id, action=action
@@ -134,7 +134,7 @@ class Task(TIMappings):
         :return:
         """
         if not self.can_update():
-            return
+            yield []
 
         yield from self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id)
 
@@ -146,7 +146,7 @@ class Task(TIMappings):
         :return:
         """
         if not self.can_update():
-            return
+            return None
 
         return self.tc_requests.escalatee(
             self.api_type, self.api_sub_type, self.unique_id, escalatee_id, action=action
@@ -187,6 +187,10 @@ class Task(TIMappings):
         self._data[key] = value
 
     def can_create(self):
+        """
+        Indicates if object can be created successfully
+        :return:
+        """
         if not self.data.get('name', None):
             return False
         return True
