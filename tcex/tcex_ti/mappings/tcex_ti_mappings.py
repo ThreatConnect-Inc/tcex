@@ -539,9 +539,9 @@ class TIMappings(object):
         if params is None:
             params = {}
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.attributes(
+        yield from self.tc_requests.attributes(
             self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 

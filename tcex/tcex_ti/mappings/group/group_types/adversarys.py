@@ -15,8 +15,7 @@ class Adversary(Group):
         super(Adversary, self).__init__(tcex, 'adversaries', name, **kwargs)
         self.api_entity = 'adversary'
 
-    # def add_asset(self, asset_type: object, asset_name: object) -> object:
-    def add_asset(self, asset_type: str, asset_name: str) -> object:
+    def add_asset(self, asset_type, asset_name):
         """
         :param asset_type:
         :param asset_name:

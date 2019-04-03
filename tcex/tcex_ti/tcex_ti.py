@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """ThreatConnect Threat Intelligence Module"""
-import hashlib
-import uuid
 import inflect
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import (
     custom_indicator_class_factory,
@@ -39,7 +37,11 @@ class TcExTi(object):
     def __init__(self, tcex):
         """
 
-        :param tcex:
+        Args:
+            tcex:
+
+        Return:
+
         """
         self.tcex = tcex
         self._custom_indicator_classes = {}
@@ -47,67 +49,83 @@ class TcExTi(object):
 
     def address(self, ip, **kwargs):
         """
+        Create the Address TI object.
 
-        :param ip:
-        :param kwargs:
-        :return:
+        Args:
+            ip:
+            **kwargs:
+
+        Return:
+
         """
         return Address(self.tcex, ip, **kwargs)
 
     def url(self, url, **kwargs):
         """
+        Create the URL TI object.
 
-        :param url:
-        :param kwargs:
-        :return:
+        Args:
+            url:
+            **kwargs:
+
+        Return:
+
         """
         return URL(self.tcex, url, **kwargs)
 
     def email_address(self, address, **kwargs):
         """
+        Create the Email Address TI object.
 
-        :param address:
-        :param kwargs:
-        :return:
+        Args:
+            address:
+            **kwargs:
+
+        Return:
+
         """
         return EmailAddress(self.tcex, address, **kwargs)
 
     def file(self, **kwargs):
         """
+        Create the File TI object.
 
-        :param kwargs:
-        :return:
+        Args:
+            **kwargs:
+
+        Return:
+
         """
         return File(self.tcex, **kwargs)
 
     def host(self, hostname, **kwargs):
         """
+        Create the Host TI object.
 
-        :param hostname:
-        :param kwargs:
-        :return:
+        Args:
+            hostname:
+            **kwargs:
+
+        Return:
+
         """
         return Host(self.tcex, hostname, **kwargs)
 
     def indicator(self, indicator_type, **kwargs):
         """
+        Create the Indicator TI object.
 
-        :param indicator_type:
-        :param kwargs:
+        Args:
+            indicator_type:
+            **kwargs:
+
+        Return:
+
         """
         if not indicator_type:
             return Indicator(self.tcex, None, **kwargs)
 
         upper_indicator_type = indicator_type.upper()
-
-        # group method:
-        # def group(self, group_type, **kwargs):
-        # if group_type == 'ADVERSARY':
-        #     group = Adversary(self.tcex, kwargs.pop('name', None), **kwargs)
-        # ADDRESS INIT
-        # def __init__(self, tcex, ip, **kwargs):
-        # Adversary INIT
-        # def __init__(self, tcex, name, **kwargs):
 
         indicator = None
         if upper_indicator_type == 'ADDRESS':
@@ -136,20 +154,16 @@ class TcExTi(object):
                 return None
         return indicator
 
-    # Verify that these two are needed since they ARE custom indicator types.
-    # def asn(self, as_number, **kwargs):
-    #     return ASN(self.tcex, as_number, **kwargs)
-    #
-    # def cidr(self, block, **kwargs):
-    #     return CIDR(self.tcex, block, **kwargs)
-    ##########################################################################
-
     def group(self, group_type, **kwargs):
         """
+        Create the Group TI object.
 
-        :param group_type:
-        :param kwargs:
-        :return:
+        Args:
+            group_type:
+            **kwargs:
+
+        Return:
+
         """
 
         group = None
@@ -210,129 +224,162 @@ class TcExTi(object):
 
     def adversary(self, name, **kwargs):
         """
+        Create the Adversary TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Adversary(self.tcex, name, **kwargs)
 
     def campaign(self, name, **kwargs):
         """
+        Create the Campaign TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Campaign(self.tcex, name, **kwargs)
 
     def document(self, name, file_name, **kwargs):
         """
+        Create the Document TI object.
 
-        :param name:
-        :param file_name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            file_name:
+            **kwargs:
+
+        Return:
+
         """
         return Document(self.tcex, name, file_name, **kwargs)
 
     def event(self, name, **kwargs):
         """
+        Create the Event TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Event(self.tcex, name, **kwargs)
 
     def email(self, name, subject, header, body, **kwargs):
         """
+        Create the Email TI object.
 
-        :param name:
-        :param subject:
-        :param header:
-        :param body:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            subject:
+            header:
+            body:
+            **kwargs:
+
+        Return:
+
         """
         return Email(self.tcex, name, subject, header, body, **kwargs)
 
     def incident(self, name, **kwargs):
         """
+        Create the Incident TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Incident(self.tcex, name, **kwargs)
 
     def intrustion_set(self, name, **kwargs):
         """
+        Create the Intrustion Set TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return IntrusionSet(self.tcex, name, **kwargs)
 
     def report(self, name, **kwargs):
         """
+        Create the Report TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Report(self.tcex, name, **kwargs)
 
     def signature(self, name, **kwargs):
         """
+        Create the Signature TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Signature(self.tcex, name, **kwargs)
 
     def threat(self, name, **kwargs):
         """
+        Create the Threat TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Threat(self.tcex, name, **kwargs)
 
     def victim(self, name, **kwargs):
         """
+        Create the Victim TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+            **kwargs:
+
+        Return:
+
         """
         return Victim(self.tcex, name, **kwargs)
 
     def tag(self, name):
         """
+        Create the Tag TI object.
 
-        :param name:
-        :param kwargs:
-        :return:
+        Args:
+            name:
+
+        Return:
+
         """
         return Tag(self.tcex, name)
-
-    @staticmethod
-    def generate_xid(identifier=None):
-        """
-
-        :param identifier:
-        :return:
-        """
-        if identifier is None:
-            identifier = str(uuid.uuid4())
-        elif isinstance(identifier, list):
-            identifier = '-'.join([str(i) for i in identifier])
-            identifier = hashlib.sha256(identifier.encode('utf-8')).hexdigest()
-        return hashlib.sha256(identifier.encode('utf-8')).hexdigest()
 
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""

@@ -27,11 +27,10 @@ def test_address_create_1():
     """Test address creation"""
     # group_name = 'document_1'
     # group_type = 'Document'
-    unique_id = 761
+    unique_id = 142899
     kwargs = {'file_name': 'document_filename_1.txt', 'malware': False, 'unique_id': unique_id}
     group = ti.group(name=None, group_type='Adversary', **kwargs)
-    for association in group.group_associations_types('Adversary'):
-        print(association)
+    print(group.single({}).json())
     # print(group.add_attribute('Description', 'Dummy_text'))
 
 

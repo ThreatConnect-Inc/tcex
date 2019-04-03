@@ -40,9 +40,6 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
 
-        print(url)
-        print(data)
-
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
     def delete(self, main_type, sub_type, unique_id):
@@ -113,10 +110,13 @@ class TiTcRequest:
 
     def _iterate(self, url, params, api_entity):
         """
+        Args:
+            url:
+            params:
+            api_entity:
 
-        :param url:
-        :param params:
-        :param api_entity:
+        Return:
+
         """
         params['resultLimit'] = self.result_limit
         should_iterate = True
@@ -141,12 +141,15 @@ class TiTcRequest:
     def request(self, main_type, sub_type, result_limit, result_offset, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param result_limit:
-        :param result_offset:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            result_limit:
+            result_offset:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -162,12 +165,15 @@ class TiTcRequest:
     def upload(self, main_type, sub_type, unique_id, data, update_if_exists=True):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param data:
-        :param update_if_exists:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            data:
+            update_if_exists:
+
+        Return:
+
         """
         if not isinstance(data, bytes):
             data = bytes(data, 'utf-8')
@@ -175,17 +181,18 @@ class TiTcRequest:
         url = '/v2/{}/{}/{}/upload?updateIfExists={}'.format(
             main_type, sub_type, unique_id, update_if_exists
         )
-        print(data)
-        print(url)
         return self.tcex.session.post(url, data=data)
 
     def add_false_positive(self, main_type, sub_type, unique_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
         """
         unique_id = quote_plus(unique_id)
         url = '/v2/{}/{}/{}/falsePositive'.format(main_type, sub_type, unique_id)
@@ -195,10 +202,13 @@ class TiTcRequest:
     def owners(self, main_type, sub_type, unique_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
         """
         if not sub_type:
             url = '/v2/{}/{}/owners'.format(main_type, unique_id)
@@ -210,11 +220,14 @@ class TiTcRequest:
     def add_observations(self, main_type, sub_type, unique_id, data):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param data:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            data:
+
+        Return:
+
         """
         url = '/v2/{}/{}/{}/observations'.format(main_type, sub_type, unique_id)
         return self.tcex.session.post(url, json=data)
@@ -222,10 +235,13 @@ class TiTcRequest:
     def observation_count(self, main_type, sub_type, unique_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
         """
         if not sub_type:
             url = '/v2/{}/{}/observationCount'.format(main_type, unique_id)
@@ -237,12 +253,15 @@ class TiTcRequest:
     def observations(self, main_type, sub_type, unique_id, owner, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param owner:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            owner:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -257,10 +276,13 @@ class TiTcRequest:
     def download(self, main_type, sub_type, unique_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
         """
         if not sub_type:
             url = '/v2/{}/{}/download'.format(main_type, unique_id)
@@ -272,10 +294,13 @@ class TiTcRequest:
     def dns_resolution(self, main_type, sub_type, unique_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+
+        Return:
+
         """
         if not sub_type:
             url = '/v2/{}/{}/dnsResolution'.format(main_type, unique_id)
@@ -287,11 +312,14 @@ class TiTcRequest:
     def deleted(self, main_type, sub_type, deleted_since, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param deleted_since:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            deleted_since:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -307,10 +335,13 @@ class TiTcRequest:
     def pivot_from_tag(self, target, tag_name, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param tag_name:
+        Args:
+            target:
+            tag_name:
+            params:
+
+        Return:
+
         """
         sub_type = target.api_sub_type
         api_type = target.api_type
@@ -326,10 +357,13 @@ class TiTcRequest:
     def groups_from_tag(self, group, tag_name, params=None):
         """
 
-        :param group:
-        :param params:
-        :param group_type:
-        :param tag_name:
+        Args:
+            group:
+            tag_name:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -337,10 +371,13 @@ class TiTcRequest:
 
     def indicators_from_tag(self, indicator, tag_name, params=None):
         """
-        :param indicator:
-        :param params:
-        :param indicator_type:
-        :param tag_name:
+                Args:
+                    indicator:
+                    tag_name:
+                    params:
+
+                Return:
+
         """
         if params is None:
             params = {}
@@ -349,20 +386,28 @@ class TiTcRequest:
     def victims_from_tag(self, tag_name, params=None):
         """
 
-        :param params:
-        :param tag_name:
+        Args:
+            tag_name:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag('victims', None, tag_name, params=params)
+        yield from self.pivot_from_tag('victims', tag_name, params=params)
 
     def indicator_associations(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -376,10 +421,14 @@ class TiTcRequest:
     def group_associations(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param params:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -393,11 +442,15 @@ class TiTcRequest:
     def victim_asset_associations(self, main_type, sub_type, unique_id, branch_type, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param branch_type:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            branch_type:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -420,13 +473,17 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param association_type:
-        :param api_branch:
-        :param api_entity:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            association_type:
+            api_branch:
+            api_entity:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -443,13 +500,17 @@ class TiTcRequest:
         self, main_type, sub_type, unique_id, target, api_branch=None, api_entity=None, params=None
     ):
         """
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param target:
-        :param api_branch:
-        :param api_entity:
+                Args:
+                    main_type:
+                    sub_type:
+                    unique_id:
+                    target:
+                    api_branch:
+                    api_entity:
+                    params:
+
+                Return:
+
         """
         if params is None:
             params = {}
@@ -468,13 +529,16 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param target_type:
-        :param target_sub_type:
-        :param target_unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            target_type:
+            target_sub_type:
+            target_unique_id:
+
+        Return:
+
         """
         return self._association(
             main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
@@ -485,13 +549,16 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param target_type:
-        :param target_sub_type:
-        :param target_unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            target_type:
+            target_sub_type:
+            target_unique_id:
+
+        Return:
+
         """
         return self._association(
             main_type,
@@ -515,14 +582,17 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param target_type:
-        :param target_sub_type:
-        :param target_unique_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            target_type:
+            target_sub_type:
+            target_unique_id:
+            action:
+
+        Return:
+
         """
         action = action.upper()
         # Typically if victim to victim but other endpoints that are not
@@ -557,20 +627,25 @@ class TiTcRequest:
     def add_victim_phone_asset(self, unique_id, name):
         """
 
-        :param unique_id:
-        :param name:
-        :return:
+        Args:
+            unique_id:
+            name:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/phoneNumbers'.format(unique_id)
         return self.tcex.session.post(url, json={'phoneType': name})
 
     def add_victim_email_asset(self, unique_id, name, asset_type):
         """
+        Args:
+            unique_id:
+            name:
+            asset_type:
 
-        :param unique_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/emailAddresses'.format(unique_id)
         return self.tcex.session.post(url, json={'address': name, 'addressType': asset_type})
@@ -578,10 +653,13 @@ class TiTcRequest:
     def add_victim_network_asset(self, unique_id, name, asset_type):
         """
 
-        :param unique_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Args:
+            unique_id:
+            name:
+            asset_type:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/networkAccounts'.format(unique_id)
         return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
@@ -589,10 +667,13 @@ class TiTcRequest:
     def add_victim_social_asset(self, unique_id, name, asset_type):
         """
 
-        :param unique_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Args:
+            unique_id:
+            name:
+            asset_type:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/socialNetworks'.format(unique_id)
         return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
@@ -600,9 +681,12 @@ class TiTcRequest:
     def add_victim_web_asset(self, unique_id, name):
         """
 
-        :param unique_id:
-        :param name:
-        :return:
+        Args:
+            unique_id:
+            name:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/webSites'.format(unique_id)
         return self.tcex.session.post(url, json={'webSite': name})
@@ -610,10 +694,13 @@ class TiTcRequest:
     def update_victim_phone_asset(self, unique_id, asset_id, name):
         """
 
-        :param unique_id:
-        :param asset_id:
-        :param name:
-        :return:
+        Args:
+            unique_id:
+            asset_id:
+            name:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/phoneNumbers/{}'.format(unique_id, asset_id)
         return self.tcex.session.post(url, json={'phoneType': name})
@@ -621,11 +708,14 @@ class TiTcRequest:
     def update_victim_email_asset(self, unique_id, asset_id, name, asset_type):
         """
 
-        :param unique_id:
-        :param asset_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Args:
+            unique_id:
+            asset_id:
+            name:
+            asset_type:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/emailAddresses/{}'.format(unique_id, asset_id)
         return self.tcex.session.post(url, json={'address': name, 'addressType': asset_type})
@@ -633,11 +723,14 @@ class TiTcRequest:
     def update_victim_network_asset(self, unique_id, asset_id, name, asset_type):
         """
 
-        :param unique_id:
-        :param asset_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Args:
+            unique_id:
+            asset_id:
+            name:
+            asset_type:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/networkAccounts/{}'.format(unique_id, asset_id)
         return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
@@ -645,11 +738,14 @@ class TiTcRequest:
     def update_victim_social_asset(self, unique_id, asset_id, name, asset_type):
         """
 
-        :param unique_id:
-        :param asset_id:
-        :param name:
-        :param asset_type:
-        :return:
+        Args:
+            unique_id:
+            asset_id:
+            name:
+            asset_type:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/socialNetworks/{}'.format(unique_id, asset_id)
         return self.tcex.session.post(url, json={'account': name, 'network': asset_type})
@@ -657,10 +753,13 @@ class TiTcRequest:
     def update_victim_web_asset(self, unique_id, asset_id, name):
         """
 
-        :param unique_id:
-        :param asset_id:
-        :param name:
-        :return:
+        Args:
+            unique_id:
+            asset_id:
+            name:
+
+        Return:
+
         """
         url = '/v2/victims/{}/victimAssets/webSites/{}'.format(unique_id, asset_id)
         return self.tcex.session.post(url, json={'webSite': name})
@@ -668,12 +767,15 @@ class TiTcRequest:
     def victim(self, main_type, sub_type, unique_id, victim_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param victim_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            victim_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -687,10 +789,14 @@ class TiTcRequest:
     def victims(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param params:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -704,10 +810,14 @@ class TiTcRequest:
     def victim_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -721,10 +831,14 @@ class TiTcRequest:
     def victim_email_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param params:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -738,10 +852,14 @@ class TiTcRequest:
     def victim_network_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -755,10 +873,14 @@ class TiTcRequest:
     def victim_phone_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -772,10 +894,14 @@ class TiTcRequest:
     def victim_social_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -789,10 +915,14 @@ class TiTcRequest:
     def victim_web_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -808,13 +938,16 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :param params:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -836,13 +969,16 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :param params:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -864,13 +1000,16 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -892,13 +1031,16 @@ class TiTcRequest:
     ):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :param params:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -918,13 +1060,16 @@ class TiTcRequest:
     def victim_web_asset(self, main_type, sub_type, unique_id, asset_id, action='GET', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -944,12 +1089,15 @@ class TiTcRequest:
     def get_victim_email_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -958,12 +1106,15 @@ class TiTcRequest:
     def get_victim_network_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -972,12 +1123,15 @@ class TiTcRequest:
     def get_victim_phone_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param params:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -986,12 +1140,15 @@ class TiTcRequest:
     def get_victim_social_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1000,12 +1157,15 @@ class TiTcRequest:
     def get_victim_web_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1014,68 +1174,86 @@ class TiTcRequest:
     def delete_victim_email_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.victim_email_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def delete_victim_network_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.victim_network_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def delete_victim_phone_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.victim_phone_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def delete_victim_social_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.victim_social_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def delete_victim_web_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.victim_web_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def tag(self, main_type, sub_type, unique_id, tag, action='GET', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param tag:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            tag:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1098,34 +1276,43 @@ class TiTcRequest:
     def add_tag(self, main_type, sub_type, unique_id, tag):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param tag:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            tag:
+
+        Return:
+
         """
         return self.tag(main_type, sub_type, unique_id, tag, action='ADD')
 
     def delete_tag(self, main_type, sub_type, unique_id, tag):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param tag:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            tag:
+
+        Return:
+
         """
         return self.tag(main_type, sub_type, unique_id, tag, action='DELETE')
 
     def get_tag(self, main_type, sub_type, unique_id, tag, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param tag:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            tag:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1134,10 +1321,14 @@ class TiTcRequest:
     def tags(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1151,10 +1342,14 @@ class TiTcRequest:
     def labels(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1168,23 +1363,29 @@ class TiTcRequest:
     def add_label(self, main_type, sub_type, unique_id, label):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            label:
+
+        Return:
+
         """
         return self.label(main_type, sub_type, unique_id, label, action='ADD')
 
     def get_label(self, main_type, sub_type, unique_id, label, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            label:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1193,24 +1394,30 @@ class TiTcRequest:
     def delete_label(self, main_type, sub_type, unique_id, label):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            label:
+
+        Return:
+
         """
         return self.label(main_type, sub_type, unique_id, label, action='DELETE')
 
     def label(self, main_type, sub_type, unique_id, label, action='ADD', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param label:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            label:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1237,10 +1444,14 @@ class TiTcRequest:
     def attributes(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
 
         if params is None:
@@ -1255,13 +1466,16 @@ class TiTcRequest:
     def attribute(self, main_type, sub_type, unique_id, attribute_id, action='GET', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1282,12 +1496,15 @@ class TiTcRequest:
     def get_attribute(self, main_type, sub_type, unique_id, attribute_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1296,23 +1513,29 @@ class TiTcRequest:
     def delete_attribute(self, main_type, sub_type, unique_id, attribute_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+
+        Return:
+
         """
         return self.attribute(main_type, sub_type, unique_id, attribute_id, action='DELETE')
 
     def add_attribute(self, main_type, sub_type, unique_id, attribute_type, attribute_value):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_type:
-        :param attribute_value:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_type:
+            attribute_value:
+
+        Return:
+
         """
         if not sub_type:
             url = '/v2/{}/{}/attributes'.format(main_type, unique_id)
@@ -1324,11 +1547,15 @@ class TiTcRequest:
     def attribute_labels(self, main_type, sub_type, unique_id, attribute_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1348,14 +1575,17 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :param label:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            label:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1383,13 +1613,16 @@ class TiTcRequest:
     def get_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            label:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1400,12 +1633,15 @@ class TiTcRequest:
     def delete_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            label:
+
+        Return:
+
         """
         return self.attribute_label(
             main_type, sub_type, unique_id, attribute_id, label, action='DELETE'
@@ -1414,12 +1650,15 @@ class TiTcRequest:
     def add_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param attribute_id:
-        :param label:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            attribute_id:
+            label:
+
+        Return:
+
         """
         return self.attribute_label(
             main_type, sub_type, unique_id, attribute_id, label, action='ADD'
@@ -1428,10 +1667,14 @@ class TiTcRequest:
     def adversary_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1441,10 +1684,14 @@ class TiTcRequest:
     def adversary_handle_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1454,10 +1701,14 @@ class TiTcRequest:
     def adversary_phone_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1467,10 +1718,14 @@ class TiTcRequest:
     def adversary_url_assets(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1482,13 +1737,16 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1505,12 +1763,15 @@ class TiTcRequest:
     def get_adversary_url_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1519,22 +1780,28 @@ class TiTcRequest:
     def delete_adversary_url_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.adversary_url_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def add_adversary_url_asset(self, main_type, sub_type, unique_id, name):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param name:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            name:
+
+        Return:
+
         """
         asset_url = '/v2/{}/{}/{}/urls'.format(main_type, sub_type, unique_id)
         asset = {'url': name}
@@ -1545,13 +1812,16 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1568,12 +1838,15 @@ class TiTcRequest:
     def get_adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1582,22 +1855,28 @@ class TiTcRequest:
     def delete_adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.adversary_phone_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
     def add_adversary_phone_asset(self, main_type, sub_type, unique_id, name):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param name:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            name:
+
+        Return:
+
         """
         asset_url = '/v2/{}/{}/{}/phoneNumbers'.format(main_type, sub_type, unique_id)
         asset = {'phoneNumber': name}
@@ -1608,13 +1887,16 @@ class TiTcRequest:
     ):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1631,12 +1913,15 @@ class TiTcRequest:
     def get_adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1645,11 +1930,14 @@ class TiTcRequest:
     def delete_adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param asset_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            asset_id:
+
+        Return:
+
         """
         return self.adversary_handler_asset(
             main_type, sub_type, unique_id, asset_id, action='DELETE'
@@ -1658,11 +1946,14 @@ class TiTcRequest:
     def add_adversary_handler_asset(self, main_type, sub_type, unique_id, name):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param name:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            name:
+
+        Return:
+
         """
         asset_url = '/v2/{}/{}/{}/handles'.format(main_type, sub_type, unique_id)
         asset = {'handle': name}
@@ -1671,10 +1962,14 @@ class TiTcRequest:
     def assignees(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1684,13 +1979,16 @@ class TiTcRequest:
     def assignee(self, main_type, sub_type, unique_id, assignee_id, action='ADD', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param assignee_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            assignee_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1706,12 +2004,15 @@ class TiTcRequest:
     def get_assignee(self, main_type, sub_type, unique_id, assignee_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param assignee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            assignee_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1720,32 +2021,42 @@ class TiTcRequest:
     def delete_assignee(self, main_type, sub_type, unique_id, assignee_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param assignee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            assignee_id:
+
+        Return:
+
         """
         return self.assignee(main_type, sub_type, unique_id, assignee_id, action='DELETE')
 
     def add_assignee(self, main_type, sub_type, unique_id, assignee_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param assignee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            assignee_id:
+
+        Return:
+
         """
         return self.assignee(main_type, sub_type, unique_id, assignee_id, action='ADD')
 
     def escalatees(self, main_type, sub_type, unique_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1755,13 +2066,16 @@ class TiTcRequest:
     def escalatee(self, main_type, sub_type, unique_id, escalatee_id, action='GET', params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param escalatee_id:
-        :param action:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            escalatee_id:
+            action:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1777,12 +2091,15 @@ class TiTcRequest:
     def get_escalatee(self, main_type, sub_type, unique_id, escalatee_id, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param escalatee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            escalatee_id:
+            params:
+
+        Return:
+
         """
         if params is None:
             params = {}
@@ -1791,22 +2108,28 @@ class TiTcRequest:
     def delete_escalatee(self, main_type, sub_type, unique_id, escalatee_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param escalatee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            escalatee_id:
+
+        Return:
+
         """
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, action='DELETE')
 
     def add_escalatee(self, main_type, sub_type, unique_id, escalatee_id):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param escalatee_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            escalatee_id:
+
+        Return:
+
         """
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, action='ADD')
 
@@ -1814,8 +2137,11 @@ class TiTcRequest:
     def success(r):
         """
 
-        :param r:
-        :return:
+        Args:
+            r:
+
+        Return:
+
         """
         status = True
         if r.ok:
