@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_session &mdash; TcEx 0.9.12 documentation</title>
+  <title>tcex.tcex_session &mdash; TcEx 0.9.13 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.12
+                0.9.13
               </div>
 
 
@@ -214,6 +214,18 @@
             <span class="p">)</span>
         <span class="c1"># Add Retry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">retry</span><span class="p">()</span>
+        <span class="c1"># auth_request_session = requests.Session()</span>
+
+        <span class="c1"># # Using an adapter to make HTTP requests robust to network errors.</span>
+        <span class="c1"># # This adapter retrys HTTP requests when network errors occur</span>
+        <span class="c1"># # and the requests seems safely retryable.</span>
+        <span class="c1"># retry_adapter = requests.adapters.HTTPAdapter(max_retries=3)</span>
+        <span class="c1"># auth_request_session.mount(&quot;https://&quot;, retry_adapter)</span>
+
+        <span class="c1"># # Do not pass `self` as the session here, as it can lead to</span>
+        <span class="c1"># # infinite recursion.</span>
+        <span class="c1"># auth_request = Request(auth_request_session)</span>
+
         <span class="c1"># Verify</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verify</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_verify</span>
 
