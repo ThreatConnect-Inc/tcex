@@ -12,12 +12,15 @@ class TIMappings(object):
         """Initialize Class Properties.
 
         Args:
+            tcex:
+            main_type:
+            api_type:
+            sub_type:
+            api_entity:
             group_type (str): The ThreatConnect define Group type.
             name (str): The name for this Group.
-            xid (str, kwargs): The external id for this Group.
         """
         self._tcex = tcex
-        # self._data = {'xid': kwargs.get('xid', str(uuid.uuid4()))}
         self._data = {}
 
         self._type = main_type
@@ -31,100 +34,117 @@ class TIMappings(object):
 
     @property
     def type(self):
-        """Return Group type."""
+        """Return main type."""
         return self._type
 
     @property
     def api_sub_type(self):
-        """Return Group type."""
+        """Return sub type."""
         return self._api_sub_type
 
     @property
-    def xid(self):
-        """Return Group xid."""
-        return self._data.get('xid')
-
-    @property
     def unique_id(self):
-        """
-
-        :return:
-        """
+        """Return unique id."""
         return self._unique_id
 
     @property
     def tc_requests(self):
-        """
-
-        :return:
-        """
+        """Return tc request object."""
         return self._tc_requests
 
     @property
     def api_type(self):
-        """Return Group type."""
+        """Return api type."""
         return self._api_type
 
     @property
     def api_entity(self):
-        """Return Group type."""
+        """Return api entity."""
         return self._api_entity
 
     @api_entity.setter
     def api_entity(self, api_entity):
         """
+        Sets the Api Entity
+        Args:
+            api_entity:
 
-        :param api_entity:
+        Returns:
+
         """
         self._api_entity = api_entity
 
     @api_type.setter
     def api_type(self, api_type):
         """
+        Sets the Api Type
+        Args:
+            api_type:
 
-        :param api_type:
+        Returns:
+
         """
         self._api_type = api_type
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
         """
+        Sets the Tc Request Object
+        Args:
+            tc_requests:
 
-        :param tc_requests:
+        Returns:
+
         """
         self._tc_requests = tc_requests
 
     @api_sub_type.setter
     def api_sub_type(self, sub_type):
-        """Return Group type."""
+        """
+        Sets the Api Sub Type
+        Args:
+            sub_type:
+
+        Returns:
+
+        """
         self._api_sub_type = sub_type
 
     @unique_id.setter
     def unique_id(self, unique_id):
         """
+        Sets the Unique Id
+        Args:
+            unique_id:
 
-        :param unique_id:
+        Returns:
+
         """
         self._unique_id = unique_id
 
     @property
     def data(self):
-        """Return Group xid."""
+        """Return data."""
         return self._data
 
     @data.setter
     def data(self, data):
         """
+        Sets the data
+        Args:
+            data:
 
-        :param data:
+        Returns:
+
         """
         self._data = data
 
     def create(self, owner):
         """
-        Creates the Group in the given Owner
-        :param owner:
-        :return:
+        Creates the Indicator/Group/Victim or Security Label given Owner
+
+        Args:
+            owner: The owner for the created object
         """
         if not self.can_create():
             return None
@@ -138,8 +158,7 @@ class TIMappings(object):
 
     def delete(self):
         """
-
-        :return:
+        Deletes the Indicator/Group/Victim or Security Label
         """
         if not self.can_delete():
             return None
@@ -148,8 +167,7 @@ class TIMappings(object):
 
     def update(self):
         """
-
-        :return:
+        Updates the Indicator/Group/Victim or Security Label
         """
         if not self.can_update():
             return None
@@ -158,9 +176,12 @@ class TIMappings(object):
 
     def single(self, params=None):
         """
+        Gets the Indicator/Group/Victim or Security Label
+        Args:
+            params: parameters to pass in to get the object
 
-        :param params:
-        :return:
+        Returns:
+
         """
         if params is None:
             params = {}
@@ -170,8 +191,12 @@ class TIMappings(object):
 
     def many(self, params=None):
         """
+        Gets the Indicator/Group/Victim or Security Labels
+        Args:
+            params: parameters to pass in to get the objects
 
-        :param params:
+        Yields: A Indicator/Group/Victim json
+
         """
         if params is None:
             params = {}
@@ -179,11 +204,14 @@ class TIMappings(object):
 
     def request(self, result_limit, result_offset, params=None):
         """
+        Gets the Indicator/Group/Victim or Security Labels
+        Args:
+            result_limit:
+            result_offset:
+            params: parameters to pass in to get the objects
 
-        :param params:
-        :param result_limit:
-        :param result_offset:
-        :return:
+        Returns:
+
         """
         if params is None:
             params = {}
@@ -191,24 +219,35 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, result_limit, result_offset, params
         )
 
-    def tags(self):
+    def tags(self, params=None):
         """
+         Gets the tags from a Indicator/Group/Victim/Security Labels
+         Args:
+             params: parameters to pass in to get the objects
 
-        :return:
-        """
+         Yields: A tag json
+
+         """
+
+        if params is None:
+            params = {}
+
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.tags(self.api_type, self.api_sub_type, self.unique_id)
+        yield from self.tc_requests.tags(
+            self.api_type, self.api_sub_type, self.unique_id, params=params
+        )
 
     def tag(self, name, action='ADD', params=None):
         """
+         Adds a tag to a Indicator/Group/Victim/Security Label
+         Args:
+             params:
+             action:
+             name: The name of the tag
 
-        :param params:
-        :param name:
-        :param action:
-        :return:
-        """
+         """
         if params is None:
             params = {}
 
@@ -233,10 +272,11 @@ class TIMappings(object):
 
     def add_tag(self, name):
         """
+         Adds a tag to a Indicator/Group/Victim/Security Label
+         Args:
+             name: The name of the tag
 
-        :param name:
-        :return:
-        """
+         """
         if not self.can_update():
             return None
 
@@ -244,11 +284,12 @@ class TIMappings(object):
 
     def get_tag(self, name, params=None):
         """
+         Gets a tag from a Indicator/Group/Victim/Security Label
+         Args:
+             name: The name of the tag
+             params:
+         """
 
-        :param params:
-        :param name:
-        :return:
-        """
         if params is None:
             params = {}
 
@@ -261,10 +302,11 @@ class TIMappings(object):
 
     def delete_tag(self, name):
         """
+         Deletes a tag from a Indicator/Group/Victim/Security Label
+         Args:
+             name: The name of the tag
+         """
 
-        :param name:
-        :return:
-        """
         if not self.can_update():
             return None
 
@@ -272,21 +314,24 @@ class TIMappings(object):
 
     def labels(self):
         """
+         Gets the security labels from a Indicator/Group/Victim
 
-        :return:
-        """
+         Yields: A Security label
+
+         """
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.labels(self.api_type, self.api_sub_type, self.unique_id)
+        yield from self.tc_requests.labels(self.api_type, self.api_sub_type, self.unique_id)
 
     def label(self, label, action='ADD'):
         """
+         Adds a tag to a Indicator/Group/Victim/Security Label
+         Args:
+             label: The name of the Security Label
+             action:
 
-        :param label:
-        :param action:
-        :return:
-        """
+         """
         if not self.can_update():
             return None
         if action == 'GET':
@@ -308,10 +353,10 @@ class TIMappings(object):
 
     def add_label(self, label):
         """
-
-        :param label:
-        :return:
-        """
+         Adds a label to a Indicator/Group/Victim
+         Args:
+             label: The name of the Security Label
+         """
         if not self.can_update():
             return None
 
@@ -319,11 +364,11 @@ class TIMappings(object):
 
     def get_label(self, label, params=None):
         """
-
-        :param params:
-        :param label:
-        :return:
-        """
+         Gets a security label from a Indicator/Group/Victim
+         Args:
+             label: The name of the Security Label
+             params:
+         """
         if params is None:
             params = {}
         if not self.can_update():
@@ -335,10 +380,10 @@ class TIMappings(object):
 
     def delete_label(self, label):
         """
-
-        :param label:
-        :return:
-        """
+         Deletes a security label from a Indicator/Group/Victim
+         Args:
+             label: The name of the Security Label
+         """
         if not self.can_update():
             return None
 
@@ -348,38 +393,44 @@ class TIMappings(object):
 
     def indicator_associations(self, params=None):
         """
+         Gets the indicator association from a Indicator/Group/Victim
 
-        :return:
-        """
+         Yields: Indicator Association
+
+         """
         if params is None:
             params = {}
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.indicator_associations(
+        yield from self.tc_requests.indicator_associations(
             self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 
     def group_associations(self, params=None):
         """
+         Gets the group association from a Indicator/Group/Victim
 
-        :return:
-        """
+         Yields: Group Association
+
+         """
         if params is None:
             params = {}
 
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.group_associations(
+        yield from self.tc_requests.group_associations(
             self.api_type, self.api_sub_type, self.unique_id, params=params
         )
 
     def victim_asset_associations(self, params=None):
         """
+         Gets the victim asset association from a Indicator/Group/Victim
 
-        :return:
-        """
+         Yields: Victim Association json
+
+         """
         if params is None:
             params = {}
         if not self.can_update():
@@ -393,12 +444,16 @@ class TIMappings(object):
         self, indicator_type, api_entity=None, api_branch=None, params=None
     ):
         """
+        Gets the indicator association from a Indicator/Group/Victim
 
-        :param params:
-        :param indicator_type:
-        :param api_entity:
-        :param api_branch:
-        :return:
+        Args:
+            indicator_type:
+            api_entity:
+            api_branch:
+            params:
+
+        Returns:
+
         """
         if params is None:
             params = {}
@@ -418,12 +473,16 @@ class TIMappings(object):
 
     def group_associations_types(self, group_type, api_entity=None, api_branch=None, params=None):
         """
+        Gets the group association from a Indicator/Group/Victim
 
-        :param params:
-        :param group_type:
-        :param api_entity:
-        :param api_branch:
-        :return:
+        Args:
+            group_type:
+            api_entity:
+            api_branch:
+            params:
+
+        Returns:
+
         """
         if params is None:
             params = {}
@@ -444,10 +503,14 @@ class TIMappings(object):
 
     def victim_asset_associations_type(self, victim_asset_type, params=None):
         """
+        Gets the victim association from a Indicator/Group/Victim
 
-        :param params:
-        :param victim_asset_type:
-        :return:
+        Args:
+            victim_asset_type:
+            params:
+
+        Returns:
+
         """
         if params is None:
             params = {}
@@ -460,12 +523,16 @@ class TIMappings(object):
 
     def add_association(self, target, api_type=None, api_sub_type=None, unique_id=None):
         """
+        Adds a association to a Indicator/Group/Victim
 
-        :param unique_id:
-        :param api_sub_type:
-        :param api_type:
-        :param target:
-        :return:
+        Args:
+            target:
+            api_type:
+            api_sub_type:
+            unique_id:
+
+        Returns:
+
         """
         api_type = api_type or target.api_type
         api_sub_type = api_sub_type or target.api_sub_type
@@ -482,12 +549,16 @@ class TIMappings(object):
 
     def delete_association(self, target, api_type=None, api_sub_type=None, unique_id=None):
         """
+        Deletes a association from a Indicator/Group/Victim
 
-        :param unique_id:
-        :param api_sub_type:
-        :param api_type:
-        :param target:
-        :return:
+        Args:
+            target:
+            api_type:
+            api_sub_type:
+            unique_id:
+
+        Returns:
+
         """
         api_type = api_type or target.api_type
         api_sub_type = api_sub_type or target.api_sub_type
@@ -502,12 +573,14 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, self.unique_id, api_type, api_sub_type, unique_id
         )
 
-    def create_observers(self, count, date_observed):
+    def add_observers(self, count, date_observed):
         """
+        Adds a Indicator Observation
 
-        :param count:
-        :param date_observed:
-        :return:
+        Args:
+            count:
+            date_observed:
+
         """
         if not self.can_update():
             return None
@@ -523,8 +596,7 @@ class TIMappings(object):
 
     def add_false_positive(self):
         """
-
-        :return:
+        Adds a Indicator FalsePositive
         """
         if not self.can_update():
             return None
@@ -533,8 +605,10 @@ class TIMappings(object):
 
     def attributes(self, params=None):
         """
+        Gets the attributes from a Group/Indicator or Victim
 
-        :return:
+        Yields: attribute json
+
         """
         if params is None:
             params = {}
@@ -547,11 +621,16 @@ class TIMappings(object):
 
     def attribute(self, attribute_id, action='GET', params=None):
         """
+        Gets the attribute from a Group/Indicator or Victim
 
-        :param params:
-        :param attribute_id:
-        :param action:
-        :return:
+
+        Args:
+            action:
+            params:
+            attribute_id:
+
+        Returns: attribute json
+
         """
         if params is None:
             params = {}
@@ -572,10 +651,15 @@ class TIMappings(object):
 
     def add_attribute(self, attribute_type, attribute_value):
         """
+        Adds a attribute to a Group/Indicator or Victim
 
-        :param attribute_type:
-        :param attribute_value:
-        :return:
+
+        Args:
+            attribute_type:
+            attribute_value:
+
+        Returns: attribute json
+
         """
         if not self.can_update():
             return None
@@ -586,28 +670,31 @@ class TIMappings(object):
 
     def attribute_labels(self, attribute_id, params=None):
         """
+        Gets the security labels from a attribute
 
-        :param params:
-        :param attribute_id:
-        :return:
+        Yields: Security label json
+
         """
         if params is None:
             params = {}
         if not self.can_update():
-            return None
+            yield []
 
-        return self.tc_requests.attribute_labels(
+        yield from self.tc_requests.attribute_labels(
             self.api_type, self.api_sub_type, self.unique_id, attribute_id, params=params
         )
 
     def attribute_label(self, attribute_id, label, action='GET', params=None):
         """
+        Gets a security labels from a attribute
 
-        :param params:
-        :param attribute_id:
-        :param label:
-        :param action:
-        :return:
+        Args:
+            attribute_id:
+            label:
+            action:
+            params:
+
+        Returns: Security label json
         """
         if params is None:
             params = {}
@@ -627,10 +714,13 @@ class TIMappings(object):
 
     def add_attribute_label(self, attribute_id, label):
         """
+        Adds a security labels to a attribute
 
-        :param attribute_id:
-        :param label:
-        :return:
+        Args:
+            attribute_id:
+            label:
+
+        Returns: A response json
         """
         if not self.can_update():
             return None
@@ -641,94 +731,59 @@ class TIMappings(object):
 
     @property
     def _base_request(self):
-        """
-
-        :return:
-        """
+        """ Returns: A common dict for requests"""
         return {'unique_id': self.unique_id, 'type': self.api_type, 'sub_type': self.api_sub_type}
 
     def can_create(self):  # pylint: disable=R0201
-        """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
-        """
+        """ Determines if the object can be created. """
         return True
 
     def can_delete(self):
-        """
-
-        :return:
-        """
+        """ Determines if the object can be deleted. """
         if self.unique_id:
             return True
         return False
 
     def can_update(self):
-        """
-
-        :return:
-        """
+        """ Determines if the object can be updated. """
         if self.unique_id:
             return True
         return False
 
     @staticmethod
     def is_indicator():
-        """
-        Indicates if Object is a Indicator
-        :return:
-        """
+        """ Determines if the object is a Indicator. """
         return False
 
     @staticmethod
     def is_group():
-        """
-        Indicates if Object is a Group
-        :return:
-        """
+        """ Determines if the object is a Group. """
         return False
 
     @staticmethod
     def is_victim():
-        """
-        Indicates if Object is a Victim
-        :return:
-        """
+        """ Determines if the object is a Victim. """
         return False
 
     @staticmethod
     def is_tag():
-        """
-        Indicates if Object is a Tag
-        :return:
-        """
+        """ Determines if the object is a Tag. """
         return False
 
     @staticmethod
     def is_security_label():
-        """
-        Indicates if Object is a Security Label
-        :return:
-        """
+        """ Determines if the object is a Security Label. """
         return False
 
     @staticmethod
     def is_task():
-        """
-        Indicates if Object is a Task
-        :return:
-        """
+        """ Determines if the object is a Task. """
         return False
 
     def _set_unique_id(self, json_response):
-        """
-
-        :param json_response:
-        """
+        """ Sets the Unique Id given a json """
         self.unique_id = json_response.get('id', '')
 
     def __str__(self):
-        """Return string representation of object.
-        :return:
-        """
+        """Return string representation of object."""
         return json.dumps(self.data, indent=4)
