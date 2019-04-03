@@ -21,6 +21,11 @@ class Group(TIMappings):
 
     @staticmethod
     def is_group():
+        """
+
+        Returns:
+
+        """
         return True
 
     @property

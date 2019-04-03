@@ -17,9 +17,12 @@ class Adversary(Group):
 
     def add_asset(self, asset_type, asset_name):
         """
-        :param asset_type:
-        :param asset_name:
-        :return:
+        Args:
+            asset_type:
+            asset_name:
+
+        Returns:
+
         """
         if asset_type == 'PHONE':
             return self.tc_requests.add_adversary_phone_asset(
@@ -38,10 +41,13 @@ class Adversary(Group):
     def asset(self, asset_id, asset_type, action='GET'):
         """
 
-        :param asset_id:
-        :param asset_type:
-        :param action:
-        :return:
+        Args:
+            asset_id:
+            asset_type:
+            action:
+
+        Returns:
+
         """
         if asset_type == 'PHONE':
             return self.tc_requests.adversary_phone_asset(
@@ -60,8 +66,11 @@ class Adversary(Group):
     def assets(self, asset_type=None):
         """
 
-        :param asset_type:
-        :return:
+        Args:
+            asset_type:
+
+        Returns:
+
         """
         if not asset_type:
             return self.tc_requests.adversary_assets(
@@ -85,122 +94,191 @@ class Adversary(Group):
     def get_asset(self, asset_id, asset_type):
         """
 
-        :param asset_id:
-        :param asset_type:
-        :return:
+        Args:
+            asset_id:
+            asset_type:
+
+        Returns:
+
         """
         return self.asset(asset_id, asset_type=asset_type)
 
     def delete_asset(self, asset_id, asset_type):
         """
 
-        :param asset_id:
-        :param asset_type:
-        :return:
+        Args:
+            asset_id:
+            asset_type:
+
+        Returns:
+
         """
         return self.asset(asset_id, asset_type=asset_type, action='DELETE')
 
     def handle_assets(self):
         """
 
-        :return:
+        Returns:
+
         """
         return self.assets(asset_type='HANDLER')
 
     def phone_assets(self):
         """
 
-        :return:
+        Returns:
+
         """
         return self.assets(asset_type='PHONE')
 
     def url_assets(self):
         """
 
-        :return:
+        Returns:
+
         """
         return self.assets(asset_type='URL')
 
     def handle_asset(self, asset_id, action='GET'):
         """
 
-        :return:
+        Args:
+            asset_id:
+            action:
+
+        Returns:
+
         """
         return self.asset(asset_id, 'HANDLER', action=action)
 
     def phone_asset(self, asset_id, action='GET'):
         """
 
-        :return:
+        Args:
+            asset_id:
+            action:
+
+        Returns:
+
         """
         return self.asset(asset_id, 'PHONE', action=action)
 
     def url_asset(self, asset_id, action='GET'):
         """
 
-        :return:
+        Args:
+            asset_id:
+            action:
+
+        Returns:
+
         """
         return self.asset(asset_id, 'URL', action=action)
 
     def get_handle_asset(self, asset_id):
         """
+        Gets the handle asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id  of the asset to be retrieved
+
+        Returns:
+
         """
         return self.get_asset(asset_id, 'HANDLER')
 
     def get_phone_asset(self, asset_id):
         """
+        Gets the phone asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id  of the asset to be retrieved
+
+        Returns:
+
         """
         return self.get_asset(asset_id, 'PHONE')
 
     def get_url_asset(self, asset_id):
         """
+        Gets the url asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id  of the asset to be retrieved
+
+        Returns:
+
         """
         return self.get_asset(asset_id, 'URL')
 
     def delete_phone_asset(self, asset_id):
         """
+        Delete the phone asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id of the asset to be deleted
+
+        Returns:
+
         """
         return self.delete_asset(asset_id, 'PHONE')
 
     def delete_url_asset(self, asset_id):
         """
+        Delete the url asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id of the asset to be deleted
+
+        Returns:
+
         """
         return self.delete_asset(asset_id, 'URL')
 
     def delete_handler_asset(self, asset_id):
         """
+        Delete the handler asset with the passed in id
 
-        :return:
+        Args:
+            asset_id: The id of the asset to be deleted
+
+        Returns:
+
         """
         return self.delete_asset(asset_id, 'HANDLER')
 
     def add_handler_asset(self, name):
         """
+        Add a Handler asset to the adversary.
 
-        :return:
+        Args:
+            name: The name of the Handler asset
+
+        Returns:
+
         """
         return self.add_asset('HANDLER', name)
 
     def add_phone_asset(self, name):
         """
+        Add a phone asset to the adversary.
 
-        :return:
+        Args:
+            name: The name of the phone asset
+
+        Returns:
+
         """
         self.add_asset('PHONE', name)
 
     def add_url_asset(self, name):
         """
+        Add a URL asset to the adversary.
 
-        :return:
+        Args:
+            name: The name of the URL asset
+
+        Returns:
+
         """
         self.add_asset('URL', name)
