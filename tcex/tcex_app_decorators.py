@@ -149,10 +149,10 @@ class FailOnInput(object):
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             if isinstance(self.enable, bool):
                 enabled = self.enable
-                app.tcex.log.info('Fail on input is ({}).'.format(self.enable))
+                app.tcex.log.debug('Fail on input is ({}).'.format(self.enable))
             else:
                 enabled = getattr(app.args, self.enable)
-                app.tcex.log.info('Fail on input is ({}) for ({}).'.format(enabled, self.enable))
+                app.tcex.log.debug('Fail on input is ({}) for ({}).'.format(enabled, self.enable))
                 if not isinstance(enabled, bool):
                     app.tcex.playbook.exit(
                         1, 'The enable value must be a boolean for fail on input.'
@@ -232,10 +232,10 @@ class FailOnOutput(object):
             # self.enable (e.g., True or 'fail_on_false') enables/disables this feature
             if isinstance(self.enable, bool):
                 enabled = self.enable
-                app.tcex.log.info('Fail on output is ({}).'.format(self.enable))
+                app.tcex.log.debug('Fail on output is ({}).'.format(self.enable))
             else:
                 enabled = getattr(app.args, self.enable)
-                app.tcex.log.info('Fail on output is ({}) for ({}).'.format(enabled, self.enable))
+                app.tcex.log.debug('Fail on output is ({}) for ({}).'.format(enabled, self.enable))
                 if not isinstance(enabled, bool):
                     app.tcex.playbook.exit(
                         1, 'The enable value must be a boolean for fail on output.'
