@@ -17,7 +17,8 @@ class TiTcRequest:
     def __init__(self, tcex):
         """
 
-        :param tcex:
+        Args:
+            tcex:
         """
         self.tcex = tcex
         self.result_limit = 10000
@@ -25,11 +26,14 @@ class TiTcRequest:
     def create(self, main_type, sub_type, data, owner):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param data:
-        :param owner:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            data:
+            owner:
+
+        Returns:
+
         """
         if not owner:
             pass
@@ -42,64 +46,85 @@ class TiTcRequest:
 
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
-    def delete(self, main_type, sub_type, unique_id):
+    def delete(self, main_type, sub_type, unique_id, owner=None):
         """
-
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Deletes the Indicator/Group/Victim or Security Label
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            owner:
         """
+        params = {'owner': owner} if owner else {}
         unique_id = quote_plus(unique_id)
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
-        return self.tcex.session.delete(url)
+        return self.tcex.session.delete(url, params=params)
 
-    def update(self, main_type, sub_type, unique_id, data):
+    def update(self, main_type, sub_type, unique_id, data, owner=None):
         """
 
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :param data:
-        :return:
+        Args:
+            owner:
+            main_type:
+            sub_type:
+            unique_id:
+            data:
+
+        Returns:
+
         """
+        params = {'owner': owner} if owner else {}
         unique_id = quote_plus(unique_id)
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
-        return self.tcex.session.put(url, json=data)
+        return self.tcex.session.put(url, params=params, json=data)
 
-    def single(self, main_type, sub_type, unique_id, params=None):
+    def single(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param unique_id:
-        :return:
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            owner:
+            params:
+
+        Returns:
+
         """
         if params is None:
             params = {}
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.get(url, params=params)
 
-    def many(self, main_type, sub_type, api_entity, params=None):
+    def many(self, main_type, sub_type, api_entity, owner=None, params=None):
         """
 
-        :param params:
-        :param main_type:
-        :param sub_type:
-        :param api_entity:
+        Args:
+            main_type:
+            sub_type:
+            api_entity:
+            owner:
+            params:
+
+        Returns:
+
         """
         if params is None:
             params = {}
+        if owner:
+            params['owner'] = owner
 
         if not sub_type:
             url = '/v2/{}'.format(main_type)

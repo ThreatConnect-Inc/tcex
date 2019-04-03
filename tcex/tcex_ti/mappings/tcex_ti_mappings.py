@@ -17,8 +17,6 @@ class TIMappings(object):
             api_type:
             sub_type:
             api_entity:
-            group_type (str): The ThreatConnect define Group type.
-            name (str): The name for this Group.
         """
         self._tcex = tcex
         self._data = {}
@@ -156,25 +154,29 @@ class TIMappings(object):
 
         return response
 
-    def delete(self):
+    def delete(self, owner=None):
         """
         Deletes the Indicator/Group/Victim or Security Label
         """
         if not self.can_delete():
             return None
 
-        return self.tc_requests.delete(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.delete(
+            self.api_type, self.api_sub_type, self.unique_id, owner=owner
+        )
 
-    def update(self):
+    def update(self, owner=None):
         """
         Updates the Indicator/Group/Victim or Security Label
         """
         if not self.can_update():
             return None
 
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, self._data)
+        return self.tc_requests.update(
+            self.api_type, self.api_sub_type, self.unique_id, self._data, owner=owner
+        )
 
-    def single(self, params=None):
+    def single(self, owner=None, params=None):
         """
         Gets the Indicator/Group/Victim or Security Label
         Args:
@@ -186,7 +188,7 @@ class TIMappings(object):
         if params is None:
             params = {}
         return self.tc_requests.single(
-            self.api_type, self.api_sub_type, self.unique_id, params=params
+            self.api_type, self.api_sub_type, self.unique_id, owner=owner, params=params
         )
 
     def many(self, params=None):
