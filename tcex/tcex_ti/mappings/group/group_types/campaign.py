@@ -13,13 +13,20 @@ class Campaign(Group):
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
-            xid (str, kwargs): The external id for this Group.
         """
         super(Campaign, self).__init__(tcex, 'campaigns', name, **kwargs)
         self.api_entity = 'campaign'
 
     def first_seen(self, first_seen):
-        """Set Document first seen."""
+        """
+        Updates the campaign with the new first_seen date.
+
+        Args:
+            first_seen: The first_seen date. Converted to %Y-%m-%dT%H:%M:%SZ date format
+
+        Returns:
+
+        """
         first_seen = self._utils.format_datetime(first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['firstSeen'] = first_seen
         request = {'firstSeen': first_seen}

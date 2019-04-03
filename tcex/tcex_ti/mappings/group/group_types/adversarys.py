@@ -17,9 +17,10 @@ class Adversary(Group):
 
     def add_asset(self, asset_type, asset_name):
         """
+        Add an asset to the adversary
         Args:
-            asset_type:
-            asset_name:
+            asset_type: (str) Either PHONE, HANDLER, or URL
+            asset_name: (str) the value for the asset
 
         Returns:
 
@@ -40,10 +41,10 @@ class Adversary(Group):
 
     def asset(self, asset_id, asset_type, action='GET'):
         """
-
+        Gets the asset with the provided id
         Args:
-            asset_id:
-            asset_type:
+            asset_id: The id of the asset to be retrieved
+            asset_type: (str) Either PHONE, HANDLER, or URL
             action:
 
         Returns:
@@ -65,9 +66,10 @@ class Adversary(Group):
 
     def assets(self, asset_type=None):
         """
+        Retrieves all of the assets of a given asset_type
 
         Args:
-            asset_type:
+            asset_type: (str) Either None, PHONE, HANDLER, or URL
 
         Returns:
 
@@ -93,10 +95,11 @@ class Adversary(Group):
 
     def get_asset(self, asset_id, asset_type):
         """
+        Gets the asset with the provided asset_id & asset_type.
 
         Args:
-            asset_id:
-            asset_type:
+            asset_id: The id of the asset.
+            asset_type: The asset type.
 
         Returns:
 
@@ -105,10 +108,11 @@ class Adversary(Group):
 
     def delete_asset(self, asset_id, asset_type):
         """
+        Delete the asset with the provided asset_id.
 
         Args:
-            asset_id:
-            asset_type:
+            asset_id: The id of the asset.
+            asset_type: The asset type.
 
         Returns:
 
@@ -118,7 +122,7 @@ class Adversary(Group):
     def handle_assets(self):
         """
 
-        Returns:
+        Returns: all of the handle assets
 
         """
         return self.assets(asset_type='HANDLER')
@@ -126,7 +130,7 @@ class Adversary(Group):
     def phone_assets(self):
         """
 
-        Returns:
+        Returns: all of the phone assets
 
         """
         return self.assets(asset_type='PHONE')
@@ -134,16 +138,17 @@ class Adversary(Group):
     def url_assets(self):
         """
 
-        Returns:
+        Returns: all of the url assets
 
         """
         return self.assets(asset_type='URL')
 
     def handle_asset(self, asset_id, action='GET'):
         """
+        Gets the phone asset with the passed in id.
 
         Args:
-            asset_id:
+            asset_id: The id  of the asset to be retrieved
             action:
 
         Returns:
@@ -153,9 +158,10 @@ class Adversary(Group):
 
     def phone_asset(self, asset_id, action='GET'):
         """
+        Gets the phone asset with the passed in id.
 
         Args:
-            asset_id:
+            asset_id: The id  of the asset to be retrieved
             action:
 
         Returns:
@@ -165,9 +171,10 @@ class Adversary(Group):
 
     def url_asset(self, asset_id, action='GET'):
         """
+        Gets the url asset with the passed in id.
 
         Args:
-            asset_id:
+            asset_id: The id  of the asset to be retrieved
             action:
 
         Returns:

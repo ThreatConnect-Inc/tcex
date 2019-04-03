@@ -12,7 +12,6 @@ class IntrusionSet(Group):
         Args:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            xid (str, kwargs): The external id for this Group.
         """
         super(IntrusionSet, self).__init__(tcex, 'intrusionSets', name, **kwargs)
         self.api_entity = 'intrusionSet'

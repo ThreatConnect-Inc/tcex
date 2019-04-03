@@ -26,7 +26,6 @@ class Signature(Group):
             file_type (str): The signature type for this Group.
             file_text (str): The signature content for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            xid (str, kwargs): The external id for this Group.
         """
         super(Signature, self).__init__(tcex, 'signatures', name, **kwargs)
         self.api_entity = 'signature'
@@ -36,7 +35,9 @@ class Signature(Group):
 
     def download(self):
         """
+        Downloads the signature.
 
-        :return:
+        Returns:
+
         """
         return self.tc_requests.download(self.api_type, self.api_sub_type, self.unique_id)

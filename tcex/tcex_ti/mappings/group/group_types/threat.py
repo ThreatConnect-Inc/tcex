@@ -12,7 +12,6 @@ class Threat(Group):
         Args:
             name (str): The name for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
-            xid (str, kwargs): The external id for this Group.
         """
         super(Threat, self).__init__(tcex, 'threats', name, **kwargs)
         self.api_entity = 'threat'
