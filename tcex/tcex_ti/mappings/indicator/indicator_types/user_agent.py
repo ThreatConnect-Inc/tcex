@@ -17,7 +17,6 @@ class UserAgent(Indicator):
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(UserAgent, self).__init__(tcex, 'userAgents', **kwargs)
         self.data['text'] = text
@@ -25,16 +24,21 @@ class UserAgent(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
-        """
+         If the text has been provided returns that the UserAgent can be created, otherwise
+         returns that the UserAgent cannot be created.
+
+         Returns:
+
+         """
         if self.data.get('text'):
             return True
         return False
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('text', '')

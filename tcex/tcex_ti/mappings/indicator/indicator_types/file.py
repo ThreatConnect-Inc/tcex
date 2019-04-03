@@ -20,7 +20,6 @@ class File(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(File, self).__init__(tcex, 'files', **kwargs)
         self.api_entity = 'file'
@@ -35,8 +34,11 @@ class File(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the md5/sha1/sha256 has been provided returns that the File can be
+        created, otherwise returns that the File cannot be created.
+
+        Returns:
+
         """
         if self.data.get('md5') or self.data.get('sha1') or self.data.get('sha256'):
             return True
@@ -44,8 +46,10 @@ class File(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = (
             json_response.get('md5')
@@ -56,7 +60,17 @@ class File(Indicator):
 
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):
-        """Build the Indicator summary using available values."""
+        """
+        Constructs the summary given a md5, sha1, and sha256
+
+        Args:
+            val1: md5
+            val2: sha1
+            val3: sha256
+
+        Returns:
+
+        """
         summary = []
         if val1 is not None:
             summary.append(val1)
@@ -68,50 +82,3 @@ class File(Indicator):
             # Indicator object has no logger to output warning
             pass
         return ' : '.join(summary)
-
-    # def action(self, relationship):
-    #     """Add a File Action."""
-    #     action_obj = FileAction(self._data.get('xid'), relationship)
-    #     self._file_actions.append(action_obj)
-    #     return action_obj
-
-
-# class FileAction(object):
-#     """ThreatConnect Batch FileAction Object"""
-#
-#     # TODO: enable when support for py2 is dropped.
-#     # __slots__ = ['_action_data', '_children', 'xid']
-#
-#     def __init__(self, parent_xid, relationship):
-#         """Initialize Class Properties.
-#
-#         .. warning:: This code is not complete and may require some update to the API.
-#
-#         Args:
-#             parent_xid (str): The external id of the parent Indicator.
-#             relationship: ???
-#         """
-#         self.xid = str(uuid.uuid4())
-#         self._action_data = {
-#             'indicatorXid': self.xid,
-#             'relationship': relationship,
-#             'parentIndicatorXid': parent_xid,
-#         }
-#         self._children = []
-#
-#     @property
-#     def data(self):
-#         """Return File Occurrence data."""
-#         if self._children:
-#             for child in self._children:
-#                 self._action_data.setdefault('children', []).append(child.data)
-#         return self._action_data
-#
-#     def action(self, relationship):
-#         """Add a nested File Action."""
-#         action_obj = FileAction(self.xid, relationship)
-#         self._children.append(action_obj)
-#
-#     def __str__(self):
-#         """Return string represtentation of object."""
-#         return json.dumps(self.data, indent=4)

@@ -25,8 +25,11 @@ class EmailAddress(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the address has been provided returns that the EmailAddress can be created, otherwise
+        returns that the EmailAddress cannot be created.
+
+        Returns:
+
         """
         if self.data.get('address'):
             return True
@@ -34,7 +37,9 @@ class EmailAddress(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('emailAddress', '')

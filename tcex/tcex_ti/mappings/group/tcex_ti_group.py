@@ -49,19 +49,13 @@ class Group(TIMappings):
         return True
 
     def add_key_value(self, key, value):
-        """Add custom field to Group object.
+        """
+        Converts the value and adds it as a data field.
 
-       .. note:: The key must be the exact name required by the batch schema.
-
-       Example::
-
-           document = tcex.batch.group('Document', 'My Document')
-           document.add_key_value('fileName', 'something.pdf')
-
-       Args:
-           :param value:
-           :param key:
-       """
+        Args:
+            key:
+            value:
+        """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'eventDate', 'firstSeen', 'publishDate']:
             self._data[key] = self._utils.format_datetime(value, date_format='%Y-%m-%dT%H:%M:%SZ')

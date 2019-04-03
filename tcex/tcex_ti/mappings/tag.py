@@ -29,56 +29,75 @@ class Tag(object):
 
     @staticmethod
     def is_tag():
+        """
+        Indicates that this is a tag object
+        Returns:
+
+        """
         return True
 
     def groups(self, group_type=None):
         """
+        Gets all groups from a tag.
 
-        :param group_type:
-        :return:
+        Args:
+            group_type:
         """
         group = self._tcex.ti.group(group_type)
         yield from self.tc_requests.groups_from_tag(group, self.name)
 
     def indicators(self, indicator_type=None):
         """
+        Gets all indicators from a tag.
 
-        :param indicator_type:
-        :return:
+        Args:
+            indicator_type:
         """
         indicator = self._tcex.ti.indicator(indicator_type)
         yield from self.tc_requests.indicators_from_tag(indicator, self.name)
 
     def victims(self):
         """
-        :return:
+        Gets all victims from a tag.
         """
         yield from self.tc_requests.victims_from_tag(self.name)
 
     @property
     def name(self):
         """
-
-        :return:
+        Gets the tag name.
         """
         return self._name
 
     @property
     def tc_requests(self):
         """
-
-        :return:
+        Gets the tc request object
         """
         return self._tc_requests
 
     @name.setter
     def name(self, name):
+        """
+        Sets the tag name
+
+        Args:
+            name:
+
+        Returns:
+
+        """
         self._name = name
 
     @tc_requests.setter
     def tc_requests(self, tc_requests):
         """
+        Sets the tc request object.
 
-        :param tc_requests:
+        Args:
+            tc_requests:
+
+        Returns:
+
         """
         self._tc_requests = tc_requests

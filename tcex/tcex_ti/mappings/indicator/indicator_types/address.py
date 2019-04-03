@@ -17,7 +17,6 @@ class Address(Indicator):
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(Address, self).__init__(tcex, 'addresses', **kwargs)
         self._api_entity = 'address'
@@ -25,8 +24,11 @@ class Address(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the ip address has been provided returns that the address can be created, otherwise
+        returns that the address cannot be created.
+
+        Returns:
+
         """
         if self.data.get('ip'):
             return True
@@ -34,14 +36,18 @@ class Address(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('ip', '')
 
     def dns_resolution(self):
         """
+        Updates the DNS resolution.
 
-        :return:
+        Returns:
+
         """
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

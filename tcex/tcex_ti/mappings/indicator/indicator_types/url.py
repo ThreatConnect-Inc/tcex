@@ -25,16 +25,21 @@ class URL(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
-        """
+         If the text has been provided returns that the URL can be created, otherwise
+         returns that the URL cannot be created.
+
+         Returns:
+
+         """
         if self.data.get('text'):
             return True
         return False
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('text', '')

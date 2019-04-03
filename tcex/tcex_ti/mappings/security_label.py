@@ -13,9 +13,10 @@ class SecurityLabel(TIMappings):
     def __init__(self, tcex, name, **kwargs):
         """
 
-        :param tcex:
-        :param name:
-        :param kwargs:
+        Args:
+            tcex:
+            name:
+            **kwargs:
         """
         super(SecurityLabel, self).__init__(tcex, 'SecurityLabel', 'securitylabels')
         self._data['type'] = 'securityLabels'
@@ -27,12 +28,20 @@ class SecurityLabel(TIMappings):
 
     @staticmethod
     def is_security_label():
+        """
+        Indicates that this is a security label object
+        Returns:
+
+        """
         return True
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the name has been provided returns that the SecurityLabel can be created, otherwise
+        returns that the SecurityLabel cannot be created.
+
+        Returns:
+
         """
         if self._data.get('name'):
             return True
@@ -40,17 +49,20 @@ class SecurityLabel(TIMappings):
 
     def add_key_value(self, key, value):
         """
+          Converts the value and adds it as a data field.
 
-        :param key:
-        :param value:
-        """
+          Args:
+              key:
+              value:
+          """
         self._data[key] = value
 
     def name(self, name):
         """
+        Updates the security labels name.
 
-        :param name:
-        :return:
+        Args:
+            name:
         """
         self._data['name'] = name
         request = self._base_request
@@ -59,8 +71,11 @@ class SecurityLabel(TIMappings):
 
     def color(self, color):
         """
-        :param color:
-        :return:
+        Updates the security labels color.
+
+        Args:
+            color:
+
         """
         self._data['color'] = color
         request = self._base_request
@@ -69,8 +84,10 @@ class SecurityLabel(TIMappings):
 
     def description(self, description):
         """
-        :param description:
-        :return:
+        Updates the security labels description.
+
+        Args:
+            description:
         """
         self._data['description'] = description
         request = self._base_request
@@ -79,8 +96,10 @@ class SecurityLabel(TIMappings):
 
     def date_added(self, date_added):
         """
-        :param date_added:
-        :return:
+        Updates the security labels date_added
+
+        Args:
+            date_added: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         date_added = self._utils.format_datetime(date_added, date_format='%Y-%m-%dT%H:%M:%SZ')
 

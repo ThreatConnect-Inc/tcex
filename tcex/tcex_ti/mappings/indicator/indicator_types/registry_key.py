@@ -19,7 +19,6 @@ class RegistryKey(Indicator):
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(RegistryKey, self).__init__(tcex, 'registryKeys', **kwargs)
         self.data['key_name'] = key_name
@@ -28,9 +27,12 @@ class RegistryKey(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
-        """
+         If the key_name, value_name, and value_type has been provided returns that the
+         Registry Key can be created, otherwise returns that the Registry Key cannot be created.
+
+         Returns:
+
+         """
         if (
             self.data.get('key_name')
             and self.data.get('value_name')
@@ -41,7 +43,9 @@ class RegistryKey(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('key_name', '')

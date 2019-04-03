@@ -13,9 +13,7 @@ from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 module = __import__(__name__)
 
 
-def custom_indicator_class_factory(
-    indicator_type, entity_type, base_class, class_dict, value_fields
-):
+def custom_indicator_class_factory(indicator_type, entity_type, base_class, value_fields):
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
@@ -40,7 +38,7 @@ def custom_indicator_class_factory(
         """
         self.unique_id = json_request.get(value_fields[0])
 
-    def can_create_1(self):
+    def can_create_1(self):  # pylint: disable=W0641
         """
         Determines if the required data that the API endpoint is expecting is present.
         :return: Boolean
@@ -70,7 +68,7 @@ def custom_indicator_class_factory(
         """
         self.unique_id = json_request.get(value_fields[0]) or json_request.get(value_fields[1])
 
-    def can_create_2(self):
+    def can_create_2(self):  # pylint: disable=W0641
         """
         Determines if the required data that the API endpoint is expecting is present.
         :return: Boolean
@@ -106,7 +104,7 @@ def custom_indicator_class_factory(
             or json_request.get(value_fields[2])
         )
 
-    def can_create_3(self):
+    def can_create_3(self):  # pylint: disable=W0641
         """
         Determines if the required data that the API endpoint is expecting is present.
         :return: Boolean
@@ -150,9 +148,11 @@ class Indicator(TIMappings):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
-        """
+        Overridden by other indicator classes.
+
+        Returns:
+
+         """
         return True
 
     @property
@@ -170,9 +170,11 @@ class Indicator(TIMappings):
 
     def add_key_value(self, key, value):
         """
+        Converts the value and adds it as a data field.
 
-        :param key:
-        :param value:
+        Args:
+            key:
+            value:
         """
         key = self._metadata_map.get(key, key)
         if key in ['dateAdded', 'lastModified']:
@@ -188,9 +190,10 @@ class Indicator(TIMappings):
 
     def rating(self, value):
         """
+        Updates the Indicators rating
 
-        :param value:
-        :return:
+        Args:
+            value:
         """
         if not self.can_update():
             return None
@@ -201,9 +204,10 @@ class Indicator(TIMappings):
 
     def confidence(self, value):
         """
+        Updates the Indicators confidence
 
-        :param value:
-        :return:
+        Args:
+            value:
         """
         if not self.can_update():
             return None
@@ -223,8 +227,8 @@ class Indicator(TIMappings):
 
     def add_false_positive(self):
         """
+        Adds a Indicator FalsePositive
 
-        :return:
         """
         if not self.can_update():
             return None
@@ -232,8 +236,10 @@ class Indicator(TIMappings):
 
     def observation_count(self):
         """
+        Gets the indicators observation count.
 
-        :return:
+        Returns:
+
         """
         if not self.can_update():
             return None
@@ -241,8 +247,10 @@ class Indicator(TIMappings):
 
     def observations(self):
         """
+        Gets the indicators observations.
 
-        :return:
+        Returns:
+
         """
         if not self.can_update():
             return None
@@ -250,10 +258,12 @@ class Indicator(TIMappings):
 
     def add_observation(self, count, date_observed):
         """
+        Adds a Indicator Observation
 
-        :param count:
-        :param date_observed:
-        :return:
+        Args:
+            count:
+            date_observed:
+
         """
         if not self.can_update():
             return None
@@ -269,15 +279,27 @@ class Indicator(TIMappings):
 
     def deleted(self, deleted_since):
         """
+        Gets the indicators deleted.
 
-        :param deleted_since:
-        :return:
+        Args:
+            deleted_since: Date since its been deleted
+
         """
         return self.tc_requests.deleted(self.api_type, self.api_sub_type, deleted_since)
 
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):
-        """Build the Indicator summary using available values."""
+        """
+        Constructs the summary given va1, va2, val3
+
+        Args:
+            val1:
+            val2:
+            val3:
+
+        Returns:
+
+        """
         summary = []
         if val1 is not None:
             summary.append(val1)

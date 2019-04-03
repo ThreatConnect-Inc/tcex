@@ -17,7 +17,6 @@ class ASN(Indicator):
             last_modified (str, kwargs): The date timestamp the Indicator was last modified.
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(ASN, self).__init__(tcex, 'asns', **kwargs)
         self._api_entity = 'asn'
@@ -25,8 +24,11 @@ class ASN(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the as_number has been provided returns that the ASN can be created, otherwise
+        returns that the ASN cannot be created.
+
+        Returns:
+
         """
         if self.data.get('as_number'):
             return True
@@ -34,7 +36,9 @@ class ASN(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('as_number', '')

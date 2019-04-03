@@ -19,7 +19,6 @@ class Host(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
-            xid (str, kwargs): The external id for this Indicator.
         """
         super(Host, self).__init__(tcex, 'hosts', **kwargs)
         self.api_entity = 'host'
@@ -27,8 +26,11 @@ class Host(Indicator):
 
     def can_create(self):
         """
-        Determines if the required data that the API endpoint is expecting is present.
-        :return: Boolean
+        If the hostName has been provided returns that the File can be created, otherwise
+        returns that the Host cannot be created.
+
+        Returns:
+
         """
         if self.data.get('hostName'):
             return True
@@ -36,14 +38,18 @@ class Host(Indicator):
 
     def _set_unique_id(self, json_response):
         """
+        Sets the unique_id provided a json response.
 
-        :param json_response:
+        Args:
+            json_response:
         """
         self.unique_id = json_response.get('hostName', '')
 
     def dns_resolution(self):
         """
+        Updates the Host DNS resolution
 
-        :return:
+        Returns:
+
         """
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

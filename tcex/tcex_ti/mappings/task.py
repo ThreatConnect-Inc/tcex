@@ -14,7 +14,20 @@ class Task(TIMappings):
     def __init__(self, tcex, name, status, due_date, reminder_date, escalation_date, **kwargs):
         """Initialize Class Properties.
 
+        Valid status:
+        + Not Started
+        + In Progress
+        + Completed
+        + Waiting on Someone
+        + Deferred
+
         Args:
+            tcex:
+            status (str): Not started, In Progress, Completed, Waiting on Someone, Deferred
+            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
+            **kwargs:
             name (str): The name for this Group.
         """
         super(Task, self).__init__(tcex, 'Task', 'tasks', None, 'task')
@@ -33,13 +46,24 @@ class Task(TIMappings):
 
     @staticmethod
     def is_task():
+        """
+        Indicates that this is a task object
+        Returns:
+
+        """
         return True
 
     def status(self, status):
         """
+        Valid status:
+        + Not Started
+        + In Progress
+        + Completed
+        + Waiting on Someone
+        + Deferred
 
-        :param status:
-        :return:
+        Args:
+            status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
         """
         self._data['status'] = status
         request = {'status': status}
@@ -47,9 +71,9 @@ class Task(TIMappings):
 
     def due_date(self, due_date):
         """
-
-        :param due_date:
-        :return:
+        Sets the task due_date
+        Args:
+            due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         due_date = self._utils.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
@@ -58,9 +82,9 @@ class Task(TIMappings):
 
     def reminder_date(self, reminder_date):
         """
-
-        :param reminder_date:
-        :return:
+        Sets the task reminder_date
+        Args:
+            reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         reminder_date = self._utils.format_datetime(reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['reminderDate'] = reminder_date
@@ -69,9 +93,9 @@ class Task(TIMappings):
 
     def escalation_date(self, escalation_date):
         """
-
-        :param escalation_date:
-        :return:
+        Sets the task escalation_date
+        Args:
+            escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
         escalation_date = self._utils.format_datetime(
             escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
@@ -82,8 +106,7 @@ class Task(TIMappings):
 
     def assignees(self):
         """
-
-        :return:
+        Gets the task assignees
         """
         if not self.can_update():
             yield []
@@ -92,10 +115,12 @@ class Task(TIMappings):
 
     def assignee(self, assignee_id, action='ADD'):
         """
+        Adds a assignee to the task
 
-        :param assignee_id:
-        :param action:
-        :return:
+        Args:
+            assignee_id: The id of the assignee to be added
+            action:
+
         """
         if not self.can_update():
             return None
@@ -106,32 +131,37 @@ class Task(TIMappings):
 
     def add_assignee(self, assignee_id):
         """
+        Adds a assignee to the task
 
-        :param assignee_id:
-        :return:
+        Args:
+            assignee_id: The id of the assignee to be added
+
         """
         return self.assignee(assignee_id)
 
     def get_assignee(self, assignee_id):
         """
+        Gets a assignee from a task
 
-        :param assignee_id:
-        :return:
+        Args:
+            assignee_id: The id of the assignee to be added
+
         """
         return self.assignee(assignee_id, action='GET')
 
     def delete_assignee(self, assignee_id):
         """
+        Deletes a assignee from a task
 
-        :param assignee_id:
-        :return:
+        Args:
+            assignee_id: The id of the assignee to be added
+
         """
         return self.assignee(assignee_id, action='DELETE')
 
     def escalatees(self):
         """
-
-        :return:
+        Gets the task escalatees
         """
         if not self.can_update():
             yield []
@@ -140,10 +170,12 @@ class Task(TIMappings):
 
     def escalatee(self, escalatee_id, action='ADD'):
         """
+        Adds a assignee to the task
 
-        :param escalatee_id:
-        :param action:
-        :return:
+        Args:
+            escalatee_id: The id of the escalatee to be added
+            action:
+
         """
         if not self.can_update():
             return None
@@ -154,33 +186,41 @@ class Task(TIMappings):
 
     def add_escalatee(self, escalatee_id):
         """
+        Adds a escalatee to the task
 
-        :param escalatee_id:
-        :return:
+        Args:
+            escalatee_id: The id of the escalatee to be added
+
         """
         return self.assignee(escalatee_id)
 
     def get_escalatee(self, escalatee_id):
         """
+        Gets a escalatee from a task
 
-        :param escalatee_id:
-        :return:
+        Args:
+            escalatee_id: The id of the escalatee to be added
+
         """
         return self.assignee(escalatee_id, action='GET')
 
     def delete_escalatee(self, escalatee_id):
         """
+        Deletes a escalatee from a task
 
-        :param escalatee_id:
-        :return:
+        Args:
+            escalatee_id: The id of the escalatee to be added
+
         """
         return self.assignee(escalatee_id, action='DELETE')
 
     def add_key_value(self, key, value):
         """
+        Converts the value and adds it as a data field.
 
-        :param key:
-        :param value:
+        Args:
+            key:
+            value:
         """
         if key == 'unique_id':
             self._unique_id = quote_plus(str(value))
@@ -188,9 +228,12 @@ class Task(TIMappings):
 
     def can_create(self):
         """
-        Indicates if object can be created successfully
-        :return:
-        """
+         If the name has been provided returns that the Task can be created, otherwise
+         returns that the Task cannot be created.
+
+         Returns:
+
+         """
         if not self.data.get('name', None):
             return False
         return True
