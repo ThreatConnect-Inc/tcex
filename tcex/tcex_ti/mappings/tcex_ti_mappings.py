@@ -191,7 +191,7 @@ class TIMappings(object):
             self.api_type, self.api_sub_type, self.unique_id, owner=owner, params=params
         )
 
-    def many(self, params=None):
+    def many(self, owner=None, params=None):
         """
         Gets the Indicator/Group/Victim or Security Labels
         Args:
@@ -202,7 +202,9 @@ class TIMappings(object):
         """
         if params is None:
             params = {}
-        yield from self.tc_requests.many(self.api_type, self.api_sub_type, self.api_entity, params)
+        yield from self.tc_requests.many(
+            self.api_type, self.api_sub_type, self.api_entity, owner=owner, params=params
+        )
 
     def request(self, result_limit, result_offset, params=None):
         """
