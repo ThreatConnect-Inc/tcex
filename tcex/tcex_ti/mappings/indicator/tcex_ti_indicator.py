@@ -277,15 +277,26 @@ class Indicator(TIMappings):
             self.api_type, self.api_sub_type, self.unique_id, request_data
         )
 
-    def deleted(self, deleted_since):
+    def deleted(self, deleted_since, owner=None, filters=None, params=None):
         """
         Gets the indicators deleted.
 
         Args:
+            params:
+            filters:
+            owner:
             deleted_since: Date since its been deleted
 
         """
-        return self.tc_requests.deleted(self.api_type, self.api_sub_type, deleted_since)
+        if params is None:
+            params = {}
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
+        return self.tc_requests.deleted(
+            self.api_type, self.api_sub_type, deleted_since, params=params
+        )
 
     @staticmethod
     def build_summary(val1=None, val2=None, val3=None):

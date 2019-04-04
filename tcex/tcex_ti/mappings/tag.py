@@ -36,31 +36,48 @@ class Tag(object):
         """
         return True
 
-    def groups(self, group_type=None):
+    def groups(self, group_type=None, filters=None, params=None):
         """
         Gets all groups from a tag.
 
         Args:
+            filters:
+            params:
             group_type:
         """
+        if not params:
+            params = {}
+        if filters:
+            params['filters'] = filters.filters_string
         group = self._tcex.ti.group(group_type)
-        yield from self.tc_requests.groups_from_tag(group, self.name)
+        yield from self.tc_requests.groups_from_tag(group, self.name, params=params)
 
-    def indicators(self, indicator_type=None):
+    def indicators(self, indicator_type=None, filters=None, params=None):
         """
         Gets all indicators from a tag.
 
         Args:
+            params:
+            filters:
             indicator_type:
         """
+        if not params:
+            params = {}
+        if filters:
+            params['filters'] = filters.filters_string
         indicator = self._tcex.ti.indicator(indicator_type)
-        yield from self.tc_requests.indicators_from_tag(indicator, self.name)
+        yield from self.tc_requests.indicators_from_tag(indicator, self.name, params=params)
 
-    def victims(self):
+    def victims(self, filters=None, params=None):
         """
         Gets all victims from a tag.
         """
-        yield from self.tc_requests.victims_from_tag(self.name)
+        if not params:
+            params = {}
+        if filters:
+            params['filters'] = filters.filters_string
+        victim = self._tcex.ti.victim(None)
+        yield from self.tc_requests.victims_from_tag(victim, self.name, params=params)
 
     @property
     def name(self):

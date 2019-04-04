@@ -84,14 +84,16 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.put(url, params=params, json=data)
 
-    def single(self, main_type, sub_type, unique_id, owner=None, params=None):
+    def single(self, main_type, sub_type, unique_id, params=None):
         """
 
         Args:
+            filters:
             main_type:
             sub_type:
             unique_id:
             owner:
+            filters:
             params:
 
         Returns:
@@ -99,8 +101,6 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        if owner:
-            params['owner'] = owner
 
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
@@ -108,7 +108,7 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.get(url, params=params)
 
-    def many(self, main_type, sub_type, api_entity, owner=None, params=None):
+    def many(self, main_type, sub_type, api_entity, params=None):
         """
 
         Args:
@@ -116,6 +116,7 @@ class TiTcRequest:
             sub_type:
             api_entity:
             owner:
+            filters:
             params:
 
         Returns:
@@ -123,8 +124,6 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        if owner:
-            params['owner'] = owner
 
         if not sub_type:
             url = '/v2/{}'.format(main_type)
@@ -145,9 +144,9 @@ class TiTcRequest:
         """
         params['resultLimit'] = self.result_limit
         should_iterate = True
-        result_offset = 0
+        result_start = 0
         while should_iterate:
-            params['resultOffset'] = result_offset
+            params['resultStart'] = result_start
             response = self.tcex.session.get(url, params=params)
             if not self.success(response):
                 # STILL NEED TO HANDLE THIS
@@ -158,19 +157,20 @@ class TiTcRequest:
 
             if len(data) < self.result_limit:
                 should_iterate = False
-            result_offset += self.result_limit
+            result_start += self.result_limit
 
             for result in data:
                 yield result
 
-    def request(self, main_type, sub_type, result_limit, result_offset, params=None):
+    def request(self, main_type, sub_type, result_limit, result_start, params=None):
         """
 
         Args:
             main_type:
             sub_type:
             result_limit:
-            result_offset:
+            result_start:
+            filters:
             params:
 
         Return:
@@ -179,7 +179,7 @@ class TiTcRequest:
         if params is None:
             params = {}
         params['resultLimit'] = result_limit or params.get('result_limit', self.result_limit)
-        params['resultOffset'] = result_offset or params.get('result_offset', 0)
+        params['resultStart'] = result_start or params.get('result_start', 0)
         if not sub_type:
             url = '/v2/{}'.format(main_type)
         else:
@@ -349,7 +349,6 @@ class TiTcRequest:
         if params is None:
             params = {}
         params['deleteSince'] = deleted_since or params.get(deleted_since, None)
-
         if not sub_type:
             url = '/v2/{}/deleted'.format(main_type)
         else:
@@ -385,6 +384,7 @@ class TiTcRequest:
         Args:
             group:
             tag_name:
+            filters:
             params:
 
         Return:
@@ -408,7 +408,7 @@ class TiTcRequest:
             params = {}
         yield from self.pivot_from_tag(indicator, tag_name, params=params)
 
-    def victims_from_tag(self, tag_name, params=None):
+    def victims_from_tag(self, victim, tag_name, params=None):
         """
 
         Args:
@@ -420,7 +420,7 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag('victims', tag_name, params=params)
+        yield from self.pivot_from_tag(victim, tag_name, params=params)
 
     def indicator_associations(self, main_type, sub_type, unique_id, params=None):
         """
@@ -532,6 +532,7 @@ class TiTcRequest:
                     target:
                     api_branch:
                     api_entity:
+                    filters:
                     params:
 
                 Return:

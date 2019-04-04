@@ -15,6 +15,7 @@ from tcex.tcex_ti.mappings.group.group_types.campaign import Campaign
 from tcex.tcex_ti.mappings.group.group_types.document import Document
 from tcex.tcex_ti.mappings.group.group_types.email import Email
 from tcex.tcex_ti.mappings.task import Task
+from tcex.tcex_ti.mappings.filters import Filters
 from tcex.tcex_ti.mappings.group.group_types.event import Event
 from tcex.tcex_ti.mappings.group.group_types.incident import Incident
 from tcex.tcex_ti.mappings.group.group_types.intrusion_set import IntrusionSet
@@ -111,7 +112,11 @@ class TcExTi(object):
         """
         return Host(self.tcex, hostname, **kwargs)
 
-    def indicator(self, indicator_type, **kwargs):
+    def filters(self):
+        """ Creates a Filters TI object """
+        return Filters(self.tcex)
+
+    def indicator(self, indicator_type=None, **kwargs):
         """
         Create the Indicator TI object.
 
@@ -154,7 +159,7 @@ class TcExTi(object):
                 return None
         return indicator
 
-    def group(self, group_type, **kwargs):
+    def group(self, group_type=None, **kwargs):
         """
         Create the Group TI object.
 
@@ -168,7 +173,7 @@ class TcExTi(object):
 
         group = None
         if not group_type:
-            group = Group(self.tcex, None, None, **kwargs)
+            return Group(self.tcex, None, None, **kwargs)
 
         group_type = group_type.upper()
         if group_type == 'ADVERSARY':
