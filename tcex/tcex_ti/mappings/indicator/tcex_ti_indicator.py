@@ -288,14 +288,14 @@ class Indicator(TIMappings):
             deleted_since: Date since its been deleted
 
         """
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
+
         return self.tc_requests.deleted(
-            self.api_type, self.api_sub_type, deleted_since, params=params
+            self.api_type,
+            self.api_sub_type,
+            deleted_since,
+            owner=owner,
+            filters=filters,
+            params=params,
         )
 
     @staticmethod

@@ -45,12 +45,10 @@ class Tag(object):
             params:
             group_type:
         """
-        if not params:
-            params = {}
-        if filters:
-            params['filters'] = filters.filters_string
         group = self._tcex.ti.group(group_type)
-        yield from self.tc_requests.groups_from_tag(group, self.name, params=params)
+        yield from self.tc_requests.groups_from_tag(
+            group, self.name, filters=filters, params=params
+        )
 
     def indicators(self, indicator_type=None, filters=None, params=None):
         """
@@ -61,23 +59,19 @@ class Tag(object):
             filters:
             indicator_type:
         """
-        if not params:
-            params = {}
-        if filters:
-            params['filters'] = filters.filters_string
         indicator = self._tcex.ti.indicator(indicator_type)
-        yield from self.tc_requests.indicators_from_tag(indicator, self.name, params=params)
+        yield from self.tc_requests.indicators_from_tag(
+            indicator, self.name, filters=filters, params=params
+        )
 
     def victims(self, filters=None, params=None):
         """
         Gets all victims from a tag.
         """
-        if not params:
-            params = {}
-        if filters:
-            params['filters'] = filters.filters_string
         victim = self._tcex.ti.victim(None)
-        yield from self.tc_requests.victims_from_tag(victim, self.name, params=params)
+        yield from self.tc_requests.victims_from_tag(
+            victim, self.name, filters=filters, params=params
+        )
 
     @property
     def name(self):

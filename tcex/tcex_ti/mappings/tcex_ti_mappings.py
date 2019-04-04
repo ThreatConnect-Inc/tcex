@@ -187,14 +187,13 @@ class TIMappings(object):
         Returns:
 
         """
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
         return self.tc_requests.single(
-            self.api_type, self.api_sub_type, self.unique_id, params=params
+            self.api_type,
+            self.api_sub_type,
+            self.unique_id,
+            filters=filters,
+            owner=owner,
+            params=params,
         )
 
     def many(self, owner=None, filters=None, params=None):
@@ -208,14 +207,13 @@ class TIMappings(object):
         Yields: A Indicator/Group/Victim json
 
         """
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
         yield from self.tc_requests.many(
-            self.api_type, self.api_sub_type, self.api_entity, params=params
+            self.api_type,
+            self.api_sub_type,
+            self.api_entity,
+            owner=owner,
+            filters=filters,
+            params=params,
         )
 
     def request(self, result_limit, result_start, owner=None, filters=None, params=None):
@@ -231,14 +229,14 @@ class TIMappings(object):
         Returns:
 
         """
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
         return self.tc_requests.request(
-            self.api_type, self.api_sub_type, result_limit, result_start, params=params
+            self.api_type,
+            self.api_sub_type,
+            result_limit,
+            result_start,
+            owner=owner,
+            filters=filters,
+            params=params,
         )
 
     def tags(self, owner=None, filters=None, params=None):
@@ -253,17 +251,16 @@ class TIMappings(object):
 
          """
 
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
         if not self.can_update():
             yield []
 
         yield from self.tc_requests.tags(
-            self.api_type, self.api_sub_type, self.unique_id, params=params
+            self.api_type,
+            self.api_sub_type,
+            self.unique_id,
+            owner=owner,
+            filters=filters,
+            params=params,
         )
 
     def tag(self, name, action='ADD', params=None):
@@ -349,15 +346,13 @@ class TIMappings(object):
         if not self.can_update():
             yield []
 
-        if params is None:
-            params = {}
-        if owner:
-            params['owner'] = owner
-        if filters.filters:
-            params['filters'] = filters.filters_string
-
         yield from self.tc_requests.labels(
-            self.api_type, self.api_sub_type, self.unique_id, params=params
+            self.api_type,
+            self.api_sub_type,
+            self.unique_id,
+            owner=owner,
+            filters=filters,
+            params=params,
         )
 
     def label(self, label, action='ADD'):

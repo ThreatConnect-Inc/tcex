@@ -84,11 +84,10 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.put(url, params=params, json=data)
 
-    def single(self, main_type, sub_type, unique_id, params=None):
+    def single(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
 
         Args:
-            filters:
             main_type:
             sub_type:
             unique_id:
@@ -101,14 +100,17 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.get(url, params=params)
 
-    def many(self, main_type, sub_type, api_entity, params=None):
+    def many(self, main_type, sub_type, api_entity, owner=None, filters=None, params=None):
         """
 
         Args:
@@ -116,7 +118,6 @@ class TiTcRequest:
             sub_type:
             api_entity:
             owner:
-            filters:
             params:
 
         Returns:
@@ -124,7 +125,10 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}'.format(main_type)
         else:
@@ -146,14 +150,20 @@ class TiTcRequest:
         should_iterate = True
         result_start = 0
         while should_iterate:
+            # params['resultOffset'] = result_offset
             params['resultStart'] = result_start
-            response = self.tcex.session.get(url, params=params)
-            if not self.success(response):
+            r = self.tcex.session.get(url, params=params)
+            if not r.ok:
+                # TODO: discuss with Ben
+                err = r.text or r.reason
+                self.tcex.handle_error(950, [r.status_code, err, r.url])
+
+            if not self.success(r):
                 # STILL NEED TO HANDLE THIS
                 should_iterate = False
                 data = []
             else:
-                data = response.json().get('data').get(api_entity)
+                data = r.json().get('data').get(api_entity)
 
             if len(data) < self.result_limit:
                 should_iterate = False
@@ -162,7 +172,9 @@ class TiTcRequest:
             for result in data:
                 yield result
 
-    def request(self, main_type, sub_type, result_limit, result_start, params=None):
+    def request(
+        self, main_type, sub_type, result_limit, result_start, owner=None, filters=None, params=None
+    ):
         """
 
         Args:
@@ -170,6 +182,7 @@ class TiTcRequest:
             sub_type:
             result_limit:
             result_start:
+            owner:
             filters:
             params:
 
@@ -178,6 +191,10 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
         params['resultLimit'] = result_limit or params.get('result_limit', self.result_limit)
         params['resultStart'] = result_start or params.get('result_start', 0)
         if not sub_type:
@@ -334,10 +351,12 @@ class TiTcRequest:
 
         return self.tcex.session.get(url)
 
-    def deleted(self, main_type, sub_type, deleted_since, params=None):
+    def deleted(self, main_type, sub_type, deleted_since, owner=None, filters=None, params=None):
         """
 
         Args:
+            owner:
+            filters:
             main_type:
             sub_type:
             deleted_since:
@@ -348,7 +367,13 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
+        if filters:
+            params['filters'] = filters.filters_string
+        params['owner'] = owner or params.get('owner', None)
+        if filters:
+            params['filters'] = filters.filters_string
         params['deleteSince'] = deleted_since or params.get(deleted_since, None)
+
         if not sub_type:
             url = '/v2/{}/deleted'.format(main_type)
         else:
@@ -356,10 +381,11 @@ class TiTcRequest:
 
         return self.tcex.session.get(url, params=params)
 
-    def pivot_from_tag(self, target, tag_name, params=None):
+    def pivot_from_tag(self, target, tag_name, filters=None, params=None):
         """
 
         Args:
+            filters:
             target:
             tag_name:
             params:
@@ -372,13 +398,15 @@ class TiTcRequest:
         api_entity = target.api_entity
         if params is None:
             params = {}
+        if filters:
+            params['filters'] = filters.filters_string
         if sub_type:
             url = '/v2/tags/{}/{}/{}'.format(tag_name, api_type, sub_type)
         else:
             url = '/v2/tags/{}/{}/'.format(tag_name, api_type)
         yield from self._iterate(url, params, api_entity)
 
-    def groups_from_tag(self, group, tag_name, params=None):
+    def groups_from_tag(self, group, tag_name, filters=None, params=None):
         """
 
         Args:
@@ -390,15 +418,15 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
-        yield from self.pivot_from_tag(group, tag_name, params=params)
 
-    def indicators_from_tag(self, indicator, tag_name, params=None):
+        yield from self.pivot_from_tag(group, tag_name, filters=filters, params=params)
+
+    def indicators_from_tag(self, indicator, tag_name, filters=None, params=None):
         """
                 Args:
                     indicator:
                     tag_name:
+                    filters:
                     params:
 
                 Return:
@@ -406,21 +434,21 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag(indicator, tag_name, params=params)
+        yield from self.pivot_from_tag(indicator, tag_name, filters=filters, params=params)
 
-    def victims_from_tag(self, victim, tag_name, params=None):
+    def victims_from_tag(self, victim, tag_name, filters=None, params=None):
         """
 
         Args:
+            victim:
             tag_name:
+            filters:
             params:
 
         Return:
 
         """
-        if params is None:
-            params = {}
-        yield from self.pivot_from_tag(victim, tag_name, params=params)
+        yield from self.pivot_from_tag(victim, tag_name, filters=filters, params=params)
 
     def indicator_associations(self, main_type, sub_type, unique_id, params=None):
         """
@@ -532,7 +560,6 @@ class TiTcRequest:
                     target:
                     api_branch:
                     api_entity:
-                    filters:
                     params:
 
                 Return:
@@ -1344,13 +1371,15 @@ class TiTcRequest:
             params = {}
         return self.tag(main_type, sub_type, unique_id, tag, params=params)
 
-    def tags(self, main_type, sub_type, unique_id, params=None):
+    def tags(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
 
         Args:
             main_type:
             sub_type:
             unique_id:
+            owner:
+            filters:
             params:
 
         Return:
@@ -1358,6 +1387,10 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}/tags'.format(main_type, unique_id)
         else:
@@ -1365,13 +1398,15 @@ class TiTcRequest:
 
         yield from self._iterate(url, params, 'tag')
 
-    def labels(self, main_type, sub_type, unique_id, params=None):
+    def labels(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
 
         Args:
             main_type:
             sub_type:
             unique_id:
+            owner:
+            filters:
             params:
 
         Return:
@@ -1379,6 +1414,10 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
+        if owner:
+            params['owner'] = owner
+        if filters.filters:
+            params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}/securityLabels'.format(main_type, unique_id)
         else:

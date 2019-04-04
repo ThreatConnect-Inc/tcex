@@ -48,6 +48,8 @@ class TcExErrorCodes(object):
             # datastore
             800: 'Failed to create index. API status code: {}, API message: {}.',
             805: 'Failed to {} record data. API status code: {}, API message: {}.',
+            # threat intelligence module
+            950: 'Error during pagination. API status code: {}, API message: {}, API Url: {}.',
             # batch v2 critical: 1500-1600
             1500: 'Critical batch error ({}).',
             1505: 'Failed submitting batch job requests ({}).',
