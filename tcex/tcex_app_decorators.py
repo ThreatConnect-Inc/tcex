@@ -162,11 +162,13 @@ class FailOnInput(object):
                 if self.arg is None:
                     # grab the first arg passed to function to use in condition
                     arg_name = 'input'
-                    conditional_value = app.tcex.playbook.read(list(args)[0])
+                    conditional_value = app.tcex.playbook.read(list(args)[0], embedded=False)
                 else:
                     # grab the arg from the args names space to use in condition
                     arg_name = self.arg
-                    conditional_value = app.tcex.playbook.read(getattr(app.args, self.arg))
+                    conditional_value = app.tcex.playbook.read(
+                        getattr(app.args, self.arg), embedded=False
+                    )
 
                 if conditional_value in self.values:
                     app.tcex.log.error(
