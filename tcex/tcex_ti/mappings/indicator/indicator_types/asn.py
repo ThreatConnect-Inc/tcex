@@ -21,6 +21,7 @@ class ASN(Indicator):
         super(ASN, self).__init__(tcex, 'asns', **kwargs)
         self._api_entity = 'asn'
         self._data['as_number'] = as_number
+        self.unique_id = as_number or kwargs.get('as_number', None)
 
     def can_create(self):
         """

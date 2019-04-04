@@ -21,6 +21,7 @@ class Mutex(Indicator):
         super(Mutex, self).__init__(tcex, 'mutexes', **kwargs)
         self.data['mutex'] = mutex
         self.api_entity = 'mutex'
+        self.unique_id = mutex or kwargs.get('mutex', None)
 
     def can_create(self):
         """

@@ -23,6 +23,7 @@ class Host(Indicator):
         super(Host, self).__init__(tcex, 'hosts', **kwargs)
         self.api_entity = 'host'
         self._data['hostName'] = hostname
+        self.unique_id = hostname or kwargs.get('hostName', None)
 
     def can_create(self):
         """
@@ -52,4 +53,7 @@ class Host(Indicator):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

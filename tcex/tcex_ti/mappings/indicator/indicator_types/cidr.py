@@ -21,6 +21,7 @@ class CIDR(Indicator):
         super(CIDR, self).__init__(tcex, 'CIDR', **kwargs)
         self.api_entity = 'cidr'
         self._data['block'] = block
+        self.unique_id = block or kwargs.get('block', None)
 
     def can_create(self):
         """

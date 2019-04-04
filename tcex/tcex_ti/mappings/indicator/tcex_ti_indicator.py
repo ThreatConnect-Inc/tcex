@@ -196,7 +196,7 @@ class Indicator(TIMappings):
             value:
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
             self.api_type, self.api_sub_type, self.unique_id, request_data
@@ -210,7 +210,7 @@ class Indicator(TIMappings):
             value:
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
             self.api_type, self.api_sub_type, self.unique_id, request_data
@@ -222,7 +222,7 @@ class Indicator(TIMappings):
         :return:
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         return self.tc_requests.owners(self.api_type, self.api_sub_type, self.unique_id)
 
     def add_false_positive(self):
@@ -231,7 +231,7 @@ class Indicator(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         return self.tc_requests.add_false_positive(self.api_type, self.api_sub_type, self.unique_id)
 
     def observation_count(self):
@@ -242,7 +242,7 @@ class Indicator(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observation_count(self.api_type, self.api_sub_type, self.unique_id)
 
     def observations(self):
@@ -253,7 +253,7 @@ class Indicator(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observations(self.api_type, self.api_sub_type, self.unique_id)
 
     def add_observation(self, count, date_observed):
@@ -266,7 +266,7 @@ class Indicator(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
         request_data = {
             'count': count,
             'dateObserved': self._utils.format_datetime(

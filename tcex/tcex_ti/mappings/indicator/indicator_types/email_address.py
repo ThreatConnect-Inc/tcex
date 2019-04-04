@@ -22,6 +22,7 @@ class EmailAddress(Indicator):
         super(EmailAddress, self).__init__(tcex, 'emailAddresses', **kwargs)
         self.api_entity = 'emailAddress'
         self._data['address'] = address
+        self.unique_id = address or kwargs.get('address', None)
 
     def can_create(self):
         """

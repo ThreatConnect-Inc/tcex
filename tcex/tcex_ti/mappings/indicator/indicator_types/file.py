@@ -31,6 +31,14 @@ class File(Indicator):
             self.data['sha256'] = sha256
         if 'size' not in self.data:
             self.data['size'] = 0
+        self.unique_id = (
+            md5
+            or sha1
+            or sha256
+            or kwargs.get('md5', None)
+            or kwargs.get('sha1', None)
+            or kwargs.get('sha256', None)
+        )
 
     def can_create(self):
         """

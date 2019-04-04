@@ -49,6 +49,12 @@ class TcExErrorCodes(object):
             800: 'Failed to create index. API status code: {}, API message: {}.',
             805: 'Failed to {} record data. API status code: {}, API message: {}.',
             # threat intelligence module
+            905: 'Error during update. {} does not have their unique_id set and cannot be updated.',
+            910: 'Error during get. {} does not have their unique_id set and cannot be fetched.',
+            915: 'Error during delete. {} does not have their unique_id set and cannot be deleted.',
+            920: 'Error during create. {} does not have their required '
+            'values set and cannot be created.',
+            925: 'Error invalid {}. {} does not accept that {}, {}: {}.',
             950: 'Error during pagination. API status code: {}, API message: {}, API Url: {}.',
             # batch v2 critical: 1500-1600
             1500: 'Critical batch error ({}).',

@@ -24,6 +24,7 @@ class RegistryKey(Indicator):
         self.data['key_name'] = key_name
         self.data['value_name'] = value_name
         self.data['value_type'] = value_type
+        self.unique_id = key_name or kwargs.get('key_name', None)
 
     def can_create(self):
         """

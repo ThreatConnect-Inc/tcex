@@ -21,6 +21,7 @@ class Address(Indicator):
         super(Address, self).__init__(tcex, 'addresses', **kwargs)
         self._api_entity = 'address'
         self.data['ip'] = ip
+        self.unique_id = ip or kwargs.get('ip', None)
 
     def can_create(self):
         """
@@ -50,4 +51,6 @@ class Address(Indicator):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)

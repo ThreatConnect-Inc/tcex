@@ -65,6 +65,9 @@ class Task(TIMappings):
         Args:
             status: Not Started, In Progress, Completed, Waiting on Someone, Deferred
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['status'] = status
         request = {'status': status}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -75,6 +78,9 @@ class Task(TIMappings):
         Args:
             due_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         due_date = self._utils.format_datetime(due_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['dueDate'] = due_date
         request = {'dueDate': due_date}
@@ -86,6 +92,9 @@ class Task(TIMappings):
         Args:
             reminder_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         reminder_date = self._utils.format_datetime(reminder_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['reminderDate'] = reminder_date
         request = {'reminderDate': reminder_date}
@@ -97,6 +106,9 @@ class Task(TIMappings):
         Args:
             escalation_date: Converted to %Y-%m-%dT%H:%M:%SZ date format
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         escalation_date = self._utils.format_datetime(
             escalation_date, date_format='%Y-%m-%dT%H:%M:%SZ'
         )
@@ -109,7 +121,7 @@ class Task(TIMappings):
         Gets the task assignees
         """
         if not self.can_update():
-            yield []
+            self._tcex.handle_error(910, [self.type])
 
         yield from self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id)
 
@@ -123,7 +135,7 @@ class Task(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.assignee(
             self.api_type, self.api_sub_type, self.unique_id, assignee_id, action=action
@@ -164,7 +176,7 @@ class Task(TIMappings):
         Gets the task escalatees
         """
         if not self.can_update():
-            yield []
+            self._tcex.handle_error(910, [self.type])
 
         yield from self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id)
 
@@ -178,7 +190,7 @@ class Task(TIMappings):
 
         """
         if not self.can_update():
-            return None
+            self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.escalatee(
             self.api_type, self.api_sub_type, self.unique_id, escalatee_id, action=action

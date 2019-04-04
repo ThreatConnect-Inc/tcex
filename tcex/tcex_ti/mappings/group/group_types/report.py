@@ -37,6 +37,8 @@ class Report(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
 
         self._data['fileContent'] = file_content
         return self.tc_requests.upload(
@@ -54,6 +56,9 @@ class Report(Group):
         Args:
             file_name:
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['fileName'] = file_name
         request = {'fileName': file_name}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -66,6 +71,9 @@ class Report(Group):
             file_size:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['fileSize'] = file_size
         request = {'fileSize': file_size}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -83,6 +91,9 @@ class Report(Group):
         Args:
             status: Success, Awaiting Upload, In Progress, or Failed
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['status'] = status
         request = {'status': status}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -96,6 +107,9 @@ class Report(Group):
             password:
             file_name:
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['malware'] = malware
         self._data['password'] = password
         self._data['fileName'] = file_name
@@ -107,6 +121,9 @@ class Report(Group):
         :param publish_date:
         :return:
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         publish_date = self._utils.format_datetime(publish_date, date_format='%Y-%m-%dT%H:%M:%SZ')
 
         self._data['publishDate'] = publish_date

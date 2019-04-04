@@ -36,6 +36,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['to'] = to
         request = {'to': to}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -49,6 +52,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['from'] = from_addr
         request = {'from': from_addr}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -62,6 +68,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['score'] = score
         request = {'score': score}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -75,6 +84,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['subject'] = subject
         request = {'subject': subject}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -88,6 +100,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['header'] = header
         request = {'header': header}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
@@ -101,6 +116,9 @@ class Email(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         self._data['body'] = body
         request = {'body': body}
         return self._tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)

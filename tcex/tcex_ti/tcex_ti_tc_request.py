@@ -117,6 +117,7 @@ class TiTcRequest:
             main_type:
             sub_type:
             api_entity:
+            filters:
             owner:
             params:
 

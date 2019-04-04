@@ -29,7 +29,7 @@ def test_address_create_1():
     # group_type = 'Document'
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags'], 'owner': 'MyOrg'}
     groups = ti.group(group_type='Adversary')
-    for group in groups.many(params=parameters):
+    for group in groups.many(owner='System', params=parameters):
         print('group: {}'.format(group))
     # print(group.add_attribute('Description', 'Dummy_text'))
 

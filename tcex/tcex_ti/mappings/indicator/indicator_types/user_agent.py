@@ -21,6 +21,7 @@ class UserAgent(Indicator):
         super(UserAgent, self).__init__(tcex, 'userAgents', **kwargs)
         self.data['text'] = text
         self.api_entity = 'userAgent'
+        self.unique_id = text or kwargs.get('text', None)
 
     def can_create(self):
         """

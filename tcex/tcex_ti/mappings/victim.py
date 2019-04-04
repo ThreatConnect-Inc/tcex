@@ -76,6 +76,9 @@ class Victim(TIMappings):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if asset == 'PHONE':
             return self.tc_requests.add_victim_phone_asset(self.unique_id, asset_name)
         if asset == 'EMAIL':
@@ -86,6 +89,9 @@ class Victim(TIMappings):
             return self.tc_requests.add_victim_social_asset(self.unique_id, asset_name, asset_type)
         if asset == 'WEB':
             return self.tc_requests.add_victim_web_asset(self.unique_id, asset_name)
+        self._tcex.handle_error(
+            925, ['asset_type', 'add_asset', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def update_asset(self, asset, asset_id, asset_name, asset_type):
@@ -108,6 +114,9 @@ class Victim(TIMappings):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if asset == 'PHONE':
             return self.tc_requests.update_victim_phone_asset(self.unique_id, asset_id, asset_name)
         if asset == 'EMAIL':
@@ -124,6 +133,10 @@ class Victim(TIMappings):
             )
         if asset == 'WEB':
             return self.tc_requests.update_victim_web_asset(self.unique_id, asset_id, asset_name)
+
+        self._tcex.handle_error(
+            925, ['asset_type', 'update_asset', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def asset(self, asset_id, asset_type, action='GET'):
@@ -145,6 +158,9 @@ class Victim(TIMappings):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if asset_type == 'PHONE':
             return self.tc_requests.victim_phone_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
@@ -165,6 +181,9 @@ class Victim(TIMappings):
             return self.tc_requests.victim_web_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
             )
+        self._tcex.handle_error(
+            925, ['asset_type', 'asset', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def assets(self, asset_type=None):
@@ -172,11 +191,13 @@ class Victim(TIMappings):
         Gets the assets of a Victim
 
         Args:
-            asset:
+            asset_type:
 
         Yields: asset json
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
 
         if not asset_type:
             yield from self.tc_requests.victim_assets(
@@ -203,7 +224,9 @@ class Victim(TIMappings):
                 self.api_type, self.api_sub_type, self.unique_id
             )
 
-            yield []
+        self._tcex.handle_error(
+            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+        )
 
     def get_asset(self, asset_id, asset_type):
         """

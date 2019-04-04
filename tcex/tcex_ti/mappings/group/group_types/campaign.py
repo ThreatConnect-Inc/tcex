@@ -27,6 +27,9 @@ class Campaign(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         first_seen = self._utils.format_datetime(first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['firstSeen'] = first_seen
         request = {'firstSeen': first_seen}

@@ -25,6 +25,9 @@ class Adversary(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if asset_type == 'PHONE':
             return self.tc_requests.add_adversary_phone_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_name
@@ -37,6 +40,9 @@ class Adversary(Group):
             return self.tc_requests.add_adversary_url_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_name
             )
+        self._tcex.handle_error(
+            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def asset(self, asset_id, asset_type, action='GET'):
@@ -50,6 +56,9 @@ class Adversary(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if asset_type == 'PHONE':
             return self.tc_requests.adversary_phone_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
@@ -62,6 +71,9 @@ class Adversary(Group):
             return self.tc_requests.adversary_url_asset(
                 self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
             )
+        self._tcex.handle_error(
+            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def assets(self, asset_type=None):
@@ -74,6 +86,9 @@ class Adversary(Group):
         Returns:
 
         """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
         if not asset_type:
             return self.tc_requests.adversary_assets(
                 self.api_type, self.api_sub_type, self.unique_id
@@ -91,6 +106,9 @@ class Adversary(Group):
                 self.api_type, self.api_sub_type, self.unique_id
             )
 
+        self._tcex.handle_error(
+            925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
+        )
         return None
 
     def get_asset(self, asset_id, asset_type):

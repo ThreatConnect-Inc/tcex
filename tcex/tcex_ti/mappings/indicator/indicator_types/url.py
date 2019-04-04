@@ -22,6 +22,7 @@ class URL(Indicator):
         super(URL, self).__init__(tcex, 'urls', **kwargs)
         self.api_entity = 'url'
         self.data['text'] = text
+        self.unique_id = text or kwargs.get('text', None)
 
     def can_create(self):
         """
