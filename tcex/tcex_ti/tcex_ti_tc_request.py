@@ -154,17 +154,11 @@ class TiTcRequest:
             # params['resultOffset'] = result_offset
             params['resultStart'] = result_start
             r = self.tcex.session.get(url, params=params)
-            if not r.ok:
-                # TODO: discuss with Ben
+            if not self.success(r):
                 err = r.text or r.reason
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
 
-            if not self.success(r):
-                # STILL NEED TO HANDLE THIS
-                should_iterate = False
-                data = []
-            else:
-                data = r.json().get('data').get(api_entity)
+            data = r.json().get('data').get(api_entity)
 
             if len(data) < self.result_limit:
                 should_iterate = False
