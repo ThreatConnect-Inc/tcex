@@ -102,7 +102,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters.filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
@@ -127,7 +127,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}'.format(main_type)
@@ -193,7 +193,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters.filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         params['resultLimit'] = result_limit or params.get('result_limit', self.result_limit)
         params['resultStart'] = result_start or params.get('result_start', 0)
@@ -367,11 +367,9 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        if filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         params['owner'] = owner or params.get('owner', None)
-        if filters:
-            params['filters'] = filters.filters_string
         params['deleteSince'] = deleted_since or params.get(deleted_since, None)
 
         if not sub_type:
@@ -398,7 +396,7 @@ class TiTcRequest:
         api_entity = target.api_entity
         if params is None:
             params = {}
-        if filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         if sub_type:
             url = '/v2/tags/{}/{}/{}'.format(tag_name, api_type, sub_type)
@@ -1389,7 +1387,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters.filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}/tags'.format(main_type, unique_id)
@@ -1416,7 +1414,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters.filters:
+        if filters and filters.filters:
             params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}/{}/securityLabels'.format(main_type, unique_id)
