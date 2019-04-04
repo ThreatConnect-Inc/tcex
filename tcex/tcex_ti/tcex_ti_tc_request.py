@@ -127,7 +127,7 @@ class TiTcRequest:
             params = {}
         if owner:
             params['owner'] = owner
-        if filters.filters:
+        if filters:
             params['filters'] = filters.filters_string
         if not sub_type:
             url = '/v2/{}'.format(main_type)
