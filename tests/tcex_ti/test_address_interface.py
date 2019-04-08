@@ -91,7 +91,6 @@ class TestAddressIndicators:
         ti = self.ti.indicator(indicator_type='Address', ip=ip)
         r = ti.create('TCI')
         ti_data = r.json()
-        print(r.text)
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('address').get('ip') == ip
