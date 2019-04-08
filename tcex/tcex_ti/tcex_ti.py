@@ -386,6 +386,136 @@ class TcExTi(object):
         """
         return Tag(self.tcex, name)
 
+    def entities(self, json_response):
+        """
+        Yields a entity. Takes both a list of indicators/groups or a individual
+        indicator/group response.
+
+        example formats:
+        {
+           "status":"Success",
+           "data":{
+              "resultCount":984240,
+              "address":[
+                 {
+                    "id":4222035,
+                    "ownerName":"System",
+                    "dateAdded":"2019-03-28T10:32:05-04:00",
+                    "lastModified":"2019-03-28T11:02:46-04:00",
+                    "rating":4,
+                    "confidence":90,
+                    "threatAssessRating":4,
+                    "threatAssessConfidence":90,
+                    "webLink":"{host}/auth/indicators/details/address.xhtml?address=221.123.32.14",
+                    "ip":"221.123.32.14"
+                 },
+                 {
+                    "id":4221517,
+                    "ownerName":"System",
+                    "dateAdded":"2018-11-05T14:24:54-05:00",
+                    "lastModified":"2019-03-07T12:38:36-05:00",
+                    "threatAssessRating":0,
+                    "threatAssessConfidence":0,
+                    "webLink":"{host}/auth/indicators/details/address.xhtml?address=221.123.32.12",
+                    "ip":"221.123.32.12"
+                 }
+              ]
+           }
+        }
+
+        or:
+        {
+            "status": "Success",
+            "data": {
+                "address": {
+                    "id": 4222035,
+                    "owner": {
+                        "id": 1,
+                        "name": "System",
+                        "type": "Organization"
+                    },
+                    "dateAdded": "2019-03-28T10:32:05-04:00",
+                    "lastModified": "2019-03-28T11:02:46-04:00",
+                    "rating": 4,
+                    "confidence": 90,
+                    "threatAssessRating": 4,
+                    "threatAssessConfidence": 90,
+                    "webLink": "{host}/auth/indicators/details/address.xhtml?address=221.123.32.14",
+                    "ip": "221.123.32.14"
+                }
+            }
+        }
+        Args:
+            json_response:
+
+        Yields:
+
+        """
+        response_data = json_response.get('data', {})
+        api_entity = None
+        for key in list(response_data.keys()):
+            if key != 'resultCount':
+                api_entity = key
+            else:
+                return
+        api_type = self.tcex.get_type_from_api_entity(api_entity)
+        response_entities = response_data.get(api_entity, [])
+        if not isinstance(response_entities, list):
+            response_entities = [response_entities]
+
+        for response_entity in response_entities:
+            entity = {}
+            data = {}
+            temp_entity = None
+            value = None
+            if api_type in self.tcex.group_types:
+                temp_entity = self.tcex.ti.group(
+                    group_type=api_type, name=response_data.get('name')
+                )
+                value = temp_entity.name
+            elif api_type in self.tcex.indicator_types:
+                temp_entity = self.tcex.ti.indicator(indicator_type=api_type)
+                temp_entity._set_unique_id(response_entity)
+                value = temp_entity.unique_id
+            else:
+                self.tcex.handle_error(925, ['type', 'entities', 'type', 'type', api_type])
+
+            confidence = response_entity.get('confidence', None)
+            if confidence is not None:
+                data['confidence'] = confidence
+            rating = response_entity.get('rating', None)
+            if rating is not None:
+                data['rating'] = rating
+            date_added = response_entity.get('dateAdded', None)
+            if date_added is not None:
+                data['dateAdded'] = date_added
+            entity_id = response_entity.get('id', None)
+            if entity_id is not None:
+                data['id'] = entity_id
+            last_modified = response_entity.get('lastModified', None)
+            if last_modified is not None:
+                data['lastModified'] = last_modified
+            owner_name = response_entity.get('owner', {}).get('name', None)
+            if owner_name is not None:
+                data['ownerName'] = owner_name
+            threat_assess_confidence = response_entity.get('threatAssessConfidence', None)
+            if threat_assess_confidence is not None:
+                data['threatAssessConfidence'] = threat_assess_confidence
+            threat_assess_rating = response_entity.get('threatAssessRating', None)
+            if threat_assess_rating is not None:
+                data['threatAssessRating'] = threat_assess_rating
+            if temp_entity.type is not None:
+                data['type'] = temp_entity.type
+            if value is not None:
+                data['value'] = value
+            web_link = response_entity.get('webLink')
+            if web_link is not None:
+                data['webLink'] = web_link
+            entity['data_type'] = 'redis'
+            entity['variable'] = 'testing'
+            entity['data'] = data
+            yield entity
+
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""
 
