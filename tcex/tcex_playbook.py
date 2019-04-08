@@ -391,7 +391,8 @@ class TcExPlaybook(object):
             (any): Results retrieved from DB
         """
         self.tcex.log.debug('read variable {}'.format(key))
-        data = None
+        # if a non-variable value is passed it should be the default
+        data = key
         if key is not None:
             key = key.strip()
             key_type = self.variable_type(key)
