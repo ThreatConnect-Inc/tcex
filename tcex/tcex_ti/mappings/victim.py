@@ -200,29 +200,35 @@ class Victim(TIMappings):
             self._tcex.handle_error(910, [self.type])
 
         if not asset_type:
-            yield from self.tc_requests.victim_assets(
+            for a in self.tc_requests.victim_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
         if asset_type == 'PHONE':
-            yield from self.tc_requests.victim_phone_assets(
+            for a in self.tc_requests.victim_phone_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
         if asset_type == 'EMAIL':
-            yield from self.tc_requests.victim_email_assets(
+            for a in self.tc_requests.victim_email_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
         if asset_type == 'NETWORK':
-            yield from self.tc_requests.victim_network_assets(
+            for a in self.tc_requests.victim_network_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
         if asset_type == 'SOCIAL':
-            yield from self.tc_requests.victim_social_assets(
+            for a in self.tc_requests.victim_social_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
         if asset_type == 'WEB':
-            yield from self.tc_requests.victim_web_assets(
+            for a in self.tc_requests.victim_web_assets(
                 self.api_type, self.api_sub_type, self.unique_id
-            )
+            ):
+                yield a
 
         self._tcex.handle_error(
             925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
@@ -252,23 +258,28 @@ class Victim(TIMappings):
 
     def phone_assets(self):
         """ Gets Phone assets """
-        yield from self.assets(asset_type='PHONE')
+        for pa in self.assets(asset_type='PHONE'):
+            yield pa
 
     def email_assets(self):
         """ Gets Phone assets """
-        yield from self.assets(asset_type='EMAIL')
+        for ea in self.assets(asset_type='EMAIL'):
+            yield ea
 
     def network_assets(self):
         """ Gets Network assets """
-        yield from self.assets(asset_type='NETWORK')
+        for na in self.assets(asset_type='NETWORK'):
+            yield na
 
     def social_assets(self):
         """ Gets Social assets """
-        yield from self.assets(asset_type='SOCIAL')
+        for sa in self.assets(asset_type='SOCIAL'):
+            yield sa
 
     def web_assets(self):
         """ Gets a Web assets """
-        yield from self.assets(asset_type='WEB')
+        for wa in self.assets(asset_type='WEB'):
+            yield wa
 
     def phone_asset(self, asset_id, action='GET'):
         """ Gets a Phone asset """

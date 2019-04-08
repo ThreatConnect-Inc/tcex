@@ -112,7 +112,6 @@ class TcExArgs(object):
         Returns:
             (namespace): ArgParser parsed arguments.
         """
-
         if not self._parsed:  # only resolve once
             self._default_args, unknown = self.parser.parse_known_args()
 
@@ -126,7 +125,7 @@ class TcExArgs(object):
             # set parsed bool to ensure args are only parsed once
             self._parsed = True
 
-            # update args with value from config
+            # update args with value from config data or configuration file
             self.args_update()
 
         return self._default_args
@@ -136,13 +135,45 @@ class TcExArgs(object):
         for key, value in self._config_data.items():
             setattr(self._default_args, key, value)
 
-    def config(self, config):
-        """Load provided configuration files and inject values into sys.argv."""
-        if os.path.isfile(config):
-            with open(config, 'r') as fh:
+    def config(self, config_data):
+        """Add configuration data to be injected into sys.argv.
+
+        Below are the default args that the TcEx frameworks supports. Any App specific args
+        should be included in the provided data.
+
+        .. code-block:: javascript
+
+            {
+              "api_access_id": "$env.API_ACCESS_ID",
+              "api_default_org": "$env.API_DEFAULT_ORG",
+              "api_secret_key": "$envs.API_SECRET_KEY",
+              "tc_api_path": "$env.TC_API_PATH",
+              "tc_log_level": "debug",
+              "tc_log_path": "log",
+              "tc_owner": "MyOwner",
+              "tc_proxy_host": "$env.TC_PROXY_HOST",
+              "tc_proxy_password": "$envs.TC_PROXY_PASSWORD",
+              "tc_proxy_port": "$env.TC_PROXY_PORT",
+              "tc_proxy_tc": false,
+              "tc_proxy_username": "$env.TC_PROXY_USERNAME"
+            }
+
+        Args:
+            config (dict): A dictionary of configuration values.
+        """
+        self._config_data = config_data
+
+    def config_file(self, filename):
+        """Load configuration data from provided file and inject values into sys.argv.
+
+        Args:
+            config (str): The configuration file name.
+        """
+        if os.path.isfile(filename):
+            with open(filename, 'r') as fh:
                 self._config_data = json.load(fh)
         else:
-            self.tcex.log.error('Could not load configuration file "{}".'.format(config))
+            self.tcex.log.error('Could not load configuration file "{}".'.format(filename))
 
     @property
     def default_args(self):

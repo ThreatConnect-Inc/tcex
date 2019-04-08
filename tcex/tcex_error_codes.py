@@ -9,7 +9,7 @@ class TcExErrorCodes(object):
     def errors(self):
         """TcEx defined error codes and messages.
 
-        .. note:: RuntimeErrors with a code of >= 1000 are considered critical.  Those < 1000
+        .. note:: RuntimeErrors with a code of >= 10000 are considered critical.  Those < 10000
             are considered warning or errors and are up to the developer to determine the
             appropriate behavior.
         """
@@ -49,19 +49,21 @@ class TcExErrorCodes(object):
             800: 'Failed to create index. API status code: {}, API message: {}.',
             805: 'Failed to {} record data. API status code: {}, API message: {}.',
             # threat intelligence module
-            905: 'Error during update. {} does not have their unique_id set and cannot be updated.',
-            910: 'Error during get. {} does not have their unique_id set and cannot be fetched.',
-            915: 'Error during delete. {} does not have their unique_id set and cannot be deleted.',
-            920: 'Error during create. {} does not have their required '
-            'values set and cannot be created.',
+            905: 'Error during update. {} does not have a unique_id set and cannot be updated.',
+            910: 'Error during get. {} does not have a unique_id set and cannot be fetched.',
+            915: 'Error during delete. {} does not have a unique_id set and cannot be deleted.',
+            920: (
+                'Error during create. {} does not have required values set and cannot be '
+                'created.'
+            ),
             925: 'Error invalid {}. {} does not accept that {}, {}: {}.',
             950: 'Error during pagination. API status code: {}, API message: {}, API Url: {}.',
-            # batch v2 critical: 1500-1600
-            1500: 'Critical batch error ({}).',
-            1505: 'Failed submitting batch job requests ({}).',
-            1510: 'Failed submitting batch job requests. API status code: {}, API message: {}.',
-            1520: 'Failed submitting batch data ({}).',
-            1525: 'Failed submitting batch data. API status code: {}, API message: {}.',
+            # batch v2 critical:
+            10500: 'Critical batch error ({}).',
+            10505: 'Failed submitting batch job requests ({}).',
+            10510: 'Failed submitting batch job requests. API status code: {}, API message: {}.',
+            10520: 'Failed submitting batch data ({}).',
+            10525: 'Failed submitting batch data. API status code: {}, API message: {}.',
         }
 
     def message(self, code):

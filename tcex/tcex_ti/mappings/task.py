@@ -123,7 +123,8 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id)
+        for a in self.tc_requests.assignees(self.api_type, self.api_sub_type, self.unique_id):
+            yield a
 
     def assignee(self, assignee_id, action='ADD'):
         """
@@ -178,7 +179,8 @@ class Task(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        yield from self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id)
+        for e in self.tc_requests.escalatees(self.api_type, self.api_sub_type, self.unique_id):
+            yield e
 
     def escalatee(self, escalatee_id, action='ADD'):
         """

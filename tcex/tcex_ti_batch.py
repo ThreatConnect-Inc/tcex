@@ -692,7 +692,7 @@ class TcExBatch(object):
                 error_reason = error.get('errorReason')
                 for error_msg in self._critical_failures:
                     if re.findall(error_msg, error_reason):
-                        self.tcex.handle_error(1500, [error_reason], halt_on_error)
+                        self.tcex.handle_error(10500, [error_reason], halt_on_error)
             return errors
         except Exception as e:
             self.tcex.handle_error(560, [e], halt_on_error)
@@ -1442,10 +1442,10 @@ class TcExBatch(object):
                 r = self.tcex.session.post('/v2/batch/createAndUpload', files=files, params=params)
                 self.tcex.log.debug('Batch Status Code: {}'.format(r.status_code))
                 if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                    self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+                    self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
                 return r.json()
             except Exception as e:
-                self.tcex.handle_error(1505, [e], halt_on_error)
+                self.tcex.handle_error(10505, [e], halt_on_error)
         return {}
 
     def submit_data(self, batch_id, halt_on_error=True):
@@ -1468,9 +1468,9 @@ class TcExBatch(object):
                     '/v2/batch/{}'.format(batch_id), headers=headers, json=content
                 )
             except Exception as e:
-                self.tcex.handle_error(1520, [e], halt_on_error)
+                self.tcex.handle_error(10520, [e], halt_on_error)
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                self.tcex.handle_error(1525, [r.status_code, r.text], halt_on_error)
+                self.tcex.handle_error(10525, [r.status_code, r.text], halt_on_error)
             return r.json()
         return {}
 
@@ -1563,12 +1563,12 @@ class TcExBatch(object):
         try:
             r = self.tcex.session.post('/v2/batch', json=self.settings)
         except Exception as e:
-            self.tcex.handle_error(1505, [e], halt_on_error)
+            self.tcex.handle_error(10505, [e], halt_on_error)
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+            self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
         data = r.json()
         if data.get('status') != 'Success':
-            self.tcex.handle_error(1510, [r.status_code, r.text], halt_on_error)
+            self.tcex.handle_error(10510, [r.status_code, r.text], halt_on_error)
         self.tcex.log.debug('Batch Submit Data: {}'.format(data))
         return data.get('data', {}).get('batchId')
 

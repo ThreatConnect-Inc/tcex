@@ -135,7 +135,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
 
-        yield from self._iterate(url, params, api_entity)
+        for i in self._iterate(url, params, api_entity):
+            yield i
 
     def _iterate(self, url, params, api_entity):
         """
@@ -145,7 +146,6 @@ class TiTcRequest:
             api_entity:
 
         Return:
-
         """
         params['resultLimit'] = self.result_limit
         should_iterate = True
@@ -397,7 +397,8 @@ class TiTcRequest:
             url = '/v2/tags/{}/{}/{}'.format(tag_name, api_type, sub_type)
         else:
             url = '/v2/tags/{}/{}/'.format(tag_name, api_type)
-        yield from self._iterate(url, params, api_entity)
+        for i in self._iterate(url, params, api_entity):
+            yield i
 
     def groups_from_tag(self, group, tag_name, filters=None, params=None):
         """
@@ -411,8 +412,8 @@ class TiTcRequest:
         Return:
 
         """
-
-        yield from self.pivot_from_tag(group, tag_name, filters=filters, params=params)
+        for t in self.pivot_from_tag(group, tag_name, filters=filters, params=params):
+            yield t
 
     def indicators_from_tag(self, indicator, tag_name, filters=None, params=None):
         """
@@ -427,7 +428,8 @@ class TiTcRequest:
         """
         if params is None:
             params = {}
-        yield from self.pivot_from_tag(indicator, tag_name, filters=filters, params=params)
+        for t in self.pivot_from_tag(indicator, tag_name, filters=filters, params=params):
+            yield t
 
     def victims_from_tag(self, victim, tag_name, filters=None, params=None):
         """
@@ -441,7 +443,8 @@ class TiTcRequest:
         Return:
 
         """
-        yield from self.pivot_from_tag(victim, tag_name, filters=filters, params=params)
+        for t in self.pivot_from_tag(victim, tag_name, filters=filters, params=params):
+            yield t
 
     def indicator_associations(self, main_type, sub_type, unique_id, params=None):
         """
@@ -462,7 +465,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/indicators'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'indicator')
+        for a in self._iterate(url, params, 'indicator'):
+            yield a
 
     def group_associations(self, main_type, sub_type, unique_id, params=None):
         """
@@ -483,7 +487,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/groups'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'group')
+        for ga in self._iterate(url, params, 'group'):
+            yield ga
 
     def victim_asset_associations(self, main_type, sub_type, unique_id, branch_type, params=None):
         """
@@ -505,7 +510,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/{}'.format(main_type, sub_type, unique_id, branch_type)
 
-        yield from self._iterate(url, params, 'victimAsset')
+        for vaa in self._iterate(url, params, 'victimAsset'):
+            yield vaa
 
     def indicator_associations_types(
         self,
@@ -540,7 +546,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/indicators/{}'.format(main_type, sub_type, unique_id, api_branch)
 
-        yield from self._iterate(url, params, api_entity)
+        for iat in self._iterate(url, params, api_entity):
+            yield iat
 
     def group_associations_types(
         self, main_type, sub_type, unique_id, target, api_branch=None, api_entity=None, params=None
@@ -568,7 +575,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/groups/{}'.format(main_type, sub_type, unique_id, api_branch)
 
-        yield from self._iterate(url, params, api_entity)
+        for gat in self._iterate(url, params, api_entity):
+            yield gat
 
     def add_association(
         self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
@@ -851,7 +859,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victims'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victim')
+        for v in self._iterate(url, params, 'victim'):
+            yield v
 
     def victim_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -872,7 +881,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimAssets')
+        for va in self._iterate(url, params, 'victimAssets'):
+            yield va
 
     def victim_email_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -893,7 +903,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/emailAddresses'.format(type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimEmail')
+        for vea in self._iterate(url, params, 'victimEmail'):
+            yield vea
 
     def victim_network_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -914,7 +925,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/networkAccounts'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimNetwork')
+        for vna in self._iterate(url, params, 'victimNetwork'):
+            yield vna
 
     def victim_phone_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -935,7 +947,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/phoneNumbers'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimPhone')
+        for vpa in self._iterate(url, params, 'victimPhone'):
+            yield vpa
 
     def victim_social_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -956,7 +969,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/socialNetworks'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimSocial')
+        for vsa in self._iterate(url, params, 'victimSocial'):
+            yield vsa
 
     def victim_web_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -977,7 +991,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/victimAssets/webSites'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'victimWeb')
+        for vwa in self._iterate(url, params, 'victimWeb'):
+            yield vwa
 
     def victim_email_asset(
         self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
@@ -1389,7 +1404,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/tags'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'tag')
+        for t in self._iterate(url, params, 'tag'):
+            yield t
 
     def labels(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
@@ -1416,7 +1432,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/securityLabels'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'securityLabel')
+        for l in self._iterate(url, params, 'securityLabel'):
+            yield l
 
     def add_label(self, main_type, sub_type, unique_id, label):
         """
@@ -1519,7 +1536,8 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/attributes'.format(main_type, sub_type, unique_id)
 
-        yield from self._iterate(url, params, 'attribute')
+        for a in self._iterate(url, params, 'attribute'):
+            yield a
 
     def attribute(self, main_type, sub_type, unique_id, attribute_id, action='GET', params=None):
         """
@@ -1626,7 +1644,8 @@ class TiTcRequest:
                 main_type, sub_type, unique_id, attribute_id
             )
 
-        yield from self._iterate(url, params, 'securityLabel')
+        for l in self._iterate(url, params, 'securityLabel'):
+            yield l
 
     def attribute_label(
         self, main_type, sub_type, unique_id, attribute_id, label, action='GET', params=None
@@ -1737,7 +1756,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/adversaryAssets'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'adversaryAsset')
+        for aa in self._iterate(url, params, 'adversaryAsset'):
+            yield aa
 
     def adversary_handle_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -1754,7 +1774,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/adversaryAssets/handles'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'adversaryHandle')
+        for aha in self._iterate(url, params, 'adversaryHandle'):
+            yield aha
 
     def adversary_phone_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -1771,7 +1792,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/adversaryAssets/phoneNumbers'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'adversaryPhone')
+        for apa in self._iterate(url, params, 'adversaryPhone'):
+            yield apa
 
     def adversary_url_assets(self, main_type, sub_type, unique_id, params=None):
         """
@@ -1788,7 +1810,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/adversaryAssets/urls'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'adversaryUrl')
+        for aua in self._iterate(url, params, 'adversaryUrl'):
+            yield aua
 
     def adversary_url_asset(
         self, main_type, sub_type, unique_id, asset_id, action='GET', params=None
@@ -2032,7 +2055,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/assignees'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'assignee')
+        for a in self._iterate(url, params, 'assignee'):
+            yield a
 
     def assignee(self, main_type, sub_type, unique_id, assignee_id, action='ADD', params=None):
         """
@@ -2119,7 +2143,8 @@ class TiTcRequest:
         if params is None:
             params = {}
         url = '/v2/{}/{}/{}/escalatees'.format(main_type, sub_type, unique_id)
-        yield from self._iterate(url, params, 'escalatee')
+        for e in self._iterate(url, params, 'escalatee'):
+            yield e
 
     def escalatee(self, main_type, sub_type, unique_id, escalatee_id, action='GET', params=None):
         """
