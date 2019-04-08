@@ -11,6 +11,6 @@ class TestArgsConfig:
     @staticmethod
     def test_address_get():
         """Test address creation"""
-        assert tcex.args.api_access_id
-        assert tcex.args.api_secret_key
+        # assert tcex.args.api_access_id
+        # assert tcex.args.api_secret_key
         assert tcex.args.api_default_org == 'TCI'
