@@ -609,6 +609,39 @@ class TcEx(object):
         return self._indicator_types_data
 
     @property
+    def group_types_data(self):
+        """All supported ThreatConnect Group types."""
+        return {
+            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+            'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+        }
+
+    def get_type_from_api_entity(self, api_entity):
+        """
+        Returns the object type as a string given a api entity.
+
+        Args:
+            api_entity:
+
+        Returns:
+
+        """
+        merged = self.group_types_data.copy()
+        merged.update(self.indicator_types_data)
+        for (key, value) in merged.items():
+            if value.get('apiEntity') == api_entity:
+                return key
+        return None
+
+    @property
     def install_json(self):
         """Return contents of install.json configuration file, loading from disk if required."""
         if self._install_json is None:
