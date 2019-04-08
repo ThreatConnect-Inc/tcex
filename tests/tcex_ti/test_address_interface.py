@@ -12,7 +12,7 @@ class TestAddressIndicators:
         """Configure setup before all tests."""
         self.ti = tcex.ti
 
-    def test_address_get(self, ip='10.20.30.40'):
+    def test_address_get(self, ip='17.15.30.41'):
         """Test address get."""
         # create
         self.test_address_create(ip)
@@ -86,11 +86,12 @@ class TestAddressIndicators:
         # delete
         self.test_address_delete(ip)
 
-    def test_address_create(self, ip='12.13.14.15'):
+    def test_address_create(self, ip='14.111.14.15'):
         """Test address create."""
         ti = self.ti.indicator(indicator_type='Address', ip=ip)
-        r = ti.create(owner='TCI')
+        r = ti.create('TCI')
         ti_data = r.json()
+        print(r.text)
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('address').get('ip') == ip
