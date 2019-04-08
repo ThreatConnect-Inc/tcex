@@ -2,10 +2,8 @@
 """ThreatConnect Threat Intelligence Module"""
 try:
     from urllib import quote  # Python 2
-    from urllib import quote_plus  # Python 2
 except ImportError:
     from urllib.parse import quote  # Python
-    from urllib.parse import quote_plus  # Python
 
 # import local modules for dynamic reference
 module = __import__(__name__)
@@ -56,7 +54,6 @@ class TiTcRequest:
             owner:
         """
         params = {'owner': owner} if owner else {}
-        unique_id = quote_plus(unique_id)
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
@@ -77,7 +74,6 @@ class TiTcRequest:
 
         """
         params = {'owner': owner} if owner else {}
-        unique_id = quote_plus(unique_id)
         if not sub_type:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
@@ -231,7 +227,6 @@ class TiTcRequest:
         Return:
 
         """
-        unique_id = quote_plus(unique_id)
         url = '/v2/{}/{}/{}/falsePositive'.format(main_type, sub_type, unique_id)
 
         return self.tcex.session.post(url)

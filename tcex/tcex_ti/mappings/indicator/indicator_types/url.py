@@ -2,6 +2,11 @@
 """ThreatConnect TI URL"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
@@ -23,6 +28,8 @@ class URL(Indicator):
         self.api_entity = 'url'
         self.data['text'] = text
         self.unique_id = text or kwargs.get('text', None)
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """
@@ -43,4 +50,4 @@ class URL(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('text', '')
+        self.unique_id = quote_plus(json_response.get('text', ''))
