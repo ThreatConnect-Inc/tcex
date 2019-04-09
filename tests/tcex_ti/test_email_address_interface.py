@@ -92,10 +92,7 @@ class TestEmailAddressIndicators:
         """Test email_address create."""
         ti = self.ti.email_address(address)
         r = ti.create(owner='TCI')
-        print(r)
-        print(r.text)
         ti_data = r.json()
-        print(ti_data)
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('emailAddress').get('address') == address

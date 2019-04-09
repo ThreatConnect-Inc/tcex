@@ -15,7 +15,7 @@ class TestNotification:
     def test_notification_organization():
         """Test org notification."""
         notification = tcex.notification()
-        notification.org(notification_type='PyTest notification', priority='High')
+        notification.org(notification_type='PyTest notification', priority='Low')
         status = notification.send(message='High alert send to organization.')
         assert status.get('status') == 'Success'
 
@@ -25,7 +25,7 @@ class TestNotification:
         notification = tcex.notification()
         notification.recipients(
             notification_type='PyTest recipients notification',
-            recipients='bsummers@threatconnect.com',
+            recipients='pytest@tci.ninja',
             priority='High',
         )
         status = notification.send(message='High alert send to recipients.')
