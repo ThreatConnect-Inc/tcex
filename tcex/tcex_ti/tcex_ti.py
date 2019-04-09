@@ -280,11 +280,13 @@ class TcExTi(object):
         """
         return Event(self.tcex, name, **kwargs)
 
-    def email(self, name, subject, header, body, **kwargs):
+    def email(self, name, to, from_addr, subject, body, header, **kwargs):
         """
         Create the Email TI object.
 
         Args:
+            to:
+            from_addr:
             name:
             subject:
             header:
@@ -294,7 +296,7 @@ class TcExTi(object):
         Return:
 
         """
-        return Email(self.tcex, name, subject, header, body, **kwargs)
+        return Email(self.tcex, name, to, from_addr, subject, body, header, **kwargs)
 
     def incident(self, name, **kwargs):
         """

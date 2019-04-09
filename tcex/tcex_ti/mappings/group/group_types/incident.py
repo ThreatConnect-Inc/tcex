@@ -71,7 +71,10 @@ class Incident(Group):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
+        print('first event_date')
+        print(event_date)
         event_date = self._utils.format_datetime(event_date, date_format='%Y-%m-%dT%H:%M:%SZ')
+        print(event_date)
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
         return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
