@@ -311,7 +311,7 @@ class TcExTi(object):
         """
         return Incident(self.tcex, name, **kwargs)
 
-    def intrustion_set(self, name, **kwargs):
+    def intrusion_sets(self, name, **kwargs):
         """
         Create the Intrustion Set TI object.
 
