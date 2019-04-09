@@ -23,11 +23,11 @@ class TestUtils:
             ('2017 11 08', 'UTC', '2017-11-08T05:51:00+00:00'),
             ('2017-11-08T16:52:42Z', None, '2017-11-08T16:52:42+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', '2017-11-08T11:52:42-05:00'),
-            ('in 1 month', 'US/Central', '2019-05-08T22'),
+            ('in 1 month', 'US/Central', '2019-05'),
         ],
     )
     def test_any_to_datetime(self, date, tz, results):
-        """Test adversary creation"""
+        """Test any to datetime"""
         dt = tcex.utils.any_to_datetime(date, tz)
         assert dt.isoformat().startswith(results)
 
@@ -40,13 +40,13 @@ class TestUtils:
             ('2017 11 08', 'UTC', '%Y-%m-%dT%H:%M:%S.%fZ', '2017-11-08T05:51:00.000000Z'),
             ('2017-11-08T16:52:42Z', None, None, '2017-11-08T16:52:42+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', '%s', 1510141962),
-            ('in 1 month', 'US/Central', '%Y-%m-%d', '2019-05-08'),
+            ('in 1 month', 'US/Central', '%Y-%m-%d', '2019-05'),
         ],
     )
     def test_format_datetime(self, date, tz, date_format, results):
-        """Test adversary creation"""
+        """Test format datetime"""
         dt = tcex.utils.format_datetime(time_input=date, tz=tz, date_format=date_format)
-        assert dt == results
+        assert dt.startswith(results)
 
     def test_timedelta(self):
         """Test timedelta module"""
