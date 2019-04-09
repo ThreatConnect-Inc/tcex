@@ -15,7 +15,7 @@ class TestIntrustionSetGroups:
     def test_intrusion_sets_get(self, name='intrusion_sets-name-42353'):
         """Test intrusion_sets get."""
         # create
-        intrusion_sets_id = self.test_intrusion_sets_create(name)
+        intrusion_sets_id = self.intrusion_sets_create(name)
 
         # get
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
@@ -26,12 +26,12 @@ class TestIntrustionSetGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_intrusion_sets_delete(intrusion_sets_id)
+        self.intrusion_sets_delete(intrusion_sets_id)
 
     def test_intrusion_sets_get_attributes(self, name='intrusion_sets-name-12453'):
         """Test intrusion_sets get."""
         # create
-        intrusion_sets_id = self.test_intrusion_sets_create(name)
+        intrusion_sets_id = self.intrusion_sets_create(name)
         self.test_intrusion_sets_add_attribute(
             intrusion_sets_id=intrusion_sets_id,
             attribute_type='Description',
@@ -57,12 +57,12 @@ class TestIntrustionSetGroups:
             assert False
 
         # delete
-        self.test_intrusion_sets_delete(intrusion_sets_id)
+        self.intrusion_sets_delete(intrusion_sets_id)
 
     def test_intrusion_sets_get_tags(self, name='intrusion_sets-name-64235'):
         """Test intrusion_sets get."""
         # create
-        intrusion_sets_id = self.test_intrusion_sets_create(name)
+        intrusion_sets_id = self.intrusion_sets_create(name)
         self.test_intrusion_sets_add_tag(intrusion_sets_id=intrusion_sets_id, tag='One')
         self.test_intrusion_sets_add_tag(intrusion_sets_id=intrusion_sets_id, tag='Two')
 
@@ -75,11 +75,11 @@ class TestIntrustionSetGroups:
             assert False
 
         # delete
-        self.test_intrusion_sets_delete(intrusion_sets_id)
+        self.intrusion_sets_delete(intrusion_sets_id)
 
     def test_intrusion_sets_get_include(self, name='intrusion_sets-name-78159'):
         """Test intrusion_sets get."""
-        intrusion_sets_id = self.test_intrusion_sets_create(name)
+        intrusion_sets_id = self.intrusion_sets_create(name)
         self.test_intrusion_sets_add_attribute(
             intrusion_sets_id=intrusion_sets_id,
             attribute_type='Description',
@@ -102,9 +102,9 @@ class TestIntrustionSetGroups:
         assert ti_data.get('data').get('intrusionSet').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_intrusion_sets_delete(intrusion_sets_id)
+        self.intrusion_sets_delete(intrusion_sets_id)
 
-    def test_intrusion_sets_create(self, name='intrusion_sets-name-65341'):
+    def intrusion_sets_create(self, name='intrusion_sets-name-65341'):
         """Test intrusion_sets create."""
         ti = self.ti.intrusion_sets(name)
         r = ti.create(owner='TCI')
@@ -122,9 +122,10 @@ class TestIntrustionSetGroups:
         attribute_value='Example Description.',
     ):
         """Test intrusion_sets attribute add."""
-
+        should_delete = False
         if not intrusion_sets_id:
-            intrusion_sets_id = self.test_intrusion_sets_create(name)
+            should_delete = True
+            intrusion_sets_id = self.intrusion_sets_create(name)
 
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -133,12 +134,17 @@ class TestIntrustionSetGroups:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.intrusion_sets_delete(intrusion_sets_id)
+
     def test_intrusion_sets_add_label(
         self, intrusion_sets_id=None, name='intrusion_sets-name-ds4vb', label='TLP:GREEN'
     ):
         """Test intrusion_sets attribute add."""
+        should_delete = False
         if not intrusion_sets_id:
-            intrusion_sets_id = self.test_intrusion_sets_create(name)
+            should_delete = True
+            intrusion_sets_id = self.intrusion_sets_create(name)
 
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
         r = ti.add_label(label=label)
@@ -146,12 +152,17 @@ class TestIntrustionSetGroups:
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
+        if should_delete:
+            self.intrusion_sets_delete(intrusion_sets_id)
+
     def test_intrusion_sets_add_tag(
         self, intrusion_sets_id=None, name='intrusion_sets-name-fdsv23', tag='Crimeware'
     ):
         """Test intrusion_sets attribute add."""
+        should_delete = False
         if not intrusion_sets_id:
-            intrusion_sets_id = self.test_intrusion_sets_create(name)
+            should_delete = True
+            intrusion_sets_id = self.intrusion_sets_create(name)
 
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
         r = ti.add_tag(tag)
@@ -159,11 +170,14 @@ class TestIntrustionSetGroups:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_intrusion_sets_delete(self, intrusion_sets_id=None, name='intrusion_sets-name-bdsfd'):
+        if should_delete:
+            self.intrusion_sets_delete(intrusion_sets_id)
+
+    def intrusion_sets_delete(self, intrusion_sets_id=None, name='intrusion_sets-name-bdsfd'):
         """Test intrusion_sets delete."""
         # create indicator
         if not intrusion_sets_id:
-            intrusion_sets_id = self.test_intrusion_sets_create(name)
+            intrusion_sets_id = self.intrusion_sets_create(name)
 
         # delete indicator
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
@@ -175,7 +189,7 @@ class TestIntrustionSetGroups:
     def test_intrusion_sets_update(self, name='intrusion_sets-name-b3da3'):
         """Test intrusion_sets update."""
         # create indicator
-        intrusion_sets_id = self.test_intrusion_sets_create(name)
+        intrusion_sets_id = self.intrusion_sets_create(name)
 
         name = 'intrusion_sets-new-name-fdasb3'
 
@@ -188,4 +202,4 @@ class TestIntrustionSetGroups:
         assert ti_data.get('data').get('intrusionSet').get('name') == name
 
         # delete indicator
-        self.test_intrusion_sets_delete(intrusion_sets_id)
+        self.intrusion_sets_delete(intrusion_sets_id)

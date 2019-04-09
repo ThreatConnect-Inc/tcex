@@ -16,7 +16,7 @@ class TestVictim:
         """Test victim get."""
         # create
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         # get
         ti = self.ti.victim(name, unique_id=victim_id)
@@ -27,13 +27,13 @@ class TestVictim:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_victim_delete(victim_id)
+        self.victim_delete(victim_id)
 
     def test_victim_get_attributes(self, victim_id=None, name='victim-name-12453'):
         """Test victim get."""
         # create
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         self.test_victim_add_attribute(
             victim_id=victim_id, attribute_type='Description', attribute_value='test1'
@@ -54,13 +54,13 @@ class TestVictim:
             assert False
 
         # delete
-        self.test_victim_delete(victim_id)
+        self.victim_delete(victim_id)
 
     def test_victim_get_tags(self, victim_id=None, name='victim-name-64235'):
         """Test victim get."""
         # create
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         self.test_victim_add_tag(victim_id=victim_id, tag='One')
         self.test_victim_add_tag(victim_id=victim_id, tag='Two')
@@ -74,12 +74,12 @@ class TestVictim:
             assert False
 
         # delete
-        self.test_victim_delete(victim_id)
+        self.victim_delete(victim_id)
 
     def test_victim_get_include(self, victim_id=None, name='victim-name-78159'):
         """Test victim get."""
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         self.test_victim_add_attribute(
             victim_id=victim_id, attribute_type='Description', attribute_value='test123'
@@ -99,9 +99,9 @@ class TestVictim:
         assert ti_data.get('data').get('victim').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_victim_delete(victim_id)
+        self.victim_delete(victim_id)
 
-    def test_victim_create(self, name='victim-name-65341'):
+    def victim_create(self, name='victim-name-65341'):
         """Test victim create."""
         ti = self.ti.victim(name)
         r = ti.create(owner='TCI')
@@ -119,9 +119,10 @@ class TestVictim:
         attribute_value='Example Description.',
     ):
         """Test victim attribute add."""
-
+        should_delete = False
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            should_delete = True
+            victim_id = self.victim_create(name)
 
         ti = self.ti.victim(name, unique_id=victim_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -130,10 +131,15 @@ class TestVictim:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.victim_delete(victim_id)
+
     def test_victim_add_label(self, victim_id=None, name='victim-name-ds4vb', label='TLP:GREEN'):
         """Test victim attribute add."""
+        should_delete = False
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            should_delete = True
+            victim_id = self.victim_create(name)
 
         ti = self.ti.victim(name, unique_id=victim_id)
         r = ti.add_label(label=label)
@@ -141,10 +147,15 @@ class TestVictim:
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
+        if should_delete:
+            self.victim_delete(victim_id)
+
     def test_victim_add_tag(self, victim_id=None, name='victim-name-fdsv23', tag='Crimeware'):
         """Test victim attribute add."""
+        should_delete = False
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            should_delete = True
+            victim_id = self.victim_create(name)
 
         ti = self.ti.victim(name, unique_id=victim_id)
         r = ti.add_tag(tag)
@@ -152,11 +163,14 @@ class TestVictim:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_victim_delete(self, victim_id=None, name='victim-name-bdsfd'):
+        if should_delete:
+            self.victim_delete(victim_id)
+
+    def victim_delete(self, victim_id=None, name='victim-name-bdsfd'):
         """Test victim delete."""
         # create indicator
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         # delete indicator
         ti = self.ti.victim(name, unique_id=victim_id)
@@ -169,7 +183,7 @@ class TestVictim:
         """Test victim update."""
         # create indicator
         if not victim_id:
-            victim_id = self.test_victim_create(name)
+            victim_id = self.victim_create(name)
 
         name = 'victim-new-name-fdasb3'
 
@@ -182,4 +196,4 @@ class TestVictim:
         assert ti_data.get('data').get('victim').get('name') == name
 
         # delete indicator
-        self.test_victim_delete(victim_id)
+        self.victim_delete(victim_id)

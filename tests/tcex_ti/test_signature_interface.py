@@ -23,7 +23,7 @@ class TestAdversaryGroups:
         """Test signature get."""
         # create
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         # get
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
@@ -34,7 +34,7 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_signature_delete(signature_id)
+        self.signature_delete(signature_id)
 
     def test_signature_get_attributes(
         self,
@@ -47,7 +47,7 @@ class TestAdversaryGroups:
         """Test signature get."""
         # create
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         self.test_signature_add_attribute(
             signature_id=signature_id, attribute_type='Description', attribute_value='test1'
@@ -68,7 +68,7 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_signature_delete(signature_id)
+        self.signature_delete(signature_id)
 
     def test_signature_get_tags(
         self,
@@ -81,7 +81,7 @@ class TestAdversaryGroups:
         """Test signature get."""
         # create
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         self.test_signature_add_tag(signature_id=signature_id, tag='One')
         self.test_signature_add_tag(signature_id=signature_id, tag='Two')
@@ -95,7 +95,7 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_signature_delete(signature_id)
+        self.signature_delete(signature_id)
 
     def test_signature_get_include(
         self,
@@ -107,7 +107,7 @@ class TestAdversaryGroups:
     ):
         """Test signature get."""
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         self.test_signature_add_attribute(
             signature_id=signature_id, attribute_type='Description', attribute_value='test123'
@@ -127,9 +127,9 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get('signature').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_signature_delete(signature_id)
+        self.signature_delete(signature_id)
 
-    def test_signature_create(
+    def signature_create(
         self,
         name='signature-name-65341',
         file_name='signature-file-name-fdasr',
@@ -159,8 +159,10 @@ class TestAdversaryGroups:
     ):
         """Test signature attribute add."""
 
+        should_delete = False
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            should_delete = True
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -168,6 +170,8 @@ class TestAdversaryGroups:
         assert r.status_code == 201
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
+        if should_delete:
+            self.signature_delete(signature_id)
 
     def test_signature_add_label(
         self,
@@ -179,14 +183,18 @@ class TestAdversaryGroups:
         label='TLP:GREEN',
     ):
         """Test signature attribute add."""
+        should_delete = False
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            should_delete = True
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
+        if should_delete:
+            self.signature_delete(signature_id)
 
     def test_signature_add_tag(
         self,
@@ -198,16 +206,20 @@ class TestAdversaryGroups:
         tag='Crimeware',
     ):
         """Test signature attribute add."""
+        should_delete = False
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            should_delete = True
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
+        if should_delete:
+            self.signature_delete(signature_id)
 
-    def test_signature_delete(
+    def signature_delete(
         self,
         signature_id=None,
         name='signature-name-bdsfd',
@@ -218,7 +230,7 @@ class TestAdversaryGroups:
         """Test signature delete."""
         # create indicator
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         # delete indicator
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
@@ -238,7 +250,7 @@ class TestAdversaryGroups:
         """Test signature update."""
         # create indicator
         if not signature_id:
-            signature_id = self.test_signature_create(name, file_name, file_type, file_content)
+            signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         name = 'signature-new-name-fdasb3'
 
@@ -257,4 +269,4 @@ class TestAdversaryGroups:
         assert r.status_code == 200
 
         # delete indicator
-        self.test_signature_delete(signature_id)
+        self.signature_delete(signature_id)

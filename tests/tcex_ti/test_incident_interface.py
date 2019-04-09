@@ -15,7 +15,7 @@ class TestAdversaryGroups:
     def test_incident_get(self, name='incident-name-42353'):
         """Test incident get."""
         # create
-        incident_id = self.test_incident_create(name)
+        incident_id = self.incident_create(name)
 
         # get
         ti = self.ti.incident(name, unique_id=incident_id)
@@ -26,12 +26,12 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_incident_delete(incident_id)
+        self.incident_delete(incident_id)
 
     def test_incident_get_attributes(self, name='incident-name-12453'):
         """Test incident get."""
         # create
-        incident_id = self.test_incident_create(name)
+        incident_id = self.incident_create(name)
         self.test_incident_add_attribute(
             incident_id=incident_id, attribute_type='Description', attribute_value='test1'
         )
@@ -51,12 +51,12 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_incident_delete(incident_id)
+        self.incident_delete(incident_id)
 
     def test_incident_get_tags(self, name='incident-name-64235'):
         """Test incident get."""
         # create
-        incident_id = self.test_incident_create(name)
+        incident_id = self.incident_create(name)
         self.test_incident_add_tag(incident_id=incident_id, tag='One')
         self.test_incident_add_tag(incident_id=incident_id, tag='Two')
 
@@ -69,11 +69,11 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_incident_delete(incident_id)
+        self.incident_delete(incident_id)
 
     def test_incident_get_include(self, name='incident-name-78159'):
         """Test incident get."""
-        incident_id = self.test_incident_create(name)
+        incident_id = self.incident_create(name)
         self.test_incident_add_attribute(
             incident_id=incident_id, attribute_type='Description', attribute_value='test123'
         )
@@ -92,9 +92,9 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get('incident').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_incident_delete(incident_id)
+        self.incident_delete(incident_id)
 
-    def test_incident_create(self, name='incident-name-65341'):
+    def incident_create(self, name='incident-name-65341'):
         """Test incident create."""
         ti = self.ti.incident(name)
         r = ti.create(owner='TCI')
@@ -112,9 +112,10 @@ class TestAdversaryGroups:
         attribute_value='Example Description.',
     ):
         """Test incident attribute add."""
-
+        should_delete = False
         if not incident_id:
-            incident_id = self.test_incident_create(name)
+            should_delete = True
+            incident_id = self.incident_create(name)
 
         ti = self.ti.incident(name, unique_id=incident_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -123,12 +124,17 @@ class TestAdversaryGroups:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.incident_delete(incident_id)
+
     def test_incident_add_label(
         self, incident_id=None, name='incident-name-ds4vb', label='TLP:GREEN'
     ):
         """Test incident attribute add."""
+        should_delete = False
         if not incident_id:
-            incident_id = self.test_incident_create(name)
+            should_delete = True
+            incident_id = self.incident_create(name)
 
         ti = self.ti.incident(name, unique_id=incident_id)
         r = ti.add_label(label=label)
@@ -136,10 +142,15 @@ class TestAdversaryGroups:
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
+        if should_delete:
+            self.incident_delete(incident_id)
+
     def test_incident_add_tag(self, incident_id=None, name='incident-name-fdsv23', tag='Crimeware'):
         """Test incident attribute add."""
+        should_delete = False
         if not incident_id:
-            incident_id = self.test_incident_create(name)
+            should_delete = True
+            incident_id = self.incident_create(name)
 
         ti = self.ti.incident(name, unique_id=incident_id)
         r = ti.add_tag(tag)
@@ -147,11 +158,14 @@ class TestAdversaryGroups:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_incident_delete(self, incident_id=None, name='incident-name-bdsfd'):
+        if should_delete:
+            self.incident_delete(incident_id)
+
+    def incident_delete(self, incident_id=None, name='incident-name-bdsfd'):
         """Test incident delete."""
         # create indicator
         if not incident_id:
-            incident_id = self.test_incident_create(name)
+            incident_id = self.incident_create(name)
 
         # delete indicator
         ti = self.ti.incident(name, unique_id=incident_id)
@@ -163,7 +177,7 @@ class TestAdversaryGroups:
     def test_incident_update(self, name='incident-name-b3da3'):
         """Test incident update."""
         # create indicator
-        incident_id = self.test_incident_create(name)
+        incident_id = self.incident_create(name)
 
         name = 'incident-new-name-fdasb3'
 
@@ -180,4 +194,4 @@ class TestAdversaryGroups:
         assert r.status_code == 200
 
         # delete indicator
-        self.test_incident_delete(incident_id)
+        self.incident_delete(incident_id)

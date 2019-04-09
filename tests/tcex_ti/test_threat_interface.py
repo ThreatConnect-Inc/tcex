@@ -16,7 +16,7 @@ class TestThreatGroups:
         """Test threat get."""
         # create
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         # get
         ti = self.ti.threat(name, unique_id=threat_id)
@@ -27,13 +27,13 @@ class TestThreatGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_threat_delete(threat_id)
+        self.threat_delete(threat_id)
 
     def test_threat_get_attributes(self, threat_id=None, name='threat-name-12453'):
         """Test threat get."""
         # create
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         self.test_threat_add_attribute(
             threat_id=threat_id, attribute_type='Description', attribute_value='test1'
@@ -54,13 +54,13 @@ class TestThreatGroups:
             assert False
 
         # delete
-        self.test_threat_delete(threat_id)
+        self.threat_delete(threat_id)
 
     def test_threat_get_tags(self, threat_id=None, name='threat-name-64235'):
         """Test threat get."""
         # create
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         self.test_threat_add_tag(threat_id=threat_id, tag='One')
         self.test_threat_add_tag(threat_id=threat_id, tag='Two')
@@ -74,12 +74,12 @@ class TestThreatGroups:
             assert False
 
         # delete
-        self.test_threat_delete(threat_id)
+        self.threat_delete(threat_id)
 
     def test_threat_get_include(self, threat_id=None, name='threat-name-78159'):
         """Test threat get."""
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         self.test_threat_add_attribute(
             threat_id=threat_id, attribute_type='Description', attribute_value='test123'
@@ -99,9 +99,9 @@ class TestThreatGroups:
         assert ti_data.get('data').get('threat').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_threat_delete(threat_id)
+        self.threat_delete(threat_id)
 
-    def test_threat_create(self, name='threat-name-65341'):
+    def threat_create(self, name='threat-name-65341'):
         """Test threat create."""
         ti = self.ti.threat(name)
         r = ti.create(owner='TCI')
@@ -120,8 +120,10 @@ class TestThreatGroups:
     ):
         """Test threat attribute add."""
 
+        should_delete = False
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            should_delete = True
+            threat_id = self.threat_create(name)
 
         ti = self.ti.threat(name, unique_id=threat_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -130,33 +132,44 @@ class TestThreatGroups:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.threat_delete(threat_id)
+
     def test_threat_add_label(self, threat_id=None, name='threat-name-ds4vb', label='TLP:GREEN'):
         """Test threat attribute add."""
+        should_delete = False
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            should_delete = True
+            threat_id = self.threat_create(name)
 
         ti = self.ti.threat(name, unique_id=threat_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
+        if should_delete:
+            self.threat_delete(threat_id)
 
     def test_threat_add_tag(self, threat_id=None, name='threat-name-fdsv23', tag='Crimeware'):
         """Test threat attribute add."""
+        should_delete = False
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            should_delete = True
+            threat_id = self.threat_create(name)
 
         ti = self.ti.threat(name, unique_id=threat_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
+        if should_delete:
+            self.threat_delete(threat_id)
 
-    def test_threat_delete(self, threat_id=None, name='threat-name-bdsfd'):
+    def threat_delete(self, threat_id=None, name='threat-name-bdsfd'):
         """Test threat delete."""
         # create indicator
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         # delete indicator
         ti = self.ti.threat(name, unique_id=threat_id)
@@ -169,7 +182,7 @@ class TestThreatGroups:
         """Test threat update."""
         # create indicator
         if not threat_id:
-            threat_id = self.test_threat_create(name)
+            threat_id = self.threat_create(name)
 
         name = 'threat-new-name-fdasb3'
 
@@ -182,4 +195,4 @@ class TestThreatGroups:
         assert ti_data.get('data').get('threat').get('name') == name
 
         # delete indicator
-        self.test_threat_delete(threat_id)
+        self.threat_delete(threat_id)

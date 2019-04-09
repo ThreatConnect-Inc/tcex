@@ -15,7 +15,7 @@ class TestCampaignGroups:
     def test_campaign_get(self, name='campaign-name-42353'):
         """Test campaign get."""
         # create
-        campaign_id = self.test_campaign_create(name)
+        campaign_id = self.campaign_create(name)
 
         # get
         ti = self.ti.campaign(name, unique_id=campaign_id)
@@ -26,12 +26,12 @@ class TestCampaignGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_campaign_delete(campaign_id)
+        self.campaign_delete(campaign_id)
 
     def test_campaign_get_attributes(self, name='campaign-name-12453'):
         """Test campaign get."""
         # create
-        campaign_id = self.test_campaign_create(name)
+        campaign_id = self.campaign_create(name)
         self.test_campaign_add_attribute(
             campaign_id=campaign_id, attribute_type='Description', attribute_value='test1'
         )
@@ -51,12 +51,12 @@ class TestCampaignGroups:
             assert False
 
         # delete
-        self.test_campaign_delete(campaign_id)
+        self.campaign_delete(campaign_id)
 
     def test_campaign_get_tags(self, name='campaign-name-64235'):
         """Test campaign get."""
         # create
-        campaign_id = self.test_campaign_create(name)
+        campaign_id = self.campaign_create(name)
         self.test_campaign_add_tag(campaign_id=campaign_id, tag='One')
         self.test_campaign_add_tag(campaign_id=campaign_id, tag='Two')
 
@@ -69,11 +69,11 @@ class TestCampaignGroups:
             assert False
 
         # delete
-        self.test_campaign_delete(campaign_id)
+        self.campaign_delete(campaign_id)
 
     def test_campaign_get_include(self, name='campaign-name-78159'):
         """Test campaign get."""
-        campaign_id = self.test_campaign_create(name)
+        campaign_id = self.campaign_create(name)
         self.test_campaign_add_attribute(
             campaign_id=campaign_id, attribute_type='Description', attribute_value='test123'
         )
@@ -92,9 +92,9 @@ class TestCampaignGroups:
         assert ti_data.get('data').get('campaign').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_campaign_delete(campaign_id)
+        self.campaign_delete(campaign_id)
 
-    def test_campaign_create(self, name='campaign-name-65341'):
+    def campaign_create(self, name='campaign-name-65341'):
         """Test campaign create."""
         ti = self.ti.campaign(name)
         r = ti.create(owner='TCI')
@@ -112,9 +112,10 @@ class TestCampaignGroups:
         attribute_value='Example Description.',
     ):
         """Test campaign attribute add."""
-
+        should_delete = False
         if not campaign_id:
-            campaign_id = self.test_campaign_create(name)
+            should_delete = True
+            campaign_id = self.campaign_create(name)
 
         ti = self.ti.campaign(name, unique_id=campaign_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -123,12 +124,17 @@ class TestCampaignGroups:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.campaign_delete(campaign_id)
+
     def test_campaign_add_label(
         self, campaign_id=None, name='campaign-name-ds4vb', label='TLP:GREEN'
     ):
         """Test campaign attribute add."""
+        should_delete = False
         if not campaign_id:
-            campaign_id = self.test_campaign_create(name)
+            should_delete = True
+            campaign_id = self.campaign_create(name)
 
         ti = self.ti.campaign(name, unique_id=campaign_id)
         r = ti.add_label(label=label)
@@ -136,10 +142,15 @@ class TestCampaignGroups:
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
+        if should_delete:
+            self.campaign_delete(campaign_id)
+
     def test_campaign_add_tag(self, campaign_id=None, name='campaign-name-fdsv23', tag='Crimeware'):
         """Test campaign attribute add."""
+        should_delete = False
         if not campaign_id:
-            campaign_id = self.test_campaign_create(name)
+            should_delete = True
+            campaign_id = self.campaign_create(name)
 
         ti = self.ti.campaign(name, unique_id=campaign_id)
         r = ti.add_tag(tag)
@@ -147,11 +158,14 @@ class TestCampaignGroups:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_campaign_delete(self, campaign_id=None, name='campaign-name-bdsfd'):
+        if should_delete:
+            self.campaign_delete(campaign_id)
+
+    def campaign_delete(self, campaign_id=None, name='campaign-name-bdsfd'):
         """Test campaign delete."""
         # create indicator
         if not campaign_id:
-            campaign_id = self.test_campaign_create(name)
+            campaign_id = self.campaign_create(name)
 
         # delete indicator
         ti = self.ti.campaign(name, unique_id=campaign_id)
@@ -163,7 +177,7 @@ class TestCampaignGroups:
     def test_campaign_update(self, name='campaign-name-b3da3'):
         """Test campaign update."""
         # create indicator
-        campaign_id = self.test_campaign_create(name)
+        campaign_id = self.campaign_create(name)
 
         name = 'campaign-new-name-fdasb3'
 
@@ -176,4 +190,4 @@ class TestCampaignGroups:
         assert ti_data.get('data').get('campaign').get('name') == name
 
         # delete indicator
-        self.test_campaign_delete(campaign_id)
+        self.campaign_delete(campaign_id)

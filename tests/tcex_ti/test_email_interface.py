@@ -23,7 +23,7 @@ class TestEmailGroups:
     ):
         """Test email get."""
         # create
-        email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+        email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         # get
         ti = self.ti.email(
@@ -36,7 +36,7 @@ class TestEmailGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_email_delete(email_id)
+        self.email_delete(email_id)
 
     def test_email_get_attributes(
         self,
@@ -51,7 +51,7 @@ class TestEmailGroups:
         """Test email get."""
         # create
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
         self.test_email_add_attribute(
             email_id=email_id, attribute_type='Description', attribute_value='test1'
         )
@@ -71,7 +71,7 @@ class TestEmailGroups:
             assert False
 
         # delete
-        self.test_email_delete(email_id)
+        self.email_delete(email_id)
 
     def test_email_get_tags(
         self,
@@ -86,7 +86,7 @@ class TestEmailGroups:
         """Test email get."""
         # create
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
         self.test_email_add_tag(email_id=email_id, tag='One')
         self.test_email_add_tag(email_id=email_id, tag='Two')
 
@@ -99,7 +99,7 @@ class TestEmailGroups:
             assert False
 
         # delete
-        self.test_email_delete(email_id)
+        self.email_delete(email_id)
 
     def test_email_get_include(
         self,
@@ -111,7 +111,7 @@ class TestEmailGroups:
         header='email-header-fdy453',
     ):
         """Test email get."""
-        email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+        email_id = self.email_create(name, to, from_addr, subject, body, header)
         self.test_email_add_attribute(
             email_id=email_id, attribute_type='Description', attribute_value='test123'
         )
@@ -130,9 +130,9 @@ class TestEmailGroups:
         assert ti_data.get('data').get('email').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_email_delete(email_id)
+        self.email_delete(email_id)
 
-    def test_email_create(
+    def email_create(
         self,
         name='email-name-65341',
         to='email-to-t42gad@gmail.com',
@@ -163,8 +163,10 @@ class TestEmailGroups:
         attribute_value='Example Description.',
     ):
         """Test email attribute add."""
+        should_delete = False
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            should_delete = True
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         ti = self.ti.email(None, None, None, None, None, None, unique_id=email_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -172,6 +174,9 @@ class TestEmailGroups:
         assert r.status_code == 201
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
+
+        if should_delete:
+            self.email_delete(email_id)
 
     def test_email_add_label(
         self,
@@ -185,14 +190,19 @@ class TestEmailGroups:
         label='TLP:GREEN',
     ):
         """Test email attribute add."""
+        should_delete = False
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            should_delete = True
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
+
+        if should_delete:
+            self.email_delete(email_id)
 
     def test_email_add_tag(
         self,
@@ -206,8 +216,10 @@ class TestEmailGroups:
         tag='Crimeware',
     ):
         """Test email attribute add."""
+        should_delete = False
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            should_delete = True
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
         r = ti.add_tag(tag)
@@ -215,7 +227,10 @@ class TestEmailGroups:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_email_delete(
+        if should_delete:
+            self.email_delete(email_id)
+
+    def email_delete(
         self,
         email_id=None,
         name='email-name-bdsfd',
@@ -228,7 +243,7 @@ class TestEmailGroups:
         """Test email delete."""
         # create indicator
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         # delete indicator
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
@@ -250,7 +265,7 @@ class TestEmailGroups:
         """Test email update."""
         # create indicator
         if not email_id:
-            email_id = self.test_email_create(name, to, from_addr, subject, body, header)
+            email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         # update indicator
         name = 'email-name-cj98fdsa'
@@ -271,4 +286,4 @@ class TestEmailGroups:
         assert ti_data.get('data').get('email').get('header') == header
 
         # delete indicator
-        self.test_email_delete(email_id)
+        self.email_delete(email_id)

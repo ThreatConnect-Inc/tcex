@@ -15,7 +15,7 @@ class TestAdversaryGroups:
     def test_adversary_get(self, name='adversary-name-42353'):
         """Test adversary get."""
         # create
-        adversary_id = self.test_adversary_create(name)
+        adversary_id = self.adversary_create(name)
 
         # get
         ti = self.ti.adversary(name, unique_id=adversary_id)
@@ -26,12 +26,12 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_adversary_delete(adversary_id)
+        self.adversary_delete(adversary_id)
 
     def test_adversary_get_attributes(self, name='adversary-name-12453'):
         """Test adversary get."""
         # create
-        adversary_id = self.test_adversary_create(name)
+        adversary_id = self.adversary_create(name)
         self.test_adversary_add_attribute(
             adversary_id=adversary_id, attribute_type='Description', attribute_value='test1'
         )
@@ -51,12 +51,12 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_adversary_delete(adversary_id)
+        self.adversary_delete(adversary_id)
 
     def test_adversary_get_tags(self, name='adversary-name-64235'):
         """Test adversary get."""
         # create
-        adversary_id = self.test_adversary_create(name)
+        adversary_id = self.adversary_create(name)
         self.test_adversary_add_tag(adversary_id=adversary_id, tag='One')
         self.test_adversary_add_tag(adversary_id=adversary_id, tag='Two')
 
@@ -69,11 +69,11 @@ class TestAdversaryGroups:
             assert False
 
         # delete
-        self.test_adversary_delete(adversary_id)
+        self.adversary_delete(adversary_id)
 
     def test_adversary_get_include(self, name='adversary-name-78159'):
         """Test adversary get."""
-        adversary_id = self.test_adversary_create(name)
+        adversary_id = self.adversary_create(name)
         self.test_adversary_add_attribute(
             adversary_id=adversary_id, attribute_type='Description', attribute_value='test123'
         )
@@ -92,9 +92,9 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get('adversary').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_adversary_delete(adversary_id)
+        self.adversary_delete(adversary_id)
 
-    def test_adversary_create(self, name='adversary-name-65341'):
+    def adversary_create(self, name='adversary-name-65341'):
         """Test adversary create."""
         ti = self.ti.adversary(name)
         r = ti.create(owner='TCI')
@@ -113,8 +113,10 @@ class TestAdversaryGroups:
     ):
         """Test adversary attribute add."""
 
+        should_delete = False
         if not adversary_id:
-            adversary_id = self.test_adversary_create(name)
+            should_delete = True
+            adversary_id = self.adversary_create(name)
 
         ti = self.ti.adversary(name, unique_id=adversary_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -122,38 +124,48 @@ class TestAdversaryGroups:
         assert r.status_code == 201
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
+        if should_delete:
+            self.adversary_delete(adversary_id)
 
     def test_adversary_add_label(
         self, adversary_id=None, name='adversary-name-ds4vb', label='TLP:GREEN'
     ):
         """Test adversary attribute add."""
+        should_delete = False
         if not adversary_id:
-            adversary_id = self.test_adversary_create(name)
+            should_delete = True
+            adversary_id = self.adversary_create(name)
 
         ti = self.ti.adversary(name, unique_id=adversary_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
+        if should_delete:
+            self.adversary_delete(adversary_id)
 
     def test_adversary_add_tag(
         self, adversary_id=None, name='adversary-name-fdsv23', tag='Crimeware'
     ):
         """Test adversary attribute add."""
+        should_delete = False
         if not adversary_id:
-            adversary_id = self.test_adversary_create(name)
+            should_delete = True
+            adversary_id = self.adversary_create(name)
 
         ti = self.ti.adversary(name, unique_id=adversary_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
+        if should_delete:
+            self.adversary_delete(adversary_id)
 
-    def test_adversary_delete(self, adversary_id=None, name='adversary-name-bdsfd'):
+    def adversary_delete(self, adversary_id=None, name='adversary-name-bdsfd'):
         """Test adversary delete."""
         # create indicator
         if not adversary_id:
-            adversary_id = self.test_adversary_create(name)
+            adversary_id = self.adversary_create(name)
 
         # delete indicator
         ti = self.ti.adversary(name, unique_id=adversary_id)
@@ -165,7 +177,7 @@ class TestAdversaryGroups:
     def test_adversary_update(self, name='adversary-name-b3da3'):
         """Test adversary update."""
         # create indicator
-        adversary_id = self.test_adversary_create(name)
+        adversary_id = self.adversary_create(name)
 
         name = 'adversary-new-name-fdasb3'
 
@@ -178,4 +190,4 @@ class TestAdversaryGroups:
         assert ti_data.get('data').get('adversary').get('name') == name
 
         # delete indicator
-        self.test_adversary_delete(adversary_id)
+        self.adversary_delete(adversary_id)

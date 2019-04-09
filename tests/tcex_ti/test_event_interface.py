@@ -15,7 +15,7 @@ class TestEventGroups:
     def test_event_get(self, name='event-name-42353'):
         """Test event get."""
         # create
-        event_id = self.test_event_create(name)
+        event_id = self.event_create(name)
 
         # get
         ti = self.ti.event(name, unique_id=event_id)
@@ -26,12 +26,12 @@ class TestEventGroups:
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.test_event_delete(event_id)
+        self.event_delete(event_id)
 
     def test_event_get_attributes(self, name='event-name-12453'):
         """Test event get."""
         # create
-        event_id = self.test_event_create(name)
+        event_id = self.event_create(name)
         self.test_event_add_attribute(
             event_id=event_id, attribute_type='Description', attribute_value='test1'
         )
@@ -51,12 +51,12 @@ class TestEventGroups:
             assert False
 
         # delete
-        self.test_event_delete(event_id)
+        self.event_delete(event_id)
 
     def test_event_get_tags(self, name='event-name-64235'):
         """Test event get."""
         # create
-        event_id = self.test_event_create(name)
+        event_id = self.event_create(name)
         self.test_event_add_tag(event_id=event_id, tag='One')
         self.test_event_add_tag(event_id=event_id, tag='Two')
 
@@ -69,11 +69,11 @@ class TestEventGroups:
             assert False
 
         # delete
-        self.test_event_delete(event_id)
+        self.event_delete(event_id)
 
     def test_event_get_include(self, name='event-name-78159'):
         """Test event get."""
-        event_id = self.test_event_create(name)
+        event_id = self.event_create(name)
         self.test_event_add_attribute(
             event_id=event_id, attribute_type='Description', attribute_value='test123'
         )
@@ -92,9 +92,9 @@ class TestEventGroups:
         assert ti_data.get('data').get('event').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.test_event_delete(event_id)
+        self.event_delete(event_id)
 
-    def test_event_create(self, name='event-name-65341'):
+    def event_create(self, name='event-name-65341'):
         """Test event create."""
         ti = self.ti.event(name)
         r = ti.create(owner='TCI')
@@ -112,9 +112,10 @@ class TestEventGroups:
         attribute_value='Example Description.',
     ):
         """Test event attribute add."""
-
+        should_delete = False
         if not event_id:
-            event_id = self.test_event_create(name)
+            should_delete = True
+            event_id = self.event_create(name)
 
         ti = self.ti.event(name, unique_id=event_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
@@ -123,10 +124,15 @@ class TestEventGroups:
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
+        if should_delete:
+            self.event_delete(event_id)
+
     def test_event_add_label(self, event_id=None, name='event-name-ds4vb', label='TLP:GREEN'):
         """Test event attribute add."""
+        should_delete = False
         if not event_id:
-            event_id = self.test_event_create(name)
+            should_delete = True
+            event_id = self.event_create(name)
 
         ti = self.ti.event(name, unique_id=event_id)
         r = ti.add_label(label=label)
@@ -134,10 +140,15 @@ class TestEventGroups:
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
+        if should_delete:
+            self.event_delete(event_id)
+
     def test_event_add_tag(self, event_id=None, name='event-name-fdsv23', tag='Crimeware'):
         """Test event attribute add."""
+        should_delete = False
         if not event_id:
-            event_id = self.test_event_create(name)
+            should_delete = True
+            event_id = self.event_create(name)
 
         ti = self.ti.event(name, unique_id=event_id)
         r = ti.add_tag(tag)
@@ -145,11 +156,14 @@ class TestEventGroups:
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
-    def test_event_delete(self, event_id=None, name='event-name-bdsfd'):
+        if should_delete:
+            self.event_delete(event_id)
+
+    def event_delete(self, event_id=None, name='event-name-bdsfd'):
         """Test event delete."""
         # create indicator
         if not event_id:
-            event_id = self.test_event_create(name)
+            event_id = self.event_create(name)
 
         # delete indicator
         ti = self.ti.event(name, unique_id=event_id)
@@ -161,7 +175,7 @@ class TestEventGroups:
     def test_event_update(self, name='event-name-b3da3'):
         """Test event update."""
         # create indicator
-        event_id = self.test_event_create(name)
+        event_id = self.event_create(name)
 
         name = 'event-new-name-fdasb3'
 
@@ -175,4 +189,4 @@ class TestEventGroups:
         assert ti_data.get('data').get('event').get('status') == 'No Further Action'
 
         # delete indicator
-        self.test_event_delete(event_id)
+        self.event_delete(event_id)
