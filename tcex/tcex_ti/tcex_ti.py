@@ -337,7 +337,7 @@ class TcExTi(object):
         """
         return Report(self.tcex, name, **kwargs)
 
-    def signature(self, name, **kwargs):
+    def signature(self, name, file_name, file_type, file_content, **kwargs):
         """
         Create the Signature TI object.
 
@@ -348,7 +348,7 @@ class TcExTi(object):
         Return:
 
         """
-        return Signature(self.tcex, name, **kwargs)
+        return Signature(self.tcex, name, file_name, file_type, file_content, **kwargs)
 
     def threat(self, name, **kwargs):
         """
