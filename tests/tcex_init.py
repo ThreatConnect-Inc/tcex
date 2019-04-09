@@ -2,7 +2,7 @@
 """TcEx Testing Initialization."""
 import os
 
-import tcex
+from tcex import TcEx
 
 # a token in required for DataStore testing
 if not os.getenv('TC_TOKEN'):
@@ -27,5 +27,5 @@ if os.getenv('TC_PROXY_USERNAME'):
 if os.getenv('TC_PROXY_PASSWORD'):
     config_data['tc_proxy_password'] = os.getenv('TC_PROXY_PASSWORD')
 
-tcex = tcex.TcEx()
+tcex = TcEx()
 tcex.tcex_args.config(config_data)
