@@ -41,7 +41,10 @@ class Victim(TIMappings):
             key:
             value:
         """
-        self._data[key] = value
+        if key == 'unique_id':
+            self._unique_id = str(value)
+        else:
+            self._data[key] = value
 
     def _set_unique_id(self, json_response):
         """
