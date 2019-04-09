@@ -7,7 +7,7 @@ from ..tcex_init import tcex
 
 
 # pylint: disable=R0201,W0201
-class TestBatch:
+class TestGroup2:
     """Test the TcEx Batch Module."""
 
     def setup_class(self):
@@ -22,7 +22,7 @@ class TestBatch:
             ('pytest-adversary-i2-004', 'Example #4', 'PYTEST4', 'PyTest4'),
         ],
     )
-    def test_adversary_create(self, name, description, label, tag):
+    def test_adversary(self, name, description, label, tag):
         """Test adversary creation"""
         batch = tcex.batch(owner='TCI')
         xid = batch.generate_xid(['pytest', 'adversary', name])
