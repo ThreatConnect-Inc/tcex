@@ -18,8 +18,8 @@ class TestAdversaryGroups:
         adversary_id = self.adversary_create(name)
 
         # get
-        ti = self.ti.adversary(name, unique_id=adversary_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -43,7 +43,7 @@ class TestAdversaryGroups:
         )
 
         # get attributes
-        ti = self.ti.adversary(name, unique_id=adversary_id)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -61,7 +61,7 @@ class TestAdversaryGroups:
         self.test_adversary_add_tag(adversary_id=adversary_id, tag='Two')
 
         # get tags
-        ti = self.ti.adversary(name, unique_id=adversary_id)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -81,8 +81,8 @@ class TestAdversaryGroups:
         self.test_adversary_add_tag(adversary_id=adversary_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.adversary(name, unique_id=adversary_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -96,8 +96,8 @@ class TestAdversaryGroups:
 
     def adversary_create(self, name='adversary-name-65341'):
         """Test adversary create."""
-        ti = self.ti.adversary(name)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -118,7 +118,7 @@ class TestAdversaryGroups:
             should_delete = True
             adversary_id = self.adversary_create(name)
 
-        ti = self.ti.adversary(name, unique_id=adversary_id)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -136,7 +136,7 @@ class TestAdversaryGroups:
             should_delete = True
             adversary_id = self.adversary_create(name)
 
-        ti = self.ti.adversary(name, unique_id=adversary_id)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -153,7 +153,7 @@ class TestAdversaryGroups:
             should_delete = True
             adversary_id = self.adversary_create(name)
 
-        ti = self.ti.adversary(name, unique_id=adversary_id)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -168,8 +168,8 @@ class TestAdversaryGroups:
             adversary_id = self.adversary_create(name)
 
         # delete indicator
-        ti = self.ti.adversary(name, unique_id=adversary_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -182,8 +182,8 @@ class TestAdversaryGroups:
         name = 'adversary-new-name-fdasb3'
 
         # update indicator
-        ti = self.ti.adversary(name, unique_id=adversary_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.adversary(name, owner=tcex.args.tc_owner, unique_id=adversary_id)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

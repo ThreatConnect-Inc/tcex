@@ -18,8 +18,8 @@ class TestCampaignGroups:
         campaign_id = self.campaign_create(name)
 
         # get
-        ti = self.ti.campaign(name, unique_id=campaign_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -43,7 +43,7 @@ class TestCampaignGroups:
         )
 
         # get attributes
-        ti = self.ti.campaign(name, unique_id=campaign_id)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -61,7 +61,7 @@ class TestCampaignGroups:
         self.test_campaign_add_tag(campaign_id=campaign_id, tag='Two')
 
         # get tags
-        ti = self.ti.campaign(name, unique_id=campaign_id)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -81,8 +81,8 @@ class TestCampaignGroups:
         self.test_campaign_add_tag(campaign_id=campaign_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.campaign(name, unique_id=campaign_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -96,8 +96,8 @@ class TestCampaignGroups:
 
     def campaign_create(self, name='campaign-name-65341'):
         """Test campaign create."""
-        ti = self.ti.campaign(name)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -117,7 +117,7 @@ class TestCampaignGroups:
             should_delete = True
             campaign_id = self.campaign_create(name)
 
-        ti = self.ti.campaign(name, unique_id=campaign_id)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -136,7 +136,7 @@ class TestCampaignGroups:
             should_delete = True
             campaign_id = self.campaign_create(name)
 
-        ti = self.ti.campaign(name, unique_id=campaign_id)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -152,7 +152,7 @@ class TestCampaignGroups:
             should_delete = True
             campaign_id = self.campaign_create(name)
 
-        ti = self.ti.campaign(name, unique_id=campaign_id)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -168,8 +168,8 @@ class TestCampaignGroups:
             campaign_id = self.campaign_create(name)
 
         # delete indicator
-        ti = self.ti.campaign(name, unique_id=campaign_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -182,8 +182,8 @@ class TestCampaignGroups:
         name = 'campaign-new-name-fdasb3'
 
         # update indicator
-        ti = self.ti.campaign(name, unique_id=campaign_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.campaign(name, owner=tcex.args.tc_owner, unique_id=campaign_id)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

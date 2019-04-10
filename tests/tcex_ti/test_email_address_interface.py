@@ -18,8 +18,8 @@ class TestEmailAddressIndicators:
         self.email_address_create(address)
 
         # get
-        ti = self.ti.email_address(address)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -37,7 +37,7 @@ class TestEmailAddressIndicators:
         self.test_email_address_add_attribute(False, address, 'Description', 'test3')
 
         # get attributes
-        ti = self.ti.email_address(address)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -55,7 +55,7 @@ class TestEmailAddressIndicators:
         self.test_email_address_add_tag(False, address, 'Two')
 
         # get tags
-        ti = self.ti.email_address(address)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -73,8 +73,8 @@ class TestEmailAddressIndicators:
         self.test_email_address_add_tag(False, address, 'PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.email_address(address)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -90,8 +90,8 @@ class TestEmailAddressIndicators:
 
     def email_address_create(self, address='email_address_65341@gmail.com'):
         """Test email_address create."""
-        ti = self.ti.email_address(address)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -108,7 +108,7 @@ class TestEmailAddressIndicators:
         if should_create:
             self.email_address_create(address)
 
-        ti = self.ti.email_address(address)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -124,7 +124,7 @@ class TestEmailAddressIndicators:
         if should_create:
             self.email_address_create(address)
 
-        ti = self.ti.email_address(address)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -139,7 +139,7 @@ class TestEmailAddressIndicators:
         if should_create:
             self.email_address_create(address)
 
-        ti = self.ti.email_address(address)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
         r = ti.add_tag(name=name)
         tag_data = r.json()
         assert r.status_code == 201
@@ -153,8 +153,8 @@ class TestEmailAddressIndicators:
         self.email_address_create(address)
 
         # delete indicator
-        ti = self.ti.email_address(address)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.email_address(address, owner=tcex.args.tc_owner)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -165,8 +165,8 @@ class TestEmailAddressIndicators:
         self.email_address_create(address)
 
         # update indicator
-        ti = self.ti.email_address(address, rating=5, confidence=10)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.email_address(address, rating=5, confidence=10, owner=tcex.args.tc_owner)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

@@ -17,8 +17,8 @@ class TestFileIndicators:
         hash_prefixes = ['A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'B4', 'B5', 'B6', 'B7']
         for hp in hash_prefixes:
             unique_id = hp * 16
-            ti = self.ti.file(unique_id=unique_id)
-            ti.delete(owner=tcex.args.tc_owner)
+            ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=unique_id)
+            ti.delete()
 
     def test_file_get(self, file_uuid=None, md5='A4', sha1='A4', sha256='A4'):
         """Test file get."""
@@ -27,8 +27,8 @@ class TestFileIndicators:
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
 
         # get
-        ti = self.ti.file(unique_id=file_uuid)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -50,7 +50,7 @@ class TestFileIndicators:
         self.test_file_add_attribute(file_uuid, 'Description', 'test3')
 
         # get attributes
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -70,7 +70,7 @@ class TestFileIndicators:
         self.test_file_add_tag(file_uuid, 'Two')
 
         # get tags
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -92,8 +92,8 @@ class TestFileIndicators:
         self.test_file_add_tag(file_uuid, name='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.file(unique_id=file_uuid)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -106,8 +106,8 @@ class TestFileIndicators:
 
     def file_create(self, md5, sha1, sha256):
         """Test file create."""
-        ti = self.ti.file(md5=md5, sha1=sha1, sha256=sha256)
-        r = ti.create(tcex.args.tc_owner)
+        ti = self.ti.file(owner=tcex.args.tc_owner, md5=md5, sha1=sha1, sha256=sha256)
+        r = ti.create()
         assert r.status_code == 201
         ti_data = r.json()
         assert ti_data.get('status') == 'Success'
@@ -137,7 +137,7 @@ class TestFileIndicators:
         if not file_uuid:
             should_delete = True
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -154,7 +154,7 @@ class TestFileIndicators:
         if not file_uuid:
             should_delete = True
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -168,7 +168,7 @@ class TestFileIndicators:
         if not file_uuid:
             should_delete = True
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         r = ti.add_tag(name=name)
         tag_data = r.json()
         assert r.status_code == 201
@@ -182,8 +182,8 @@ class TestFileIndicators:
         # create indicator
         if not file_uuid:
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(unique_id=file_uuid)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -193,7 +193,7 @@ class TestFileIndicators:
         # create indicator
         if not file_uuid:
             file_uuid = self.file_create(md5=md5 * 16, sha1=sha1 * 20, sha256=sha256 * 32)
-        ti = self.ti.file(unique_id=file_uuid)
+        ti = self.ti.file(owner=tcex.args.tc_owner, unique_id=file_uuid)
         r = ti.rating(5)
         ti_data = r.json()
         assert r.status_code == 200

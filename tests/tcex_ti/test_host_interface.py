@@ -18,8 +18,8 @@ class TestHostIndicators:
         self.host_create(hostname)
 
         # get
-        ti = self.ti.host(hostname)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -37,7 +37,7 @@ class TestHostIndicators:
         self.test_host_add_attribute(False, hostname, 'Description', 'test3')
 
         # get attributes
-        ti = self.ti.host(hostname)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -55,7 +55,7 @@ class TestHostIndicators:
         self.test_host_add_tag(False, hostname, 'Two')
 
         # get tags
-        ti = self.ti.host(hostname)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -73,8 +73,8 @@ class TestHostIndicators:
         self.test_host_add_tag(False, hostname, 'PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.host(hostname)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -88,8 +88,8 @@ class TestHostIndicators:
 
     def host_create(self, hostname='www.hostname-title-65341.com'):
         """Test host create."""
-        ti = self.ti.host(hostname)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -106,7 +106,7 @@ class TestHostIndicators:
         if should_create:
             self.host_create(hostname)
 
-        ti = self.ti.host(hostname)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -122,7 +122,7 @@ class TestHostIndicators:
         if should_create:
             self.host_create(hostname)
 
-        ti = self.ti.host(hostname)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -137,7 +137,7 @@ class TestHostIndicators:
         if should_create:
             self.host_create(hostname)
 
-        ti = self.ti.host(hostname)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
         r = ti.add_tag(name=name)
         tag_data = r.json()
         assert r.status_code == 201
@@ -151,8 +151,8 @@ class TestHostIndicators:
         self.host_create(hostname)
 
         # delete indicator
-        ti = self.ti.host(hostname)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -163,8 +163,8 @@ class TestHostIndicators:
         self.host_create(hostname)
 
         # update indicator
-        ti = self.ti.host(hostname, rating=5, confidence=10)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.host(hostname, owner=tcex.args.tc_owner, rating=5, confidence=10)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

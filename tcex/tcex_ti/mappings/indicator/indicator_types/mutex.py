@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class Mutex(Indicator):
     """Unique API calls for Mutex API Endpoints"""
 
-    def __init__(self, tcex, mutex, **kwargs):
+    def __init__(self, tcex, mutex, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,10 +18,10 @@ class Mutex(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(Mutex, self).__init__(tcex, 'mutexes', **kwargs)
+        super(Mutex, self).__init__(tcex, 'mutexes', owner, **kwargs)
         self.data['mutex'] = mutex
         self.api_entity = 'mutex'
-        self.unique_id = mutex or kwargs.get('mutex', None)
+        self.unique_id = self.unique_id or mutex
 
     def can_create(self):
         """

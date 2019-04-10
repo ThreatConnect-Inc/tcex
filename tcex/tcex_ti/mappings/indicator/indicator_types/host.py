@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
 
-    def __init__(self, tcex, hostname, **kwargs):
+    def __init__(self, tcex, hostname, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,10 +20,10 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super(Host, self).__init__(tcex, 'hosts', **kwargs)
+        super(Host, self).__init__(tcex, 'hosts', owner, **kwargs)
         self.api_entity = 'host'
         self._data['hostName'] = hostname
-        self.unique_id = hostname or kwargs.get('hostName', None)
+        self.unique_id = self.unique_id or hostname
 
     def can_create(self):
         """
@@ -56,4 +56,6 @@ class Host(Indicator):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.dns_resolution(
+            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+        )

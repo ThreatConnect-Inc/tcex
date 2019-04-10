@@ -27,9 +27,9 @@ class TestEmailGroups:
 
         # get
         ti = self.ti.email(
-            name, to, from_addr, subject, body, header, unique_id=email_id
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
         )  # pylint: disable=E1121
-        r = ti.single(owner=tcex.args.tc_owner)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -63,7 +63,9 @@ class TestEmailGroups:
         )
 
         # get attributes
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
         for attribute in ti.attributes():
             assert attribute
             break
@@ -91,7 +93,9 @@ class TestEmailGroups:
         self.test_email_add_tag(email_id=email_id, tag='Two')
 
         # get tags
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -119,8 +123,10 @@ class TestEmailGroups:
         self.test_email_add_tag(email_id=email_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -142,8 +148,8 @@ class TestEmailGroups:
         header='email-header-32fsa',
     ):
         """Test email create."""
-        ti = self.ti.email(name, to, from_addr, subject, body, header)
-        r = ti.create(tcex.args.tc_owner)
+        ti = self.ti.email(name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -168,7 +174,9 @@ class TestEmailGroups:
             should_delete = True
             email_id = self.email_create(name, to, from_addr, subject, body, header)
 
-        ti = self.ti.email(None, None, None, None, None, None, unique_id=email_id)
+        ti = self.ti.email(
+            None, None, None, None, None, None, owner=tcex.args.tc_owner, unique_id=email_id
+        )
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -195,7 +203,9 @@ class TestEmailGroups:
             should_delete = True
             email_id = self.email_create(name, to, from_addr, subject, body, header)
 
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -221,7 +231,9 @@ class TestEmailGroups:
             should_delete = True
             email_id = self.email_create(name, to, from_addr, subject, body, header)
 
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -246,8 +258,10 @@ class TestEmailGroups:
             email_id = self.email_create(name, to, from_addr, subject, body, header)
 
         # delete indicator
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -274,8 +288,10 @@ class TestEmailGroups:
         subject = 'email-subject-j980as'
         body = 'email-body-fdsat3'
         header = 'email-header-jk23gf'
-        ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.email(
+            name, to, from_addr, subject, body, header, owner=tcex.args.tc_owner, unique_id=email_id
+        )
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

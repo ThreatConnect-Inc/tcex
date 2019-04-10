@@ -48,79 +48,85 @@ class TcExTi(object):
         self._custom_indicator_classes = {}
         self._gen_indicator_class()
 
-    def address(self, ip, **kwargs):
+    def address(self, ip, owner=None, **kwargs):
         """
         Create the Address TI object.
 
         Args:
+            owner:
             ip:
             **kwargs:
 
         Return:
 
         """
-        return Address(self.tcex, ip, **kwargs)
+        return Address(self.tcex, ip, owner=owner, **kwargs)
 
-    def url(self, url, **kwargs):
+    def url(self, url, owner=None, **kwargs):
         """
         Create the URL TI object.
 
         Args:
+            owner:
             url:
             **kwargs:
 
         Return:
 
         """
-        return URL(self.tcex, url, **kwargs)
+        return URL(self.tcex, url, owner=owner, **kwargs)
 
-    def email_address(self, address, **kwargs):
+    def email_address(self, address, owner=None, **kwargs):
         """
         Create the Email Address TI object.
 
         Args:
+            owner:
             address:
             **kwargs:
 
         Return:
 
         """
-        return EmailAddress(self.tcex, address, **kwargs)
+        return EmailAddress(self.tcex, address, owner=owner, **kwargs)
 
-    def file(self, **kwargs):
+    def file(self, owner=None, **kwargs):
         """
         Create the File TI object.
 
         Args:
+            owner:
             **kwargs:
 
         Return:
 
         """
-        return File(self.tcex, **kwargs)
+        return File(self.tcex, owner=owner, **kwargs)
 
-    def host(self, hostname, **kwargs):
+    def host(self, hostname, owner=None, **kwargs):
         """
         Create the Host TI object.
 
         Args:
+            owner:
             hostname:
             **kwargs:
 
         Return:
 
         """
-        return Host(self.tcex, hostname, **kwargs)
+        return Host(self.tcex, hostname, owner=owner, **kwargs)
 
     def filters(self):
         """ Creates a Filters TI object """
         return Filters(self.tcex)
 
-    def indicator(self, indicator_type=None, **kwargs):
+    def indicator(self, indicator_type=None, owner=None, **kwargs):
         """
         Create the Indicator TI object.
 
         Args:
+            owner:
             indicator_type:
             **kwargs:
 
@@ -128,21 +134,21 @@ class TcExTi(object):
 
         """
         if not indicator_type:
-            return Indicator(self.tcex, None, **kwargs)
+            return Indicator(self.tcex, None, owner=owner, **kwargs)
 
         upper_indicator_type = indicator_type.upper()
 
         indicator = None
         if upper_indicator_type == 'ADDRESS':
-            indicator = Address(self.tcex, kwargs.pop('ip', None), **kwargs)
+            indicator = Address(self.tcex, kwargs.pop('ip', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'EMAILADDRESS':
-            indicator = EmailAddress(self.tcex, kwargs.pop('address', None), **kwargs)
+            indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'FILE':
             indicator = File(self.tcex, **kwargs)
         elif upper_indicator_type == 'HOST':
-            indicator = Host(self.tcex, kwargs.pop('hostname', None), **kwargs)
+            indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':
-            indicator = URL(self.tcex, kwargs.pop('url', None), **kwargs)
+            indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
@@ -150,20 +156,21 @@ class TcExTi(object):
                     value_fields = custom_indicator_details.get('value_fields')
                     c = getattr(module, custom_indicator_details.get('branch'))
                     if len(value_fields) == 1:
-                        indicator = c(value_fields[0], **kwargs)
+                        indicator = c(value_fields[0], owner=owner, **kwargs)
                     elif len(value_fields) == 2:
-                        indicator = c(value_fields[0], value_fields[1], **kwargs)
+                        indicator = c(value_fields[0], value_fields[1], owner=owner, **kwargs)
                     elif len(value_fields) == 3:
-                        indicator = c(value_fields[0], value_fields[2], **kwargs)
+                        indicator = c(value_fields[0], value_fields[2], owner=owner, **kwargs)
             except Exception:
                 return None
         return indicator
 
-    def group(self, group_type=None, **kwargs):
+    def group(self, group_type=None, owner=None, **kwargs):
         """
         Create the Group TI object.
 
         Args:
+            owner:
             group_type:
             **kwargs:
 
@@ -173,91 +180,95 @@ class TcExTi(object):
 
         group = None
         if not group_type:
-            return Group(self.tcex, None, None, **kwargs)
+            return Group(self.tcex, None, None, owner=owner, **kwargs)
 
+        name = kwargs.pop('name', None)
         group_type = group_type.upper()
         if group_type == 'ADVERSARY':
-            group = Adversary(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Adversary(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'CAMPAIGN':
-            group = Campaign(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Campaign(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'DOCUMENT':
-            group = Document(
-                self.tcex, kwargs.pop('name', None), kwargs.pop('file_name', None), **kwargs
-            )
+            group = Document(self.tcex, name, **kwargs.get('file_name'), owner=owner, **kwargs)
         if group_type == 'EVENT':
-            group = Event(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Event(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'EMAIL':
             group = Email(
                 self.tcex,
-                kwargs.pop('name', None),
+                name,
                 kwargs.pop('to', None),
                 kwargs.pop('from_addr', None),
                 kwargs.pop('subject', None),
                 kwargs.pop('body', None),
                 kwargs.pop('header', None),
+                owner=owner,
                 **kwargs
             )
         if group_type == 'INCIDENT':
-            group = Incident(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Incident(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'INTRUSION SET':
-            group = IntrusionSet(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = IntrusionSet(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'REPORT':
-            group = Report(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Report(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'SIGNATURE':
-
             group = Signature(
                 self.tcex,
-                kwargs.pop('name', None),
+                name,
                 kwargs.pop('file_name', None),
                 kwargs.pop('file_type', None),
                 kwargs.pop('file_text', None),
+                owner=owner,
                 **kwargs
             )
         if group_type == 'THREAT':
-            group = Threat(self.tcex, kwargs.pop('name', None), **kwargs)
+            group = Threat(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'TASK':
             group = Task(
                 self.tcex,
-                kwargs.pop('name', None),
+                name,
                 kwargs.pop('status', 'Not Started'),
                 kwargs.pop('due_date', None),
                 kwargs.pop('reminder_date', None),
                 kwargs.pop('escalation_date', None),
+                owner,
                 **kwargs
             )
         return group
 
-    def adversary(self, name, **kwargs):
+    def adversary(self, name, owner=None, **kwargs):
         """
         Create the Adversary TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Adversary(self.tcex, name, **kwargs)
+        return Adversary(self.tcex, name, owner=owner, **kwargs)
 
-    def campaign(self, name, **kwargs):
+    def campaign(self, name, owner=None, **kwargs):
         """
         Create the Campaign TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Campaign(self.tcex, name, **kwargs)
+        return Campaign(self.tcex, name, owner=owner, **kwargs)
 
-    def document(self, name, file_name, **kwargs):
+    def document(self, name, file_name, owner=None, **kwargs):
         """
         Create the Document TI object.
 
         Args:
+            owner:
             name:
             file_name:
             **kwargs:
@@ -265,9 +276,9 @@ class TcExTi(object):
         Return:
 
         """
-        return Document(self.tcex, name, file_name, **kwargs)
+        return Document(self.tcex, name, file_name, owner=owner, **kwargs)
 
-    def event(self, name, **kwargs):
+    def event(self, name, owner=None, **kwargs):
         """
         Create the Event TI object.
 
@@ -278,13 +289,14 @@ class TcExTi(object):
         Return:
 
         """
-        return Event(self.tcex, name, **kwargs)
+        return Event(self.tcex, name, owner=owner, **kwargs)
 
-    def email(self, name, to, from_addr, subject, body, header, **kwargs):
+    def email(self, name, to, from_addr, subject, body, header, owner=None, **kwargs):
         """
         Create the Email TI object.
 
         Args:
+            owner:
             to:
             from_addr:
             name:
@@ -296,85 +308,94 @@ class TcExTi(object):
         Return:
 
         """
-        return Email(self.tcex, name, to, from_addr, subject, body, header, **kwargs)
+        return Email(self.tcex, name, to, from_addr, subject, body, header, owner=owner, **kwargs)
 
-    def incident(self, name, **kwargs):
+    def incident(self, name, owner=None, **kwargs):
         """
         Create the Incident TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Incident(self.tcex, name, **kwargs)
+        return Incident(self.tcex, name, owner=owner, **kwargs)
 
-    def intrusion_sets(self, name, **kwargs):
+    def intrusion_sets(self, name, owner=None, **kwargs):
         """
         Create the Intrustion Set TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return IntrusionSet(self.tcex, name, **kwargs)
+        return IntrusionSet(self.tcex, name, owner=owner, **kwargs)
 
-    def report(self, name, **kwargs):
+    def report(self, name, owner=None, **kwargs):
         """
         Create the Report TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Report(self.tcex, name, **kwargs)
+        return Report(self.tcex, name, owner=owner, **kwargs)
 
-    def signature(self, name, file_name, file_type, file_content, **kwargs):
+    def signature(self, name, file_name, file_type, file_content, owner=None, **kwargs):
         """
         Create the Signature TI object.
 
         Args:
+            owner:
+            file_content:
+            file_name:
+            file_type:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Signature(self.tcex, name, file_name, file_type, file_content, **kwargs)
+        return Signature(self.tcex, name, file_name, file_type, file_content, owner=owner, **kwargs)
 
-    def threat(self, name, **kwargs):
+    def threat(self, name, owner=None, **kwargs):
         """
         Create the Threat TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Threat(self.tcex, name, **kwargs)
+        return Threat(self.tcex, name, owner=owner, **kwargs)
 
-    def victim(self, name, **kwargs):
+    def victim(self, name, owner=None, **kwargs):
         """
         Create the Victim TI object.
 
         Args:
+            owner:
             name:
             **kwargs:
 
         Return:
 
         """
-        return Victim(self.tcex, name, **kwargs)
+        return Victim(self.tcex, name, owner=owner, **kwargs)
 
     def tag(self, name):
         """
@@ -574,17 +595,17 @@ class TcExTi(object):
         tcex = self.tcex
 
         # Add Method for each Custom Indicator class
-        def method_1(value1, **kwargs):  # pylint: disable=W0641
+        def method_1(owner, value1, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, **kwargs)
+            return custom_class(tcex, value1, owner=owner, **kwargs)
 
-        def method_2(value1, value2, **kwargs):  # pylint: disable=W0641
+        def method_2(owner, value1, value2, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, value2, **kwargs)
+            return custom_class(tcex, value1, value2, owner=owner, **kwargs)
 
-        def method_3(value1, value2, value3, **kwargs):  # pylint: disable=W0641
+        def method_3(owner, value1, value2, value3, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
-            return custom_class(tcex, value1, value2, value3, **kwargs)
+            return custom_class(tcex, value1, value2, value3, owner=owner, **kwargs)
 
         method = locals()['method_{}'.format(value_count)]
         setattr(self, method_name, method)

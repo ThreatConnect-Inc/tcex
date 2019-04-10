@@ -67,7 +67,7 @@ class SecurityLabel(TIMappings):
         self._data['name'] = name
         request = self._base_request
         request['name'] = name
-        return self._tc_requests.update(request)
+        return self._tc_requests.update(request, owner=self.owner)
 
     def color(self, color):
         """
@@ -80,7 +80,7 @@ class SecurityLabel(TIMappings):
         self._data['color'] = color
         request = self._base_request
         request['color'] = color
-        return self._tc_requests.update(request)
+        return self._tc_requests.update(request, owner=self.owner)
 
     def description(self, description):
         """
@@ -92,7 +92,7 @@ class SecurityLabel(TIMappings):
         self._data['description'] = description
         request = self._base_request
         request['description'] = description
-        return self._tc_requests.update(request)
+        return self._tc_requests.update(request, owner=self.owner)
 
     def date_added(self, date_added):
         """
@@ -106,4 +106,4 @@ class SecurityLabel(TIMappings):
         self._data['dateAdded'] = date_added
         request = self._base_request
         request['dateAdded'] = date_added
-        return self._tc_requests.update(request)
+        return self._tc_requests.update(request, owner=self.owner)

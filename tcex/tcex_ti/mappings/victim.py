@@ -10,8 +10,8 @@ module = __import__(__name__)
 class Victim(TIMappings):
     """Unique API calls for Victim API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
-        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim')
+    def __init__(self, tcex, name, owner=None, **kwargs):
+        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim', owner)
         self._data['name'] = name
 
         for arg, value in kwargs.items():

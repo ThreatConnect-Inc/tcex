@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Campaign(Group):
     """Unique API calls for Campaign API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
+    def __init__(self, tcex, name, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -14,7 +14,7 @@ class Campaign(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
         """
-        super(Campaign, self).__init__(tcex, 'campaigns', name, **kwargs)
+        super(Campaign, self).__init__(tcex, 'campaigns', name, owner, **kwargs)
         self.api_entity = 'campaign'
 
     def first_seen(self, first_seen):

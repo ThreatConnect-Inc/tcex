@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Event(Group):
     """Unique API calls for Event API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
+    def __init__(self, tcex, name, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Valid status:
@@ -21,7 +21,7 @@ class Event(Group):
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
         """
-        super(Event, self).__init__(tcex, 'events', name, **kwargs)
+        super(Event, self).__init__(tcex, 'events', name, owner, **kwargs)
         self.api_entity = 'event'
 
     def status(self, status):

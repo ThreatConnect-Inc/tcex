@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Email(Group):
     """Unique API calls for Email API Endpoints"""
 
-    def __init__(self, tcex, name, to, from_addr, subject, body, header, **kwargs):
+    def __init__(self, tcex, name, to, from_addr, subject, body, header, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,7 +18,7 @@ class Email(Group):
             from_addr (str, kwargs): The **from** address for this Email.
             to (str, kwargs): The **to** address for this Email.
         """
-        super(Email, self).__init__(tcex, 'emails', name, **kwargs)
+        super(Email, self).__init__(tcex, 'emails', name, owner, **kwargs)
         self.api_entity = 'email'
         self._data['to'] = to or kwargs.get('to')
         self._data['from'] = from_addr or kwargs.get('from_addr')

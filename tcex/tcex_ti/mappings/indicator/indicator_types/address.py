@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class Address(Indicator):
     """Unique API calls for Address API Endpoints"""
 
-    def __init__(self, tcex, ip, **kwargs):
+    def __init__(self, tcex, ip, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,7 +18,7 @@ class Address(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(Address, self).__init__(tcex, 'addresses', **kwargs)
+        super(Address, self).__init__(tcex, 'addresses', owner, **kwargs)
         self._api_entity = 'address'
         self.data['ip'] = ip
         self.unique_id = self.unique_id or ip
@@ -53,4 +53,6 @@ class Address(Indicator):
         """
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
-        return self.tc_requests.dns_resolution(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.dns_resolution(
+            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+        )

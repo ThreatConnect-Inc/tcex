@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class File(Indicator):
     """Unique API calls for File API Endpoints"""
 
-    def __init__(self, tcex, md5=None, sha1=None, sha256=None, **kwargs):
+    def __init__(self, tcex, md5=None, sha1=None, sha256=None, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -21,7 +21,7 @@ class File(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
         """
-        super(File, self).__init__(tcex, 'files', **kwargs)
+        super(File, self).__init__(tcex, 'files', owner, **kwargs)
         self.api_entity = 'file'
         if md5:
             self.data['md5'] = md5

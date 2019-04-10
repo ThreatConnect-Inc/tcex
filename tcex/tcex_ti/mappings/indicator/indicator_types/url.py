@@ -11,7 +11,7 @@ except ImportError:
 class URL(Indicator):
     """Unique API calls for URL API Endpoints"""
 
-    def __init__(self, tcex, text, **kwargs):
+    def __init__(self, tcex, text, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -24,10 +24,10 @@ class URL(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(URL, self).__init__(tcex, 'urls', **kwargs)
+        super(URL, self).__init__(tcex, 'urls', owner, **kwargs)
         self.api_entity = 'url'
         self.data['text'] = text
-        self.unique_id = text or kwargs.get('text', None)
+        self.unique_id = self.unique_id or text
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
 

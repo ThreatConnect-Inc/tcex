@@ -18,8 +18,8 @@ class TestAddressIndicators:
         self.address_create(ip)
 
         # get
-        ti = self.ti.address(ip)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -37,7 +37,7 @@ class TestAddressIndicators:
         self.test_address_add_attribute(False, ip, 'Description', 'test3')
 
         # get attributes
-        ti = self.ti.address(ip)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -55,7 +55,7 @@ class TestAddressIndicators:
         self.test_address_add_tag(False, ip, 'Two')
 
         # get tags
-        ti = self.ti.address(ip)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -74,8 +74,8 @@ class TestAddressIndicators:
         self.test_address_add_tag(False, ip, 'PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.address(ip)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -89,8 +89,8 @@ class TestAddressIndicators:
 
     def address_create(self, ip='14.111.14.15'):
         """Test address create."""
-        ti = self.ti.indicator(indicator_type='Address', ip=ip)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -107,7 +107,7 @@ class TestAddressIndicators:
         if should_create:
             self.address_create(ip)
 
-        ti = self.ti.address(ip)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -121,7 +121,7 @@ class TestAddressIndicators:
         if should_create:
             self.address_create(ip)
 
-        ti = self.ti.address(ip)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -134,7 +134,7 @@ class TestAddressIndicators:
         if should_create:
             self.address_create(ip)
 
-        ti = self.ti.address(ip)
+        ti = self.ti.address(ip, owner=tcex.args.tc_owner)
         r = ti.add_tag(name=name)
         tag_data = r.json()
         assert r.status_code == 201
@@ -148,8 +148,8 @@ class TestAddressIndicators:
         self.address_create(ip)
 
         # delete indicator
-        ti = self.ti.indicator(indicator_type='Address', ip=ip)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -160,8 +160,10 @@ class TestAddressIndicators:
         self.address_create(ip)
 
         # update indicator
-        ti = self.ti.indicator(indicator_type='Address', ip=ip, rating=5, confidence=10)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.indicator(
+            indicator_type='Address', owner=tcex.args.tc_owner, ip=ip, rating=5, confidence=10
+        )
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

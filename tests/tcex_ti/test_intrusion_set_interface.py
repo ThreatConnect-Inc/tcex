@@ -18,8 +18,8 @@ class TestIntrustionSetGroups:
         intrusion_sets_id = self.intrusion_sets_create(name)
 
         # get
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -49,7 +49,7 @@ class TestIntrustionSetGroups:
         )
 
         # get attributes
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -67,7 +67,7 @@ class TestIntrustionSetGroups:
         self.test_intrusion_sets_add_tag(intrusion_sets_id=intrusion_sets_id, tag='Two')
 
         # get tags
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -89,8 +89,8 @@ class TestIntrustionSetGroups:
         self.test_intrusion_sets_add_tag(intrusion_sets_id=intrusion_sets_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -106,8 +106,8 @@ class TestIntrustionSetGroups:
 
     def intrusion_sets_create(self, name='intrusion_sets-name-65341'):
         """Test intrusion_sets create."""
-        ti = self.ti.intrusion_sets(name)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -127,7 +127,7 @@ class TestIntrustionSetGroups:
             should_delete = True
             intrusion_sets_id = self.intrusion_sets_create(name)
 
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -146,7 +146,7 @@ class TestIntrustionSetGroups:
             should_delete = True
             intrusion_sets_id = self.intrusion_sets_create(name)
 
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -164,7 +164,7 @@ class TestIntrustionSetGroups:
             should_delete = True
             intrusion_sets_id = self.intrusion_sets_create(name)
 
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -180,8 +180,8 @@ class TestIntrustionSetGroups:
             intrusion_sets_id = self.intrusion_sets_create(name)
 
         # delete indicator
-        ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.intrusion_sets(name, owner=tcex.args.tc_owner, unique_id=intrusion_sets_id)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -195,7 +195,7 @@ class TestIntrustionSetGroups:
 
         # update indicator
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

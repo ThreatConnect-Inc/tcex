@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class RegistryKey(Indicator):
     """Unique API calls for RegistryKey API Endpoints"""
 
-    def __init__(self, tcex, key_name, value_name, value_type, **kwargs):
+    def __init__(self, tcex, key_name, value_name, value_type, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -20,11 +20,11 @@ class RegistryKey(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(RegistryKey, self).__init__(tcex, 'registryKeys', **kwargs)
+        super(RegistryKey, self).__init__(tcex, 'registryKeys', owner, **kwargs)
         self.data['key_name'] = key_name
         self.data['value_name'] = value_name
         self.data['value_type'] = value_type
-        self.unique_id = key_name or kwargs.get('key_name', None)
+        self.unique_id = self.unique_id or key_name
 
     def can_create(self):
         """

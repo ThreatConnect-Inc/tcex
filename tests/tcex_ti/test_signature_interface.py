@@ -26,8 +26,15 @@ class TestAdversaryGroups:
             signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         # get
-        ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -117,7 +124,7 @@ class TestAdversaryGroups:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -137,8 +144,8 @@ class TestAdversaryGroups:
         file_content='signature-file-content-t5r32',
     ):
         """Test signature create."""
-        ti = self.ti.signature(name, file_name, file_type, file_content)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.signature(name, file_name, file_type, file_content, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -164,7 +171,14 @@ class TestAdversaryGroups:
             should_delete = True
             signature_id = self.signature_create(name, file_name, file_type, file_content)
 
-        ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -188,7 +202,14 @@ class TestAdversaryGroups:
             should_delete = True
             signature_id = self.signature_create(name, file_name, file_type, file_content)
 
-        ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -211,7 +232,14 @@ class TestAdversaryGroups:
             should_delete = True
             signature_id = self.signature_create(name, file_name, file_type, file_content)
 
-        ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -233,8 +261,15 @@ class TestAdversaryGroups:
             signature_id = self.signature_create(name, file_name, file_type, file_content)
 
         # delete indicator
-        ti = self.ti.signature(name, file_name, file_type, file_content, unique_id=signature_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.signature(
+            name,
+            file_name,
+            file_type,
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
+        )
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -256,9 +291,14 @@ class TestAdversaryGroups:
 
         # update indicator
         ti = self.ti.signature(
-            name, 'signature-file-name.txt', 'Bro', file_content, unique_id=signature_id
+            name,
+            'signature-file-name.txt',
+            'Bro',
+            file_content,
+            owner=tcex.args.tc_owner,
+            unique_id=signature_id,
         )
-        r = ti.update(owner=tcex.args.tc_owner)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

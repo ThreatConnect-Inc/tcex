@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class EmailAddress(Indicator):
     """Unique API calls for Email Address API Endpoints"""
 
-    def __init__(self, tcex, address, **kwargs):
+    def __init__(self, tcex, address, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -19,10 +19,10 @@ class EmailAddress(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__(tcex, 'emailAddresses', **kwargs)
+        super(EmailAddress, self).__init__(tcex, 'emailAddresses', owner, **kwargs)
         self.api_entity = 'emailAddress'
         self._data['address'] = address
-        self.unique_id = address or kwargs.get('address', None)
+        self.unique_id = self.unique_id or address
 
     def can_create(self):
         """

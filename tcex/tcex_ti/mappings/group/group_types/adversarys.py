@@ -6,13 +6,13 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Adversary(Group):
     """Unique API calls for Adversary API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
+    def __init__(self, tcex, name, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
             name (str): The name for this Group.
         """
-        super(Adversary, self).__init__(tcex, 'adversaries', name, **kwargs)
+        super(Adversary, self).__init__(tcex, 'adversaries', name, owner, **kwargs)
         self.api_entity = 'adversary'
 
     def add_asset(self, asset_type, asset_name):

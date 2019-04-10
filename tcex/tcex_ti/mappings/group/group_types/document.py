@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Document(Group):
     """Unique API calls for Document API Endpoints"""
 
-    def __init__(self, tcex, name, file_name, **kwargs):
+    def __init__(self, tcex, name, file_name, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Valid status:
@@ -24,7 +24,7 @@ class Document(Group):
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is required.
         """
-        super(Document, self).__init__(tcex, 'documents', name, **kwargs)
+        super(Document, self).__init__(tcex, 'documents', name, owner, **kwargs)
         self._data['fileName'] = file_name or kwargs.get('file_name')
         self.api_entity = 'document'
         # file data/content to upload

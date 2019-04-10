@@ -94,8 +94,8 @@ class TiTcRequest:
         Returns:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if owner:
             params['owner'] = owner
         if filters and filters.filters:
@@ -120,8 +120,8 @@ class TiTcRequest:
         Returns:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if owner:
             params['owner'] = owner
         if filters and filters.filters:
@@ -180,8 +180,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if owner:
             params['owner'] = owner
         if filters and filters.filters:
@@ -216,10 +216,11 @@ class TiTcRequest:
         )
         return self.tcex.session.post(url, data=data)
 
-    def add_false_positive(self, main_type, sub_type, unique_id):
+    def add_false_positive(self, main_type, sub_type, unique_id, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -227,14 +228,17 @@ class TiTcRequest:
         Return:
 
         """
+        params = {'owner': owner} if owner else {}
+
         url = '/v2/{}/{}/{}/falsePositive'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.post(url)
+        return self.tcex.session.post(url, params=params)
 
-    def owners(self, main_type, sub_type, unique_id):
+    def owners(self, main_type, sub_type, unique_id, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -242,17 +246,19 @@ class TiTcRequest:
         Return:
 
         """
+        params = {'owner': owner} if owner else {}
         if not sub_type:
             url = '/v2/{}/{}/owners'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}/owners'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        return self.tcex.session.get(url, params=params)
 
-    def add_observations(self, main_type, sub_type, unique_id, data):
+    def add_observations(self, main_type, sub_type, unique_id, data, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -261,13 +267,17 @@ class TiTcRequest:
         Return:
 
         """
-        url = '/v2/{}/{}/{}/observations'.format(main_type, sub_type, unique_id)
-        return self.tcex.session.post(url, json=data)
 
-    def observation_count(self, main_type, sub_type, unique_id):
+        params = {'owner': owner} if owner else {}
+
+        url = '/v2/{}/{}/{}/observations'.format(main_type, sub_type, unique_id)
+        return self.tcex.session.post(url, json=data, params=params)
+
+    def observation_count(self, main_type, sub_type, unique_id, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -275,14 +285,16 @@ class TiTcRequest:
         Return:
 
         """
+        params = {'owner': owner} if owner else {}
+
         if not sub_type:
             url = '/v2/{}/{}/observationCount'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}/observationCount'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        return self.tcex.session.get(url, params=params)
 
-    def observations(self, main_type, sub_type, unique_id, owner, params=None):
+    def observations(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
 
         Args:
@@ -295,9 +307,11 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
-        params['owner'] = owner or params.get('owner', None)
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/observations'.format(main_type, unique_id)
         else:
@@ -323,10 +337,11 @@ class TiTcRequest:
 
         return self.tcex.session.get(url)
 
-    def dns_resolution(self, main_type, sub_type, unique_id):
+    def dns_resolution(self, main_type, sub_type, unique_id, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -334,12 +349,14 @@ class TiTcRequest:
         Return:
 
         """
+        params = {'owner': owner} if owner else {}
+
         if not sub_type:
             url = '/v2/{}/{}/dnsResolution'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}/dnsResolution'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.get(url)
+        return self.tcex.session.get(url, params=params)
 
     def deleted(self, main_type, sub_type, deleted_since, owner=None, filters=None, params=None):
         """
@@ -355,12 +372,14 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if filters and filters.filters:
             params['filters'] = filters.filters_string
-        params['owner'] = owner or params.get('owner', None)
-        params['deleteSince'] = deleted_since or params.get(deleted_since, None)
+        if owner:
+            params['owner'] = owner
+        if deleted_since:
+            params['deleteSince'] = deleted_since
 
         if not sub_type:
             url = '/v2/{}/deleted'.format(main_type)
@@ -384,8 +403,8 @@ class TiTcRequest:
         sub_type = target.api_sub_type
         api_type = target.api_type
         api_entity = target.api_entity
-        if params is None:
-            params = {}
+        params = params or {}
+
         if filters and filters.filters:
             params['filters'] = filters.filters_string
         if sub_type:
@@ -421,8 +440,8 @@ class TiTcRequest:
                 Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         for t in self.pivot_from_tag(indicator, tag_name, filters=filters, params=params):
             yield t
 
@@ -441,10 +460,11 @@ class TiTcRequest:
         for t in self.pivot_from_tag(victim, tag_name, filters=filters, params=params):
             yield t
 
-    def indicator_associations(self, main_type, sub_type, unique_id, params=None):
+    def indicator_associations(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -453,8 +473,10 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/indicators'.format(main_type, unique_id)
         else:
@@ -463,10 +485,11 @@ class TiTcRequest:
         for a in self._iterate(url, params, 'indicator'):
             yield a
 
-    def group_associations(self, main_type, sub_type, unique_id, params=None):
+    def group_associations(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -475,8 +498,10 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/groups'.format(main_type, unique_id)
         else:
@@ -485,10 +510,13 @@ class TiTcRequest:
         for ga in self._iterate(url, params, 'group'):
             yield ga
 
-    def victim_asset_associations(self, main_type, sub_type, unique_id, branch_type, params=None):
+    def victim_asset_associations(
+        self, main_type, sub_type, unique_id, branch_type, owner=None, params=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -498,8 +526,11 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/{}'.format(main_type, unique_id, branch_type)
         else:
@@ -516,11 +547,13 @@ class TiTcRequest:
         association_type,
         api_branch=None,
         api_entity=None,
+        owner=None,
         params=None,
     ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -532,8 +565,10 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
+
         api_branch = api_branch or association_type.api_sub_type
         api_entity = api_entity or association_type.api_entity
         if not sub_type:
@@ -545,10 +580,19 @@ class TiTcRequest:
             yield iat
 
     def group_associations_types(
-        self, main_type, sub_type, unique_id, target, api_branch=None, api_entity=None, params=None
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        target,
+        api_branch=None,
+        api_entity=None,
+        owner=None,
+        params=None,
     ):
         """
                 Args:
+                    owner:
                     main_type:
                     sub_type:
                     unique_id:
@@ -560,8 +604,10 @@ class TiTcRequest:
                 Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
+
         api_branch = api_branch or target.api_sub_type
         api_entity = api_entity or target.api_entity
 
@@ -574,11 +620,19 @@ class TiTcRequest:
             yield gat
 
     def add_association(
-        self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        target_type,
+        target_sub_type,
+        target_unique_id,
+        owner=None,
     ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -590,15 +644,29 @@ class TiTcRequest:
 
         """
         return self._association(
-            main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
+            main_type,
+            sub_type,
+            unique_id,
+            target_type,
+            target_sub_type,
+            target_unique_id,
+            owner=owner,
         )
 
     def delete_association(
-        self, main_type, sub_type, unique_id, target_type, target_sub_type, target_unique_id
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        target_type,
+        target_sub_type,
+        target_unique_id,
+        owner=None,
     ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -617,6 +685,7 @@ class TiTcRequest:
             target_sub_type,
             target_unique_id,
             action='DELETE',
+            owner=owner,
         )
 
     def _association(
@@ -628,6 +697,7 @@ class TiTcRequest:
         target_sub_type,
         target_unique_id,
         action='ADD',
+        owner=None,
     ):
         """
 
@@ -644,6 +714,7 @@ class TiTcRequest:
 
         """
         action = action.upper()
+        params = {'owner': owner} if owner else {}
         # Typically if victim to victim but other endpoints that are not
         # groups/indicators can exist in the future
         if not sub_type and not target_sub_type:
@@ -666,9 +737,9 @@ class TiTcRequest:
 
         response = None
         if action == 'ADD':
-            response = self.tcex.session.post(url)
+            response = self.tcex.session.post(url, params=params)
         elif action == 'DELETE':
-            response = self.tcex.session.delete(url)
+            response = self.tcex.session.delete(url, params=params)
         else:
             self.tcex.log.error('associations error')
         return response
@@ -826,8 +897,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victims/{}'.format(main_type, unique_id, victim_id)
         else:
@@ -847,8 +918,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victims'.format(main_type, unique_id)
         else:
@@ -869,8 +940,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets'.format(main_type, unique_id)
         else:
@@ -891,8 +962,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/emailAddresses'.format(main_type, unique_id)
         else:
@@ -913,8 +984,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/networkAccounts'.format(main_type, unique_id)
         else:
@@ -935,8 +1006,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/phoneNumbers'.format(main_type, unique_id)
         else:
@@ -957,8 +1028,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/socialNetworks'.format(main_type, unique_id)
         else:
@@ -979,8 +1050,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/webSites'.format(main_type, unique_id)
         else:
@@ -1005,8 +1076,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/emailAddresses/{}'.format(main_type, unique_id, asset_id)
         else:
@@ -1036,8 +1107,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/networkAccounts/{}'.format(main_type, unique_id, asset_id)
         else:
@@ -1067,8 +1138,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/phoneNumbers/{}'.format(main_type, unique_id, asset_id)
         else:
@@ -1098,8 +1169,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/socialNetworks/{}'.format(main_type, unique_id, asset_id)
         else:
@@ -1127,8 +1198,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if not sub_type:
             url = '/v2/{}/{}/victimAssets/webSites/{}'.format(main_type, unique_id, asset_id)
         else:
@@ -1155,8 +1226,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.victim_email_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def get_victim_network_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
@@ -1172,8 +1243,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.victim_network_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def get_victim_phone_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
@@ -1189,8 +1260,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.victim_phone_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def get_victim_social_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
@@ -1206,8 +1277,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.victim_social_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def get_victim_web_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
@@ -1223,8 +1294,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.victim_web_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def delete_victim_email_asset(self, main_type, sub_type, unique_id, asset_id):
@@ -1297,10 +1368,11 @@ class TiTcRequest:
         """
         return self.victim_web_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
 
-    def tag(self, main_type, sub_type, unique_id, tag, action='GET', params=None):
+    def tag(self, main_type, sub_type, unique_id, tag, action='GET', owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1311,8 +1383,11 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+
         action = action.upper()
         if sub_type:
             url = '/v2/{}/{}/{}/tags/{}'.format(main_type, sub_type, unique_id, quote(tag))
@@ -1320,19 +1395,20 @@ class TiTcRequest:
             url = '/v2/{}/{}/tags/{}'.format(main_type, unique_id, quote(tag))
         response = None
         if action == 'ADD':
-            response = self.tcex.session.post(url)
+            response = self.tcex.session.post(url, params=params)
         elif action == 'DELETE':
-            response = self.tcex.session.delete(url)
+            response = self.tcex.session.delete(url, params=params)
         elif action == 'GET':
             response = self.tcex.session.get(url, params=params)
         else:
             self.tcex.log.error('_tags error')
         return response
 
-    def add_tag(self, main_type, sub_type, unique_id, tag):
+    def add_tag(self, main_type, sub_type, unique_id, tag, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1341,12 +1417,13 @@ class TiTcRequest:
         Return:
 
         """
-        return self.tag(main_type, sub_type, unique_id, tag, action='ADD')
+        return self.tag(main_type, sub_type, unique_id, tag, action='ADD', owner=owner)
 
-    def delete_tag(self, main_type, sub_type, unique_id, tag):
+    def delete_tag(self, main_type, sub_type, unique_id, tag, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1355,12 +1432,13 @@ class TiTcRequest:
         Return:
 
         """
-        return self.tag(main_type, sub_type, unique_id, tag, action='DELETE')
+        return self.tag(main_type, sub_type, unique_id, tag, action='DELETE', owner=owner)
 
-    def get_tag(self, main_type, sub_type, unique_id, tag, params=None):
+    def get_tag(self, main_type, sub_type, unique_id, tag, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1370,9 +1448,9 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
-        return self.tag(main_type, sub_type, unique_id, tag, params=params)
+        params = params or {}
+
+        return self.tag(main_type, sub_type, unique_id, tag, owner=owner, params=params)
 
     def tags(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
@@ -1388,8 +1466,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if owner:
             params['owner'] = owner
         if filters and filters.filters:
@@ -1416,8 +1494,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         if owner:
             params['owner'] = owner
         if filters and filters.filters:
@@ -1430,10 +1508,11 @@ class TiTcRequest:
         for l in self._iterate(url, params, 'securityLabel'):
             yield l
 
-    def add_label(self, main_type, sub_type, unique_id, label):
+    def add_label(self, main_type, sub_type, unique_id, label, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1442,12 +1521,13 @@ class TiTcRequest:
         Return:
 
         """
-        return self.label(main_type, sub_type, unique_id, label, action='ADD')
+        return self.label(main_type, sub_type, unique_id, label, action='ADD', owner=owner)
 
-    def get_label(self, main_type, sub_type, unique_id, label, params=None):
+    def get_label(self, main_type, sub_type, unique_id, label, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1457,14 +1537,17 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
-        return self.label(main_type, sub_type, unique_id, label, action='GET', params=params)
+        params = params or {}
 
-    def delete_label(self, main_type, sub_type, unique_id, label):
+        return self.label(
+            main_type, sub_type, unique_id, label, action='GET', owner=owner, params=params
+        )
+
+    def delete_label(self, main_type, sub_type, unique_id, label, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1473,12 +1556,13 @@ class TiTcRequest:
         Return:
 
         """
-        return self.label(main_type, sub_type, unique_id, label, action='DELETE')
+        return self.label(main_type, sub_type, unique_id, label, action='DELETE', owner=owner)
 
-    def label(self, main_type, sub_type, unique_id, label, action='ADD', params=None):
+    def label(self, main_type, sub_type, unique_id, label, action='ADD', owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1489,8 +1573,11 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+
         action = action.upper()
 
         if not sub_type:
@@ -1501,20 +1588,21 @@ class TiTcRequest:
             )
 
         if action == 'ADD':
-            return self.tcex.session.post(url)
+            return self.tcex.session.post(url, params=params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url)
+            return self.tcex.session.delete(url, params=params)
 
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
 
         return None
 
-    def attributes(self, main_type, sub_type, unique_id, params=None):
+    def attributes(self, main_type, sub_type, unique_id, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1524,8 +1612,11 @@ class TiTcRequest:
 
         """
 
-        if params is None:
-            params = {}
+        params = params or {}
+
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/attributes'.format(main_type, unique_id)
         else:
@@ -1534,10 +1625,13 @@ class TiTcRequest:
         for a in self._iterate(url, params, 'attribute'):
             yield a
 
-    def attribute(self, main_type, sub_type, unique_id, attribute_id, action='GET', params=None):
+    def attribute(
+        self, main_type, sub_type, unique_id, attribute_id, action='GET', owner=None, params=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1548,8 +1642,9 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
         action = action.upper()
         if not sub_type:
             url = '/v2/{}/{}/attributes/{}'.format(main_type, unique_id, attribute_id)
@@ -1560,14 +1655,15 @@ class TiTcRequest:
             return self.tcex.session.get(url, params=params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url)
+            return self.tcex.session.delete(url, params=params)
 
         return None
 
-    def get_attribute(self, main_type, sub_type, unique_id, attribute_id, params=None):
+    def get_attribute(self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1577,14 +1673,15 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
-        return self.attribute(main_type, sub_type, unique_id, attribute_id, params=params)
+        return self.attribute(
+            main_type, sub_type, unique_id, attribute_id, action='GET', owner=owner, params=params
+        )
 
-    def delete_attribute(self, main_type, sub_type, unique_id, attribute_id):
+    def delete_attribute(self, main_type, sub_type, unique_id, attribute_id, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1593,12 +1690,17 @@ class TiTcRequest:
         Return:
 
         """
-        return self.attribute(main_type, sub_type, unique_id, attribute_id, action='DELETE')
+        return self.attribute(
+            main_type, sub_type, unique_id, attribute_id, action='DELETE', owner=owner
+        )
 
-    def add_attribute(self, main_type, sub_type, unique_id, attribute_type, attribute_value):
+    def add_attribute(
+        self, main_type, sub_type, unique_id, attribute_type, attribute_value, owner=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1608,17 +1710,25 @@ class TiTcRequest:
         Return:
 
         """
+        params = {}
+        if owner:
+            params['owner'] = owner
         if not sub_type:
             url = '/v2/{}/{}/attributes'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}/attributes'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.post(url, json={'type': attribute_type, 'value': attribute_value})
+        return self.tcex.session.post(
+            url, json={'type': attribute_type, 'value': attribute_value}, params=params
+        )
 
-    def attribute_labels(self, main_type, sub_type, unique_id, attribute_id, params=None):
+    def attribute_labels(
+        self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1628,8 +1738,10 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
+
         if not sub_type:
             url = '/v2/{}/{}/attributes/{}/securityLabels'.format(
                 main_type, unique_id, attribute_id
@@ -1643,11 +1755,20 @@ class TiTcRequest:
             yield l
 
     def attribute_label(
-        self, main_type, sub_type, unique_id, attribute_id, label, action='GET', params=None
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        attribute_id,
+        label,
+        action='GET',
+        owner=None,
+        params=None,
     ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1659,8 +1780,9 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+        if owner:
+            params['owner'] = owner
         action = action.upper()
 
         if not sub_type:
@@ -1672,20 +1794,23 @@ class TiTcRequest:
                 main_type, sub_type, unique_id, attribute_id, quote(label)
             )
         if action == 'ADD':
-            return self.tcex.session.post(url)
+            return self.tcex.session.post(url, params=params)
 
         if action == 'DELETE':
-            return self.tcex.session.delete(url)
+            return self.tcex.session.delete(url, params=params)
 
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
 
         return None
 
-    def get_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label, params=None):
+    def get_attribute_label(
+        self, main_type, sub_type, unique_id, attribute_id, label, owner=None, params=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1696,16 +1821,17 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
         return self.attribute_label(
-            main_type, sub_type, unique_id, attribute_id, label, params=params
+            main_type, sub_type, unique_id, attribute_id, label, owner=owner, params=params
         )
 
-    def delete_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label):
+    def delete_attribute_label(
+        self, main_type, sub_type, unique_id, attribute_id, label, owner=None
+    ):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1716,13 +1842,14 @@ class TiTcRequest:
 
         """
         return self.attribute_label(
-            main_type, sub_type, unique_id, attribute_id, label, action='DELETE'
+            main_type, sub_type, unique_id, attribute_id, label, action='DELETE', owner=owner
         )
 
-    def add_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label):
+    def add_attribute_label(self, main_type, sub_type, unique_id, attribute_id, label, owner=None):
         """
 
         Args:
+            owner:
             main_type:
             sub_type:
             unique_id:
@@ -1733,7 +1860,7 @@ class TiTcRequest:
 
         """
         return self.attribute_label(
-            main_type, sub_type, unique_id, attribute_id, label, action='ADD'
+            main_type, sub_type, unique_id, attribute_id, label, action='ADD', owner=owner
         )
 
     def adversary_assets(self, main_type, sub_type, unique_id, params=None):
@@ -1748,8 +1875,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets'.format(main_type, sub_type, unique_id)
         for aa in self._iterate(url, params, 'adversaryAsset'):
             yield aa
@@ -1766,8 +1893,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/handles'.format(main_type, sub_type, unique_id)
         for aha in self._iterate(url, params, 'adversaryHandle'):
             yield aha
@@ -1784,8 +1911,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/phoneNumbers'.format(main_type, sub_type, unique_id)
         for apa in self._iterate(url, params, 'adversaryPhone'):
             yield apa
@@ -1802,8 +1929,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/urls'.format(main_type, sub_type, unique_id)
         for aua in self._iterate(url, params, 'adversaryUrl'):
             yield aua
@@ -1824,8 +1951,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/urls/{}'.format(
             main_type, sub_type, unique_id, asset_id
         )
@@ -1849,8 +1976,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.adversary_url_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def delete_adversary_url_asset(self, main_type, sub_type, unique_id, asset_id):
@@ -1899,8 +2026,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/phoneNumbers/{}'.format(
             main_type, sub_type, unique_id, asset_id
         )
@@ -1924,8 +2051,6 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
         return self.adversary_phone_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def delete_adversary_phone_asset(self, main_type, sub_type, unique_id, asset_id):
@@ -1974,8 +2099,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/adversaryAssets/handles/{}'.format(
             main_type, sub_type, unique_id, asset_id
         )
@@ -1999,8 +2124,6 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
         return self.adversary_handler_asset(main_type, sub_type, unique_id, asset_id, params=params)
 
     def delete_adversary_handler_asset(self, main_type, sub_type, unique_id, asset_id):
@@ -2047,8 +2170,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/assignees'.format(main_type, sub_type, unique_id)
         for a in self._iterate(url, params, 'assignee'):
             yield a
@@ -2067,8 +2190,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/assignees/{}'.format(main_type, sub_type, unique_id, assignee_id)
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
@@ -2091,8 +2214,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.assignee(main_type, sub_type, unique_id, assignee_id, params=params)
 
     def delete_assignee(self, main_type, sub_type, unique_id, assignee_id):
@@ -2135,8 +2258,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/escalatees'.format(main_type, sub_type, unique_id)
         for e in self._iterate(url, params, 'escalatee'):
             yield e
@@ -2155,8 +2278,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         url = '/v2/{}/{}/{}/escalatees/{}'.format(main_type, sub_type, unique_id, escalatee_id)
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
@@ -2179,8 +2302,8 @@ class TiTcRequest:
         Return:
 
         """
-        if params is None:
-            params = {}
+        params = params or {}
+
         return self.escalatee(main_type, sub_type, unique_id, escalatee_id, params=params)
 
     def delete_escalatee(self, main_type, sub_type, unique_id, escalatee_id):

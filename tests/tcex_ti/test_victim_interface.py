@@ -19,15 +19,15 @@ class TestVictim:
             victim_id = self.victim_create(name)
 
         # get
-        ti = self.ti.victim(name, unique_id=victim_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get(ti.api_entity).get('name') == name
 
         # delete
-        self.victim_delete(victim_id)
+        self.victim_delete()
 
     def test_victim_get_attributes(self, victim_id=None, name='victim-name-12453'):
         """Test victim get."""
@@ -46,7 +46,7 @@ class TestVictim:
         )
 
         # get attributes
-        ti = self.ti.victim(name, unique_id=victim_id)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -54,7 +54,7 @@ class TestVictim:
             assert False
 
         # delete
-        self.victim_delete(victim_id)
+        self.victim_delete()
 
     def test_victim_get_tags(self, victim_id=None, name='victim-name-64235'):
         """Test victim get."""
@@ -66,7 +66,7 @@ class TestVictim:
         self.test_victim_add_tag(victim_id=victim_id, tag='Two')
 
         # get tags
-        ti = self.ti.victim(name, unique_id=victim_id)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -74,7 +74,7 @@ class TestVictim:
             assert False
 
         # delete
-        self.victim_delete(victim_id)
+        self.victim_delete()
 
     def test_victim_get_include(self, victim_id=None, name='victim-name-78159'):
         """Test victim get."""
@@ -88,8 +88,8 @@ class TestVictim:
         self.test_victim_add_tag(victim_id=victim_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.victim(name, unique_id=victim_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
+        r = ti.single(params=parameters)
 
         ti_data = r.json()
         assert r.status_code == 200
@@ -100,12 +100,12 @@ class TestVictim:
         assert ti_data.get('data').get('victim').get('tag')[0].get('name') == 'PyTest'
 
         # delete
-        self.victim_delete(victim_id)
+        self.victim_delete()
 
     def victim_create(self, name='victim-name-65341'):
         """Test victim create."""
-        ti = self.ti.victim(name)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -125,7 +125,7 @@ class TestVictim:
             should_delete = True
             victim_id = self.victim_create(name)
 
-        ti = self.ti.victim(name, unique_id=victim_id)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -133,7 +133,7 @@ class TestVictim:
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
 
         if should_delete:
-            self.victim_delete(victim_id)
+            self.victim_delete()
 
     def test_victim_add_label(self, victim_id=None, name='victim-name-ds4vb', label='TLP:GREEN'):
         """Test victim attribute add."""
@@ -142,14 +142,14 @@ class TestVictim:
             should_delete = True
             victim_id = self.victim_create(name)
 
-        ti = self.ti.victim(name, unique_id=victim_id)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
 
         if should_delete:
-            self.victim_delete(victim_id)
+            self.victim_delete()
 
     def test_victim_add_tag(self, victim_id=None, name='victim-name-fdsv23', tag='Crimeware'):
         """Test victim attribute add."""
@@ -158,14 +158,14 @@ class TestVictim:
             should_delete = True
             victim_id = self.victim_create(name)
 
-        ti = self.ti.victim(name, unique_id=victim_id)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
 
         if should_delete:
-            self.victim_delete(victim_id)
+            self.victim_delete()
 
     def victim_delete(self, victim_id=None, name='victim-name-bdsfd'):
         """Test victim delete."""
@@ -174,8 +174,8 @@ class TestVictim:
             victim_id = self.victim_create(name)
 
         # delete indicator
-        ti = self.ti.victim(name, unique_id=victim_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -189,12 +189,12 @@ class TestVictim:
         name = 'victim-new-name-fdasb3'
 
         # update indicator
-        ti = self.ti.victim(name, unique_id=victim_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.victim(name, owner=tcex.args.tc_owner, unique_id=victim_id)
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('victim').get('name') == name
 
         # delete indicator
-        self.victim_delete(victim_id)
+        self.victim_delete()

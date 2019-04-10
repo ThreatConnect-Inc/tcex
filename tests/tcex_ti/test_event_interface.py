@@ -18,8 +18,8 @@ class TestEventGroups:
         event_id = self.event_create(name)
 
         # get
-        ti = self.ti.event(name, unique_id=event_id)
-        r = ti.single(owner=tcex.args.tc_owner)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
+        r = ti.single()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -43,7 +43,7 @@ class TestEventGroups:
         )
 
         # get attributes
-        ti = self.ti.event(name, unique_id=event_id)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
         for attribute in ti.attributes():
             assert attribute
             break
@@ -61,7 +61,7 @@ class TestEventGroups:
         self.test_event_add_tag(event_id=event_id, tag='Two')
 
         # get tags
-        ti = self.ti.event(name, unique_id=event_id)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
         for tag in ti.tags():
             assert tag.get('name')
             break
@@ -81,8 +81,8 @@ class TestEventGroups:
         self.test_event_add_tag(event_id=event_id, tag='PyTest')
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        ti = self.ti.event(name, unique_id=event_id)
-        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
+        r = ti.single(params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -96,8 +96,8 @@ class TestEventGroups:
 
     def event_create(self, name='event-name-65341'):
         """Test event create."""
-        ti = self.ti.event(name)
-        r = ti.create(owner=tcex.args.tc_owner)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner)
+        r = ti.create()
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -117,7 +117,7 @@ class TestEventGroups:
             should_delete = True
             event_id = self.event_create(name)
 
-        ti = self.ti.event(name, unique_id=event_id)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
         r = ti.add_attribute(attribute_type=attribute_type, attribute_value=attribute_value)
         attribute_data = r.json()
         assert r.status_code == 201
@@ -134,7 +134,7 @@ class TestEventGroups:
             should_delete = True
             event_id = self.event_create(name)
 
-        ti = self.ti.event(name, unique_id=event_id)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
         r = ti.add_label(label=label)
         label_data = r.json()
         assert r.status_code == 201
@@ -150,7 +150,7 @@ class TestEventGroups:
             should_delete = True
             event_id = self.event_create(name)
 
-        ti = self.ti.event(name, unique_id=event_id)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
         r = ti.add_tag(tag)
         tag_data = r.json()
         assert r.status_code == 201
@@ -166,8 +166,8 @@ class TestEventGroups:
             event_id = self.event_create(name)
 
         # delete indicator
-        ti = self.ti.event(name, unique_id=event_id)
-        r = ti.delete(owner=tcex.args.tc_owner)
+        ti = self.ti.event(name, owner=tcex.args.tc_owner, unique_id=event_id)
+        r = ti.delete()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -180,8 +180,10 @@ class TestEventGroups:
         name = 'event-new-name-fdasb3'
 
         # update indicator
-        ti = self.ti.event(name, status='No Further Action', unique_id=event_id)
-        r = ti.update(owner=tcex.args.tc_owner)
+        ti = self.ti.event(
+            name, status='No Further Action', owner=tcex.args.tc_owner, unique_id=event_id
+        )
+        r = ti.update()
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

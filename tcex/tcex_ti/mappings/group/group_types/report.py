@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Report(Group):
     """Unique API calls for Report API Endpoints"""
 
-    def __init__(self, tcex, name, **kwargs):
+    def __init__(self, tcex, name, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Valid status:
@@ -23,7 +23,7 @@ class Report(Group):
                                                file content.
             publish_date (str, kwargs): The publish datetime expression for this Group.
         """
-        super(Report, self).__init__(tcex, 'reports', name, **kwargs)
+        super(Report, self).__init__(tcex, 'reports', name, owner, **kwargs)
         self.api_entity = 'report'
 
     def file_content(self, file_content, update_if_exists=True):

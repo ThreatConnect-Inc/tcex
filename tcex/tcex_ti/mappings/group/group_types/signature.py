@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
 class Signature(Group):
     """Unique API calls for Signature API Endpoints"""
 
-    def __init__(self, tcex, name, file_name, file_type, file_text, **kwargs):
+    def __init__(self, tcex, name, file_name, file_type, file_text, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Valid file_types:
@@ -27,7 +27,7 @@ class Signature(Group):
             file_text (str): The signature content for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
         """
-        super(Signature, self).__init__(tcex, 'signatures', name, **kwargs)
+        super(Signature, self).__init__(tcex, 'signatures', name, owner, **kwargs)
         self.api_entity = 'signature'
         self._data['fileName'] = file_name
         self._data['fileType'] = file_type

@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class UserAgent(Indicator):
     """Unique API calls for UserAgent API Endpoints"""
 
-    def __init__(self, tcex, text, **kwargs):
+    def __init__(self, tcex, text, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,10 +18,10 @@ class UserAgent(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(UserAgent, self).__init__(tcex, 'userAgents', **kwargs)
+        super(UserAgent, self).__init__(tcex, 'userAgents', owner, **kwargs)
         self.data['text'] = text
         self.api_entity = 'userAgent'
-        self.unique_id = text or kwargs.get('text', None)
+        self.unique_id = self.unique_id or text
 
     def can_create(self):
         """

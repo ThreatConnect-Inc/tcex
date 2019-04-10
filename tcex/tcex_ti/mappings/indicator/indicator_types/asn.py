@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class ASN(Indicator):
     """Unique API calls for ASN API Endpoints"""
 
-    def __init__(self, tcex, as_number, **kwargs):
+    def __init__(self, tcex, as_number, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,10 +18,10 @@ class ASN(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(ASN, self).__init__(tcex, 'asns', **kwargs)
+        super(ASN, self).__init__(tcex, 'asns', owner, **kwargs)
         self._api_entity = 'asn'
         self._data['as_number'] = as_number
-        self.unique_id = as_number or kwargs.get('as_number', None)
+        self.unique_id = self.unique_id or as_number
 
     def can_create(self):
         """

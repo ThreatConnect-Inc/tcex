@@ -6,7 +6,7 @@ from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 class CIDR(Indicator):
     """Unique API calls for CIDR API Endpoints"""
 
-    def __init__(self, tcex, block, **kwargs):
+    def __init__(self, tcex, block, owner=None, **kwargs):
         """Initialize Class Properties.
 
         Args:
@@ -18,10 +18,10 @@ class CIDR(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(CIDR, self).__init__(tcex, 'CIDR', **kwargs)
+        super(CIDR, self).__init__(tcex, 'CIDR', owner, **kwargs)
         self.api_entity = 'cidr'
         self._data['block'] = block
-        self.unique_id = block or kwargs.get('block', None)
+        self.unique_id = self.unique_id or block
 
     def can_create(self):
         """

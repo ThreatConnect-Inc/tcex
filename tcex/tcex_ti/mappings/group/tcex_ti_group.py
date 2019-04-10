@@ -11,8 +11,8 @@ except ImportError:
 class Group(TIMappings):
     """Unique API calls for Group API Endpoints"""
 
-    def __init__(self, tcex, sub_type, name, **kwargs):
-        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group')
+    def __init__(self, tcex, sub_type, name, owner=None, **kwargs):
+        super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group', owner)
         if name:
             self._data['name'] = name
 
