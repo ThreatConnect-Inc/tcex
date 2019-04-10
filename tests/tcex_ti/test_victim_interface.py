@@ -90,10 +90,8 @@ class TestVictim:
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.victim(name, unique_id=victim_id)
         r = ti.single(owner='TCI', params=parameters)
-        print(r.url)
 
         ti_data = r.json()
-        print(ti_data)
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('victim').get('name') == name
