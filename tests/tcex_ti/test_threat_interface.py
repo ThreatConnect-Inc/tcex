@@ -20,7 +20,7 @@ class TestThreatGroups:
 
         # get
         ti = self.ti.threat(name, unique_id=threat_id)
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -89,7 +89,7 @@ class TestThreatGroups:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.threat(name, unique_id=threat_id)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -104,7 +104,7 @@ class TestThreatGroups:
     def threat_create(self, name='threat-name-65341'):
         """Test threat create."""
         ti = self.ti.threat(name)
-        r = ti.create(owner='TCI')
+        r = ti.create(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -173,7 +173,7 @@ class TestThreatGroups:
 
         # delete indicator
         ti = self.ti.threat(name, unique_id=threat_id)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -188,7 +188,7 @@ class TestThreatGroups:
 
         # update indicator
         ti = self.ti.threat(name, unique_id=threat_id)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

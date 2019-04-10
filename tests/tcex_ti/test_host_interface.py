@@ -19,7 +19,7 @@ class TestHostIndicators:
 
         # get
         ti = self.ti.host(hostname)
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -74,7 +74,7 @@ class TestHostIndicators:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.host(hostname)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -89,7 +89,7 @@ class TestHostIndicators:
     def host_create(self, hostname='www.hostname-title-65341.com'):
         """Test host create."""
         ti = self.ti.host(hostname)
-        r = ti.create(owner='TCI')
+        r = ti.create(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -152,7 +152,7 @@ class TestHostIndicators:
 
         # delete indicator
         ti = self.ti.host(hostname)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -164,7 +164,7 @@ class TestHostIndicators:
 
         # update indicator
         ti = self.ti.host(hostname, rating=5, confidence=10)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

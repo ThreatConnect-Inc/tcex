@@ -19,7 +19,7 @@ class TestIntrustionSetGroups:
 
         # get
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -90,7 +90,7 @@ class TestIntrustionSetGroups:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -107,7 +107,7 @@ class TestIntrustionSetGroups:
     def intrusion_sets_create(self, name='intrusion_sets-name-65341'):
         """Test intrusion_sets create."""
         ti = self.ti.intrusion_sets(name)
-        r = ti.create(owner='TCI')
+        r = ti.create(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -181,7 +181,7 @@ class TestIntrustionSetGroups:
 
         # delete indicator
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -195,7 +195,7 @@ class TestIntrustionSetGroups:
 
         # update indicator
         ti = self.ti.intrusion_sets(name, unique_id=intrusion_sets_id)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

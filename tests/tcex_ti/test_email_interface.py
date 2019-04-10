@@ -29,7 +29,7 @@ class TestEmailGroups:
         ti = self.ti.email(
             name, to, from_addr, subject, body, header, unique_id=email_id
         )  # pylint: disable=E1121
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -120,7 +120,7 @@ class TestEmailGroups:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -143,7 +143,7 @@ class TestEmailGroups:
     ):
         """Test email create."""
         ti = self.ti.email(name, to, from_addr, subject, body, header)
-        r = ti.create('TCI')
+        r = ti.create(tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -247,7 +247,7 @@ class TestEmailGroups:
 
         # delete indicator
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -275,7 +275,7 @@ class TestEmailGroups:
         body = 'email-body-fdsat3'
         header = 'email-header-jk23gf'
         ti = self.ti.email(name, to, from_addr, subject, body, header, unique_id=email_id)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

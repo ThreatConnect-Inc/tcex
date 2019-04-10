@@ -19,7 +19,7 @@ class TestAddressIndicators:
 
         # get
         ti = self.ti.address(ip)
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -75,7 +75,7 @@ class TestAddressIndicators:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.address(ip)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -90,7 +90,7 @@ class TestAddressIndicators:
     def address_create(self, ip='14.111.14.15'):
         """Test address create."""
         ti = self.ti.indicator(indicator_type='Address', ip=ip)
-        r = ti.create('TCI')
+        r = ti.create(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -149,7 +149,7 @@ class TestAddressIndicators:
 
         # delete indicator
         ti = self.ti.indicator(indicator_type='Address', ip=ip)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -161,7 +161,7 @@ class TestAddressIndicators:
 
         # update indicator
         ti = self.ti.indicator(indicator_type='Address', ip=ip, rating=5, confidence=10)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'

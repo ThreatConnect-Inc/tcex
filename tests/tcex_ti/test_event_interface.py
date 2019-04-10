@@ -19,7 +19,7 @@ class TestEventGroups:
 
         # get
         ti = self.ti.event(name, unique_id=event_id)
-        r = ti.single(owner='TCI')
+        r = ti.single(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -82,7 +82,7 @@ class TestEventGroups:
 
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         ti = self.ti.event(name, unique_id=event_id)
-        r = ti.single(owner='TCI', params=parameters)
+        r = ti.single(owner=tcex.args.tc_owner, params=parameters)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -97,7 +97,7 @@ class TestEventGroups:
     def event_create(self, name='event-name-65341'):
         """Test event create."""
         ti = self.ti.event(name)
-        r = ti.create(owner='TCI')
+        r = ti.create(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -167,7 +167,7 @@ class TestEventGroups:
 
         # delete indicator
         ti = self.ti.event(name, unique_id=event_id)
-        r = ti.delete(owner='TCI')
+        r = ti.delete(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
@@ -181,7 +181,7 @@ class TestEventGroups:
 
         # update indicator
         ti = self.ti.event(name, status='No Further Action', unique_id=event_id)
-        r = ti.update(owner='TCI')
+        r = ti.update(owner=tcex.args.tc_owner)
         ti_data = r.json()
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
