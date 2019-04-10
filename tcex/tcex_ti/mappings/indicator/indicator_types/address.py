@@ -21,7 +21,7 @@ class Address(Indicator):
         super(Address, self).__init__(tcex, 'addresses', **kwargs)
         self._api_entity = 'address'
         self.data['ip'] = ip
-        self.unique_id = ip or kwargs.get('ip', None)
+        self.unique_id = self.unique_id or ip
 
     def can_create(self):
         """

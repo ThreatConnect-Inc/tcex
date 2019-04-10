@@ -46,7 +46,7 @@ class TestUtils:
     def test_format_datetime(self, date, tz, date_format, results):
         """Test format datetime"""
         dt = tcex.utils.format_datetime(time_input=date, tz=tz, date_format=date_format)
-        assert dt.startswith(results)
+        assert str(dt).startswith(str(results))
 
     def test_timedelta(self):
         """Test timedelta module"""

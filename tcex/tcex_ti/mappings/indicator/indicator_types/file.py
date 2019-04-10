@@ -32,7 +32,8 @@ class File(Indicator):
         if 'size' not in self.data:
             self.data['size'] = 0
         self.unique_id = (
-            md5
+            self.unique_id
+            or md5
             or sha1
             or sha256
             or kwargs.get('md5', None)

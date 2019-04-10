@@ -568,21 +568,33 @@ class ReadArg(object):
             # retrieve data from Redis and call decorated function
             args_list = list(args)
             try:
-                value = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
-                if self.default is not None and value is None:
-                    value = self.default
+                arg_data = app.tcex.playbook.read(getattr(app.args, self.arg), self.array)
+                arg_type = app.tcex.playbook.variable_type(getattr(app.args, self.arg))
+                if self.default is not None and arg_data is None:
+                    arg_data = self.default
                 if self.fail_on is not None:
-                    if value in self.fail_on:
+                    if arg_data in self.fail_on:
                         app.tcex.playbook.exit(
                             1,
                             'Arg value for ReadArg matched fail_on value ({}).'.format(
                                 self.fail_on
                             ),
                         )
-                args_list[0] = value
+                args_list[0] = arg_data
+
+                # Add logging for debug/troubleshooting
+                if (
+                    arg_type not in ['Binary', 'BinaryArray']
+                    and app.tcex.log.getEffectiveLevel() == 10
+                ):
+                    log_string = str(arg_data)
+                    if len(log_string) > 100:
+                        log_string = '{} ...'.format(log_string[:100])
+                    app.tcex.log.debug('input value: {}'.format(log_string))
             except IndexError:
                 args_list.append(app.tcex.playbook.read(getattr(app.args, self.arg), self.array))
             args = tuple(args_list)
+
             return fn(app, *args, **kwargs)
 
         return read
