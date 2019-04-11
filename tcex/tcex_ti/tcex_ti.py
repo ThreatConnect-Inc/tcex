@@ -412,7 +412,7 @@ class TcExTi(object):
 
     def owner(self):
         """
-        Create the Ownerobject.
+        Create the Owner object.
 
         Return:
 
