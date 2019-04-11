@@ -11,6 +11,19 @@ class TestAddressIndicators:
     def setup_class(self):
         """Configure setup before all tests."""
         self.ti = tcex.ti
+        addresses = [
+            '11.21.31.41',
+            '12.11.12.11',
+            '12.13.14.15',
+            '13.11.13.11',
+            '13.23.33.43',
+            '14.111.14.15',
+            '17.15.30.41',
+            '40.30.20.10',
+        ]
+        for ip in addresses:
+            ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
+            ti.delete()
 
     def test_address_get(self, ip='17.15.30.41'):
         """Test address get."""
@@ -24,9 +37,6 @@ class TestAddressIndicators:
         assert r.status_code == 200
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('address').get('ip') == ip
-
-        # delete
-        self.address_delete(ip)
 
     def test_address_get_attributes(self, ip='11.21.31.41'):
         """Test address get."""
@@ -44,9 +54,6 @@ class TestAddressIndicators:
         else:
             assert False
 
-        # delete
-        self.address_delete(ip)
-
     def test_address_get_tags(self, ip='13.23.33.43'):
         """Test address get."""
         # create
@@ -61,9 +68,6 @@ class TestAddressIndicators:
             break
         else:
             assert False
-
-        # delete
-        self.address_delete(ip)
 
     def test_address_get_include(self, ip='40.30.20.10'):
         """Test address get."""
@@ -84,13 +88,12 @@ class TestAddressIndicators:
         assert ti_data.get('data').get('address').get('securityLabel')[0].get('name') == 'TLP:RED'
         assert ti_data.get('data').get('address').get('tag')[0].get('name') == 'PyTest'
 
-        # delete
-        self.address_delete(ip)
-
     def address_create(self, ip='14.111.14.15'):
         """Test address create."""
         ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
         r = ti.create()
+        print(r.url)
+        print(r.text)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
@@ -113,8 +116,6 @@ class TestAddressIndicators:
         assert r.status_code == 201
         assert attribute_data.get('status') == 'Success'
         assert attribute_data.get('data').get('attribute').get('value') == attribute_value
-        if should_create:
-            self.address_delete(ip)
 
     def test_address_add_label(self, should_create=True, ip='12.13.14.15', label='TLP:GREEN'):
         """Test address attribute add."""
@@ -126,8 +127,6 @@ class TestAddressIndicators:
         label_data = r.json()
         assert r.status_code == 201
         assert label_data.get('status') == 'Success'
-        if should_create:
-            self.address_delete(ip)
 
     def test_address_add_tag(self, should_create=True, ip='12.13.14.15', name='Crimeware'):
         """Test address attribute add."""
@@ -139,8 +138,6 @@ class TestAddressIndicators:
         tag_data = r.json()
         assert r.status_code == 201
         assert tag_data.get('status') == 'Success'
-        if should_create:
-            self.address_delete(ip)
 
     def address_delete(self, ip='12.11.12.11'):
         """Test address delete."""
@@ -169,6 +166,3 @@ class TestAddressIndicators:
         assert ti_data.get('status') == 'Success'
         assert ti_data.get('data').get('address').get('rating') == 5.0
         assert ti_data.get('data').get('address').get('confidence') == 10
-
-        # delete indicator
-        self.address_delete(ip)

@@ -95,7 +95,6 @@ class TestEmbedded:
     )
     def test_embedded_read_string(self, embedded_value, resolved_value):
         """Test playbook embedded string in string"""
-        print(tcex.playbook.read(embedded_value))
         assert tcex.playbook.read(embedded_value) == resolved_value
 
     @pytest.mark.parametrize(

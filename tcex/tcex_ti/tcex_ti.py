@@ -189,7 +189,7 @@ class TcExTi(object):
         if group_type == 'CAMPAIGN':
             group = Campaign(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'DOCUMENT':
-            group = Document(self.tcex, name, **kwargs.get('file_name'), owner=owner, **kwargs)
+            group = Document(self.tcex, name, kwargs.get('file_name'), owner=owner, **kwargs)
         if group_type == 'EVENT':
             group = Event(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'EMAIL':
