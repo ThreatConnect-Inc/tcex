@@ -25,6 +25,7 @@ from tcex.tcex_ti.mappings.group.group_types.threat import Threat
 from tcex.tcex_ti.mappings.victim import Victim
 from tcex.tcex_ti.mappings.tag import Tag
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
+from tcex.tcex_ti.mappings.tcex_ti_owner import Owner
 
 p = inflect.engine()
 
@@ -408,6 +409,15 @@ class TcExTi(object):
 
         """
         return Tag(self.tcex, name)
+
+    def owner(self):
+        """
+        Create the Ownerobject.
+
+        Return:
+
+        """
+        return Owner(self.tcex)
 
     def entities(self, json_response):
         """
