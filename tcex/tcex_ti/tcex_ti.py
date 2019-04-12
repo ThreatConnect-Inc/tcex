@@ -503,7 +503,7 @@ class TcExTi(object):
             value = None
             if api_type in self.tcex.group_types:
                 temp_entity = self.tcex.ti.group(
-                    group_type=api_type, name=response_data.get('name')
+                    group_type=api_type, name=response_entity.get('name')
                 )
                 value = temp_entity.name
             elif api_type in self.tcex.indicator_types:
