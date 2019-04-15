@@ -236,29 +236,6 @@ class TestEmbedded:
         'variable,embedded_value,resolved_value',
         [
             (
-                '#App:0001:embedded.string_array.3!StringArray',
-                ['one', '#App:0001:array.1!StringArray', 'four'],
-                ['one', 'two', 'three', 'four'],
-            )
-        ],
-    )
-    def test_embedded_string_array_in_string_array(self, variable, embedded_value, resolved_value):
-        """Test playbook embedded string array in string array"""
-        tcex.playbook.create_string_array(variable, embedded_value)
-        assert tcex.playbook.read(variable) == resolved_value
-
-        # print('redis    : {}'.format(tcex.playbook.read(variable)))
-        # print('resolved : {}'.format(resolved_value))
-        # print('redis (type)   : {}'.format(type(tcex.playbook.read(variable))))
-        # print('resolved (type): {}'.format(type(resolved_value)))
-
-        tcex.playbook.delete(variable)
-        assert tcex.playbook.read(variable) is None
-
-    @pytest.mark.parametrize(
-        'variable,embedded_value,resolved_value',
-        [
-            (
                 '#App:0001:embedded.keyvalue.1!KeyValue',
                 {'key': 'one', 'value': '#App:0001:string.3!String'},
                 {'key': 'one', 'value': 'two'},
