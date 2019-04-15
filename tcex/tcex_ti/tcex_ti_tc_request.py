@@ -80,6 +80,15 @@ class TiTcRequest:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
         return self.tcex.session.put(url, params=params, json=data)
 
+    def mine(self):
+        """
+        Get My owners
+        Returns:
+
+        """
+        url = '/v2/owners/mine'
+        return self.tcex.session.get(url)
+
     def single(self, main_type, sub_type, unique_id, owner=None, filters=None, params=None):
         """
 
@@ -104,6 +113,7 @@ class TiTcRequest:
             url = '/v2/{}/{}'.format(main_type, unique_id)
         else:
             url = '/v2/{}/{}/{}'.format(main_type, sub_type, unique_id)
+
         return self.tcex.session.get(url, params=params)
 
     def many(self, main_type, sub_type, api_entity, owner=None, filters=None, params=None):

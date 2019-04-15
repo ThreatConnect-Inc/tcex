@@ -25,6 +25,7 @@ from tcex.tcex_ti.mappings.group.group_types.threat import Threat
 from tcex.tcex_ti.mappings.victim import Victim
 from tcex.tcex_ti.mappings.tag import Tag
 from tcex.tcex_ti.mappings.group.tcex_ti_group import Group
+from tcex.tcex_ti.mappings.tcex_ti_owner import Owner
 
 p = inflect.engine()
 
@@ -409,6 +410,15 @@ class TcExTi(object):
         """
         return Tag(self.tcex, name)
 
+    def owner(self):
+        """
+        Create the Owner object.
+
+        Return:
+
+        """
+        return Owner(self.tcex)
+
     def entities(self, json_response):
         """
         Yields a entity. Takes both a list of indicators/groups or a individual
@@ -493,7 +503,7 @@ class TcExTi(object):
             value = None
             if api_type in self.tcex.group_types:
                 temp_entity = self.tcex.ti.group(
-                    group_type=api_type, name=response_data.get('name')
+                    group_type=api_type, name=response_entity.get('name')
                 )
                 value = temp_entity.name
             elif api_type in self.tcex.indicator_types:

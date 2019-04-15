@@ -14,7 +14,7 @@ class Group(TIMappings):
     def __init__(self, tcex, sub_type, name, owner=None, **kwargs):
         super(Group, self).__init__(tcex, 'Group', 'groups', sub_type, 'group', owner)
         if name:
-            self._data['name'] = name
+            self.name = name
 
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
@@ -75,6 +75,10 @@ class Group(TIMappings):
     def name(self):
         """Return Group name."""
         return self._data.get('name')
+
+    @name.setter
+    def name(self, name):
+        self._data['name'] = name
 
     def _set_unique_id(self, json_response):
         self.unique_id = json_response.get('id', '')
