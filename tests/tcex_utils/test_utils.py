@@ -20,7 +20,7 @@ class TestUtils:
             (1229084481, 'US/Eastern', '2008-12-12T07:21:21-05:00'),
             ('1229084481', 'US/Central', '2008-12-12T06:21:21-06:00'),
             (1229084481.298753, 'America/New_York', '2008-12-12T07:21:21.298753-05:00'),
-            ('2017 11 08', 'UTC', '2017-11-08T05:51:00+00:00'),
+            ('2017 11 08', 'UTC', '2017-11-08T06:00:00+00:00'),
             ('2017-11-08T16:52:42Z', None, '2017-11-08T16:52:42+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', '2017-11-08T11:52:42-05:00'),
             ('in 1 month', 'US/Central', '2019-05'),
@@ -29,6 +29,7 @@ class TestUtils:
     def test_any_to_datetime(self, date, tz, results):
         """Test any to datetime"""
         dt = tcex.utils.any_to_datetime(date, tz)
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
         assert dt.isoformat().startswith(results)
 
     @pytest.mark.parametrize(
@@ -52,46 +53,49 @@ class TestUtils:
     def test_date_to_datetime(self, date, tz, results):
         """Test format datetime"""
         dt = tcex.utils.date_to_datetime(time_input=date, tz=tz)
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
         assert str(dt).startswith(str(results))
 
     @pytest.mark.parametrize(
         'date,tz,date_format,results',
         [
-            (1229084481, 'US/Eastern', '%s', 1229066481),
+            (1229084481, 'US/Eastern', '%s', '1229066481'),
             ('1229084481', 'US/Central', None, '2008-12-12T06:21:21-06:00'),
             (1229084481.298753, 'America/New_York', '%Y-%m-%dT%H:%M:%SZ', '2008-12-12T07:21:21Z'),
-            ('2017 11 08', 'UTC', '%Y-%m-%dT%H:%M:%S.%fZ', '2017-11-08T05:51:00.000000Z'),
+            ('2017 11 08', 'UTC', '%Y-%m-%dT%H:%M:%S.%fZ', '2017-11-08T06:00:00.000000Z'),
             ('2017-11-08T16:52:42Z', None, None, '2017-11-08T16:52:42+00:00'),
-            ('2017-11-08 12:52:42-04:00', 'US/Eastern', '%s', 1510141962),
+            ('2017-11-08 12:52:42-04:00', 'US/Eastern', '%s', '1510141962'),
             ('in 1 month', 'US/Central', '%Y-%m-%d', '2019-'),
+            ('now', 'UTC', '%Y-%m-%dT%H:%M:%S', '2019-'),
         ],
     )
     def test_format_datetime(self, date, tz, date_format, results):
         """Test format datetime"""
         dt = tcex.utils.format_datetime(time_input=date, tz=tz, date_format=date_format)
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
         # TODO: replace with regex or date calculated differently
-        assert str(dt).startswith(str(results))
+        assert str(dt).startswith(results)
 
     @pytest.mark.parametrize(
         'date,tz,results',
         [
-            ('August 25th, 2008', 'UTC', '2008-08-26'),
-            ('25 Aug 2008', 'UTC', '2008-08-26'),
+            ('August 25th, 2008', 'UTC', '2008-08-25'),
+            ('25 Aug 2008', 'UTC', '2008-08-25'),
             ('Aug 25 5pm', 'UTC', '2019-08-25'),
             ('5pm August 25', 'UTC', '2019-08-25'),
             ('next saturday', 'UTC', '2019-'),
             ('tomorrow', 'UTC', '2019-'),
             ('next thursday at 4pm', 'UTC', '2019-'),
             ('at 4pm', 'UTC', '2019-'),
-            ('eod', 'UTC', '2019-04-10'),
-            ('tomorrow eod', 'UTC', '2019-04'),
+            ('eod', 'UTC', '2019-'),
+            ('tomorrow eod', 'UTC', '2019'),
             ('eod tuesday', 'UTC', '2019-'),
             ('eoy', 'UTC', '2019-12-31'),
             ('eom', 'UTC', '2019-'),
-            ('in 5 minutes', 'UTC', '2019-04-11'),
-            ('5 minutes from now', 'UTC', '2019-04-11'),
-            ('5 hours before now', 'UTC', '2019-04-10'),
-            ('2 hours before noon', 'UTC', '2019-04-10'),
+            ('in 5 minutes', 'UTC', '2019-'),
+            ('5 minutes from now', 'UTC', '2019-'),
+            ('5 hours before now', 'UTC', '2019-'),
+            ('2 hours before noon', 'UTC', '2019-'),
             ('2 days from tomorrow', 'UTC', '2019-'),
             ('0', 'US/Eastern', None),
         ],
@@ -99,7 +103,7 @@ class TestUtils:
     def test_human_date_to_datetime(self, date, tz, results):
         """Test format datetime"""
         dt = tcex.utils.human_date_to_datetime(time_input=date, tz=tz)
-        # print('(\'{}\', \'{}\', \'{}\')'.format(date, tz, dt))
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
         assert str(dt).startswith(str(results))
 
     def test_timedelta(self):
@@ -125,5 +129,4 @@ class TestUtils:
     def test_unix_time_to_datetime(self, date, tz, results):
         """Test unix time to datetime"""
         dt = tcex.utils.unix_time_to_datetime(time_input=date, tz=tz)
-        print(dt)
         assert str(dt).startswith(str(results))

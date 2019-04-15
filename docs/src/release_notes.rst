@@ -3,6 +3,14 @@
 Release Notes
 #############
 
+1.0.0
+=====
++ Added new TI (Threat Intel) module to interact with ThreatConnect REST API.
++ Added support of "\s" characters to be replaced automatically with a space (" ") character on user string input in Playbook Apps.
++ Added templates for external Apps.
++ Updated read_embedded method to deserialize nested variables before replacement.
++ Updated utils module to better handle datetime tz conversions.
+
 0.9.x
 =====
 

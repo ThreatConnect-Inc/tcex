@@ -75,8 +75,7 @@ class TcExUtils:
             except pytz.exceptions.UnknownTimeZoneError:
                 # seeing as all else has failed: use UTC as the timezone
                 tzinfo = timezone('UTC')
-        dateutil_parser = dateutil_parser.replace(tzinfo=tzinfo)
-        return dateutil_parser
+        return tzinfo.localize(dateutil_parser)
 
     def date_to_datetime(self, time_input, tz=None):
         """ Convert ISO 8601 and other date strings to datetime.datetime type.

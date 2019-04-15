@@ -408,9 +408,16 @@ class TcExPlaybook(object):
                         data = self.read_data_types[key_type](key, embedded)
                 else:
                     data = self.read_raw(key)
-            elif embedded:
-                # check for any embedded variables
-                data = self.read_embedded(key, key_type)
+            else:
+                if key_type == 'String':
+                    # replace "\s" with a space only for user input.
+                    # using '\\s' will prevent replacement.
+                    data = re.sub(r'(?<!\\)\\s', ' ', data)
+                    data = re.sub(r'\\\\s', '\\s', data)
+
+                if embedded:
+                    # check for any embedded variables
+                    data = self.read_embedded(data, key_type)
 
         # return data as a list
         if array and not isinstance(data, list):
@@ -501,6 +508,9 @@ class TcExPlaybook(object):
 
         # iterate all matching variables
         for var in (v.group(0) for v in re.finditer(self._variable_parse, data)):
+            self.tcex.log.debug(
+                'embedded variable: {}, parent_var_type: {}'.format(var, parent_var_type)
+            )
             key_type = self.variable_type(var)
             val = self.read(var)
 
@@ -509,10 +519,6 @@ class TcExPlaybook(object):
             elif key_type != 'String':
                 var = r'"?{}"?'.format(var)  # replace quotes if they exist
                 val = json.dumps(val)
-
-            # do we care to support this?
-            if parent_var_type == 'StringArray' and key_type == 'StringArray':
-                val = val[1:-1]
 
             data = re.sub(var, val, data)
         return data

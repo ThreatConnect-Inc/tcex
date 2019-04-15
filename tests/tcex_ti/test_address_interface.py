@@ -92,8 +92,6 @@ class TestAddressIndicators:
         """Test address create."""
         ti = self.ti.indicator(indicator_type='Address', owner=tcex.args.tc_owner, ip=ip)
         r = ti.create()
-        print(r.url)
-        print(r.text)
         ti_data = r.json()
         assert r.status_code == 201
         assert ti_data.get('status') == 'Success'
