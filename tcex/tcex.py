@@ -790,7 +790,7 @@ class TcEx(object):
             from .tcex_request import TcExRequest
 
             r = TcExRequest(self, session)
-            if self.default_args.tc_proxy_external:
+            if session is None and self.default_args.tc_proxy_external:
                 self.log.info(
                     'Using proxy server for external request {}:{}.'.format(
                         self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
