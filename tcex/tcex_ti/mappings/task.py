@@ -47,6 +47,20 @@ class Task(TIMappings):
         for arg, value in kwargs.items():
             self.add_key_value(arg, value)
 
+    @property
+    def name(self):
+        """Return Task name."""
+        return self._data.get('name')
+
+    @name.setter
+    def name(self, name):
+        """
+
+        Args:
+            name:
+        """
+        self._data['name'] = name
+
     @staticmethod
     def is_task():
         """
