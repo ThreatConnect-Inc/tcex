@@ -490,21 +490,25 @@ class TcExTi(object):
         for d in tc_data:
             entity = {'id': d.get('id'), 'webLink': d.get('webLink')}
             values = []
+            value = None
             if resource_type in self.tcex.group_types:
                 r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
+                value = d.get('name')
             elif resource_type in self.tcex.indicator_types:
                 r = self.tcex.ti.indicator(indicator_type=resource_type)
+                r._set_unique_id(d)
+                value = r.unique_id
             elif resource_type.lower() in ['victim']:
-                r = self.tcex.ti.victim()
+                r = self.tcex.ti.victim(d.get('name'))
+                value = d.get('name')
             else:
                 self.tcex.handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
 
             if 'summary' in d:
                 values.append(d.get('summary'))
             else:
-                r._set_unique_id(d)
-                values.append(r.unique_id)
-            entity['value'] = ' : '.join(values)
+                values.append(value)
+            entity['value'] = ' : '.join(str(values))
 
             if r.is_group() or r.is_indicator():
                 if 'owner' in d:
@@ -528,7 +532,7 @@ class TcExTi(object):
             else:
                 entity['type'] = resource_type
 
-            yield r
+            yield entity
 
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""
