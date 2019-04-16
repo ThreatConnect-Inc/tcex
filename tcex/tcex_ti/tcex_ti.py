@@ -508,7 +508,7 @@ class TcExTi(object):
                 values.append(d.get('summary'))
             else:
                 values.append(value)
-            entity['value'] = ' : '.join(str(values))
+            entity['value'] = ' : '.join(values)
 
             if r.is_group() or r.is_indicator():
                 if 'owner' in d:
