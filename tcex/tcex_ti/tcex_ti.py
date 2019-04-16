@@ -419,7 +419,7 @@ class TcExTi(object):
         """
         return Owner(self.tcex)
 
-    def entities(self, json_response):
+    def entities(self, tc_data, resource_type):
         """
         Yields a entity. Takes both a list of indicators/groups or a individual
         indicator/group response.
@@ -484,66 +484,51 @@ class TcExTi(object):
         Yields:
 
         """
-        response_data = json_response.get('data', {})
-        api_entity = None
-        for key in list(response_data.keys()):
-            if key != 'resultCount':
-                api_entity = key
-            else:
-                return
-        api_type = self.tcex.get_type_from_api_entity(api_entity)
-        response_entities = response_data.get(api_entity, [])
-        if not isinstance(response_entities, list):
-            response_entities = [response_entities]
+        if not isinstance(tc_data, list):
+            tc_data = [tc_data]
 
-        for response_entity in response_entities:
-            data = {}
-            temp_entity = None
-            value = None
-            if api_type in self.tcex.group_types:
-                temp_entity = self.tcex.ti.group(
-                    group_type=api_type, name=response_entity.get('name')
-                )
-                value = temp_entity.name
-            elif api_type in self.tcex.indicator_types:
-                temp_entity = self.tcex.ti.indicator(indicator_type=api_type)
-                temp_entity._set_unique_id(response_entity)
-                value = temp_entity.unique_id
+        for d in tc_data:
+            entity = {'id': d.get('id'), 'webLink': d.get('webLink')}
+            values = []
+            if resource_type in self.tcex.group_types:
+                r = self.tcex.ti.group(group_type=resource_type, name=d.get('name'))
+            elif resource_type in self.tcex.indicator_types:
+                r = self.tcex.ti.indicator(indicator_type=resource_type)
+            elif resource_type.lower() in ['victim']:
+                r = self.tcex.ti.victim()
             else:
-                self.tcex.handle_error(925, ['type', 'entities', 'type', 'type', api_type])
+                self.tcex.handle_error(925, ['type', 'entities', 'type', 'type', resource_type])
 
-            confidence = response_entity.get('confidence', None)
-            if confidence is not None:
-                data['confidence'] = confidence
-            rating = response_entity.get('rating', None)
-            if rating is not None:
-                data['rating'] = rating
-            date_added = response_entity.get('dateAdded', None)
-            if date_added is not None:
-                data['dateAdded'] = date_added
-            entity_id = response_entity.get('id', None)
-            if entity_id is not None:
-                data['id'] = entity_id
-            last_modified = response_entity.get('lastModified', None)
-            if last_modified is not None:
-                data['lastModified'] = last_modified
-            owner_name = response_entity.get('owner', {}).get('name', None)
-            if owner_name is not None:
-                data['ownerName'] = owner_name
-            threat_assess_confidence = response_entity.get('threatAssessConfidence', None)
-            if threat_assess_confidence is not None:
-                data['threatAssessConfidence'] = threat_assess_confidence
-            threat_assess_rating = response_entity.get('threatAssessRating', None)
-            if threat_assess_rating is not None:
-                data['threatAssessRating'] = threat_assess_rating
-            if temp_entity.type is not None:
-                data['type'] = temp_entity.type
-            if value is not None:
-                data['value'] = value
-            web_link = response_entity.get('webLink')
-            if web_link is not None:
-                data['webLink'] = web_link
-            yield data
+            if 'summary' in d:
+                values.append(d.get('summary'))
+            else:
+                r._set_unique_id(d)
+                values.append(r.unique_id)
+            entity['value'] = ' : '.join(values)
+
+            if r.is_group() or r.is_indicator():
+                if 'owner' in d:
+                    entity['ownerName'] = d['owner']['name']
+                else:
+                    entity['ownerName'] = d.get('ownerName')
+                entity['dateAdded'] = d.get('dateAdded')
+
+            if r.is_victim():
+                entity['ownerName'] = d.get('org')
+
+            if r.is_indicator():
+                entity['confidence'] = d.get('confidence')
+                entity['rating'] = d.get('rating')
+                entity['threatAssessConfidence'] = d.get('threatAssessConfidence')
+                entity['threatAssessRating'] = d.get('threatAssessRating')
+                entity['dateLastModified'] = d.get('lastModified')
+            # type
+            if d.get('type') is not None:
+                entity['type'] = d.get('type')
+            else:
+                entity['type'] = resource_type
+
+            yield r
 
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""
