@@ -32,7 +32,7 @@ class Task(TIMappings):
             **kwargs:
             name (str): The name for this Group.
         """
-        super(Task, self).__init__(tcex, owner, None, 'tasks', None, 'task')
+        super(Task, self).__init__(tcex, owner, 'Task', 'tasks', None, 'task')
         self._data['name'] = name
         if status:
             self._data['status'] = status
