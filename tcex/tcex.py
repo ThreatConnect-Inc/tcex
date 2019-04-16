@@ -615,7 +615,7 @@ class TcEx(object):
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
             'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
             'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
-            'Emails': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
             'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
             'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
             'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
