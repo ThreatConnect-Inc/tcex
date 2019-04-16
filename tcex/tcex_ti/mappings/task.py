@@ -55,6 +55,14 @@ class Task(TIMappings):
         """
         return True
 
+    def _set_unique_id(self, json_response):
+        """
+
+        Args:
+            json_response:
+        """
+        self.unique_id = json_response.get('id', '')
+
     def status(self, status):
         """
         Valid status:
