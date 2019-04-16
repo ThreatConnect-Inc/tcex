@@ -190,7 +190,7 @@ class TcExTi(object):
         if group_type == 'CAMPAIGN':
             group = Campaign(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'DOCUMENT':
-            group = Document(self.tcex, name, kwargs.get('file_name'), owner=owner, **kwargs)
+            group = Document(self.tcex, name, kwargs.pop('file_name', None), owner=owner, **kwargs)
         if group_type == 'EVENT':
             group = Event(self.tcex, name, owner=owner, **kwargs)
         if group_type == 'EMAIL':
@@ -497,7 +497,6 @@ class TcExTi(object):
             response_entities = [response_entities]
 
         for response_entity in response_entities:
-            entity = {}
             data = {}
             temp_entity = None
             value = None
@@ -544,10 +543,7 @@ class TcExTi(object):
             web_link = response_entity.get('webLink')
             if web_link is not None:
                 data['webLink'] = web_link
-            entity['data_type'] = 'redis'
-            entity['variable'] = 'testing'
-            entity['data'] = data
-            yield entity
+            yield data
 
     def _gen_indicator_class(self):
         """Generate Custom Indicator Classes."""
