@@ -231,7 +231,7 @@ class TcExTi(object):
                 kwargs.pop('due_date', None),
                 kwargs.pop('reminder_date', None),
                 kwargs.pop('escalation_date', None),
-                owner,
+                owner=owner,
                 **kwargs
             )
         return group
