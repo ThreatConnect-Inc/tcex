@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_playbook &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex_playbook &mdash; TcEx 1.0.1 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.1
               </div>
 
 
@@ -178,8 +178,11 @@
 <span class="sd">&quot;&quot;&quot; TcEx Framework Playbook module &quot;&quot;&quot;</span>
 <span class="c1"># from builtins import int, str</span>
 <span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="c1"># import codecs</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 
 
 <div class="viewcode-block" id="TcExPlaybook"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook">[docs]</a><span class="k">class</span> <span class="nc">TcExPlaybook</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -567,7 +570,8 @@
 <span class="sd">            (any): Results retrieved from DB</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;read variable </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># if a non-variable value is passed it should be the default</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">key</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -580,9 +584,16 @@
                         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data_types</span><span class="p">[</span><span class="n">key_type</span><span class="p">](</span><span class="n">key</span><span class="p">,</span> <span class="n">embedded</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">embedded</span><span class="p">:</span>
-                <span class="c1"># check for any embedded variables</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s1">&#39;String&#39;</span><span class="p">:</span>
+                    <span class="c1"># replace &quot;\s&quot; with a space only for user input.</span>
+                    <span class="c1"># using &#39;\\s&#39; will prevent replacement.</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?&lt;!</span><span class="se">\\</span><span class="s1">)</span><span class="se">\\</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">s&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                    <span class="c1"># check for any embedded variables</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
 
         <span class="c1"># return data as a list</span>
         <span class="k">if</span> <span class="n">array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -668,60 +679,24 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (string): Results retrieved from DB</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># self.tcex.log.debug(u&#39;data {}&#39;.format(data))</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
 
-            <span class="c1"># get all matching variables</span>
-            <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-                <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># iterate all matching variables</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variable_parse</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s1">&#39;embedded variable: </span><span class="si">{}</span><span class="s1">, parent_var_type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">parent_var_type</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">):</span>  <span class="c1"># recursion over set to handle duplicates</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;var </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
-                <span class="c1"># get the embedded variable type.</span>
-                <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-                <span class="c1"># self.tcex.log.debug(u&#39;key_type {}&#39;.format(key_type))</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">elif</span> <span class="n">key_type</span> <span class="o">!=</span> <span class="s1">&#39;String&#39;</span><span class="p">:</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&quot;?</span><span class="si">{}</span><span class="s1">&quot;?&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>  <span class="c1"># replace quotes if they exist</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-                <span class="c1"># val - read raw value from DB leaving escaped characters intact</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_raw</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-                <span class="c1"># val - read recursive embedded</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
-                <span class="c1"># val - remove double quotes added by JSON encoding from embedded String</span>
-                <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
-                    <span class="c1"># per slack conversation with danny on 3/22/17 all string data should already</span>
-                    <span class="c1"># have quotes since they are JSON values</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># ensure only first and last quote are removed</span>
-                <span class="c1"># self.tcex.log.debug(u&#39;var {}: val: {}&#39;.format(var, val))</span>
-
-                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># replace variable reference with nothing</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="c1"># elif parent_var_type in [&#39;String&#39;]:</span>
-                <span class="c1">#     # a parent type of String should have escaped characters removed</span>
-                <span class="c1">#     # convert &quot;embedded \\\\\\&quot;variable\\\\&quot; TO &quot;embedded \\&quot;variable&quot;</span>
-                <span class="c1">#     val = codecs.getdecoder(&#39;unicode_escape&#39;)(val)[0]</span>
-                <span class="c1">#     # self.tcex.log.debug(u&#39;val (codec.getdecoder): {}&#39;.format(val))</span>
-                <span class="k">elif</span> <span class="n">parent_var_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;StringArray&#39;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;String&#39;</span><span class="p">]:</span>
-                        <span class="c1"># handle case where String may or may not be wrapped in double quotes.</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">),</span> <span class="s1">&#39;, &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
-                    <span class="k">elif</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;StringArray&#39;</span><span class="p">]:</span>
-                        <span class="c1"># handle case where StringArray may or may not be wrapped in double quotes.</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">),</span> <span class="n">var</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">):</span>
-                            <span class="c1"># remove [] from embedded StringArray</span>
-                            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># ensure only first and last bracket are removed</span>
-                <span class="k">elif</span> <span class="n">parent_var_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;KeyValue&#39;</span><span class="p">,</span> <span class="s1">&#39;KeyValueArray&#39;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">key_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;StringArray&#39;</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">var</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">var</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
-                            <span class="c1"># add quotes to var so they will be removed in replace()</span>
-                            <span class="n">var</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 <div class="viewcode-block" id="TcExPlaybook.variable_type"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.variable_type">[docs]</a>    <span class="k">def</span> <span class="nf">variable_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
@@ -899,7 +874,7 @@
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">data_decoded</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">b64decode</span><span class="p">:</span>
                         <span class="c1"># if requested decode the base64 string</span>
                         <span class="n">dd</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -960,7 +935,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -1011,7 +986,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -1089,12 +1064,12 @@
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">key_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># handle improperly saved string</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">embedded</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="c1"># reverted the previous change where data was encoded due to issues where</span>
                         <span class="c1"># it broke the operator method in py3 (e.g. b&#39;1&#39; ne &#39;1&#39;).</span>
@@ -1146,7 +1121,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -1193,7 +1168,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -1240,7 +1215,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_embedded</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_type</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Failed loading JSON data (</span><span class="si">{}</span><span class="s1">). Error: (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>

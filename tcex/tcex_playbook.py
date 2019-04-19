@@ -507,7 +507,7 @@ class TcExPlaybook(object):
             return data
 
         # iterate all matching variables
-        for var in (v.group(0) for v in re.finditer(self._variable_parse, data)):
+        for var in (v.group(0) for v in re.finditer(self._variable_parse, str(data))):
             self.tcex.log.debug(
                 'embedded variable: {}, parent_var_type: {}'.format(var, parent_var_type)
             )

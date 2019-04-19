@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_args module &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex_args module &mdash; TcEx 1.0.1 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.1
               </div>
 
 
@@ -308,6 +308,58 @@ TcEX platform and is only intended for testing apps locally.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">ArgParser parsed arguments.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(namespace)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_args.TcExArgs.args_update">
+<code class="descname">args_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_args.html#TcExArgs.args_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_args.TcExArgs.args_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the argparser namespace with any data from configuration file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_args.TcExArgs.config">
+<code class="descname">config</code><span class="sig-paren">(</span><em>config_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_args.html#TcExArgs.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_args.TcExArgs.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add configuration data to be injected into sys.argv.</p>
+<p>Below are the default args that the TcEx frameworks supports. Any App specific args
+should be included in the provided data.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;api_access_id&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.API_ACCESS_ID&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;api_default_org&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.API_DEFAULT_ORG&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;api_secret_key&quot;</span><span class="o">:</span> <span class="s2">&quot;$envs.API_SECRET_KEY&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_api_path&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_API_PATH&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_log_level&quot;</span><span class="o">:</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_log_path&quot;</span><span class="o">:</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_owner&quot;</span><span class="o">:</span> <span class="s2">&quot;MyOwner&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_host&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_HOST&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_password&quot;</span><span class="o">:</span> <span class="s2">&quot;$envs.TC_PROXY_PASSWORD&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_port&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_PORT&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_tc&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="s2">&quot;tc_proxy_username&quot;</span><span class="o">:</span> <span class="s2">&quot;$env.TC_PROXY_USERNAME&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config</strong> (<em>dict</em>) – A dictionary of configuration values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="tcex.tcex_args.TcExArgs.config_file">
+<code class="descname">config_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_args.html#TcExArgs.config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_args.TcExArgs.config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load configuration data from provided file and inject values into sys.argv.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config</strong> (<em>str</em>) – The configuration file name.</td>
 </tr>
 </tbody>
 </table>

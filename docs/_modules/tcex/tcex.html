@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 1.0.1 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.1
               </div>
 
 
@@ -219,10 +219,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_playbook</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_utils</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># NOTE: odd issue where args is not updating properly</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tc_token_expires</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Parser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcex_args</span> <span class="o">=</span> <span class="n">TcExArgs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -788,6 +785,41 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_types_data</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_types_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;All supported ThreatConnect Group types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Adversary&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;adversaries&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;adversary&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Campaign&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;campaigns&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;campaign&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Document&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;document&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Email&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;emails&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;email&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Event&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;event&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Incident&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;incidents&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;incident&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Intrusion Set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSets&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;intrusionSet&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Report&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;report&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Signature&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;signatures&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;signature&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Threat&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;threats&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;threat&#39;</span><span class="p">},</span>
+            <span class="s1">&#39;Task&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;apiBranch&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;apiEntity&#39;</span><span class="p">:</span> <span class="s1">&#39;task&#39;</span><span class="p">},</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="TcEx.get_type_from_api_entity"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.get_type_from_api_entity">[docs]</a>    <span class="k">def</span> <span class="nf">get_type_from_api_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_entity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the object type as a string given a api entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            api_entity:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_types_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_types_data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;apiEntity&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">api_entity</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">key</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">install_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return contents of install.json configuration file, loading from disk if required.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -797,26 +829,16 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Could not retrieve App Data.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">install_json_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse params from install.json into a dict by name.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">install_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">param</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_install_json_params</span>
-
-<div class="viewcode-block" id="TcEx.job"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.job">[docs]</a>    <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;**[Deprecated]** Return instance of Job module</span>
-
-<span class="sd">        .. warning:: The job module is deprecated and will be removed in TcEx version 0.9.0. Use</span>
-<span class="sd">                     tcex.batch instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Jobs module will be deprecated in TcEx version 0.9.0.&#39;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">.tcex_job</span> <span class="k">import</span> <span class="n">TcExJob</span>
-
-        <span class="k">return</span> <span class="n">TcExJob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TcEx.metric"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.metric">[docs]</a>    <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">keyed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get instance of the Metrics module.</span>
@@ -946,7 +968,7 @@
             <span class="kn">from</span> <span class="nn">.tcex_request</span> <span class="k">import</span> <span class="n">TcExRequest</span>
 
             <span class="n">r</span> <span class="o">=</span> <span class="n">TcExRequest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">session</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_external</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="s1">&#39;Using proxy server for external request </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_proxy_port</span>
@@ -1157,7 +1179,19 @@
             <span class="kn">from</span> <span class="nn">.tcex_session</span> <span class="k">import</span> <span class="n">TcExSession</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">TcExSession</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ti</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Include the Threat Intel Module.</span>
+
+<span class="sd">        .. Note:: Threat Intell methods can be accessed using ``tcex.ti.&lt;method&gt;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.tcex_ti</span> <span class="k">import</span> <span class="n">TcExTi</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span> <span class="o">=</span> <span class="n">TcExTi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ti</span></div>
 </pre></div>
 
            </div>

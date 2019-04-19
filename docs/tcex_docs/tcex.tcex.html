@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex module &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex module &mdash; TcEx 1.0.1 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.1
               </div>
 
 
@@ -482,6 +482,21 @@ during the call of this method.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="tcex.tcex.TcEx.get_type_from_api_entity">
+<code class="descname">get_type_from_api_entity</code><span class="sig-paren">(</span><em>api_entity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.get_type_from_api_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.get_type_from_api_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the object type as a string given a api entity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>api_entity</strong> – </td>
+</tr>
+</tbody>
+</table>
+<p>Returns:</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="tcex.tcex.TcEx.group_types">
 <code class="descname">group_types</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types" title="Permalink to this definition">¶</a></dt>
@@ -496,6 +511,12 @@ during the call of this method.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.group_types_data">
+<code class="descname">group_types_data</code><a class="headerlink" href="#tcex.tcex.TcEx.group_types_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>All supported ThreatConnect Group types.</p>
 </dd></dl>
 
 <dl class="method">
@@ -577,17 +598,6 @@ during the call of this method.</p>
 <dt id="tcex.tcex.TcEx.install_json_params">
 <code class="descname">install_json_params</code><a class="headerlink" href="#tcex.tcex.TcEx.install_json_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse params from install.json into a dict by name.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="tcex.tcex.TcEx.job">
-<code class="descname">job</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex.html#TcEx.job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex.TcEx.job" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>[Deprecated]</strong> Return instance of Job module</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The job module is deprecated and will be removed in TcEx version 0.9.0. Use
-tcex.batch instead.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -908,6 +918,16 @@ better logic to handle poorly encoded unicode data in Python2 and still work in 
 <dt id="tcex.tcex.TcEx.session">
 <code class="descname">session</code><a class="headerlink" href="#tcex.tcex.TcEx.session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an instance of Requests Session configured for the ThreatConnect API.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tcex.tcex.TcEx.ti">
+<code class="descname">ti</code><a class="headerlink" href="#tcex.tcex.TcEx.ti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Include the Threat Intel Module.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Threat Intell methods can be accessed using <code class="docutils literal notranslate"><span class="pre">tcex.ti.&lt;method&gt;</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
