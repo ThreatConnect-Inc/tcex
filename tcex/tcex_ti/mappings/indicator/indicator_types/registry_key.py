@@ -21,9 +21,9 @@ class RegistryKey(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(RegistryKey, self).__init__(tcex, 'registryKeys', owner, **kwargs)
-        self.data['key_name'] = key_name
-        self.data['value_name'] = value_name
-        self.data['value_type'] = value_type
+        self.data['Key Name'] = key_name
+        self.data['Value Name'] = value_name
+        self.data['Value Type'] = value_type
         self.unique_id = self.unique_id or key_name
 
     def can_create(self):
@@ -35,9 +35,9 @@ class RegistryKey(Indicator):
 
          """
         if (
-            self.data.get('key_name')
-            and self.data.get('value_name')
-            and self.data.get('value_type')
+            self.data.get('Key Name')
+            and self.data.get('Value Name')
+            and self.data.get('Value Type')
         ):
             return True
         return False
@@ -49,4 +49,4 @@ class RegistryKey(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('key_name', '')
+        self.unique_id = json_response.get('Key Name', '')

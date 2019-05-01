@@ -19,7 +19,7 @@ class Mutex(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(Mutex, self).__init__(tcex, 'mutexes', owner, **kwargs)
-        self.data['mutex'] = mutex
+        self.data['Mutex'] = mutex
         self.api_entity = 'mutex'
         self.unique_id = self.unique_id or mutex
 
@@ -31,7 +31,7 @@ class Mutex(Indicator):
          Returns:
 
          """
-        if self.data.get('mutex'):
+        if self.data.get('Mutex'):
             return True
         return False
 
@@ -42,4 +42,4 @@ class Mutex(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('mutex', '')
+        self.unique_id = json_response.get('Mutex', '')

@@ -172,6 +172,13 @@ class Indicator(TIMappings):
             'size': 'intValue1',
             'whoisActive': 'flag2',
             'whois_active': 'flag2',
+            'key_name': 'Key Name',
+            'value_type': 'Value Type',
+            'value_name': 'Value Name',
+            'user_agent_string': 'User Agent String',
+            'block': 'Block',
+            'mutex': 'Mutex',
+            'as_number': 'AS Number',
         }
 
     def add_key_value(self, key, value):

@@ -158,20 +158,22 @@ class TcExTi(object):
         elif upper_indicator_type == 'ASN':
             indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'CIDR':
-            indicator = CIDR(self.tcex, kwargs.pop('block', None), owner=owner, **kwargs)
+            indicator = CIDR(self.tcex, kwargs.pop('Block', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'MUTEX':
-            indicator = Mutex(self.tcex, kwargs.pop('mutex', None), owner=owner, **kwargs)
+            indicator = Mutex(self.tcex, kwargs.pop('Mutex', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'REGISTRY KEY':
             indicator = RegistryKey(
                 self.tcex,
-                kwargs.pop('key_name', None),
-                kwargs.pop('value_name', None),
-                kwargs.pop('value_type', None),
+                kwargs.pop('Key Name', None),
+                kwargs.pop('Value Name', None),
+                kwargs.pop('Value Type', None),
                 owner=owner,
                 **kwargs
             )
         elif upper_indicator_type == 'USER AGENT':
-            indicator = UserAgent(self.tcex, kwargs.pop('text', None), owner=owner, **kwargs)
+            indicator = UserAgent(
+                self.tcex, kwargs.pop('User Agent String', None), owner=owner, **kwargs
+            )
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():

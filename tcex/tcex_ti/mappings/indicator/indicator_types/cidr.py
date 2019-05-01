@@ -20,7 +20,7 @@ class CIDR(Indicator):
         """
         super(CIDR, self).__init__(tcex, 'CIDR', owner, **kwargs)
         self.api_entity = 'cidr'
-        self._data['block'] = block
+        self._data['Block'] = block
         self.unique_id = self.unique_id or block
 
     def can_create(self):
@@ -31,7 +31,7 @@ class CIDR(Indicator):
         Returns:
 
         """
-        if self.data.get('block'):
+        if self.data.get('Block'):
             return True
         return False
 
@@ -42,4 +42,4 @@ class CIDR(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('block', '')
+        self.unique_id = json_response.get('Block', '')
