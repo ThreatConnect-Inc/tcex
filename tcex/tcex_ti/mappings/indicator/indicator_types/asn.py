@@ -31,7 +31,7 @@ class ASN(Indicator):
         Returns:
 
         """
-        if self.data.get('As Number'):
+        if self.data.get('AS Number'):
             return True
         return False
 
