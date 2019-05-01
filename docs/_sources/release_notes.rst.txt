@@ -3,10 +3,14 @@
 Release Notes
 #############
 
+1.0.2
+=====
++ Updated read_embedded to escape newline characters in embedded string values.
+
 1.0.1
 =====
-+ Update install.json schema validation to ensure displayName is a minimum of 3 characters.
-+ Update read_embedded to cast data value to a string.
++ Updated install.json schema validation to ensure displayName is a minimum of 3 characters.
++ Updated read_embedded to cast data value to a string.
 + Minor updates for TI module.
 
 1.0.0
