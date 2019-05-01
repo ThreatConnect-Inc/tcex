@@ -145,7 +145,7 @@ class TcExTi(object):
         elif upper_indicator_type == 'EMAILADDRESS':
             indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'FILE':
-            indicator = File(self.tcex, **kwargs)
+            indicator = File(self.tcex, owner=owner, **kwargs)
         elif upper_indicator_type == 'HOST':
             indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':

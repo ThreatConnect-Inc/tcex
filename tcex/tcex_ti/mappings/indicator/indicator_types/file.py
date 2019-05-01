@@ -91,3 +91,79 @@ class File(Indicator):
             # Indicator object has no logger to output warning
             pass
         return ' : '.join(summary)
+
+    def occurrences(self):
+        """
+        Yields all occurrences that file has.
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        for o in self.tc_requests.file_occurrences(
+            self.api_type, self.api_sub_type, self.unique_id, self.owner
+        ):
+            yield o
+
+    def get_occurrence(self, occurrence_id):
+        """
+        Gets a file occurrence given a occurrence id
+        Args:
+            occurrence_id:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.occurrence(occurrence_id)
+
+    def occurrence(self, occurrence_id):
+        """
+        Gets a file occurrence given a occurrence id
+        Args:
+            occurrence_id:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.file_occurrence(
+            self.api_type, self.api_sub_type, self.unique_id, occurrence_id, self.owner
+        )
+
+    def add_occurrence(self, name, date, path):
+        """
+        Adds a occurrence to the file
+        Args:
+            name:
+            date:
+            path:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.add_file_occurrence(
+            self.api_type, self.api_sub_type, self.unique_id, name, date, path, self.owner
+        )
+
+    def delete_occurrence(self, occurrence_id):
+        """
+        Deletes a file occurrence given a occurrence id
+        Args:
+            occurrence_id:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.delete_file_occurrence(
+            self.api_type, self.api_sub_type, self.unique_id, occurrence_id, self.owner
+        )
