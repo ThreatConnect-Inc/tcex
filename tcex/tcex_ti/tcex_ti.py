@@ -156,7 +156,7 @@ class TcExTi(object):
         elif upper_indicator_type == 'URL':
             indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'ASN':
-            indicator = ASN(self.tcex, kwargs.pop('as_number', None), owner=owner, **kwargs)
+            indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'CIDR':
             indicator = CIDR(self.tcex, kwargs.pop('block', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'MUTEX':
