@@ -146,6 +146,8 @@ class TIMappings(object):
 
         """
         self._data = data
+        if not self.unique_id:
+            self._set_unique_id(data)
 
     def create(self):
         """
@@ -833,7 +835,7 @@ class TIMappings(object):
 
     def _set_unique_id(self, json_response):
         """ Sets the Unique Id given a json """
-        self.unique_id = json_response.get('id', '')
+        self.unique_id = json_response.get('id')
 
     def __str__(self):
         """Return string representation of object."""

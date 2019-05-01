@@ -43,4 +43,4 @@ class EmailAddress(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('emailAddress', '')
+        self.unique_id = json_response.get('address', '')
