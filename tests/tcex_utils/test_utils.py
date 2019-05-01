@@ -79,8 +79,8 @@ class TestUtils:
     @pytest.mark.parametrize(
         'date,tz,results',
         [
-            ('August 25th, 2008', 'UTC', '2008-08-25'),
-            ('25 Aug 2008', 'UTC', '2008-08-25'),
+            ('August 25th, 2008', 'UTC', '2008-08-2'),
+            ('25 Aug 2008', 'UTC', '2008-08-2'),
             ('Aug 25 5pm', 'UTC', '2019-08-25'),
             ('5pm August 25', 'UTC', '2019-08-25'),
             ('next saturday', 'UTC', '2019-'),

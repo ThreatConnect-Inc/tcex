@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_error_codes &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex_error_codes &mdash; TcEx 1.0.2 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.2
               </div>
 
 
@@ -185,7 +185,7 @@
     <span class="k">def</span> <span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;TcEx defined error codes and messages.</span>
 
-<span class="sd">        .. note:: RuntimeErrors with a code of &gt;= 1000 are considered critical.  Those &lt; 1000</span>
+<span class="sd">        .. note:: RuntimeErrors with a code of &gt;= 10000 are considered critical.  Those &lt; 10000</span>
 <span class="sd">            are considered warning or errors and are up to the developer to determine the</span>
 <span class="sd">            appropriate behavior.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -210,6 +210,12 @@
             <span class="mi">580</span><span class="p">:</span> <span class="s1">&#39;Failed posting file data (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
             <span class="mi">585</span><span class="p">:</span> <span class="s1">&#39;Failed posting file data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="mi">590</span><span class="p">:</span> <span class="s1">&#39;No hash values provided.&#39;</span><span class="p">,</span>
+            <span class="c1"># threat intelligence</span>
+            <span class="mi">600</span><span class="p">:</span> <span class="s1">&#39;Failed adding group type &quot;</span><span class="si">{}</span><span class="s1">&quot; with name &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">605</span><span class="p">:</span> <span class="s1">&#39;Failed adding attribute type &quot;</span><span class="si">{}</span><span class="s1">&quot; with value &quot;</span><span class="si">{}</span><span class="s1">&quot; to group id &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">610</span><span class="p">:</span> <span class="s1">&#39;Failed adding label &quot;</span><span class="si">{}</span><span class="s1">&quot; to group id &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">615</span><span class="p">:</span> <span class="s1">&#39;Failed adding tag &quot;</span><span class="si">{}</span><span class="s1">&quot; to group id &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">650</span><span class="p">:</span> <span class="s1">&#39;Failed adding label &quot;</span><span class="si">{}</span><span class="s1">&quot; to attribute id &quot;</span><span class="si">{}</span><span class="s1">&quot; (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
             <span class="c1"># metrics</span>
             <span class="mi">700</span><span class="p">:</span> <span class="s1">&#39;Failed to create metric. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="mi">705</span><span class="p">:</span> <span class="s1">&#39;Error while finding metric by name. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
@@ -218,12 +224,22 @@
             <span class="c1"># datastore</span>
             <span class="mi">800</span><span class="p">:</span> <span class="s1">&#39;Failed to create index. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="mi">805</span><span class="p">:</span> <span class="s1">&#39;Failed to </span><span class="si">{}</span><span class="s1"> record data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
-            <span class="c1"># batch v2 critical: 1500-1600</span>
-            <span class="mi">1500</span><span class="p">:</span> <span class="s1">&#39;Critical batch error (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
-            <span class="mi">1505</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
-            <span class="mi">1510</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
-            <span class="mi">1520</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
-            <span class="mi">1525</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="c1"># threat intelligence module</span>
+            <span class="mi">905</span><span class="p">:</span> <span class="s1">&#39;Error during update. </span><span class="si">{}</span><span class="s1"> does not have a unique_id set and cannot be updated.&#39;</span><span class="p">,</span>
+            <span class="mi">910</span><span class="p">:</span> <span class="s1">&#39;Error during get. </span><span class="si">{}</span><span class="s1"> does not have a unique_id set and cannot be fetched.&#39;</span><span class="p">,</span>
+            <span class="mi">915</span><span class="p">:</span> <span class="s1">&#39;Error during delete. </span><span class="si">{}</span><span class="s1"> does not have a unique_id set and cannot be deleted.&#39;</span><span class="p">,</span>
+            <span class="mi">920</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Error during create. </span><span class="si">{}</span><span class="s1"> does not have required values set and cannot be &#39;</span>
+                <span class="s1">&#39;created.&#39;</span>
+            <span class="p">),</span>
+            <span class="mi">925</span><span class="p">:</span> <span class="s1">&#39;Error invalid </span><span class="si">{}</span><span class="s1">. </span><span class="si">{}</span><span class="s1"> does not accept that </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">950</span><span class="p">:</span> <span class="s1">&#39;Error during pagination. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">, API Url: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="c1"># batch v2 critical:</span>
+            <span class="mi">10500</span><span class="p">:</span> <span class="s1">&#39;Critical batch error (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">10505</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">10510</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch job requests. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
+            <span class="mi">10520</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data (</span><span class="si">{}</span><span class="s1">).&#39;</span><span class="p">,</span>
+            <span class="mi">10525</span><span class="p">:</span> <span class="s1">&#39;Failed submitting batch data. API status code: </span><span class="si">{}</span><span class="s1">, API message: </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="p">,</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="TcExErrorCodes.message"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_error_codes.html#tcex.tcex_error_codes.TcExErrorCodes.message">[docs]</a>    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>

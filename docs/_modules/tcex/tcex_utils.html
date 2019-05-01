@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_utils &mdash; TcEx 0.9.13 documentation</title>
+  <title>tcex.tcex_utils &mdash; TcEx 1.0.2 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                0.9.13
+                1.0.2
               </div>
 
 
@@ -251,8 +251,7 @@
             <span class="k">except</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">:</span>
                 <span class="c1"># seeing as all else has failed: use UTC as the timezone</span>
                 <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
-        <span class="n">dateutil_parser</span> <span class="o">=</span> <span class="n">dateutil_parser</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tzinfo</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">dateutil_parser</span>
+        <span class="k">return</span> <span class="n">tzinfo</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">dateutil_parser</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcExUtils.date_to_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.date_to_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">date_to_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert ISO 8601 and other date strings to datetime.datetime type.</span>
@@ -266,15 +265,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># dt = parser.parse(time_input, fuzzy_with_tokens=True)[0]</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time_input</span><span class="p">)</span>
-            <span class="c1"># don&#39;t covert timezone if dt timezone already in the correct timezone</span>
+            <span class="c1"># don&#39;t convert timezone if dt timezone already in the correct timezone</span>
             <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">tz</span> <span class="o">!=</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzname</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_timezone</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">timezone</span><span class="p">(</span><span class="n">tz</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">pass</span>
-
         <span class="k">return</span> <span class="n">dt</span></div>
 
 <div class="viewcode-block" id="TcExUtils.format_datetime"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.format_datetime">[docs]</a>    <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_input</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -346,7 +349,9 @@
 <span class="sd">            (datetime.datetime): Python datetime.datetime object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">cal</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Calendar</span><span class="p">()</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Constants</span><span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">)</span>
+        <span class="n">cal</span> <span class="o">=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">Calendar</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="c1"># cal = pdt.Calendar(c, version=pdt.VERSION_CONTEXT_STYLE)</span>
         <span class="n">tzinfo</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">src_tzname</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">source_datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -394,7 +399,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            content (bytes|str): The file content. If passing binary data the mode needs to be set</span>
-<span class="sd">                                 to &#39;wb&#39;.</span>
+<span class="sd">                to &#39;wb&#39;.</span>
 <span class="sd">            filename (str, optional): The filename to use when writing the file.</span>
 <span class="sd">            mode (str, optional): The file write mode which could be either &#39;w&#39; or &#39;wb&#39;.</span>
 
