@@ -83,6 +83,10 @@ class TestEmbedded:
             (r'test\\s', r'test\s'),
             (r'\\\somedir', r'\\somedir'),
             (r'\snow\sor\slater\s', ' now or later '),
+            (
+                '{"numbers": "#App:0001:string.4!String three\n\r"}',
+                '{"numbers": "one\ntwo\n three\n\r"}',
+            ),
             # String Test: new lines
             ('#App:0001:string.4!String', 'one\ntwo\n'),
             # String Test: escaped \n
@@ -164,7 +168,7 @@ class TestEmbedded:
             (
                 '#App:0001:embedded.string.1!String',
                 '#App:0001:string.2!String inside a string.',
-                'This is "a string" inside a string.',
+                r'This is \"a string\" inside a string.',
             ),
             (
                 '#App:0001:embedded.string.1!String',
