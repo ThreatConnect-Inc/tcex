@@ -20,7 +20,7 @@ class ASN(Indicator):
         """
         super(ASN, self).__init__(tcex, 'asns', owner, **kwargs)
         self._api_entity = 'asn'
-        self._data['as_number'] = as_number
+        self._data['AS Number'] = as_number
         self.unique_id = self.unique_id or as_number
 
     def can_create(self):
@@ -31,7 +31,7 @@ class ASN(Indicator):
         Returns:
 
         """
-        if self.data.get('as_number'):
+        if self.data.get('As Number'):
             return True
         return False
 
@@ -42,4 +42,4 @@ class ASN(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('as_number', '')
+        self.unique_id = json_response.get('AS Number', '')
