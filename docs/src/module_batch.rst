@@ -2,7 +2,7 @@
 .. _module_batch:
 
 ==============
-Module - Batch
+Module: Batch
 ==============
 
 .. important:: The Batch module requires ThreatConnect version 5.6 or higher.
