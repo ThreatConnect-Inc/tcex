@@ -23,13 +23,14 @@ class TestUtils:
             ('2017 11 08', 'UTC', '2017-11-08T06:00:00+00:00'),
             ('2017-11-08T16:52:42Z', None, '2017-11-08T16:52:42+00:00'),
             ('2017-11-08 12:52:42-04:00', 'US/Eastern', '2017-11-08T11:52:42-05:00'),
-            ('in 1 month', 'US/Central', '2019-05'),
+            ('in 1 month', 'US/Central', '2019-'),
+            (1556643600000, None, '2019-04-30T17:00:00+00:00'),
         ],
     )
     def test_any_to_datetime(self, date, tz, results):
         """Test any to datetime"""
         dt = tcex.utils.any_to_datetime(date, tz)
-        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt, results))
+        # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
         assert dt.isoformat().startswith(results)
 
     @pytest.mark.parametrize(
@@ -117,16 +118,28 @@ class TestUtils:
     @pytest.mark.parametrize(
         'date,tz,results',
         [
-            ('1454944545', 'UTC', '2016-02-08 15:15:45+00:00'),
-            ('1554944545', 'UTC', '2019-04-11 01:02:25+00:00'),
-            ('1854944545', 'US/Eastern', '2028-10-12 02:22:25-04:00'),
-            ('1954944545.123456', 'US/Eastern', '2031-12-13 11:09:05.123456-05:00'),
+            ('1454944545', 'UTC', '2016-02-08T15:15:45+00:00'),
+            ('1554944545', 'UTC', '2019-04-11T01:02:25+00:00'),
+            ('1854944545', 'US/Eastern', '2028-10-12T02:22:25-04:00'),
+            ('1954944545.123456', 'US/Eastern', '2031-12-13T11:09:05.123456-05:00'),
             ('1954944', 'UTC', None),
             ('0', 'UTC', None),
             (0, 'UTC', None),
+            ('1556643600', None, '2019-04-30T17:00:00+00:00'),
+            ('1556643600', None, '2019-04-30T17:00:00+00:00'),
+            ('15566436001', None, '2019-04-30T17:00:00.100000+00:00'),
+            ('155664360012', None, '2019-04-30T17:00:00.120000+00:00'),
+            ('1556643600123', None, '2019-04-30T17:00:00.123000+00:00'),
+            ('15566436001234', None, '2019-04-30T17:00:00.123400+00:00'),
+            ('155664360012345', None, '2019-04-30T17:00:00.123450+00:00'),
+            ('1556643600123456', None, '2019-04-30T17:00:00.123456+00:00'),
         ],
     )
     def test_unix_time_to_datetime(self, date, tz, results):
         """Test unix time to datetime"""
         dt = tcex.utils.unix_time_to_datetime(time_input=date, tz=tz)
-        assert str(dt).startswith(str(results))
+        if results is None:
+            assert dt is None
+        else:
+            # print('(\'{}\', \'{}\', \'{}\', \'{}\')'.format(date, tz, dt.isoformat(), results))
+            assert str(dt.isoformat()).startswith(str(results))

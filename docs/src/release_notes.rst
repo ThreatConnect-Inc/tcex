@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+1.0.3
+=====
++ Updated playbook read for ``\s`` replacement issue in Python 3.7.
++ Updated utils ``unix_time_to_datetime()`` method to handle unix timestamps with milliseconds that are not floats.
+
 1.0.2
 =====
 + Updated read_embedded to escape newline characters in embedded string values.

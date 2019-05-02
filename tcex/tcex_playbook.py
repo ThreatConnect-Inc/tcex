@@ -413,7 +413,7 @@ class TcExPlaybook(object):
                     # replace "\s" with a space only for user input.
                     # using '\\s' will prevent replacement.
                     data = re.sub(r'(?<!\\)\\s', ' ', data)
-                    data = re.sub(r'\\\\s', '\\s', data)
+                    data = re.sub(r'\\\\s', r'\\s', data)
 
                 if embedded:
                     # check for any embedded variables

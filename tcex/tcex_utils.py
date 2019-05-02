@@ -2,6 +2,7 @@
 """TcEx Utilities Module"""
 from datetime import datetime
 import calendar
+import math
 import os
 import re
 import time
@@ -306,7 +307,13 @@ class TcExUtils:
             (datetime.datetime): Python datetime.datetime object.
         """
         dt = None
-        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,10})?$').findall(str(time_input)):
+        if re.compile(r'^[0-9]{11,16}$').findall(str(time_input)):
+            # handle timestamp with milliseconds and no "."
+            time_input_length = len(time_input) - 10
+            dec = math.pow(10, time_input_length)
+            time_input = float(time_input) / dec
+
+        if re.compile(r'^[0-9]{9,10}(?:\.[0-9]{0,6})?$').findall(str(time_input)):
             dt = datetime.fromtimestamp(float(time_input), tz=timezone('UTC'))
             # don't covert timezone if dt timezone already in the correct timezone
             if tz is not None and tz != dt.tzname():
