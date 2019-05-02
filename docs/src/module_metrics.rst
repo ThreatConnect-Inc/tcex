@@ -2,13 +2,13 @@
 .. _module_metrics:
 
 ================
-Module - Metrics
+Module: Metrics
 ================
-The ThreatConnect |copy| TcEx App Framework provides an simple interface for Creating and adding metrics in Apps.  The :py:mod:`~tcex.tcex_metrics_v2.TcExMetricsV2` module will automatically create the Metric if it does not already exists in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics see the docs at https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics.
+The ThreatConnect TcEx App Framework provides a simple interface for creating and adding Metrics in Apps.  The :py:mod:`~tcex.tcex_metrics_v2.TcExMetricsV2` module will automatically create the Metric if it does not already exist in ThreatConnect.  The Metric Name is a unique field in the ThreatConnect platform. For more information on ThreatConnect Metrics, see the documents at https://docs.threatconnect.com/en/latest/rest_api/custom_metrics/custom_metrics.html#custom-metrics.
 
 Metrics Instance
 ================
-The ``tcex.metrics()`` method has required fields of name, description, data_type, interval, and keyed as parameters.
+The ``tcex.metrics()`` method has required fields of **name**, **description**, **data_type**, **interval**, and **keyed** as parameters.
 
 .. code-block:: python
     :linenos:
@@ -18,7 +18,7 @@ The ``tcex.metrics()`` method has required fields of name, description, data_typ
 
 Add Metrics
 ===========
-The :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add` method has a required field of value. It also accepts an option fields for **date**, **return_value**, and **key**.  If no date is provided the current datetime will be used.  The **return_value** field will tell the API to return the value for the current interval.  The **key** arg is only used for Keyed Metrics or the :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed` method can be used.
+The :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add` method has a required field of **value**. It also accepts an option field for **date**, **return_value**, and **key**.  If no date is provided, the current **datetime** will be used.  The **return_value** field will tell the API to return the value for the current interval.  The **key** arg is only used for Keyed Metrics; otehrwise, the :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed` method can be used.
 
 .. code-block:: python
     :linenos:
@@ -29,7 +29,7 @@ The :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add` method has a required fie
 
 Add Keyed Metrics
 =================
-The :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed` method has a required field of value and key. It also accepts an option fields for **date**, and **return_value**.  If no date is provided the current datetime will be used.  The **return_value** field will tell the API to return the value for the current interval.
+The :py:meth:`~tcex.tcex_metrics_v2.TcExMetricsV2.add_keyed` method has required fields of **value** and **key**. It also accepts option fields for **date** and **return_value**.  If no date is provided the current **datetime** will be used.  The **return_value** field will tell the API to return the value for the current interval.
 
 .. code-block:: python
     :linenos:
