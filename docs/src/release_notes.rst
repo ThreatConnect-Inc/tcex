@@ -5,108 +5,107 @@ Release Notes
 
 1.0.2
 =====
-+ Updated read_embedded to escape newline characters in embedded string values.
++ Updated **read_embedded** to escape newline characters in embedded string values
 
 1.0.1
 =====
-+ Updated install.json schema validation to ensure displayName is a minimum of 3 characters.
-+ Updated read_embedded to cast data value to a string.
-+ Minor updates for TI module.
++ Updated **install.json** schema validation to ensure that **displayName** contains a minimum of three characters
++ Updated **read_embedded** to cast data value to a string
++ Made minor updates to the TI module
 
 1.0.0
 =====
-+ Added new TI (Threat Intel) module to interact with ThreatConnect REST API.
-+ Added support of "\s" characters to be replaced automatically with a space (" ") character on user string input in Playbook Apps.
-+ Added templates for external Apps.
-+ Updated read_embedded method to deserialize nested variables before replacement.
-+ Updated utils module to better handle datetime tz conversions.
++ Added new Threat Intel (TI) module to interact with ThreatConnect REST API
++ Added support of "\s" characters to be replaced automatically with a space (" ") character on user string input in Playbook Apps
++ Added templates for external Apps
++ Updated **read_embedded method** to deserialize nested variables before replacement
++ Updated Utils module to better handle datetime timezone conversions
 
 0.9.x
 =====
 
 0.9.13
 ------
-+ Updated ReadArg decorator to support ``fail_on`` parameter.
-+ Updated IterateOnArg decorator to support ``fail_on`` parameter and removed ``fail_on_empty``.
-+ Updated ``datastore`` module to support no Id for POST and GET methods.
++ Updated **ReadArg** decorator to support ``fail_on`` parameter
++ Updated **IterateOnArg** decorator to support ``fail_on`` parameter and removed ``fail_on_empty``
++ Updated ``Datastore`` module to support no ID for POST and GET methods
 
 0.9.12
 ------
-+ Added new FailOnInput decorator.
-+ Changed FailOn decorator to FailOnError with arg input changes to enable.
-+ Added additional logging to IterateOnArg decorator.
++ Added new **FailOnInput** decorator
++ Changed **FailOn** decorator to **FailOnError** with arg input changes to enable
++ Added additional logging to **IterateOnArg** decorator
 
 0.9.11
 ------
-+ Reverted change to playbook module ``read()`` method for null value returned when Array is True.
++ Reverted change to Playbook module ``read()`` method for null value returned when Array is True
 
 0.9.10
 ------
-+ Updated App templates to call ``parse_args()`` from init method.
-+ Updated ``IterateOnArg`` decorator to take an addition default value.
-+ Updated ``IterateOnArg`` to exit or log when no data is retrieved from Redis.
-+ Updated ``TcExRun`` module to detect V3 profile args section by either optional or required field.
-+ Updated ``TcExProfile`` module to use new layout.json output logic and always display output variables unless display value exists and return negative validation.
++ Updated App templates to call ``parse_args()`` from **init** method
++ Updated ``IterateOnArg`` decorator to take an addition default value
++ Updated ``IterateOnArg`` to exit or log when no data is retrieved from Redis
++ Updated ``TcExRun`` module to detect v3 profile args section by either optional or required field
++ Updated ``TcExProfile`` module to use new **layout.json** output logic and always display output variables unless display value exists and return negative validation
 
 0.9.9
 -----
-+ Added new ``cache`` module.
-+ Added new ``datastore`` module.
-+ Updated App templates ignore/exclude definitions.
-+ Updated ``tcprofile`` permutation_id to handle 0 index.
-+ Updated ``tcpackage`` command to not add commitHash if value is None.
-+ Updated ``tcvalidate`` command to handle permission error when using pkg_resources.
-+ Updated install.json schema to include commitHash.
++ Added new ``Cache`` module
++ Added new ``DataStore`` module
++ Updated App templates to ignore or exclude definitions
++ Updated ``tcprofile`` **permutation_id** to handle 0 index
++ Updated ``tcpackage`` command to not add **commitHash** if value is None
++ Updated ``tcvalidate`` command to handle permission errors when using **pkg_resources**
++ Updated **install.json** schema to include **commitHash**
 
 0.9.8
 -----
-+ Fixed issue with ``sqlite`` being imported while not required for Apps.
-+ Updated ``tcprofile`` to better support App bundle projects.
++ Fixed issue with ``sqlite`` being imported while not required for Apps
++ Updated ``tcprofile`` to better support App bundle projects
 
 0.9.7
 -----
-+ Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of space.
-+ Updated ``tcprofile`` command to support permutations logic for Apps with layout.json conditional input parameters.
-+ Updated ``tcprofile`` command to update the profile schema to v3. **app.arg** is now **app.arg.optional** and **app.arg.required**.
-+ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space.
-+ Updated batch module to support new 5.8+ merge of file hash feature.
++ Updated :py:mod:`~tcex.tcex_args` module to parse injected params using a **=** separator instead of a space+ Updated ``tcprofile`` command to support permutations logic for Apps with **layout.json** conditional input parameters
++ Updated ``tcprofile`` command to update the profile schema to **v3**. Note that **app.arg** is now **app.arg.optional** and **app.arg.required**.
++ Updated ``tcrun`` arg parsing logic to use a **=** separator instead of a space
++ Updated Batch module to support new 5.8+ merge of file hash feature
 
 0.9.6
 -----
-+ Fix for ``tcvalidate`` output display statement validation.
-+ Updated install.json schema file.
-+ Updated ``tclib`` to error when environment variables are not available.
-+ Updated batch module to handle xid as str for py2 Apps.
++ Added a fix for ``tcvalidate`` output display statement validation
++ Updated **install.json** schema file
++ Updated ``tclib`` to error when environment variables are not available
++ Updated Batch module to handle **xid** as **str** for **py2** Apps
 
 0.9.5
 -----
-+ Enabled package_data in setup.py for JSON schema files.
++ Enabled **package_data** in **setup.py** for JSON schema files
 
 0.9.4
 -----
-+ Switched from setup.py package_data to MANIFEST.in for JSON schema files.
++ Switched from **setup.py package_data** to **MANIFEST.in** for JSON schema files
 
 0.9.3
 -----
-+ Added new ``tcvalidate`` command for App Builder.
-+ Added validation of layout.json schema, inputs, and outputs.
-+ Migrated JSON validation files from App to TcEx.
++ Added new ``tcvalidate`` command for App Builder
++ Added validation of **layout.json** schema, inputs, and outputs
++ Migrated JSON validation files from App to TcEx
 
 0.9.2
 -----
-+ Added new ``FailOn`` App decorator.
-+ Updated run.py in Playbook templates to handle TypeError on incorrect action.
-+ Updated ``tcpackage`` command to suggest proper fix for missing modules.
-+ Updated ``tcrun`` to handle null value in args.
++ Added new ``FailOn`` App decorator
++ Updated **run.py** in Playbook templates to handle **TypeError** on incorrect action
++ Updated ``tcpackage`` command to suggest proper fix for missing modules
++ Updated ``tcrun`` to handle null value in args
 
 0.9.1
 -----
-+ Fixed issue in ``tcpackage`` with handling errors.
-+ Updated ``tcpackage`` command to validate import module for **.py** file in project root directory.
-+ Updated ``tcpackage`` moving install.json validation to top level.
++ Fixed issue in ``tcpackage`` with handling errors
++ Updated ``tcpackage`` command to validate import module for **.py** file in project-root directory
++ Updated ``tcpackage`` moving **install.json** validation to top level
 + Updated ``tcpackage`` to support ``--ignore_validation`` arg. Using this flag will cause the command to not exit on validation errors.
-+ Updated install.json schema file to support new ``feedDeployer`` boolean field.
-+ Updated ``run.py`` template file to ensure proper paths are set for an App.
++ Updated **install.json** schema file to support new ``feedDeployer`` Boolean field
++ Updated ``run.py`` template file to ensure proper paths are set for an App
 
 0.9.0
 -----
