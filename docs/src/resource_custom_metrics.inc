@@ -1,6 +1,6 @@
 .. _resources_custom_metrics:
 
-.. important:: The Custom Metric module requires ThreatConnect version 5.4 or higher.
+.. important:: The **Custom Metric** module requires ThreatConnect version 5.4 or higher.
 
 Read Metric Configs
 ===================
@@ -214,7 +214,7 @@ Response
 Update Metric Config
 ====================
 
-.. Note:: Both the Metric ID and Metric Name can be used via the ``resource_id()`` or ``resource_name`` methods.
+.. Note:: Both the **Metric ID** and **Metric Name** can be used via the ``resource_id()`` or ``resource_name`` methods.
 
 .. code-block:: python
     :linenos:
@@ -272,10 +272,10 @@ Response
 Create Metric Data
 ==================
 
-.. Note:: The weight parameter is optional.
+.. Note:: The **weight** parameter is optional.
 
-.. Important:: Creating metrics will return a 204 by default with no Data.  To get updated Metrics
-          use the returnValue=true query parameter.
+.. Important:: Creating metrics will return a 204 by default with no data.  To get updated metrics,
+          use the **returnValue=true** query parameter.
 
 .. code-block:: python
     :linenos:
@@ -315,7 +315,7 @@ No response returned.
 Create Metric Data (with returnValue)
 =====================================
 
-.. Note:: The weight parameter is optional.
+.. Note:: The **weight** parameter is optional.
 
 .. code-block:: python
     :linenos:
@@ -349,7 +349,7 @@ Create Metric Data (with returnValue)
 
 Response
 --------
-The response contains the processed results for the reporting period.  For example if the Metric configured for a sum over a 1 hour period and this was the second value of **1** posted the response value would be **2**.
+The response contains the processed results for the reporting period.  For example, if the metric was configured for a sum over a one-hour period, and if this was the second value of **1** posted, the response value would be **2**.
 
 .. code-block:: javascript
     :linenos:
