@@ -1,18 +1,18 @@
 .. _building_apps_tcinit:
 
 ----------------------------------
-Building Apps - Templates (tcinit)
+Building Apps: Templates (tcinit)
 ----------------------------------
 
 Summary
 -------
 
-The ``tcinit`` CLI tool provides a simple interface to kick start a new project from a template and to keep framework files updated.  There are several template that supported specific use cases. Most templates are working Apps that can be easily modified to the developers use case.
+The ``tcinit`` CLI tool provides a simple interface to kick start a new project from a template and to keep framework files updated.  There are several templates that support specific-use cases. Most templates are working Apps that can easily be modified to the developers use case.
 
 Usage
 -----
 
-To get the latest usage and template choices for ``tcinit`` run ``tcinit -h``.
+To get the latest usage and template choices for ``tcinit``, run ``tcinit -h``.
 
 .. code:: bash
 
@@ -22,7 +22,7 @@ To get the latest usage and template choices for ``tcinit`` run ``tcinit -h``.
                   [--force]
 
     optional arguments:
-      -h, --help            show this help message and exit
+      -h, --help            Show this help message and exit
       --branch {master,develop}
                             git branch.
       --action {create,update,migrate}
@@ -39,13 +39,13 @@ To get the latest usage and template choices for ``tcinit`` run ``tcinit -h``.
 Common Usage
 ~~~~~~~~~~~~
 
-To initialize a new App run this command from the project directory.
+To initialize a new App, run this command from the project directory.
 
 .. code:: bash
 
     tcinit --template playbook_utility
 
-To update an existing App run this command from the project directory. The **update** action will download all frameworks files to ensure these files are the latest with any bug fixes or updates.  It is best practice to run the **update** action whenever an App is being updated for new features or bug fixes.
+To update an existing App, run the command below from the project directory. The **update** action will download all frameworks files to ensure these files are the latest with any bug fixes or updates.  It is best practice to run the **update** action whenever an App is being updated for new features or bug fixes.
 
 .. code:: bash
 
@@ -54,7 +54,7 @@ To update an existing App run this command from the project directory. The **upd
 Job App Templates
 -----------------
 
-The ``run()`` method is the default method that is called when an App is executed. For simple Apps the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the **app.py** file if required.
+The ``run()`` method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the **app.py** file, if required.
 
 Job (job)
 ~~~~~~~~~
@@ -71,7 +71,7 @@ app.py
 Job Ingress (job_ingress)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This template provides a working example of downloading remote threat intel (md5 hash indicators) and writing the data in the ThreatConnect Platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method the batch module is instantiated. Next the data is retrieved from the remote URL and written to the batch module. Finally the batch job is submitted to ThreatConnect for processing.
+This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method, the batch module is instantiated. Next, the data is retrieved from the remote URL and written to the batch module. Finally, the batch job is submitted to ThreatConnect for processing.
 
 app.py
 """"""
@@ -98,12 +98,12 @@ app.py
 Playbook Actions (playbook_actions)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This template provides a working example of "actions" in a Playbook App. Using the "actions" feature a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface into processing inputs for an App.
+This template provides a working example of "actions" in a Playbook App. Using the "actions" feature, a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface to process inputs for an App.
 
 .. seealso::
 
     :py:mod:`~tcex.tcex_app_decorators`
-        Inline documentation of App decorators.
+        Inline documentation of App decorators
 
 app.py
 """"""
