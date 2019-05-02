@@ -2,10 +2,10 @@
 .. _module_resources:
 
 ==================
-Module - Resources
+Module: Resources
 ==================
 
-The ThreatConnect |copy| TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed directly via the ``tcex.resources`` property of the TcEx Framework or indirectly vi the ``tcex.resource()`` method.
+The ThreatConnect TcEx Framework provides access to the ThreatConnect API using the :py:mod:`~tcex.tcex_resources` module.  The Resource Classes can be accessed directly via the ``tcex.resources`` property of the TcEx Framework or indirectly via the ``tcex.resource()`` method.
 
 **Direct Access**
 
@@ -43,18 +43,18 @@ The ThreatConnect |copy| TcEx Framework provides access to the ThreatConnect API
 
     tcex.exit()
 
-.. Note:: For result sets that do not support pagination the ``resource.request()`` method can be called directly.
+.. Note:: For result sets that do not support pagination, the ``resource.request()`` method can be called directly.
 
-Custom Metrics Resource
+Custom Metric Resources
 -----------------------
 The TcEx Resource Module provides Access to the ``customMetric`` API endpoint to create configurations and add data.
 
-.. Important:: Available in 5.4+ version of the ThreatConnect API.
+.. Important:: Custom Metrics are available in 5.4+ versions of the ThreatConnect API.
 
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Custom Metrics         | :py:class:`~tcex.tcex_resources.CustomMetric`            |
+| Custom Metric         | :py:class:`~tcex.tcex_resources.CustomMetric`            |
 +------------------------+----------------------------------------------------------+
 
 Examples
@@ -62,9 +62,9 @@ Examples
 :ref:`custom_metric_examples`
 
 
-Data Store Resource
+Data Store Resources
 --------------------
-The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.
+The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local, Organization, and System.
 
 +------------------------+----------------------------------------------------------+
 | Db Method              | Method                                                   |
@@ -128,7 +128,7 @@ Examples
 ~~~~~~~~
 :ref:`indicator_examples`
 
-.. Note:: Custom Indicators can be accessed by the **Type**. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made **safe** by using the :py:meth:`~tcex.tcex.TcEx.safe_rt` method.
+.. Note:: Custom Indicators can be accessed by **type**. The ThreatConnect platform supports Custom Indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made **safe** by using the :py:meth:`~tcex.tcex.TcEx.safe_rt` method.
 
 Owner Resources
 ---------------
