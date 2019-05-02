@@ -70,7 +70,11 @@ The ``tcpackage`` command will package all relevant files in the project directo
         Documentation for packaging of an App
         
 OS X® is a registered trademark of Apple, Inc.
+
 Linux® is a registered trademark of Linus Torvalds.
-Windows® is a registered trademark of the Microsoft Corporation. 
+
+Windows® is a registered trademark of the Microsoft Corporation.
+
 Python® is a registered trademark of the Python Software Foundation.
+
      
