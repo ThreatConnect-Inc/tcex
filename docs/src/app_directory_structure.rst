@@ -1,7 +1,7 @@
 .. _app_directory_structure:
 
 -------------------------
-App - Directory Structure
+App-Directory Structure
 -------------------------
 
 .. code:: bash
@@ -31,7 +31,7 @@ App - Directory Structure
 .gitignore (optional)
 ~~~~~~~~~~~~~~~~~~~~~
 
-Template file that specifies intentionally untracked files that Git should ignore. This file is part of the template update, but can be optionally updated if required.
+This template file specifies intentionally untracked files that Github should ignore. This file is part of the template update, but it optionally can be updated, if required.
 
 .. literalinclude:: ../../app_init/gitignore
     :language: bash
@@ -40,7 +40,7 @@ Template file that specifies intentionally untracked files that Git should ignor
 .pre-commit-config.yaml (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Configuration file for the ``pre-commit`` Python command line tool. This configuration is the same one that is used for internal development of Apps.
+This is the configuration file for the ``pre-commit`` Python CLI tool. This configuration is the same one that is used for the internal development of Apps.
 
 .. literalinclude:: ../../app_init/.pre-commit-config.yaml
     :language: yaml
@@ -58,7 +58,7 @@ The ``README.md`` file should contain any relevant information for the App and t
 __main__.py (required)
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Template file that should not be modified.
+This template file should not be modified.
 
 .. literalinclude:: ../../app_init/__main__.py
     :language: python
@@ -67,7 +67,7 @@ Template file that should not be modified.
 app.py (required)
 ~~~~~~~~~~~~~~~~~
 
-This file contains the "main" App logic and contains the ``run()`` method that is called by default. It also can contain methods for **tc_actions**.
+This file contains the "main" App logic and the ``run()`` method that is called by default. It also can contain methods for **tc_actions**.
 
 .. literalinclude:: ../../app_init/playbook/app.py
     :language: python
@@ -94,7 +94,7 @@ This is the main configuration file for the App and controls what inputs and out
 log (temporary)
 ~~~~~~~~~~~~~~~
 
-This directory is created when running testing profile locally. All App output is written to this directory as well as the output of the ``tcrun`` command.
+This directory is created when running a testing profile locally. All App output is written to this directory, as well as the output of the ``tcrun`` command.
 
 log/app.log (temporary)
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +104,7 @@ This log file contains the logging output of the App.
 log/message.tc (temporary)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This file contains the App exit message. The contents of this file will be displayed in the UI when the App is run in platform. For local testing the file should be verified to have content on successful App completion and on failure.
+This file contains the App exit message. The contents of this file will be displayed in the UI when the App is run the in platform. For local testing, the file should be verified to have content on successful App completion and on failure.
 
 log/run.log (temporary)
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +114,7 @@ This log file contains the output from the ``tcrun`` command and will contain in
 playbook_app.py (required)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Template file that contains base logic for a Playbook App. This file should not be edited and will get updated when using ``tcprofile --action update --template <template name>`` command.
+This template file contains base logic for a Playbook App. This file should not be edited and will get updated when using the ``tcprofile --action update --template <template name>`` command.
 
 .. literalinclude:: ../../app_init/playbook/playbook_app.py
     :language: python
@@ -123,7 +123,7 @@ Template file that contains base logic for a Playbook App. This file should not 
 pyproject.toml (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is a Python tool configuration file which contains the configuration for the "black" formatting tool used to format all Python code.
+This is a Python tool configuration file that contains the configuration for the **black** formatting tool used to format all Python code.
 
 .. literalinclude:: ../../app_init/pyproject.toml
     :language: python
@@ -132,7 +132,7 @@ This is a Python tool configuration file which contains the configuration for th
 requirements.txt (required)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This file contains all the required Python dependencies for the App. The requirements.txt file is used by the ``tclib`` command to build the **lib_x.x.x** directories.
+This file contains all the required Python dependencies for the App. The **requirements.txt** file is used by the ``tclib`` command to build the **lib_x.x.x** directories.
 
 .. literalinclude:: ../../app_init/requirements.txt
     :language: python
@@ -141,7 +141,7 @@ This file contains all the required Python dependencies for the App. The require
 run.py (required)
 ~~~~~~~~~~~~~~~~~
 
-Template file that is called by ThreatConnect and ``tcrun`` to launch the App. This file should not be edited and will get updated when using ``tcprofile --action update --template <template name>`` command.
+This template file is called by ThreatConnect and ``tcrun`` to launch the App. This file should not be edited and will get updated when using the ``tcprofile --action update --template <template name>`` command.
 
 .. literalinclude:: ../../app_init/playbook/run.py
     :language: python
@@ -150,7 +150,7 @@ Template file that is called by ThreatConnect and ``tcrun`` to launch the App. T
 setup.cfg (optional)
 ~~~~~~~~~~~~~~~~~~~~
 
-This file contains Python configurations data, specifically for linting ignores/excludes.
+This file contains Python configurations data, specifically for linting ignores or excludes.
 
 .. literalinclude:: ../../app_init/setup.cfg
     :language: python
@@ -159,7 +159,7 @@ This file contains Python configurations data, specifically for linting ignores/
 tcex.d (optional)
 ~~~~~~~~~~~~~~~~~
 
-This directory is created when creating testing profile using the ``tcprofile`` command.  This directory hold both the staging data and profiles JSON files.
+This directory is generated when creating a testing profile using the ``tcprofile`` command.  This directory holds both the staging data and JSON profile files.
 
 tcex.d/data (optional)
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -174,7 +174,7 @@ This directory contains the JSON profile files.
 tcex.json (required)
 ~~~~~~~~~~~~~~~~~~~~
 
-This is the main TcEx framework configuration file. It required to run local testing and for packaging, but should not be included in the App package.
+This is the main TcEx framework configuration file. It is required to run local testing and for packaging, but it should not be included in the App package.
 
 .. literalinclude:: ../../app_init/playbook/tcex.json
     :language: json
