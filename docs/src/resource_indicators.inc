@@ -16,7 +16,7 @@
 | URL                    | resource = tcex.resource('URL')                          |
 +------------------------+----------------------------------------------------------+
 
-.. Note:: Custom Indicator types can be accessed using the same method ``tcex.resource('MyCustomType`)``
+.. Note:: Custom Indicator types can be accessed using the same method ``tcex.resource('MyCustomType`)``.
 
 Retrieve All Indicators
 =======================
