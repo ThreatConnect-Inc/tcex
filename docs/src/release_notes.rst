@@ -551,110 +551,110 @@ Release Notes
 
 0.5.14
 ------
-+ Updated :py:meth:`~tcex.tcex_resources.Bulk.json` method to use proper entity value.
-+ Updated ``tcprofile`` to use default env values for API credentials.
-+ Adding **groups** parameter to **tcex.json** so a profile can be part of multiple groups.
++ Updated :py:meth:`~tcex.tcex_resources.Bulk.json` method to use proper entity value
++ Updated ``tcprofile`` to use default env values for API credentials
++ Added Groups parameter to **tcex.json** so that a profile can be part of multiple Groups
 
 0.5.13
 ------
-+ Added additional exclude values for IDE directories.
-+ Added **app_name** parameter to **tcex.json** for App built on system where App directory is not the App name.
-+ Updated ``tcpackage`` to use new **app_name** if exists and default back to App directory name.
-+ Updated ``tcprofile`` to only output redis variable for Playbook Apps.
-+ Updated ``tclib`` to have default config value for instance where there is not **tcex.json** file.
++ Added additional exclude values for IDE directories
++ Added **app_name** parameter to **tcex.json** for App built on system where App directory is not the App name
++ Updated ``tcpackage`` to use new **app_name**, if it exists, and to default back to App directory name
++ Updated ``tcprofile`` to only output Redis variable for Playbook Apps
++ Updated ``tclib`` to have default config value for instance where there is not **tcex.json** file
 
 0.5.12
 ------
-+ Update Building Apps section of the Documentation.
-+ Updated required module versions (requests, python-dateutil, and redis).
++ Update Building Apps section of the documentation
++ Updated required module versions (requests, python-dateutil, and Redis)
 + Fixed issue with sleep parameter being ignored in ``tcrun``.
-+ Updated ``tclib`` to automatically read **tcex.json**.
-+ Updated ``tcpackage`` to output Apps zip files with **.tcx** extension.
++ Updated ``tclib`` to automatically read **tcex.json**
++ Updated ``tcpackage`` to output Apps zip files with **.tcx** extension
 
 0.5.11
 ------
-+ Added support for Binary data type in ``tcdata`` for staging.
++ Added support for binary data type in ``tcdata`` for staging
 
 0.5.10
 ------
-+ Added platform for docker support.
++ Added platform for docker support
 
 0.5.9
 -----
-+ Added platform check for subprocess calls.
-+ Added additional error logging for ``tcrun`` command.
++ Added platform check for subprocess calls
++ Added additional error logging for ``tcrun`` command
 
 0.5.8
 -----
-+ Added better support for build / test commands on Windows platform.
++ Added better support for build and test commands on Windows platform
 
 0.5.7
 -----
-+ Removing pip as a dependency.
++ Removed pip as a dependency
 
 0.5.6
 -----
-+ Updated ``tcdata`` to support multiple operators for validation.
-+ Added ``tcprofile`` command to automatically build testing profiles from install.json.
-+ Updated ``tcrun`` to create log, out, and temp directories for testing output.
-+ Updated ``tcpackage`` to exclude **.pyc** files and **__pycache__** directory.
++ Updated ``tcdata`` to support multiple operators for validation
++ Added ``tcprofile`` command to automatically build testing profiles from **install.json**
++ Updated ``tcrun`` to create log, out, and temp directories for testing output
++ Updated ``tcpackage`` to exclude **.pyc** files and **__pycache__** directory
 
 0.5.5
 -----
-+ Updated ``tcpackage`` to append version number to zip_file.
-+ Added a **bundle_name** parameter to tcex.json file for systems where the directory name doesn't represent the App name.
++ Updated ``tcpackage`` to append version number to zip file
++ Added a **bundle_name** parameter to **tcex.json** file for systems where the directory name does not represent the App name
 
 0.5.4
 -----
-+ Minor update on tcdata for issue with bytes string in Python 3.
++ Updated tcdata for issue with bytes string in Python 3
 
 0.5.3
 -----
-+ Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (app.py will be deprecated in the future).
-+ Updates to ``__main__.py`` for new lib directory structure create with pip (replaced easy_install).
-+ Apps should now be built with ``requirements.txt`` instead of ``setup.py``.
++ Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (The app.py will be deprecated in the future.)
++ Updatesd ``__main__.py`` for new lib directory structure created with pip (replaced easy_install)
++ Changed method so that Apps are now built with ``requirements.txt`` instead of ``setup.py``
 
 0.5.2
 ------
-+ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support DELETE/POST Methods.
-+ Added :py:meth:`~tcex.tcex.TcEx._association_types` method to load Custom Association types from API.
-+ Added ``indicator_types_data`` property with full Indicator Type data.
-+ Added ``indicator_associations_types_data`` property with full Indicator Association Type data.
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support DELETE/POST methods
++ Added :py:meth:`~tcex.tcex.TcEx._association_types` method to load Custom Association types from API
++ Added ``indicator_types_data`` property with full Indicator Type data
++ Added ``indicator_associations_types_data`` property with full Indicator Association Type data
 
 0.5.1
 ------
-+ Update to playbookdb variable name.
-+ Updated __main__.py template for proper exit code.
++ Update **playbookdb** variable name
++ Updated **__main__.py** template for proper exit code
 
 0.5.0
 ------
-+ Added support for output variable of the same name, but different types.
-+ Support for new TCKeyValueAPI DB types in Playbook Apps.  This is a seamless change to the Apps.
-+ Updated :py:meth:`~tcex.tcex.TcEx.authorization` method to return properly formatted header when no token_expires is provided.
-+ Added automatic Authorization to :py:meth:`~tcex.tcex.TcEx.request_tc` method.
-+ Updated documentation for Request module.
++ Added support for output variable of the same name, but different types
++ Added support for new **TCKeyValueAPI** DB types in Playbook Apps.  This is a seamless change to the Apps.
++ Updated :py:meth:`~tcex.tcex.TcEx.authorization` method to return properly formatted header when no **token_expires** is provided
++ Added automatic authorization to :py:meth:`~tcex.tcex.TcEx.request_tc` method
++ Updated documentation for Request module
 
 0.4.x
 =====
 
 0.4.11
 ------
-+ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_external` method.
-+ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_tc` method.
-+ Added :py:meth:`~tcex.tcex_resources.Task.assignees` method for Tasks.
-+ Added :py:meth:`~tcex.tcex_resources.Task.escalatees` method for Tasks.
-+ Added 201 as valid status code for Task.
++ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_external` method
++ Changed proxy variable to proxies in :py:meth:`~tcex.tcex.TcEx.request_tc` method
++ Added :py:meth:`~tcex.tcex_resources.Task.assignees` method for Tasks
++ Added :py:meth:`~tcex.tcex_resources.Task.escalatees` method for Tasks
++ Added 201 as valid status code for Task
 
 0.4.10
 ------
-+ Added :py:meth:`~tcex.tcex_resources.Resource.victims` method to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added :py:meth:`~tcex.tcex_resources.Resource.victim_assets` method to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added :py:meth:`~tcex.tcex_resources.Indicator.observations` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added :py:meth:`~tcex.tcex_resources.Indicator.observation_count` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added :py:meth:`~tcex.tcex_resources.Indicator.observed` methods to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Changed private ``_copy()`` method to public :py:meth:`~tcex.tcex_resources.Resource.copy` in the :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Updated :py:meth:`~tcex.tcex_resources.File.occurrence` method indicator parameter to be optional.
-+ Added :py:meth:`~tcex.tcex_resources.Host.resolution` methods to :py:mod:`~tcex.tcex_resources.Resource` module to retrieve DNS resolutions on Host Indicators.
++ Added :py:meth:`~tcex.tcex_resources.Resource.victims` method to :py:mod:`~tcex.tcex_resources.Resource` module
++ Added :py:meth:`~tcex.tcex_resources.Resource.victim_assets` method to :py:mod:`~tcex.tcex_resources.Resource` module
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observations` methods to :py:mod:`~tcex.tcex_resources.Resource` module
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observation_count` methods to :py:mod:`~tcex.tcex_resources.Resource` module
++ Added :py:meth:`~tcex.tcex_resources.Indicator.observed` methods to :py:mod:`~tcex.tcex_resources.Resource` module
++ Changed private ``_copy()`` method to public :py:meth:`~tcex.tcex_resources.Resource.copy` in the :py:mod:`~tcex.tcex_resources.Resource` module
++ Updated :py:meth:`~tcex.tcex_resources.File.occurrence` method Indicator parameter to be optional
++ Added :py:meth:`~tcex.tcex_resources.Host.resolution` methods to :py:mod:`~tcex.tcex_resources.Resource` module to retrieve DNS resolutions on Host Indicators
 
 0.4.9
 -----
