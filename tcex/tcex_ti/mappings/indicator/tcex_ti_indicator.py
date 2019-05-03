@@ -75,9 +75,11 @@ def custom_indicator_class_factory(
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
-        self.unique_id = self.unique_id or value1 or value2
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+        if value1:
+            value1 = quote_plus(value1)
+        if value2:
+            value2 = quote_plus(value2)
+        self.unique_id = self.unique_id or self.build_summary(value1, value2)
 
     def _set_unique_id_2(self, json_request):
         """
@@ -85,9 +87,11 @@ def custom_indicator_class_factory(
         :param self:
         :param json_request:
         """
-        self.unique_id = json_request.get(value_fields[0]) or json_request.get(value_fields[1])
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+        value_0 = json_request.get(value_fields[0], '')
+        value_1 = json_request.get(value_fields[1], '')
+        self.unique_id = self.build_summary(
+            quote_plus(value_0) or None, quote_plus(value_1) or None
+        )
 
     def can_create_2(self):  # pylint: disable=W0641
         """
@@ -111,9 +115,13 @@ def custom_indicator_class_factory(
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
-        self.unique_id = self.unique_id or value1 or value2 or value3
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
+        if value1:
+            value1 = quote_plus(value1)
+        if value2:
+            value2 = quote_plus(value2)
+        if value3:
+            value2 = quote_plus(value3)
+        self.unique_id = self.unique_id or self.build_summary(value1, value2, value3)
 
     def _set_unique_id_3(self, json_request):
         """
@@ -121,13 +129,12 @@ def custom_indicator_class_factory(
         :param self:
         :param json_request:
         """
-        self.unique_id = (
-            json_request.get(value_fields[0])
-            or json_request.get(value_fields[1])
-            or json_request.get(value_fields[2])
+        value_0 = json_request.get(value_fields[0], '')
+        value_1 = json_request.get(value_fields[1], '')
+        value_2 = json_request.get(value_fields[2], '')
+        self.unique_id = self.build_summary(
+            quote_plus(value_0) or None, quote_plus(value_1) or None, quote_plus(value_2) or None
         )
-        if self.unique_id:
-            self.unique_id = quote_plus(self.unique_id)
 
     def can_create_3(self):  # pylint: disable=W0641
         """
