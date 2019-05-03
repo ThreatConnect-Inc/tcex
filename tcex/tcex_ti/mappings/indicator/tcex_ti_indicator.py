@@ -12,6 +12,15 @@ from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 # import local modules for dynamic reference
 module = __import__(__name__)
 
+# custom_class = custom_indicator_class_factory(
+#     entry.get('name'),
+#     entry.get('apiEntity'),
+#     entry.get('apiBranch'),
+#     Indicator,
+#     class_data,
+#     value_fields,
+# )
+
 
 def custom_indicator_class_factory(
     indicator_type, entity_type, branch_type, base_class, value_fields
@@ -19,14 +28,15 @@ def custom_indicator_class_factory(
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(self, tcex, owner, value1, **kwargs):  # pylint: disable=W0641
+    def init_1(self, tcex, value1, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with one value
         :param self:
         :param tcex:
+        :param owner:
         :param value1:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self.unique_id = self.unique_id or value1
         if self.unique_id:
@@ -51,15 +61,16 @@ def custom_indicator_class_factory(
             return True
         return False
 
-    def init_2(self, tcex, owner, value1, value2, **kwargs):  # pylint: disable=W0641
+    def init_2(self, tcex, value1, value2, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with two values.
         :param self:
         :param tcex:
         :param value1:
         :param value2:
+        :param owner:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self.unique_id = self.unique_id or value1 or value2
@@ -83,7 +94,7 @@ def custom_indicator_class_factory(
             return True
         return False
 
-    def init_3(self, tcex, owner, value1, value2, value3, **kwargs):  # pylint: disable=W0641
+    def init_3(self, tcex, value1, value2, value3, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with three values.
         :param self:
         :param tcex:
@@ -92,7 +103,7 @@ def custom_indicator_class_factory(
         :param value3:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3

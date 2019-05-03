@@ -179,6 +179,8 @@ class TIMappings(object):
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
         print(response.url)
         print(response)
+        print(response.text)
+        print(self._data)
         print(self.api_entity)
 
         if self.tc_requests.success(response):

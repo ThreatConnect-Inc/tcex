@@ -11,8 +11,8 @@ if not os.getenv('TC_TOKEN'):
 config_data = {
     # connection
     'api_default_org': os.getenv('API_DEFAULT_ORG'),
-    'tc_token': os.getenv('TC_TOKEN'),
-    'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
+    # 'tc_token': os.getenv('TC_TOKEN'),
+    # 'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
     'tc_owner': os.getenv('TC_OWNER', 'TCI'),
     # logging
     'tc_log_level': os.getenv('TC_LOG_LEVEL', 'debug'),
