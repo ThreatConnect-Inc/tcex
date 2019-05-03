@@ -2,6 +2,11 @@
 """ThreatConnect TI ASN"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class ASN(Indicator):
     """Unique API calls for ASN API Endpoints"""
@@ -19,9 +24,10 @@ class ASN(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(ASN, self).__init__(tcex, 'asn', 'asn', 'asns', owner, **kwargs)
-        self._api_entity = 'asn'
         self._data['AS Number'] = as_number
         self.unique_id = self.unique_id or as_number
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """

@@ -2,6 +2,11 @@
 """ThreatConnect TI CIDR"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class CIDR(Indicator):
     """Unique API calls for CIDR API Endpoints"""
@@ -21,6 +26,8 @@ class CIDR(Indicator):
         super(CIDR, self).__init__(tcex, 'cidr', 'cidrBlock', 'cidrBlocks', owner, **kwargs)
         self._data['Block'] = block
         self.unique_id = self.unique_id or block
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """
@@ -41,4 +48,4 @@ class CIDR(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('Block', '')
+        self.unique_id = quote_plus(json_response.get('Block', ''))

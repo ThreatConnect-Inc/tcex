@@ -2,6 +2,11 @@
 """ThreatConnect TI Host"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
@@ -23,6 +28,8 @@ class Host(Indicator):
         super(Host, self).__init__(tcex, 'host', 'host', 'hosts', owner, **kwargs)
         self._data['hostName'] = hostname
         self.unique_id = self.unique_id or hostname
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """

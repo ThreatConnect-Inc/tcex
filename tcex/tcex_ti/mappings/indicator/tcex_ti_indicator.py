@@ -28,6 +28,9 @@ def custom_indicator_class_factory(
         """
         base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
         self._data[value_fields[0]] = value1
+        self.unique_id = self.unique_id or value1
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
         # for k, v in class_dict.items():
         #     setattr(self, k, v)
 
@@ -59,6 +62,9 @@ def custom_indicator_class_factory(
         base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
+        self.unique_id = self.unique_id or value1 or value2
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def _set_unique_id_2(self, json_request):
         """
@@ -90,6 +96,9 @@ def custom_indicator_class_factory(
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
+        self.unique_id = self.unique_id or value1 or value2 or value3
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def _set_unique_id_3(self, json_request):
         """
