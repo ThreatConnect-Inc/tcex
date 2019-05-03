@@ -401,7 +401,7 @@ Release Notes
 -----
 + Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded variables
 + Added **--report** arg to ``tcrun`` to output a JSON Report of profiles and run data
-+ Added new JSON string comparison operator (jc/json compare) to ``tcdata`` to compare two JSON strings (requires **deepdiff** to be installed locally)
++ Added new JSON string comparison operator (jc/json compare) to ``tcdata`` to compare two JSON strings (requires DeepDiff to be installed locally)
 
 0.7.8
 -----
@@ -418,58 +418,58 @@ Release Notes
 
 0.7.6
 -----
-+ Fixed issue with _newstr_ and dynamic class generation.
++ Fixed issue with _newstr_ and dynamic-class generation
 
 0.7.5
 -----
-+ Updated all TcEx framework CLI commands to use utf-8 encoding by default.
-+ Replaced usage of unicode with built-ins str (Python 2/3 compatible.
-+ Replaced usage of long with built-ins int (Python 2/3 compatible).
-+ Update used of urllib.quote to be Python 2/3 compatible.
++ Updated all TcEx framework command-line interface (CLI) commands to use utf-8 encoding by default
++ Replaced usage of unicode with built-in strs (Python 2/3 compatible
++ Replaced usage of long with built-in ints (Python 2/3 compatible)
++ Update usage of **urllib.quote** to be Python 2/3 compatible
 
 0.7.4
 -----
-+ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` to handle boolean values that are passed as strings.
-+ Updated :py:meth:`~tcex.tcex.TcEx._resource` method to handle boolean returned as strings from the API.
-+ Updated ``tcdata`` to properly delete indicators when using ``--clear`` arg.
-+ Update the log module to use **tcex** instead of **tcapp**.
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` to handle boolean values that are passed as strings
++ Updated :py:meth:`~tcex.tcex.TcEx._resource` method to handle boolean returned as strings from the API
++ Updated ``tcdata`` to properly delete Indicators when using ``--clear`` arg
++ Update the Log module to use **tcex** instead of **tcapp**
 
 0.7.3
 -----
-+ Added :py:mod:`~tcex.tcex_utils.TcExUtils` module with date functions to handle common date use cases.
-+ Added DeepDiff functionality to ``tcdata`` for validating unsorted dictionaries and list.
-+ Updated ``tcdata`` to pull item from lists by index for easier comparison.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read` method to allow disabling of automatically resolving embedded variables.
-+ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support file actions.
-+ Updated :py:meth:`~tcex.tcex_resources.File.file_action` method as alias to :py:meth:`~tcex.tcex_resources.Resource.association_custom`.
++ Added :py:mod:`~tcex.tcex_utils.TcExUtils` module with date functions to handle common date-use cases
++ Added DeepDiff functionality to ``tcdata`` for validating unsorted dictionaries and list
++ Updated ``tcdata`` to pull item from lists by index for easier comparison
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read` method to allow disabling of automatically resolving embedded variables
++ Updated :py:meth:`~tcex.tcex_resources.Resource.association_custom` method to support file actions
++ Updated :py:meth:`~tcex.tcex_resources.File.file_action` method as alias to :py:meth:`~tcex.tcex_resources.Resource.association_custom`
 
 0.7.2
 -----
-+ Updated ``tcdata`` command for issue on sorting list in Python 3.
-+ Added update for tcex.json file to allow the App Version to be specified instead of using programVersion from install.json.
++ Updated ``tcdata`` command for issue on sorting list in Python 3
++ Added update for **tcex.json** file to allow the App version to be specified instead of using **programVersion** from **install.json**
 
 0.7.1
 -----
-+ Added stub support for associatedGroup in Batch Indicator JSON.
-+ Updated the TcEx Job module to better handle Document uploads in Python 3.
-+ Updated TcEx Resource module to support query parameter list in the add_payload() method.
-+ Updated TcEx Request module to support query parameter list in the add_payload() method.
-+ Updated ``tclib`` to remove the old lib directory before creating the lib directory.
++ Added stub support for **associatedGroup** in Batch Indicator JSON
++ Updated the TcEx Job module to better handle Document uploads in Python 3
++ Updated TcEx Resource module to support query parameter list in the **add_payload()** method
++ Updated TcEx Request module to support query parameter list in the **add_payload()** method
++ Updated ``tclib`` to remove the old lib directory before creating the lib directory
 
 0.7.0
 -----
-+ Updated the TcEx framework to only build custom indicator classes when working with custom indicators.
-+ Updated TcJobs module group add logic to fix issue with skipping existing groups.
-+ Updated TcJobs module to handle associatedGroup passed as string or int when using **/v2**.
++ Updated the TcEx framework to only build custom Indicator classes when working with custom Indicators
++ Updated TcEx Jobs module Group add logic to fix issue with skipping existing Groups
++ Updated TcEx Jobs module to handle **associatedGroup** passed as string or int when using **/v2**
 
-.. Important:: Breaking change to any App that uses the Direct Access method with a Custom Indicator type.
+•	Updated TcEx_Jobs module gGroup add logic to fix issue with skipping existing gGroups
 
 0.6.x
 =====
 
 0.6.3
 -----
-+ Fixed issue in ``tcdata`` when validating data is a not string type.
++ Fixed issue in ``tcdata`` when validating that data is not string type
 + Updated ``tcprofile`` to set type check to binary on Binary data.
 
 0.6.2
