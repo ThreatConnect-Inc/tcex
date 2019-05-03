@@ -278,144 +278,143 @@ Release Notes
 + Updated secure params injection to handle pipe-delimited multiple-choice values
 0.8.6
 ------
-+ Fixed issue with API logging not working when secure params is enabled.
-+ Fixed issue with API logging timestamp precision.
++ Fixed issue with API logging not working when secure params are enabled
++ Fixed issue with API logging timestamp precision
 
 0.8.5
 ------
-+ Updated tcdata for playbook variable creation during staging testing data.
-+ Updated tcex logging for level and removal of stream logger once API logger is initialized.
++ Updated tcdata for Playbook variable creation during staging testing data
++ Updated tcex logging for level and removal of stream logger once API logger is initialized
 
 0.8.4
 ------
-+ Update to handle binary array in tcdata.
-+ Update to support environment variables in tcex.json file for tclib command.
-+ Added initial functionality for v2 Batch create and upload.
++ Updated tcdata to handle binary array
++ Updated tclib command to support environment variables in **tcex.json** file
++ Added initial functionality for v2 Batch **create and upload**
 
 0.8.3
 ------
-+ Updated regex for playbook variables.
++ Updated regex for Playbook variables
 
 0.8.2
 ------
-+ Update for tcdata module for local testing.
-+ Updates for changes in Batch V2 API.
++ Updated Tcdata module for local testing
++ Updated Batch v2 API
 
 0.8.1
 ------
-+ Update for secureParams loading order.
-+ Updates to :py:mod:`~tcex.tcex_logger` module.
-+ Updates to :py:mod:`~tcex.tcex` module to only import modules when required.
-+ Moved :py:meth:`~tcex.tcex_utils.TcExUtils.inflect` to the Utils module.
-+ Updated docs for Metrics, Notifications, and Batch.
++ Updated secureParams loading order
++ Updated :py:mod:`~tcex.tcex_logger` module
++ Updated :py:mod:`~tcex.tcex` module to only import modules when required
++ Moved :py:meth:`~tcex.tcex_utils.TcExUtils.inflect` to the Utils module
++ Updated dpcuments for Metrics, Notifications, and Batch
 
 0.8.0
 ------
-+ Added tcex.session to provide access to the ThreatConnect API using Requests native interface.
-+ Added :py:mod:`~tcex.tcex_batch_v2` module to replace the jobs module starting in ThreatConnect 5.6.
-+ Added msg to :py:meth:`~tcex.tcex.TcEx.exit` methods.
-+ Changed :py:meth:`~tcex.tcex.TcEx.exit_code` method to a property with a setter.
-+ Changed :py:meth:`~tcex.tcex.TcEx.request` property to a method.
-+ Updated multiple methods to use :py:mod:`~tcex.tcex_session` instead of :py:mod:`~tcex.tcex_request`.
-+ Renamed logger module to be consistent with other modules.
-+ Removed second arg from :py:meth:`~tcex.tcex.TcEx.expand_indicators` method.
-+ Removed owner parameter from :py:mod:`~tcex.tcex_resources.DataStore` module.
++ Added **tcex.session** to provide access to the ThreatConnect API using Requests' native interface
++ Added :py:mod:`~tcex.tcex_batch_v2` module to replace the Jobs module starting in ThreatConnect 5.6
++ Added msg to :py:meth:`~tcex.tcex.TcEx.exit` methods
++ Changed :py:meth:`~tcex.tcex.TcEx.exit_code` method to a property with a setter
++ Changed :py:meth:`~tcex.tcex.TcEx.request` property to a method
++ Updated multiple methods to use :py:mod:`~tcex.tcex_session` instead of :py:mod:`~tcex.tcex_request`
++ Renamed Logger module to be consistent with other modules
++ Removed second arg from :py:meth:`~tcex.tcex.TcEx.expand_indicators` method
++ Removed owner parameter from :py:mod:`~tcex.tcex_resources.Datastore` module
 + Added deprecation warning for the following methods: :py:meth:`~tcex.tcex.TcEx.bulk_enabled`, :py:meth:`~tcex.tcex.TcEx.job`, :py:meth:`~tcex.tcex.TcEx.request_tc`, :py:meth:`~tcex.tcex.TcEx.epoch_seconds`, and :py:meth:`~tcex.tcex.TcEx.to_string`.  These methods will be removed in version 0.9.0.
-+ Cleaned up code, comments and documentation.
-+ Added error code/message for all RuntimeError exceptions.
++ Cleaned up code, comments, and documentation
++ Added error code/message for all RuntimeError exceptions
 
 0.7.x
 =====
 
 0.7.21
 ------
-+ Fixed issue with newstr when using quote() method in :py:meth:`~tcex.tcex.TcEx.safe_indicator`.
++ Fixed issue with newstr when using quote() method in :py:meth:`~tcex.tcex.TcEx.safe_indicator`
 
 0.7.20
 ------
-+ Updated logging to log App name and other data.
-+ Added notifications module for ThreatConnect 5.6+.
++ Updated logging to log App name and other data
++ Added Notifications module for ThreatConnect 5.6+
 
 0.7.19
 ------
-+ Updated secure params injection to treat string value of "true" as boolean/flag.
-+ Updated secure params to handle unicode values in py2.
-+ Updated jobs module to use batch settings from args on init and to allow programmatic override of batch settings.
-+ Updated token renewal to handle issue with newstr.
++ Updated secure params injection to treat string value of True as Boolean/flag
++ Updated secure params to handle unicode values in py2
++ Updated Jobs module to use batch settings from args on init and to allow programmatic override of batch settings
++ Updated token renewal to handle issue with newstr
 
 0.7.18
 ------
-+ Updated jobs module to not call safetag method when using resource module.
-+ Updated Intrusion Set class in resource module.
-+ Updated group list to include new group types.
++ Updated Jobs module to not call safetag method when using Resource module
++ Updated Intrusion Set class in Resource module
++ Updated Group list to include new Group types
 + Added ``upload()`` and ``download()`` methods to Report class in resource module.
 + Added Task as a group type.
-+ Added new secure params feature.
++ Added new secure params feature
 
 0.7.17
 ------
-+ Update utils module for handling naive datetime in Py2.
-+ Added to_bool() method back to utils module.
++ Updatde Utils module for handling naive datetime in py2
++ Added **to_bool()** method back to Utils module
 
 0.7.16
 ------
-+ Updated utils datetime methods to not require a timezone.
-+ Updated Tag class to urlencode tag value so slashes are supported.
-+ Updated safetag method to strip **^** from tag values.
-+ Changed modules dependency to use latest version instead of restricting to current version.
-+ Added Event, Intrusion Set and Report group types in preparation for TC > 5.6.0.
++ Updated utils datetime methods to not require a timezone
++ Updated Tag class to urlencode tag value so slashes are supported
++ Updated safetag method to strip **^** from tag values
++ Changed modules dependency to use latest version instead of restricting to current version
++ Added Event, Intrusion Set, and Report Group types in preparation for TC > 5.6.0
 + Added metrics module to create and add metrics to ThreatConnect.
-+ Added **deleted** endpoint for indicators.
-
++ Added **deleted** endpoint for Indicators.
 0.7.15
 ------
-+ Updated jobs module to delete by name when using replace for groups.
-+ Updated token renewal to log more information on failure.
-+ Updated playbooks read binary array to better handle null values.
++ Updated Jobs module to delete by name when using replace for Groups
++ Updated token renewal to log more information on failure
++ Updated Playbooks read-binary array to better handle null values
 
 0.7.14
 ------
-+ Updated file indicator class for proper handling of attributes, tag, and labels.
-+ Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a new regex to handle more formats for file hashes and custom indicators.
++ Updated file Indicator class for proper handling of Attributes, Tags, and Labels
++ Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a new regex to handle more formats for file hashes and custom Indicators
 
 0.7.13
 ------
-+ Fixed issue with embedded variable matching during exact variable check.
++ Fixed issue with embedded variable matching during exact variable check
 
 0.7.12
 ------
-+ Updated :py:mod:`~tcex.tcex_resources.Resource` for py2 unicode issue in ipaddress module.
++ Updated :py:mod:`~tcex.tcex_resources.Resource` for py2 unicode issue in ipAddress module
 
 0.7.11
 ------
-+ Updated :py:mod:`~tcex.tcex_resources.Resource` module to automatically handle files hashes in format "md5 : sha1 : sha256".
-+ Updated :py:mod:`~tcex.tcex_resources.Resource` module to reformat ipv6 addresses to same format as TC.
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module to automatically handle files hashes in format "md5 : sha1 : sha256"
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module to reformat ipv6 addresses to same format as TC
 
 
 0.7.10
 ------
-+ Updated **__main__.py** template with better logic to detect Python lib directory version.
-+ Updates to regex patterns for variable matching in playbook module.
-+ Cleanup of playbook module in handling variables.
++ Updated **__main__.py** template with better logic to detect Python lib directory version
++ Updated regex patterns for variable matching in Paybook module
++ Updated Playbook module function in handling variables
 
 0.7.9
 -----
-+ Major update to :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded variables.
-+ Add **--report** arg to ``tcrun`` to output a JSON report of profiles and run data.
-+ Added new JSON string comparison operator (jc/json compare) to ``tcdata`` to compare two json string (requires deepdiff to be installed locally).
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better support embedded variables
++ Added **--report** arg to ``tcrun`` to output a JSON Report of profiles and run data
++ Added new JSON string comparison operator (jc/json compare) to ``tcdata`` to compare two JSON strings (requires **deepdiff** to be installed locally)
 
 0.7.8
 -----
-+ Added KeyValueArray operator to ``tcdata`` which allow searching for a single key/value entry in array.
-+ Update functionality to replace non-quoted embedded variable to handle duplicate variables in KeyValueArray.
++ Added **KeyValueArray** operator to ``tcdata``, which allows searching for a single key/value entry in array
++ Updated functionality to replace non-quoted embedded variable to handle duplicate variables in **KeyValueArray**
 
 0.7.7
 -----
-+ Added new string comparison operator (sc) to ``tcdata`` that strips all white space before eq comparison.
-+ Added new functionality to :py:mod:`~tcex.tcex_playbook.TcExPlaybook` to replace non-quoted embedded variables in Read KeyValueArrays.
-+ Updated Create KeyValue/KeyValueArray methods to not JSON load when passed a String.
-+ Added :py:meth:`~tcex.tcex_utils.TcExUtils.any_to_datetime` method to return datetime.datetime object.
-+ Added :py:meth:`~tcex.tcex_utils.TcExUtils.timedelta` method to return delta object from two provided datetime expressions.
++ Added new string comparison operator (sc) to ``tcdata`` that strips all white space before eq comparison
++ Added new functionality to :py:mod:`~tcex.tcex_playbook.TcExPlaybook` to replace non-quoted embedded variables in **Read KeyValueArrays**
++ Updated **Create KeyValue/KeyValueArray** methods to not JSON load when passed a string
++ Added :py:meth:`~tcex.tcex_utils.TcExUtils.any_to_datetime` method to return **datetime.datetime** object
++ Added :py:meth:`~tcex.tcex_utils.TcExUtils.timedelta` method to return delta object from two provided datetime expressions
 
 0.7.6
 -----
