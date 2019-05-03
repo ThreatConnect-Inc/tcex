@@ -658,101 +658,101 @@ Release Notes
 
 0.4.9
 -----
-+ Added :py:meth:`~tcex.tcex_resources.Signature.download` method to download signature data.
-+ Added urlencoding to proxy user and password.
++ Added :py:meth:`~tcex.tcex_resources.Signature.download` method to download Signature data
++ Added **urlencoding** to proxy user and password
 
 0.4.7
 -----
-+ Added :py:meth:`~tcex.tcex.TcEx.job` method to allow multiple jobs to run in an App.
-+ Update :py:meth:`~tcex.tcex.TcEx.s` method to fix issues in Python 3.
++ Added :py:meth:`~tcex.tcex.TcEx.job` method to allow multiple jobs to run in an App
++ Update :py:meth:`~tcex.tcex.TcEx.s` method to fix issues in Python 3
 
 0.4.6
 -----
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.create_binary_array` method to properly handle binary array data.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` method to properly handle binary array data.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.create_binary_array` method to properly handle binary array data
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` method to properly handle binary array data
 
 0.4.5
 -----
-+ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` to support missing hashes.
-+ Added :py:meth:`~tcex.tcex_resources.Indicator.false_positive` endpoint for indicators.
-+ Merged pull requests for better native Python3 support.
-+ Added Campaign to group types.
-+ Increased request timeout to 300 seconds.
++ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` to support missing hashes
++ Added :py:meth:`~tcex.tcex_resources.Indicator.false_positive` endpoint for Indicators
++ Merged pull requests for better native Python 3 support
++ Added Campaign to Group types
++ Increased request timeout to 300 second.
 
 0.4.4
 -----
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method logic for null values and better support of mixed values.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method logic for null values and better support of mixed values
 
 0.4.3
 -----
-+ Update to TcExJob module for file hashes updates using v2/indicators/files.
++ Updated TcEx Job module for file hashes updates using **v2/indicators/files**
 
 0.4.2
 -----
-+ Update to :py:mod:`~tcex.tcex_job.TcExJob` module for file hashes updates using ``v2/indicators/files``.
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module for file hashes updates using ``v2/indicators/files``
 
 0.4.2
 -----
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent variable type.
-+ Updated :py:mod:`~tcex.tcex_resources.Resource` module for an issue where copying the instance causing errors with request instance in Python3.
-+ Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to better format error output.
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to support different formatting dependent on the parent variable type
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module to address issue in which copying the instance causes errors with request instance in Python 3
++ Updated T**cExLocal** :py:meth:`~tcex.tcex_local.TcExLocal.run` method to better format error output
 
 0.4.1
 -----
-+ Adding :py:meth:`~tcex.tcex_resources.DataStore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class.
-+ Fixed issue with :py:mod:`~tcex.tcex_job.TcExJob` module where batch indicator POST with chunking would fail after first chunk.
-+ Added :py:meth:`~tcex.tcex.TcEx.safe_indicator` method to urlencode and cleanup indicator before associations, etc.
-+ Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a regex instead of split for better support of custom indicators.
-+ Updated :py:mod:`~tcex.tcex_job.TcExJob._process_indicators_v2` to better handle custom indicator types.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to strip off double quote from JSON string on mixed types and to decode escaped strings.
-+ Updated :py:mod:`~tcex.tcex_resources.Resource` module so that all indicator are URL encoded before adding to the URI.
-+ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicator_body` method to only include items in the JSON body if not None.
-+ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicators` method to handle extra white spaces on the boundary.
-+ Added additional standard args of ``api_default_org`` and ``tc_in_path``.
++ Added :py:meth:`~tcex.tcex_resources.Datastore.add_payload` method to :py:mod:`~tcex.tcex_resources.DataStore` class
++ Fixed issue with :py:mod:`~tcex.tcex_job.TcExJob` module in ehich batch Indicator POST with chunking would fail after first chunk
++ Added :py:meth:`~tcex.tcex.TcEx.safe_indicator` method to urlencode and cleaned up Indicator before associations, etc.
++ Updated :py:meth:`~tcex.tcex.TcEx.expand_indicators` method to use a regex instead of split for better support of custom Indicators
++ Updated :py:mod:`~tcex.tcex_job.TcExJob._process_indicators_v2` to better handle custom Indicator types
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to strip off double quote from JSON string on mixed types and to decode escaped strings
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module so that all Indicator are URL encoded before adding to the URI
++ Updated :py:meth:`~tcex.tcex_resources.Indicator.Indicator_body` method to only include items in the JSON body if not None.
++ Updated :py:meth:`~tcex.tcex_resources.Indicator.indicators` method to handle extra white spaces on the boundary
++ Added additional standard args of ``api_default_org`` and ``tc_in_path``
 
 0.4.0
 -----
-+ Breaking change to :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take a instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.
-+ Added :py:mod:`~tcex.tcex_resources.Tag` Resource class.
-+ Added :py:meth:`~tcex.tcex.TcEx.resource` method to get instance of Resource instance.
-+ Added :py:mod:`~tcex.tcex_resources.DataStore` Resource class to the :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Updated :py:mod:`~tcex.tcex_job.TcExJob` module for changes in the :py:mod:`~tcex.tcex_resources.Resource` module.
++ Updated :py:mod:`~tcex.tcex_resources.Resource` module. All ``_pivot()`` and ``associations()`` methods now take an instance of Resource and return a copy of the current Resource instance. Other methods such as ``security_label()`` and ``tags()`` now return a copy of the current Resource instance.
++ Added :py:mod:`~tcex.tcex_resources.Tag` Resource class
++ Added :py:meth:`~tcex.tcex.TcEx.resource` method to get instance of Resource instance
++ Added :py:mod:`~tcex.tcex_resources.Datastore` Resource class to the :py:mod:`~tcex.tcex_resources.Resource` module
++ Updated :py:mod:`~tcex.tcex_job.TcExJob` module for changes in the :py:mod:`~tcex.tcex_resources.Resource` module
 
 0.3.x
 =====
 
 0.3.7
 -----
-+ Added logic around retrieving Batch Errors to handle 404.
-+ Added new :py:meth:`~tcex.tcex_playbook.TcExPlaybook.exit` method for playbook apps (exit code of 3 to 1 for partial success).
++ Added logic around retrieving Batch errors to handle 404
++ Added new :py:meth:`~tcex.tcex_playbook.TcExPlaybook.exit` method for Playbook Apps (exit code of 3 to 1 for partial success)
 
 0.3.6
 -----
-+ Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcExJob` module.
-+ Added :py:meth:`~tcex.tcex.TcEx.request_external` and :py:meth:`~tcex.tcex.TcEx.request_tc` methods.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with a better regex for matching variables.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook` module with better error handling with JSON loads.
-+ Updated TcExLocal :py:meth:`~tcex.tcex_local.TcExLocal.run` method to sleep after subprocess executes the first time.
++ Added :py:mod:`~tcex.tcex_job.TcExJob.group_results` and :py:mod:`~tcex.tcex_job.TcExJob.indicator_results` properties to :py:mod:`~tcex.tcex_job.TcEx Job` module
++ Added :py:meth:`~tcex.tcex.TcEx.request_external` and :py:meth:`~tcex.tcex.TcEx.request_tc` methods
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method with a better regex for matching variables
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook` module with better error handling with JSON loads
++ Updated **TcExLocal** :py:meth:`~tcex.tcex_local.TcExLocal.run` method to sleep after subprocess executes the first time
 
 0.3.5
 -----
-+ Updated :py:mod:`~tcex.tcex_job.TcExJob` module to allow indicators to be added via ``/v2/indicators/<type>``.
-+ Updated structure for attributes/tags adds on groups to use singular version (attribute/tag) in Jobs modules to match format used for Indicators.
-+ Added custom, case_preference and parsable properties to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Added logic to cleanup temporary JSON bulk file. When logging is "debug" a compressed copy of the file will remain.
++ Updated :py:mod:`~tcex.tcex_job.TcEx Job` module to allow Indicators to be added via ``/v2/indicators/<type>``
++ Updated structure for Attributes/Tags on Groups to use singular version (Attribute/Tag) in Jobs modules to match format used for Indicators
++ Added custom case_preference and parsable properties to :py:mod:`~tcex.tcex_resources.Resource` module
++ Added logic to cleanup temporary JSON bulk file. When logging is **debug**, a compressed copy of the file will remain.
 
 0.3.4
 -----
-+ Fixed issue in :py:mod:`~tcex.tcex_resources` module with pagination stopping before all results are retrieved.
++ Fixed issue in :py:mod:`~tcex.tcex_resources` module with pagination stopping before all results are retrieved
 
 0.3.3
 -----
-+ Added :py:meth:`~tcex.tcex.TcEx.s` method to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method (handle bad unicode in Python2 and still support Python3).
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better handle embedded Vars.
++ Added :py:meth:`~tcex.tcex.TcEx.s` method to replace the :py:meth:`~tcex.tcex.TcEx.to_string` method (handle bad unicode in Python 2 and still support Python 3)
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to better handle embedded vars
 
 0.3.2
 -----
-+ Added :py:meth:`~tcex.tcex_resources.Resource.indicators` method to allow iteration over indicator values in Indicator response JSON.
++ Added :py:meth:`~tcex.tcex_resources.Resource.indicators` method to allow iteration over Indicator values in Indicator response JSON
 
 0.3.1
 -----
