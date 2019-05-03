@@ -177,14 +177,8 @@ class TIMappings(object):
             self._tcex.handle_error(905, [self.type])
 
         response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
-        print(response.url)
-        print(response)
-        print(response.text)
-        print(self._data)
-        print(self.api_entity)
 
         if self.tc_requests.success(response):
-            print(response.json())
             self._set_unique_id(response.json().get('data').get(self.api_entity))
 
         return response
