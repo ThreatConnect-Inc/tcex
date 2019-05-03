@@ -470,84 +470,84 @@ Release Notes
 0.6.3
 -----
 + Fixed issue in ``tcdata`` when validating that data is not string type
-+ Updated ``tcprofile`` to set type check to binary on Binary data.
++ Updated ``tcprofile`` to set type check to binary on binary data
 
 0.6.2
 -----
-+ Updated playbook create_binary and create_binary array for to better support Py3.
-+ Update ``tcdata`` to support Security Labels in staged data.
-+ Update ``tcdata`` to support adding Associations.
-+ Update ``tcdata`` to support variable reference **#App:4768:tc.address!TCEntity::value** during validation.
++ Updated Playbook **create_binary** and **create_binary** array for to better support py3.
++ Updated ``tcdata`` to support Security Labels in staged data
++ Updated ``tcdata`` to support adding associations
++ Updated ``tcdata`` to support variable reference **#App:4768:tc.address!TCEntity::value** during validation
 
 0.6.1
 -----
-+ Updated ``tcdata`` to validate String as string_types for "is type" check using six module.
-+ Added fix for code font not matching line numbers in the docs.
++ Updated ``tcdata`` to validate string as **string_types **for "is type" check using six modules
++ Added fix for code font not matching line numbers in the documents
 
 0.6.0
 -----
-+ Added :py:mod:`~tcex.tcex_resources.CustomMetric` module to :py:mod:`~tcex.tcex_resources.Resource` module.
-+ Renamed ``_args`` variable in tcex.py to ``default_args``.
-+ Renamed ``_parser`` variable in tcex.py to ``parser``.
-+ Code cleanup (removing any Python 2.5 specific code).
++ Added :py:mod:`~tcex.tcex_resources.CustomMetric` module to :py:mod:`~tcex.tcex_resources.Resource` module
++ Renamed ``_args`` variable in **tcex.py** to ``default_args``
++ Renamed ``_parser`` variable in **tcex.py** to ``parser``
++ Cleaned up code (removed any Python 2.5-specific code)
 
 0.5.x
 =====
 
 0.5.23
 ------
-+ Replace use of ``str()`` in TcEx playbook module.
-+ Updated ``tcrun`` to pass data_owner for each action on ``tcdata``.
-+ Updated ``tcdata`` to stage TC data via ``/v2`` instead of batch.
-+ Updated ``tcdata`` write Entity out as variable.
++ Replaced use of ``str()`` in TcEx Playbook module
++ Updated ``tcrun`` to pass **data_owner** for each action on ``tcdata``
++ Updated ``tcdata`` to stage TC data via ``/v2`` instead of batch
++ Updated ``tcdata`` write entity out as variable
 
 0.5.22
 ------
-+ Updated ``tcprofile`` to support new parameters.
-+ Updated ``tcdata`` to properly handle older tcex.json files.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method handle unicode error.
-+ Added additional logging to TcEx Job for logging API response.
++ Updated ``tcprofile`` to support new parameters
++ Updated ``tcdata`` to properly handle older **tcex.json** files
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_embedded` method to handle unicode error
++ Added additional logging to TcEx Job for logging API response
 
 0.5.21
 ------
-+ Added :py:meth:`~tcex.tcex.TcEx.job` association feature to handle group->indicator and group->group associations.
-+ Added :py:meth:`~tcex.tcex.TcEx.safe_group_name` method to ensure group meet the required length.
-+ Added ``tcdata`` initial feature to stage Groups and Indicators in ThreatConnect.
-+ Updated ``tcrun`` to use new parameter for logging.
-+ Updated :py:meth:`~tcex.tcex.TcEx.job` to support upload of file to Document group.
++ Added :py:meth:`~tcex.tcex.TcEx.job` association feature to handle Group-> Indicator and Group-> Group associations
++ Added :py:meth:`~tcex.tcex.TcEx.safe_group_name` method to ensure Group meets the required length
++ Added ``tcdata`` initial feature to stage Groups and Indicators in ThreatConnect
++ Updated ``tcrun`` to use new parameter for logging
++ Updated :py:meth:`~tcex.tcex.TcEx.job` to support upload of file to Document Group
 
 0.5.20
 ------
-+ Updated token renewal URL.
-+ Updated ``tcprofile`` to include api_default_org, tc_proxy_external, tc_proxy_host, tc_proxy_port, tcp_proxy_password, tc_proxy_tc, tc_proxy_username.
-+ Updated ``tcprofile`` changing tc_playbook_db_path and tc_playbook_db_port parameters to environment variables by default.
-+ Updated ``tcprofile`` changing **logging** to **tc_log_level**.
-+ Updated ``tclib`` to check for requirements.txt.
++ Updated token renewal URL
++ Updated ``tcprofile`` to include **api_default_org, tc_proxy_external, tc_proxy_host, tc_proxy_port, tcp_proxy_password, tc_proxy_tc, tc_proxy_username**
++ Updated ``tcprofile`` changing **tc_playbook_db_path** and **tc_playbook_db_port** parameters to environment variables by default
++ Updated ``tcprofile`` changing **logging** to **tc_log_level**
++ Updated ``tclib`` to check for **requirements.txt**
 
 0.5.19
 ------
-+ Updates to tcex.playbook, tcrun, and tcdata to support deleting data from Redis from previous runs.
++ Updated **tcex.playbook**, tcrun, and tcdata to support deleting data from Redis from previous runs
 
 0.5.18
 ------
-+ Updated ``tcrun`` to handle issue where **install_json** is not defined in the **tcex.json** file and script name was improperly being set.
++ Updated ``tcrun`` to handle issue where **install_json** is not defined in the **tcex.json** file so that script name was improperly being set
 
 0.5.17
 ------
-+ Updated create_output() method to fix issue when using output variables of the same name and different types.
++ Updated **create_output()** method to fix issue when using output variables of the same name and different type
 
 0.5.16
 ------
-+ Updated ``tcrun`` to not check for the program main file for Java Apps.
++ Updated ``tcrun`` to not check for the program main file for Java Apps
 
 0.5.15
 ------
-+ Initial update to ``tcrun`` to support running Java Apps.
-+ Added support for **install_json** profile parameter to tcex.json. This should be included in all **tcex.json** files going forward.
-+ Added support for **java_path** config parameter to tcex.json for custom java path.  Default behavior is to use the default version of **java** from user path.
-+ Added support for **class_path** profile parameter to tcex.json for custom java paths.  By default ``./target/`` will be used as the class_pass value.
-+ Updated ``tcpackage`` to grab minor version from programVersion in install.json.  If no programVersion found the default version of an App is 1.0.0.
-+ Cleanup for PEP8 and more.
++ Updated ``tcrun`` to support running Java Apps
++ Added support for **install_json** profile parameter to **tcex.json**. This should be included in all **tcex.json** files going forward.
++ Added support for **java_path** config parameter to **tcex.json** for custom Java path.  Default behavior is to use the default version of Java from user path.
++ Added support for **class_path** profile parameter to **tcex.json** for custom Java paths.  By default, ``./target/`` will be used as the **class_pass** value.
++ Updated ``tcpackage`` to grab minor version from **programVersion** in **install.json**.  If no **programVersion** is found, the default version of an App is 1.0.0.
++ Cleaned up PEP8
 
 0.5.14
 ------
