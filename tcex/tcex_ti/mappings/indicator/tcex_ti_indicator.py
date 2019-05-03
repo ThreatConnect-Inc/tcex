@@ -13,7 +13,9 @@ from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 module = __import__(__name__)
 
 
-def custom_indicator_class_factory(indicator_type, entity_type, base_class, value_fields):
+def custom_indicator_class_factory(
+    indicator_type, entity_type, branch_type, base_class, value_fields
+):
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
@@ -24,8 +26,7 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param value1:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
         self._data[value_fields[0]] = value1
         # for k, v in class_dict.items():
         #     setattr(self, k, v)
@@ -55,8 +56,7 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param value2:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
 
@@ -86,8 +86,7 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param value3:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, owner, indicator_type, entity_type, branch_type, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
@@ -136,9 +135,9 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
 class Indicator(TIMappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, tcex, sub_type, owner, **kwargs):
+    def __init__(self, tcex, sub_type, api_entity, api_branch, owner, **kwargs):
         super(Indicator, self).__init__(
-            tcex, 'Indicator', 'indicators', sub_type, 'indicator', owner
+            tcex, 'Indicator', 'indicators', sub_type, api_entity, api_branch, owner
         )
 
         for arg, value in kwargs.items():
@@ -212,7 +211,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
-            self.api_type, self.api_sub_type, self.unique_id, request_data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
         )
 
     def confidence(self, value):
@@ -226,7 +225,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
-            self.api_type, self.api_sub_type, self.unique_id, request_data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
         )
 
     def owners(self):
@@ -237,7 +236,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.owners(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def add_observers(self, count, date_observed):
@@ -260,7 +259,7 @@ class Indicator(TIMappings):
         }
 
         return self.tc_requests.add_observations(
-            self.api_type, self.api_sub_type, self.unique_id, data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
         )
 
     def observation_count(self):
@@ -273,7 +272,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observation_count(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def add_false_positive(self):
@@ -284,7 +283,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.add_false_positive(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def observations(self):
@@ -297,7 +296,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observations(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def deleted(self, deleted_since, filters=None, params=None):
@@ -313,7 +312,7 @@ class Indicator(TIMappings):
 
         return self.tc_requests.deleted(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             deleted_since,
             owner=self.owner,
             filters=filters,

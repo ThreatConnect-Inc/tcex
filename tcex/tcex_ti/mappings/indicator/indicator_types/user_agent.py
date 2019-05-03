@@ -18,7 +18,9 @@ class UserAgent(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(UserAgent, self).__init__(tcex, 'userAgents', owner, **kwargs)
+        super(UserAgent, self).__init__(
+            tcex, 'User Agent', 'userAgent', 'userAgents', owner, **kwargs
+        )
         self.data['User Agent String'] = text
         self.api_entity = 'userAgent'
         self.unique_id = self.unique_id or text

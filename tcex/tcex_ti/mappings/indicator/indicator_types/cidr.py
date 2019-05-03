@@ -18,8 +18,7 @@ class CIDR(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(CIDR, self).__init__(tcex, 'CIDR', owner, **kwargs)
-        self.api_entity = 'cidr'
+        super(CIDR, self).__init__(tcex, 'cidr', 'cidrBlock', 'cidrBlocks', owner, **kwargs)
         self._data['Block'] = block
         self.unique_id = self.unique_id or block
 

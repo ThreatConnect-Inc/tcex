@@ -24,8 +24,8 @@ class TcExSession(Session):
         elif self.args.api_access_id is not None and self.args.api_secret_key is not None:
             self.auth = self._hmac_auth()
             self._auth_type = 'hmac'
-        else:
-            raise RuntimeError('No valid ThreatConnect API credentials provided.')
+        # else:
+        #     raise RuntimeError('No valid ThreatConnect API credentials provided.')
         # Update User-Agent
         self.headers.update({'User-Agent': 'TcEx'})
         # Set Proxy

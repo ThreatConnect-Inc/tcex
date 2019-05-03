@@ -21,8 +21,7 @@ class File(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
         """
-        super(File, self).__init__(tcex, 'files', owner, **kwargs)
-        self.api_entity = 'file'
+        super(File, self).__init__(tcex, 'file', 'file', 'files', owner, **kwargs)
         if md5:
             self.data['md5'] = md5
         if sha1:
@@ -100,7 +99,7 @@ class File(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         for o in self.tc_requests.file_occurrences(
-            self.api_type, self.api_sub_type, self.unique_id, self.owner
+            self.api_type, self.api_branch, self.unique_id, self.owner
         ):
             yield o
 
@@ -131,7 +130,7 @@ class File(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.file_occurrence(
-            self.api_type, self.api_sub_type, self.unique_id, occurrence_id, self.owner
+            self.api_type, self.api_branch, self.unique_id, occurrence_id, self.owner
         )
 
     def add_occurrence(self, name, date, path):
@@ -149,7 +148,7 @@ class File(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.add_file_occurrence(
-            self.api_type, self.api_sub_type, self.unique_id, name, date, path, self.owner
+            self.api_type, self.api_branch, self.unique_id, name, date, path, self.owner
         )
 
     def delete_occurrence(self, occurrence_id):
@@ -165,5 +164,5 @@ class File(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.delete_file_occurrence(
-            self.api_type, self.api_sub_type, self.unique_id, occurrence_id, self.owner
+            self.api_type, self.api_branch, self.unique_id, occurrence_id, self.owner
         )

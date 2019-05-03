@@ -8,7 +8,7 @@ from tcex.tcex_utils import TcExUtils
 class TIMappings(object):
     """Common API calls for for Indicators/SecurityLabels/Groups and Victims"""
 
-    def __init__(self, tcex, main_type, api_type, sub_type, api_entity, owner):
+    def __init__(self, tcex, main_type, api_type, sub_type, api_entity, api_branch, owner):
         """Initialize Class Properties.
 
         Args:
@@ -27,6 +27,7 @@ class TIMappings(object):
         self._api_type = api_type
         self._unique_id = None
         self._api_entity = api_entity
+        self._api_branch = api_branch
 
         self._utils = TcExUtils()
         self._tc_requests = TiTcRequest(self._tcex)
@@ -57,6 +58,11 @@ class TIMappings(object):
         return self._api_type
 
     @property
+    def api_branch(self):
+        """Return api entity."""
+        return self._api_branch
+
+    @property
     def api_entity(self):
         """Return api entity."""
         return self._api_entity
@@ -69,6 +75,18 @@ class TIMappings(object):
     @owner.setter
     def owner(self, owner):
         self._owner = owner
+
+    @api_branch.setter
+    def api_branch(self, api_branch):
+        """
+        Sets the Api Entity
+        Args:
+            api_branch:
+
+        Returns:
+
+        """
+        self._api_branch = api_branch
 
     @api_entity.setter
     def api_entity(self, api_entity):
@@ -158,9 +176,13 @@ class TIMappings(object):
         if not self.can_create():
             self._tcex.handle_error(905, [self.type])
 
-        response = self.tc_requests.create(self.api_type, self.api_sub_type, self._data, self.owner)
+        response = self.tc_requests.create(self.api_type, self.api_branch, self._data, self.owner)
+        print(response.url)
+        print(response)
+        print(self.api_entity)
 
         if self.tc_requests.success(response):
+            print(response.json())
             self._set_unique_id(response.json().get('data').get(self.api_entity))
 
         return response
@@ -173,7 +195,7 @@ class TIMappings(object):
             self._tcex.handle_error(915, [self.type])
 
         return self.tc_requests.delete(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def update(self):
@@ -184,7 +206,7 @@ class TIMappings(object):
             self._tcex.handle_error(905, [self.type])
 
         return self.tc_requests.update(
-            self.api_type, self.api_sub_type, self.unique_id, self._data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, self._data, owner=self.owner
         )
 
     def single(self, filters=None, params=None):
@@ -202,7 +224,7 @@ class TIMappings(object):
 
         return self.tc_requests.single(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             filters=filters,
             owner=self.owner,
@@ -222,7 +244,7 @@ class TIMappings(object):
         """
         for i in self.tc_requests.many(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.api_entity,
             owner=self.owner,
             filters=filters,
@@ -245,7 +267,7 @@ class TIMappings(object):
         """
         return self.tc_requests.request(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             result_limit,
             result_start,
             owner=self.owner,
@@ -270,7 +292,7 @@ class TIMappings(object):
 
         for t in self.tc_requests.tags(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             owner=self.owner,
             filters=filters,
@@ -296,7 +318,7 @@ class TIMappings(object):
         if action in ['GET', 'ADD', 'DELETE']:
             return self.tc_requests.tag(
                 self.api_type,
-                self.api_sub_type,
+                self.api_branch,
                 self.unique_id,
                 name,
                 action=action,
@@ -345,7 +367,7 @@ class TIMappings(object):
 
         for l in self.tc_requests.labels(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             owner=self.owner,
             filters=filters,
@@ -375,7 +397,7 @@ class TIMappings(object):
         if action == 'GET':
             return self.tc_requests.get_label(
                 self.api_type,
-                self.api_sub_type,
+                self.api_branch,
                 self.unique_id,
                 label,
                 owner=self.owner,
@@ -384,12 +406,12 @@ class TIMappings(object):
 
         if action == 'ADD':
             return self.tc_requests.add_label(
-                self.api_type, self.api_sub_type, self.unique_id, label, owner=self.owner
+                self.api_type, self.api_branch, self.unique_id, label, owner=self.owner
             )
 
         if action == 'DELETE':
             return self.tc_requests.delete_label(
-                self.api_type, self.api_sub_type, self.unique_id, label, owner=self.owner
+                self.api_type, self.api_branch, self.unique_id, label, owner=self.owner
             )
 
         self._tcex.handle_error(925, ['action', 'label', 'action', 'action', action])
@@ -434,7 +456,7 @@ class TIMappings(object):
             params = {}
 
         for ia in self.tc_requests.indicator_associations(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner, params=params
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         ):
             yield ia
 
@@ -452,7 +474,7 @@ class TIMappings(object):
             self._tcex.handle_error(910, [self.type])
 
         for ga in self.tc_requests.group_associations(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner, params=params
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         ):
             yield ga
 
@@ -469,7 +491,7 @@ class TIMappings(object):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.victim_asset_associations(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner, params=params
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         )
 
     def indicator_associations_types(
@@ -495,7 +517,7 @@ class TIMappings(object):
         target = self._tcex.ti.indicator(indicator_type)
         for at in self.tc_requests.indicator_associations_types(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             target,
             api_entity=api_entity,
@@ -527,7 +549,7 @@ class TIMappings(object):
 
         for gat in self.tc_requests.group_associations_types(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             target,
             api_entity=api_entity,
@@ -555,28 +577,28 @@ class TIMappings(object):
 
         return self.tc_requests.victim_asset_associations(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             victim_asset_type,
             owner=self.owner,
             params=params,
         )
 
-    def add_association(self, target, api_type=None, api_sub_type=None, unique_id=None):
+    def add_association(self, target, api_type=None, api_branch=None, unique_id=None):
         """
         Adds a association to a Indicator/Group/Victim
 
         Args:
             target:
             api_type:
-            api_sub_type:
+            api_branch:
             unique_id:
 
         Returns:
 
         """
         api_type = api_type or target.api_type
-        api_sub_type = api_sub_type or target.api_sub_type
+        api_branch = api_branch or target.api_branch
         unique_id = unique_id or target.unique_id
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -586,29 +608,29 @@ class TIMappings(object):
 
         return self.tc_requests.add_association(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             api_type,
-            api_sub_type,
+            api_branch,
             unique_id,
             owner=self.owner,
         )
 
-    def delete_association(self, target, api_type=None, api_sub_type=None, unique_id=None):
+    def delete_association(self, target, api_type=None, api_branch=None, unique_id=None):
         """
         Deletes a association from a Indicator/Group/Victim
 
         Args:
             target:
             api_type:
-            api_sub_type:
+            api_branch:
             unique_id:
 
         Returns:
 
         """
         api_type = api_type or target.api_type
-        api_sub_type = api_sub_type or target.api_sub_type
+        api_branch = api_branch or target.api_branch
         unique_id = unique_id or target.unique_id
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
@@ -618,10 +640,10 @@ class TIMappings(object):
 
         return self.tc_requests.delete_association(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             api_type,
-            api_sub_type,
+            api_branch,
             unique_id,
             owner=self.owner,
         )
@@ -639,7 +661,7 @@ class TIMappings(object):
             self._tcex.handle_error(910, [self.type])
 
         for a in self.tc_requests.attributes(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner, params=params
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner, params=params
         ):
             yield a
 
@@ -664,7 +686,7 @@ class TIMappings(object):
         if action == 'GET':
             return self.tc_requests.get_attribute(
                 self.api_type,
-                self.api_sub_type,
+                self.api_branch,
                 self.unique_id,
                 attribute_id,
                 owner=self.owner,
@@ -673,7 +695,7 @@ class TIMappings(object):
 
         if action == 'DELETE':
             return self.tc_requests.delete_attribute(
-                self.api_type, self.api_sub_type, self.unique_id, attribute_id, owner=self.owner
+                self.api_type, self.api_branch, self.unique_id, attribute_id, owner=self.owner
             )
 
         self._tcex.handle_error(925, ['action', 'attribute', 'action', 'action', action])
@@ -696,7 +718,7 @@ class TIMappings(object):
 
         return self.tc_requests.add_attribute(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             attribute_type,
             attribute_value,
@@ -717,7 +739,7 @@ class TIMappings(object):
 
         for al in self.tc_requests.attribute_labels(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             attribute_id,
             owner=self.owner,
@@ -745,7 +767,7 @@ class TIMappings(object):
         if action == 'GET':
             return self.tc_requests.get_attribute_label(
                 self.api_type,
-                self.api_sub_type,
+                self.api_branch,
                 self.unique_id,
                 attribute_id,
                 label,
@@ -755,7 +777,7 @@ class TIMappings(object):
         if action == 'DELETE':
             return self.tc_requests.delete_attribute_label(
                 self.api_type,
-                self.api_sub_type,
+                self.api_branch,
                 self.unique_id,
                 attribute_id,
                 label,
@@ -779,13 +801,8 @@ class TIMappings(object):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.add_attribute_label(
-            self.api_type, self.api_sub_type, self.unique_id, attribute_id, label, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, attribute_id, label, owner=self.owner
         )
-
-    @property
-    def _base_request(self):
-        """ Returns: A common dict for requests"""
-        return {'unique_id': self.unique_id, 'type': self.api_type, 'sub_type': self.api_sub_type}
 
     def can_create(self):  # pylint: disable=R0201
         """ Determines if the object can be created. """

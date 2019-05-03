@@ -11,7 +11,7 @@ class Victim(TIMappings):
     """Unique API calls for Victim API Endpoints"""
 
     def __init__(self, tcex, name, owner=None, **kwargs):
-        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim', owner)
+        super(Victim, self).__init__(tcex, 'Victim', 'victims', None, 'victim', None, owner)
         self._data['name'] = name
 
         for arg, value in kwargs.items():
@@ -166,23 +166,23 @@ class Victim(TIMappings):
 
         if asset_type == 'PHONE':
             return self.tc_requests.victim_phone_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'EMAIL':
             return self.tc_requests.victim_email_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'NETWORK':
             return self.tc_requests.victim_network_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'SOCIAL':
             return self.tc_requests.victim_social_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'WEB':
             return self.tc_requests.victim_web_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         self._tcex.handle_error(
             925, ['asset_type', 'asset', 'asset_type', 'asset_type', asset_type]
@@ -203,33 +203,31 @@ class Victim(TIMappings):
             self._tcex.handle_error(910, [self.type])
 
         if not asset_type:
-            for a in self.tc_requests.victim_assets(
-                self.api_type, self.api_sub_type, self.unique_id
-            ):
+            for a in self.tc_requests.victim_assets(self.api_type, self.api_branch, self.unique_id):
                 yield a
         if asset_type == 'PHONE':
             for a in self.tc_requests.victim_phone_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             ):
                 yield a
         if asset_type == 'EMAIL':
             for a in self.tc_requests.victim_email_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             ):
                 yield a
         if asset_type == 'NETWORK':
             for a in self.tc_requests.victim_network_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             ):
                 yield a
         if asset_type == 'SOCIAL':
             for a in self.tc_requests.victim_social_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             ):
                 yield a
         if asset_type == 'WEB':
             for a in self.tc_requests.victim_web_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             ):
                 yield a
 

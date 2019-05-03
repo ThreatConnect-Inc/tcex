@@ -33,7 +33,7 @@ class Task(TIMappings):
             name (str): The name for this Group.
         """
 
-        super(Task, self).__init__(tcex, 'Task', 'tasks', None, 'task', owner)
+        super(Task, self).__init__(tcex, 'Task', 'tasks', None, 'task', None, owner)
         self._data['name'] = name
         if status:
             self._data['status'] = status

@@ -20,8 +20,7 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super(Host, self).__init__(tcex, 'hosts', owner, **kwargs)
-        self.api_entity = 'host'
+        super(Host, self).__init__(tcex, 'host', 'host', 'hosts', owner, **kwargs)
         self._data['hostName'] = hostname
         self.unique_id = self.unique_id or hostname
 
@@ -57,5 +56,5 @@ class Host(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.dns_resolution(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

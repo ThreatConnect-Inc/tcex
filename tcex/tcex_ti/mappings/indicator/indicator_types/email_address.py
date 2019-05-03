@@ -19,8 +19,9 @@ class EmailAddress(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             xid (str, kwargs): The external id for this Indicator.
         """
-        super(EmailAddress, self).__init__(tcex, 'emailAddresses', owner, **kwargs)
-        self.api_entity = 'emailAddress'
+        super(EmailAddress, self).__init__(
+            tcex, 'Email Address', 'emailAddress', 'emailAddresses', owner, **kwargs
+        )
         self._data['address'] = address
         self.unique_id = self.unique_id or address
 
@@ -43,4 +44,4 @@ class EmailAddress(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('address', '')
+        self.unique_id = json_response.get(self.api_entity, '')
