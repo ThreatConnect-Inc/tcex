@@ -109,25 +109,25 @@ Release Notes
 
 0.9.0
 -----
-+ **Breaking Change:** Updated all optional args in batch module for Group/Indicator objects to kwargs. This will allow easier updates for new value in the future.
-+ **Breaking Change:** Updated the decode arg on the read Binary/BinaryArray methods to be False by default. When set to True the ``read()`` method can't be used in some use cases.
-+ **Breaking Change:** Updated the Group and Indicator object in the Batch module to only produce random and unique xids when an xid is not provided.  These objects will no longer produce a unique and reproducible xid.
-+ Added new App templates and updated templates with new files and content.
-+ Added :py:mod:`~tcex.tcex_args` module to include all args related methods from the :py:mod:`~tcex.tcex` module.
-+ Updated :py:meth:`~tcex.tcex.TcEx.request` method to include proxy settings.
-+ Updated ``tcprofile`` to include an epilog with command instructions on environment setup **(> tcprofile -h)**.
-+ Updated ``tcprofile`` to split the args section to support "default" args and "app" args.
-+ Updated ``tcinit`` to support templates instead of types.
-+ Updated ``tcinit`` to include an epilog with template definitions **(> tcinit -h)**.
-+ Updated ``tcinit`` to download additional files required for building Apps.
-+ Updated ``tcrun`` to support update args schema in profiles.
-+ Removed ``tcex.jobs()`` module.
-+ Removed ``tcex.request_external()`` method.
-+ Removed ``tcex.authorization()`` method.
-+ Removed ``tcex.authorization_hmac()`` method.
-+ Removed ``tcex._authorization_token_renew()`` method.
-+ Updated **all** code to standard formatting and structure.
-+ Updated and restructured docs.
++ Updated all optional args in Batch module for Group/Indicator objects to kwargs. This will allow easier updates for new values in the future.
++ Updated the decode arg on the read Binary/BinaryArray methods to be False by default. When set to True, the ``read()`` method cannot be used in some use cases.
++ Updated the Group and Indicator object in the Batch module to only produce random and unique xids when an xid is not provided.  These objects will no longer produce a unique and reproducible xid.
++ Added new App templates and updated templates with new files and content
++ Added :py:mod:`~tcex.tcex_args` module to include all args related methods from the :py:mod:`~tcex.tcex` module
++ Updated :py:meth:`~tcex.tcex.TcEx.request` method to include proxy settings
++ Updated ``tcprofile`` to include an epilog with command instructions on environment setup **(> tcprofile -h)**
++ Updated ``tcprofile`` to split the args section to support "default" args and "app" args
++ Updated ``tcinit`` to support templates instead of types
++ Updated ``tcinit`` to include an epilog with template definitions **(> tcinit -h)**
++ Updated ``tcinit`` to download additional files required for building Apps
++ Updated ``tcrun`` to support update args schema in profiles
++ Removed ``tcex.jobs()`` module
++ Removed ``tcex.request_external()`` method
++ Removed ``tcex.authorization()`` method
++ Removed ``tcex.authorization_hmac()`` method
++ Removed ``tcex._authorization_token_renew()`` method
++ Updated **all** code to standard formatting and structur
++ Updated and restructured Documents
 
 0.8.x
 =====
@@ -135,148 +135,147 @@ Release Notes
 0.8.27
 ------
 + Added decorator to provide common methods for Playbook Apps.
-+ Added logic to ``tcpackage`` to do basic syntax validation of ``.py`` and ``.json`` files.
-+ Added :py:meth:`~tcex.tcex_playbook.TcExPlaybook.add_output` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.write_output` methods to provide an alternative way to write playbook output data.
-+ Added access to resolved args.
-+ Updated ``tclib`` logic for **lib_latest** symbolic link.
++ Added logic to ``tcpackage`` to do basic syntax validation of ``.py`` and ``.json`` files
++ Added :py:meth:`~tcex.tcex_playbook.TcExPlaybook.add_output` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.write_output` methods to provide an alternative way to write Playbook output data
++ Added access to resolved args
++ Updated ``tclib`` logic for **lib_latest** symbolic link
 
 0.8.26
 ------
-+ Updated ``tcinit`` to include **migration** as an action to help convert non App Builder compliant Apps.
-+ Updated utils module for additional method to determine local timezone.
-+ Updated utils module to output correct total_weeks value.
++ Updated ``tcinit`` to include **migration** as an action to help convert non-App Builder compliant Apps
++ Updated Utils module for additional method to determine local timezone
++ Updated Utils module to output correct **total_weeks** value
 
 0.8.25
 ------
-+ Updated ``tcinit`` command CLI option ``--upgrade`` to download additional files.
-+ Updated ``tcrun`` command to use **dockerImage** parameter from install.json or profile.
-+ Updated ``tcrun`` command to support new **autoclear** value in profile.
-+ Updated ``tclib`` to create a symbolic link to the latest Python lib directory.
-+ Updated ``tcpackage`` command to add **commitHash** value to install.json.
-+ Updated :py:mod:`~tcex.tcex` module to log **commitHash** value.
-+ Updated the ``.gitignore`` file for App templates.
++ Updated ``tcinit`` command CLI option ``--upgrade`` to download additional files
++ Updated ``tcrun`` command to use **dockerImage** parameter from **install.json** or profile
++ Updated ``tcrun`` command to support new **autoclear** value in profile
++ Updated ``tclib`` to create a symbolic link to the latest Python lib directory
++ Updated ``tcpackage`` command to add **commitHash** value to **install.json**
++ Updated :py:mod:`~tcex.tcex` module to log **commitHash** value
++ Updated the ``.gitignore`` file for App templates
 
 0.8.24
 ------
 + Fixed GH issue #(60)
-+ Updates to App templates.  Added "tc_action" logic to handle launching "action" methods in the App class.
-+ Added ``--docker`` flag to ``tcrun`` command to launch App in docker container.
++ Updated App templates.  Added **tc_action** logic to handle launching **action** methods in the App class
++ Added ``--docker`` flag to ``tcrun`` command to launch App in docker container
 
 0.8.23
 ------
-+ Update for batch module to handle attribute values of False.
-+ Added ``read_array`` method to playbook module.
-+ Updated App templates to include start and done methods.
-+ Update tcprofile to create the tcex.d directory automatically.
++ Updatd Batch module to handle Attribute values of False
++ Added ``read_array`` method to Playbook module
++ Updated App templates to include **start** and **done** methods
++ Update **tcprofile** to create the **tcex.d** directory automatically
 
 0.8.22
 ------
-+ Removed ``__slots__`` on batch module due to issues w/ Python2.
-+ Updated tcinit and corresponding App templates.
++ Removed ``__slots__`` on Batch module due to issues with Python 2
++ Updated **tcinit** and corresponding App templates
 
 0.8.21
 ------
-+ Added PDF method to resource module for supported group types.
-+ Added task_id method for Task class.
-+ Added date_added property to Indicator and Groups objects.
-+ Added last_modified property to Indicator objects.
-+ Updated tcrun for handling Binary/BinaryArray validation.
++ Added PDF method to Resource module for supported Group types
++ Added **task_id** method for Task class
++ Added **date_added** property to Indicator and Groups objects
++ Added **last_modified** property to Indicator objects
++ Updated **tcrun** for handling Binary/BinaryArray validation
 
 0.8.20
 ------
-+ Fixed deletion in the batch module for TC instances < 5.7.
++ Fixed deletion in Batch module for TC instances < 5.7
 
 0.8.19
 ------
-+ Removed app.lock logic.
-+ Updated file_content logic for Documents and Reports.
-+ Added ``add_file()`` method for batch Group objects.
-+ Added playbook_triggers_enabled parameter to batch module (requires ThreatConnect 5.7).
++ Removed **app.lock** logic
++ Updated **file_content** logic for Documents and Reports
++ Added ``add_file()`` method for batch Group objects
++ Added **playbook_triggers_enabled** parameter to Batch module (requires ThreatConnect 5.7)
 
 0.8.18
 ------
-+ Minor change to batch poll.
-+ Update batch module ``close()`` method to check for xids-saved file existence before deletion.
++ Made minor change to batch poll
++ Updated Batch module ``close()`` method to check for xids-saved file existence before deletion
 
 0.8.17
 ------
-+ Added app.lock file to temp directory to ensure single execution.
++ Added **app.lock** file to temp directory to ensure single execution
 
 0.8.16
 ------
-+ Removed debugging flag from batch module and replaced with logic to control debug externally.
-+ Updated batch poll method logic to poll more frequently.
-+ Update resource module to allow the addition of a body when reading from the datastore.
++ Removed debugging flag from Batch module and replaced with logic to control debug externally
++ Updated batch-poll method logic to poll more frequently
++ Update Resource module to allow the addition of a body when reading from the datastore
 
 0.8.15
 ------
-+ Added signal handler to tcex to gracefully handle interrupts.
-+ Added new ``tcinit`` command to download files required for a new App or update files in an existing App.
-+ Updated batch poll method to automatically calculate poll interval. **REMOVED** interval method parameter.
-+ Updated batch module to raise error on batch status poll timeout.
-+ Updated __main__.py to version 1.0.2.
-+ Moved and added supporting file to app_init directory.
++ Added signal handler to tcex to gracefully handle interrupts
++ Added new ``tcinit`` command to download files required for a new App or update files in an existing App
++ Updated batch-poll method to automatically calculate poll interval. **REMOVED** interval-method parameter
++ Updated Batch module to raise error on batch-status poll timeout
++ Updated **__main__.py** to version 1.0.2
++ Moved and added supporting file to **app_init** directory
 
 0.8.14
 ------
-+ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done.
-+ Added global overrides for halt_on_error in batch module.
-+ Fixed issue with token renewal not failing properly on error.
-+ Updated logging method to ensure all messages are logged to file.
-+ Updated logging method to skip API logging during token renewal.
-+ Changed tcrun to not use shell on Windows systems.
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.close` method to allow cleanup of temp files when batch job is done
++ Added global overrides for **halt_on_error** in Batch module
++ Fixed issue with token renewal not failing properly on error
++ Updated logging method to ensure all messages are logged to file
++ Updated logging method to skip API logging during token renewal
++ Changed tcrun to not use shell on Windows systems
 
 0.8.13
 ------
-+ Updated Batch to use Submit Job/Submit Data for Deletes.
-+ Replaced tcex_develop arg with branch arg for tclib command.
-+ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to help generate a unique and/or reproducible xid.
-+ Added default value for Email score in batch module.
++ Updated Batch module to use Submit Job/Submit Data for deletes
++ Replaced **tcex_develop** arg with branch arg for tclib command
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.generate_xid` method to help generate a unique and/or reproducible xid
++ Added default value for Email score in Batch module
 
 0.8.12
 ------
-+ Added active property to Indicator type objects.
-+ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method be best effort.
-+ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned.
-+ Updated ``attribute()`` methods to handle unique values when using a formatter.
-+ Fixed issue with --unmask arg not working on tcrun command.
++ Added active property to Indicator type objects
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method be best effort
++ Updated :py:meth:`~tcex.tcex_batch_v2.TcExBatch.submit_file` to handle None value being returned
++ Updated ``attribute()`` methods to handle unique values when using a formatter
++ Fixed issue with **--unmask** arg not working on tcrun command
 
 0.8.11
 ------
-+ Merged AOT feature in prep for 5.7.
-+ Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load install.json, which is used in injection method to determine the structure on the param values.
-+ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method to save batch data to disk to reduce memory usage of the App.
-+ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams, and AOT params depending on selected feature.
-+ Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic to allow params to be injected manually.
-+ Updated :py:mod:`~tcex.tcex_redis` module to support additional redis methods required for AOT.
-+ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` methods to support b64decode and decode params.
-+ Updated :py:meth:`~tcex.tcex_batch_v2.Report` module to make the report file name optional for update in 5.7.
-+ Updated examples in docs.
-+ Fixed validation issues in tcrun.
++ Merged AOT feature in prep for 5.7
++ Added :py:meth:`~tcex.tcex.TcEx.install_json` method to load **install.json**, which is used in the injection method to determine the structure on the param values
++ Added :py:meth:`~tcex.tcex_batch_v2.TcExBatch.save` method to save batch data to disk to reduce memory usage of the App
++ Updated the logic in :py:meth:`~tcex.tcex.TcEx.default_args` method to handle both injecting secureParams and AOT params depending, on selected featur.
++ Updated :py:meth:`~tcex.tcex.TcEx.inject_params` method to be public and generic and to allow params to be injected manually
++ Updated :py:mod:`~tcex.tcex_redis` module to support additional Redis methods required for AOT
++ Updated :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary` and :py:meth:`~tcex.tcex_playbook.TcExPlaybook.read_binary_array` methods to support b64decode and decode params
++ Updated :py:meth:`~tcex.tcex_batch_v2.Report` module to make the Report file name optional for updates in 5.7
++ Updated examples in Documents
++ Fixed validation issues in tcrun
 
 0.8.10
 ------
-+ Updated submit_create_and_upload method to clear raw list after submission.
-+ Rewrite of results_tc method to handle updates to key/value pairs.
-+ Updated tcrun to auto create required directories.
-+ Updated tclib to support building tcex develop version with "--tcex_develop" CLI flag.
++ Updated **submit_create_and_upload** method to clear raw list after submission
++ Rewrote **results_tc** method to handle updates to key/value pairs
++ Updated tcrun to autocreate required directories
++ Updated tclib to support building tcex develop version with **--tcex_develop** CLI flag
 
 0.8.9
 ------
-+ Rewrite of tcrun and tcprofile commands.
-+ Removed tcdata commands.
-+ Changed logging of unsupported args to only show when App retrieves args.
-+ Changed read_binary_array method to decode Redis data automatically.
++ Rewrote tcrun and tcprofile commands
++ Removed tcdata commands
++ Changed logging of unsupported args to only show when App retrieves args
++ Changed **read_binary_array** method to decode Redis data automatically
 
 0.8.8
 ------
-+ Updated :py:meth:`~tcex.tcex.TcEx.exit` methods to treat exit code of 3 as non-failure.
-+ Updates for v2 Batch createAndUpload.
++ Updated :py:meth:`~tcex.tcex.TcEx.exit` methods to treat exit code of 3 as non-failure
++ Updated v2 Batch createAndUpload
 
 0.8.7
 ------
-+ Updated secure params injection to handle pipe delimited multiple choice values.
-
++ Updated secure params injection to handle pipe-delimited multiple-choice values
 0.8.6
 ------
 + Fixed issue with API logging not working when secure params is enabled.
