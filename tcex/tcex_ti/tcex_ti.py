@@ -172,9 +172,9 @@ class TcExTi(object):
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
-                    custom_indicator_details = self._custom_indicator_classes[indicator_type]
+                    custom_indicator_details = self._custom_indicator_classes[upper_indicator_type]
                     value_fields = custom_indicator_details.get('value_fields')
-                    c = getattr(module, upper_indicator_type)
+                    c = getattr(module, indicator_type.replace(' ', ''))
                     if len(value_fields) == 1:
                         indicator = c(
                             self.tcex, kwargs.pop(value_fields[0], None), owner=owner, **kwargs
@@ -188,6 +188,7 @@ class TcExTi(object):
                             **kwargs
                         )
                     elif len(value_fields) == 3:
+                        print(value_fields)
                         indicator = c(
                             self.tcex,
                             kwargs.pop(value_fields[0], None),
