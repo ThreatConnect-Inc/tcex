@@ -51,6 +51,8 @@ def custom_indicator_class_factory(
         :param json_request:
         """
         self.unique_id = json_request.get(value_fields[0])
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create_1(self):  # pylint: disable=W0641
         """
@@ -84,6 +86,8 @@ def custom_indicator_class_factory(
         :param json_request:
         """
         self.unique_id = json_request.get(value_fields[0]) or json_request.get(value_fields[1])
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create_2(self):  # pylint: disable=W0641
         """
@@ -122,6 +126,8 @@ def custom_indicator_class_factory(
             or json_request.get(value_fields[1])
             or json_request.get(value_fields[2])
         )
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create_3(self):  # pylint: disable=W0641
         """
