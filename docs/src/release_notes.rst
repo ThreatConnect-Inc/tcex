@@ -462,7 +462,7 @@ Release Notes
 + Updated TcEx Jobs module Group add logic to fix issue with skipping existing Groups
 + Updated TcEx Jobs module to handle **associatedGroup** passed as string or int when using **/v2**
 
-•	Updated TcEx_Jobs module gGroup add logic to fix issue with skipping existing gGroups
+.. Important:: Breaking change to any App that uses the Direct Access method with a Custom Indicator type.
 
 0.6.x
 =====
