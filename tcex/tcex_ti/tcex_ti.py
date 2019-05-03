@@ -10,12 +10,6 @@ from tcex.tcex_ti.mappings.indicator.indicator_types.url import URL
 from tcex.tcex_ti.mappings.indicator.indicator_types.email_address import EmailAddress
 from tcex.tcex_ti.mappings.indicator.indicator_types.file import File
 from tcex.tcex_ti.mappings.indicator.indicator_types.host import Host
-from tcex.tcex_ti.mappings.indicator.indicator_types.asn import ASN
-
-# from tcex.tcex_ti.mappings.indicator.indicator_types.cidr import CIDR
-from tcex.tcex_ti.mappings.indicator.indicator_types.mutex import Mutex
-from tcex.tcex_ti.mappings.indicator.indicator_types.registry_key import RegistryKey
-from tcex.tcex_ti.mappings.indicator.indicator_types.user_agent import UserAgent
 from tcex.tcex_ti.mappings.group.group_types.adversarys import Adversary
 from tcex.tcex_ti.mappings.group.group_types.campaign import Campaign
 from tcex.tcex_ti.mappings.group.group_types.document import Document
@@ -148,7 +142,7 @@ class TcExTi(object):
         indicator = None
         if upper_indicator_type == 'ADDRESS':
             indicator = Address(self.tcex, kwargs.pop('ip', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'EMAILADDRESS':
+        elif upper_indicator_type == 'EMAIL ADDRESS':
             indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'FILE':
             indicator = File(self.tcex, owner=owner, **kwargs)
@@ -156,25 +150,25 @@ class TcExTi(object):
             indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':
             indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'ASN':
-            indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'ASN':
+        #     indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
         # elif upper_indicator_type == 'CIDR':
         #     indicator = CIDR(self.tcex, kwargs.pop('Block', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'MUTEX':
-            indicator = Mutex(self.tcex, kwargs.pop('Mutex', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'REGISTRY KEY':
-            indicator = RegistryKey(
-                self.tcex,
-                kwargs.pop('Key Name', None),
-                kwargs.pop('Value Name', None),
-                kwargs.pop('Value Type', None),
-                owner=owner,
-                **kwargs
-            )
-        elif upper_indicator_type == 'USER AGENT':
-            indicator = UserAgent(
-                self.tcex, kwargs.pop('User Agent String', None), owner=owner, **kwargs
-            )
+        # elif upper_indicator_type == 'MUTEX':
+        #     indicator = Mutex(self.tcex, kwargs.pop('Mutex', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'REGISTRY KEY':
+        #     indicator = RegistryKey(
+        #         self.tcex,
+        #         kwargs.pop('Key Name', None),
+        #         kwargs.pop('Value Name', None),
+        #         kwargs.pop('Value Type', None),
+        #         owner=owner,
+        #         **kwargs
+        #     )
+        # elif upper_indicator_type == 'USER AGENT':
+        #     indicator = UserAgent(
+        #         self.tcex, kwargs.pop('User Agent String', None), owner=owner, **kwargs
+        #     )
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
