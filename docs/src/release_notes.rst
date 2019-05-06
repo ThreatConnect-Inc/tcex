@@ -7,6 +7,8 @@ Release Notes
 =====
 + Updated playbook read for ``\s`` replacement issue in Python 3.7.
 + Updated utils ``unix_time_to_datetime()`` method to handle unix timestamps with milliseconds that are not floats.
++ Updated TI module with changes for indicators data.
++ Updated tcinit for temporary proxy fields names.
 
 1.0.2
 =====
