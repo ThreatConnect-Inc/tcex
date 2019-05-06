@@ -14,6 +14,17 @@ if sys.version_info[0] == 2:
     reload(sys)  # noqa: F821; pylint: disable=E0602
     sys.setdefaultencoding('utf-8')  # pylint: disable=E1101
 
+# temp workaround for proxy arg issue
+for n, i in enumerate(sys.argv):
+    if i == 'proxy_host':
+        sys.argv[n] = '--proxy_host'
+    elif i == 'proxy_port':
+        sys.argv[n] = '--proxy_port'
+    elif i == 'proxy_user':
+        sys.argv[n] = '--proxy_user'
+    elif i == 'proxy_pass':
+        sys.argv[n] = '--proxy_pass'
+
 # autoreset colorama
 c.init(autoreset=True, strip=False)
 
