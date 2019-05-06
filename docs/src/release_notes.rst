@@ -283,6 +283,7 @@ Release Notes
 0.8.7
 ------
 + Updated secure params injection to handle pipe-delimited multiple-choice values
+
 0.8.6
 ------
 + Fixed issue with API logging not working when secure params are enabled
@@ -373,6 +374,7 @@ Release Notes
 + Added Event, Intrusion Set, and Report Group types in preparation for TC > 5.6.0
 + Added metrics module to create and add metrics to ThreatConnect.
 + Added **deleted** endpoint for Indicators.
+
 0.7.15
 ------
 + Updated Jobs module to delete by name when using replace for Groups
@@ -488,7 +490,7 @@ Release Notes
 
 0.6.1
 -----
-+ Updated ``tcdata`` to validate string as **string_types **for "is type" check using six modules
++ Updated ``tcdata`` to validate string as **string_types** for "is type" check using six modules
 + Added fix for code font not matching line numbers in the documents
 
 0.6.0

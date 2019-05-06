@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module - Resources &mdash; TcEx 1.0.2 documentation</title>
+  <title>Module: Resources &mdash; TcEx 1.0.3 documentation</title>
 
 
 
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module - Utils" href="module_utils.html" />
-    <link rel="prev" title="Module - Requests" href="module_request.html" />
+    <link rel="next" title="Module: Utils" href="module_utils.html" />
+    <link rel="prev" title="Module: Requests" href="module_request.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.2
+                1.0.3
               </div>
 
 
@@ -87,25 +87,25 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module - Batch</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module - Resources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#custom-metrics-resource">Custom Metrics Resource</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#custom-metric-resources">Custom Metric Resources</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#data-store-resource">Data Store Resource</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-store-resources">Data Store Resources</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id2">Examples</a></li>
 </ul>
 </li>
@@ -127,13 +127,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#victim-resources">Victim Resources</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser/Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -184,7 +184,7 @@
 
       <li><a href="index.html">Docs</a> &raquo;</li>
 
-      <li>Module - Resources</li>
+      <li>Module: Resources</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -202,8 +202,8 @@
            <div itemprop="articleBody">
 
   <div class="section" id="module-resources">
-<span id="id1"></span><h1>Module - Resources<a class="headerlink" href="#module-resources" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect © TcEx Framework provides access to the ThreatConnect API using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module.  The Resource Classes can be accessed directly via the <code class="docutils literal notranslate"><span class="pre">tcex.resources</span></code> property of the TcEx Framework or indirectly vi the <code class="docutils literal notranslate"><span class="pre">tcex.resource()</span></code> method.</p>
+<span id="id1"></span><h1>Module: Resources<a class="headerlink" href="#module-resources" title="Permalink to this headline">¶</a></h1>
+<p>The ThreatConnect TcEx Framework provides access to the ThreatConnect API using the <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module.  The Resource Classes can be accessed directly via the <code class="docutils literal notranslate"><span class="pre">tcex.resources</span></code> property of the TcEx Framework or indirectly via the <code class="docutils literal notranslate"><span class="pre">tcex.resource()</span></code> method.</p>
 <p><strong>Direct Access</strong></p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
@@ -250,14 +250,14 @@
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For result sets that do not support pagination the <code class="docutils literal notranslate"><span class="pre">resource.request()</span></code> method can be called directly.</p>
+<p class="last">For result sets that do not support pagination, the <code class="docutils literal notranslate"><span class="pre">resource.request()</span></code> method can be called directly.</p>
 </div>
-<div class="section" id="custom-metrics-resource">
-<h2>Custom Metrics Resource<a class="headerlink" href="#custom-metrics-resource" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="custom-metric-resources">
+<h2>Custom Metric Resources<a class="headerlink" href="#custom-metric-resources" title="Permalink to this headline">¶</a></h2>
 <p>The TcEx Resource Module provides Access to the <code class="docutils literal notranslate"><span class="pre">customMetric</span></code> API endpoint to create configurations and add data.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">Available in 5.4+ version of the ThreatConnect API.</p>
+<p class="last">Custom Metrics are available in 5.4+ versions of the ThreatConnect API.</p>
 </div>
 <table border="1" class="docutils">
 <colgroup>
@@ -270,7 +270,7 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>Custom Metrics</td>
+<tr class="row-even"><td>Custom Metric</td>
 <td><a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric" title="tcex.tcex_resources.CustomMetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomMetric</span></code></a></td>
 </tr>
 </tbody>
@@ -280,9 +280,9 @@
 <p><a class="reference internal" href="examples.html#custom-metric-examples"><span class="std std-ref">Custom Metric Examples</span></a></p>
 </div>
 </div>
-<div class="section" id="data-store-resource">
-<h2>Data Store Resource<a class="headerlink" href="#data-store-resource" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local; Organization; and System.</p>
+<div class="section" id="data-store-resources">
+<h2>Data Store Resources<a class="headerlink" href="#data-store-resources" title="Permalink to this headline">¶</a></h2>
+<p>The TcEx Module provide CRUD (Create, Read, Update, and Delete) operations to the ThreatConnect DataStore. The DataStore provides access to three domains: Local, Organization, and System.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="29%" />
@@ -391,7 +391,7 @@
 <p><a class="reference internal" href="examples.html#indicator-examples"><span class="std std-ref">Indicator Resource Examples</span></a></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Custom Indicators can be accessed by the <strong>Type</strong>. The ThreatConnect platform supports Custom indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made <strong>safe</strong> by using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt" title="tcex.tcex.TcEx.safe_rt"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safe_rt()</span></code></a> method.</p>
+<p class="last">Custom Indicators can be accessed by <strong>type</strong>. The ThreatConnect platform supports Custom Indicator types with a space in the name. To prevent issues with the space all Custom Resource (Indicator) types should be made <strong>safe</strong> by using the <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_rt" title="tcex.tcex.TcEx.safe_rt"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safe_rt()</span></code></a> method.</p>
 </div>
 </div>
 </div>
@@ -508,10 +508,10 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="module_utils.html" class="btn btn-neutral float-right" title="Module - Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="module_utils.html" class="btn btn-neutral float-right" title="Module: Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_request.html" class="btn btn-neutral" title="Module - Requests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_request.html" class="btn btn-neutral" title="Module: Requests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

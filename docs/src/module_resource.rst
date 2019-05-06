@@ -54,7 +54,7 @@ The TcEx Resource Module provides Access to the ``customMetric`` API endpoint to
 +------------------------+----------------------------------------------------------+
 | Resource Type          | Class                                                    |
 +========================+==========================================================+
-| Custom Metric         | :py:class:`~tcex.tcex_resources.CustomMetric`            |
+| Custom Metric          | :py:class:`~tcex.tcex_resources.CustomMetric`            |
 +------------------------+----------------------------------------------------------+
 
 Examples

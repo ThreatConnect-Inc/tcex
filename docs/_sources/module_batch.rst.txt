@@ -2,24 +2,24 @@
 .. _module_batch:
 
 ==============
-Module - Batch
+Module: Batch
 ==============
 
 .. important:: The Batch module requires ThreatConnect version 5.6 or higher.
 
-The ThreatConnect |copy| TcEx Framework provides the :py:mod:`~tcex.tcex_ti_batch.TcExBatch` module to create, delete, and update both Groups and Indicators in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.
+The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti_batch.TcExBatch` module to create, delete, and update both Groups and Indicators in the ThreatConnect platform. The App developer can dynamically build data objects, and the Batch module will write the data to the ThreatConnect API.
 
 External ID (xid)
 =================
-The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.  The XID **must** be unique for the entire instance of ThreatConnect.
+The batch JSON data requires an **xid** value for all Groups and Indicators.  The xid is used internally in ThreatConnect for associations and for updating existing Groups.  The xid **must** be unique for the entire instance of ThreatConnect.
 
-The :py:mod:`~tcex.tcex_ti_batch.TcExBatch` module provides the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.generate_xid` method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the **preferred** xid type as it allows for a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or ['myapp', 'adversary', '222']).
+The :py:mod:`~tcex.tcex_ti_batch.TcExBatch` module provides the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.generate_xid` method to assist in generating two types of xid. The first type is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the **preferred** xid type, as it allows a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid, either a string or array of value can be passed to the method (e.g., **myapp-adversary-5** or **['myapp', 'adversary', '222']**).
 
-For Interface 1 and 2 the xid is optional, if not provided a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is **best practice** and allows Groups and Indicators to be easily updated.
+For Interface 1 and 2, the xid is optional; if not provided, a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from a remote source). Passing in an xid, when possible, is **best practice** and allows Groups and Indicators to be easily updated.
 
-.. important:: It is best practice to provide a unique and reproducible XID value when creating Groups. If the XID created for a new Group matches the XID for an existing Group the existing Group will be overwritten.
+.. important:: It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.
 
-.. note:: In all of the examples below, the code to create the content is removed. You can read more about how to create the content in the `submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
+.. note:: In all of the examples below, the code to create the content is removed. Read more on how to create the content in the `Submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
 
 Groups
 ======
@@ -27,7 +27,7 @@ There are three interfaces to add Group Threat Intelligence data to the Batch Mo
 
 Group Interface 1
 -----------------
-The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.
+The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.
 
 The example below passes all supported fields to the``adversary()`` method.
 
@@ -44,7 +44,7 @@ The example below passes all supported fields to the``adversary()`` method.
     # optional save method
     batch.save(adversary)
 
-The example below passes only the required fields to document().  The optional properties can then be set whenever required. The same interface is used for the attribute.  The required attribute properties are set first and then optional values can be added.
+The example below passes only the required fields to **document()**.  The optional properties can then be set whenever required. The same interface is used for the Attribute.  The required Attribute properties are set first, and then optional values can be added.
 
 .. code-block:: python
     :linenos:
@@ -68,13 +68,13 @@ The example below passes only the required fields to document().  The optional p
     # optional save method
     batch.save(document)
 
-.. note:: The optional ``batch.save()`` method will write the group or indicator to disk.  When processing large amounts of data this is the preferred method in order to save on the memory usage of the App.
+.. note:: The optional ``batch.save()`` method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.
 
-.. important:: The **file_content** parameter for documents and reports will accept multiple types of data as well as a callback method.  The callback method will be passed the xid of the documents/report and expects a single response containing the contents of the file.  If loading a large number of documents it is best practice to not load the contents in memory, but instead use the callback method so that the files can be processed one at a time.
+.. important:: The **file_content** parameter for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.
 
 Group Interface 2
 -----------------
-The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_batch.TcExBatch.group` method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as **eventDate** for an Event Group the :py:meth:`~tcex.tcex_ti_group.Group.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__).  Adding metadata behaves the same as in Interface 1.
+The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_batch.TcExBatch.group` method.  In this interface the Group type, Group name, and optional xid are the only allowed fields.  For a type-specific field, such as **eventDate** for an Event Group, the :py:meth:`~tcex.tcex_ti_group.Group.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__).  Added metadata behaves the same as in Interface 1.
 
 .. code-block:: python
     :linenos:
@@ -88,7 +88,7 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_
     event.attribute('Description', 'Example Description 2', True, 'source')
     event.tag('Example Tag')
 
-The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other groups to which file contents can be added):
+The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other Groups to which file contents can be added):
 
 .. code-block:: python
     :linenos:
@@ -105,7 +105,7 @@ The code below demonstrates how to create a Document using this interface (and t
 
 Group Interface 3
 -----------------
-The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  You can view the required fields for each group type `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__.
+The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  View the required fields for each group type `here <https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields>`__.
 
 .. code-block:: python
     :linenos:
@@ -139,7 +139,7 @@ There are three interfaces to add Indicator Threat Intelligence data to the Batc
 
 Indicator Interface 1
 ---------------------
-The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the indicator instance directly.
+The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the Indicator instance directly.
 
 .. code-block:: python
     :linenos:
@@ -178,7 +178,7 @@ The first interface is for type specific access.  This interface allows for pass
 
 Indicator Interface 2
 ---------------------
-The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_batch.TcExBatch.indicator` method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as **size** for a File indicator the :py:meth:`~tcex.tcex_ti_indicator.Indicator.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__).  Adding metadata behaves the same as in Interface 1.
+The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_batch.TcExBatch.indicator` method.  In this interface, the Indicator type, Indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For a type-specific field, such as **size** for a File Indicator, the :py:meth:`~tcex.tcex_ti_indicator.Indicator.add_key_value` method is available. The field name must be exactly what the batch API expects (which are listed `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__).  Added metadata behaves the same as in Interface 1.
 
 .. code-block:: python
     :linenos:
@@ -192,11 +192,11 @@ The second more dynamic interface uses the more generic :py:meth:`~tcex.tcex_ti_
     host.attribute('Description', 'Example Description 2', True, 'source')
     host.tag('Example Tag')
 
-.. note:: The case of the indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the `indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
+.. note:: The case of the Indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the Indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
 
 Indicator Interface 3
 ---------------------
-The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. You can view the required fields for each indicator type `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__.
+The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. View the required fields for each Indicator type `here <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields>`__.
 
 .. code-block:: python
     :linenos:
@@ -255,11 +255,11 @@ File Occurrence
 
 Associations
 ============
-Associations are supported as Group -> Group or Indicator -> Group.  Using Interface 1 or 2 the behavior is the same for Group and Indicators.  However, for Interface 3 the structure is slightly different as displayed below.
+Associations are supported as Group -> Group or Indicator -> Group.  For Interface 1 or 2, the behavior is the same as that for Group and Indicators.  However, for Interface ,3 the structure is slightly different, as displayed below.
 
 Group
 -----
-Example of Group -> Group association.
+Example of Group -> Group Association.
 
 .. code-block:: javascript
     :linenos:
@@ -277,7 +277,7 @@ Example of Group -> Group association.
 
 Indicator
 ---------
-Example of Indicator -> Group association.
+Example of Indicator -> Group Association.
 
 .. code-block:: javascript
     :linenos:
@@ -295,7 +295,7 @@ Example of Indicator -> Group association.
 
 Submit
 ======
-There are few options for submitting the batch job, all with an option to halt_on_error.  The most common option :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_all` provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method it is possible to control the halt_on_error behavior for each step using global overrides.
+There are few options for submitting the batch job, all with an option to **halt_on_error**.  The most common option, :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_all`, provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method, it is possible to control the **halt_on_error** behavior for each step using global overrides.
 
 .. code-block:: python
     :linenos:
@@ -319,13 +319,13 @@ There are few options for submitting the batch job, all with an option to halt_o
     if errors:
         tcex.exit(1, 'Errors during Batch: {}'.format(errors))
 
-In some cases handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload` and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Next poll using :py:meth:`~tcex.tcex_ti_batch.TcExBatch.poll` for status and when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.errors` method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_files` method.
+In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload` and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using :py:meth:`~tcex.tcex_ti_batch.TcExBatch.poll` for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.errors` method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit_files` method.
 
-.. note:: The setting **synchronousBatchSaveLimit** in the ThreatConnect UI -> System Settings controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value the batch data will be processed synchronously and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit` method provides logic for handling this so the developer is not required to check if the job was queued.
+.. note:: The **synchronousBatchSaveLimit** setting, configured in the **System Settings** screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The :py:meth:`~tcex.tcex_ti_batch.TcExBatch.submit` method provides logic for handling this so that the developer is not required to check if the job was queued.
 
 Option 1
 --------
-Submit the job and wait for completion. In the example any error messages are requested to be returned as well.
+Submit the job and wait for completion. In the example below, any error messages are requested to be returned as well.
 
 .. code-block:: python
     :linenos:
@@ -339,7 +339,7 @@ Submit the job and wait for completion. In the example any error messages are re
 
 Option 2
 --------
-Call each step in submitting the batch job manually. A check for batch_id will indicate whether the job was processed asynchronously.
+Call each step in submitting the batch job manually. A check for **batch_id** will indicate whether the job was processed asynchronously.
 
 .. code-block:: python
     :linenos:

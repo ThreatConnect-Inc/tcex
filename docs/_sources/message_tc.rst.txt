@@ -4,7 +4,7 @@
 ==========
 Message TC
 ==========
-All ThreatConnect |copy| Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the :py:meth:`~tcex.tcex.TcEx.message_tc` method to handle writing this message.  The contents of message_tc are shown in the ThreatConnect UI and should provide a meaning message to the user.
+All ThreatConnect Exchange Apps should write an exit message on successful or failed execution.  The TcEx Frameworks provides the :py:meth:`~tcex.tcex.TcEx.message_tc` method to handle writing this message.  The contents of **message_tc** are shown in the ThreatConnect UI and should provide a meaning message to the user.
 
 .. Warning:: The Message TC exit message only supports up to 255 characters.  All data added after that will be truncated.
 

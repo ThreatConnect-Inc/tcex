@@ -4,9 +4,9 @@
 =======
 Logging
 =======
-The ThreatConnect |copy| TcEx App Framework has a built-in logger that will log to the ``args.tc_log_path`` directory. If the App is passed ``args.tc_token`` and ``args.tc_log_to_api`` the logger will automatically log to the ThreatConnect API.  This built-in logger is a instance of the standard `Python Logger <https://docs.python.org/2/library/logging.html>`_ with modification for API logging.
+The ThreatConnect TcEx App Framework has a built-in logger that will log to the ``args.tc_log_path`` directory. If the App passes ``args.tc_token`` and ``args.tc_log_to_api``, the logger will automatically log to the ThreatConnect API.  This built-in logger is an instance of the standard `Python Logger <https://docs.python.org/2/library/logging.html>`_ with modification for API logging.
 
-.. Note:: The ``args.tc_log_to_api`` variable is passed only if API Logging is turned on in the System Settings in the ThreatConnect Platform UI.
+.. Note:: The ``args.tc_log_to_api`` variable is passed only if API Logging is turned on in the **System Settings** screen, which is accessed in the ThreatConnect platform UI.
 
 **Example Logging**
 

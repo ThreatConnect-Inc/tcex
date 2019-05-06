@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module - Batch &mdash; TcEx 1.0.2 documentation</title>
+  <title>Module: Batch &mdash; TcEx 1.0.3 documentation</title>
 
 
 
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Module - Metrics" href="module_metrics.html" />
-    <link rel="prev" title="App - Directory Structure" href="app_directory_structure.html" />
+    <link rel="next" title="Module: Metrics" href="module_metrics.html" />
+    <link rel="prev" title="App-Directory Structure" href="app_directory_structure.html" />
 
 
   <script src="_static/js/modernizr.min.js"></script>
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.2
+                1.0.3
               </div>
 
 
@@ -87,15 +87,15 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps - Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps - Templates (tcinit)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps - Dependencies (tclib)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps - Packaging (tcpackage)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps - Profiles (tcprofile)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps - Running Profiles (tcrun)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App - Deployment Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App - Directory Structure</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module - Batch</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Batch</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#external-id-xid">External ID (xid)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#group-interface-1">Group Interface 1</a></li>
@@ -122,18 +122,18 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module - Metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module - Notifications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module - Playbooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module - Requests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module - Resources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module - Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token / HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser / Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser/Args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -184,7 +184,7 @@
 
       <li><a href="index.html">Docs</a> &raquo;</li>
 
-      <li>Module - Batch</li>
+      <li>Module: Batch</li>
 
 
       <li class="wy-breadcrumbs-aside">
@@ -202,24 +202,24 @@
            <div itemprop="articleBody">
 
   <div class="section" id="module-batch">
-<span id="id1"></span><h1>Module - Batch<a class="headerlink" href="#module-batch" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Module: Batch<a class="headerlink" href="#module-batch" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">The Batch module requires ThreatConnect version 5.6 or higher.</p>
 </div>
-<p>The ThreatConnect © TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module to create, delete, and update both Groups and Indicators in the ThreatConnect Platform. The App developer can dynamically build a data objects and the Batch module will handle writing the data to the ThreatConnect API.</p>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module to create, delete, and update both Groups and Indicators in the ThreatConnect platform. The App developer can dynamically build data objects, and the Batch module will write the data to the ThreatConnect API.</p>
 <div class="section" id="external-id-xid">
 <h2>External ID (xid)<a class="headerlink" href="#external-id-xid" title="Permalink to this headline">¶</a></h2>
-<p>The batch JSON data requires a xid value for all Groups and Indicators.  The XID is used internally in ThreatConnect for associations and for updating existing Groups.  The XID <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
-<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.generate_xid" title="tcex.tcex_ti_batch.TcExBatch.generate_xid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_xid()</span></code></a> method to assist in generating 2 types of xid. The first type of xid is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the <strong>preferred</strong> xid type as it allows for a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid either a string or array of value can be passed to the method (e.g., myapp-adversary-5 or [‘myapp’, ‘adversary’, ‘222’]).</p>
-<p>For Interface 1 and 2 the xid is optional, if not provided a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from an remote source). Passing in an xid when possible is <strong>best practice</strong> and allows Groups and Indicators to be easily updated.</p>
+<p>The batch JSON data requires an <strong>xid</strong> value for all Groups and Indicators.  The xid is used internally in ThreatConnect for associations and for updating existing Groups.  The xid <strong>must</strong> be unique for the entire instance of ThreatConnect.</p>
+<p>The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch" title="tcex.tcex_ti_batch.TcExBatch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExBatch</span></code></a> module provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.generate_xid" title="tcex.tcex_ti_batch.TcExBatch.generate_xid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_xid()</span></code></a> method to assist in generating two types of xid. The first type is a unique xid based on UUID4.  No input is required to produce a unique xid.  The second type is a unique and reproducible xid value.  This is the <strong>preferred</strong> xid type, as it allows a Group to have the same xid on subsequent runs of the App.  To generate a unique and reproducible xid, either a string or array of value can be passed to the method (e.g., <strong>myapp-adversary-5</strong> or <strong>[‘myapp’, ‘adversary’, ‘222’]</strong>).</p>
+<p>For Interface 1 and 2, the xid is optional; if not provided, a unique xid (UUID4) will be auto-generated.  A string value can also be passed if the xid is a known value (e.g., the id field from a remote source). Passing in an xid, when possible, is <strong>best practice</strong> and allows Groups and Indicators to be easily updated.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">It is best practice to provide a unique and reproducible XID value when creating Groups. If the XID created for a new Group matches the XID for an existing Group the existing Group will be overwritten.</p>
+<p class="last">It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In all of the examples below, the code to create the content is removed. You can read more about how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">submit section</a>.</p>
+<p class="last">In all of the examples below, the code to create the content is removed. Read more on how to create the content in the <a class="reference external" href="https://docs.threatconnect.com/en/latest/tcex/batch.html#submit">Submit section</a>.</p>
 </div>
 </div>
 <div class="section" id="groups">
@@ -227,7 +227,7 @@
 <p>There are three interfaces to add Group Threat Intelligence data to the Batch Module.</p>
 <div class="section" id="group-interface-1">
 <h3>Group Interface 1<a class="headerlink" href="#group-interface-1" title="Permalink to this headline">¶</a></h3>
-<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
+<p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.</p>
 <p>The example below passes all supported fields to the``adversary()`` method.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -244,7 +244,7 @@
 <span class="hll"><span class="n">batch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">adversary</span><span class="p">)</span>
 </span></pre></div>
 </td></tr></table></div>
-<p>The example below passes only the required fields to document().  The optional properties can then be set whenever required. The same interface is used for the attribute.  The required attribute properties are set first and then optional values can be added.</p>
+<p>The example below passes only the required fields to <strong>document()</strong>.  The optional properties can then be set whenever required. The same interface is used for the Attribute.  The required Attribute properties are set first, and then optional values can be added.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -280,16 +280,16 @@
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The optional <code class="docutils literal notranslate"><span class="pre">batch.save()</span></code> method will write the group or indicator to disk.  When processing large amounts of data this is the preferred method in order to save on the memory usage of the App.</p>
+<p class="last">The optional <code class="docutils literal notranslate"><span class="pre">batch.save()</span></code> method will write the Group or Indicator to disk.  When processing large amounts of data, this is the preferred method in order to save on the memory usage of the App.</p>
 </div>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p class="last">The <strong>file_content</strong> parameter for documents and reports will accept multiple types of data as well as a callback method.  The callback method will be passed the xid of the documents/report and expects a single response containing the contents of the file.  If loading a large number of documents it is best practice to not load the contents in memory, but instead use the callback method so that the files can be processed one at a time.</p>
+<p class="last">The <strong>file_content</strong> parameter for Documents and Reports will accept multiple types of data as well as a callback method.  The callback method will be passed in the xid of the Documents and Reports and expects a single response containing the contents of the file.  If loading a large number of Documents, it is best practice to not load the contents in memory, but instead to use the callback method so that the files can be processed one at a time.</p>
 </div>
 </div>
 <div class="section" id="group-interface-2">
 <h3>Group Interface 2<a class="headerlink" href="#group-interface-2" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.group" title="tcex.tcex_ti_batch.TcExBatch.group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">group()</span></code></a> method.  In this interface the group type, group name and optional xid are the only allowed fields.  For type specific field such as <strong>eventDate</strong> for an Event Group the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.add_key_value" title="tcex.tcex_ti_group.Group.add_key_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>).  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second and more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.group" title="tcex.tcex_ti_batch.TcExBatch.group"><code class="xref py py-meth docutils literal notranslate"><span class="pre">group()</span></code></a> method.  In this interface the Group type, Group name, and optional xid are the only allowed fields.  For a type-specific field, such as <strong>eventDate</strong> for an Event Group, the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_group.html#tcex.tcex_ti_group.Group.add_key_value" title="tcex.tcex_ti_group.Group.add_key_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>).  Added metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -303,7 +303,7 @@
 </span><span class="hll"><span class="n">event</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Example Tag&#39;</span><span class="p">)</span>
 </span></pre></div>
 </td></tr></table></div>
-<p>The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other groups to which file contents can be added):</p>
+<p>The code below demonstrates how to create a Document using this interface (and the same principle applies for Reports and any other Groups to which file contents can be added):</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -322,7 +322,7 @@
 </div>
 <div class="section" id="group-interface-3">
 <h3>Group Interface 3<a class="headerlink" href="#group-interface-3" title="Permalink to this headline">¶</a></h3>
-<p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  You can view the required fields for each group type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>.</p>
+<p>The third interface accepts the raw data formatted as a dictionary.  This method requires that an xid be provided.  All metadata should be included with in the JSON object.  View the required fields for each group type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/groups/groups.html#group-fields">here</a>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -371,7 +371,7 @@
 <p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
 <div class="section" id="indicator-interface-1">
 <h3>Indicator Interface 1<a class="headerlink" href="#indicator-interface-1" title="Permalink to this headline">¶</a></h3>
-<p>The first interface is for type specific access.  This interface allows for passing all the data in the method call or only the required fields with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the indicator instance directly.</p>
+<p>The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the Indicator instance directly.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -423,7 +423,7 @@
 </div>
 <div class="section" id="indicator-interface-2">
 <h3>Indicator Interface 2<a class="headerlink" href="#indicator-interface-2" title="Permalink to this headline">¶</a></h3>
-<p>The second more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.indicator" title="tcex.tcex_ti_batch.TcExBatch.indicator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator()</span></code></a> method.  In this interface the indicator type, indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For type specific field such as <strong>size</strong> for a File indicator the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_indicator.html#tcex.tcex_ti_indicator.Indicator.add_key_value" title="tcex.tcex_ti_indicator.Indicator.add_key_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>).  Adding metadata behaves the same as in Interface 1.</p>
+<p>The second and more dynamic interface uses the more generic <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.indicator" title="tcex.tcex_ti_batch.TcExBatch.indicator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator()</span></code></a> method.  In this interface, the Indicator type, Indicator value, optional rating, optional confidence, and optional xid are the only allowed fields.  For a type-specific field, such as <strong>size</strong> for a File Indicator, the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_indicator.html#tcex.tcex_ti_indicator.Indicator.add_key_value" title="tcex.tcex_ti_indicator.Indicator.add_key_value"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_key_value()</span></code></a> method is available. The field name must be exactly what the batch API expects (which are listed <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>).  Added metadata behaves the same as in Interface 1.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -439,12 +439,12 @@
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The case of the indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">indicator types</a>.</p>
+<p class="last">The case of the Indicator type (the first argument provided to the <cite>batch.indicator()</cite> function) should be the same as the <cite>name</cite> key provided when retrieving the Indicator types &lt;<a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types">https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types</a>&gt;`__.</p>
 </div>
 </div>
 <div class="section" id="indicator-interface-3">
 <h3>Indicator Interface 3<a class="headerlink" href="#indicator-interface-3" title="Permalink to this headline">¶</a></h3>
-<p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. You can view the required fields for each indicator type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>.</p>
+<p>The third interface accepts the raw data formatted as a dictionary. This method requires that an xid be provided. All metadata should be included with in the data. View the required fields for each Indicator type <a class="reference external" href="https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#indicator-fields">here</a>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -523,10 +523,10 @@
 </div>
 <div class="section" id="associations">
 <h2>Associations<a class="headerlink" href="#associations" title="Permalink to this headline">¶</a></h2>
-<p>Associations are supported as Group -&gt; Group or Indicator -&gt; Group.  Using Interface 1 or 2 the behavior is the same for Group and Indicators.  However, for Interface 3 the structure is slightly different as displayed below.</p>
+<p>Associations are supported as Group -&gt; Group or Indicator -&gt; Group.  For Interface 1 or 2, the behavior is the same as that for Group and Indicators.  However, for Interface ,3 the structure is slightly different, as displayed below.</p>
 <div class="section" id="group">
 <h3>Group<a class="headerlink" href="#group" title="Permalink to this headline">¶</a></h3>
-<p>Example of Group -&gt; Group association.</p>
+<p>Example of Group -&gt; Group Association.</p>
 <div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -547,7 +547,7 @@
 </div>
 <div class="section" id="indicator">
 <h3>Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h3>
-<p>Example of Indicator -&gt; Group association.</p>
+<p>Example of Indicator -&gt; Group Association.</p>
 <div class="highlight-javascript notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -569,7 +569,7 @@
 </div>
 <div class="section" id="submit">
 <h2>Submit<a class="headerlink" href="#submit" title="Permalink to this headline">¶</a></h2>
-<p>There are few options for submitting the batch job, all with an option to halt_on_error.  The most common option <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_all" title="tcex.tcex_ti_batch.TcExBatch.submit_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_all()</span></code></a> provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method it is possible to control the halt_on_error behavior for each step using global overrides.</p>
+<p>There are few options for submitting the batch job, all with an option to <strong>halt_on_error</strong>.  The most common option, <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_all" title="tcex.tcex_ti_batch.TcExBatch.submit_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_all()</span></code></a>, provides a simple interface that will perform all the individual step by default (e.g., request create and upload, poll for status, retrieve errors, and submit files).  When using this method, it is possible to control the <strong>halt_on_error</strong> behavior for each step using global overrides.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -603,14 +603,14 @@
     <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Errors during Batch: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
-<p>In some cases handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload" title="tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code></a> and then go retrieve data from remote endpoint while ThreatConnect processes the batch job.  Next poll using <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.poll" title="tcex.tcex_ti_batch.TcExBatch.poll"><code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code></a> for status and when the job is Completed the next job request can be submitted. If batch errors are reported in the Batch status the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.errors" title="tcex.tcex_ti_batch.TcExBatch.errors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code></a> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_files" title="tcex.tcex_ti_batch.TcExBatch.submit_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code></a> method.</p>
+<p>In some cases, handling errors may require more control.  For these cases the submit method can be called with some or all of the additional features (e.g., polling, retrieving errors, and uploading files) disabled. It is also possible to call each method individually.  A possible workflow could be to use <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload" title="tcex.tcex_ti_batch.TcExBatch.submit_create_and_upload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_create_and_upload()</span></code></a> and then to retrieve data from a remote endpoint while ThreatConnect processes the batch job.  Next, poll by using <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.poll" title="tcex.tcex_ti_batch.TcExBatch.poll"><code class="xref py py-meth docutils literal notranslate"><span class="pre">poll()</span></code></a> for status, and when the job is completed, the next job request can be submitted. If batch errors are reported in the Batch status, the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.errors" title="tcex.tcex_ti_batch.TcExBatch.errors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">errors()</span></code></a> method can be used to retrieve the errors.  Submitting files for Documents and Reports can be done using the <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit_files" title="tcex.tcex_ti_batch.TcExBatch.submit_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit_files()</span></code></a> method.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The setting <strong>synchronousBatchSaveLimit</strong> in the ThreatConnect UI -&gt; System Settings controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value the batch data will be processed synchronously and the batch status will be returned on completion without the need to poll. The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit" title="tcex.tcex_ti_batch.TcExBatch.submit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code></a> method provides logic for handling this so the developer is not required to check if the job was queued.</p>
+<p class="last">The <strong>synchronousBatchSaveLimit</strong> setting, configured in the <strong>System Settings</strong> screeen, which is accessed in the ThreatConnect UI, controls the synchronous processing of batch jobs. If the batch job is smaller than the defined value, the batch data will be processed synchronously, and the batch status will be returned on completion without the need to poll. The <a class="reference internal" href="tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch.submit" title="tcex.tcex_ti_batch.TcExBatch.submit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit()</span></code></a> method provides logic for handling this so that the developer is not required to check if the job was queued.</p>
 </div>
 <div class="section" id="option-1">
 <h3>Option 1<a class="headerlink" href="#option-1" title="Permalink to this headline">¶</a></h3>
-<p>Submit the job and wait for completion. In the example any error messages are requested to be returned as well.</p>
+<p>Submit the job and wait for completion. In the example below, any error messages are requested to be returned as well.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -623,7 +623,7 @@
 </div>
 <div class="section" id="option-2">
 <h3>Option 2<a class="headerlink" href="#option-2" title="Permalink to this headline">¶</a></h3>
-<p>Call each step in submitting the batch job manually. A check for batch_id will indicate whether the job was processed asynchronously.</p>
+<p>Call each step in submitting the batch job manually. A check for <strong>batch_id</strong> will indicate whether the job was processed asynchronously.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -671,10 +671,10 @@
 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="module_metrics.html" class="btn btn-neutral float-right" title="Module - Metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="module_metrics.html" class="btn btn-neutral float-right" title="Module: Metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="app_directory_structure.html" class="btn btn-neutral" title="App - Directory Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="app_directory_structure.html" class="btn btn-neutral" title="App-Directory Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 

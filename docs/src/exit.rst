@@ -13,7 +13,7 @@ The :py:meth:`~tcex.tcex.TcEx.exit` method supports and optional ``msg`` paramet
 .. Note:: The exit method automatically logs the exit code using the :ref:`logging` functionality of the TcEx Framework.
 
 Setting the Exit Code
-=================
+=====================
 Some failures do not warrant an immediate exit.  In these cases, the :py:mod:`~tcex.tcex.TcEx.exit_code` property allows an exit code to be set for when the :py:meth:`~tcex.tcex.TcEx.exit` method is called.  This allows the App to continue execution and still notify the ThreatConnect platform that a failure occurred.
 
 Job App Example

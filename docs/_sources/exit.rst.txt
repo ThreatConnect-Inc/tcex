@@ -4,17 +4,17 @@
 ====
 Exit
 ====
-All ThreatConnect |copy| Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` method and :py:mod:`~tcex.tcex.TcEx.exit_code` property to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
+All ThreatConnect Exchange Apps should deliberately exit with the appropriate exit code on successful or failed execution. The :py:mod:`~tcex.tcex.TcEx` Framework provides the :py:meth:`~tcex.tcex.TcEx.exit` method and :py:mod:`~tcex.tcex.TcEx.exit_code` property to handle exit codes.  All Apps should end with the :py:meth:`~tcex.tcex.TcEx.exit` method.
 
-The :py:meth:`~tcex.tcex.TcEx.exit` method supports and optional ``msg`` parameter.  If provided the ``msg`` value will be logged and written to the ``message_tc`` file as the App exit message.
+The :py:meth:`~tcex.tcex.TcEx.exit` method supports and optional ``msg`` parameter.  If provided, the ``msg`` value will be logged and written to the ``message_tc`` file as the App exit message.
 
 .. Important:: Providing a proper exit code for Playbook Apps is important for execution of downstream Apps. Supported exit codes for Playbook Apps are 0 (success) and 1 (failure).
 
-.. Note:: The exit methods automatically logs the exit code using the :ref:`logging` functionality of the TcEx Framework.
+.. Note:: The exit method automatically logs the exit code using the :ref:`logging` functionality of the TcEx Framework.
 
-Setting Exit Code
-=================
-Some failures do not warrant an immediate exit.  In such case the :py:mod:`~tcex.tcex.TcEx.exit_code` property allows an exit code to be set for when the :py:meth:`~tcex.tcex.TcEx.exit` method is called.  This allows the app to continue execution and still notify the ThreatConnect Platform that a failure occurred.
+Setting the Exit Code
+=====================
+Some failures do not warrant an immediate exit.  In these cases, the :py:mod:`~tcex.tcex.TcEx.exit_code` property allows an exit code to be set for when the :py:meth:`~tcex.tcex.TcEx.exit` method is called.  This allows the App to continue execution and still notify the ThreatConnect platform that a failure occurred.
 
 Job App Example
 ---------------
@@ -60,7 +60,7 @@ Playbook App Example
 
 Immediate Exit on Failure
 =========================
-Certain failures require that the App exit immediately.  In these cases calling the :py:meth:`~tcex.tcex.TcEx.exit` method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect Platform of a failure.
+Certain failures require that the App exit immediately.  In these cases, calling the :py:meth:`~tcex.tcex.TcEx.exit` method while passing the exit code will immediately halt execution of the App and notify the ThreatConnect platform of a failure.
 
 Job App Example
 ---------------

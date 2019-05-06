@@ -56,7 +56,7 @@ ISO 8601 Date (Zulu)
     <snipped...>
 
 ISO 8601 Date (Zulu) in U.S. Eastern Time
----------------------------------------
+-----------------------------------------
 
 .. code-block:: python
     :linenos:
@@ -68,7 +68,7 @@ ISO 8601 Date (Zulu) in U.S. Eastern Time
     <snipped...>
 
 ISO 8601 Date with Timezone Offset
---------------------------
+----------------------------------
 
 .. code-block:: python
     :linenos:
@@ -80,7 +80,7 @@ ISO 8601 Date with Timezone Offset
     <snipped...>
 
 ISO 8601 Date with Timezone Offset in U.S. Eastern Time
----------------------------------------------
+-------------------------------------------------------
 
 .. code-block:: python
     :linenos:
@@ -104,7 +104,7 @@ Now UTC UNIX timestamp
     <snipped...>
 
 Now in U.S. Central Time
------------
+------------------------
 
 .. code-block:: python
     :linenos:
@@ -116,7 +116,7 @@ Now in U.S. Central Time
     <snipped...>
 
 Tomorrow at 6 A.M.
-----------------
+------------------
 
 .. code-block:: python
     :linenos:
@@ -140,7 +140,7 @@ Next Monday at Noon
     <snipped...>
 
 3 Weeks Ago U.S. Eastern Time Formatted for ThreatConnect
---------------------------------------------------
+---------------------------------------------------------
 
 .. code-block:: python
     :linenos:

@@ -9,7 +9,7 @@ Summary
 
 The ``tclib`` CLI tool provides a simple interface to download required Python modules in a self-contained folder in the project directory.  This "lib" directory allows all dependencies to be bundled within the App. The App dependencies should be defined in the **requirements.txt** file in the project directory.
 
-.. warning:: For clients using **macOS**® that have Python installed via Homebrew, there is a `known bug <https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both>`__ that requires the creation of a ``setup.cfg`` file in the same directory as ``requirements.txt``. The ``setup.cfg`` file should have the following code at minimum:
+.. warning:: For clients using **macOS** ® that have Python installed via Homebrew, there is a `known bug <https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both>`__ that requires the creation of a ``setup.cfg`` file in the same directory as ``requirements.txt``. The ``setup.cfg`` file should have the following code at minimum:
 
   .. code-block:: python
 
@@ -54,7 +54,7 @@ If using a PIP cache, it is sometimes required to tell ``pip`` to ignore the cac
     tclib --no_cache_dir
 
 Using a Configuration File
-------------------------
+--------------------------
 By default, the **tcex.json** configuration file will be loaded if it exists.  If the configuration includes the ``lib_versions`` parameter array, the ``tclib`` command will use the values defined in the configuration to build the "lib" directories.
 
 **Linux**
@@ -106,5 +106,5 @@ For ease of management, when building multiple Apps the tcex.json file can conta
     }
   ],
   <snipped...>
-  
+
   macOS® is a registered trademark of Apple, Inc.

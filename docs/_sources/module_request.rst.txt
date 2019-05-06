@@ -2,9 +2,9 @@
 .. _module_requests:
 
 =================
-Module - Requests
+Module: Requests
 =================
-The ThreatConnect |copy| TcEx Framework provides the :py:mod:`~tcex.tcex_request.TcExRequest` module accessed using the ``tcex.request`` property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.
+The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_request.TcExRequest` module accessed using the ``tcex.request`` property.  This module is a wrapper around the Python Requests module with API logging and custom authorization functionality.
 
 .. code-block:: python
     :linenos:
@@ -37,7 +37,7 @@ The TcEx Framework provides the :py:meth:`~tcex.tcex.TcEx.request_external` meth
 
 Request TC
 ----------
-The TcEx Framework provides the :py:meth:`~tcex.tcex.TcEx.request_tc` method that returns an TcExRequest instance with the proxy and authorization information automatically configured.
+The TcEx Framework provides the :py:meth:`~tcex.tcex.TcEx.request_tc` method that returns a TcExRequest instance with the proxy and authorization information automatically configured.
 
 .. code-block:: python
     :linenos:

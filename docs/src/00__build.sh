@@ -17,7 +17,7 @@ ln -fs tcrun ../../bin/tcrun.py
 ln -fs tcvalidate ../../bin/tcvalidate.py
 
 # get app deployment
-wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer-docs/master/docs/deployment_config.rst --output-document=deployment_config.rst
+# wget https://raw.githubusercontent.com/ThreatConnect-Inc/threatconnect-developer-docs/master/docs/deployment_config.rst --output-document=deployment_config.rst
 
 # clean old build
 rm -fr _build

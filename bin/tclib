@@ -35,18 +35,10 @@ parser.add_argument('--no_cache_dir', action='store_true', help='Do not use pip 
 parser.add_argument(
     '--branch', help='Build tcex from specified git branch instead of downloading from PyPi.'
 )
-parser.add_argument(
-    '--proxy_host', 'proxy_host', help='(Advanced) Hostname of the proxy.', default=None
-)
-parser.add_argument(
-    '--proxy_port', 'proxy_port', help='(Advanced) Port of the proxy.', default=None
-)
-parser.add_argument(
-    '--proxy_user', 'proxy_user', help='(Advanced) Username for the proxy.', default=None
-)
-parser.add_argument(
-    '--proxy_pass', 'proxy_pass', help='(Advanced) Password for the proxy.', default=None
-)
+parser.add_argument('--proxy_host', help='(Advanced) Hostname of the proxy.', default=None)
+parser.add_argument('--proxy_port', help='(Advanced) Port of the proxy.', default=None)
+parser.add_argument('--proxy_user', help='(Advanced) Username for the proxy.', default=None)
+parser.add_argument('--proxy_pass', help='(Advanced) Password for the proxy.', default=None)
 args, extra_args = parser.parse_known_args()
 
 
