@@ -12,21 +12,35 @@ from tcex.tcex_ti.mappings.tcex_ti_mappings import TIMappings
 # import local modules for dynamic reference
 module = __import__(__name__)
 
+# custom_class = custom_indicator_class_factory(
+#     entry.get('name'),
+#     entry.get('apiEntity'),
+#     entry.get('apiBranch'),
+#     Indicator,
+#     class_data,
+#     value_fields,
+# )
 
-def custom_indicator_class_factory(indicator_type, entity_type, base_class, value_fields):
+
+def custom_indicator_class_factory(
+    indicator_type, entity_type, branch_type, base_class, value_fields
+):
     """Internal method for dynamically building Custom Indicator Class."""
     value_count = len(value_fields)
 
-    def init_1(self, tcex, owner, value1, **kwargs):  # pylint: disable=W0641
+    def init_1(self, tcex, value1, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with one value
         :param self:
         :param tcex:
+        :param owner:
         :param value1:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
+        self.unique_id = self.unique_id or value1
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
         # for k, v in class_dict.items():
         #     setattr(self, k, v)
 
@@ -37,6 +51,8 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param json_request:
         """
         self.unique_id = json_request.get(value_fields[0])
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create_1(self):  # pylint: disable=W0641
         """
@@ -47,18 +63,23 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
             return True
         return False
 
-    def init_2(self, tcex, owner, value1, value2, **kwargs):  # pylint: disable=W0641
+    def init_2(self, tcex, value1, value2, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with two values.
         :param self:
         :param tcex:
         :param value1:
         :param value2:
+        :param owner:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
+        if value1:
+            value1 = quote_plus(value1)
+        if value2:
+            value2 = quote_plus(value2)
+        self.unique_id = self.unique_id or self.build_summary(value1, value2)
 
     def _set_unique_id_2(self, json_request):
         """
@@ -66,7 +87,11 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param self:
         :param json_request:
         """
-        self.unique_id = json_request.get(value_fields[0]) or json_request.get(value_fields[1])
+        value_0 = json_request.get(value_fields[0], '')
+        value_1 = json_request.get(value_fields[1], '')
+        self.unique_id = self.build_summary(
+            quote_plus(value_0) or None, quote_plus(value_1) or None
+        )
 
     def can_create_2(self):  # pylint: disable=W0641
         """
@@ -77,7 +102,7 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
             return True
         return False
 
-    def init_3(self, tcex, owner, value1, value2, value3, **kwargs):  # pylint: disable=W0641
+    def init_3(self, tcex, value1, value2, value3, owner=None, **kwargs):  # pylint: disable=W0641
         """Init method for Custom Indicator Types with three values.
         :param self:
         :param tcex:
@@ -86,11 +111,17 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param value3:
         :param kwargs:
         """
-        base_class.__init__(self, tcex, owner, indicator_type, **kwargs)
-        self.api_entity = entity_type
+        base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
         self._data[value_fields[0]] = value1
         self._data[value_fields[1]] = value2
         self._data[value_fields[2]] = value3
+        if value1:
+            value1 = quote_plus(value1)
+        if value2:
+            value2 = quote_plus(value2)
+        if value3:
+            value2 = quote_plus(value3)
+        self.unique_id = self.unique_id or self.build_summary(value1, value2, value3)
 
     def _set_unique_id_3(self, json_request):
         """
@@ -98,10 +129,11 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
         :param self:
         :param json_request:
         """
-        self.unique_id = (
-            json_request.get(value_fields[0])
-            or json_request.get(value_fields[1])
-            or json_request.get(value_fields[2])
+        value_0 = json_request.get(value_fields[0], '')
+        value_1 = json_request.get(value_fields[1], '')
+        value_2 = json_request.get(value_fields[2], '')
+        self.unique_id = self.build_summary(
+            quote_plus(value_0) or None, quote_plus(value_1) or None, quote_plus(value_2) or None
         )
 
     def can_create_3(self):  # pylint: disable=W0641
@@ -136,9 +168,9 @@ def custom_indicator_class_factory(indicator_type, entity_type, base_class, valu
 class Indicator(TIMappings):
     """Unique API calls for Indicator API Endpoints"""
 
-    def __init__(self, tcex, sub_type, owner, **kwargs):
+    def __init__(self, tcex, sub_type, api_entity, api_branch, owner, **kwargs):
         super(Indicator, self).__init__(
-            tcex, 'Indicator', 'indicators', sub_type, 'indicator', owner
+            tcex, 'Indicator', 'indicators', sub_type, api_entity, api_branch, owner
         )
 
         for arg, value in kwargs.items():
@@ -172,6 +204,13 @@ class Indicator(TIMappings):
             'size': 'intValue1',
             'whoisActive': 'flag2',
             'whois_active': 'flag2',
+            'key_name': 'Key Name',
+            'value_type': 'Value Type',
+            'value_name': 'Value Name',
+            'user_agent_string': 'User Agent String',
+            'block': 'Block',
+            'mutex': 'Mutex',
+            'as_number': 'AS Number',
         }
 
     def add_key_value(self, key, value):
@@ -205,7 +244,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
         request_data = {'rating': value}
         return self.tc_requests.update(
-            self.api_type, self.api_sub_type, self.unique_id, request_data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
         )
 
     def confidence(self, value):
@@ -219,7 +258,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
         request_data = {'confidence': value}
         return self.tc_requests.update(
-            self.api_type, self.api_sub_type, self.unique_id, request_data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, request_data, owner=self.owner
         )
 
     def owners(self):
@@ -230,7 +269,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.owners(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def add_observers(self, count, date_observed):
@@ -253,7 +292,7 @@ class Indicator(TIMappings):
         }
 
         return self.tc_requests.add_observations(
-            self.api_type, self.api_sub_type, self.unique_id, data, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
         )
 
     def observation_count(self):
@@ -266,7 +305,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observation_count(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def add_false_positive(self):
@@ -277,7 +316,7 @@ class Indicator(TIMappings):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.add_false_positive(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def observations(self):
@@ -290,7 +329,7 @@ class Indicator(TIMappings):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.observations(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )
 
     def deleted(self, deleted_since, filters=None, params=None):
@@ -306,7 +345,7 @@ class Indicator(TIMappings):
 
         return self.tc_requests.deleted(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             deleted_since,
             owner=self.owner,
             filters=filters,

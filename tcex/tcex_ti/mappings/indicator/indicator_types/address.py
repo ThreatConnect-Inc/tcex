@@ -18,8 +18,7 @@ class Address(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(Address, self).__init__(tcex, 'addresses', owner, **kwargs)
-        self._api_entity = 'address'
+        super(Address, self).__init__(tcex, 'Address', 'address', 'addresses', owner, **kwargs)
         self.data['ip'] = ip
         self.unique_id = self.unique_id or ip
 
@@ -54,5 +53,5 @@ class Address(Indicator):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
         return self.tc_requests.dns_resolution(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

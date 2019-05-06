@@ -26,8 +26,9 @@ class Incident(Group):
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
         """
-        super(Incident, self).__init__(tcex, 'incidents', name, owner, **kwargs)
-        self.api_entity = 'incident'
+        super(Incident, self).__init__(
+            tcex, 'Incident', 'incident', 'incidents', name, owner, **kwargs
+        )
 
     def status(self, status):
         """
@@ -56,7 +57,7 @@ class Incident(Group):
 
         self._data['status'] = status
         request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def event_date(self, event_date):
         """
@@ -74,4 +75,4 @@ class Incident(Group):
         event_date = self._utils.format_datetime(event_date, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['eventDate'] = event_date
         request = {'eventDate': event_date}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

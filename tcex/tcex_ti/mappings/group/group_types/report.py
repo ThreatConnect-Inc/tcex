@@ -23,8 +23,7 @@ class Report(Group):
                                                file content.
             publish_date (str, kwargs): The publish datetime expression for this Group.
         """
-        super(Report, self).__init__(tcex, 'reports', name, owner, **kwargs)
-        self.api_entity = 'report'
+        super(Report, self).__init__(tcex, 'Report', 'report', 'reports', name, owner, **kwargs)
 
     def file_content(self, file_content, update_if_exists=True):
         """
@@ -43,7 +42,7 @@ class Report(Group):
         self._data['fileContent'] = file_content
         return self.tc_requests.upload(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             file_content,
             update_if_exists=update_if_exists,
@@ -61,7 +60,7 @@ class Report(Group):
 
         self._data['fileName'] = file_name
         request = {'fileName': file_name}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def file_size(self, file_size):
         """
@@ -76,7 +75,7 @@ class Report(Group):
 
         self._data['fileSize'] = file_size
         request = {'fileSize': file_size}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def status(self, status):
         """
@@ -96,7 +95,7 @@ class Report(Group):
 
         self._data['status'] = status
         request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def malware(self, malware, password, file_name):
         """
@@ -114,7 +113,7 @@ class Report(Group):
         self._data['password'] = password
         self._data['fileName'] = file_name
         request = {'malware': malware, 'password': password, 'fileName': file_name}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def publish_date(self, publish_date):
         """Return Email to.
@@ -128,4 +127,4 @@ class Report(Group):
 
         self._data['publishDate'] = publish_date
         request = {'publishDate': publish_date}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

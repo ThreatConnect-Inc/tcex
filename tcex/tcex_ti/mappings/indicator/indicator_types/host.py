@@ -2,6 +2,11 @@
 """ThreatConnect TI Host"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class Host(Indicator):
     """Unique API calls for Host API Endpoints"""
@@ -20,10 +25,11 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super(Host, self).__init__(tcex, 'hosts', owner, **kwargs)
-        self.api_entity = 'host'
+        super(Host, self).__init__(tcex, 'Host', 'host', 'hosts', owner, **kwargs)
         self._data['hostName'] = hostname
         self.unique_id = self.unique_id or hostname
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """
@@ -57,5 +63,5 @@ class Host(Indicator):
             self._tcex.handle_error(910, [self.type])
 
         return self.tc_requests.dns_resolution(
-            self.api_type, self.api_sub_type, self.unique_id, owner=self.owner
+            self.api_type, self.api_branch, self.unique_id, owner=self.owner
         )

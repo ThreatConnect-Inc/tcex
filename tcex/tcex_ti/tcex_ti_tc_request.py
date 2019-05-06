@@ -42,8 +42,6 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}'.format(main_type, sub_type)
 
-        print(data)
-
         return self.tcex.session.post(url, json=data, params={'owner': owner})
 
     def delete(self, main_type, sub_type, unique_id, owner=None):
@@ -1222,7 +1220,7 @@ class TiTcRequest:
         if action == 'GET':
             return self.tcex.session.get(url, params=params)
         if action == 'DELETE':
-            return self.tcex.session.get(url)
+            return self.tcex.session.delete(url)
         return None
 
     def get_victim_email_asset(self, main_type, sub_type, unique_id, asset_id, params=None):
@@ -1351,6 +1349,108 @@ class TiTcRequest:
 
         """
         return self.victim_phone_asset(main_type, sub_type, unique_id, asset_id, action='DELETE')
+
+    def file_occurrences(self, main_type, sub_type, unique_id, owner=None):
+        """
+        Yields all occurrences a File has
+
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            owner:
+        """
+        url = '/v2/{}/{}/{}/fileOccurrences'.format(main_type, sub_type, unique_id)
+        params = {}
+
+        if owner:
+            params['owner'] = owner
+
+        for o in self._iterate(url, params, 'fileOccurrence'):
+            yield o
+
+    def get_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
+        """
+        Gets a file occurrence given a occurrence_id
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            occurrence_id:
+            owner:
+
+        Returns:
+
+        """
+        return self.file_occurrence(main_type, sub_type, unique_id, occurrence_id, owner)
+
+    def delete_file_occurrence(self, main_type, sub_type, unique_id, occurrence_id, owner=None):
+        """
+        Deletes a file occurrence given a occurrence_id
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            occurrence_id:
+            owner:
+
+        Returns:
+
+        """
+        return self.file_occurrence(main_type, sub_type, unique_id, occurrence_id, owner, 'DELETE')
+
+    def file_occurrence(
+        self, main_type, sub_type, unique_id, occurrence_id, owner=None, action='GET'
+    ):
+        """
+        Gets a file occurrence given a occurrence_id
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            occurrence_id:
+            owner:
+            action:
+
+        Returns:
+
+        """
+        url = '/v2/{}/{}/{}/fileOccurrences/{}'.format(
+            main_type, sub_type, unique_id, occurrence_id
+        )
+        params = {}
+
+        if owner:
+            params['owner'] = owner
+
+        if action == 'GET':
+            return self.tcex.session.get(url, params=params)
+
+        if action == 'DELETE':
+            return self.tcex.session.delete(url, params=params)
+
+        return None
+
+    def add_file_occurrence(self, main_type, sub_type, unique_id, name, date, path, owner=None):
+        """
+        Adds a file occurrence to a File
+        Args:
+            main_type:
+            sub_type:
+            unique_id:
+            name:
+            date:
+            path:
+            owner:
+
+        Returns:
+
+        """
+        url = '/v2/{}/{}/{}/fileOccurrences'.format(main_type, sub_type, unique_id)
+        params = {}
+        if owner:
+            params['owner'] = owner
+        return self.tcex.session.post(url, json={'fileName': name, 'path': path, 'date': date})
 
     def delete_victim_social_asset(self, main_type, sub_type, unique_id, asset_id):
         """

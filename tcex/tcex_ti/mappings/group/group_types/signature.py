@@ -27,8 +27,9 @@ class Signature(Group):
             file_text (str): The signature content for this Group.
             date_added (str, kwargs): The date timestamp the Indicator was created.
         """
-        super(Signature, self).__init__(tcex, 'signatures', name, owner, **kwargs)
-        self.api_entity = 'signature'
+        super(Signature, self).__init__(
+            tcex, 'Signature', 'signature', 'signatures', name, owner, **kwargs
+        )
         self._data['fileName'] = file_name
         self._data['fileType'] = file_type
         self._data['fileText'] = file_text
@@ -43,4 +44,4 @@ class Signature(Group):
         if not self.can_update():
             self._tcex.handle_error(910, [self.type])
 
-        return self.tc_requests.download(self.api_type, self.api_sub_type, self.unique_id)
+        return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)

@@ -14,8 +14,9 @@ class Campaign(Group):
             date_added (str, kwargs): The date timestamp the Indicator was created.
             first_seen (str, kwargs): The first seen datetime expression for this Group.
         """
-        super(Campaign, self).__init__(tcex, 'campaigns', name, owner, **kwargs)
-        self.api_entity = 'campaign'
+        super(Campaign, self).__init__(
+            tcex, 'Campaign', 'campaign', 'campaigns', name, owner, **kwargs
+        )
 
     def first_seen(self, first_seen):
         """
@@ -33,4 +34,4 @@ class Campaign(Group):
         first_seen = self._utils.format_datetime(first_seen, date_format='%Y-%m-%dT%H:%M:%SZ')
         self._data['firstSeen'] = first_seen
         request = {'firstSeen': first_seen}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

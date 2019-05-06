@@ -1,12 +1,12 @@
 .. _testing_apps_tcprofile:
 
 -----------------------------------
-Testing Apps - Profiles (tcprofile)
+Testing Apps: Profiles (tcprofile)
 -----------------------------------
 
-The ``tcprofile`` CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be create and grouped to allow testing of different data inputs and outputs.
+The ``tcprofile`` CLI tool provides a simple interface to create testing profiles.  These profiles can be used to perform local testing of the App before deploying to ThreatConnect.  Multiple profiles can be created and grouped to allow testing of different data inputs and outputs.
 
-By default the ``tcprofile`` command will add any default values defined in the **install.json** file to the args value.  Args without a default value will have to populated manually. For validation rules there are 2 rules created automatically for each output variables.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variables is of the correct type (e.g., String value is a <str> type, StringArray value is of <list> type.).
+By default, the ``tcprofile`` command will add any default values defined in the **install.json** file to the args value.  Args without a default value will have to be populated manually. For validation rules, there are two rules created automatically for each output variable.  One rule ensures that the output variable is not null and should be update to a more specific test. The second rule validates that the output variable is of the correct type (e.g., String value is a <str> type; StringArray value is a <list> type.).
 
 .. Important:: The generation of profiles uses the **install.json** file to create the ``args.apps`` section and the ``validation`` section of the profile. It is important that all inputs and outputs are defined in the **install.json** prior to running the ``tcprofile`` command.
 
@@ -24,20 +24,20 @@ Usage
                      [--redis_port REDIS_PORT] [--verbose]
 
     optional arguments:
-      -h, --help            show this help message and exit
+      -h, --help            Show this help message and exit.
       --action {create,delete,replace_validation,update,validate}
       --ij IJ               (Advanced) The install.json file name (default:
-                            install.json).
+                            install.json)
       --outdir OUTDIR       (Advanced) The *base* output directory containing the
                             data/profiles folder(default: tcex.d).
       --outfile OUTFILE     (Advanced) The filename for the profile (default:
-                            <profile name>.json).
+                            <profile name>.json)
       --name PROFILE_NAME   The profile name to create, delete, or
-                            replace_validation.
+                            replace_validation
       --redis_host REDIS_HOST
-                            (Advanced) The redis host.
+                            (Advanced) The Redis host
       --redis_port REDIS_PORT
-                            (Advanced) The redis port.
+                            (Advanced) The Redis port
       --verbose             Show verbose output.
 
 Common Usage
@@ -54,7 +54,7 @@ To create a new profile run the following command.  The profile will be created 
 Output
 ~~~~~~
 
-After running the ``tcprofile`` a the directory **tcex.d** will be created in the project directory.  The **tcex.d** directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.
+After running the ``tcprofile``, the directory **tcex.d** will be created in the project directory.  The **tcex.d** directory will have the structure displayed below. New testing profiles can be added to existing file or new files can be created.
 
 .. code:: bash
 
@@ -66,16 +66,16 @@ After running the ``tcprofile`` a the directory **tcex.d** will be created in th
 Updates
 ~~~~~~~
 
-Once a profile has been created, testing value needs to be added to the JSON data.  All inputs in the ``args.apps`` section need to have values set or updated. A description can be added to define the intent of the testing profile.
+Once a profile has been created, testing values need to be added to the JSON data.  All inputs in the ``args.apps`` section need to have values set or updated. A description can be added to define the intent of the testing profile.
 
 Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~
 
-An important part of local testing is setting up the appropriate environmental variables.  In each profile the ``args.default`` section has all the default args that will be provided to every App by the ThreatConnect Platform during execution. The values for these args can be entered directly into the configuration file, however to keep sensitive data out of VCS systems the use of environment variables is employed.
+An important part of local testing is setting up the appropriate environmental variables.  In each profile, the ``args.default`` section has all the default args that will be provided to every App by the ThreatConnect platform during execution. The values for these args can be entered directly into the configuration file; however, to keep sensitive data out of version-control systems, the use of environment variables is employed.
 
 .. NOTE:: This list of environment variables can be found by running ``tcprofile -h``.
 
-Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done the environment file will need to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).
+Update the values for each variable and add to the local environment (e.g., ~/.bashrc or ~/.bash_profile). Once done, the environment file needs to be sourced once or the shell restarted before the values are available (e.g., source ~/.bashrc).
 
 .. code:: bash
 
@@ -85,7 +85,7 @@ Update the values for each variable and add to the local environment (e.g., ~/.b
     export API_SECRET_KEY=abc123
     export TC_API_PATH=https://maclaren.pub/api
 
-    # API Token can be supplied optionally, but must be updated frequently.
+    # API Token can be supplied optionally but must be updated frequently.
     export TC_TOKEN=123-abc-456-def
 
     # Proxy settings are optional
@@ -98,7 +98,7 @@ Update the values for each variable and add to the local environment (e.g., ~/.b
     export DB_PATH=localhost
     export DB_PORT=6379
 
-.. IMPORTANT:: To test that the values are available run ``echo $API_ACCESS_ID``.
+.. IMPORTANT:: To test that the values are available, run ``echo $API_ACCESS_ID``.
 
 Profile Format
 --------------
@@ -177,22 +177,22 @@ Multiple testing profiles can be created in the **tcex.d/profiles** directory to
 args.app
 ~~~~~~~~
 
-The ``args.app`` section of the profile contains all the CLI Args from the ``params`` section of the **install.json** file.
+The ``args.app`` section of the profile contains all the CLI args from the ``params`` section of the **install.json** file.
 
 args.default
 ~~~~~~~~~~~~
 
-The ``args.default`` section has all the default args that are passed to all Apps by ThreatConnect. Some of these args are in the format ``$env.<value>`` or ``$envs.<value>``. Args in this format reference environment variables defined on the local workstation. These environment variables must be created manually by the developer.  The ``$envs.<values>`` are used to represent sensitive data, such as API credentials and will be masked when printed to the screen.
+The ``args.default`` section has all the default args that are passed to all Apps by ThreatConnect. Some of these args are in the format ``$env.<value>`` or ``$envs.<value>``. Args in this format reference environment variables defined on the local workstation. These environment variables must be created manually by the developer.  The ``$envs.<values>`` are used to represent sensitive data, such as API credentials, and will be masked when printed to the screen.
 
 autoclear
 ~~~~~~~~~
 
-The ``autoclear`` boolean field enables clearing of Redis and/or ThreatConnect data when set to **true**. By using autoclear the developer can assure that validation rules are not using stale data. The most common use case is to leave this enabled unless using output data from previous profiles.
+The ``autoclear`` boolean field enables clearing of Redis and/or ThreatConnect data when set to **true**. By using **autoclear**, the developer can assure that validation rules are not using stale data. The most common use case is to leave this enabled, unless using output data from previous profiles.
 
 data_files
 ~~~~~~~~~~
 
-The ``data_files`` section of the configuration allow an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the `Data Files`_ section.
+The ``data_files`` section of the configuration allows an array of staging files to be defined. Each staging file defined in this section will be staged to Redis and/or ThreatConnect to simulate an upstream App.  For help creating staging files see the `Data Files`_ section.
 
 description
 ~~~~~~~~~~~
@@ -202,19 +202,19 @@ The ``description`` field allows for a helpful message that will be logged when 
 exit_codes
 ~~~~~~~~~~
 
-The ``exit_codes`` section allows for one or more exit codes to be defined. If the exit code of the App matches one of the defined values then the profile was completed successfully. For "fail" testing adding an exit code of **1** is appropriate.  If the App exits with a **1** then the profile succeeded.
+The ``exit_codes`` section allows for one or more exit codes to be defined. If the exit code of the App matches one of the defined values, then the profile was completed successfully. For "fail" testing, adding an exit code of **1** is appropriate.  If the App exits with a **1** then the profile succeeded.
 
-.. NOTE:: For Job Apps there are 3 valid exit codes.  An exit code of 0 indicates success, 1 indicates failure, and 3 indicates partial success/failure.
+.. NOTE:: For Job Apps there are three valid exit codes.  An exit code of 0 indicates success, 1 indicates failure, and 3 indicates partial success/failure.
 
 groups
 ~~~~~~
 
-The ``groups`` section allows for one or more group names so that the profile can be run grouped with other profiles.
+The ``groups`` section allows for one or more group names, so that the profile can be run grouped with other profiles.
 
 install_json
 ~~~~~~~~~~~~
 
-The ``install_json`` field defines the install.json filename of the App. This is typically ``install.json`` unless working in a Multi-App bundle.
+The ``install_json`` field defines the **install.json** filename of the App. This is typically ``install.json``, unless working in a multi-App bundle.
 
 profile_name
 ~~~~~~~~~~~~
@@ -234,12 +234,12 @@ The ``validations`` section of the configuration file defines validations rules 
 Staging Redis Data
 ------------------
 
-In order to test using variable inputs the data can be manually added to Redis.  The ``tcrun`` command has functionality to "stage" the data in redis that can be used to simulate an upstream App writing data to Redis.  This staged data can be and added to a single json file or multiple reusable files.  Once the files have been created they should be referenced in the Profile.
+In order to test using variable inputs, the data can be manually added to Redis.  The ``tcrun`` command has functionality to "stage" the data in Redis, which can be used to simulate an upstream App writing data to Redis.  This staged data can be added to a single json file or multiple reusable files.  Once the files have been created, they should be referenced in the profile.
 
 Data Files
 ----------
 
-.. note:: Data files can contain a single data input or multiple data inputs.  If the data is reusable it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.
+.. note:: Data files can contain a single data input or multiple data inputs.  If the data is reusable, it is best practice to keep the data in a file by itself so that it can be used in multiple profiles.
 
 .. code-block:: javascript
 
@@ -291,7 +291,7 @@ Data Files
 Data Validation
 ---------------
 
-The ``tcrun`` command will run any validation rules defined in the profile. Currently the ``tcrun`` command can validate the output data store in Redis by the App.
+The ``tcrun`` command will run any validation rules defined in the profile. Currently, the ``tcrun`` command can validate the output data stored in Redis by the App.
 
 **Example Configuration**
 
@@ -320,4 +320,4 @@ The ``tcrun`` command will run any validation rules defined in the profile. Curr
 Supported Operators
 ~~~~~~~~~~~~~~~~~~~
 
-For a list of supported **operator** see the :py:meth:`~tcex.tcex_bin_run.TcExRun.operators` property of the ``tcrun`` command.
+For a list of supported **operators**,see the :py:meth:`~tcex.tcex_bin_run.TcExRun.operators` property of the ``tcrun`` command.

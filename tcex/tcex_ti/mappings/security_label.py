@@ -65,9 +65,10 @@ class SecurityLabel(TIMappings):
             name:
         """
         self._data['name'] = name
-        request = self._base_request
-        request['name'] = name
-        return self._tc_requests.update(request, owner=self.owner)
+        data = {'name': name}
+        return self._tc_requests.update(
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
+        )
 
     def color(self, color):
         """
@@ -78,9 +79,10 @@ class SecurityLabel(TIMappings):
 
         """
         self._data['color'] = color
-        request = self._base_request
-        request['color'] = color
-        return self._tc_requests.update(request, owner=self.owner)
+        data = {'color': color}
+        return self._tc_requests.update(
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
+        )
 
     def description(self, description):
         """
@@ -90,9 +92,10 @@ class SecurityLabel(TIMappings):
             description:
         """
         self._data['description'] = description
-        request = self._base_request
-        request['description'] = description
-        return self._tc_requests.update(request, owner=self.owner)
+        data = {'description': description}
+        return self._tc_requests.update(
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
+        )
 
     def date_added(self, date_added):
         """
@@ -104,6 +107,7 @@ class SecurityLabel(TIMappings):
         date_added = self._utils.format_datetime(date_added, date_format='%Y-%m-%dT%H:%M:%SZ')
 
         self._data['dateAdded'] = date_added
-        request = self._base_request
-        request['dateAdded'] = date_added
-        return self._tc_requests.update(request, owner=self.owner)
+        data = {'dateAdded': date_added}
+        return self._tc_requests.update(
+            self.api_type, self.api_branch, self.unique_id, data, owner=self.owner
+        )

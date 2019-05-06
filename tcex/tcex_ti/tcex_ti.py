@@ -142,26 +142,60 @@ class TcExTi(object):
         indicator = None
         if upper_indicator_type == 'ADDRESS':
             indicator = Address(self.tcex, kwargs.pop('ip', None), owner=owner, **kwargs)
-        elif upper_indicator_type == 'EMAILADDRESS':
+        elif upper_indicator_type == 'EMAIL ADDRESS':
             indicator = EmailAddress(self.tcex, kwargs.pop('address', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'FILE':
-            indicator = File(self.tcex, **kwargs)
+            indicator = File(self.tcex, owner=owner, **kwargs)
         elif upper_indicator_type == 'HOST':
             indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':
             indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'ASN':
+        #     indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'CIDR':
+        #     indicator = CIDR(self.tcex, kwargs.pop('Block', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'MUTEX':
+        #     indicator = Mutex(self.tcex, kwargs.pop('Mutex', None), owner=owner, **kwargs)
+        # elif upper_indicator_type == 'REGISTRY KEY':
+        #     indicator = RegistryKey(
+        #         self.tcex,
+        #         kwargs.pop('Key Name', None),
+        #         kwargs.pop('Value Name', None),
+        #         kwargs.pop('Value Type', None),
+        #         owner=owner,
+        #         **kwargs
+        #     )
+        # elif upper_indicator_type == 'USER AGENT':
+        #     indicator = UserAgent(
+        #         self.tcex, kwargs.pop('User Agent String', None), owner=owner, **kwargs
+        #     )
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
-                    custom_indicator_details = self._custom_indicator_classes[indicator_type]
+                    custom_indicator_details = self._custom_indicator_classes[upper_indicator_type]
                     value_fields = custom_indicator_details.get('value_fields')
-                    c = getattr(module, custom_indicator_details.get('branch'))
+                    c = getattr(module, indicator_type.replace(' ', ''))
                     if len(value_fields) == 1:
-                        indicator = c(value_fields[0], owner=owner, **kwargs)
+                        indicator = c(
+                            self.tcex, kwargs.pop(value_fields[0], None), owner=owner, **kwargs
+                        )
                     elif len(value_fields) == 2:
-                        indicator = c(value_fields[0], value_fields[1], owner=owner, **kwargs)
+                        indicator = c(
+                            self.tcex,
+                            kwargs.pop(value_fields[0], None),
+                            kwargs.pop(value_fields[1], None),
+                            owner=owner,
+                            **kwargs
+                        )
                     elif len(value_fields) == 3:
-                        indicator = c(value_fields[0], value_fields[2], owner=owner, **kwargs)
+                        indicator = c(
+                            self.tcex,
+                            kwargs.pop(value_fields[0], None),
+                            kwargs.pop(value_fields[1], None),
+                            kwargs.pop(value_fields[2], None),
+                            owner=owner,
+                            **kwargs
+                        )
             except Exception:
                 return None
         return indicator
@@ -557,13 +591,16 @@ class TcExTi(object):
                 value_fields.append(entry['value3Label'])
             value_count = len(value_fields)
 
-            if value_fields:
+            if not value_fields:
                 continue
 
-            class_data = {}
             # Add Class for each Custom Indicator type to this module
             custom_class = custom_indicator_class_factory(
-                entry.get('apiBranch'), entry.get('apiEntity'), class_data, value_fields
+                entry.get('name'),
+                entry.get('apiEntity'),
+                entry.get('apiBranch'),
+                Indicator,
+                value_fields,
             )
 
             custom_indicator_data = {
@@ -590,15 +627,15 @@ class TcExTi(object):
         tcex = self.tcex
 
         # Add Method for each Custom Indicator class
-        def method_1(owner, value1, **kwargs):  # pylint: disable=W0641
+        def method_1(value1, owner=None, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, value1, owner=owner, **kwargs)
 
-        def method_2(owner, value1, value2, **kwargs):  # pylint: disable=W0641
+        def method_2(value1, value2, owner=None, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, value1, value2, owner=owner, **kwargs)
 
-        def method_3(owner, value1, value2, value3, **kwargs):  # pylint: disable=W0641
+        def method_3(value1, value2, value3, owner=None, **kwargs):  # pylint: disable=W0641
             """Add Custom Indicator data to Batch object"""
             return custom_class(tcex, value1, value2, value3, owner=owner, **kwargs)
 

@@ -24,9 +24,10 @@ class Document(Group):
             malware (bool, kwargs): If true the file is considered malware.
             password (bool, kwargs): If malware is true a password for the zip archive is required.
         """
-        super(Document, self).__init__(tcex, 'documents', name, owner, **kwargs)
+        super(Document, self).__init__(
+            tcex, 'Document', 'document', 'documents', name, owner, **kwargs
+        )
         self._data['fileName'] = file_name or kwargs.get('file_name')
-        self.api_entity = 'document'
         # file data/content to upload
 
     def file_content(self, file_content, update_if_exists=True):
@@ -46,7 +47,7 @@ class Document(Group):
         self._data['fileContent'] = file_content
         return self.tc_requests.upload(
             self.api_type,
-            self.api_sub_type,
+            self.api_branch,
             self.unique_id,
             file_content,
             update_if_exists=update_if_exists,
@@ -64,7 +65,7 @@ class Document(Group):
 
         self._data['fileName'] = file_name
         request = {'fileName': file_name}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def file_size(self, file_size):
         """
@@ -79,7 +80,7 @@ class Document(Group):
 
         self._data['fileSize'] = file_size
         request = {'fileSize': file_size}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def status(self, status):
         """
@@ -99,7 +100,7 @@ class Document(Group):
 
         self._data['status'] = status
         request = {'status': status}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
 
     def malware(self, malware, password, file_name):
         """
@@ -117,4 +118,4 @@ class Document(Group):
         self._data['password'] = password
         self._data['fileName'] = file_name
         request = {'malware': malware, 'password': password, 'fileName': file_name}
-        return self.tc_requests.update(self.api_type, self.api_sub_type, self.unique_id, request)
+        return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)

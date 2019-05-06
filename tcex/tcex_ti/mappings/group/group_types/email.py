@@ -18,8 +18,7 @@ class Email(Group):
             from_addr (str, kwargs): The **from** address for this Email.
             to (str, kwargs): The **to** address for this Email.
         """
-        super(Email, self).__init__(tcex, 'emails', name, owner, **kwargs)
-        self.api_entity = 'email'
+        super(Email, self).__init__(tcex, 'Email', 'email', 'emails', name, owner, **kwargs)
         self._data['to'] = to or kwargs.get('to')
         self._data['from'] = from_addr or kwargs.get('from_addr')
         self._data['subject'] = subject or kwargs.get('subject')

@@ -2,6 +2,11 @@
 """ThreatConnect TI Registry Key"""
 from tcex.tcex_ti.mappings.indicator.tcex_ti_indicator import Indicator
 
+try:
+    from urllib import quote_plus  # Python 2
+except ImportError:
+    from urllib.parse import quote_plus  # Python
+
 
 class RegistryKey(Indicator):
     """Unique API calls for RegistryKey API Endpoints"""
@@ -20,11 +25,15 @@ class RegistryKey(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(RegistryKey, self).__init__(tcex, 'registryKeys', owner, **kwargs)
-        self.data['key_name'] = key_name
-        self.data['value_name'] = value_name
-        self.data['value_type'] = value_type
+        super(RegistryKey, self).__init__(
+            tcex, 'Registry Key', 'registryKey', 'registryKeys', owner, **kwargs
+        )
+        self.data['Key Name'] = key_name
+        self.data['Value Name'] = value_name
+        self.data['Value Type'] = value_type
         self.unique_id = self.unique_id or key_name
+        if self.unique_id:
+            self.unique_id = quote_plus(self.unique_id)
 
     def can_create(self):
         """
@@ -35,9 +44,9 @@ class RegistryKey(Indicator):
 
          """
         if (
-            self.data.get('key_name')
-            and self.data.get('value_name')
-            and self.data.get('value_type')
+            self.data.get('Key Name')
+            and self.data.get('Value Name')
+            and self.data.get('Value Type')
         ):
             return True
         return False
@@ -49,4 +58,4 @@ class RegistryKey(Indicator):
         Args:
             json_response:
         """
-        self.unique_id = json_response.get('key_name', '')
+        self.unique_id = json_response.get('Key Name', '')

@@ -12,8 +12,9 @@ class Adversary(Group):
         Args:
             name (str): The name for this Group.
         """
-        super(Adversary, self).__init__(tcex, 'adversaries', name, owner, **kwargs)
-        self.api_entity = 'adversary'
+        super(Adversary, self).__init__(
+            tcex, 'Adversary', 'adversary', 'adversaries', name, owner, **kwargs
+        )
 
     def add_asset(self, asset_type, asset_name):
         """
@@ -30,15 +31,15 @@ class Adversary(Group):
 
         if asset_type == 'PHONE':
             return self.tc_requests.add_adversary_phone_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_name
+                self.api_type, self.api_branch, self.unique_id, asset_name
             )
         if asset_type == 'HANDLER':
             return self.tc_requests.add_adversary_handler_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_name
+                self.api_type, self.api_branch, self.unique_id, asset_name
             )
         if asset_type == 'URL':
             return self.tc_requests.add_adversary_url_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_name
+                self.api_type, self.api_branch, self.unique_id, asset_name
             )
         self._tcex.handle_error(
             925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
@@ -61,15 +62,15 @@ class Adversary(Group):
 
         if asset_type == 'PHONE':
             return self.tc_requests.adversary_phone_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'HANDLER':
             return self.tc_requests.adversary_handle_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         if asset_type == 'URL':
             return self.tc_requests.adversary_url_asset(
-                self.api_type, self.api_sub_type, self.unique_id, asset_id, action=action
+                self.api_type, self.api_branch, self.unique_id, asset_id, action=action
             )
         self._tcex.handle_error(
             925, ['asset_type', 'assets', 'asset_type', 'asset_type', asset_type]
@@ -90,20 +91,18 @@ class Adversary(Group):
             self._tcex.handle_error(910, [self.type])
 
         if not asset_type:
-            return self.tc_requests.adversary_assets(
-                self.api_type, self.api_sub_type, self.unique_id
-            )
+            return self.tc_requests.adversary_assets(self.api_type, self.api_branch, self.unique_id)
         if asset_type == 'PHONE':
             return self.tc_requests.adversary_phone_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             )
         if asset_type == 'HANDLER':
             return self.tc_requests.adversary_handle_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             )
         if asset_type == 'URL':
             return self.tc_requests.adversary_url_assets(
-                self.api_type, self.api_sub_type, self.unique_id
+                self.api_type, self.api_branch, self.unique_id
             )
 
         self._tcex.handle_error(
