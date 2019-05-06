@@ -1450,7 +1450,6 @@ class TiTcRequest:
         params = {}
         if owner:
             params['owner'] = owner
-        print({'fileName': name, 'path': path, 'date': date})
         return self.tcex.session.post(url, json={'fileName': name, 'path': path, 'date': date})
 
     def delete_victim_social_asset(self, main_type, sub_type, unique_id, asset_id):

@@ -188,7 +188,6 @@ class TcExTi(object):
                             **kwargs
                         )
                     elif len(value_fields) == 3:
-                        print(value_fields)
                         indicator = c(
                             self.tcex,
                             kwargs.pop(value_fields[0], None),
@@ -197,8 +196,7 @@ class TcExTi(object):
                             owner=owner,
                             **kwargs
                         )
-            except Exception as e:
-                print(e)
+            except Exception:
                 return None
         return indicator
 
