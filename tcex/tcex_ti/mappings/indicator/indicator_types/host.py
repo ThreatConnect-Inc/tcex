@@ -25,7 +25,7 @@ class Host(Indicator):
             dns_active (bool, kwargs): If True DNS active is enabled for this indicator.
             whois_active (bool, kwargs): If True WhoIs active is enabled for this indicator.
         """
-        super(Host, self).__init__(tcex, 'host', 'host', 'hosts', owner, **kwargs)
+        super(Host, self).__init__(tcex, 'Host', 'host', 'hosts', owner, **kwargs)
         self._data['hostName'] = hostname
         self.unique_id = self.unique_id or hostname
         if self.unique_id:

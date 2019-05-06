@@ -27,7 +27,7 @@ class Incident(Group):
             status (str, kwargs): The status for this Group.
         """
         super(Incident, self).__init__(
-            tcex, 'incident', 'incident', 'incidents', name, owner, **kwargs
+            tcex, 'Incident', 'incident', 'incidents', name, owner, **kwargs
         )
 
     def status(self, status):

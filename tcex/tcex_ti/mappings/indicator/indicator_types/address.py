@@ -18,7 +18,7 @@ class Address(Indicator):
             private_flag (bool, kwargs): If True the indicator is marked as private in TC.
             rating (str, kwargs): The threat rating for this Indicator.
         """
-        super(Address, self).__init__(tcex, 'address', 'address', 'addresses', owner, **kwargs)
+        super(Address, self).__init__(tcex, 'Address', 'address', 'addresses', owner, **kwargs)
         self.data['ip'] = ip
         self.unique_id = self.unique_id or ip
 

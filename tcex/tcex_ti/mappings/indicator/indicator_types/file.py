@@ -21,7 +21,7 @@ class File(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
             size (str, kwargs): The file size for this Indicator.
         """
-        super(File, self).__init__(tcex, 'file', 'file', 'files', owner, **kwargs)
+        super(File, self).__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
         if md5:
             self.data['md5'] = md5
         if sha1:

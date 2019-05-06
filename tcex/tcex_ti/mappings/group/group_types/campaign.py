@@ -15,7 +15,7 @@ class Campaign(Group):
             first_seen (str, kwargs): The first seen datetime expression for this Group.
         """
         super(Campaign, self).__init__(
-            tcex, 'campaign', 'campaign', 'campaigns', name, owner, **kwargs
+            tcex, 'Campaign', 'campaign', 'campaigns', name, owner, **kwargs
         )
 
     def first_seen(self, first_seen):
