@@ -327,7 +327,7 @@ To retrieve all owners you currently own from the ThreatConnect REST API the ``o
 
 Get My Members
 -------------------
-To retrieve all members currently in owners you own from the ThreatConnect REST API the ``owner`` object can be used. Calling ``members()`` method allows pagination over all owners available.
+To retrieve all members currently in owners you own from the ThreatConnect REST API the ``owner`` object can be used. Calling ``members()`` method allows pagination over all members available.
 
 .. code-block:: python
     :linenos:
@@ -339,7 +339,7 @@ To retrieve all members currently in owners you own from the ThreatConnect REST 
 
 Get Metrics
 -------------------
-To retrieve all metrics from the ThreatConnect REST API the ``owner`` object can be used. Calling ``metrics()`` method allows pagination over all owners available.
+To retrieve all metrics from the ThreatConnect REST API the ``owner`` object can be used. Calling ``metrics()`` method allows pagination over all metrics available.
 
 .. code-block:: python
     :linenos:
