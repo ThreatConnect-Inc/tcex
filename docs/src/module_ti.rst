@@ -37,14 +37,14 @@ The example below retrieves all groups of type Adversary.
     :linenos:
     :lineno-start: 1
     :emphasize-lines: 1-3
-    
+
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     tag = self.tcex.ti.tag('group_tag')
     for group in tag.groups(params=parameters):
         self.tcex.log.debug('group: {}'.format(group))
 
 Get Groups by Filter
-------------------
+--------------------
 To retrieve all group of a using a filter from the ThreatConnect REST API the filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all groups matching the provided filter(s).
 
 The example below retrieves all groups where name equals ``my_name_filter``.
@@ -93,7 +93,7 @@ There are 6 methods to retrieve metadata for a group: ``group_associations()``, 
     # get indicator associations
     for association in ti.indicator_associations():
         self.tcex.log.debug('association: {}'.format(association))
-    
+
     # get victim asset associations
     for association in ti.victim_asset_associations():
         self.tcex.log.debug('association: {}'.format(association))
@@ -177,7 +177,7 @@ The example below retrieves all indicators of type Address.
         self.tcex.log.debug('indicator: {}'.format(indicator))
 
 Get Indicators by Tag
-------------------
+---------------------
 To retrieve all group with a specific Tag from the ThreatConnect REST API the tag name can be provided to the ``tag()`` method. Once the tag object is initialized the ``indicators()`` method retrieves all indicators with the tag and allows pagination them.
 
 The example below retrieves all groups of type Adversary.
@@ -186,14 +186,14 @@ The example below retrieves all groups of type Adversary.
     :linenos:
     :lineno-start: 1
     :emphasize-lines: 1-3
-    
+
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     tag = self.tcex.ti.tag('indicator_tag')
     for indicator in tag.indicators(params=parameters):
         self.tcex.log.debug('indicator: {}'.format(indicator))
 
 Get Indicators by Filter
-------------------
+------------------------
 To retrieve all group of a using a filter from the ThreatConnect REST API the filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all groups matching the provided filter(s).
 
 The example below retrieves all groups where name equals ``my_name_filter``.
@@ -302,7 +302,7 @@ Deleting an indicator is similar to creating a indicator with the addition of pr
     response = ti.delete()
 
 Get Available Owners
--------------------
+--------------------
 To retrieve all owners available from the ThreatConnect REST API the ``owner`` object can be used. Calling ``many()`` method allows pagination over all owners available.
 
 .. code-block:: python
@@ -314,7 +314,7 @@ To retrieve all owners available from the ThreatConnect REST API the ``owner`` o
         self.tcex.log.debug('owner: {}'.format(owner))
 
 Get My Owners
--------------------
+-------------
 To retrieve all owners you currently own from the ThreatConnect REST API the ``owner`` object can be used. Calling ``mine()`` method allows pagination over all owners available.
 
 .. code-block:: python
