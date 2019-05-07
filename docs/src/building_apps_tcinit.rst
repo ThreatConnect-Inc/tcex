@@ -17,8 +17,8 @@ To get the latest usage and template choices for ``tcinit``, run ``tcinit -h``.
 .. code:: bash
 
     usage: tcinit [-h] [--branch {master,develop}]
-                  [--action {create,update,migrate}] --template
-                  {job,job_batch,playbook,playbook_actions,playbook_utility}
+                  [--action {create,update,migrate}]
+                  [--template {external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility}]
                   [--force]
 
     optional arguments:
@@ -30,8 +30,8 @@ To get the latest usage and template choices for ``tcinit``, run ``tcinit -h``.
                             App, "update" to download updates to App framework
                             files, and "migrate" to update a non App Builder
                             compliant App to use a standard template.
-      --template {job,job_batch,playbook,playbook_actions,playbook_utility}
-                            Choose an appropriate App template for the current
+      --template {external,external_ingress,job,job_batch,playbook,playbook_actions,playbook_utility}
+                            (default: playbook) Choose an appropriate App template for the current
                             project.
       --force               Enable this flag to forcibly overwrite existing files
                             in the current working directory.
@@ -49,7 +49,7 @@ To update an existing App, run the command below from the project directory. The
 
 .. code:: bash
 
-    tcinit --action update --template playbook_utility
+    tcinit --action update --template playbook
 
 Job App Templates
 -----------------
@@ -121,5 +121,36 @@ app.py
 """"""
 
 .. literalinclude:: ../../app_init/playbook_utility/app.py
+    :language: python
+    :linenos:
+
+External App Templates
+----------------------
+
+The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method ``self.tcex.tcex_args.config_file()`` will take a JSON file as input for the App configuration file. The second method ``self.tcex.tcex_args.config()`` takes a dictionary of configuration data.  Either method will load the data and make it accessible via the ``self.args`` namespace.
+
+The ``run()`` method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the **app.py** file, if required.
+
+External (external)
+~~~~~~~~~~~~~~~~~~~
+
+This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.
+
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/external/app.py
+    :language: python
+    :linenos:
+
+External Ingress (external_ingress)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx :ref:`Batch Module <module_batch>`.  The URL is defined in the ``init()`` method for convenience. In the ``run()`` method, the batch module is instantiated. Next, the data is retrieved from the remote URL and written to the batch module. Finally, the batch job is submitted to ThreatConnect for processing.
+
+app.py
+""""""
+
+.. literalinclude:: ../../app_init/external_ingress/app.py
     :language: python
     :linenos:

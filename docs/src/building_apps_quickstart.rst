@@ -8,7 +8,7 @@ The following steps are written for development on a OSX® or Linux® system.  D
 
 This quick-start guide walks through the steps necessary to create and initialize a fully functioning App.  Adding custom code or logic is not covered in this quick-start guide.
 
-.. Important:: This guide assumes that the workstation and ThreatConnect instance have the same version of Python installed. Writing Apps that support multiple versions of Python is supported but not covered in the quick-start guide.
+.. Important:: This guide assumes that the workstation and ThreatConnect instance have the same version of Python installed. Writing Apps that supports multiple versions of Python is supported but not covered in the quick-start guide.
 
 Initializing an App
 -------------------
@@ -68,7 +68,7 @@ The ``tcpackage`` command will package all relevant files in the project directo
 
     :ref:`App Packaging <building_apps_tcpackage>`
         Documentation for packaging of an App
-        
+
 OS X® is a registered trademark of Apple, Inc.
 
 Linux® is a registered trademark of Linus Torvalds.
@@ -76,5 +76,3 @@ Linux® is a registered trademark of Linus Torvalds.
 Windows® is a registered trademark of the Microsoft Corporation.
 
 Python® is a registered trademark of the Python Software Foundation.
-
-     
