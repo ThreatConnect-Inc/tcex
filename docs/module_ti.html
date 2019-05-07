@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Module: Threat Intelligence &mdash; TcEx 1.0.3 documentation</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module: Utils" href="module_utils.html" />
+    <link rel="prev" title="Module: Resources" href="module_resource.html" />
+
+
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+
+  <div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+
+
+
+            <a href="index.html" class="icon icon-home"> TcEx
+
+
+
+          </a>
+
+
+
+
+              <div class="version">
+                1.0.3
+              </div>
+
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+
+
+
+
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_quickstart.html">Building Apps: Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcinit.html">Building Apps: Templates (tcinit)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tclib.html">Building Apps: Dependencies (tclib)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_apps_tcpackage.html">Building Apps: Packaging (tcpackage)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcprofile.html">Testing Apps: Profiles (tcprofile)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_apps_tcrun.html">Testing Apps: Running Profiles (tcrun)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_deployment_configuration.html">App-Deployment Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_directory_structure.html">App-Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_batch.html">Module: Batch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_metrics.html">Module: Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_notifications.html">Module: Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_playbook.html">Module: Playbooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_request.html">Module: Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_resource.html">Module: Resources</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module: Threat Intelligence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-groups-by-type">Get Groups by Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-group-by-id">Get Group by Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-group-metadata">Get Group Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-group">Create a Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-a-group">Updating a Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-a-group">Delete a Group</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#indicators">Indicators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-indicator-by-type">Get Indicator by Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-indicator-by-value">Get Indicator by Value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-indicator-metadata">Get Indicator Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-an-indicator">Create an Indicator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-an-indicator">Updating an Indicator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Delete a Group</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_utils.html">Module: Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization (Token/HMAC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exit.html">Exit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_tc.html">Message TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Parser/Args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html">TcEx Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcex_docs/modules.html#tcex-cli">TcEx CLI</a></li>
+</ul>
+
+
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+      <nav class="wy-nav-top" aria-label="top navigation">
+
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TcEx</a>
+
+      </nav>
+
+
+      <div class="wy-nav-content">
+
+        <div class="rst-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+
+      <li><a href="index.html">Docs</a> &raquo;</li>
+
+      <li>Module: Threat Intelligence</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+
+
+
+      </li>
+
+  </ul>
+
+
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+
+  <div class="section" id="module-threat-intelligence">
+<span id="module-ti"></span><h1>Module: Threat Intelligence<a class="headerlink" href="#module-threat-intelligence" title="Permalink to this headline">¶</a></h1>
+<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code> module to create, delete, and update Groups, Indicators, Tasks, and Victims in the ThreatConnect platform. The TI module returns a Python Requests Response object for each API call.  This object has the status code, headers, and body (response.text or response.json()) of the response.</p>
+<div class="section" id="groups">
+<h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="get-groups-by-type">
+<h3>Get Groups by Type<a class="headerlink" href="#get-groups-by-type" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve all group of a specific type from the ThreatConnect REST API the group_type can be provided to the <code class="docutils literal notranslate"><span class="pre">group()</span></code> method. Once the group object is initialized the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all groups.</p>
+<p>The example below retrieves all groups of type Adversary.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+</span><span class="hll"><span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="get-group-by-id">
+<h3>Get Group by Id<a class="headerlink" href="#get-group-by-id" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve a group from the ThreatConnect REST API the group unique id is required. Once the group object is initialize the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the group data from the API.</p>
+<p>The example below retrieves a single Adversary with id 416 if it exists.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+</span><span class="hll"><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">416</span><span class="p">)</span>
+</span><span class="hll"><span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="get-group-metadata">
+<h3>Get Group Metadata<a class="headerlink" href="#get-group-metadata" title="Permalink to this headline">¶</a></h3>
+<p>There are 6 methods to retrieve metadata for a group: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">416</span><span class="p">)</span>
+
+<span class="c1"># get group associations</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+
+<span class="c1"># get indicator associations</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+
+<span class="c1"># get attributes</span>
+<span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">attributes</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+
+<span class="c1"># get tags</span>
+<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">tags</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+
+<span class="c1"># get security labels</span>
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">labels</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="create-a-group">
+<h3>Create a Group<a class="headerlink" href="#create-a-group" title="Permalink to this headline">¶</a></h3>
+<p>Creating a Group, adding association and metadata are all separate API calls and each have their own response object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;camp-3&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">first_seen</span><span class="o">=</span><span class="s1">&#39;2019-04-02&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="c1"># add associations</span>
+<span class="n">group_assoc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">417</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">group_assoc</span><span class="p">)</span>
+
+<span class="c1"># add attributes</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="n">attribute_type</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">attribute_value</span><span class="o">=</span><span class="s1">&#39;Example Description.&#39;</span><span class="p">)</span>
+
+<span class="c1"># add security label</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;TLP:GREEN&#39;</span><span class="p">)</span>
+
+<span class="c1"># add tag</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="updating-a-group">
+<h3>Updating a Group<a class="headerlink" href="#updating-a-group" title="Permalink to this headline">¶</a></h3>
+<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;camp-3&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">first_seen</span><span class="o">=</span><span class="s1">&#39;2019-04-02&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">4127</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="delete-a-group">
+<h3>Delete a Group<a class="headerlink" href="#delete-a-group" title="Permalink to this headline">¶</a></h3>
+<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">4127</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="indicators">
+<h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
+<p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
+<div class="section" id="get-indicator-by-type">
+<h3>Get Indicator by Type<a class="headerlink" href="#get-indicator-by-type" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve all indicators of a specific type from the ThreatConnect REST API the indicator_type can be provided to the <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> method. Once the indicator object is initialized the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all indicators.</p>
+<p>The example below retrieves all indicators of type Address.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+</span><span class="hll"><span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
+</span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="get-indicator-by-value">
+<h3>Get Indicator by Value<a class="headerlink" href="#get-indicator-by-value" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve an indicator from the ThreatConnect REST API the indicator unique value and owner is required. Once the indicator object is initialize the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the indicator data from the API.</p>
+<p>The example below retrieves a single Address with value 1.1.1.1 if it exists.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
+</span><span class="hll"><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">single</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="get-indicator-metadata">
+<h3>Get Indicator Metadata<a class="headerlink" href="#get-indicator-metadata" title="Permalink to this headline">¶</a></h3>
+<p>There are 6 methods to retrieve metadata for an indicator: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">)</span>
+
+<span class="c1"># get group associations</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+
+<span class="c1"># get indicator associations</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">indicator_associations</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;association: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">association</span><span class="p">))</span>
+
+<span class="c1"># get attributes</span>
+<span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">attributes</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;attribute: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+
+<span class="c1"># get tags</span>
+<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">tags</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;tag: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+
+<span class="c1"># get security labels</span>
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ti</span><span class="o">.</span><span class="n">labels</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;label: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="create-an-indicator">
+<h3>Create an Indicator<a class="headerlink" href="#create-an-indicator" title="Permalink to this headline">¶</a></h3>
+<p>Creating an Indicator, adding association and metadata are all separate API calls and each have their own response object.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="c1"># add associations</span>
+<span class="n">group_assoc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Adversary&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">417</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_association</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">group_assoc</span><span class="p">)</span>
+
+<span class="c1"># add attributes</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="n">attribute_type</span><span class="o">=</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="n">attribute_value</span><span class="o">=</span><span class="s1">&#39;Example Description.&#39;</span><span class="p">)</span>
+
+<span class="c1"># add security label</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;TLP:GREEN&#39;</span><span class="p">)</span>
+
+<span class="c1"># add tag</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="updating-an-indicator">
+<h3>Updating an Indicator<a class="headerlink" href="#updating-an-indicator" title="Permalink to this headline">¶</a></h3>
+<p>Updating an indicator is similar to creating an indicator with the addition of providing the indicator value.  The Indicator metadata can be updated using the same methods as were used in the Indicator Create example.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="id1">
+<h3>Delete a Group<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+
+          </div>
+          <footer>
+
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+        <a href="module_utils.html" class="btn btn-neutral float-right" title="Module: Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+
+
+        <a href="module_resource.html" class="btn btn-neutral" title="Module: Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+    </div>
+
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, ThreatConnect Inc
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+
+
+
+
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+
+
+
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+</body>
+</html>

@@ -4,7 +4,6 @@
 =========
 Examples
 =========
-
 .. _custom_metric_examples:
 
 ----------------------

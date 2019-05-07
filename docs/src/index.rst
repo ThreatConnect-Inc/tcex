@@ -26,6 +26,7 @@ Release |version|.
    module_playbook
    module_request
    module_resource
+   module_ti
    module_utils
    authorization
    exit
