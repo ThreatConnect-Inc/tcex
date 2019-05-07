@@ -117,7 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-indicator-metadata">Get Indicator Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#create-an-indicator">Create an Indicator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-an-indicator">Updating an Indicator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Delete a Group</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-an-indicator">Delete an Indicator</a></li>
 </ul>
 </li>
 </ul>
@@ -320,7 +320,7 @@
 </div>
 <div class="section" id="delete-a-group">
 <h3>Delete a Group<a class="headerlink" href="#delete-a-group" title="Permalink to this headline">¶</a></h3>
-<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<p>Deleting a group is similar to creating a group with the addition of providing the group Id.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">4127</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
@@ -448,9 +448,9 @@
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="id1">
-<h3>Delete a Group<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<div class="section" id="delete-an-indicator">
+<h3>Delete an Indicator<a class="headerlink" href="#delete-an-indicator" title="Permalink to this headline">¶</a></h3>
+<p>Deleting an indicator is similar to creating a indicator with the addition of providing the indicator value.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>

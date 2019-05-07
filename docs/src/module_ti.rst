@@ -109,7 +109,7 @@ Updating a group is similar to creating a group with the addition of providing t
 
 Delete a Group
 --------------
-Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.
+Deleting a group is similar to creating a group with the addition of providing the group Id.
 
 .. code-block:: python
     :linenos:
@@ -218,9 +218,9 @@ Updating an indicator is similar to creating an indicator with the addition of p
     ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', ip='12.13.14.15')
     response = ti.update()
 
-Delete a Group
---------------
-Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.
+Delete an Indicator
+-------------------
+Deleting an indicator is similar to creating a indicator with the addition of providing the indicator value.
 
 .. code-block:: python
     :linenos:
