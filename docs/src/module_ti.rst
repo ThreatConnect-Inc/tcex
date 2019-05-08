@@ -31,7 +31,7 @@ Get Groups by Tag
 ------------------
 To retrieve all Groups with a specific Tag from the ThreatConnect REST API, the Tag name can be provided to the ``tag()`` method. Once the Tag object is initialized, the ``groups()`` method retrieves all Groups with that Tag and allows pagination over them.
 
-The example below retrieves all Groups of type Adversary.
+The example below retrieves all Groups with a group of Crimeware.
 
 .. code-block:: python
     :linenos:
@@ -39,7 +39,7 @@ The example below retrieves all Groups of type Adversary.
     :emphasize-lines: 1-3
 
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-    tag = self.tcex.ti.tag('group_tag')
+    tag = self.tcex.ti.tag('Crimeware')
     for group in tag.groups(params=parameters):
         self.tcex.log.debug('group: {}'.format(group))
 
@@ -136,7 +136,7 @@ Creating a Group and adding Associations and metadata constitute separate API ca
 
 Updating a Group
 ----------------
-Updating a Group is similar to creating a Ggroup, with the addition of providing the Group ID.  The Group metadata can be updated using the same methods as were used in the Group Create example.
+Updating a Group is similar to creating a Group, with the addition of providing the Group ID.  The Group metadata can be updated using the same methods as were used in the Group Create example.
 
 .. code-block:: python
     :linenos:
@@ -180,7 +180,7 @@ Get Indicators by Tag
 ---------------------
 To retrieve all Indicators with a specific Tag from the ThreatConnect REST API, the tag name can be provided to the ``tag()`` method. Once the Tag object is initialized, the ``indicators()`` method retrieves all Indicators with the Tag and allows pagination over them.
 
-The example below retrieves all groups of type Adversary.
+The example below retrieves all indicators with a tag of Crimeware.
 
 .. code-block:: python
     :linenos:
@@ -188,13 +188,13 @@ The example below retrieves all groups of type Adversary.
     :emphasize-lines: 1-3
 
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-    tag = self.tcex.ti.tag('indicator_tag')
+    tag = self.tcex.ti.tag('Crimeware')
     for indicator in tag.indicators(params=parameters):
         self.tcex.log.debug('indicator: {}'.format(indicator))
 
 Get Indicators by Filter
 ------------------------
-To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicatos matching the provided Filter(s).
+To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicators matching the provided Filter(s).
 
 The example below retrieves all Indicators where name equals ``my_name_filter``.
 

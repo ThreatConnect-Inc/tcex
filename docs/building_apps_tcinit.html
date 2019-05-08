@@ -224,7 +224,7 @@
 <span id="building-apps-tcinit"></span><h1>Building Apps: Templates (tcinit)<a class="headerlink" href="#building-apps-templates-tcinit" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">tcinit</span></code> CLI tool provides a simple interface to kick start a new project from a template and to keep framework files updated.  There are several templates that support specific-use cases. Most templates are working Apps that can easily be modified to the developers use case.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tcinit</span></code> CLI tool provides a simple interface to begin a new project from a template and to keep Framework files updated.  There are several templates that support specific-use cases. Most templates are working Apps that can easily be modified to the developer’s use case.</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -252,11 +252,11 @@
 </div>
 <div class="section" id="common-usage">
 <h3>Common Usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h3>
-<p>To initialize a new App, run this command from the project directory.</p>
+<p>To initialize a new App, run this command from the project directory:</p>
 <div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcinit</span> <span class="o">--</span><span class="n">template</span> <span class="n">playbook_utility</span>
 </pre></div>
 </div>
-<p>To update an existing App, run the command below from the project directory. The <strong>update</strong> action will download all frameworks files to ensure these files are the latest with any bug fixes or updates.  It is best practice to run the <strong>update</strong> action whenever an App is being updated for new features or bug fixes.</p>
+<p>To update an existing App, run the command below from the project directory. The <strong>update</strong> action will download all Frameworks files to ensure that these files are the latest with any bug fixes or updates.  It is best practice to run the <strong>update</strong> action whenever an App is being updated for new features or bug fixes.</p>
 <div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tcinit</span> <span class="o">--</span><span class="n">action</span> <span class="n">update</span> <span class="o">--</span><span class="n">template</span> <span class="n">playbook</span>
 </pre></div>
 </div>
@@ -264,7 +264,7 @@
 </div>
 <div class="section" id="job-app-templates">
 <h2>Job App Templates<a class="headerlink" href="#job-app-templates" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the <strong>app.py</strong> file, if required.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
 <div class="section" id="job-job">
 <h3>Job (job)<a class="headerlink" href="#job-job" title="Permalink to this headline">¶</a></h3>
 <p>This basic template provides the structure for a Job App without any logic.  This template is intended for advanced users that only require the App structure.</p>
@@ -305,7 +305,7 @@
 </div>
 <div class="section" id="job-ingress-job-ingress">
 <h3>Job Ingress (job_ingress)<a class="headerlink" href="#job-ingress-job-ingress" title="Permalink to this headline">¶</a></h3>
-<p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the batch module is instantiated. Next, the data is retrieved from the remote URL and written to the batch module. Finally, the batch job is submitted to ThreatConnect for processing.</p>
+<p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.</p>
 <div class="section" id="id1">
 <h4>app.py<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -474,7 +474,7 @@
 </div>
 <div class="section" id="playbook-actions-playbook-actions">
 <h3>Playbook Actions (playbook_actions)<a class="headerlink" href="#playbook-actions-playbook-actions" title="Permalink to this headline">¶</a></h3>
-<p>This template provides a working example of “actions” in a Playbook App. Using the “actions” feature, a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface to process inputs for an App.</p>
+<p>This template provides a working example of <strong>actions</strong> in a Playbook App. Using the Actions feature, a single Playbook can have multiple actions to perform different operations on the provided data. Python decorators are heavily used in this template to provide a clean interface to process inputs for an App.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
@@ -786,8 +786,8 @@
 </div>
 <div class="section" id="external-app-templates">
 <h2>External App Templates<a class="headerlink" href="#external-app-templates" title="Permalink to this headline">¶</a></h2>
-<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method <code class="docutils literal notranslate"><span class="pre">self.tcex.tcex_args.config_file()</span></code> will take a JSON file as input for the App configuration file. The second method <code class="docutils literal notranslate"><span class="pre">self.tcex.tcex_args.config()</span></code> takes a dictionary of configuration data.  Either method will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps additional methods can be added to the <strong>app.py</strong> file, if required.</p>
+<p>The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method ,``self.tcex.tcex_args.config_file()``, takes a JSON file as input for the App configuration file. The second method, <code class="docutils literal notranslate"><span class="pre">self.tcex.tcex_args.config()</span></code>, takes a dictionary of configuration data.  Either method will load the data and make it accessible via the <code class="docutils literal notranslate"><span class="pre">self.args</span></code> namespace.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the <strong>app.py</strong> file, if required.</p>
 <div class="section" id="external-external">
 <h3>External (external)<a class="headerlink" href="#external-external" title="Permalink to this headline">¶</a></h3>
 <p>This basic template provides the structure for an External App without any logic.  This template is intended for advanced users that only require the App structure.</p>
@@ -828,7 +828,7 @@
 </div>
 <div class="section" id="external-ingress-external-ingress">
 <h3>External Ingress (external_ingress)<a class="headerlink" href="#external-ingress-external-ingress" title="Permalink to this headline">¶</a></h3>
-<p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the batch module is instantiated. Next, the data is retrieved from the remote URL and written to the batch module. Finally, the batch job is submitted to ThreatConnect for processing.</p>
+<p>This template provides a working example of how to download remote-threat intel (md5 hash Indicators) and write the data in the ThreatConnect platform using the TcEx <a class="reference internal" href="module_batch.html#module-batch"><span class="std std-ref">Batch Module</span></a>.  The URL is defined in the <code class="docutils literal notranslate"><span class="pre">init()</span></code> method for convenience. In the <code class="docutils literal notranslate"><span class="pre">run()</span></code> method, the Batch module is instantiated. Next, the data is retrieved from the remote URL and written to the Batch module. Finally, the Batch Job is submitted to ThreatConnect for processing.</p>
 <div class="section" id="id6">
 <h4>app.py<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1

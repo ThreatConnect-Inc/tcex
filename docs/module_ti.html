@@ -106,7 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-type">Get Groups by Type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-tag">Get Groups by Tag</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-groups-by-filter">Get Groups by Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-group-by-id">Get Group by Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-group-by-id">Get Group by ID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-group-metadata">Get Group Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#create-a-group">Create a Group</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-a-group">Updating a Group</a></li>
@@ -206,13 +206,13 @@
 
   <div class="section" id="module-threat-intelligence">
 <span id="module-ti"></span><h1>Module: Threat Intelligence<a class="headerlink" href="#module-threat-intelligence" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code> module to create, delete, get and update Groups, Indicators, Tasks, and Victims, provides the ability to get Groups, Indicators, and Victims based on Tags, and provides the ability to get Owners available to the api user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create/delete/get/update a single ThreatConnect objects, and yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format will vary depending on the type of object.</p>
+<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code> module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.</p>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="get-groups-by-type">
 <h3>Get Groups by Type<a class="headerlink" href="#get-groups-by-type" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all group of a specific type from the ThreatConnect REST API the group_type can be provided to the <code class="docutils literal notranslate"><span class="pre">group()</span></code> method. Once the group object is initialized the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all groups.</p>
-<p>The example below retrieves all groups of type Adversary.</p>
+<p>To retrieve all Groups of a specific type from the ThreatConnect REST API, the group_type can be provided to the <code class="docutils literal notranslate"><span class="pre">group()</span></code> method. Once the Group object is initialized, the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups.</p>
+<p>The example below retrieves all Groups of type Adversary.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -225,13 +225,13 @@
 </div>
 <div class="section" id="get-groups-by-tag">
 <h3>Get Groups by Tag<a class="headerlink" href="#get-groups-by-tag" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all group with a specific Tag from the ThreatConnect REST API the tag name can be provided to the <code class="docutils literal notranslate"><span class="pre">tag()</span></code> method. Once the tag object is initialized the <code class="docutils literal notranslate"><span class="pre">groups()</span></code> method retrieves all groups with the tag and allows pagination them.</p>
-<p>The example below retrieves all groups of type Adversary.</p>
+<p>To retrieve all Groups with a specific Tag from the ThreatConnect REST API, the Tag name can be provided to the <code class="docutils literal notranslate"><span class="pre">tag()</span></code> method. Once the Tag object is initialized, the <code class="docutils literal notranslate"><span class="pre">groups()</span></code> method retrieves all Groups with that Tag and allows pagination over them.</p>
+<p>The example below retrieves all Groups with a group of Crimeware.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
-</span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;group_tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
 </span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
 </pre></div>
@@ -239,8 +239,8 @@
 </div>
 <div class="section" id="get-groups-by-filter">
 <h3>Get Groups by Filter<a class="headerlink" href="#get-groups-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all group of a using a filter from the ThreatConnect REST API the filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all groups matching the provided filter(s).</p>
-<p>The example below retrieves all groups where name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
+<p>To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. The calling  <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Groups matching the provided Filter(s).</p>
+<p>The example below retrieves all Groups where the name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -256,9 +256,9 @@
 </td></tr></table></div>
 </div>
 <div class="section" id="get-group-by-id">
-<h3>Get Group by Id<a class="headerlink" href="#get-group-by-id" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve a group from the ThreatConnect REST API the group unique id is required. Once the group object is initialize the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the group data from the API.</p>
-<p>The example below retrieves a single Adversary with id 416 if it exists.</p>
+<h3>Get Group by ID<a class="headerlink" href="#get-group-by-id" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve a Group from the ThreatConnect REST API, the Group’s unique ID is required. Once the Group object is initialized, the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the Group data from the API.</p>
+<p>The example below retrieves a single Adversary with ID 416, if it exists.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
@@ -269,7 +269,7 @@
 </div>
 <div class="section" id="get-group-metadata">
 <h3>Get Group Metadata<a class="headerlink" href="#get-group-metadata" title="Permalink to this headline">¶</a></h3>
-<p>There are 6 methods to retrieve metadata for a group: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<p>There are six methods that retrieve metadata for a Group: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -324,7 +324,7 @@
 </div>
 <div class="section" id="create-a-group">
 <h3>Create a Group<a class="headerlink" href="#create-a-group" title="Permalink to this headline">¶</a></h3>
-<p>Creating a Group, adding association and metadata are all separate API calls and each have their own response object.</p>
+<p>Creating a Group and adding Associations and metadata constitute separate API calls, and each have their own Response object.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -359,7 +359,7 @@
 </div>
 <div class="section" id="updating-a-group">
 <h3>Updating a Group<a class="headerlink" href="#updating-a-group" title="Permalink to this headline">¶</a></h3>
-<p>Updating a group is similar to creating a group with the addition of providing the group Id.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
+<p>Updating a Group is similar to creating a Group, with the addition of providing the Group ID.  The Group metadata can be updated using the same methods as were used in the Group Create example.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;camp-3&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">first_seen</span><span class="o">=</span><span class="s1">&#39;2019-04-02&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">4127</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -368,7 +368,7 @@
 </div>
 <div class="section" id="delete-a-group">
 <h3>Delete a Group<a class="headerlink" href="#delete-a-group" title="Permalink to this headline">¶</a></h3>
-<p>Deleting a group is similar to creating a group with the addition of providing the group Id.</p>
+<p>Deleting a Group is similar to creating a Group, with the addition of providing the Group ID.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;Campaign&#39;</span><span class="p">,</span> <span class="n">unique_id</span><span class="o">=</span><span class="mi">4127</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
@@ -378,11 +378,11 @@
 </div>
 <div class="section" id="indicators">
 <h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
-<p>There are three interfaces to add Indicator Threat Intelligence data to the Batch Module.</p>
+<p>There are three interfaces used to add Indicator Threat Intelligence data to the Batch module.</p>
 <div class="section" id="get-indicator-by-type">
 <h3>Get Indicator by Type<a class="headerlink" href="#get-indicator-by-type" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all indicators of a specific type from the ThreatConnect REST API the indicator_type can be provided to the <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> method. Once the indicator object is initialized the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all indicators.</p>
-<p>The example below retrieves all indicators of type Address.</p>
+<p>To retrieve all Indicators of a specific type from the ThreatConnect REST API, the Indicator_type can be provided to the <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> method. Once the Indicator object is initialized, the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators.</p>
+<p>The example below retrieves all Indicators of type Address.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -395,13 +395,13 @@
 </div>
 <div class="section" id="get-indicators-by-tag">
 <h3>Get Indicators by Tag<a class="headerlink" href="#get-indicators-by-tag" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all group with a specific Tag from the ThreatConnect REST API the tag name can be provided to the <code class="docutils literal notranslate"><span class="pre">tag()</span></code> method. Once the tag object is initialized the <code class="docutils literal notranslate"><span class="pre">indicators()</span></code> method retrieves all indicators with the tag and allows pagination them.</p>
-<p>The example below retrieves all groups of type Adversary.</p>
+<p>To retrieve all Indicators with a specific Tag from the ThreatConnect REST API, the tag name can be provided to the <code class="docutils literal notranslate"><span class="pre">tag()</span></code> method. Once the Tag object is initialized, the <code class="docutils literal notranslate"><span class="pre">indicators()</span></code> method retrieves all Indicators with the Tag and allows pagination over them.</p>
+<p>The example below retrieves all indicators with a tag of Crimeware.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
-</span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;indicator_tag&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="s1">&#39;Crimeware&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">indicators</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
 </span>    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
 </pre></div>
@@ -409,8 +409,8 @@
 </div>
 <div class="section" id="get-indicators-by-filter">
 <h3>Get Indicators by Filter<a class="headerlink" href="#get-indicators-by-filter" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all group of a using a filter from the ThreatConnect REST API the filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all groups matching the provided filter(s).</p>
-<p>The example below retrieves all groups where name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
+<p>To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators matching the provided Filter(s).</p>
+<p>The example below retrieves all Indicators where name equals <code class="docutils literal notranslate"><span class="pre">my_name_filter</span></code>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -427,8 +427,8 @@
 </div>
 <div class="section" id="get-indicator-by-value">
 <h3>Get Indicator by Value<a class="headerlink" href="#get-indicator-by-value" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve an indicator from the ThreatConnect REST API the indicator unique value and owner is required. Once the indicator object is initialize the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the indicator data from the API.</p>
-<p>The example below retrieves a single Address with value 1.1.1.1 if it exists.</p>
+<p>To retrieve an Indicators from the ThreatConnect REST API, the Indicator’s unique Value and Owner are required. Once the Indicator object is initialized, the <code class="docutils literal notranslate"><span class="pre">single</span></code> method will return the Indicator data from the API.</p>
+<p>The example below retrieves a single Address with Value 1.1.1.1, if it exists.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
@@ -439,7 +439,7 @@
 </div>
 <div class="section" id="get-indicator-metadata">
 <h3>Get Indicator Metadata<a class="headerlink" href="#get-indicator-metadata" title="Permalink to this headline">¶</a></h3>
-<p>There are 6 methods to retrieve metadata for an indicator: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
+<p>There are six methods that retrieve metadata for an Indicator: <code class="docutils literal notranslate"><span class="pre">group_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">indicator_associations()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">attributes()</span></code>, <code class="docutils literal notranslate"><span class="pre">tags()</span></code>, and <code class="docutils literal notranslate"><span class="pre">labels()</span></code>.  This data can also be retrieved in the initial API call by using the <code class="docutils literal notranslate"><span class="pre">include</span></code> query parameters.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -486,7 +486,7 @@
 </div>
 <div class="section" id="create-an-indicator">
 <h3>Create an Indicator<a class="headerlink" href="#create-an-indicator" title="Permalink to this headline">¶</a></h3>
-<p>Creating an Indicator, adding association and metadata are all separate API calls and each have their own response object.</p>
+<p>Creating an Indicator and adding Associations and metadata are all separate API calls, and each have their own Response object.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -521,7 +521,7 @@
 </div>
 <div class="section" id="updating-an-indicator">
 <h3>Updating an Indicator<a class="headerlink" href="#updating-an-indicator" title="Permalink to this headline">¶</a></h3>
-<p>Updating an indicator is similar to creating an indicator with the addition of providing the indicator value.  The Indicator metadata can be updated using the same methods as were used in the Indicator Create example.</p>
+<p>Updating an Indicator is similar to creating an Indicator, with the addition of providing the Indicator value.  The Indicator metadata can be updated using the same methods as were used in the Indicator Create example.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -530,7 +530,7 @@
 </div>
 <div class="section" id="delete-an-indicator">
 <h3>Delete an Indicator<a class="headerlink" href="#delete-an-indicator" title="Permalink to this headline">¶</a></h3>
-<p>Deleting an indicator is similar to creating a indicator with the addition of providing the indicator value.</p>
+<p>Deleting an indicator is similar to creating an Indicator, with the addition of providing the Indicator value.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">indicator_type</span><span class="o">=</span><span class="s1">&#39;Address&#39;</span><span class="p">,</span> <span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;12.13.14.15&#39;</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
@@ -539,7 +539,7 @@
 </div>
 <div class="section" id="get-available-owners">
 <h3>Get Available Owners<a class="headerlink" href="#get-available-owners" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all owners available from the ThreatConnect REST API the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. Calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all owners available.</p>
+<p>To retrieve all Owners available from the ThreatConnect REST API, the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. The calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Owners available.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
@@ -550,7 +550,7 @@
 </div>
 <div class="section" id="get-my-owners">
 <h3>Get My Owners<a class="headerlink" href="#get-my-owners" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all owners you currently own from the ThreatConnect REST API the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. Calling <code class="docutils literal notranslate"><span class="pre">mine()</span></code> method allows pagination over all owners available.</p>
+<p>To retrieve all Owners that are currently owned from the ThreatConnect REST API, the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. The calling <code class="docutils literal notranslate"><span class="pre">mine()</span></code> method allows pagination over all Owners available.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
@@ -561,7 +561,7 @@
 </div>
 <div class="section" id="get-my-members">
 <h3>Get My Members<a class="headerlink" href="#get-my-members" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all members currently in owners you own from the ThreatConnect REST API the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. Calling <code class="docutils literal notranslate"><span class="pre">members()</span></code> method allows pagination over all members available.</p>
+<p>To retrieve all Members currently in Owners that are owned from the ThreatConnect REST API, the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. The calling <code class="docutils literal notranslate"><span class="pre">members()</span></code> method allows pagination over all Members available.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
@@ -572,7 +572,7 @@
 </div>
 <div class="section" id="get-metrics">
 <h3>Get Metrics<a class="headerlink" href="#get-metrics" title="Permalink to this headline">¶</a></h3>
-<p>To retrieve all metrics from the ThreatConnect REST API the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. Calling <code class="docutils literal notranslate"><span class="pre">metrics()</span></code> method allows pagination over all metrics available.</p>
+<p>To retrieve all Metrics from the ThreatConnect REST API, the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. The calling <code class="docutils literal notranslate"><span class="pre">metrics()</span></code> method allows pagination over all Metrics available.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">ti</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">owner</span><span class="p">()</span>
