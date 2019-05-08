@@ -38,12 +38,8 @@ class TcExTi(object):
 
     def __init__(self, tcex):
         """
-
         Args:
-            tcex:
-
-        Return:
-
+            tcex (obj): An instance of TcEx.
         """
         self.tcex = tcex
         self._custom_indicator_classes = {}
@@ -54,7 +50,7 @@ class TcExTi(object):
         Create the Address TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             ip:
             **kwargs:
 
@@ -68,7 +64,7 @@ class TcExTi(object):
         Create the URL TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             url:
             **kwargs:
 
@@ -82,7 +78,7 @@ class TcExTi(object):
         Create the Email Address TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             address:
             **kwargs:
 
@@ -96,7 +92,7 @@ class TcExTi(object):
         Create the File TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             **kwargs:
 
         Return:
@@ -109,7 +105,7 @@ class TcExTi(object):
         Create the Host TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             hostname:
             **kwargs:
 
@@ -127,7 +123,7 @@ class TcExTi(object):
         Create the Indicator TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             indicator_type:
             **kwargs:
 
@@ -205,7 +201,7 @@ class TcExTi(object):
         Create the Group TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             group_type:
             **kwargs:
 
@@ -275,7 +271,7 @@ class TcExTi(object):
         Create the Adversary TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -289,7 +285,7 @@ class TcExTi(object):
         Create the Campaign TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -303,7 +299,7 @@ class TcExTi(object):
         Create the Document TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             file_name:
             **kwargs:
@@ -331,7 +327,7 @@ class TcExTi(object):
         Create the Email TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             to:
             from_addr:
             name:
@@ -350,7 +346,7 @@ class TcExTi(object):
         Create the Incident TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -364,7 +360,7 @@ class TcExTi(object):
         Create the Intrustion Set TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -378,7 +374,7 @@ class TcExTi(object):
         Create the Report TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -392,7 +388,7 @@ class TcExTi(object):
         Create the Signature TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             file_content:
             file_name:
             file_type:
@@ -409,7 +405,7 @@ class TcExTi(object):
         Create the Threat TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -423,7 +419,7 @@ class TcExTi(object):
         Create the Victim TI object.
 
         Args:
-            owner:
+            owner (str): The ThreatConnect owner name.
             name:
             **kwargs:
 
@@ -458,60 +454,70 @@ class TcExTi(object):
         Yields a entity. Takes both a list of indicators/groups or a individual
         indicator/group response.
 
-        example formats:
-        {
-           "status":"Success",
-           "data":{
-              "resultCount":984240,
-              "address":[
-                 {
-                    "id":4222035,
-                    "ownerName":"System",
-                    "dateAdded":"2019-03-28T10:32:05-04:00",
-                    "lastModified":"2019-03-28T11:02:46-04:00",
-                    "rating":4,
-                    "confidence":90,
-                    "threatAssessRating":4,
-                    "threatAssessConfidence":90,
-                    "webLink":"{host}/auth/indicators/details/address.xhtml?address=221.123.32.14",
-                    "ip":"221.123.32.14"
-                 },
-                 {
-                    "id":4221517,
-                    "ownerName":"System",
-                    "dateAdded":"2018-11-05T14:24:54-05:00",
-                    "lastModified":"2019-03-07T12:38:36-05:00",
-                    "threatAssessRating":0,
-                    "threatAssessConfidence":0,
-                    "webLink":"{host}/auth/indicators/details/address.xhtml?address=221.123.32.12",
-                    "ip":"221.123.32.12"
-                 }
-              ]
-           }
-        }
+        example formats
 
-        or:
-        {
-            "status": "Success",
-            "data": {
-                "address": {
-                    "id": 4222035,
-                    "owner": {
-                        "id": 1,
-                        "name": "System",
-                        "type": "Organization"
-                    },
-                    "dateAdded": "2019-03-28T10:32:05-04:00",
-                    "lastModified": "2019-03-28T11:02:46-04:00",
-                    "rating": 4,
-                    "confidence": 90,
-                    "threatAssessRating": 4,
-                    "threatAssessConfidence": 90,
-                    "webLink": "{host}/auth/indicators/details/address.xhtml?address=221.123.32.14",
-                    "ip": "221.123.32.14"
+        .. code-block:: javascript
+
+            {
+                "status": "Success",
+                "data": {
+                    "resultCount": 984240,
+                    "address": [
+                        {
+                            "id": 4222035,
+                            "ownerName": "System",
+                            "dateAdded": "2019-03-28T10:32:05-04:00",
+                            "lastModified": "2019-03-28T11:02:46-04:00",
+                            "rating": 4,
+                            "confidence": 90,
+                            "threatAssessRating": 4,
+                            "threatAssessConfidence": 90,
+                            "webLink": "{host}/auth/indicators/details/address.xhtml?
+                                        address=221.123.32.14",
+                            "ip": "221.123.32.14"
+                        },
+                        {
+                            "id": 4221517,
+                            "ownerName": "System",
+                            "dateAdded": "2018-11-05T14:24:54-05:00",
+                            "lastModified": "2019-03-07T12:38:36-05:00",
+                            "threatAssessRating": 0,
+                            "threatAssessConfidence": 0,
+                            "webLink": "{host}/auth/indicators/details/address.xhtml?
+                                        address=221.123.32.12",
+                            "ip": "221.123.32.12"
+                        }
+                    ]
                 }
             }
-        }
+
+        or:
+
+        .. code-block:: javascript
+
+            {
+                "status": "Success",
+                "data": {
+                    "address": {
+                        "id": 4222035,
+                        "owner": {
+                            "id": 1,
+                            "name": "System",
+                            "type": "Organization"
+                        },
+                        "dateAdded": "2019-03-28T10:32:05-04:00",
+                        "lastModified": "2019-03-28T11:02:46-04:00",
+                        "rating": 4,
+                        "confidence": 90,
+                        "threatAssessRating": 4,
+                        "threatAssessConfidence": 90,
+                        "webLink": "{host}/auth/indicators/details/address.xhtml?
+                                    address=221.123.32.14",
+                        "ip": "221.123.32.14"
+                    }
+                }
+            }
+
         Args:
             json_response:
 

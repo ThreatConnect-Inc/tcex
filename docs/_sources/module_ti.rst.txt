@@ -5,7 +5,7 @@
 Module: Threat Intelligence
 ===========================
 
-The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti.TcExTi` module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.
+The ThreatConnect TcEx Framework provides the :py:mod:`~tcex.tcex_ti.tcex_ti.TcExTi` module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.
 
 Groups
 ======
@@ -158,7 +158,6 @@ Deleting a Group is similar to creating a Group, with the addition of providing 
 
 Indicators
 ==========
-There are three interfaces used to add Indicator Threat Intelligence data to the Batch module.
 
 Get Indicator by Type
 ---------------------
@@ -300,6 +299,9 @@ Deleting an indicator is similar to creating an Indicator, with the addition of 
 
     ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', ip='12.13.14.15')
     response = ti.delete()
+
+Owners
+======
 
 Get Available Owners
 --------------------

@@ -122,6 +122,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#create-an-indicator">Create an Indicator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-an-indicator">Updating an Indicator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#delete-an-indicator">Delete an Indicator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#owners">Owners</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#get-available-owners">Get Available Owners</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-my-owners">Get My Owners</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-my-members">Get My Members</a></li>
@@ -206,7 +209,7 @@
 
   <div class="section" id="module-threat-intelligence">
 <span id="module-ti"></span><h1>Module: Threat Intelligence<a class="headerlink" href="#module-threat-intelligence" title="Permalink to this headline">¶</a></h1>
-<p>The ThreatConnect TcEx Framework provides the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code> module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.</p>
+<p>The ThreatConnect TcEx Framework provides the <a class="reference internal" href="tcex_docs/tcex.tcex_ti.html#tcex.tcex_ti.tcex_ti.TcExTi" title="tcex.tcex_ti.tcex_ti.TcExTi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExTi</span></code></a> module, which creates, deletes, gets, and updates Groups, Indicators, Tasks, and Victims. The Threat Intelligence (TI) module also provides the ability to get Groups, Indicators, and Victims based on Tags, and it provides the ability to get Owners available to the API user in the ThreatConnect platform. The TI module returns a Python Requests Response object when requesting to create, delete, get, or update a single ThreatConnect object, and it yields the ThreatConnect object entity when requesting multiple objects. The Response object has the status code, headers, and body (response.text or response.json()) of the response, while the ThreatConnect object entity format varies depending on the type of object.</p>
 <div class="section" id="groups">
 <h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="get-groups-by-type">
@@ -378,7 +381,6 @@
 </div>
 <div class="section" id="indicators">
 <h2>Indicators<a class="headerlink" href="#indicators" title="Permalink to this headline">¶</a></h2>
-<p>There are three interfaces used to add Indicator Threat Intelligence data to the Batch module.</p>
 <div class="section" id="get-indicator-by-type">
 <h3>Get Indicator by Type<a class="headerlink" href="#get-indicator-by-type" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all Indicators of a specific type from the ThreatConnect REST API, the Indicator_type can be provided to the <code class="docutils literal notranslate"><span class="pre">indicator()</span></code> method. Once the Indicator object is initialized, the <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Indicators.</p>
@@ -537,6 +539,9 @@
 </pre></div>
 </td></tr></table></div>
 </div>
+</div>
+<div class="section" id="owners">
+<h2>Owners<a class="headerlink" href="#owners" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="get-available-owners">
 <h3>Get Available Owners<a class="headerlink" href="#get-available-owners" title="Permalink to this headline">¶</a></h3>
 <p>To retrieve all Owners available from the ThreatConnect REST API, the <code class="docutils literal notranslate"><span class="pre">owner</span></code> object can be used. The calling <code class="docutils literal notranslate"><span class="pre">many()</span></code> method allows pagination over all Owners available.</p>

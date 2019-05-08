@@ -29,6 +29,7 @@ Submodules
    tcex.tcex_request
    tcex.tcex_resources
    tcex.tcex_session
+   tcex.tcex_ti
    tcex.tcex_ti_attribute
    tcex.tcex_ti_batch
    tcex.tcex_ti_group
