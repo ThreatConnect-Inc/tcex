@@ -63,17 +63,14 @@ if __name__ == '__main__':
             tc_action = app.args.tc_action
             tc_action_formatted = tc_action.lower().replace(' ', '_')
             tc_action_map = 'tc_action_map'  # reserved property name for action to method map
-            try:
-                # run action method
-                if hasattr(app, tc_action):
-                    getattr(app, tc_action)()
-                elif hasattr(app, tc_action_formatted):
-                    getattr(app, tc_action_formatted)()
-                elif hasattr(app, tc_action_map):
-                    app.tc_action_map.get(app.args.tc_action)()
-                else:
-                    tcex.exit(1, 'Action method ({}) was not found.'.format(app.args.tc_action))
-            except (AttributeError, TypeError):
+            # run action method
+            if hasattr(app, tc_action):
+                getattr(app, tc_action)()
+            elif hasattr(app, tc_action_formatted):
+                getattr(app, tc_action_formatted)()
+            elif hasattr(app, tc_action_map):
+                app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=E1101
+            else:
                 tcex.exit(1, 'Action method ({}) was not found.'.format(app.args.tc_action))
         else:
             # default to run method
