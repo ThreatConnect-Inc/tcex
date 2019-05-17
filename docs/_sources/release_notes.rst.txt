@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+1.0.4
+=====
++ Updated datastore module to prevent creating of empty record on index creation.
++ Updated batch module to support additional debugging features.
+
 1.0.3
 =====
 + Updated playbook read for ``\s`` replacement issue in Python 3.7.

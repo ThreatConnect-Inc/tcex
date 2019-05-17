@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.3 documentation</title>
+  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.4 documentation</title>
 
 
 
@@ -57,7 +57,7 @@
 
 
               <div class="version">
-                1.0.3
+                1.0.4
               </div>
 
 
@@ -722,6 +722,7 @@
             <span class="k">if</span> <span class="n">file_content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xid&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;fileContent&#39;</span><span class="p">:</span> <span class="n">file_content</span><span class="p">,</span>
+                    <span class="s1">&#39;fileName&#39;</span><span class="p">:</span> <span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">),</span>
                     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">group_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">),</span>
                 <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1690,6 +1691,15 @@
                 <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;documents&#39;</span>
             <span class="k">elif</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Report&#39;</span><span class="p">:</span>
                 <span class="n">api_branch</span> <span class="o">=</span> <span class="s1">&#39;reports&#39;</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="ow">and</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">):</span>
+                <span class="c1"># special code for debugging App using batchV2.</span>
+                <span class="n">fqfn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_temp_path</span><span class="p">,</span>
+                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">--</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">xid</span><span class="p">,</span> <span class="n">content_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">)),</span>
+                <span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fqfn</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 
             <span class="c1"># Post File</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/v2/groups/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/upload&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">xid</span><span class="p">)</span>

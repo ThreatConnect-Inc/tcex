@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Batch &mdash; TcEx 1.0.3 documentation</title>
+  <title>Module: Batch &mdash; TcEx 1.0.4 documentation</title>
 
 
 
@@ -59,7 +59,7 @@
 
 
               <div class="version">
-                1.0.3
+                1.0.4
               </div>
 
 
@@ -312,7 +312,7 @@
 5
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">batch</span> <span class="o">=</span> <span class="n">tcex</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">batch_job</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;document-001&#39;</span><span class="p">,</span> <span class="n">xid</span><span class="o">=</span><span class="s1">&#39;my-xid-0001&#39;</span><span class="p">)</span>
 <span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="s1">&#39;test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;Document content here...&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">add_key_value</span><span class="p">(</span><span class="s1">&#39;fileName&#39;</span><span class="p">,</span> <span class="s1">&#39;test.txt&#39;</span><span class="p">)</span>
 </span><span class="hll"><span class="n">document</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;Example Description&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">&#39;Attribute source&#39;</span><span class="p">)</span>
