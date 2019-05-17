@@ -96,7 +96,7 @@ The code below demonstrates how to create a Document using this interface (and t
     :emphasize-lines: 3-7
 
     batch = tcex.batch('MyOrg')
-    document = batch_job.group('Document', 'document-001', xid='my-xid-0001')
+    document = batch.group('Document', 'document-001', xid='my-xid-0001')
     document.add_file('test.txt', 'Document content here...')
     document.add_key_value('fileName', 'test.txt')
     document.attribute('Description', 'Example Description', True, 'Attribute source')
