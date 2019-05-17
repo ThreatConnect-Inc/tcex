@@ -1521,7 +1521,7 @@ class TcExBatch(object):
                     self.tcex.args.tc_temp_path,
                     '{}-{}'.format(api_branch, content_data.get('fileName')),
                 )
-                with open(fqfn, 'w') as fh:
+                with open(fqfn, 'wb') as fh:
                     fh.write(content)
 
             # Post File
