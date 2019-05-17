@@ -54,9 +54,10 @@ class TcExDataStore(object):
     def _create_index(self):
         """Create index if it doesn't exist."""
         if not self.index_exists:
+            rid = 'temp-index-create'
             index_settings = {}
             headers = {'Content-Type': 'application/json', 'DB-Method': 'POST'}
-            url = '/v2/exchange/db/{}/{}'.format(self.domain, self.data_type)
+            url = '/v2/exchange/db/{}/{}/{}'.format(self.domain, self.data_type, rid)
             r = self.tcex.session.post(url, json=index_settings, headers=headers)
 
             if not r.ok:
@@ -65,6 +66,8 @@ class TcExDataStore(object):
             self.tcex.log.debug(
                 'creating index. status_code: {}, response: "{}".'.format(r.status_code, r.text)
             )
+            # delete temporary record
+            self.delete(rid, False)
 
     def _update_mappings(self):
         """Update the mappings for the current index."""

@@ -12,6 +12,10 @@ class TestDataStore:
         """Configure setup before all tests."""
         self.data_type = 'pytest'
 
+    def test_data_store_local_index(self):
+        """Test data store add."""
+        tcex.datastore('local', self.data_type)
+
     def test_data_store_local_add(self, rid='one', data=None):
         """Test data store add."""
         if data is None:

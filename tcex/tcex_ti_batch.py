@@ -545,6 +545,7 @@ class TcExBatch(object):
             if file_content is not None:
                 self._files[group_data.get('xid')] = {
                     'fileContent': file_content,
+                    'fileName': group_data.get('fileName'),
                     'type': group_data.get('type'),
                 }
         else:
@@ -1513,6 +1514,15 @@ class TcExBatch(object):
                 api_branch = 'documents'
             elif content_data.get('type') == 'Report':
                 api_branch = 'reports'
+
+            if self.debug and content_data.get('fileName'):
+                # special code for debugging App using batchV2.
+                fqfn = os.path.join(
+                    self.tcex.args.tc_temp_path,
+                    '{}-{}'.format(api_branch, content_data.get('fileName')),
+                )
+                with open(fqfn, 'w') as fh:
+                    fh.write(content)
 
             # Post File
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
