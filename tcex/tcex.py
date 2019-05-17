@@ -206,7 +206,7 @@ class TcEx(object):
     def _logger_formatter(self):
         """Return log formatter."""
         tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        tx_format += '(%(funcName)s:%(lineno)d)'
+        tx_format += '(%(filename)s:%(funcName)s:%(lineno)d)'
         return logging.Formatter(tx_format)
 
     @property
