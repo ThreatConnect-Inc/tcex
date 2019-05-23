@@ -3,6 +3,7 @@
 import base64
 import binascii
 import sys
+import os
 
 
 # pylint: disable=R0201
@@ -55,8 +56,43 @@ class Redis(StageData):
 class ThreatConnect(StageData):
     """Stages the ThreatConnect Data"""
 
-    def stage_tc(self, entity, owner, batch=False):
+    def __init__(self, tcex):
+        super(ThreatConnect, self).__init__(tcex)
+        self.batch = None
+
+    def dir(self, directory, owner, batch=False):
+        """Stages the directory"""
+        entities = []
+        for stage_file in os.listdir(directory):
+            if not (stage_file.endswith('.json') and stage_file.startswith('tc_stage_')):
+                continue
+            entities.append(self._convert_to_entities(stage_file))
+        return self.entities(entities, owner, batch=batch)
+
+    def file(self, file, owner, batch=False):
+        """Stages the file"""
+        entities = self._convert_to_entities(file)
+        return self.entities(entities, owner, batch=batch)
+
+    def entities(self, entities, owner, batch=False):
+        """Stages all of the provided entities"""
+        response = []
+        if batch:
+            self.batch = self.tcex.batch(owner)
+            for entity in entities:
+                self.batch.save(self._convert_to_batch_entity(entity))
+                response = self.batch.submit_all()
+        else:
+            for entity in entities:
+                response.append(self.entity(entity, owner))
+        return response if not batch else None
+
+    def entity(self, entity, owner):
         """Stage data in ThreatConnect"""
 
-    def stage_tc_from_dict(self, entity, owner, batch=False):
-        """Stage data in ThreatConnect from dict"""
+    def _convert_to_entities(self, file):
+        """Convert A file to TC Entity's"""
+        return self.batch or file
+
+    def _convert_to_batch_entity(self, entity):
+        """Convert TC Entity to a Batch entity"""

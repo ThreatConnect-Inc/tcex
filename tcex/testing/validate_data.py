@@ -81,13 +81,13 @@ class ThreatConnect(Validator):
     def __init__(self, tcex):
         super(ThreatConnect, self).__init__(tcex)
         self.seeded_file = None
-        self.statif_files = None
+        self.static_files = None
 
     def dir(self, directory):
         """validates the content of a given dir"""
         results = []
         for test_file in os.listdir(directory):
-            if not test_file.endswith('.json'):
+            if not (test_file.endswith('.json') and test_file.startswith('validate_')):
                 continue
             results.append(self.file(test_file))
         return results
