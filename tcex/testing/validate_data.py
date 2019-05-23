@@ -5,13 +5,13 @@ import hashlib
 import os
 
 
-class ValidateData(object):
-    """Validate Data class"""
+class Validator(object):
+    """Validator"""
 
     def __init__(self, tcex):
         self.tcex = tcex
-        self.seeded_file = None
-        self.static_file = None
+        self.redis = Redis(tcex)
+        self.threatconnect = ThreatConnect(tcex)
 
     @staticmethod
     def get_operator(op):
@@ -32,17 +32,11 @@ class ValidateData(object):
         }
         return operators.get(op, None)
 
-    def validate_redis(self, variable, data, op='='):
-        """validates the redis data with a given op"""
-        if not variable:
-            return False
-        op = self.get_operator(op)
-        if not operator:
-            return False
-        variable_data = self.tcex.playbook.read(variable)
-        return op(variable_data, data)
 
-    def validate_redis_type(self, variable, redis_type):
+class Redis(Validator):
+    """Validates Redis data"""
+
+    def type(self, variable, redis_type):
         """validates the type of a redis variable"""
         if not variable or not redis_type:
             return False
@@ -58,60 +52,97 @@ class ValidateData(object):
 
         return True
 
-    def validate_redis_eq(self, variable, data):
+    def data(self, variable, data, op='='):
+        """validates that the redis variable matches the provided op of the data"""
+        if not variable:
+            return False
+        op = self.get_operator(op)
+        if not operator:
+            return False
+        variable_data = self.tcex.playbook.read(variable)
+        return op(variable_data, data)
+
+    def eq(self, variable, data):
         """tests equation of redis var"""
-        return self.validate_redis(variable, data)
+        return self.data(variable, data)
 
-    def validate_redis_gt(self, variable, data):
+    def gt(self, variable, data):
         """tests gt of redis var"""
-        return self.validate_redis(variable, data, op='>')
+        return self.data(variable, data, op='>')
 
-    def validate_redis_lt(self, variable, data):
+    def lt(self, variable, data):
         """tests lt of redis var"""
-        return self.validate_redis(variable, data, op='<')
+        return self.data(variable, data, op='<')
 
-    def _convert_file_to_entities(self, file):
-        """converts file to tc_entity array"""
-        if not file:
-            file = self.seeded_file
-        return file
 
-    def validate_file(self, file):
-        """validates the content of a given file"""
-        entities = self._convert_file_to_entities(file)
-        return self.validate_tc_entities(entities)
+class ThreatConnect(Validator):
+    """Validate ThreatConnect data"""
 
-    def validate_dir(self, directory):
+    def __init__(self, tcex):
+        super(ThreatConnect, self).__init__(tcex)
+        self.seeded_file = None
+        self.statif_files = None
+
+    def dir(self, directory):
         """validates the content of a given dir"""
         results = []
         for test_file in os.listdir(directory):
             if not test_file.endswith('.json'):
                 continue
-            results.append(self.validate_file(test_file))
+            results.append(self.file(test_file))
         return results
 
-    def validate_seeded_file(self):
-        """validates the content of the seeded file"""
-        return self.validate_file(self.seeded_file)
+    # def seeded_file(self):
+    #     """validates the content of the seeded file"""
+    #     return self.file(self.seeded_file)
+    #
+    # def static_file(self):
+    #     """validates the content of the static file"""
+    #     return self.file(self.static_file)
 
-    def validate_static_file(self):
-        """validates the content of the static file"""
-        return self.validate_file(self.static_file)
+    def file(self, file):
+        """validates the content of a given file"""
+        entities, files = self._convert_to_entities(file)
+        return self.tc_entities(entities, files)
 
-    def validate_tc_entities(self, tc_entities, files=None):
+    def tc_entities(self, tc_entities, files=None):
         """validates a array of tc_entitites"""
-        if files and len(files) != len(tc_entities):
-            print('you messed up')
-            return False
         results = []
+        if files and len(files) != len(tc_entities):
+            return [{'valid': False, 'errors': 'File length did not match tc_entity length'}]
         for index, entity in enumerate(tc_entities):
             file = None
             if files:
                 file = files[index]
-            results.append(self.validate_tc_entity(entity, file))
+            results.append(self.tc_entity(entity, file))
         return results
 
-    def _convert_tc_entity_to_ti_entity(self, tc_entity):
+    def tc_entity(self, tc_entity, file=None):
+        """validates the ti_response entity"""
+        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
+        response = {'valid': True, 'errors': []}
+        ti_entity = self._convert_to_ti_entity(tc_entity)
+        ti_response = ti_entity.single(parameters)
+        response.get('errors').append(self._response_attributes(ti_response, ti_entity))
+        response.get('errors').append(self._response_tags(ti_response, ti_entity))
+        response.get('errors').append(self._response_labels(ti_response, ti_entity))
+        response.get('errors').append(self._file(ti_entity, file))
+        # Handle stuff like the rating/confidence/name/ip/ext. Specific things unique to each ti
+        # object type.
+
+        if response.get('errors'):
+            response['valid'] = False
+
+        return response
+
+    @staticmethod
+    def _convert_to_entities(file):
+        """converts file to tc_entity array"""
+        if not file:
+            return file
+        return file
+
+    def _convert_to_ti_entity(self, tc_entity):
         """converts a tc_entity to a ti_entity"""
         ti_entity = None
         if tc_entity.type.is_indicator:
@@ -127,49 +158,43 @@ class ValidateData(object):
 
         return ti_entity
 
-    def validate_ti_response_attributes(self, ti_response, tc_entity):
+    @staticmethod
+    def _response_attributes(ti_response, tc_entity):
         """validates the ti_response attributes"""
+        errors = []
+        if ti_response or tc_entity:
+            return errors
 
-    def validate_ti_response_tags(self, ti_response, tc_entity):
+        return errors
+
+    @staticmethod
+    def _response_tags(ti_response, tc_entity):
         """validates the ti_response tags"""
+        errors = []
+        if ti_response or tc_entity:
+            return errors
 
-    def validate_ti_response_labels(self, ti_response, tc_entity):
+        return errors
+
+    @staticmethod
+    def _response_labels(ti_response, tc_entity):
         """validates the ti_response labels"""
+        errors = []
+        if ti_response or tc_entity:
+            return errors
 
-    def validate_tc_entity(self, tc_entity, file=None):
-        """validates the ti_response entity"""
-        parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        response = {'valid': True, 'errors': []}
-        ti_entity = self._convert_tc_entity_to_ti_entity(tc_entity)
-        ti_response = ti_entity.single(parameters)
-        if not self.validate_ti_response_attributes(ti_response, tc_entity):
-            response.get('errors').append(
-                'Attributes of saved item {} does not match tc_entity {}'.format(
-                    ti_response, tc_entity
-                )
-            )
-        if not self.validate_ti_response_tags(ti_response, tc_entity):
-            response.get('errors').append(
-                'Tags of saved item {} does not match tc_entity {}'.format(ti_response, tc_entity)
-            )
-        if not self.validate_ti_response_labels(ti_response, tc_entity):
-            response.get('errors').append(
-                'Security Labels of saved item {} does not match '
-                'tc_entity {}'.format(ti_response, tc_entity)
-            )
-        # Handle stuff like the rating/confidence/name/ip/ext. Specific things unique to each ti
-        # object type.
+        return errors
+
+    @staticmethod
+    def _file(ti_entity, file):
+        errors = []
         if (ti_entity.type == 'Document' or ti_entity.type == 'Report') and file:
             downloaded = ti_entity.download()
             downloaded_hash = hashlib.md5(open(downloaded, 'rb').read()).hexdigest()
             file_hash = hashlib.md5(open(file, 'rb').read()).hexdigest()
             if downloaded_hash != file_hash:
-                response.get('errors').append(
+                errors.append(
                     'Hash of saved file {} does not match provided '
                     'file hash {}'.format(downloaded_hash, file_hash)
                 )
-
-        if response.get('errors'):
-            response['valid'] = False
-
-        return response
+        return errors

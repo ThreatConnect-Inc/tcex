@@ -13,19 +13,11 @@ class StageData(object):
         """Initialize class properties"""
         self.tcex = tcex
 
-    def _decode_binary(self, binary_data, variable):
-        """Base64 decode binary data."""
-        try:
-            data = base64.b64decode(binary_data)
-        except binascii.Error:
-            print(
-                'The Binary staging data for variable {} is not properly base64 '
-                'encoded.'.format(variable)
-            )
-            sys.exit()
-        return data
 
-    def stage_redis_from_dict(self, staging_data):
+class Redis(StageData):
+    """Stages the Redis Data"""
+
+    def from_dict(self, staging_data):
         """Stage redis data from dict"""
         for sd in staging_data:
             data = sd.get('data')
@@ -42,9 +34,26 @@ class StageData(object):
                 # data = decoded_data
             self.tcex.playbook.create(variable, data)
 
-    def stage_redis(self, variable, data):
+    def stage(self, variable, data):
         """Stage data in redis"""
         self.tcex.playbook.create(variable, data)
+
+    @staticmethod
+    def _decode_binary(binary_data, variable):
+        """Base64 decode binary data."""
+        try:
+            data = base64.b64decode(binary_data)
+        except binascii.Error:
+            print(
+                'The Binary staging data for variable {} is not properly base64 '
+                'encoded.'.format(variable)
+            )
+            sys.exit()
+        return data
+
+
+class ThreatConnect(StageData):
+    """Stages the ThreatConnect Data"""
 
     def stage_tc(self, entity, owner, batch=False):
         """Stage data in ThreatConnect"""
