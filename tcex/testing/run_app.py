@@ -5,7 +5,7 @@
 class RunApp(object):
     """Run App class"""
 
-    def __init__(self, args):
+    def __init__(self):
         """Initialize class properties"""
 
     def run(self, command, args):

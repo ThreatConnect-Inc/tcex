@@ -21,10 +21,16 @@ from tcex.testing.stage_data import StageData  # noqa: F401
 from tcex.testing.run_app import RunApp  # noqa: F401
 
 # from tcex.testing.validate_data import RedisValidator, TcValidator
-from tcex.testing.validate_data import ValidateData  # noqa: F401
+from tcex.testing.validate_data import Validator  # noqa: F401
 
 # pylint: disable=W0105,W1508
 # teardown - override pytest method to auto do 'stuff'
+
+
+def _to_bool(value):
+    """Return bool value from int or string."""
+    return str(value).lower() in ['1', 'true']
+
 
 context = str(uuid.uuid4())
 default_args = {
@@ -34,25 +40,42 @@ default_args = {
     'tc_api_path': os.getenv('TC_API_PATH'),
     'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
     'tc_log_path': os.getenv('TC_LOG_PATH', 'debug'),
-    'tc_log_to_api': os.getenv('TC_LOG_TO_API', False),  # pylint: disable=invalid-envvar-default
+    'tc_log_to_api': _to_bool(os.getenv('TC_LOG_TO_API', 'false')),
     'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
     'tc_playbook_db_context': os.getenv('TC_PLAYBOOK_DB_CONTEXT', context),
     'tc_playbook_db_path': os.getenv('TC_PLAYBOOK_DB_PATH', 'localhost'),
     'tc_playbook_db_port': os.getenv('TC_PLAYBOOK_DB_PORT', '6379'),
     'tc_playbook_db_type': os.getenv('TC_PLAYBOOK_DB_TYPE', 'Redis'),
     'tc_playbook_out_variables': '',
-    'tc_proxy_external': os.getenv(
-        'TC_PROXY_EXTERNAL', False
-    ),  # pylint: disable=invalid-envvar-default
+    'tc_proxy_external': _to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
     'tc_proxy_host': os.getenv('TC_PROXY_HOST', 'localhost'),
-    'tc_proxy_password': os.getenv('TC_PROXY_PASSWORD', None),
+    'tc_proxy_password': os.getenv('TC_PROXY_PASSWORD', ''),
     'tc_proxy_port': os.getenv('TC_PROXY_PORT', '4242'),
-    'tc_proxy_tc': os.getenv('TC_PROXY_TC', False),  # pylint: disable=invalid-envvar-default
-    'tc_proxy_username': os.getenv(
-        'TC_PROXY_USERNAME', False
-    ),  # pylint: disable=invalid-envvar-default
+    'tc_proxy_tc': _to_bool(os.getenv('TC_PROXY_TC', 'false')),
+    'tc_proxy_username': os.getenv('TC_PROXY_USERNAME', ''),
     'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
 }
+
+"""
+API_ACCESS_ID=abc123
+API_DEFAULT_ORG=MyOrg
+API_SECRET_KEY=abc123
+TC_API_PATH=https://api.threatconnect.com
+TC_IN_PATH=log
+TC_LOG_PATH=debug
+TC_LOG_TO_API=False
+TC_OUT_PATH=log
+TC_PLAYBOOK_DB_PATH=localhost
+TC_PLAYBOOK_DB_PORT=6379
+TC_PLAYBOOK_DB_TYPE=Redis
+TC_PROXY_EXTERNAL=False
+TC_PROXY_HOST=localhost
+TC_PROXY_PASSWORD=''
+TC_PROXY_PORT=4242
+TC_PROXY_TC=False
+TC_PROXY_USERNAME=''
+TC_TEMP_PATH=log
+"""
 
 """ Example Test File
 
