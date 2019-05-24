@@ -5,7 +5,7 @@ import pytest
 from tcex import TcEx
 
 # from tcex.testing import RunApp, StageData, ValidateData, default_args
-from tcex.testing import StageData, default_args
+from tcex.testing import Stager, default_args
 
 
 @pytest.fixture(scope='session', params=None, autouse=False)
@@ -25,7 +25,7 @@ def _tcex():
 @pytest.fixture(scope='session', params=None, autouse=False)
 def stager(_tcex):
     """Return an instance of StageData"""
-    return StageData(_tcex)
+    return Stager(_tcex)
 
 
 # @pytest.fixture(scope='session', params=None, autouse=False)
