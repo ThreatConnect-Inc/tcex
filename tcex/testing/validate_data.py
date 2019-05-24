@@ -10,8 +10,8 @@ class Validator(object):
 
     def __init__(self, tcex):
         self.tcex = tcex
-        self.redis = Redis(tcex)
-        self.threatconnect = ThreatConnect(tcex)
+        self._redis = None
+        self._threatconnect = None
 
     @staticmethod
     def get_operator(op):
@@ -32,19 +32,36 @@ class Validator(object):
         }
         return operators.get(op, None)
 
+    @property
+    def redis(self):
+        """Gets the current instance of Redis for validating data"""
+        if not self._redis:
+            self._redis = Redis(self)
+        return self._redis
 
-class Redis(Validator):
+    @property
+    def threatconnect(self):
+        """Gets the current instance of ThreatConnect for validating data"""
+        if not self._threatconnect:
+            self._threatconnect = ThreatConnect(self)
+        return self._threatconnect
+
+
+class Redis(object):
     """Validates Redis data"""
+
+    def __init__(self, provider):
+        self.provider = provider
 
     def type(self, variable, redis_type):
         """validates the type of a redis variable"""
         if not variable or not redis_type:
             return False
-        if redis_type not in self.tcex.playbook.read_data_types():
+        if redis_type not in self.provider.tcex.playbook.read_data_types():
             return 'You messed up'
-        if redis_type != self.tcex.playbook.variable_type(variable):
+        if redis_type != self.provider.tcex.playbook.variable_type(variable):
             return False
-        variable_data = self.tcex.playbook.read(variable)
+        variable_data = self.provider.tcex.playbook.read(variable)
         if not variable_data:
             return False
         if variable_data.get('type', None) != redis_type:
@@ -56,10 +73,10 @@ class Redis(Validator):
         """validates that the redis variable matches the provided op of the data"""
         if not variable:
             return False
-        op = self.get_operator(op)
+        op = self.provider.get_operator(op)
         if not operator:
             return False
-        variable_data = self.tcex.playbook.read(variable)
+        variable_data = self.provider.tcex.playbook.read(variable)
         return op(variable_data, data)
 
     def eq(self, variable, data):
@@ -75,13 +92,11 @@ class Redis(Validator):
         return self.data(variable, data, op='<')
 
 
-class ThreatConnect(Validator):
+class ThreatConnect(object):
     """Validate ThreatConnect data"""
 
-    def __init__(self, tcex):
-        super(ThreatConnect, self).__init__(tcex)
-        self.seeded_file = None
-        self.static_files = None
+    def __init__(self, provider):
+        self.provider = provider
 
     def dir(self, directory):
         """validates the content of a given dir"""
@@ -146,15 +161,17 @@ class ThreatConnect(Validator):
         """converts a tc_entity to a ti_entity"""
         ti_entity = None
         if tc_entity.type.is_indicator:
-            ti_entity = self.tcex.ti.indicator(
+            ti_entity = self.provider.tcex.ti.indicator(
                 indicator_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
             )
         elif tc_entity.type.is_group:
-            ti_entity = self.tcex.ti.group(
+            ti_entity = self.provider.tcex.ti.group(
                 group_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
             )
         elif tc_entity.type.is_victim:
-            ti_entity = self.tcex.ti.victim(unique_id=tc_entity.unique_id, owner=tc_entity.owner)
+            ti_entity = self.provider.tcex.ti.victim(
+                unique_id=tc_entity.unique_id, owner=tc_entity.owner
+            )
 
         return ti_entity
 
