@@ -471,7 +471,6 @@ class TcExTi(object):
             ti = self.indicator(entity_type, owner, **entity)
             if not ti:
                 ti = self.group(type, owner, **entity)
-            print('uuid: {}'.format(ti.unique_id))
             responses.append(ti.create())
             for attribute in attributes:
                 responses.append(ti.add_attribute(attribute.get('type'), attribute.get('value')))

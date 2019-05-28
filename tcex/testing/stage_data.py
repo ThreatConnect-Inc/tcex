@@ -3,6 +3,7 @@
 import base64
 import binascii
 import sys
+import json
 import os
 
 
@@ -86,7 +87,7 @@ class ThreatConnect(object):
         for stage_file in os.listdir(directory):
             if not (stage_file.endswith('.json') and stage_file.startswith('tc_stage_')):
                 continue
-            entities.append(self._convert_to_entities(stage_file))
+            entities.append(self._convert_to_entities('{}/{}'.format(directory, stage_file)))
         return self.entities(entities, owner, batch=batch)
 
     def file(self, file, owner, batch=False):
@@ -140,9 +141,12 @@ class ThreatConnect(object):
     def clear(self, owner):
         """delete and recreate the owner"""
 
-    def _convert_to_entities(self, file):
+    @staticmethod
+    def _convert_to_entities(file):
         """Convert A file to TC Entity's"""
-        return self.batch or file
+        with open(file, 'r') as read_file:
+            data = json.load(read_file)
+        return data
 
     def _convert_to_batch_entity(self, entity):
         """Convert TC Entity to a Batch entity"""
