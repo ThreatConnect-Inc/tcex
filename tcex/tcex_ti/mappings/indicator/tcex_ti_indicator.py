@@ -37,8 +37,8 @@ def custom_indicator_class_factory(
         :param kwargs:
         """
         base_class.__init__(self, tcex, indicator_type, entity_type, branch_type, owner, **kwargs)
-        self._data[value_fields[0]] = value1
         self.unique_id = self.unique_id or value1
+        self._data[value_fields[0]] = value1 or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
         # for k, v in class_dict.items():

@@ -100,8 +100,32 @@ class ThreatConnect(object):
         if batch:
             self.batch = self.provider.tcex.batch(owner)
             for entity in entities:
-                self.batch.save(self._convert_to_batch_entity(entity))
-                response = self.batch.submit_all()
+                labels = entity.pop('securityLabels')
+                attributes = entity.pop('attributes')
+                tags = entity.pop('tags')
+                associations = entity.pop('associations')
+                entity['xid'] = entity.get(
+                    'xid',
+                    self.provider.batch.generate_xid(
+                        [owner, entity.get('type'), entity.get('summary')]
+                    ),
+                )
+                batch_entity = self._convert_to_batch_entity(entity)
+                self.provider.batch.save(batch_entity)
+                for tag in tags:
+                    batch_entity.tag(tag)
+                for label in labels:
+                    batch_entity.label(label)
+                for association in associations:
+                    batch_entity.association(association)
+                for attribute in attributes:
+                    batch_entity.attribute(
+                        attribute.get('type'),
+                        attribute.get('value'),
+                        attribute.get('displayed', True),
+                    )
+
+            response = self.batch.submit_all()
         else:
             for entity in entities:
                 response.append(self.entity(entity, owner))
@@ -109,6 +133,12 @@ class ThreatConnect(object):
 
     def entity(self, entity, owner):
         """Stage data in ThreatConnect"""
+        if not isinstance(entity, list):
+            entity = [entity]
+        self.provider.tcex.ti.create_entities(entity, owner)
+
+    def clear(self, owner):
+        """delete and recreate the owner"""
 
     def _convert_to_entities(self, file):
         """Convert A file to TC Entity's"""
@@ -116,3 +146,10 @@ class ThreatConnect(object):
 
     def _convert_to_batch_entity(self, entity):
         """Convert TC Entity to a Batch entity"""
+        entity_type = entity.pop('type')
+        ti = None
+        if entity_type in self.provider.tcex.indicator_types:
+            ti = self.provider.batch.indicator(entity_type, entity.pop('summary'), entity)
+        elif entity_type in self.provider.tcex.group_types:
+            ti = self.provider.batch.group(entity_type, entity.pop('summary'), entity)
+        return ti
