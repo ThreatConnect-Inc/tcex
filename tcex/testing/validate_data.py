@@ -99,37 +99,38 @@ class ThreatConnect(object):
     def __init__(self, provider):
         self.provider = provider
 
-    def dir(self, directory):
+    def dir(self, directory, owner):
         """validates the content of a given dir"""
         results = []
         for test_file in os.listdir(directory):
             if not (test_file.endswith('.json') and test_file.startswith('validate_')):
                 continue
-            results.append(self.file(test_file))
+            results.append(self.file('{}/{}'.format(directory, test_file), owner))
         return results
 
-    def file(self, file):
+    def file(self, file, owner):
         """validates the content of a given file"""
         entities = self._convert_to_entities(file)
-        return self.tc_entities(entities)
+        return self.tc_entities(entities, owner)
 
-    def tc_entities(self, tc_entities):
+    def tc_entities(self, tc_entities, owner):
         """validates a array of tc_entitites"""
         results = []
         for entity in tc_entities:
-            results.append(self.tc_entity(entity))
+            results.append(self.tc_entity(entity, owner))
         return results
 
-    def tc_entity(self, tc_entity):
+    def tc_entity(self, tc_entity, owner):
         """validates the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         response = {'valid': True, 'errors': []}
-        ti_entity = self._convert_to_ti_entity(tc_entity)
-        ti_response = ti_entity.single(parameters)
-        response.get('errors').append(self._response_attributes(ti_response, ti_entity))
-        response.get('errors').append(self._response_tags(ti_response, ti_entity))
-        response.get('errors').append(self._response_labels(ti_response, ti_entity))
-        response.get('errors').append(self._file(ti_entity))
+        ti_entity = self._convert_to_ti_entity(tc_entity, owner)
+        ti_response = ti_entity.single(params=parameters)
+        ti_response = ti_response.json()
+        response.get('errors').append(self._response_attributes(ti_response, tc_entity))
+        response.get('errors').append(self._response_tags(ti_response, tc_entity))
+        response.get('errors').append(self._response_labels(ti_response, tc_entity))
+        response.get('errors').append(self._file(tc_entity))
 
         if ti_entity.type == 'Indicator':
             provided_rating = ti_entity.data.get('rating', None)
@@ -141,14 +142,14 @@ class ThreatConnect(object):
                 )
 
             provided_confidence = ti_entity.data.get('confidence', None)
-            expected_confidence = ti_response.data.get('confidence', None)
+            expected_confidence = ti_response.get('confidence', None)
             if not provided_confidence == expected_confidence:
                 response.get('errors').append(
                     'ConfidenceError: Provided confidence {} does not match '
                     'actual confidence {}'.format(provided_rating, expected_rating)
                 )
             provided_summary = ti_entity.unique_id
-            expected_summary = ti_response.data.get('summary', None)
+            expected_summary = ti_response.get('summary', None)
             if not provided_summary == expected_summary:
                 response.get('errors').append(
                     'SummaryError: Provided summary {} does not match '
@@ -156,47 +157,62 @@ class ThreatConnect(object):
                 )
         elif ti_entity.type == 'Group':
             provided_summary = ti_entity.data.get('name', None)
-            expected_summary = ti_response.data.get('summary', None)
+            expected_summary = ti_response.get('summary', None)
             if not provided_summary == expected_summary:
                 response.get('errors').append(
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
+
+        response['errors'] = self.flatten(response['errors'])
         if response.get('errors'):
             response['errors'].insert(
                 0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
             )
+            print(response['errors'])
             response['valid'] = False
 
         return response
+
+    def flatten(self, lis):
+        """Idk why python doesnt have this built in but helper function to flatten a list"""
+        new_lis = []
+        for item in lis:
+            if isinstance(item, list):
+                new_lis.extend(self.flatten(item))
+            else:
+                new_lis.append(item)
+        return new_lis
 
     @staticmethod
     def compare_dicts(expected, actual):
         """Compares two dicts and returns a list of errors if they don't match"""
         errors = []
-        for item in expected.items():
-            if item in expected.keys():
+        for item in expected:
+            if item in actual:
                 if expected.get(item) == actual.get(item):
                     actual.pop(item)
                     continue
                 errors.append(
                     '{0} : {1} did not match {0} : {2}'.format(
-                        item, expected.get('item'), actual.get('item')
+                        item, expected.get('item'), actual.get(item)
                     )
                 )
                 actual.pop(item)
             else:
                 errors.append(
                     '{} : {} was in expected results but not in actual results.'.format(
-                        item, expected.get('item')
+                        item, expected.get(item)
                     )
                 )
         for item in actual.items():
             errors.append(
                 '{} : {} was in actual results but not in expected results.'.format(
-                    item, actual.get('item')
+                    item, actual.get(item)
                 )
             )
+
+        print('Attribute errors: ', errors)
 
         return errors
 
@@ -221,20 +237,22 @@ class ThreatConnect(object):
             data = json.load(read_file)
         return data
 
-    def _convert_to_ti_entity(self, tc_entity):
+    def _convert_to_ti_entity(self, tc_entity, owner):
         """converts a tc_entity to a ti_entity"""
         ti_entity = None
         if tc_entity.get('type') in self.provider.tcex.indicator_types:
             ti_entity = self.provider.tcex.ti.indicator(
-                indicator_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
+                indicator_type=tc_entity.get('type'),
+                owner=owner,
+                unique_id=tc_entity.get('summary'),
             )
         elif tc_entity.get('type') in self.provider.tcex.group_types:
             ti_entity = self.provider.tcex.ti.group(
-                group_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
+                group_type=tc_entity.get('type'), owner=owner, unique_id=tc_entity.get('summary')
             )
         elif tc_entity.get('type') == 'Victim':
             ti_entity = self.provider.tcex.ti.victim(
-                unique_id=tc_entity.unique_id, owner=tc_entity.owner
+                unique_id=tc_entity.get('summary'), owner=owner
             )
 
         return ti_entity
@@ -251,7 +269,7 @@ class ThreatConnect(object):
         for attribute in ti_response.get('attribute', []):
             actual[attribute.get('type')] = attribute.get('value')
         errors = self.compare_dicts(expected, actual)
-        ['AttributeError: ' + error for error in errors]  # pylint: disable=W0104
+        errors = ['AttributeError: ' + error for error in errors]
 
         return errors
 
@@ -268,7 +286,7 @@ class ThreatConnect(object):
         for tag in ti_response.get('tag', []):
             actual.append(tag)
         errors = self.compare_lists(expected, actual)
-        ['TagError: ' + error for error in errors]  # pylint: disable=W0104
+        errors = ['TagError: ' + error for error in errors]
 
         return errors
 
@@ -285,7 +303,7 @@ class ThreatConnect(object):
         for tag in ti_response.get('securityLabel', []):
             actual.append(tag)
         errors = self.compare_lists(expected, actual)
-        ['SecurityLabelError: ' + error for error in errors]  # pylint: disable=W0104
+        errors = ['SecurityLabelError: ' + error for error in errors]
 
         return errors
 
