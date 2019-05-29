@@ -131,7 +131,7 @@ class TcExTi(object):
 
         """
         if not indicator_type:
-            return Indicator(self.tcex, None, owner=owner, **kwargs)
+            return Indicator(self.tcex, None, 'indicator', None, owner=owner, **kwargs)
 
         upper_indicator_type = indicator_type.upper()
 
@@ -146,25 +146,6 @@ class TcExTi(object):
             indicator = Host(self.tcex, kwargs.pop('hostname', None), owner=owner, **kwargs)
         elif upper_indicator_type == 'URL':
             indicator = URL(self.tcex, kwargs.pop('url', None), owner=owner, **kwargs)
-        # elif upper_indicator_type == 'ASN':
-        #     indicator = ASN(self.tcex, kwargs.pop('AS Number', None), owner=owner, **kwargs)
-        # elif upper_indicator_type == 'CIDR':
-        #     indicator = CIDR(self.tcex, kwargs.pop('Block', None), owner=owner, **kwargs)
-        # elif upper_indicator_type == 'MUTEX':
-        #     indicator = Mutex(self.tcex, kwargs.pop('Mutex', None), owner=owner, **kwargs)
-        # elif upper_indicator_type == 'REGISTRY KEY':
-        #     indicator = RegistryKey(
-        #         self.tcex,
-        #         kwargs.pop('Key Name', None),
-        #         kwargs.pop('Value Name', None),
-        #         kwargs.pop('Value Type', None),
-        #         owner=owner,
-        #         **kwargs
-        #     )
-        # elif upper_indicator_type == 'USER AGENT':
-        #     indicator = UserAgent(
-        #         self.tcex, kwargs.pop('User Agent String', None), owner=owner, **kwargs
-        #     )
         else:
             try:
                 if upper_indicator_type in self._custom_indicator_classes.keys():
@@ -211,7 +192,7 @@ class TcExTi(object):
 
         group = None
         if not group_type:
-            return Group(self.tcex, None, None, owner=owner, **kwargs)
+            return Group(self.tcex, None, 'group', owner=owner, **kwargs)
 
         name = kwargs.pop('name', None)
         group_type = group_type.upper()
