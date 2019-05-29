@@ -164,7 +164,7 @@ class TiTcRequest:
                 err = r.text or r.reason
                 self.tcex.handle_error(950, [r.status_code, err, r.url])
 
-            data = r.json().get('data').get(api_entity)
+            data = r.json().get('data', {}).get(api_entity, [])
 
             if len(data) < self.result_limit:
                 should_iterate = False
