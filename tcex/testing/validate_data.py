@@ -3,6 +3,7 @@
 import operator
 import hashlib
 import os
+import json
 
 
 class Validator(object):
@@ -107,32 +108,19 @@ class ThreatConnect(object):
             results.append(self.file(test_file))
         return results
 
-    # def seeded_file(self):
-    #     """validates the content of the seeded file"""
-    #     return self.file(self.seeded_file)
-    #
-    # def static_file(self):
-    #     """validates the content of the static file"""
-    #     return self.file(self.static_file)
-
     def file(self, file):
         """validates the content of a given file"""
-        entities, files = self._convert_to_entities(file)
-        return self.tc_entities(entities, files)
+        entities = self._convert_to_entities(file)
+        return self.tc_entities(entities)
 
-    def tc_entities(self, tc_entities, files=None):
+    def tc_entities(self, tc_entities):
         """validates a array of tc_entitites"""
         results = []
-        if files and len(files) != len(tc_entities):
-            return [{'valid': False, 'errors': 'File length did not match tc_entity length'}]
-        for index, entity in enumerate(tc_entities):
-            file = None
-            if files:
-                file = files[index]
-            results.append(self.tc_entity(entity, file))
+        for entity in tc_entities:
+            results.append(self.tc_entity(entity))
         return results
 
-    def tc_entity(self, tc_entity, file=None):
+    def tc_entity(self, tc_entity):
         """validates the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         response = {'valid': True, 'errors': []}
@@ -141,77 +129,176 @@ class ThreatConnect(object):
         response.get('errors').append(self._response_attributes(ti_response, ti_entity))
         response.get('errors').append(self._response_tags(ti_response, ti_entity))
         response.get('errors').append(self._response_labels(ti_response, ti_entity))
-        response.get('errors').append(self._file(ti_entity, file))
-        # Handle stuff like the rating/confidence/name/ip/ext. Specific things unique to each ti
-        # object type.
+        response.get('errors').append(self._file(ti_entity))
 
+        if ti_entity.type == 'Indicator':
+            provided_rating = ti_entity.data.get('rating', None)
+            expected_rating = ti_response.get('rating', None)
+            if not provided_rating == expected_rating:
+                response.get('errors').append(
+                    'RatingError: Provided rating {} does not match '
+                    'actual rating {}'.format(provided_rating, expected_rating)
+                )
+
+            provided_confidence = ti_entity.data.get('confidence', None)
+            expected_confidence = ti_response.data.get('confidence', None)
+            if not provided_confidence == expected_confidence:
+                response.get('errors').append(
+                    'ConfidenceError: Provided confidence {} does not match '
+                    'actual confidence {}'.format(provided_rating, expected_rating)
+                )
+            provided_summary = ti_entity.unique_id
+            expected_summary = ti_response.data.get('summary', None)
+            if not provided_summary == expected_summary:
+                response.get('errors').append(
+                    'SummaryError: Provided summary {} does not match '
+                    'actual summary {}'.format(provided_summary, expected_summary)
+                )
+        elif ti_entity.type == 'Group':
+            provided_summary = ti_entity.data.get('name', None)
+            expected_summary = ti_response.data.get('summary', None)
+            if not provided_summary == expected_summary:
+                response.get('errors').append(
+                    'SummaryError: Provided summary {} does not match '
+                    'actual summary {}'.format(provided_summary, expected_summary)
+                )
         if response.get('errors'):
+            response['errors'].insert(
+                0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
+            )
             response['valid'] = False
 
         return response
 
     @staticmethod
+    def compare_dicts(expected, actual):
+        """Compares two dicts and returns a list of errors if they don't match"""
+        errors = []
+        for item in expected.items():
+            if item in expected.keys():
+                if expected.get(item) == actual.get(item):
+                    actual.pop(item)
+                    continue
+                errors.append(
+                    '{0} : {1} did not match {0} : {2}'.format(
+                        item, expected.get('item'), actual.get('item')
+                    )
+                )
+                actual.pop(item)
+            else:
+                errors.append(
+                    '{} : {} was in expected results but not in actual results.'.format(
+                        item, expected.get('item')
+                    )
+                )
+        for item in actual.items():
+            errors.append(
+                '{} : {} was in actual results but not in expected results.'.format(
+                    item, actual.get('item')
+                )
+            )
+
+        return errors
+
+    @staticmethod
+    def compare_lists(expected, actual):
+        """Compares two lists and returns a list of errors if they don't match"""
+        errors = []
+        for item in expected:
+            if item in expected:
+                del actual[item]
+            else:
+                errors.append('{} was in expected results but not in actual results.'.format(item))
+        for item in actual:
+            errors.append('{} was in actual results but not in expected results.'.format(item))
+
+        return errors
+
+    @staticmethod
     def _convert_to_entities(file):
         """converts file to tc_entity array"""
-        if not file:
-            return file
-        return file
+        with open(file, 'r') as read_file:
+            data = json.load(read_file)
+        return data
 
     def _convert_to_ti_entity(self, tc_entity):
         """converts a tc_entity to a ti_entity"""
         ti_entity = None
-        if tc_entity.type.is_indicator:
+        if tc_entity.get('type') in self.provider.tcex.indicator_types:
             ti_entity = self.provider.tcex.ti.indicator(
                 indicator_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
             )
-        elif tc_entity.type.is_group:
+        elif tc_entity.get('type') in self.provider.tcex.group_types:
             ti_entity = self.provider.tcex.ti.group(
                 group_type=tc_entity.type, owner=tc_entity.owner, unique_id=tc_entity.unique_id
             )
-        elif tc_entity.type.is_victim:
+        elif tc_entity.get('type') == 'Victim':
             ti_entity = self.provider.tcex.ti.victim(
                 unique_id=tc_entity.unique_id, owner=tc_entity.owner
             )
 
         return ti_entity
 
-    @staticmethod
-    def _response_attributes(ti_response, tc_entity):
+    def _response_attributes(self, ti_response, tc_entity):
         """validates the ti_response attributes"""
-        errors = []
-        if ti_response or tc_entity:
-            return errors
+        if not ti_response or not tc_entity:
+            return []
+
+        expected = {}
+        actual = {}
+        for attribute in tc_entity.get('attribute', []):
+            expected[attribute.get('type')] = attribute.get('value')
+        for attribute in ti_response.get('attribute', []):
+            actual[attribute.get('type')] = attribute.get('value')
+        errors = self.compare_dicts(expected, actual)
+        ['AttributeError: ' + error for error in errors]  # pylint: disable=W0104
 
         return errors
 
-    @staticmethod
-    def _response_tags(ti_response, tc_entity):
+    def _response_tags(self, ti_response, tc_entity):
         """validates the ti_response tags"""
         errors = []
-        if ti_response or tc_entity:
+        if not ti_response or not tc_entity:
             return errors
+
+        expected = []
+        actual = []
+        for tag in tc_entity.get('tag', []):
+            expected.append(tag)
+        for tag in ti_response.get('tag', []):
+            actual.append(tag)
+        errors = self.compare_lists(expected, actual)
+        ['TagError: ' + error for error in errors]  # pylint: disable=W0104
 
         return errors
 
-    @staticmethod
-    def _response_labels(ti_response, tc_entity):
+    def _response_labels(self, ti_response, tc_entity):
         """validates the ti_response labels"""
         errors = []
-        if ti_response or tc_entity:
+        if not ti_response or not tc_entity:
             return errors
+
+        expected = []
+        actual = []
+        for tag in tc_entity.get('securityLabel', []):
+            expected.append(tag)
+        for tag in ti_response.get('securityLabel', []):
+            actual.append(tag)
+        errors = self.compare_lists(expected, actual)
+        ['SecurityLabelError: ' + error for error in errors]  # pylint: disable=W0104
 
         return errors
 
     @staticmethod
-    def _file(ti_entity, file):
+    def _file(ti_entity):
         errors = []
-        if (ti_entity.type == 'Document' or ti_entity.type == 'Report') and file:
+        if ti_entity.get('type') == 'Document' or ti_entity.get('type') == 'Report':
             downloaded = ti_entity.download()
-            downloaded_hash = hashlib.md5(open(downloaded, 'rb').read()).hexdigest()
-            file_hash = hashlib.md5(open(file, 'rb').read()).hexdigest()
-            if downloaded_hash != file_hash:
-                errors.append(
-                    'Hash of saved file {} does not match provided '
-                    'file hash {}'.format(downloaded_hash, file_hash)
-                )
+            return hashlib.md5(open(downloaded, 'rb').read()).hexdigest()
+            # file_hash = hashlib.md5(open(file, 'rb').read()).hexdigest()
+            # if downloaded_hash != file_hash:
+            #     errors.append(
+            #         'Hash of saved file {} does not match provided '
+            #         'file hash {}'.format(downloaded_hash, file_hash)
+            #     )
         return errors
