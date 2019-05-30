@@ -56,6 +56,8 @@ class Redis(object):
 
     def not_null(self, variable):
         """validates that a variable isnt empty/null"""
+        # Could do something like self.ne(variable, None), but want to be pretty specific on
+        # the errors on this one
         response = {'valid': True, 'errors': []}
         if not variable:
             response.get('errors').append('NoneError: Redis Variable not provided')
@@ -107,16 +109,21 @@ class Redis(object):
         response = {'valid': True, 'errors': []}
         if not variable:
             response.get('errors').append('NoneError: Redis Variable not provided')
-        op = self.provider.get_operator(op)
-        if not operator:
-            response.get('errors').append('NotSupportedError: Operator {} not supported'.format(op))
-        variable_data = self.provider.tcex.playbook.read(variable)
-        if not op(variable_data, data):
+        elif not op:
+            response.get('errors').append('NoneError: Operator provided.')
+        elif self.provider.get_operator(op):
             response.get('errors').append(
-                'OperatorError: Variable {} data {} is not {} expected data {}'.format(
-                    variable, variable_data, op, data
-                )
+                'NotSupportedError: Operator {} not supported.'.format(op)
             )
+        else:
+            op = self.provider.get_operator(op)
+            variable_data = self.provider.tcex.playbook.read(variable)
+            if not op(variable_data, data):
+                response.get('errors').append(
+                    'OperatorError: Variable {} data {} is not {} expected data {}'.format(
+                        variable, variable_data, op, data
+                    )
+                )
 
         if response.get('errors'):
             response['valid'] = False
@@ -129,11 +136,23 @@ class Redis(object):
 
     def gt(self, variable, data):
         """tests gt of redis var"""
-        return self.data(variable, data, op='>')
+        return self.data(variable, data, op='gt')
 
     def lt(self, variable, data):
         """tests lt of redis var"""
-        return self.data(variable, data, op='<')
+        return self.data(variable, data, op='lt')
+
+    def le(self, variable, data):
+        """tests le of redis var"""
+        return self.data(variable, data, op='le')
+
+    def ne(self, variable, data):
+        """tests ne of redis var"""
+        return self.data(variable, data, op='ne')
+
+    def ge(self, variable, data):
+        """tests ge of redis var"""
+        return self.data(variable, data, op='ge')
 
 
 class ThreatConnect(object):
