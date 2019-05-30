@@ -126,14 +126,28 @@ class ThreatConnect(object):
         response = {'valid': True, 'errors': []}
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
         ti_response = ti_entity.single(params=parameters)
-        ti_response = ti_response.json()
+        if not self.success(ti_response):
+            response.get('errors').append(
+                'NotFoundError: Provided entity {} could not be fetched from ThreatConnect'.format(
+                    tc_entity.get('summary')
+                )
+            )
+            response['errors'].insert(
+                0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
+            )
+            response['valid'] = False
+            return response
+        ti_response_entity = None
+        ti_response = ti_response.json().get('data').get(ti_entity.api_entity)
+        for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type')):
+            ti_response_entity = entity
         response.get('errors').append(self._response_attributes(ti_response, tc_entity))
         response.get('errors').append(self._response_tags(ti_response, tc_entity))
         response.get('errors').append(self._response_labels(ti_response, tc_entity))
         response.get('errors').append(self._file(tc_entity))
 
         if ti_entity.type == 'Indicator':
-            provided_rating = ti_entity.data.get('rating', None)
+            provided_rating = tc_entity.get('rating', None)
             expected_rating = ti_response.get('rating', None)
             if not provided_rating == expected_rating:
                 response.get('errors').append(
@@ -141,7 +155,7 @@ class ThreatConnect(object):
                     'actual rating {}'.format(provided_rating, expected_rating)
                 )
 
-            provided_confidence = ti_entity.data.get('confidence', None)
+            provided_confidence = tc_entity.get('confidence', None)
             expected_confidence = ti_response.get('confidence', None)
             if not provided_confidence == expected_confidence:
                 response.get('errors').append(
@@ -149,7 +163,7 @@ class ThreatConnect(object):
                     'actual confidence {}'.format(provided_rating, expected_rating)
                 )
             provided_summary = ti_entity.unique_id
-            expected_summary = ti_response.get('summary', None)
+            expected_summary = ti_response_entity.get('value', None)
             if not provided_summary == expected_summary:
                 response.get('errors').append(
                     'SummaryError: Provided summary {} does not match '
@@ -169,7 +183,6 @@ class ThreatConnect(object):
             response['errors'].insert(
                 0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
             )
-            print(response['errors'])
             response['valid'] = False
 
         return response
@@ -212,8 +225,6 @@ class ThreatConnect(object):
                 )
             )
 
-        print('Attribute errors: ', errors)
-
         return errors
 
     @staticmethod
@@ -221,8 +232,8 @@ class ThreatConnect(object):
         """Compares two lists and returns a list of errors if they don't match"""
         errors = []
         for item in expected:
-            if item in expected:
-                del actual[item]
+            if item in actual:
+                actual.remove(item)
             else:
                 errors.append('{} was in expected results but not in actual results.'.format(item))
         for item in actual:
@@ -284,7 +295,7 @@ class ThreatConnect(object):
         for tag in tc_entity.get('tag', []):
             expected.append(tag)
         for tag in ti_response.get('tag', []):
-            actual.append(tag)
+            actual.append(tag.get('name'))
         errors = self.compare_lists(expected, actual)
         errors = ['TagError: ' + error for error in errors]
 
@@ -301,7 +312,7 @@ class ThreatConnect(object):
         for tag in tc_entity.get('securityLabel', []):
             expected.append(tag)
         for tag in ti_response.get('securityLabel', []):
-            actual.append(tag)
+            actual.append(tag.get('name'))
         errors = self.compare_lists(expected, actual)
         errors = ['SecurityLabelError: ' + error for error in errors]
 
@@ -320,3 +331,24 @@ class ThreatConnect(object):
             #         'file hash {}'.format(downloaded_hash, file_hash)
             #     )
         return errors
+
+    @staticmethod
+    def success(r):
+        """
+
+        Args:
+            r:
+
+        Return:
+
+        """
+        status = True
+        if r.ok:
+            try:
+                if r.json().get('status') != 'Success':
+                    status = False
+            except Exception:
+                status = False
+        else:
+            status = False
+        return status
