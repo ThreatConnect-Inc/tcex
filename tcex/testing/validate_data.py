@@ -54,31 +54,74 @@ class Redis(object):
     def __init__(self, provider):
         self.provider = provider
 
+    def not_null(self, variable):
+        """validates that a variable isnt empty/null"""
+        response = {'valid': True, 'errors': []}
+        if not variable:
+            response.get('errors').append('NoneError: Redis Variable not provided')
+        else:
+            variable_data = self.provider.tcex.playbook.read(variable)
+            if not variable_data:
+                response.get('errors').append(
+                    'NullError: Variable {} not found or empty'.format(variable)
+                )
+        if response.get('errors'):
+            response['valid'] = False
+
+        return response
+
     def type(self, variable, redis_type):
         """validates the type of a redis variable"""
-        if not variable or not redis_type:
-            return False
-        if redis_type not in self.provider.tcex.playbook.read_data_types():
-            return 'You messed up'
-        if redis_type != self.provider.tcex.playbook.variable_type(variable):
-            return False
-        variable_data = self.provider.tcex.playbook.read(variable)
-        if not variable_data:
-            return False
-        if variable_data.get('type', None) != redis_type:
-            return False
+        response = {'valid': True, 'errors': []}
+        if not variable:
+            response.get('errors').append('NoneError: Redis Variable not provided')
+        elif not redis_type:
+            response.get('errors').append('NoneError: Redis Type not provided')
+        elif redis_type not in self.provider.tcex.playbook.read_data_types():
+            response.get('errors').append('InvalidTypeError: Redis Type not supported')
+        elif redis_type != self.provider.tcex.playbook.variable_type(variable):
+            response.get('errors').append(
+                'TypeMismatchError: Redis Type: {} and Variable Type: {} do not match'.format(
+                    redis_type, self.provider.tcex.playbook.variable_type(variable)
+                )
+            )
+        else:
+            variable_data = self.provider.tcex.playbook.read(variable)
+            if not variable_data:
+                response.get('errors').append(
+                    'NotFoundError: Variable {} not found'.format(variable)
+                )
+            if variable_data.get('type', None) != redis_type:
+                response.get('errors').append(
+                    'TypeMismatchError: Redis Type: {} and Variable Type: {} do not match'.format(
+                        redis_type, self.provider.tcex.playbook.variable_type(variable)
+                    )
+                )
+        if response.get('errors'):
+            response['valid'] = False
 
-        return True
+        return response
 
     def data(self, variable, data, op='='):
         """validates that the redis variable matches the provided op of the data"""
+        response = {'valid': True, 'errors': []}
         if not variable:
-            return False
+            response.get('errors').append('NoneError: Redis Variable not provided')
         op = self.provider.get_operator(op)
         if not operator:
-            return False
+            response.get('errors').append('NotSupportedError: Operator {} not supported'.format(op))
         variable_data = self.provider.tcex.playbook.read(variable)
-        return op(variable_data, data)
+        if not op(variable_data, data):
+            response.get('errors').append(
+                'OperatorError: Variable {} data {} is not {} expected data {}'.format(
+                    variable, variable_data, op, data
+                )
+            )
+
+        if response.get('errors'):
+            response['valid'] = False
+
+        return response
 
     def eq(self, variable, data):
         """tests equation of redis var"""
