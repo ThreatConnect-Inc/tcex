@@ -11,9 +11,11 @@ import os
 class Stager(object):
     """Stage Data class"""
 
-    def __init__(self, tcex):
+    def __init__(self, tcex, log):
         """Initialize class properties"""
         self.tcex = tcex
+        self.log = log
+        self.args = self.tcex.args  # required for args to be parsed
         self._redis = None
         self._threatconnect = None
 
@@ -37,18 +39,18 @@ class Redis(object):
 
     def __init__(self, provider):
         self.provider = provider
-        self.batch = None
+        self.redis_client = provider.tcex.playbook.db.r
 
     def from_dict(self, staging_data):
         """Stage redis data from dict"""
         for sd in staging_data:
             data = sd.get('data')
-            data_type = self.provider.tcex.playbook.variable_type(data)
             variable = sd.get('variable')
+            variable_type = self.provider.tcex.playbook.variable_type(variable)
 
-            if data_type == 'Binary':
+            if variable_type == 'Binary':
                 data = self._decode_binary(data, variable)
-            elif data_type == 'BinaryArray':
+            elif variable_type == 'BinaryArray':
                 data = [self._decode_binary(d, variable) for d in data]
                 # decoded_data = []
                 # for d in data:
@@ -59,6 +61,11 @@ class Redis(object):
     def stage(self, variable, data):
         """Stage data in redis"""
         self.provider.tcex.playbook.create(variable, data)
+
+    def delete_context(self, context):
+        """Delete data in redis"""
+        keys = self.redis_client.hkeys(context)
+        return self.redis_client.hdel(context, *keys)
 
     @staticmethod
     def _decode_binary(binary_data, variable):
