@@ -12,10 +12,11 @@ from datetime import datetime
 from tcex import TcEx
 from app import App  # pylint: disable=import-error
 from stage_data import Stager
+from validate_data import Validator
 
 logger = logging.getLogger('TestCase')
 fh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10_485_760, mode='a')
-fh.setLevel(logging.INFO)
+fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
@@ -160,21 +161,27 @@ class TestCase(object):
         tcex.tcex_args.config(app_args)
         return tcex
 
+    @property
+    def validator(self):
+        """Return instance of Stager class."""
+        return Validator(self.tcex(self.default_args), logger)
+
 
 class TestCasePlaybook(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
 
-    def output_variables(self, app_id=987):
+    @property
+    def output_variables(self):
         """Return playbook output variables"""
         if self._output_variables is None:
             self._output_variables = []
-            # TODO: currently there is no support for projects with multiple install.json files.
+            # Currently there is no support for projects with multiple install.json files.
             for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # #App:3313:app.data.count!String
+                # "#App:9876:app.data.count!String"
                 self._output_variables.append(
-                    '#App:{}:{}!{}'.format(app_id, p.get('name'), p.get('type'))
+                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
                 )
         return self._output_variables
 

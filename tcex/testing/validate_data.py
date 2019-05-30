@@ -9,8 +9,10 @@ import json
 class Validator(object):
     """Validator"""
 
-    def __init__(self, tcex):
+    def __init__(self, tcex, log):
+        self.log = log
         self.tcex = tcex
+        self.args = tcex.args
         self._redis = None
         self._threatconnect = None
 
@@ -53,9 +55,10 @@ class Redis(object):
 
     def __init__(self, provider):
         self.provider = provider
+        self.redis_client = provider.tcex.playbook.db.r
 
     def not_null(self, variable):
-        """validates that a variable isnt empty/null"""
+        """validates that a variable is not empty/null"""
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
         response = {'valid': True, 'errors': []}
@@ -104,31 +107,38 @@ class Redis(object):
 
         return response
 
-    def data(self, variable, data, op='='):
-        """validates that the redis variable matches the provided op of the data"""
-        response = {'valid': True, 'errors': []}
+    def data(self, variable, data, op=None):
+        """Validate Redis data <operator> variable_data.
+
+        Args:
+            variable (str): The variable to read from REDIS.
+            data (dict or list or str): The validation data
+            op (str, optional): The comparison operator expression. Defaults to "eq".
+
+        Returns:
+            [type]: [description]
+        """
+        op = op or 'eq'
         if not variable:
-            response.get('errors').append('NoneError: Redis Variable not provided')
-        elif not op:
-            response.get('errors').append('NoneError: Operator provided.')
-        elif self.provider.get_operator(op):
-            response.get('errors').append(
-                'NotSupportedError: Operator {} not supported.'.format(op)
+            self.provider.log.error('NoneError: Redis Variable not provided')
+            return False
+
+        if not self.provider.get_operator(op):
+            self.provider.log.error('Invalid operator provided ({})'.format(op))
+            return False
+
+        variable_data = self.provider.tcex.playbook.read(variable)
+
+        # Logging
+        self.provider.log.info('[validator] Variable: {}'.format(variable))
+        self.provider.log.info('[validator] DB Data: {}'.format(variable_data))
+        self.provider.log.info('[validator] User Data: {}'.format(data))
+        self.provider.log.debug(
+            'redis-cli hget {} \'{}\''.format(
+                self.provider.tcex.args.tc_playbook_db_context, variable
             )
-        else:
-            op = self.provider.get_operator(op)
-            variable_data = self.provider.tcex.playbook.read(variable)
-            if not op(variable_data, data):
-                response.get('errors').append(
-                    'OperatorError: Variable {} data {} is not {} expected data {}'.format(
-                        variable, variable_data, op, data
-                    )
-                )
-
-        if response.get('errors'):
-            response['valid'] = False
-
-        return response
+        )
+        return self.provider.get_operator(op)(variable_data, data)
 
     def eq(self, variable, data):
         """tests equation of redis var"""
