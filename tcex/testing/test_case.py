@@ -30,8 +30,10 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
+    _tcex = None
     _timer_class_start = None
     _timer_method_start = None
+    _previous_context = None
     context = None
     log = logger
     redis_staging_data = []
@@ -145,21 +147,27 @@ class TestCase(object):
             )
         )
 
-    def tcex(self, args):
+    def tcex(self, args=None):
         """Return an instance of App."""
-        try:
-            sys.argv.remove('tests')  # remove pytest args
-        except ValueError:
-            pass
-        try:
-            sys.argv.remove('-s')  # remove pytest args
-        except ValueError:
-            pass
-        tcex = TcEx()
+        args = args or {}
         app_args = self.default_args
         app_args.update(args)
-        tcex.tcex_args.config(app_args)
-        return tcex
+        if self.context == self._previous_context:
+            self._tcex.tcex_args.config(app_args)  # during run this is required
+            return self._tcex
+
+        self._previous_context = self.context
+        sys.argv = [
+            sys.argv[0],
+            '--tc_log_path',
+            'log',
+            '--tc_log_file',
+            '{}-app.log'.format(self.context),
+        ]
+        self._tcex = TcEx()
+        self._tcex.tcex_args.config(app_args)  # required for stager
+        self._tcex.tcex_args.args_update()  # required for stager
+        return self._tcex
 
     @property
     def validator(self):
@@ -187,6 +195,7 @@ class TestCasePlaybook(TestCase):
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App."""
+        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
         app = self.app(args)
 
         # Start
@@ -194,10 +203,10 @@ class TestCasePlaybook(TestCase):
             app.start()
         except SystemExit as e:
             self.log.error('App failed in start() method ({}).'.format(e))
-            return e
+            return self.exit(e)
         except Exception as err:
             self.log.error('App encountered except in start() method ({}).'.format(err))
-            return 1
+            return self.exit(1)
 
         # Run
         try:
@@ -215,29 +224,34 @@ class TestCasePlaybook(TestCase):
                 app.run()
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
-            return e
+            return self.exit(e)
         except Exception as err:
             self.log.error('App encountered except in run() method ({}).'.format(err))
-            return 1
+            return self.exit(1)
 
         # Write Output
         try:
             app.write_output()
         except SystemExit as e:
             self.log.error('App failed in write_output() method ({}).'.format(e))
-            return e
+            return self.exit(e)
         except Exception as err:
             self.log.error('App encountered except in write_output() method ({}).'.format(err))
-            return 1
+            return self.exit(1)
 
         # Done
         try:
             app.done()
         except SystemExit as e:
             self.log.error('App failed in done() method ({}).'.format(e))
-            return e
+            return self.exit(e)
         except Exception as err:
             self.log.error('App encountered except in done() method ({}).'.format(err))
-            return 1
+            return self.exit(1)
 
-        return app.tcex.exit_code
+        return self.exit(app.tcex.exit_code)
+
+    def exit(self, code):
+        """Log and return exit code"""
+        self.tcex().log.info('Exit Code: {}'.format(code))
+        return code

@@ -10,9 +10,11 @@ class Validator(object):
     """Validator"""
 
     def __init__(self, tcex, log):
+        # self.args = tcex.args
         self.log = log
         self.tcex = tcex
-        self.args = tcex.args
+
+        # properties
         self._redis = None
         self._threatconnect = None
 

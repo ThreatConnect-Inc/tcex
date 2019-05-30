@@ -13,9 +13,11 @@ class Stager(object):
 
     def __init__(self, tcex, log):
         """Initialize class properties"""
-        self.tcex = tcex
+        # self.args = tcex.args  # required for args to be parsed
         self.log = log
-        self.args = self.tcex.args  # required for args to be parsed
+        self.tcex = tcex
+
+        # properties
         self._redis = None
         self._threatconnect = None
 
@@ -65,7 +67,9 @@ class Redis(object):
     def delete_context(self, context):
         """Delete data in redis"""
         keys = self.redis_client.hkeys(context)
-        return self.redis_client.hdel(context, *keys)
+        if keys:
+            return self.redis_client.hdel(context, *keys)
+        return 0
 
     @staticmethod
     def _decode_binary(binary_data, variable):
