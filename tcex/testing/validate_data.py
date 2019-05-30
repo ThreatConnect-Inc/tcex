@@ -113,14 +113,26 @@ class ThreatConnect(object):
         entities = self._convert_to_entities(file)
         return self.tc_entities(entities, owner)
 
-    def tc_entities(self, tc_entities, owner):
+    def tc_entities(self, tc_entities, owner, files=None):
         """validates a array of tc_entitites"""
         results = []
-        for entity in tc_entities:
+        if files:
+            if not len(tc_entities) == len(files):
+                return {
+                    'valid': True,
+                    'errors': [
+                        'LengthError: Length of files provided does not '
+                        'match length of entities provided.'
+                    ],
+                }
+
+        for index, entity in enumerate(tc_entities):
+            if files:
+                results.append(self.tc_entity(entity, owner, files[index]))
             results.append(self.tc_entity(entity, owner))
         return results
 
-    def tc_entity(self, tc_entity, owner):
+    def tc_entity(self, tc_entity, owner, file=None):
         """validates the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         response = {'valid': True, 'errors': []}
@@ -140,7 +152,7 @@ class ThreatConnect(object):
             response.get('errors').append(self._response_attributes(ti_response, tc_entity))
             response.get('errors').append(self._response_tags(ti_response, tc_entity))
             response.get('errors').append(self._response_labels(ti_response, tc_entity))
-            response.get('errors').append(self._file(tc_entity))
+            response.get('errors').append(self._file(ti_entity, file))
 
             if ti_entity.type == 'Indicator':
                 provided_rating = tc_entity.get('rating', None)
@@ -166,7 +178,7 @@ class ThreatConnect(object):
                         'actual summary {}'.format(provided_summary, expected_summary)
                     )
             elif ti_entity.type == 'Group':
-                provided_summary = ti_entity.data.get('name', None)
+                provided_summary = tc_entity.get('summary', None)
                 expected_summary = ti_response_entity.get('value', None)
                 if not provided_summary == expected_summary:
                     response.get('errors').append(
@@ -255,7 +267,7 @@ class ThreatConnect(object):
             )
         elif tc_entity.get('type') in self.provider.tcex.group_types:
             ti_entity = self.provider.tcex.ti.group(
-                group_type=tc_entity.get('type'), owner=owner, unique_id=tc_entity.get('summary')
+                group_type=tc_entity.get('type'), owner=owner, unique_id=tc_entity.get('id')
             )
         elif tc_entity.get('type') == 'Victim':
             ti_entity = self.provider.tcex.ti.victim(
@@ -315,17 +327,26 @@ class ThreatConnect(object):
         return errors
 
     @staticmethod
-    def _file(ti_entity):
+    def _file(ti_entity, file):
         errors = []
-        if ti_entity.get('type') == 'Document' or ti_entity.get('type') == 'Report':
-            downloaded = ti_entity.download()
-            return hashlib.md5(open(downloaded, 'rb').read()).hexdigest()
-            # file_hash = hashlib.md5(open(file, 'rb').read()).hexdigest()
-            # if downloaded_hash != file_hash:
-            #     errors.append(
-            #         'Hash of saved file {} does not match provided '
-            #         'file hash {}'.format(downloaded_hash, file_hash)
-            #     )
+        if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
+            actual_hash = ti_entity.get_file_hash()
+            actual_hash = actual_hash.hexdigest()
+            provided_hash = hashlib.sha256()
+            with open(file, 'rb') as f:
+                for byte_block in iter(lambda: f.read(4096), b''):
+                    provided_hash.update(byte_block)
+            provided_hash = provided_hash.hexdigest()
+            if not provided_hash == actual_hash:
+                errors.append(
+                    'sha256 {} of provided file did not match sha256 of actual file {}'.format(
+                        provided_hash, actual_hash
+                    )
+                )
+        else:
+            errors.append(
+                'TypeError: {} entity type does not contain files.'.format(ti_entity.api_sub_type)
+            )
         return errors
 
     @staticmethod

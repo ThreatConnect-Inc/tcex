@@ -128,3 +128,31 @@ class Report(Group):
         self._data['publishDate'] = publish_date
         request = {'publishDate': publish_date}
         return self.tc_requests.update(self.api_type, self.api_branch, self.unique_id, request)
+
+    def download(self):
+        """
+        Downloads the documents context.
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.download(self.api_type, self.api_branch, self.unique_id)
+
+    def get_file_hash(self, hash_type='sha256'):
+        """
+        Getting the hash value of attached document
+        Args:
+            hash_type:
+
+        Returns:
+
+        """
+        if not self.can_update():
+            self._tcex.handle_error(910, [self.type])
+
+        return self.tc_requests.get_file_hash(
+            self.api_type, self.api_branch, self.unique_id, hash_type=hash_type
+        )
