@@ -132,51 +132,47 @@ class ThreatConnect(object):
                     tc_entity.get('summary')
                 )
             )
-            response['errors'].insert(
-                0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
-            )
-            response['valid'] = False
-            return response
-        ti_response_entity = None
-        ti_response = ti_response.json().get('data').get(ti_entity.api_entity)
-        for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type')):
-            ti_response_entity = entity
-        response.get('errors').append(self._response_attributes(ti_response, tc_entity))
-        response.get('errors').append(self._response_tags(ti_response, tc_entity))
-        response.get('errors').append(self._response_labels(ti_response, tc_entity))
-        response.get('errors').append(self._file(tc_entity))
+        else:
+            ti_response_entity = None
+            ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
+            for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
+                ti_response_entity = entity
+            response.get('errors').append(self._response_attributes(ti_response, tc_entity))
+            response.get('errors').append(self._response_tags(ti_response, tc_entity))
+            response.get('errors').append(self._response_labels(ti_response, tc_entity))
+            response.get('errors').append(self._file(tc_entity))
 
-        if ti_entity.type == 'Indicator':
-            provided_rating = tc_entity.get('rating', None)
-            expected_rating = ti_response.get('rating', None)
-            if not provided_rating == expected_rating:
-                response.get('errors').append(
-                    'RatingError: Provided rating {} does not match '
-                    'actual rating {}'.format(provided_rating, expected_rating)
-                )
+            if ti_entity.type == 'Indicator':
+                provided_rating = tc_entity.get('rating', None)
+                expected_rating = ti_response.get('rating', None)
+                if not provided_rating == expected_rating:
+                    response.get('errors').append(
+                        'RatingError: Provided rating {} does not match '
+                        'actual rating {}'.format(provided_rating, expected_rating)
+                    )
 
-            provided_confidence = tc_entity.get('confidence', None)
-            expected_confidence = ti_response.get('confidence', None)
-            if not provided_confidence == expected_confidence:
-                response.get('errors').append(
-                    'ConfidenceError: Provided confidence {} does not match '
-                    'actual confidence {}'.format(provided_rating, expected_rating)
-                )
-            provided_summary = ti_entity.unique_id
-            expected_summary = ti_response_entity.get('value', None)
-            if not provided_summary == expected_summary:
-                response.get('errors').append(
-                    'SummaryError: Provided summary {} does not match '
-                    'actual summary {}'.format(provided_summary, expected_summary)
-                )
-        elif ti_entity.type == 'Group':
-            provided_summary = ti_entity.data.get('name', None)
-            expected_summary = ti_response.get('summary', None)
-            if not provided_summary == expected_summary:
-                response.get('errors').append(
-                    'SummaryError: Provided summary {} does not match '
-                    'actual summary {}'.format(provided_summary, expected_summary)
-                )
+                provided_confidence = tc_entity.get('confidence', None)
+                expected_confidence = ti_response.get('confidence', None)
+                if not provided_confidence == expected_confidence:
+                    response.get('errors').append(
+                        'ConfidenceError: Provided confidence {} does not match '
+                        'actual confidence {}'.format(provided_confidence, expected_confidence)
+                    )
+                provided_summary = ti_entity.unique_id
+                expected_summary = ti_response_entity.get('value', None)
+                if not provided_summary == expected_summary:
+                    response.get('errors').append(
+                        'SummaryError: Provided summary {} does not match '
+                        'actual summary {}'.format(provided_summary, expected_summary)
+                    )
+            elif ti_entity.type == 'Group':
+                provided_summary = ti_entity.data.get('name', None)
+                expected_summary = ti_response_entity.get('value', None)
+                if not provided_summary == expected_summary:
+                    response.get('errors').append(
+                        'SummaryError: Provided summary {} does not match '
+                        'actual summary {}'.format(provided_summary, expected_summary)
+                    )
 
         response['errors'] = self.flatten(response['errors'])
         if response.get('errors'):
