@@ -5,6 +5,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import time
+import textwrap
 import uuid
 import sys
 from datetime import datetime
@@ -15,11 +16,11 @@ from stage_data import Stager
 from validate_data import Validator
 
 logger = logging.getLogger('TestCase')
-fh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10_485_760, mode='a')
-fh.setLevel(logging.DEBUG)
+rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10_485_760, mode='a')
+rfh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+rfh.setFormatter(formatter)
+logger.addHandler(rfh)
 logger.setLevel(logging.DEBUG)
 
 
@@ -33,10 +34,8 @@ class TestCase(object):
     _tcex = None
     _timer_class_start = None
     _timer_method_start = None
-    _previous_context = None
     context = None
     log = logger
-    redis_staging_data = []
 
     @staticmethod
     def _to_bool(value):
@@ -81,8 +80,8 @@ class TestCase(object):
         file_fqpn = os.path.join(self._app_path, 'install.json')
         if self._install_json is None:
             if os.path.isfile(file_fqpn):
-                with open(file_fqpn, 'r') as ij_fh:
-                    self._install_json = json.load(ij_fh)
+                with open(file_fqpn, 'r') as fh:
+                    self._install_json = json.load(fh)
             else:
                 print('File "{}" could not be found.'.format(file_fqpn))
         return self._install_json
@@ -98,7 +97,7 @@ class TestCase(object):
         """
         if self._input_params is None:
             self._input_params = {}
-            # TODO: support for projects with multiple install.json files is not supported
+            # Currently there is no support for projects with multiple install.json files.
             for p in self.install_json.get('params') or []:
                 self._input_params.setdefault(p.get('name'), p)
         return self._input_params
@@ -121,7 +120,6 @@ class TestCase(object):
         self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
         self.log.info('[setup method] Context: {}'.format(self.context))
-        self.stager.redis.from_dict(self.redis_staging_data)
 
     @property
     def stager(self):
@@ -139,8 +137,6 @@ class TestCase(object):
 
     def teardown_method(self):
         """Run after each test method runs."""
-        r = self.stager.redis.delete_context(self.context)
-        self.log.info('[teardown method] Delete Key Count: {}'.format(r))
         self.log.info(
             '[teardown method] Finished: {}, Elapsed: {}'.format(
                 datetime.now().isoformat(), time.time() - self._timer_method_start
@@ -152,11 +148,13 @@ class TestCase(object):
         args = args or {}
         app_args = self.default_args
         app_args.update(args)
-        if self.context == self._previous_context:
+        if (
+            self._tcex is not None
+            and self.context == self._tcex.default_args.tc_playbook_db_context
+        ):
             self._tcex.tcex_args.config(app_args)  # during run this is required
             return self._tcex
 
-        self._previous_context = self.context
         sys.argv = [
             sys.argv[0],
             '--tc_log_path',
@@ -179,6 +177,48 @@ class TestCasePlaybook(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
+    redis_staging_data = []
+
+    def _exit(self, code):
+        """Log and return exit code"""
+        self.tcex().log.info('Exit Code: {}'.format(code))
+        return code
+
+    @staticmethod
+    def _split_string(string, indent=12, max_len=84):
+        """Split a string that would exceed the 100 columns."""
+        split_string = ''
+        lines = textwrap.wrap(str(string), max_len, break_long_words=False)
+        lines = ['{}\'{}\',\n'.format(' ' * (indent + 4), l) for l in lines]
+        split_string += '(\n'
+        for l in lines:
+            split_string += '{}'.format(l)
+        split_string += '{})\n'.format(' ' * indent)
+        print('split string', split_string)
+        return split_string
+
+    def gen_validation_rules(self, max_len=84):
+        """Generate validation rules from App outputs."""
+        with open('validation_rules.txt', 'a') as fh:
+            # test_name = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
+            fh.write('{0} {1} {0}\n'.format('=' * 10, self._current_test))
+            for variable in self.output_variables:
+                variable_type = self.tcex().playbook.variable_type(variable)
+                data = self._tcex.playbook.read(variable)
+
+                # clean/format String data
+                if data is not None:
+                    if variable_type == 'String':
+                        # data = '\'{}\''.format(data.replace('\n', '\\n'))
+                        data = '{}'.format(data.replace('\n', '\\n'))
+                        if len(data) >= max_len:
+                            data = self._split_string(data)
+
+                # write output to file
+                fh.write('        assert self.validator.redis.eq(\n')
+                fh.write('            \'{}\',\n'.format(variable))
+                fh.write('            {}\n'.format(data))
+                fh.write('        )\n')
 
     @property
     def output_variables(self):
@@ -193,8 +233,17 @@ class TestCasePlaybook(TestCase):
                 )
         return self._output_variables
 
-    def run(self, args):  # pylint: disable=too-many-return-statements
-        """Run the Playbook App."""
+    def run(self, args, rules=False):  # pylint: disable=arguments-differ,too-many-return-statements
+        """Run the Playbook App.
+
+        Args:
+            args (dict): The App CLI args.
+            rules (bool, optional): If True validation rules will be generate if test is
+                successful. Defaults to False.
+
+        Returns:
+            [type]: [description]
+        """
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
         app = self.app(args)
 
@@ -203,10 +252,10 @@ class TestCasePlaybook(TestCase):
             app.start()
         except SystemExit as e:
             self.log.error('App failed in start() method ({}).'.format(e))
-            return self.exit(e)
+            return self._exit(e)
         except Exception as err:
             self.log.error('App encountered except in start() method ({}).'.format(err))
-            return self.exit(1)
+            return self._exit(1)
 
         # Run
         try:
@@ -224,34 +273,42 @@ class TestCasePlaybook(TestCase):
                 app.run()
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
-            return self.exit(e)
+            return self._exit(e)
         except Exception as err:
             self.log.error('App encountered except in run() method ({}).'.format(err))
-            return self.exit(1)
+            return self._exit(1)
 
         # Write Output
         try:
             app.write_output()
         except SystemExit as e:
             self.log.error('App failed in write_output() method ({}).'.format(e))
-            return self.exit(e)
+            return self._exit(e)
         except Exception as err:
             self.log.error('App encountered except in write_output() method ({}).'.format(err))
-            return self.exit(1)
+            return self._exit(1)
 
         # Done
         try:
             app.done()
         except SystemExit as e:
             self.log.error('App failed in done() method ({}).'.format(e))
-            return self.exit(e)
+            return self._exit(e)
         except Exception as err:
             self.log.error('App encountered except in done() method ({}).'.format(err))
-            return self.exit(1)
+            return self._exit(1)
 
-        return self.exit(app.tcex.exit_code)
+        if rules:
+            self.gen_validation_rules()
+        return self._exit(app.tcex.exit_code)
 
-    def exit(self, code):
-        """Log and return exit code"""
-        self.tcex().log.info('Exit Code: {}'.format(code))
-        return code
+    def setup_method(self):
+        """Run before each test method runs."""
+        super().setup_method()
+        self.stager.redis.from_dict(self.redis_staging_data)
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        r = self.stager.redis.delete_context(self.context)
+        self.log.info('[teardown method] Delete Key Count: {}'.format(r))
+        super().teardown_method()

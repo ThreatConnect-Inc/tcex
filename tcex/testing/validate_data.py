@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
-import operator
 import hashlib
-import os
 import json
+import operator
+import os
+import re
+from six import string_types
 
 
 class Validator(object):
@@ -18,24 +20,96 @@ class Validator(object):
         self._redis = None
         self._threatconnect = None
 
-    @staticmethod
-    def get_operator(op):
+    def get_operator(self, op):
         """gets the corresponding operator"""
         operators = {
-            'lt': operator.lt,
-            '<': operator.lt,
-            'le': operator.le,
-            '<=': operator.le,
+            'dd': self.operator_deep_diff,
             'eq': operator.eq,
             '=': operator.eq,
-            'ne': operator.ne,
-            '!=': operator.ne,
+            'le': operator.le,
+            '<=': operator.le,
+            'lt': operator.lt,
+            '<': operator.lt,
             'ge': operator.ge,
             '>=': operator.ge,
             'gt': operator.gt,
             '>': operator.gt,
+            'jeq': self.operator_json_eq,
+            'ne': operator.ne,
+            '!=': operator.ne,
+            'rex': self.operator_regex_match,
         }
         return operators.get(op, None)
+
+    def operator_deep_diff(self, app_data, test_data):
+        """Compare app data equals tests data.
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        # NOTE: tcex does include the deepdiff library as a dependencies since it is only
+        # required for local testing.
+        try:
+            from deepdiff import DeepDiff
+        except ImportError:
+            self.log.error('Could not import DeepDiff module (try "pip install deepdiff").')
+            return False
+
+        try:
+            ddiff = DeepDiff(app_data, test_data, ignore_order=True)
+        except KeyError:
+            return False
+        except NameError:
+            return False
+        if ddiff:
+            self.log.info('[validator] Diff: {}'.format(ddiff))
+            return False
+        return True
+
+    def operator_json_eq(self, app_data, test_data, **kwargs):
+        """Compare app data equals tests data.
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        if isinstance(app_data, (string_types)):
+            app_data = json.loads(app_data)
+        if isinstance(test_data, (string_types)):
+            test_data = json.loads(test_data)
+
+        # remove exclude field. usually dynamic data like date fields.
+        for e in kwargs.get('exclude', []):
+            try:
+                del app_data[e]
+            except KeyError:
+                pass
+
+            try:
+                del test_data[e]
+            except KeyError:
+                pass
+        return self.operator_deep_diff(app_data, test_data)
+
+    @staticmethod
+    def operator_regex_match(app_data, test_data):
+        """Compare app data equals tests data.
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        return re.match(test_data, app_data)
 
     @property
     def redis(self):
@@ -109,8 +183,8 @@ class Redis(object):
 
         return response
 
-    def data(self, variable, data, op=None):
-        """Validate Redis data <operator> variable_data.
+    def data(self, variable, test_data, op=None, **kwargs):
+        """Validate Redis data <operator> test_data.
 
         Args:
             variable (str): The variable to read from REDIS.
@@ -129,26 +203,34 @@ class Redis(object):
             self.provider.log.error('Invalid operator provided ({})'.format(op))
             return False
 
-        variable_data = self.provider.tcex.playbook.read(variable)
+        app_data = self.provider.tcex.playbook.read(variable)
 
         # Logging
-        self.provider.log.info('[validator] Variable: {}'.format(variable))
-        self.provider.log.info('[validator] DB Data: {}'.format(variable_data))
-        self.provider.log.info('[validator] User Data: {}'.format(data))
+        self.provider.log.info('[validator] Variable:  {}'.format(variable))
+        self.provider.log.info('[validator] App Data:  {}'.format(app_data))
+        self.provider.log.info('[validator] Test Data: {}'.format(test_data))
         self.provider.log.debug(
             'redis-cli hget {} \'{}\''.format(
                 self.provider.tcex.args.tc_playbook_db_context, variable
             )
         )
-        return self.provider.get_operator(op)(variable_data, data)
+        return self.provider.get_operator(op)(app_data, test_data, **kwargs)
 
     def eq(self, variable, data):
         """tests equation of redis var"""
         return self.data(variable, data)
 
+    def ge(self, variable, data):
+        """tests ge of redis var"""
+        return self.data(variable, data, op='ge')
+
     def gt(self, variable, data):
         """tests gt of redis var"""
         return self.data(variable, data, op='gt')
+
+    def jeq(self, variable, data, **kwargs):
+        """Test JSON data equality"""
+        return self.data(variable, data, op='jeq', **kwargs)
 
     def lt(self, variable, data):
         """tests lt of redis var"""
@@ -162,9 +244,9 @@ class Redis(object):
         """tests ne of redis var"""
         return self.data(variable, data, op='ne')
 
-    def ge(self, variable, data):
-        """tests ge of redis var"""
-        return self.data(variable, data, op='ge')
+    def rex(self, variable, data):
+        """Test App data with regex"""
+        return self.data(variable, data, op='rex')
 
 
 class ThreatConnect(object):
