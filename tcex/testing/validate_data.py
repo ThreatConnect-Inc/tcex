@@ -164,6 +164,8 @@ class Redis(object):
             redis_type = str
         elif redis_type.startswith('KeyValuePair'):
             redis_type = dict
+        else:
+            redis_type = str
 
         if not variable_data:
             self.provider.log.error(
@@ -199,7 +201,12 @@ class Redis(object):
             self.provider.log.error('Invalid operator provided ({})'.format(op))
             return False
 
-        app_data = self.provider.tcex.playbook.read(variable)
+        if variable.endswith('Binary'):
+            app_data = self.provider.tcex.playbook.read_binary(variable, False, False)
+        elif variable.endswith('BinaryArray'):
+            app_data = self.provider.tcex.playbook.read_binary_array(variable, False, False)
+        else:
+            app_data = self.provider.tcex.playbook.read(variable)
 
         # Logging
         self.provider.log.info('[validator] Variable:  {}'.format(variable))
