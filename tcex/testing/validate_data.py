@@ -137,51 +137,47 @@ class Redis(object):
         """validates that a variable is not empty/null"""
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
-        response = {'valid': True, 'errors': []}
+        variable_data = self.provider.tcex.playbook.read(variable)
+        self.provider.log.info('[validator] Variable: {}'.format(variable))
+        self.provider.log.info('[validator] DB Data: {}'.format(variable_data))
         if not variable:
-            response.get('errors').append('NoneError: Redis Variable not provided')
-        else:
-            variable_data = self.provider.tcex.playbook.read(variable)
-            if not variable_data:
-                response.get('errors').append(
-                    'NullError: Variable {} not found or empty'.format(variable)
-                )
-        if response.get('errors'):
-            response['valid'] = False
+            self.provider.log.error('NoneError: Redis Variable not provided')
+            return False
 
-        return response
-
-    def type(self, variable, redis_type):
-        """validates the type of a redis variable"""
-        response = {'valid': True, 'errors': []}
-        if not variable:
-            response.get('errors').append('NoneError: Redis Variable not provided')
-        elif not redis_type:
-            response.get('errors').append('NoneError: Redis Type not provided')
-        elif redis_type not in self.provider.tcex.playbook.read_data_types():
-            response.get('errors').append('InvalidTypeError: Redis Type not supported')
-        elif redis_type != self.provider.tcex.playbook.variable_type(variable):
-            response.get('errors').append(
-                'TypeMismatchError: Redis Type: {} and Variable Type: {} do not match'.format(
-                    redis_type, self.provider.tcex.playbook.variable_type(variable)
-                )
+        if not variable_data:
+            self.provider.log.error(
+                'NotFoundError: Redis Variable {} was not found.'.format(variable)
             )
-        else:
-            variable_data = self.provider.tcex.playbook.read(variable)
-            if not variable_data:
-                response.get('errors').append(
-                    'NotFoundError: Variable {} not found'.format(variable)
-                )
-            if variable_data.get('type', None) != redis_type:
-                response.get('errors').append(
-                    'TypeMismatchError: Redis Type: {} and Variable Type: {} do not match'.format(
-                        redis_type, self.provider.tcex.playbook.variable_type(variable)
-                    )
-                )
-        if response.get('errors'):
-            response['valid'] = False
+            return False
 
-        return response
+        return True
+
+    def type(self, variable):
+        """validates the type of a redis variable"""
+        variable_data = self.provider.tcex.playbook.read(variable)
+        self.provider.log.info('[validator] Variable: {}'.format(variable))
+        self.provider.log.info('[validator] App Data:  {}'.format(variable_data))
+        redis_type = self.provider.tcex.playbook.variable_type(variable)
+        if redis_type.endswith('Array'):
+            redis_type = list
+        elif redis_type.startswith('String'):
+            redis_type = str
+        elif redis_type.startswith('KeyValuePair'):
+            redis_type = dict
+
+        if not variable_data:
+            self.provider.log.error(
+                'NotFoundError: Redis Variable {} was not found.'.format(variable)
+            )
+            return False
+        if not isinstance(variable_data, redis_type):
+            self.provider.log.error(
+                'TypeMismatchError: Redis Type: {} and Variable: {} '
+                'do not match'.format(redis_type, variable)
+            )
+            return False
+
+        return True
 
     def data(self, variable, test_data, op=None, **kwargs):
         """Validate Redis data <operator> test_data.
@@ -291,65 +287,64 @@ class ThreatConnect(object):
     def tc_entity(self, tc_entity, owner, file=None):
         """validates the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        response = {'valid': True, 'errors': []}
+        valid = True
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
         ti_response = ti_entity.single(params=parameters)
         if not self.success(ti_response):
-            response.get('errors').append(
+            self.provider.log.error(
                 'NotFoundError: Provided entity {} could not be fetched from ThreatConnect'.format(
                     tc_entity.get('summary')
                 )
             )
-        else:
-            ti_response_entity = None
-            ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
-            for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
-                ti_response_entity = entity
-            response.get('errors').append(self._response_attributes(ti_response, tc_entity))
-            response.get('errors').append(self._response_tags(ti_response, tc_entity))
-            response.get('errors').append(self._response_labels(ti_response, tc_entity))
-            response.get('errors').append(self._file(ti_entity, file))
+            return False
 
-            if ti_entity.type == 'Indicator':
-                provided_rating = tc_entity.get('rating', None)
-                expected_rating = ti_response.get('rating', None)
-                if not provided_rating == expected_rating:
-                    response.get('errors').append(
-                        'RatingError: Provided rating {} does not match '
-                        'actual rating {}'.format(provided_rating, expected_rating)
-                    )
+        ti_response_entity = None
+        ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
+        for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
+            ti_response_entity = entity
+            valid_attributes = self._response_attributes(ti_response, tc_entity)
+            valid_tags = self._response_tags(ti_response, tc_entity)
+            valid_labels = self._response_labels(ti_response, tc_entity)
+            valid_file = self._file(ti_entity, file)
+            if not valid_attributes or not valid_tags or not valid_labels or not valid_file:
+                valid = False
 
-                provided_confidence = tc_entity.get('confidence', None)
-                expected_confidence = ti_response.get('confidence', None)
-                if not provided_confidence == expected_confidence:
-                    response.get('errors').append(
-                        'ConfidenceError: Provided confidence {} does not match '
-                        'actual confidence {}'.format(provided_confidence, expected_confidence)
-                    )
-                provided_summary = ti_entity.unique_id
-                expected_summary = ti_response_entity.get('value', None)
-                if not provided_summary == expected_summary:
-                    response.get('errors').append(
-                        'SummaryError: Provided summary {} does not match '
-                        'actual summary {}'.format(provided_summary, expected_summary)
-                    )
-            elif ti_entity.type == 'Group':
-                provided_summary = tc_entity.get('summary', None)
-                expected_summary = ti_response_entity.get('value', None)
-                if not provided_summary == expected_summary:
-                    response.get('errors').append(
-                        'SummaryError: Provided summary {} does not match '
-                        'actual summary {}'.format(provided_summary, expected_summary)
-                    )
+        if ti_entity.type == 'Indicator':
+            provided_rating = tc_entity.get('rating', None)
+            expected_rating = ti_response.get('rating', None)
+            if not provided_rating == expected_rating:
+                self.provider.log.error(
+                    'RatingError: Provided rating {} does not match '
+                    'actual rating {}'.format(provided_rating, expected_rating)
+                )
+                valid = False
 
-        response['errors'] = self.flatten(response['errors'])
-        if response.get('errors'):
-            response['errors'].insert(
-                0, 'Errors for Provided Entity: {}'.format(tc_entity.get('summary'))
-            )
-            response['valid'] = False
-
-        return response
+            provided_confidence = tc_entity.get('confidence', None)
+            expected_confidence = ti_response.get('confidence', None)
+            if not provided_confidence == expected_confidence:
+                self.provider.log.error(
+                    'ConfidenceError: Provided confidence {} does not match '
+                    'actual confidence {}'.format(provided_confidence, expected_confidence)
+                )
+                valid = False
+            provided_summary = ti_entity.unique_id
+            expected_summary = ti_response_entity.get('value', None)
+            if not provided_summary == expected_summary:
+                self.provider.log.error(
+                    'SummaryError: Provided summary {} does not match '
+                    'actual summary {}'.format(provided_summary, expected_summary)
+                )
+                valid = False
+        elif ti_entity.type == 'Group':
+            provided_summary = tc_entity.get('summary', None)
+            expected_summary = ti_response_entity.get('value', None)
+            if not provided_summary == expected_summary:
+                self.provider.log.error(
+                    'SummaryError: Provided summary {} does not match '
+                    'actual summary {}'.format(provided_summary, expected_summary)
+                )
+                valid = False
+        return valid
 
     def flatten(self, lis):
         """Idk why python doesnt have this built in but helper function to flatten a list"""
@@ -361,49 +356,58 @@ class ThreatConnect(object):
                 new_lis.append(item)
         return new_lis
 
-    @staticmethod
-    def compare_dicts(expected, actual):
+    def compare_dicts(self, expected, actual, error_type=''):
         """Compares two dicts and returns a list of errors if they don't match"""
-        errors = []
+        valid = True
         for item in expected:
             if item in actual:
                 if expected.get(item) == actual.get(item):
                     actual.pop(item)
                     continue
-                errors.append(
-                    '{0} : {1} did not match {0} : {2}'.format(
-                        item, expected.get('item'), actual.get(item)
+                self.provider.log.error(
+                    '{0}{1} : {2} did not match {1} : {3}'.format(
+                        error_type, item, expected.get('item'), actual.get(item)
                     )
                 )
+                valid = False
                 actual.pop(item)
             else:
-                errors.append(
-                    '{} : {} was in expected results but not in actual results.'.format(
-                        item, expected.get(item)
+                self.provider.log.error(
+                    '{}{} : {} was in expected results but not in actual results.'.format(
+                        error_type, item, expected.get(item)
                     )
                 )
+                valid = False
         for item in actual.items():
-            errors.append(
-                '{} : {} was in actual results but not in expected results.'.format(
-                    item, actual.get(item)
+            self.provider.log.error(
+                '{}{} : {} was in actual results but not in expected results.'.format(
+                    error_type, item, actual.get(item)
                 )
             )
+            valid = False
 
-        return errors
+        return valid
 
-    @staticmethod
-    def compare_lists(expected, actual):
+    def compare_lists(self, expected, actual, error_type=''):
         """Compares two lists and returns a list of errors if they don't match"""
-        errors = []
+        valid = True
         for item in expected:
             if item in actual:
                 actual.remove(item)
             else:
-                errors.append('{} was in expected results but not in actual results.'.format(item))
+                self.provider.log.error(
+                    '{}{} was in expected results but not in actual results.'.format(
+                        error_type, item
+                    )
+                )
+                valid = False
         for item in actual:
-            errors.append('{} was in actual results but not in expected results.'.format(item))
+            self.provider.log.error(
+                '{}{} was in actual results but not in expected results.'.format(error_type, item)
+            )
+            valid = False
 
-        return errors
+        return valid
 
     @staticmethod
     def _convert_to_entities(file):
@@ -435,7 +439,7 @@ class ThreatConnect(object):
     def _response_attributes(self, ti_response, tc_entity):
         """validates the ti_response attributes"""
         if not ti_response or not tc_entity:
-            return []
+            return True
 
         expected = {}
         actual = {}
@@ -443,16 +447,14 @@ class ThreatConnect(object):
             expected[attribute.get('type')] = attribute.get('value')
         for attribute in ti_response.get('attribute', []):
             actual[attribute.get('type')] = attribute.get('value')
-        errors = self.compare_dicts(expected, actual)
-        errors = ['AttributeError: ' + error for error in errors]
+        valid = self.compare_dicts(expected, actual, error_type='AttributeError: ')
 
-        return errors
+        return valid
 
     def _response_tags(self, ti_response, tc_entity):
         """validates the ti_response tags"""
-        errors = []
         if not ti_response or not tc_entity:
-            return errors
+            return True
 
         expected = []
         actual = []
@@ -460,16 +462,14 @@ class ThreatConnect(object):
             expected.append(tag)
         for tag in ti_response.get('tag', []):
             actual.append(tag.get('name'))
-        errors = self.compare_lists(expected, actual)
-        errors = ['TagError: ' + error for error in errors]
+        valid = self.compare_lists(expected, actual, error_type='TagError: ')
 
-        return errors
+        return valid
 
     def _response_labels(self, ti_response, tc_entity):
         """validates the ti_response labels"""
-        errors = []
         if not ti_response or not tc_entity:
-            return errors
+            return True
 
         expected = []
         actual = []
@@ -477,14 +477,12 @@ class ThreatConnect(object):
             expected.append(tag)
         for tag in ti_response.get('securityLabel', []):
             actual.append(tag.get('name'))
-        errors = self.compare_lists(expected, actual)
-        errors = ['SecurityLabelError: ' + error for error in errors]
+        valid = self.compare_lists(expected, actual, error_type='SecurityLabelError: ')
 
-        return errors
+        return valid
 
-    @staticmethod
-    def _file(ti_entity, file):
-        errors = []
+    def _file(self, ti_entity, file):
+        valid = True
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
@@ -494,16 +492,18 @@ class ThreatConnect(object):
                     provided_hash.update(byte_block)
             provided_hash = provided_hash.hexdigest()
             if not provided_hash == actual_hash:
-                errors.append(
+                self.provider.log.error(
                     'sha256 {} of provided file did not match sha256 of actual file {}'.format(
                         provided_hash, actual_hash
                     )
                 )
+                valid = False
         else:
-            errors.append(
+            self.provider.log.error(
                 'TypeError: {} entity type does not contain files.'.format(ti_entity.api_sub_type)
             )
-        return errors
+            valid = False
+        return valid
 
     @staticmethod
     def success(r):
