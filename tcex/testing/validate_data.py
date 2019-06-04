@@ -35,6 +35,9 @@ class Validator(object):
             'gt': operator.gt,
             '>': operator.gt,
             'jeq': self.operator_json_eq,
+            'json_eq': self.operator_json_eq,
+            'kveq': self.operator_keyvalue_eq,
+            'keyvalue_eq': self.operator_keyvalue_eq,
             'ne': operator.ne,
             '!=': operator.ne,
             'rex': self.operator_regex_match,
@@ -47,18 +50,18 @@ class Validator(object):
         Args:
             app_data (dict|str|list): The data created by the App.
             test_data (dict|str|list): The data provided in the test case.
+            exclude_keys (list, kwargs): A list of key for a KeyValueArray to be removed.
 
         Returns:
             bool: The results of the operator.
         """
-        # NOTE: tcex does include the deepdiff library as a dependencies since it is only
-        # required for local testing.
         try:
             from deepdiff import DeepDiff
         except ImportError:
             self.log.error('Could not import DeepDiff module (try "pip install deepdiff").')
             return False
 
+        # run operator
         try:
             ddiff = DeepDiff(app_data, test_data, ignore_order=True)
         except KeyError:
@@ -97,6 +100,26 @@ class Validator(object):
             except KeyError:
                 pass
         return self.operator_deep_diff(app_data, test_data)
+
+    def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
+        """Compare app data equals tests data.
+
+        Args:
+            app_data (dict|str|list): The data created by the App.
+            test_data (dict|str|list): The data provided in the test case.
+
+        Returns:
+            bool: The results of the operator.
+        """
+        # remove exclude_key field. usually dynamic data like date fields.
+        if kwargs.get('exclude_keys') is not None:
+            app_data = [
+                kv for kv in app_data if kv.get('key') not in kwargs.get('exclude_keys', [])
+            ]
+            test_data = [
+                kv for kv in test_data if kv.get('key') not in kwargs.get('exclude_keys', [])
+            ]
+        return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     @staticmethod
     def operator_regex_match(app_data, test_data):
@@ -217,8 +240,12 @@ class Redis(object):
         return self.provider.get_operator(op)(app_data, test_data, **kwargs)
 
     def eq(self, variable, data):
-        """tests equation of redis var"""
+        """Validate test data equality"""
         return self.data(variable, data)
+
+    def dd(self, variable, data, **kwargs):
+        """tests equation of redis var"""
+        return self.data(variable, data, op='dd', **kwargs)
 
     def ge(self, variable, data):
         """tests ge of redis var"""
@@ -229,8 +256,20 @@ class Redis(object):
         return self.data(variable, data, op='gt')
 
     def jeq(self, variable, data, **kwargs):
-        """Test JSON data equality"""
+        """Validate JSON data equality"""
         return self.data(variable, data, op='jeq', **kwargs)
+
+    def json_eq(self, variable, data, **kwargs):
+        """Validate JSON data equality"""
+        return self.data(variable, data, op='jeq', **kwargs)
+
+    def kveq(self, variable, data, **kwargs):
+        """Validate JSON data equality"""
+        return self.data(variable, data, op='kveq', **kwargs)
+
+    def keyvalue_eq(self, variable, data, **kwargs):
+        """Validate JSON data equality"""
+        return self.data(variable, data, op='kveq', **kwargs)
 
     def lt(self, variable, data):
         """tests lt of redis var"""

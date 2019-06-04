@@ -178,9 +178,11 @@ class TestCasePlaybook(TestCase):
 
     _output_variables = None
     redis_staging_data = []
+    redis_client = None
 
     def _exit(self, code):
         """Log and return exit code"""
+        self.log.info('[runner] Exit Code: {}'.format(code))
         self.tcex().log.info('Exit Code: {}'.format(code))
         return code
 
@@ -194,7 +196,6 @@ class TestCasePlaybook(TestCase):
         for l in lines:
             split_string += '{}'.format(l)
         split_string += '{})\n'.format(' ' * indent)
-        print('split string', split_string)
         return split_string
 
     def gen_validation_rules(self, max_len=84):
@@ -205,6 +206,10 @@ class TestCasePlaybook(TestCase):
             for variable in self.output_variables:
                 variable_type = self.tcex().playbook.variable_type(variable)
                 data = self._tcex.playbook.read(variable)
+                operator = 'eq'
+                if variable_type == 'KeyValueArray':
+                    operator = 'kveq'
+                    data = [dict(d) for d in data]
 
                 # clean/format String data
                 if data is not None:
@@ -213,9 +218,11 @@ class TestCasePlaybook(TestCase):
                         data = '{}'.format(data.replace('\n', '\\n'))
                         if len(data) >= max_len:
                             data = self._split_string(data)
+                        else:
+                            data = '\'{}\''.format(data)
 
                 # write output to file
-                fh.write('        assert self.validator.redis.eq(\n')
+                fh.write('        assert self.validator.redis.{}(\n'.format(operator))
                 fh.write('            \'{}\',\n'.format(variable))
                 fh.write('            {}\n'.format(data))
                 fh.write('        )\n')
@@ -306,6 +313,7 @@ class TestCasePlaybook(TestCase):
         """Run before each test method runs."""
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
+        self.redis_client = self.tcex().playbook.db.r
 
     def teardown_method(self):
         """Run after each test method runs."""
