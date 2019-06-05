@@ -43,6 +43,8 @@ scripts = [
     'bin/tcprofile.cmd',
     'bin/tcrun',
     'bin/tcrun.cmd',
+    'bin/tctest',
+    'bin/tctest.cmd',
     'bin/tcvalidate',
     'bin/tcvalidate.cmd',
 ]
