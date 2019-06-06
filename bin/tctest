@@ -61,6 +61,7 @@ parser.add_argument(
     dest='profile_name',
     help='The profile name to create, delete, update.',
 )
+parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument('--redis_host', default='localhost', help='(Advanced) The redis host.')
 parser.add_argument('--redis_port', default='6379', help='(Advanced) The redis port.')
 parser.add_argument('--verbose', action='store_true', help='Show verbose output.')
@@ -80,6 +81,7 @@ if __name__ == '__main__':
         # adds the profile to the json
         tc_test.add_profile()
 
+        tc_test.download_file('test_template.py')
         # exit
         sys.exit()
     except Exception:
