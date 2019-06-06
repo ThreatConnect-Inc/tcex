@@ -3,10 +3,17 @@
 """TcEx Framework Profile Generation Module."""
 import json
 import os
+import sys
 import requests
 import colorama as c
 
 from .tcex_bin import TcExBin
+
+try:
+    import sqlite3
+except ModuleNotFoundError:
+    # this module is only required for certain CLI commands
+    pass
 
 
 class TcExTest(TcExBin):
@@ -29,11 +36,11 @@ class TcExTest(TcExBin):
         self._input_permutations = []
         self._output_permutations = []
         self._app_path = os.getcwd()
-        self.base_dir = 'tests'
+        self.base_dir = os.path.join(self._app_path, 'tests')
         self.feature_dir = os.path.join(self.base_dir, self.args.feature)
         self.profile_file = os.path.join(self.base_dir, self.args.feature, 'profiles.json')
         self.validation_file = os.path.join(self.base_dir, self.args.feature, 'validation.py')
-        self.permutation_file = os.path.join(self._app_path, 'permutations.json')
+        self.permutation_file = os.path.join(self.base_dir, 'permutations.json')
         self.profiles = {}
         self._current_test = None
         self._output_variables = None
@@ -99,8 +106,8 @@ class TcExTest(TcExBin):
         permutation = self.get_permutation_by_id()
         inputs = {}
 
-        for arg in permutation.get('args', []):
-            inputs[arg.get('name')] = arg.get('value', None)
+        for key, value in permutation.items():
+            inputs[key] = value
 
         profile_data = self.profile_data
         profile = {'inputs': inputs, 'outputs': None, 'stage': {'redis': {}, 'threatconnect': {}}}
@@ -115,18 +122,45 @@ class TcExTest(TcExBin):
         raise NotImplementedError('Not implemented at this moment, might be a nice to have')
 
     def get_permutation_by_id(self):
-        """Gets the permutation dict based on id"""
-        if not self.permutation_file_exists():
-            return None
+        """Return args based on layout.json and conditional rendering.
 
-        permutation_data = None
-        with open(self.permutation_file, 'r+') as permutation_file:
-            data = json.load(permutation_file)
-            for permutation in data:
-                if permutation.get('index', None) == self.args.permutation_id:
-                    permutation_data = permutation
+                Args:
+                    required (bool): If True only required args will be returned.
 
-        return permutation_data
+                Returns:
+                    dict: Dictionary of required or optional App args.
+                """
+
+        profile_args = {}
+        self.db_create_table(self.input_table, self.install_json_params().keys())
+        self.db_insert_record(self.input_table, self.install_json_params().keys())
+        self.gen_permutations()
+        try:
+            for pn in self._input_permutations[self.args.permutation_id]:
+                p = self.install_json_params().get(pn.get('name'))
+                if p.get('type').lower() == 'boolean':
+                    # use the value generated in the permutation
+                    profile_args[p.get('name')] = pn.get('value')
+                elif p.get('type').lower() == 'choice':
+                    # use the value generated in the permutation
+                    profile_args[p.get('name')] = pn.get('value')
+                elif p.get('name') in ['api_access_id', 'api_secret_key']:
+                    # leave these parameters set to the value defined in defaults
+                    pass
+                else:
+                    # add type stub for values
+                    types = '|'.join(p.get('playbookDataType', []))
+                    if types:
+                        profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
+                    else:
+                        profile_args[p.get('name')] = p.get('default', '')
+                if p.get('required', False):
+                    profile_args[p.get('name')] = '{} - Required'.format(
+                        profile_args[p.get('name')]
+                    )
+        except IndexError:
+            self.handle_error('Invalid permutation index provided.')
+        return profile_args
 
     def validation_file_exists(self):
         """Checks if the validation file exists"""
@@ -172,6 +206,11 @@ class TcExTest(TcExBin):
         """
         status = 'Failed'
         local_filename = self.test_file
+        if os.path.isfile(local_filename):
+            self.handle_error(
+                'Error downloading file: {}. File already exists'.format(local_filename), False
+            )
+            return
         url = '{}{}'.format(self.base_url, remote_filename)
         r = requests.get(url, allow_redirects=True)
         if r.ok:
@@ -199,15 +238,17 @@ class TcExTest(TcExBin):
         elif status == 'Skipped':
             status_color = c.Fore.YELLOW
         print(
-            '{}{!s:<13}{}{!s:<35}{}{!s:<8}{}{}'.format(
-                c.Fore.CYAN,
-                'Downloading:',
-                file_color,
-                file,
-                c.Fore.CYAN,
-                'Status:',
-                status_color,
-                status,
+            (
+                '{}{!s:<13}{}{!s:<35}{}{!s:<8}{}{}'.format(
+                    c.Fore.CYAN,
+                    'Downloading:',
+                    file_color,
+                    file,
+                    c.Fore.CYAN,
+                    'Status:',
+                    status_color,
+                    status,
+                )
             )
         )
 
@@ -229,12 +270,23 @@ class TcExTest(TcExBin):
             c.Fore.MAGENTA, filename
         )
         # 2to3 fixes this for py3
-        response = raw_input(message)  # noqa: F821, pylint: disable=E0602
+        response = input(message)  # noqa: F821, pylint: disable=E0602
         response = response.lower()
 
         if response in ['y', 'yes']:
             return True
         return False
+
+    def permutations(self):
+        """Process layout.json names/display to get all permutations of args."""
+        if 'sqlite3' not in sys.modules:
+            print('The sqlite3 module needs to be build-in to Python for this feature.')
+            sys.exit(1)
+
+        self.db_create_table(self.input_table, self.install_json_params().keys())
+        self.db_insert_record(self.input_table, self.install_json_params().keys())
+        self.gen_permutations()
+        self.print_permutations()
 
     def gen_permutations(self, index=0, args=None):
         """Iterate recursively over layout.json parameter names.
@@ -247,24 +299,30 @@ class TcExTest(TcExBin):
             args = []
         try:
             name = self.layout_json_names[index]
+            display = self.layout_json_params.get(name, {}).get('display')
             input_type = self.install_json_params().get(name, {}).get('type')
-            if input_type.lower() == 'boolean':
-                for val in [True, False]:
-                    args.append({'name': name, 'value': val})
+            if self.validate_layout_display(self.input_table, display):
+                if input_type.lower() == 'boolean':
+                    for val in [True, False]:
+                        args.append({'name': name, 'value': val})
+                        self.db_update_record(self.input_table, name, val)
+                        self.gen_permutations(index + 1, list(args))
+                        # remove the previous arg before next iteration
+                        args.pop()
+                elif input_type.lower() == 'choice':
+                    valid_values = self.expand_valid_values(
+                        self.install_json_params().get(name, {}).get('validValues', [])
+                    )
+                    for val in valid_values:
+                        args.append({'name': name, 'value': val})
+                        self.db_update_record(self.input_table, name, val)
+                        self.gen_permutations(index + 1, list(args))
+                        # remove the previous arg before next iteration
+                        args.pop()
+                else:
+                    args.append({'name': name, 'value': None})
                     self.gen_permutations(index + 1, list(args))
-                    # remove the previous arg before next iteration
-                    args.pop()
-            elif input_type.lower() == 'choice':
-                valid_values = self.expand_valid_values(
-                    self.install_json_params().get(name, {}).get('validValues', [])
-                )
-                for val in valid_values:
-                    args.append({'name': name, 'value': val})
-                    self.gen_permutations(index + 1, list(args))
-                    # remove the previous arg before next iteration
-                    args.pop()
             else:
-                args.append({'name': name, 'value': None})
                 self.gen_permutations(index + 1, list(args))
 
         except IndexError:
@@ -273,9 +331,40 @@ class TcExTest(TcExBin):
             outputs = []
 
             for o_name in self.install_json_output_variables():
+                if self.layout_json_outputs.get(o_name) is not None:
+                    display = self.layout_json_outputs.get(o_name, {}).get('display')
+                    valid = self.validate_layout_display(self.input_table, display)
+                    if display is None or not valid:
+                        continue
                 for ov in self.install_json_output_variables().get(o_name):
                     outputs.append(ov)
             self._output_permutations.append(outputs)
+
+    def validate_layout_display(self, table, display_condition):
+        """Check to see if the display condition passes.
+
+        Args:
+            table (str): The name of the DB table which hold the App data.
+            display_condition (str): The "where" clause of the DB SQL statement.
+
+        Returns:
+            bool: True if the row count is greater than 0.
+        """
+        display = False
+        if display_condition is None:
+            display = True
+        else:
+            display_query = 'select count(*) from {} where {}'.format(table, display_condition)
+            try:
+                cur = self.db_conn.cursor()
+                cur.execute(display_query.replace('"', ''))
+                rows = cur.fetchall()
+                if rows[0][0] > 0:
+                    display = True
+            except sqlite3.Error as e:
+                print('"{}" query returned an error: ({}).'.format(display_query, e))
+                sys.exit(1)
+        return display
 
     @staticmethod
     def expand_valid_values(valid_values):

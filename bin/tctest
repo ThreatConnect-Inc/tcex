@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Users/bpurdy-ad/.pyenv/versions/3.6.5/bin/python
 # -*- coding: utf-8 -*-
 """ TcEx Framework Profile Generation Module """
 import argparse
@@ -51,6 +51,9 @@ parser.add_argument(
 parser.add_argument(
     '--feature', default='', help='The sub directory under tests for this test logic'
 )
+parser.add_argument(
+    '--permutations', default=False, help='Generate the permutations.json file or not'
+)
 parser.add_argument('--file', help='The test file to generate')
 parser.add_argument(
     '--permutation_id',
@@ -74,6 +77,9 @@ if __name__ == '__main__':
     try:
         tc_test = TcExTest(args)
 
+        # creates the permutation.json file if requested
+        if args.permutations:
+            tc_test.print_permutations()
         # generates the tests and feature dir
         tc_test._create_dirs()
         # generates the validation file if it doesnt exist
@@ -82,8 +88,9 @@ if __name__ == '__main__':
         tc_test.generate_profile()
         # adds the profile to the json
         tc_test.add_profile()
-
+        # downlaods the test template file if not already exists
         tc_test.download_file('test_template.py')
+
         # exit
         sys.exit()
     except Exception:
