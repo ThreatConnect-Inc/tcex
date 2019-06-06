@@ -90,6 +90,9 @@ class TcExTest(TcExBin):
 
     def add_profile(self):
         """Adds the desired profile"""
+        if not self.args.permutation_id:
+            return
+
         if self.profile_exists():
             return
 
@@ -168,10 +171,7 @@ class TcExTest(TcExBin):
                 be written to local filesystem.
         """
         status = 'Failed'
-        local_filename = self.args.file
-        if not local_filename.startswith('test_'):
-            local_filename = 'test_' + local_filename
-
+        local_filename = self.test_file
         url = '{}{}'.format(self.base_url, remote_filename)
         r = requests.get(url, allow_redirects=True)
         if r.ok:
@@ -235,6 +235,93 @@ class TcExTest(TcExBin):
         if response in ['y', 'yes']:
             return True
         return False
+
+    def gen_permutations(self, index=0, args=None):
+        """Iterate recursively over layout.json parameter names.
+
+        Args:
+            index (int, optional): The current index position in the layout names list.
+            args (list, optional): Defaults to None. The current list of args.
+        """
+        if args is None:
+            args = []
+        try:
+            name = self.layout_json_names[index]
+            input_type = self.install_json_params().get(name, {}).get('type')
+            if input_type.lower() == 'boolean':
+                for val in [True, False]:
+                    args.append({'name': name, 'value': val})
+                    self.gen_permutations(index + 1, list(args))
+                    # remove the previous arg before next iteration
+                    args.pop()
+            elif input_type.lower() == 'choice':
+                valid_values = self.expand_valid_values(
+                    self.install_json_params().get(name, {}).get('validValues', [])
+                )
+                for val in valid_values:
+                    args.append({'name': name, 'value': val})
+                    self.gen_permutations(index + 1, list(args))
+                    # remove the previous arg before next iteration
+                    args.pop()
+            else:
+                args.append({'name': name, 'value': None})
+                self.gen_permutations(index + 1, list(args))
+
+        except IndexError:
+            # when IndexError is reached all data has been processed.
+            self._input_permutations.append(args)
+            outputs = []
+
+            for o_name in self.install_json_output_variables():
+                for ov in self.install_json_output_variables().get(o_name):
+                    outputs.append(ov)
+            self._output_permutations.append(outputs)
+
+    @staticmethod
+    def expand_valid_values(valid_values):
+        """Expand supported playbook variables to their full list.
+
+        Args:
+            valid_values (list): The list of valid values for Choice or MultiChoice inputs.
+
+        Returns:
+            List: An expanded list of valid values for Choice or MultiChoice inputs.
+        """
+
+        if '${GROUP_TYPES}' in valid_values:
+            valid_values.remove('${GROUP_TYPES}')
+            valid_values.extend(
+                [
+                    'Adversary',
+                    'Campaign',
+                    'Document',
+                    'Email',
+                    'Event',
+                    'Incident',
+                    'Intrusion Set',
+                    'Signature',
+                    'Task',
+                    'Threat',
+                ]
+            )
+        elif '${OWNERS}' in valid_values:
+            valid_values.remove('${OWNERS}')
+            valid_values.append('')
+        elif '${USERS}' in valid_values:
+            valid_values.remove('${USERS}')
+            valid_values.append('')
+        return valid_values
+
+    def print_permutations(self):
+        """Print all valid permutations."""
+        index = 0
+        permutations = []
+        for p in self._input_permutations:
+            permutations.append({'index': index, 'args': p})
+            index += 1
+        with open('permutations.json', 'w') as fh:
+            json.dump(permutations, fh, indent=2)
+        print('All permutations written to the "permutations.json" file.')
 
     @property
     def profile_data(self):

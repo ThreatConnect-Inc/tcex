@@ -48,7 +48,9 @@ parser.add_argument(
     default='install.json',
     help='(Advanced) The install.json file name (default: install.json).',
 )
-parser.add_argument('--feature', help='The sub directory under tests for this test logic')
+parser.add_argument(
+    '--feature', default='', help='The sub directory under tests for this test logic'
+)
 parser.add_argument('--file', help='The test file to generate')
 parser.add_argument(
     '--permutation_id',

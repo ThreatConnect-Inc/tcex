@@ -258,6 +258,13 @@ class TestCasePlaybook(TestCase):
                 )
         return self._output_variables
 
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in staged_data.get('redis', {}).items():
+            self.stager.redis.stage(key, value)
+
+        # TODO: stage threatconnect data
+
     def run(self, profile_name):  # pylint: disable=arguments-differ,too-many-return-statements
         """Run the Playbook App.
 
@@ -271,7 +278,14 @@ class TestCasePlaybook(TestCase):
             [type]: [description]
         """
         profile = self.profile(profile_name)
-        inputs = profile.get('inputs')
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+        self.stage_data(profile.get('stage', {}))
+        inputs = profile.get('inputs', None)
+        if not inputs:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
         app = self.app(inputs)
         #
         # # Start
