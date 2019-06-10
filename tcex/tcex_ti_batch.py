@@ -1527,7 +1527,7 @@ class TcExBatch(object):
             # Post File
             url = '/v2/groups/{}/{}/upload'.format(api_branch, xid)
             headers = {'Content-Type': 'application/octet-stream'}
-            params = {'owner': self._owner}
+            params = {'owner': self._owner, 'updateIfExists': 'true'}
             r = self.submit_file_content('POST', url, content, headers, params, halt_on_error)
             if r.status_code == 401:
                 # use PUT method if file already exists

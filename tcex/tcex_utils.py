@@ -309,7 +309,7 @@ class TcExUtils:
         dt = None
         if re.compile(r'^[0-9]{11,16}$').findall(str(time_input)):
             # handle timestamp with milliseconds and no "."
-            time_input_length = len(time_input) - 10
+            time_input_length = len(str(time_input)) - 10
             dec = math.pow(10, time_input_length)
             time_input = float(time_input) / dec
 

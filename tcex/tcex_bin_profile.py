@@ -109,6 +109,9 @@ class TcExProfile(TcExBin):
             name = self.layout_json_names[index]
             display = self.layout_json_params.get(name, {}).get('display')
             input_type = self.install_json_params().get(name, {}).get('type')
+            if input_type is None:
+                self.handle_error('No value found in install.json for "{}".'.format(name))
+
             if self.validate_layout_display(self.input_table, display):
                 if input_type.lower() == 'boolean':
                     for val in [True, False]:
