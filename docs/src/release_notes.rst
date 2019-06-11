@@ -6,6 +6,7 @@ Release Notes
 1.0.5
 =====
 + Updated arg parsing to better handle delimited input strings for secureParams/AOT input.
++ Updated TI module to better handle filters and retrieving generic indicator/group types.
 
 1.0.4
 =====
