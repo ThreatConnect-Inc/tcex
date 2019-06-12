@@ -128,6 +128,9 @@ class TcExArgs(object):
             # update args with value from config data or configuration file
             self.args_update()
 
+            # reinitialize logger with new log level and api settings
+            self.tcex._logger(fh=True)
+
         return self._default_args
 
     def args_update(self):
@@ -180,8 +183,7 @@ class TcExArgs(object):
         """Parse args and return default args."""
         if self._default_args is None:
             self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
-            # reinitialize logger with new log level and api settings
-            self.tcex._logger()
+
             if self._default_args.tc_aot_enabled:
                 # block for AOT message and get params
                 params = self.tcex.playbook.aot_blpop()
@@ -190,6 +192,10 @@ class TcExArgs(object):
                 # inject secure params from API
                 params = self._load_secure_params()
                 self.inject_params(params)
+            else:
+                # reinitialize logger with new log level and api settings
+                self.tcex._logger(clear_handler=False)
+
         return self._default_args
 
     def inject_params(self, params):

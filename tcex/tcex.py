@@ -138,7 +138,7 @@ class TcEx(object):
         """Log the current TcEx version number."""
         self.log.info(u'TcEx Version: {}'.format(__import__(__name__).__version__))
 
-    def _logger(self):
+    def _logger(self, fh=False, clear_handler=True):
         """Create TcEx app logger instance.
 
         The logger is accessible via the ``tc.log.<level>`` call.
@@ -164,7 +164,8 @@ class TcEx(object):
         self.log.setLevel(level)
 
         # clear all handlers
-        self.log.handlers = []
+        if clear_handler:
+            self.log.handlers = []
 
         # update logging level
         if self.default_args.logging is not None:
@@ -174,7 +175,7 @@ class TcEx(object):
         self.log.setLevel(level)
 
         # add file handler if not already added
-        if self.default_args.tc_log_path:
+        if fh and os.path.isdir(self.default_args.tc_log_path):
             self._logger_fh()
 
         # add api handler if not already added
