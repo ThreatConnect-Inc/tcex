@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.4 documentation</title>
+  <title>tcex.tcex_ti_batch &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
 
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
 
 
@@ -29,10 +36,6 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-
-
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -40,10 +43,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -57,7 +59,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -404,7 +406,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">indicators</span><span class="p">[</span><span class="n">xid</span><span class="p">]</span> <span class="o">=</span> <span class="n">indicator_data</span>
         <span class="k">return</span> <span class="n">indicator_data</span></div>
 
-<div class="viewcode-block" id="TcExBatch._indicator_values"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_ti_batch.html#tcex.tcex_ti_batch.TcExBatch._indicator_values">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_indicator_values</span><span class="p">(</span><span class="n">indicator</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process indicators expanding file hashes/custom indicators into multiple entries.</span>
 
@@ -435,7 +437,7 @@
             <span class="k">if</span> <span class="n">indicators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">indicator_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indicators</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="n">indicator_list</span></div>
+        <span class="k">return</span> <span class="n">indicator_list</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1704,7 +1706,7 @@
             <span class="c1"># Post File</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/v2/groups/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">/upload&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">api_branch</span><span class="p">,</span> <span class="n">xid</span><span class="p">)</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/octet-stream&#39;</span><span class="p">}</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="p">}</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_owner</span><span class="p">,</span> <span class="s1">&#39;updateIfExists&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">}</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_file_content</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">halt_on_error</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
                 <span class="c1"># use PUT method if file already exists</span>
@@ -1891,26 +1893,16 @@
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>

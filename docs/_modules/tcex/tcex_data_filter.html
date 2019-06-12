@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_data_filter &mdash; TcEx 1.0.4 documentation</title>
+  <title>tcex.tcex_data_filter &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
 
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
 
 
@@ -29,10 +36,6 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-
-
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -40,10 +43,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -57,7 +59,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -233,7 +235,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataFilter._in"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._in">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_in</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field **IN** string or list.</span>
 
@@ -246,9 +248,9 @@
         <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">filter_value</span><span class="p">:</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">valid</span></div>
+        <span class="k">return</span> <span class="n">valid</span>
 
-<div class="viewcode-block" id="DataFilter._index_filter"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._index_filter">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_index_filter</span><span class="p">(</span><span class="n">index_data</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Post Filter</span>
 
@@ -281,7 +283,7 @@
                     <span class="c1"># for data_obj in data_obj_list:</span>
                     <span class="c1">#     yield data_obj.data</span>
 
-        <span class="k">return</span> <span class="n">filtered_data</span></div>
+        <span class="k">return</span> <span class="n">filtered_data</span>
 
     <span class="c1"># def _loop_filter(self, field, filter_value, filter_operator, field_converter=None):</span>
     <span class="c1">#     &quot;&quot;&quot;</span>
@@ -313,7 +315,7 @@
     <span class="c1">#</span>
     <span class="c1">#     return filtered_data</span>
 
-<div class="viewcode-block" id="DataFilter._ni"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._ni">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_ni</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field **NOT IN** string or list.</span>
 
@@ -326,9 +328,9 @@
         <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filter_value</span><span class="p">:</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">valid</span></div>
+        <span class="k">return</span> <span class="n">valid</span>
 
-<div class="viewcode-block" id="DataFilter._starts_with"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter._starts_with">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_starts_with</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate field starts with provided value.</span>
 
@@ -341,7 +343,7 @@
         <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">filter_value</span><span class="p">):</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">valid</span></div>
+        <span class="k">return</span> <span class="n">valid</span>
 
 <div class="viewcode-block" id="DataFilter.filter_data"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex_data_filter.html#tcex.tcex_data_filter.DataFilter.filter_data">[docs]</a>    <span class="k">def</span> <span class="nf">filter_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">filter_operator</span><span class="p">,</span> <span class="n">field_converter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter the data given the provided.</span>
@@ -479,26 +481,16 @@
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>
