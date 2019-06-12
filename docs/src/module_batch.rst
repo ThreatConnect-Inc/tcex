@@ -82,7 +82,7 @@ The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex
     :emphasize-lines: 2-6
 
     batch = tcex.batch('MyOrg')
-    event = batch.group('Event', date_added='event-001', xid='my-xid-0001')
+    event = batch.group('Event', 'My event name', date_added='event-001', xid='my-xid-0001')
     event.add_key_value('eventDate', 'yesterday')
     event.add_key_value('status', 'New')
     event.attribute('Description', 'Example Description 2', True, 'source')
