@@ -56,7 +56,7 @@ The example below retrieves all Groups where the name equals ``my_name_filter``.
 
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     groups = self.tcex.ti.group(owner='MyOrg')
-    filters = self.tcex.filters()
+    filters = self.tcex.ti.filters()
     filters.add('name', '=', 'my_name_filter')
     for group in groups.many(filters=filters, params=parameters):
         self.tcex.log.debug('group: {}'.format(group))
@@ -204,7 +204,7 @@ The example below retrieves all Indicators where name equals ``my_name_filter``.
 
     parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
     indicators = self.tcex.ti.indicator(owner='MyOrg')
-    filters = self.tcex.filters()
+    filters = self.tcex.ti.filters()
     filters.add('summary', '=', 'my_name_filter')
     for indicator in indicators.many(filters=filters, params=parameters):
         self.tcex.log.debug('indicator: {}'.format(indicator))

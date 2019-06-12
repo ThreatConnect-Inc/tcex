@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Module: Threat Intelligence &mdash; TcEx 1.0.4 documentation</title>
+  <title>Module: Threat Intelligence &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
 
 
@@ -31,10 +38,6 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Module: Utils" href="module_utils.html" />
     <link rel="prev" title="Module: Resources" href="module_resource.html" />
-
-
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -42,10 +45,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -59,7 +61,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -251,7 +253,7 @@
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
+</span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
 </span><span class="n">filters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;group: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
@@ -420,7 +422,7 @@
 5
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;includes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;additional&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]}</span>
 </span><span class="hll"><span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">indicator</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s1">&#39;MyOrg&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
+</span><span class="hll"><span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">ti</span><span class="o">.</span><span class="n">filters</span><span class="p">()</span>
 </span><span class="n">filters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;my_name_filter&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">indicator</span> <span class="ow">in</span> <span class="n">indicators</span><span class="o">.</span><span class="n">many</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">parameters</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">tcex</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;indicator: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indicator</span><span class="p">))</span>
@@ -600,7 +602,7 @@
         <a href="module_utils.html" class="btn btn-neutral float-right" title="Module: Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="module_resource.html" class="btn btn-neutral" title="Module: Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="module_resource.html" class="btn btn-neutral float-left" title="Module: Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
@@ -625,26 +627,16 @@
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>

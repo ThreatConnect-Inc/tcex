@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex_data_filter module &mdash; TcEx 1.0.4 documentation</title>
+  <title>tcex.tcex_data_filter module &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
 
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
 
 
@@ -31,10 +38,6 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="tcex.tcex_error_codes module" href="tcex.tcex_error_codes.html" />
     <link rel="prev" title="tcex.tcex_bin_validate module" href="tcex.tcex_bin_validate.html" />
-
-
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -42,10 +45,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -59,7 +61,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -237,87 +239,6 @@
 List of Dictionaries with String values.</p>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="tcex.tcex_data_filter.DataFilter._in">
-<em class="property">static </em><code class="descname">_in</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._in" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate field <strong>IN</strong> string or list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of check</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_data_filter.DataFilter._index_filter">
-<em class="property">static </em><code class="descname">_index_filter</code><span class="sig-paren">(</span><em>index_data</em>, <em>filter_value</em>, <em>filter_operator</em>, <em>field_converter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._index_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._index_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post Filter</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index_data</strong> (<em>dictionary</em>) – The indexed data for the provided field.</li>
-<li><strong>field</strong> (<em>string</em>) – The field to filter on.</li>
-<li><strong>filter_value</strong> (<em>string | list</em>) – The value to match.</li>
-<li><strong>filter_operator</strong> (<em>string</em>) – The operator for comparison.</li>
-<li><strong>field_converter</strong> (<em>method</em>) – A method used to convert the field before comparison.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Matching data objects</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(list)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_data_filter.DataFilter._ni">
-<em class="property">static </em><code class="descname">_ni</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._ni"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._ni" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate field <strong>NOT IN</strong> string or list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string | list</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="tcex.tcex_data_filter.DataFilter._starts_with">
-<em class="property">static </em><code class="descname">_starts_with</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter._starts_with"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter._starts_with" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate field starts with provided value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter_value</strong> (<em>string</em>) – A string or list of values.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Results of validation</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(boolean)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="tcex.tcex_data_filter.DataFilter.filter_data">
 <code class="descname">filter_data</code><span class="sig-paren">(</span><em>field</em>, <em>filter_value</em>, <em>filter_operator</em>, <em>field_converter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tcex/tcex_data_filter.html#DataFilter.filter_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tcex.tcex_data_filter.DataFilter.filter_data" title="Permalink to this definition">¶</a></dt>
@@ -401,7 +322,7 @@ List of Dictionaries with String values.</p>
         <a href="tcex.tcex_error_codes.html" class="btn btn-neutral float-right" title="tcex.tcex_error_codes module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="tcex.tcex_bin_validate.html" class="btn btn-neutral" title="tcex.tcex_bin_validate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tcex.tcex_bin_validate.html" class="btn btn-neutral float-left" title="tcex.tcex_bin_validate module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
@@ -426,26 +347,16 @@ List of Dictionaries with String values.</p>
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>
