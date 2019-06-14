@@ -3,6 +3,7 @@
 
 from tcex.testing import TestCasePlaybook
 import pytest
+from .validation import Validation  # pylint: disable=E0402
 
 # pylint: disable=W0235,too-many-function-args
 
@@ -26,7 +27,9 @@ class TestFeature(TestCasePlaybook):
         """Run teardown logic after test method completes."""
         super().teardown_method()
 
-    @pytest.mark.parametrize('profile_name', [('test_profile',)])
+    @pytest.mark.parametrize('profile_name', ['test_profile'])
     def test_profiles(self, profile_name):
         """Unique_name should be the unique permutation name they pass in via the tctest command"""
-        self.run(profile_name[0])
+        validator = Validation()
+        self.run(profile_name)
+        validator.validation(self.profile(profile_name).get('outputs'))

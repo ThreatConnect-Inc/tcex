@@ -64,6 +64,13 @@ class TcExTest(TcExBin):
         for d in dirs:
             if not os.path.isdir(d):
                 os.makedirs(d)
+                self.generate_init(d)
+
+    @staticmethod
+    def generate_init(directory):
+        """Creates the __init__.py file under dir """
+        with open(os.path.join(directory, '__init__.py'), 'a'):
+            os.utime(os.path.join(directory, '__init__.py'), None)
 
     def profile_file_exists(self):
         """Checks to see if the profile file exists"""
@@ -103,11 +110,7 @@ class TcExTest(TcExBin):
         if self.profile_exists():
             return
 
-        permutation = self.get_permutation_by_id()
-        inputs = {}
-
-        for key, value in permutation.items():
-            inputs[key] = value
+        inputs = self.get_inputs_by_id()
 
         profile_data = self.profile_data
         profile = {'inputs': inputs, 'outputs': None, 'stage': {'redis': {}, 'threatconnect': {}}}
@@ -121,7 +124,7 @@ class TcExTest(TcExBin):
         """Updates the desired profile to create/delete input/output variables"""
         raise NotImplementedError('Not implemented at this moment, might be a nice to have')
 
-    def get_permutation_by_id(self):
+    def get_inputs_by_id(self):
         """Return args based on layout.json and conditional rendering.
 
                 Args:
@@ -131,36 +134,33 @@ class TcExTest(TcExBin):
                     dict: Dictionary of required or optional App args.
                 """
 
-        profile_args = {}
+        inputs = {'required': {}, 'optional': {}}
         self.db_create_table(self.input_table, self.install_json_params().keys())
         self.db_insert_record(self.input_table, self.install_json_params().keys())
         self.gen_permutations()
         try:
             for pn in self._input_permutations[self.args.permutation_id]:
                 p = self.install_json_params().get(pn.get('name'))
-                if p.get('type').lower() == 'boolean':
-                    # use the value generated in the permutation
-                    profile_args[p.get('name')] = pn.get('value')
-                elif p.get('type').lower() == 'choice':
-                    # use the value generated in the permutation
-                    profile_args[p.get('name')] = pn.get('value')
+                argument = p.get('name')
+                value = ''
+                if p.get('type').lower() == 'boolean' or p.get('type').lower() == 'choice':
+                    value = pn.get('value')
                 elif p.get('name') in ['api_access_id', 'api_secret_key']:
                     # leave these parameters set to the value defined in defaults
                     pass
                 else:
                     # add type stub for values
                     types = '|'.join(p.get('playbookDataType', []))
+                    value = p.get('default', '')
                     if types:
-                        profile_args[p.get('name')] = p.get('default', '<{}>'.format(types))
-                    else:
-                        profile_args[p.get('name')] = p.get('default', '')
+                        value = '<{}>'.format(types)
                 if p.get('required', False):
-                    profile_args[p.get('name')] = '{} - Required'.format(
-                        profile_args[p.get('name')]
-                    )
+                    inputs['required'][argument] = value
+                else:
+                    inputs['optional'][argument] = value
         except IndexError:
             self.handle_error('Invalid permutation index provided.')
-        return profile_args
+        return inputs
 
     def validation_file_exists(self):
         """Checks if the validation file exists"""
@@ -186,9 +186,14 @@ class TcExTest(TcExBin):
             for variable in self.output_variables:
                 # write output to file
                 asserts += '        if \'{}\' in output_variables.keys():\n'.format(variable)
-                asserts += '            assert self.validator.redis.eq(\n'
+                asserts += (
+                    '            output_variable_data = output_variables.get('
+                    '\'{}\')\n'.format(variable)
+                )
+                asserts += '            assert self.validator.redis.data(\n'
                 asserts += '                \'{}\',\n'.format(variable)
-                asserts += '                output_variables.get(\'{}\', None)\n'.format(variable)
+                asserts += '                output_variable_data.get(\'expected_output\', None),\n'
+                asserts += '                output_variable_data.get(\'op\', \'=\'),\n'
                 asserts += '            )\n'
             fh.write(asserts)
 
@@ -270,7 +275,7 @@ class TcExTest(TcExBin):
             c.Fore.MAGENTA, filename
         )
         # 2to3 fixes this for py3
-        response = input(message)  # noqa: F821, pylint: disable=E0602
+        response = eval(input(message))  # noqa: F821, pylint: disable=E0602, W0123
         response = response.lower()
 
         if response in ['y', 'yes']:
@@ -283,8 +288,8 @@ class TcExTest(TcExBin):
             print('The sqlite3 module needs to be build-in to Python for this feature.')
             sys.exit(1)
 
-        self.db_create_table(self.input_table, self.install_json_params().keys())
-        self.db_insert_record(self.input_table, self.install_json_params().keys())
+        self.db_create_table(self.input_table, list(self.install_json_params().keys()))
+        self.db_insert_record(self.input_table, list(self.install_json_params().keys()))
         self.gen_permutations()
         self.print_permutations()
 
@@ -362,7 +367,7 @@ class TcExTest(TcExBin):
                 if rows[0][0] > 0:
                     display = True
             except sqlite3.Error as e:
-                print('"{}" query returned an error: ({}).'.format(display_query, e))
+                print(('"{}" query returned an error: ({}).'.format(display_query, e)))
                 sys.exit(1)
         return display
 

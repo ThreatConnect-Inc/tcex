@@ -8,11 +8,11 @@ import time
 import textwrap
 import uuid
 import sys
+import re
 from datetime import datetime
 
 from tcex import TcEx
 from app import App  # pylint: disable=import-error
-from validation import Validation  # pylint: disable=import-error
 from .stage_data import Stager
 from .validate_data import Validator
 
@@ -32,6 +32,7 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
+    _profile_file = None
     _tcex = None
     _timer_class_start = None
     _timer_method_start = None
@@ -117,6 +118,9 @@ class TestCase(object):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
+        test_path = self._current_test.split('::')[0]
+        test_path = os.path.dirname(test_path)
+        self._profile_file = os.path.join(self._app_path, test_path, 'profiles.json')
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
@@ -153,7 +157,7 @@ class TestCase(object):
             self._tcex is not None
             and self.context == self._tcex.default_args.tc_playbook_db_context
         ):
-            self._tcex.tcex_args.config(app_args)  # during run this is required
+            self._tcex.tcex_args.inject_params(app_args)  # during run this is required
             return self._tcex
 
         sys.argv = [
@@ -164,8 +168,8 @@ class TestCase(object):
             '{}-app.log'.format(self.context),
         ]
         self._tcex = TcEx()
-        self._tcex.tcex_args.config(app_args)  # required for stager
-        self._tcex.tcex_args.args_update()  # required for stager
+        self._tcex.tcex_args.inject_params(app_args)  # required for stager
+        # self._tcex.tcex_args.args_update()  # required for stager
         return self._tcex
 
     @property
@@ -202,10 +206,9 @@ class TestCasePlaybook(TestCase):
     def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
         profiles_data = None
-        profiles_file = os.path.join(self._app_path, 'profiles.json')
-        with open(profiles_file, 'r') as profiles:
+        with open(self._profile_file, 'r') as profiles:
             profiles_data = json.load(profiles)
-            if profile_name not in profiles_data.keys():
+            if profile_name not in list(profiles_data.keys()):
                 return
             if profiles_data.get(profile_name).get('outputs') is not None:
                 return
@@ -213,37 +216,27 @@ class TestCasePlaybook(TestCase):
         if not profiles_data:
             return
 
-        profiles_file = os.path.join(self._app_path, 'profiles.json')
-        with open(profiles_file, 'w') as profiles:
+        with open(self._profile_file, 'w') as profiles:
             redis_data = self.redis_client.hgetall(self.context)
-            outputs = []
-            for item in redis_data.items():
+            outputs = {}
+            for item in list(redis_data.items()):
                 if item[0].decode('UTF-8') in self.output_variables:
-                    outputs.append(
-                        {
-                            'variable': item[0].decode('UTF-8'),
-                            'value': item[1].decode('UTF-8'),
-                            'op': 'eq',
-                        }
-                    )
+                    outputs[item[0].decode('UTF-8')] = {
+                        'expected_output': re.sub(r'(^")|("$)', '', item[1].decode('UTF-8')),
+                        'op': 'eq',
+                    }
             profiles_data.get(profile_name)['outputs'] = outputs
             json.dump(profiles_data, profiles, indent=4)
 
     def profile(self, profile_name):
         """Gets a profile from the profiles.json file by name"""
         profile = None
-        profiles_file = os.path.join(self._app_path, 'profiles.json')
-        with open(profiles_file, 'r') as profiles:
+        with open(self._profile_file, 'r') as profiles:
+            print('profiles: ', self._profile_file)
             data = json.load(profiles)
+            print('json loaded')
             profile = data.get(profile_name, None)
         return profile
-
-    def validation(self, profile_name):
-        """Runs the generated validation rules"""
-        validation = Validation()
-        profile = self.profile(profile_name)
-        if profile:
-            validation(profile.get('outputs'))
 
     @property
     def output_variables(self):
@@ -260,7 +253,7 @@ class TestCasePlaybook(TestCase):
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""
-        for key, value in staged_data.get('redis', {}).items():
+        for key, value in list(staged_data.get('redis', {}).items()):
             self.stager.redis.stage(key, value)
 
         # TODO: stage threatconnect data
@@ -282,7 +275,10 @@ class TestCasePlaybook(TestCase):
             self.log.error('No profile named {} found.'.format(profile_name))
             return self._exit(1)
         self.stage_data(profile.get('stage', {}))
-        inputs = profile.get('inputs', None)
+        inputs = {}
+        inputs.update(profile.get('inputs', {}).get('required', {}))
+        inputs.update(profile.get('inputs', {}).get('optional', {}))
+
         if not inputs:
             self.log.error('No profile named {} found.'.format(profile_name))
             return self._exit(1)
