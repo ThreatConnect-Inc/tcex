@@ -46,16 +46,18 @@ class TcExTest(TcExBin):
         self._output_variables = None
         self._input_params = None
         self._install_json = None
+        self.test_file = None
         self.base_url = (
             'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex/{}/test_init/'
         ).format(self.args.branch)
 
-        if not self.args.file.startswith('test_'):
-            self.args.file = 'test_' + self.args.file
-        if not self.args.file.endswith('.py'):
-            self.args.file = self.args.file + '.py'
+        if self.args.file:
+            if not self.args.file.startswith('test_'):
+                self.args.file = 'test_' + self.args.file
+            if not self.args.file.endswith('.py'):
+                self.args.file = self.args.file + '.py'
 
-        self.test_file = os.path.join(self.base_dir, self.args.feature, self.args.file)
+            self.test_file = os.path.join(self.base_dir, self.args.feature, self.args.file)
 
     def _create_dirs(self):
         """Create tcex.d directory and sub directories."""
@@ -135,8 +137,8 @@ class TcExTest(TcExBin):
                 """
 
         inputs = {'required': {}, 'optional': {}}
-        self.db_create_table(self.input_table, self.install_json_params().keys())
-        self.db_insert_record(self.input_table, self.install_json_params().keys())
+        self.db_create_table(self.input_table, list(self.install_json_params().keys()))
+        self.db_insert_record(self.input_table, list(self.install_json_params().keys()))
         self.gen_permutations()
         try:
             for pn in self._input_permutations[self.args.permutation_id]:

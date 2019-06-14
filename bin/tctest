@@ -77,9 +77,9 @@ if __name__ == '__main__':
     try:
         tc_test = TcExTest(args)
 
-        # creates the permutation.json file if requested
         if args.permutations:
             tc_test.print_permutations()
+
         # generates the tests and feature dir
         tc_test._create_dirs()
         # generates the validation file if it doesnt exist
@@ -89,7 +89,8 @@ if __name__ == '__main__':
         # adds the profile to the json
         tc_test.add_profile()
         # downlaods the test template file if not already exists
-        tc_test.download_file('test_template.py')
+        if args.file:
+            tc_test.download_file('test_template.py')
 
         # exit
         sys.exit()
