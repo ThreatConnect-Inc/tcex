@@ -20,5 +20,6 @@ from .tcex_bin_lib import TcExLib  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_package import TcExPackage  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_profile import TcExProfile  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_run import TcExRun  # noqa: F401,F403; pylint: disable=C0413
+from .tcex_bin_test import TcExTest  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_bin_validate import TcExValidate  # noqa: F401,F403; pylint: disable=C0413
 from .tcex_ti.tcex_ti import TcExTi  # noqa: F401,F403; pylint: disable=C0413

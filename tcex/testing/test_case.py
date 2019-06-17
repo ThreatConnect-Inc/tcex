@@ -8,12 +8,13 @@ import time
 import textwrap
 import uuid
 import sys
+import re
 from datetime import datetime
 
 from tcex import TcEx
 from app import App  # pylint: disable=import-error
-from stage_data import Stager
-from validate_data import Validator
+from .stage_data import Stager
+from .validate_data import Validator
 
 logger = logging.getLogger('TestCase')
 rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10_485_760, mode='a')
@@ -31,6 +32,7 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
+    _profile_file = None
     _tcex = None
     _timer_class_start = None
     _timer_method_start = None
@@ -83,7 +85,7 @@ class TestCase(object):
                 with open(file_fqpn, 'r') as fh:
                     self._install_json = json.load(fh)
             else:
-                print('File "{}" could not be found.'.format(file_fqpn))
+                print(('File "{}" could not be found.'.format(file_fqpn)))
         return self._install_json
 
     def input_params(self):
@@ -116,6 +118,9 @@ class TestCase(object):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
+        test_path = self._current_test.split('::')[0]
+        test_path = os.path.dirname(test_path)
+        self._profile_file = os.path.join(self._app_path, test_path, 'profiles.json')
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
@@ -152,7 +157,7 @@ class TestCase(object):
             self._tcex is not None
             and self.context == self._tcex.default_args.tc_playbook_db_context
         ):
-            self._tcex.tcex_args.config(app_args)  # during run this is required
+            self._tcex.tcex_args.inject_params(app_args)  # during run this is required
             return self._tcex
 
         sys.argv = [
@@ -163,8 +168,8 @@ class TestCase(object):
             '{}-app.log'.format(self.context),
         ]
         self._tcex = TcEx()
-        self._tcex.tcex_args.config(app_args)  # required for stager
-        self._tcex.tcex_args.args_update()  # required for stager
+        self._tcex.tcex_args.inject_params(app_args)  # required for stager
+        # self._tcex.tcex_args.args_update()  # required for stager
         return self._tcex
 
     @property
@@ -198,34 +203,40 @@ class TestCasePlaybook(TestCase):
         split_string += '{})\n'.format(' ' * indent)
         return split_string
 
-    def gen_validation_rules(self, max_len=84):
+    def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
-        with open('validation_rules.txt', 'a') as fh:
-            # test_name = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
-            fh.write('{0} {1} {0}\n'.format('=' * 10, self._current_test))
-            for variable in self.output_variables:
-                variable_type = self.tcex().playbook.variable_type(variable)
-                data = self._tcex.playbook.read(variable)
-                operator = 'eq'
-                if variable_type == 'KeyValueArray':
-                    operator = 'kveq'
-                    data = [dict(d) for d in data]
+        profiles_data = None
+        with open(self._profile_file, 'r') as profiles:
+            profiles_data = json.load(profiles)
+            if profile_name not in list(profiles_data.keys()):
+                return
+            if profiles_data.get(profile_name).get('outputs') is not None:
+                return
 
-                # clean/format String data
-                if data is not None:
-                    if variable_type == 'String':
-                        # data = '\'{}\''.format(data.replace('\n', '\\n'))
-                        data = '{}'.format(data.replace('\n', '\\n'))
-                        if len(data) >= max_len:
-                            data = self._split_string(data)
-                        else:
-                            data = '\'{}\''.format(data)
+        if not profiles_data:
+            return
 
-                # write output to file
-                fh.write('        assert self.validator.redis.{}(\n'.format(operator))
-                fh.write('            \'{}\',\n'.format(variable))
-                fh.write('            {}\n'.format(data))
-                fh.write('        )\n')
+        with open(self._profile_file, 'w') as profiles:
+            redis_data = self.redis_client.hgetall(self.context)
+            outputs = {}
+            for item in list(redis_data.items()):
+                if item[0].decode('UTF-8') in self.output_variables:
+                    outputs[item[0].decode('UTF-8')] = {
+                        'expected_output': re.sub(r'(^")|("$)', '', item[1].decode('UTF-8')),
+                        'op': 'eq',
+                    }
+            profiles_data.get(profile_name)['outputs'] = outputs
+            json.dump(profiles_data, profiles, indent=4)
+
+    def profile(self, profile_name):
+        """Gets a profile from the profiles.json file by name"""
+        profile = None
+        with open(self._profile_file, 'r') as profiles:
+            print('profiles: ', self._profile_file)
+            data = json.load(profiles)
+            print('json loaded')
+            profile = data.get(profile_name, None)
+        return profile
 
     @property
     def output_variables(self):
@@ -240,10 +251,18 @@ class TestCasePlaybook(TestCase):
                 )
         return self._output_variables
 
-    def run(self, args, rules=False):  # pylint: disable=arguments-differ,too-many-return-statements
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in list(staged_data.get('redis', {}).items()):
+            self.stager.redis.stage(key, value)
+
+        # TODO: stage threatconnect data
+
+    def run(self, profile_name):  # pylint: disable=arguments-differ,too-many-return-statements
         """Run the Playbook App.
 
         Args:
+            profile_name:
             args (dict): The App CLI args.
             rules (bool, optional): If True validation rules will be generate if test is
                 successful. Defaults to False.
@@ -251,10 +270,21 @@ class TestCasePlaybook(TestCase):
         Returns:
             [type]: [description]
         """
-        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        app = self.app(args)
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+        self.stage_data(profile.get('stage', {}))
+        inputs = {}
+        inputs.update(profile.get('inputs', {}).get('required', {}))
+        inputs.update(profile.get('inputs', {}).get('optional', {}))
 
-        # Start
+        if not inputs:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+        app = self.app(inputs)
+        #
+        # # Start
         try:
             app.start()
         except SystemExit as e:
@@ -305,8 +335,7 @@ class TestCasePlaybook(TestCase):
             self.log.error('App encountered except in done() method ({}).'.format(err))
             return self._exit(1)
 
-        if rules:
-            self.gen_validation_rules()
+        self.populate_output_variables(profile_name)
         return self._exit(app.tcex.exit_code)
 
     def setup_method(self):
