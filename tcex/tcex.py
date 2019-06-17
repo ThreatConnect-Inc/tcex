@@ -41,6 +41,7 @@ class TcEx(object):
         self._indicator_types_data = {}
         self._jobs = None
         self._playbook = None
+        self._service = None
         self._session = None
         self._utils = None
         self._ti = None
@@ -857,6 +858,18 @@ class TcEx(object):
             fh.seek(0)
             fh.write(results)
             fh.truncate()
+
+    @property
+    def service(self):
+        """Include the Service Module.
+
+        .. Note:: Service methods can be accessed using ``tcex.service.<method>``.
+        """
+        if self._service is None:
+            from .tcex_service import TcExService
+
+            self._service = TcExService(self)
+        return self._service
 
     def s(self, data, errors='strict'):
         """Decode value using correct Python 2/3 method.
