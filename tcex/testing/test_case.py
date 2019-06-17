@@ -5,7 +5,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import time
-import textwrap
 import uuid
 import sys
 import re
@@ -189,18 +188,6 @@ class TestCasePlaybook(TestCase):
         self.log.info('[runner] Exit Code: {}'.format(code))
         self.tcex().log.info('Exit Code: {}'.format(code))
         return code
-
-    @staticmethod
-    def _split_string(string, indent=12, max_len=84):
-        """Split a string that would exceed the 100 columns."""
-        split_string = ''
-        lines = textwrap.wrap(str(string), max_len, break_long_words=False)
-        lines = ['{}\'{}\',\n'.format(' ' * (indent + 4), l) for l in lines]
-        split_string += '(\n'
-        for l in lines:
-            split_string += '{}'.format(l)
-        split_string += '{})\n'.format(' ' * indent)
-        return split_string
 
     @property
     def output_variables(self):
