@@ -35,6 +35,7 @@ class Profiles:
         """Add a profile."""
         if not self.exists(profile_name):
             profile = {
+                'exit_codes': [0],
                 'inputs': inputs,
                 'outputs': outputs,
                 'stage': stage or {'redis': {}, 'threatconnect': {}},

@@ -30,5 +30,5 @@ class TestFeature(TestCasePlaybook):
     def test_profiles(self, profile_name):
         """Run pre-created testing profiles."""
         validator = Validation(self.validator)
-        self.run_profile(profile_name)
+        assert self.run_profile(profile_name) in self.profile(profile_name).get('exit_codes', [0])
         validator.validation(self.profile(profile_name).get('outputs'))

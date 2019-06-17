@@ -99,6 +99,7 @@ class Validator(object):
                 del test_data[e]
             except KeyError:
                 pass
+            del kwargs['exclude']
         return self.operator_deep_diff(app_data, test_data)
 
     def operator_keyvalue_eq(self, app_data, test_data, **kwargs):
@@ -119,6 +120,8 @@ class Validator(object):
             test_data = [
                 kv for kv in test_data if kv.get('key') not in kwargs.get('exclude_keys', [])
             ]
+            del kwargs['exclude_keys']
+
         return self.operator_deep_diff(app_data, test_data, **kwargs)
 
     @staticmethod
@@ -132,7 +135,9 @@ class Validator(object):
         Returns:
             bool: The results of the operator.
         """
-        return re.match(test_data, app_data)
+        if re.match(test_data, app_data) is None:
+            return False
+        return True
 
     @property
     def redis(self):
@@ -233,15 +238,20 @@ class Redis(object):
             app_data = self.provider.tcex.playbook.read(variable)
 
         # Logging
-        self.provider.log.info('[validator] Variable:  {}'.format(variable))
-        self.provider.log.info('[validator] App Data:  {}'.format(app_data))
-        self.provider.log.info('[validator] Test Data: {}'.format(test_data))
         self.provider.log.debug(
             'redis-cli hget {} \'{}\''.format(
                 self.provider.tcex.args.tc_playbook_db_context, variable
             )
         )
-        return self.provider.get_operator(op)(app_data, test_data, **kwargs)
+        self.provider.log.info('[validator] Variable:  {}'.format(variable))
+        self.provider.log.info('[validator] App Data:  {}'.format(app_data))
+        self.provider.log.info('[validator] Test Data: {}'.format(test_data))
+        self.provider.log.info('[validator] Operator:  {}'.format(op))
+
+        passed = self.provider.get_operator(op)(app_data, test_data, **kwargs)
+        self.provider.log.info('[validator] Passed:  {}'.format(passed))
+
+        return passed
 
     def eq(self, variable, data):
         """Validate test data equality"""
@@ -289,7 +299,7 @@ class Redis(object):
 
     def rex(self, variable, data):
         """Test App data with regex"""
-        return self.data(variable, data, op='rex')
+        return self.data(variable, r'{}'.format(data), op='rex')
 
 
 class ThreatConnect(object):

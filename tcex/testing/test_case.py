@@ -7,7 +7,6 @@ import os
 import time
 import uuid
 import sys
-import re
 from datetime import datetime
 
 from tcex import TcEx
@@ -154,7 +153,6 @@ class TestCase(object):
             self._tcex is not None
             and self.context == self._tcex.default_args.tc_playbook_db_context
         ):
-            print('tcex already exists', self._tcex.default_args)
             self._tcex.tcex_args.inject_params(app_args)  # during run this is required
             return self._tcex
 
@@ -167,7 +165,6 @@ class TestCase(object):
         ]
         self._tcex = TcEx()
         self._tcex.tcex_args.inject_params(app_args)  # required for stager
-        print('new tcex', self._tcex.default_args)
         return self._tcex
 
     @property
@@ -205,27 +202,24 @@ class TestCasePlaybook(TestCase):
     def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
         profiles_data = None
-        with open(self._profile_file, 'r') as profiles:
-            profiles_data = json.load(profiles)
-            if profile_name not in list(profiles_data.keys()):
-                return
-            if profiles_data.get(profile_name).get('outputs') is not None:
-                return
+        with open(self._profile_file, 'r+') as fh:
+            profiles_data = json.load(fh)
+            if (
+                profiles_data.get(profile_name) is not None
+                and profiles_data.get(profile_name).get('outputs') is None
+            ):
 
-        if not profiles_data:
-            return
-
-        with open(self._profile_file, 'w') as profiles:
-            redis_data = self.redis_client.hgetall(self.context)
-            outputs = {}
-            for item in list(redis_data.items()):
-                if item[0].decode('UTF-8') in self.output_variables:
-                    outputs[item[0].decode('UTF-8')] = {
-                        'expected_output': re.sub(r'(^")|("$)', '', item[1].decode('UTF-8')),
-                        'op': 'eq',
-                    }
-            profiles_data.get(profile_name)['outputs'] = outputs
-            json.dump(profiles_data, profiles, indent=2)
+                redis_data = self.redis_client.hgetall(self.context)
+                outputs = {}
+                for variable, data in redis_data.items():
+                    variable = variable.decode('utf-8')
+                    data = data.decode('utf-8')
+                    if variable in self.output_variables:
+                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
+                profiles_data[profile_name]['outputs'] = outputs
+                fh.seek(0)
+                fh.write(json.dumps(profiles_data, indent=2, sort_keys=True))
+                fh.truncate()
 
     def profile(self, profile_name):
         """Get a profile from the profiles.json file by name"""
@@ -252,7 +246,7 @@ class TestCasePlaybook(TestCase):
             app.start()
         except SystemExit as e:
             self.log.error('App failed in start() method ({}).'.format(e))
-            return self._exit(e)
+            return self._exit(e.code)
         except Exception as err:
             self.log.error('App encountered except in start() method ({}).'.format(err))
             return self._exit(1)
@@ -273,7 +267,7 @@ class TestCasePlaybook(TestCase):
                 app.run()
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
-            return self._exit(e)
+            return self._exit(e.code)
         except Exception as err:
             self.log.error('App encountered except in run() method ({}).'.format(err))
             return self._exit(1)
@@ -283,7 +277,7 @@ class TestCasePlaybook(TestCase):
             app.write_output()
         except SystemExit as e:
             self.log.error('App failed in write_output() method ({}).'.format(e))
-            return self._exit(e)
+            return self._exit(e.code)
         except Exception as err:
             self.log.error('App encountered except in write_output() method ({}).'.format(err))
             return self._exit(1)
@@ -293,7 +287,7 @@ class TestCasePlaybook(TestCase):
             app.done()
         except SystemExit as e:
             self.log.error('App failed in done() method ({}).'.format(e))
-            return self._exit(e)
+            return self._exit(e.code)
         except Exception as err:
             self.log.error('App encountered except in done() method ({}).'.format(err))
             return self._exit(1)
@@ -318,7 +312,7 @@ class TestCasePlaybook(TestCase):
         args.update(profile.get('inputs', {}).get('optional', {}))
         if not args:
             self.log.error('No profile named {} found.'.format(profile_name))
-            self._exit(1)
+            return self._exit(1)
 
         # run the App
         exit_code = self.run(args)
