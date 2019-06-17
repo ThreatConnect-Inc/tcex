@@ -12,7 +12,7 @@ class Validator(object):
     """Validator"""
 
     def __init__(self, tcex, log):
-        # self.args = tcex.args
+        """Initialize class properties."""
         self.log = log
         self.tcex = tcex
 
@@ -21,7 +21,7 @@ class Validator(object):
         self._threatconnect = None
 
     def get_operator(self, op):
-        """gets the corresponding operator"""
+        """Get the corresponding operator"""
         operators = {
             'dd': self.operator_deep_diff,
             'eq': operator.eq,
@@ -136,14 +136,14 @@ class Validator(object):
 
     @property
     def redis(self):
-        """Gets the current instance of Redis for validating data"""
+        """Get the current instance of Redis for validating data"""
         if not self._redis:
             self._redis = Redis(self)
         return self._redis
 
     @property
     def threatconnect(self):
-        """Gets the current instance of ThreatConnect for validating data"""
+        """Get the current instance of ThreatConnect for validating data"""
         if not self._threatconnect:
             self._threatconnect = ThreatConnect(self)
         return self._threatconnect
@@ -153,11 +153,12 @@ class Redis(object):
     """Validates Redis data"""
 
     def __init__(self, provider):
+        """Initialize class properties."""
         self.provider = provider
         self.redis_client = provider.tcex.playbook.db.r
 
     def not_null(self, variable):
-        """validates that a variable is not empty/null"""
+        """Validate that a variable is not empty/null"""
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
         variable_data = self.provider.tcex.playbook.read(variable)
@@ -176,7 +177,7 @@ class Redis(object):
         return True
 
     def type(self, variable):
-        """validates the type of a redis variable"""
+        """Validate the type of a redis variable"""
         variable_data = self.provider.tcex.playbook.read(variable)
         self.provider.log.info('[validator] Variable: {}'.format(variable))
         self.provider.log.info('[validator] App Data:  {}'.format(variable_data))
@@ -247,15 +248,15 @@ class Redis(object):
         return self.data(variable, data)
 
     def dd(self, variable, data, **kwargs):
-        """tests equation of redis var"""
+        """Validate test data equality"""
         return self.data(variable, data, op='dd', **kwargs)
 
     def ge(self, variable, data):
-        """tests ge of redis var"""
+        """Validate test data equality"""
         return self.data(variable, data, op='ge')
 
     def gt(self, variable, data):
-        """tests gt of redis var"""
+        """Validate test data equality"""
         return self.data(variable, data, op='gt')
 
     def jeq(self, variable, data, **kwargs):
@@ -275,15 +276,15 @@ class Redis(object):
         return self.data(variable, data, op='kveq', **kwargs)
 
     def lt(self, variable, data):
-        """tests lt of redis var"""
+        """Validate test data less than"""
         return self.data(variable, data, op='lt')
 
     def le(self, variable, data):
-        """tests le of redis var"""
+        """Validate test data less than or equal"""
         return self.data(variable, data, op='le')
 
     def ne(self, variable, data):
-        """tests ne of redis var"""
+        """Validate test data non equality"""
         return self.data(variable, data, op='ne')
 
     def rex(self, variable, data):
@@ -295,10 +296,11 @@ class ThreatConnect(object):
     """Validate ThreatConnect data"""
 
     def __init__(self, provider):
+        """Initialize class properties"""
         self.provider = provider
 
     def dir(self, directory, owner):
-        """validates the content of a given dir"""
+        """Validate the content of a given dir"""
         results = []
         for test_file in os.listdir(directory):
             if not (test_file.endswith('.json') and test_file.startswith('validate_')):
@@ -307,12 +309,12 @@ class ThreatConnect(object):
         return results
 
     def file(self, file, owner):
-        """validates the content of a given file"""
+        """Validate the content of a given file"""
         entities = self._convert_to_entities(file)
         return self.tc_entities(entities, owner)
 
     def tc_entities(self, tc_entities, owner, files=None):
-        """validates a array of tc_entitites"""
+        """Validate a array of tc_entities"""
         results = []
         if files:
             if not len(tc_entities) == len(files):
@@ -331,7 +333,7 @@ class ThreatConnect(object):
         return results
 
     def tc_entity(self, tc_entity, owner, file=None):
-        """validates the ti_response entity"""
+        """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
         valid = True
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
@@ -403,7 +405,7 @@ class ThreatConnect(object):
         return new_lis
 
     def compare_dicts(self, expected, actual, error_type=''):
-        """Compares two dicts and returns a list of errors if they don't match"""
+        """Compare two dicts and returns a list of errors if they don't match"""
         valid = True
         for item in expected:
             if item in actual:
@@ -435,7 +437,7 @@ class ThreatConnect(object):
         return valid
 
     def compare_lists(self, expected, actual, error_type=''):
-        """Compares two lists and returns a list of errors if they don't match"""
+        """Compare two lists and returns a list of errors if they don't match"""
         valid = True
         for item in expected:
             if item in actual:
@@ -457,13 +459,13 @@ class ThreatConnect(object):
 
     @staticmethod
     def _convert_to_entities(file):
-        """converts file to tc_entity array"""
+        """Convert file to tc_entity array"""
         with open(file, 'r') as read_file:
             data = json.load(read_file)
         return data
 
     def _convert_to_ti_entity(self, tc_entity, owner):
-        """converts a tc_entity to a ti_entity"""
+        """Convert a tc_entity to a ti_entity"""
         ti_entity = None
         if tc_entity.get('type') in self.provider.tcex.indicator_types:
             ti_entity = self.provider.tcex.ti.indicator(
@@ -483,7 +485,7 @@ class ThreatConnect(object):
         return ti_entity
 
     def _response_attributes(self, ti_response, tc_entity):
-        """validates the ti_response attributes"""
+        """Validate the ti_response attributes"""
         if not ti_response or not tc_entity:
             return True
 
@@ -498,7 +500,7 @@ class ThreatConnect(object):
         return valid
 
     def _response_tags(self, ti_response, tc_entity):
-        """validates the ti_response tags"""
+        """Validate the ti_response tags"""
         if not ti_response or not tc_entity:
             return True
 
@@ -513,7 +515,7 @@ class ThreatConnect(object):
         return valid
 
     def _response_labels(self, ti_response, tc_entity):
-        """validates the ti_response labels"""
+        """Validate the ti_response labels"""
         if not ti_response or not tc_entity:
             return True
 
@@ -528,6 +530,7 @@ class ThreatConnect(object):
         return valid
 
     def _file(self, ti_entity, file):
+        """Handle file data"""
         valid = True
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
             actual_hash = ti_entity.get_file_hash()
@@ -553,7 +556,7 @@ class ThreatConnect(object):
 
     @staticmethod
     def success(r):
-        """
+        """???
 
         Args:
             r:

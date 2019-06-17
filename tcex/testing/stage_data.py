@@ -23,14 +23,14 @@ class Stager(object):
 
     @property
     def redis(self):
-        """Gets the current instance of Redis for staging data"""
+        """Get the current instance of Redis for staging data"""
         if not self._redis:
             self._redis = Redis(self)
         return self._redis
 
     @property
     def threatconnect(self):
-        """Gets the current instance of ThreatConnect for staging data"""
+        """Get the current instance of ThreatConnect for staging data"""
         if not self._threatconnect:
             self._threatconnect = ThreatConnect(self)
         return self._threatconnect
@@ -40,24 +40,19 @@ class Redis(object):
     """Stages the Redis Data"""
 
     def __init__(self, provider):
+        """Initialize class properties."""
         self.provider = provider
         self.redis_client = provider.tcex.playbook.db.r
 
     def from_dict(self, staging_data):
         """Stage redis data from dict"""
-        for sd in staging_data:
-            data = sd.get('data')
-            variable = sd.get('variable')
+        for variable, data in staging_data.items():
             variable_type = self.provider.tcex.playbook.variable_type(variable)
 
             if variable_type == 'Binary':
                 data = self._decode_binary(data, variable)
             elif variable_type == 'BinaryArray':
                 data = [self._decode_binary(d, variable) for d in data]
-                # decoded_data = []
-                # for d in data:
-                #     decoded_data.append(self._decode_binary(d, variable))
-                # data = decoded_data
             self.provider.tcex.playbook.create(variable, data)
 
     def stage(self, variable, data):

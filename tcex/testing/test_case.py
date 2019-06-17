@@ -61,7 +61,6 @@ class TestCase(object):
             'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
             'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
             'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
-            # 'tc_playbook_db_context': os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4())),
             'tc_playbook_db_context': self.context,
             'tc_playbook_db_path': os.getenv('TC_PLAYBOOK_DB_PATH', 'localhost'),
             'tc_playbook_db_port': os.getenv('TC_PLAYBOOK_DB_PORT', '6379'),
@@ -118,8 +117,7 @@ class TestCase(object):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
-        test_path = self._current_test.split('::')[0]
-        test_path = os.path.dirname(test_path)
+        test_path = os.path.dirname(self._current_test.split('::')[0])
         self._profile_file = os.path.join(self._app_path, test_path, 'profiles.json')
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
@@ -157,6 +155,7 @@ class TestCase(object):
             self._tcex is not None
             and self.context == self._tcex.default_args.tc_playbook_db_context
         ):
+            print('tcex already exists', self._tcex.default_args)
             self._tcex.tcex_args.inject_params(app_args)  # during run this is required
             return self._tcex
 
@@ -169,7 +168,7 @@ class TestCase(object):
         ]
         self._tcex = TcEx()
         self._tcex.tcex_args.inject_params(app_args)  # required for stager
-        # self._tcex.tcex_args.args_update()  # required for stager
+        print('new tcex', self._tcex.default_args)
         return self._tcex
 
     @property
@@ -203,6 +202,19 @@ class TestCasePlaybook(TestCase):
         split_string += '{})\n'.format(' ' * indent)
         return split_string
 
+    @property
+    def output_variables(self):
+        """Return playbook output variables"""
+        if self._output_variables is None:
+            self._output_variables = []
+            # Currently there is no support for projects with multiple install.json files.
+            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+                # "#App:9876:app.data.count!String"
+                self._output_variables.append(
+                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
+                )
+        return self._output_variables
+
     def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
         profiles_data = None
@@ -226,65 +238,29 @@ class TestCasePlaybook(TestCase):
                         'op': 'eq',
                     }
             profiles_data.get(profile_name)['outputs'] = outputs
-            json.dump(profiles_data, profiles, indent=4)
+            json.dump(profiles_data, profiles, indent=2)
 
     def profile(self, profile_name):
-        """Gets a profile from the profiles.json file by name"""
+        """Get a profile from the profiles.json file by name"""
         profile = None
         with open(self._profile_file, 'r') as profiles:
-            print('profiles: ', self._profile_file)
             data = json.load(profiles)
-            print('json loaded')
             profile = data.get(profile_name, None)
         return profile
 
-    @property
-    def output_variables(self):
-        """Return playbook output variables"""
-        if self._output_variables is None:
-            self._output_variables = []
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # "#App:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
-                )
-        return self._output_variables
-
-    def stage_data(self, staged_data):
-        """Stage the data in the profile."""
-        for key, value in list(staged_data.get('redis', {}).items()):
-            self.stager.redis.stage(key, value)
-
-        # TODO: stage threatconnect data
-
-    def run(self, profile_name):  # pylint: disable=arguments-differ,too-many-return-statements
+    def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
 
         Args:
-            profile_name:
             args (dict): The App CLI args.
-            rules (bool, optional): If True validation rules will be generate if test is
-                successful. Defaults to False.
 
         Returns:
             [type]: [description]
         """
-        profile = self.profile(profile_name)
-        if not profile:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-        self.stage_data(profile.get('stage', {}))
-        inputs = {}
-        inputs.update(profile.get('inputs', {}).get('required', {}))
-        inputs.update(profile.get('inputs', {}).get('optional', {}))
+        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        app = self.app(args)
 
-        if not inputs:
-            self.log.error('No profile named {} found.'.format(profile_name))
-            return self._exit(1)
-        app = self.app(inputs)
-        #
-        # # Start
+        # Start
         try:
             app.start()
         except SystemExit as e:
@@ -335,14 +311,48 @@ class TestCasePlaybook(TestCase):
             self.log.error('App encountered except in done() method ({}).'.format(err))
             return self._exit(1)
 
-        self.populate_output_variables(profile_name)
         return self._exit(app.tcex.exit_code)
+
+    def run_profile(self, profile_name):
+        """Run an App using the profile name."""
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # stage any staging data
+        # self.stage_data(profile.get('stage', {}))
+        # self.stager.redis.from_dict(profile.get('stage', {}))
+        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+
+        # build args from install.json
+        args = {}
+        args.update(profile.get('inputs', {}).get('required', {}))
+        args.update(profile.get('inputs', {}).get('optional', {}))
+        if not args:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            self._exit(1)
+
+        # run the App
+        exit_code = self.run(args)
+
+        # populate the output variables
+        self.populate_output_variables(profile_name)
+
+        return self._exit(exit_code)
 
     def setup_method(self):
         """Run before each test method runs."""
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex().playbook.db.r
+
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in list(staged_data.get('redis', {}).items()):
+            self.stager.redis.stage(key, value)
+
+        # TODO: stage threatconnect data
 
     def teardown_method(self):
         """Run after each test method runs."""

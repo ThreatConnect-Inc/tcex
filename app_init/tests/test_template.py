@@ -31,5 +31,5 @@ class TestFeature(TestCasePlaybook):
     def test_profiles(self, profile_name):
         """Unique_name should be the unique permutation name they pass in via the tctest command"""
         validator = Validation()
-        self.run(profile_name)
+        self.run_profile(profile_name)
         validator.validation(self.profile(profile_name).get('outputs'))
