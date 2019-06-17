@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-'''Test the TcEx Threat Intel Module.'''
+"""Test case template for App testing."""
+import pytest
 
 from tcex.testing import TestCasePlaybook
-import pytest
 from .validation import Validation  # pylint: disable=E0402
 
+
 # pylint: disable=W0235,too-many-function-args
-
-
 class TestFeature(TestCasePlaybook):
     """Test TcEx Host Indicators."""
 
@@ -29,7 +28,7 @@ class TestFeature(TestCasePlaybook):
 
     @pytest.mark.parametrize('profile_name', ['test_profile'])
     def test_profiles(self, profile_name):
-        """Unique_name should be the unique permutation name they pass in via the tctest command"""
-        validator = Validation()
+        """Run pre-created testing profiles."""
+        validator = Validation(self.validator)
         self.run_profile(profile_name)
         validator.validation(self.profile(profile_name).get('outputs'))

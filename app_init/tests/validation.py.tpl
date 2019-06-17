@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validation file for testing profiles."""
 
+
 class Validation:
     """Validation for Feature ${feature}, File ${file}.
 
