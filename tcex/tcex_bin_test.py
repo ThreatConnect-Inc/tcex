@@ -104,8 +104,7 @@ class Validation:
     def generate(self, feature, file_, output_variables):
         """If not currently exist, generates the validation file."""
         if not self.file_exists:
-            template = Template(filename='validation.py.tpl')
-            # template = Template(self.template)
+            template = Template(self.template)
             template_data = {
                 'feature': feature,
                 'file': file_,
