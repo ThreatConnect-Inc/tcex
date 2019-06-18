@@ -177,7 +177,7 @@ class TestCasePlaybook(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
-    redis_staging_data = []
+    redis_staging_data = {}
     redis_client = None
 
     def _exit(self, code):
@@ -228,6 +228,15 @@ class TestCasePlaybook(TestCase):
             data = json.load(profiles)
             profile = data.get(profile_name, None)
         return profile
+
+    @property
+    def profile_names(self):
+        """Get a profile from the profiles.json file by name"""
+        profile_names = []
+        with open(self._profile_file, 'r') as profiles:
+            data = json.load(profiles)
+            profile_names = data.keys()
+        return profile_names
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.

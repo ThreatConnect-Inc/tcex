@@ -3,6 +3,7 @@
 """TcEx Framework Profile Generation Module."""
 import json
 import os
+import re
 
 from mako.template import Template
 import requests
@@ -31,7 +32,7 @@ class Profiles:
         # properties
         self._profiles = None
 
-    def add(self, profile_name, inputs, outputs=None, stage=None):
+    def add(self, profile_name, inputs, outputs=None, stage=None, sort_keys=True):
         """Add a profile."""
         if not self.exists(profile_name):
             profile = {
@@ -44,7 +45,7 @@ class Profiles:
             self.profiles[profile_name] = profile
 
             with open(self.filename, 'w') as fh:
-                json.dump(self.profiles, fh, indent=2, sort_keys=True)
+                json.dump(self.profiles, fh, indent=2, sort_keys=sort_keys)
 
     def delete(self, profile_name):
         """Delete an existing profile."""
@@ -88,13 +89,78 @@ class Validation:
         NotImplementedError: The update method is not currently implemented.
     """
 
-    def __init__(self, filename, branch='master'):
+    def __init__(self, base_dir, branch='master'):
         """Initialize class properties."""
-        self.filename = filename
         self.branch = branch
+        self.base_dir = base_dir
+        self.validation_file = (base_dir, 'validation.py')
+        self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
+        self._variable_parse = re.compile(self._variable_pattern)
+
+    def _method_name(self, variable):
+        """Convert variable name to a valid method name.
+
+        Args:
+            variable (string): The variable name to convert.
+
+        Returns:
+            (str): Method name
+        """
+        method_name = None
+        if variable is not None:
+            variable = variable.strip()
+            if re.match(self._variable_match, variable):
+                var = re.search(self._variable_parse, variable)
+                variable_name = var.group(3).replace('.', '_').lower()
+                variable_type = var.group(4).lower()
+                method_name = '{}_{}'.format(variable_name, variable_type)
+        return method_name
 
     @property
-    def template(self):
+    def _variable_pattern(self):
+        """Regex pattern to match and parse a playbook variable."""
+        variable_pattern = r'#([A-Za-z]+)'  # match literal (#App) at beginning of String
+        variable_pattern += r':([\d]+)'  # app id (:7979)
+        variable_pattern += r':([A-Za-z0-9_\.\-\[\]]+)'  # variable name (:variable_name)
+        variable_pattern += r'!(StringArray|BinaryArray|KeyValueArray'  # variable type (array)
+        variable_pattern += r'|TCEntityArray|TCEnhancedEntityArray'  # variable type (array)
+        variable_pattern += r'|String|Binary|KeyValue|TCEntity|TCEnhancedEntity'  # variable type
+        variable_pattern += r'|(?:(?!String)(?!Binary)(?!KeyValue)'  # non matching for custom
+        variable_pattern += r'(?!TCEntity)(?!TCEnhancedEntity)'  # non matching for custom
+        variable_pattern += r'[A-Za-z0-9_-]+))'  # variable type (custom)
+        return variable_pattern
+
+    def generate(self, output_variables):
+        """If not currently exist, generates the validation file."""
+        if not os.path.isfile(self.validation_file):
+            template = Template(self.validation_template)
+            template_data = {'output_data': self.output_data(output_variables)}
+            rendered_template = template.render(**template_data)
+            with open(self.validation_file, 'a') as f:
+                f.write(rendered_template)
+
+    def generate_feature(self, feature, file_):
+        """If not currently exist, generates the validation file."""
+        validation_file = (self.base_dir, feature, 'validation_feature.py')
+        if not os.path.isfile(validation_file):
+            template = Template(self.validation_feature_template)
+            template_data = {'feature': feature, 'file': file_}
+            rendered_template = template.render(**template_data)
+            with open(validation_file, 'a') as f:
+                f.write(rendered_template)
+
+    def output_data(self, output_variables):
+        """Return formatted output data.
+
+        #App:9876:http.content!Binary
+        """
+        output_data = []
+        for ov in output_variables:
+            output_data.append({'method': self._method_name(ov), 'variable': ov})
+        return output_data
+
+    @property
+    def validation_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validation.py.tpl')
         r = requests.get(url, allow_redirects=True)
@@ -102,23 +168,14 @@ class Validation:
             raise RuntimeError('Could not download template file.')
         return r.content
 
-    def generate(self, feature, file_, output_variables):
-        """If not currently exist, generates the validation file."""
-        if not self.file_exists:
-            template = Template(self.template)
-            template_data = {
-                'feature': feature,
-                'file': file_,
-                'output_variables': output_variables,
-            }
-            rendered_template = template.render(**template_data)
-            with open(self.filename, 'a') as f:
-                f.write(rendered_template)
-
     @property
-    def file_exists(self):
-        """Check to see if the profile file exists."""
-        return os.path.isfile(self.filename)
+    def validation_feature_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validation_feature.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
 
 
 class TcExTest(TcExBin):
@@ -141,8 +198,7 @@ class TcExTest(TcExBin):
         self.base_dir = os.path.join(self.app_path, 'tests')
         self.feature_dir = os.path.join(self.base_dir, self.args.feature)
         self.profiles = Profiles(self.profiles_file)
-        self.validation = Validation(self.validation_file, self.args.branch)
-
+        self.validation = Validation(self.base_dir, self.args.branch)
         self._output_variables = None
 
     @staticmethod
@@ -175,19 +231,60 @@ class TcExTest(TcExBin):
 
     def add_profile(self):
         """Add the desired profile"""
-        if self.args.permutation_id:
+        sort_keys = True
+        if self.args.profile_file:
+            sort_keys = False
+            if os.path.isfile(self.args.profile_file):
+                with open(self.args.profile_file, 'r') as fh:
+                    data = json.load(fh)
+
+            profile_data = {}
+            for d in data:
+                profile_data[d.get('profile_name')] = {
+                    'inputs': d.get('args', {}).get('app'),
+                    'stage': self.add_profile_staging(d.get('data_files')),
+                }
+
+        elif self.args.permutation_id:
             # TODO: fix the profile_settings_args_layout_json to not run permutations twice
-            inputs = {
-                'optional': self.profile_settings_args_layout_json(False),
-                'required': self.profile_settings_args_layout_json(True),
+            profile_data = {
+                self.args.profile_name: {
+                    'inputs': {
+                        'optional': self.profile_settings_args_layout_json(False),
+                        'required': self.profile_settings_args_layout_json(True),
+                    }
+                }
             }
         else:
-            inputs = {
-                'optional': self.profile_settings_args_install_json(self.install_json, False),
-                'required': self.profile_settings_args_install_json(self.install_json, True),
+            profile_data = {
+                self.args.profile_name: {
+                    'inputs': {
+                        'optional': self.profile_settings_args_install_json(
+                            self.install_json, False
+                        ),
+                        'required': self.profile_settings_args_install_json(
+                            self.install_json, True
+                        ),
+                    }
+                }
             }
 
-        self.profiles.add(self.args.profile_name, inputs)
+        # add profiles
+        for profile_name, data in profile_data.items():
+            self.profiles.add(
+                profile_name, data.get('inputs'), stage=data.get('stage'), sort_keys=sort_keys
+            )
+
+    @staticmethod
+    def add_profile_staging(staging_files):
+        """Get existing staging data."""
+        staging_data = {}
+        for sf in staging_files:
+            with open(sf, 'r') as fh:
+                data = json.load(fh)
+            for d in data:
+                staging_data[d.get('variable')] = d.get('data')
+        return staging_data
 
     def create_dirs(self):
         """Create tcex.d directory and sub directories."""
@@ -232,7 +329,8 @@ class TcExTest(TcExBin):
 
     def generate_validation_file(self):
         """Generate the validation file."""
-        self.validation.generate(self.args.feature, self.args.file, self.output_variables)
+        self.validation.generate(self.output_variables)
+        self.validation.generate_feature(self.args.feature, self.args.file)
 
     @property
     def output_variables(self):
@@ -274,6 +372,11 @@ class TcExTest(TcExBin):
             test_file = os.path.join(self.base_dir, self.args.feature, self.args.file)
 
         return test_file
+
+    @property
+    def validation_base_file(self):
+        """Return validations fully qualified filename."""
+        return os.path.join(self.base_dir, 'validation_base.py')
 
     @property
     def validation_file(self):

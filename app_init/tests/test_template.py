@@ -8,7 +8,7 @@ from .validation import Validation  # pylint: disable=E0402
 
 # pylint: disable=W0235,too-many-function-args
 class TestFeature(TestCasePlaybook):
-    """Test TcEx Host Indicators."""
+    """TcEx App Testing Template."""
 
     def setup_class(self):
         """Run setup logic before all test cases in this module."""

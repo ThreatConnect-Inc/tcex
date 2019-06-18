@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Validate Data Testing Module"""
+import difflib
 import hashlib
 import json
 import operator
@@ -69,7 +70,7 @@ class Validator(object):
         except NameError:
             return False
         if ddiff:
-            self.log.info('[validator] Diff: {}'.format(ddiff))
+            self.log.info('[validate] Diff: {}'.format(ddiff))
             return False
         return True
 
@@ -157,9 +158,13 @@ class Validator(object):
 class Redis(object):
     """Validates Redis data"""
 
-    def __init__(self, provider):
+    def __init__(self, provider, truncate=50):
         """Initialize class properties."""
         self.provider = provider
+        self.truncate = truncate
+
+        # Properties
+        self.max_diff = 10
         self.redis_client = provider.tcex.playbook.db.r
 
     def not_null(self, variable):
@@ -167,8 +172,8 @@ class Redis(object):
         # Could do something like self.ne(variable, None), but want to be pretty specific on
         # the errors on this one
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.provider.log.info('[validator] Variable: {}'.format(variable))
-        self.provider.log.info('[validator] DB Data: {}'.format(variable_data))
+        self.provider.log.info('[validate] Variable: {}'.format(variable))
+        self.provider.log.info('[validate] DB Data: {}'.format(variable_data))
         if not variable:
             self.provider.log.error('NoneError: Redis Variable not provided')
             return False
@@ -184,8 +189,8 @@ class Redis(object):
     def type(self, variable):
         """Validate the type of a redis variable"""
         variable_data = self.provider.tcex.playbook.read(variable)
-        self.provider.log.info('[validator] Variable: {}'.format(variable))
-        self.provider.log.info('[validator] App Data:  {}'.format(variable_data))
+        self.provider.log.info('[validate] Variable: {}'.format(variable))
+        self.provider.log.info('[validate] App Data:  {}'.format(variable_data))
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -237,19 +242,25 @@ class Redis(object):
         else:
             app_data = self.provider.tcex.playbook.read(variable)
 
-        # Logging
+        passed = self.provider.get_operator(op)(app_data, test_data, **kwargs)
+
+        # log validation data in a readable format
+        self.provider.log.info('{0} {1} {0}'.format('-' * 10, variable))
+        self.validate_log_output(passed, app_data, test_data, op)
+
+        # # Logging
+        # self.provider.log.info('[validate] App Data:  {}'.format(app_data))
+        # self.provider.log.info('[validate] Test Data: {}'.format(test_data))
+        # self.provider.log.info('[validate] Operator:  {}'.format(op))
+
+        # self.provider.log.info('[validate] Passed:  {}'.format(passed))
+
+        # debug
         self.provider.log.debug(
             'redis-cli hget {} \'{}\''.format(
                 self.provider.tcex.args.tc_playbook_db_context, variable
             )
         )
-        self.provider.log.info('[validator] Variable:  {}'.format(variable))
-        self.provider.log.info('[validator] App Data:  {}'.format(app_data))
-        self.provider.log.info('[validator] Test Data: {}'.format(test_data))
-        self.provider.log.info('[validator] Operator:  {}'.format(op))
-
-        passed = self.provider.get_operator(op)(app_data, test_data, **kwargs)
-        self.provider.log.info('[validator] Passed:  {}'.format(passed))
 
         return passed
 
@@ -300,6 +311,79 @@ class Redis(object):
     def rex(self, variable, data):
         """Test App data with regex"""
         return self.data(variable, r'{}'.format(data), op='rex')
+
+    def validate_log_output(self, passed, app_data, test_data, op):
+        """Format the validation log output to be easier to read.
+
+        Args:
+            passed (bool): The results of the validation test.
+            app_data (str): The data store in Redis.
+            test_data (str): The user provided data.
+            op (str): The comparison operator.
+
+        Raises:
+            RuntimeError: Raise error on validation failure if halt_on_fail is True.
+        """
+        truncate = self.truncate
+        if app_data is not None and passed:
+            if isinstance(app_data, (string_types)) and len(app_data) > truncate:
+                app_data = app_data[:truncate]
+            elif isinstance(app_data, (list)):
+                db_data_truncated = []
+                for d in app_data:
+                    if d is not None and isinstance(d, string_types) and len(d) > truncate:
+                        db_data_truncated.append('{} ...'.format(d[: self.truncate]))
+                    else:
+                        db_data_truncated.append(d)
+                app_data = db_data_truncated
+
+        if test_data is not None and passed:
+            if isinstance(test_data, (string_types)) and len(test_data) > truncate:
+                test_data = test_data[: self.truncate]
+            elif isinstance(test_data, (list)):
+                user_data_truncated = []
+                for u in test_data:
+                    if isinstance(app_data, (string_types)) and len(u) > truncate:
+                        user_data_truncated.append('{} ...'.format(u[: self.truncate]))
+                    else:
+                        user_data_truncated.append(u)
+                test_data = user_data_truncated
+
+        self.provider.log.info(
+            '[validate] DB Data   : ({}), Type: [{}]'.format(app_data, type(app_data))
+        )
+        self.provider.log.info('[validate] Operator  : ({})'.format(op))
+        self.provider.log.info(
+            '[validate] User Data : ({}), Type: [{}]'.format(test_data, type(test_data))
+        )
+
+        if passed:
+            self.provider.log.info('[validate] Results   : Passed')
+        else:
+            self.provider.log.error('[validate] Results  : Failed')
+            if app_data is not None and test_data is not None and op in ['eq', 'ne']:
+                try:
+                    diff_count = 0
+                    for i, diff in enumerate(difflib.ndiff(app_data, test_data)):
+                        if diff[0] == ' ':  # no difference
+                            continue
+                        elif diff[0] == '-':
+                            self.provider.log.info(
+                                '[validate] Diff      : Missing data at index {}'.format(i)
+                            )
+                        elif diff[0] == '+':
+                            self.provider.log.info(
+                                '[validate] Diff      : Extra data at index {}'.format(i)
+                            )
+                        if diff_count > self.max_diff:
+                            # don't spam the logs if string are vastly different
+                            self.provider.log.info('Max number of differences reached.')
+                            break
+                        diff_count += 1
+                except TypeError:
+                    pass
+                except KeyError:
+                    pass
 
 
 class ThreatConnect(object):
