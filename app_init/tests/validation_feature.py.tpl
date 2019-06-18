@@ -12,28 +12,3 @@ class ValidationFeature(Validation):
     def __init__(self, validator):
         """Initialize class properties."""
         super(ValidationFeature, self).__init__(validator)
-
-    def validation(self, output_variables):
-        """Validate Redis output data."""
-        if output_variables is None:
-            return
-        % for variable in output_variables:
-
-        if '${variable}' in output_variables:
-            output_variable_data = output_variables.get('${variable}')
-            assert self.validator.redis.data(
-                '${variable}',
-                output_variable_data.get('expected_output', None),
-                output_variable_data.get('op', '='),
-            )
-        % endfor
-
-    % for method in output_methods:
-
-    def ${method}(self, variable, data):
-        assert self.validator.redis.data(
-            '${variable}',
-            data.get('expected_output', None),
-            data.get('op', '='),
-        )
-    % endfor

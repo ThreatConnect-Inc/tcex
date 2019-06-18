@@ -134,14 +134,15 @@ class Validation:
         """If not currently exist, generates the validation file."""
         if not os.path.isfile(self.validation_file):
             template = Template(self.validation_template)
-            template_data = {'output_data': self.output_data(output_variables)}
+            output_data = self.output_data(output_variables)
+            template_data = {'output_data': output_data}
             rendered_template = template.render(**template_data)
             with open(self.validation_file, 'a') as f:
                 f.write(rendered_template)
 
     def generate_feature(self, feature, file_):
         """If not currently exist, generates the validation file."""
-        validation_file = (self.base_dir, feature, 'validation_feature.py')
+        validation_file = os.path.join(self.base_dir, feature, 'validation_feature.py')
         if not os.path.isfile(validation_file):
             template = Template(self.validation_feature_template)
             template_data = {'feature': feature, 'file': file_}

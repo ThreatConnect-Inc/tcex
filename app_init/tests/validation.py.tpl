@@ -16,15 +16,16 @@ class Validation:
         % for data in output_data:
 
         if '${data['variable']}' in output_variables:
-            output_variable_data = output_variables.get('${data['variable']}')
-            self.${data['method']}('${data['variable']}', output_variable_data)
+            data = output_variables.get('${data['variable']}')
+            self.${data['method']}(data)
         % endfor
     % for data in output_data:
 
-    def ${data['method']}(self, variable, data):
+    def ${data['method']}(self, data):
+        """Assert output data for variable ${data['data['variable']}."""
         assert self.validator.redis.data(
-            variable,
-            data.get('expected_output', None),
+            '${data['variable']}',
+            data.get('expected_output'),
             data.get('op', '='),
         )
     % endfor
