@@ -3,7 +3,7 @@
 import pytest
 
 from tcex.testing import TestCasePlaybook
-from .validation import Validation  # pylint: disable=E0402
+from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 
 # pylint: disable=W0235,too-many-function-args
@@ -29,6 +29,5 @@ class TestFeature(TestCasePlaybook):
     @pytest.mark.parametrize('profile_name', ['test_profile'])
     def test_profiles(self, profile_name):
         """Run pre-created testing profiles."""
-        validator = Validation(self.validator)
         assert self.run_profile(profile_name) in self.profile(profile_name).get('exit_codes', [0])
-        validator.validation(self.profile(profile_name).get('outputs'))
+        ValidateFeature(self.validator).validate(self.profile(profile_name).get('outputs'))

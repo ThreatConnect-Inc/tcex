@@ -336,6 +336,7 @@ class TestCasePlaybook(TestCase):
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex().playbook.db.r
+        #
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""

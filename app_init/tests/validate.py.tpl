@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Validation file for testing profiles."""
+"""Validate App outputs Class."""
 
 
-class Validation:
-    """Validation base class for App output validation."""
+class Validate:
+    """Validate base class for App output validation."""
 
     def __init__(self, validator):
         """Initialize class properties."""
         self.validator = validator
 
-    def validation(self, output_variables):
+    def validate(self, output_variables):
         """Validate Redis output data."""
         if output_variables is None:
             return
@@ -22,7 +22,7 @@ class Validation:
     % for data in output_data:
 
     def ${data['method']}(self, data):
-        """Assert output data for variable ${data['data['variable']}."""
+        """Assert output data for variable ${data['variable']}."""
         assert self.validator.redis.data(
             '${data['variable']}',
             data.get('expected_output'),

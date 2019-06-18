@@ -93,7 +93,6 @@ class Validation:
         """Initialize class properties."""
         self.branch = branch
         self.base_dir = base_dir
-        self.validation_file = os.path.join(base_dir, 'validation.py')
         self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
         self._variable_parse = re.compile(self._variable_pattern)
 
@@ -132,17 +131,18 @@ class Validation:
 
     def generate(self, output_variables):
         """If not currently exist, generates the validation file."""
-        if not os.path.isfile(self.validation_file):
+        validation_file = os.path.join(self.base_dir, 'validate.py')
+        if not os.path.isfile(validation_file):
             template = Template(self.validation_template)
             output_data = self.output_data(output_variables)
             template_data = {'output_data': output_data}
             rendered_template = template.render(**template_data)
-            with open(self.validation_file, 'a') as f:
+            with open(validation_file, 'a') as f:
                 f.write(rendered_template)
 
     def generate_feature(self, feature, file_):
         """If not currently exist, generates the validation file."""
-        validation_file = os.path.join(self.base_dir, feature, 'validation_feature.py')
+        validation_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
         if not os.path.isfile(validation_file):
             template = Template(self.validation_feature_template)
             template_data = {'feature': feature, 'file': file_}
@@ -163,7 +163,7 @@ class Validation:
     @property
     def validation_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validation.py.tpl')
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate.py.tpl')
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -172,7 +172,7 @@ class Validation:
     @property
     def validation_feature_template(self):
         """Return template file"""
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validation_feature.py.tpl')
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
