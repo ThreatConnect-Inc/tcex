@@ -1430,13 +1430,14 @@ class TcExBatch(object):
             halt_on_error = self.halt_on_batch_error
 
         content = self.data
-        # store the length of the batch data to use for poll interval calculations
-        self.tcex.log.info('Batch Group Size: {:,}.'.format(len(content.get('group'))))
-        self.tcex.log.info('Batch Indicator Size {:,}.'.format(len(content.get('indicator'))))
         if self.debug:
             # special code for debugging App using batchV2.
             self.write_batch_json(content)
         if content.get('group') or content.get('indicator'):
+            # store the length of the batch data to use for poll interval calculations
+            self.tcex.log.info('Batch Group Size: {:,}.'.format(len(content.get('group'))))
+            self.tcex.log.info('Batch Indicator Size {:,}.'.format(len(content.get('indicator'))))
+
             try:
                 files = (('config', json.dumps(self.settings)), ('content', json.dumps(content)))
                 params = {'includeAdditional': 'true'}

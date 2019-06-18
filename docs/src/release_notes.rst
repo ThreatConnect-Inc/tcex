@@ -3,6 +3,11 @@
 Release Notes
 #############
 
+1.0.6
+=====
++ Updated logging initialization to create file handler when using inject_params.
++ Updated logging of batch sizes to not log when there is not content.
+
 1.0.5
 =====
 + Updated arg parsing to better handle delimited input strings for secureParams/AOT input.
