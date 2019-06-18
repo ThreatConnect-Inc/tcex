@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>App-Directory Structure &mdash; TcEx 1.0.4 documentation</title>
+  <title>App-Directory Structure &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
 
 
@@ -31,10 +38,6 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Module: Batch" href="module_batch.html" />
     <link rel="prev" title="App-Deployment Configuration" href="app_deployment_configuration.html" />
-
-
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -42,10 +45,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -59,7 +61,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -277,7 +279,9 @@
 49
 50
 51
-52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
+52
+53
+54</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">#=================================================</span>
 <span class="c1"># Python App Template</span>
 <span class="c1"># Version: 1.0.2</span>
 <span class="c1"># Last Updated: 2017/10/04</span>
@@ -288,6 +292,7 @@
 <span class="c1">#-------------------------------------------------</span>
 __pycache__
 *.pyc
+venv
 
 <span class="c1">#-------------------------------------------------</span>
 <span class="c1"># App Specific Exclusions</span>
@@ -302,6 +307,7 @@ sample-*.json
 <span class="c1">#-------------------------------------------------</span>
 build
 lib_*
+permutations.json
 target
 temp
 
@@ -943,7 +949,7 @@ nbproject
 <div class="section" id="requirements-txt-required">
 <h2>requirements.txt (required)<a class="headerlink" href="#requirements-txt-required" title="Permalink to this headline">¶</a></h2>
 <p>This file contains all the required Python dependencies for the App. The <strong>requirements.txt</strong> file is used by the <code class="docutils literal notranslate"><span class="pre">tclib</span></code> command to build the <strong>lib_x.x.x</strong> directories.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">0.9</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.0</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">tcex</span><span class="o">&gt;=</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span><span class="o">&lt;</span><span class="mf">1.1</span><span class="o">.</span><span class="mi">0</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -1041,10 +1047,7 @@ nbproject
 89
 90
 91
-92
-93
-94
-95</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+92</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;Playbook App&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
@@ -1109,17 +1112,14 @@ nbproject
             <span class="n">tc_action</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span>
             <span class="n">tc_action_formatted</span> <span class="o">=</span> <span class="n">tc_action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
             <span class="n">tc_action_map</span> <span class="o">=</span> <span class="s1">&#39;tc_action_map&#39;</span>  <span class="c1"># reserved property name for action to method map</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># run action method</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">):</span>
-                    <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">)()</span>
-                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">):</span>
-                    <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
-                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
-                    <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="c1"># run action method</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">):</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action</span><span class="p">)()</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">):</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_formatted</span><span class="p">)()</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">tc_action_map</span><span class="p">):</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">tc_action_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">)()</span>  <span class="c1"># pylint: disable=E1101</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">tcex</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Action method ({}) was not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">tc_action</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># default to run method</span>
@@ -1237,7 +1237,7 @@ nbproject
         <a href="module_batch.html" class="btn btn-neutral float-right" title="Module: Batch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="app_deployment_configuration.html" class="btn btn-neutral" title="App-Deployment Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="app_deployment_configuration.html" class="btn btn-neutral float-left" title="App-Deployment Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
@@ -1262,26 +1262,16 @@ nbproject
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>

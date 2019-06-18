@@ -64,11 +64,11 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 # source_suffix = '.rst'
 
-from recommonmark.parser import CommonMarkParser  # pylint: disable=C0413
+# from recommonmark.parser import CommonMarkParser  # pylint: disable=C0413
 
-source_parsers = {'.md': CommonMarkParser}
+# source_parsers = {'.md': CommonMarkParser}
 
-source_suffix = ['.rst', '.md']
+# source_suffix = ['.rst', '.md']
 
 # The encoding of source files.
 #

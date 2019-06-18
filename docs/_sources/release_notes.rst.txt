@@ -3,6 +3,12 @@
 Release Notes
 #############
 
+1.0.5
+=====
++ Updated arg parsing to better handle delimited input strings for secureParams/AOT input.
++ Updated TI module to better handle filters and retrieving generic indicator/group types.
++ Updated logging initialization to ensure user provided log path is available before adding file handler.
+
 1.0.4
 =====
 + Updated datastore module to prevent creating of empty record on index creation.

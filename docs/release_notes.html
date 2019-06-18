@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Release Notes &mdash; TcEx 1.0.4 documentation</title>
+  <title>Release Notes &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
 
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
 
 
@@ -31,10 +38,6 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="TcEx Package" href="tcex_docs/modules.html" />
     <link rel="prev" title="Results TC" href="results_tc.html" />
-
-
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -42,10 +45,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -59,7 +61,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -112,182 +114,183 @@
 <li class="toctree-l1"><a class="reference internal" href="proxies.html">Proxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results_tc.html">Results TC</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">1.0.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">1.0.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">1.0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">1.0.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">1.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">1.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">1.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">1.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">1.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">1.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">1.0.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x">0.9.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">0.9.13</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">0.9.12</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id9">0.9.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">0.9.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id11">0.9.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id12">0.9.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id13">0.9.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id14">0.9.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id15">0.9.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id16">0.9.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id17">0.9.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id18">0.9.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id19">0.9.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id20">0.9.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">0.9.13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">0.9.12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">0.9.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">0.9.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">0.9.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">0.9.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">0.9.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">0.9.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">0.9.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">0.9.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">0.9.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">0.9.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">0.9.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">0.9.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id21">0.8.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id22">0.8.27</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id23">0.8.26</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id24">0.8.25</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id25">0.8.24</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id26">0.8.23</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id27">0.8.22</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id28">0.8.21</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id29">0.8.20</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id30">0.8.19</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id31">0.8.18</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id32">0.8.17</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id33">0.8.16</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id34">0.8.15</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id35">0.8.14</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id36">0.8.13</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id37">0.8.12</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id38">0.8.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id39">0.8.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id40">0.8.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id41">0.8.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id42">0.8.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id43">0.8.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id44">0.8.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id45">0.8.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id46">0.8.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id47">0.8.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id48">0.8.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id49">0.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id22">0.8.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id23">0.8.27</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">0.8.26</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">0.8.25</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">0.8.24</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">0.8.23</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">0.8.22</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">0.8.21</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">0.8.20</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">0.8.19</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">0.8.18</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">0.8.17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">0.8.16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">0.8.15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">0.8.14</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">0.8.13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">0.8.12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">0.8.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">0.8.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">0.8.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">0.8.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">0.8.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">0.8.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">0.8.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">0.8.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">0.8.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">0.8.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id49">0.8.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">0.8.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id50">0.7.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id51">0.7.21</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id52">0.7.20</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id53">0.7.19</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id54">0.7.18</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id55">0.7.17</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id56">0.7.16</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id57">0.7.15</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id58">0.7.14</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id59">0.7.13</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id60">0.7.12</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id61">0.7.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id62">0.7.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id63">0.7.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id64">0.7.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id65">0.7.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id66">0.7.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id67">0.7.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id68">0.7.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id69">0.7.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id70">0.7.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id71">0.7.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id72">0.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id51">0.7.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id52">0.7.21</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">0.7.20</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id54">0.7.19</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">0.7.18</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id56">0.7.17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id57">0.7.16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id58">0.7.15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">0.7.14</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">0.7.13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id61">0.7.12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id62">0.7.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">0.7.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">0.7.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">0.7.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id66">0.7.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id67">0.7.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id68">0.7.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id69">0.7.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id70">0.7.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">0.7.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id72">0.7.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id73">0.7.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id73">0.6.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id74">0.6.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id75">0.6.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id76">0.6.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id77">0.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id74">0.6.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id75">0.6.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id76">0.6.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id77">0.6.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id78">0.6.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id78">0.5.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id79">0.5.23</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id80">0.5.22</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id81">0.5.21</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id82">0.5.20</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id83">0.5.19</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id84">0.5.18</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id85">0.5.17</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id86">0.5.16</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id87">0.5.15</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id88">0.5.14</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id89">0.5.13</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id90">0.5.12</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id91">0.5.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id92">0.5.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id93">0.5.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id94">0.5.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id95">0.5.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id96">0.5.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id97">0.5.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id98">0.5.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id99">0.5.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id100">0.5.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id101">0.5.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id102">0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id79">0.5.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id80">0.5.23</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id81">0.5.22</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id82">0.5.21</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id83">0.5.20</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id84">0.5.19</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id85">0.5.18</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id86">0.5.17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id87">0.5.16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id88">0.5.15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id89">0.5.14</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id90">0.5.13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id91">0.5.12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id92">0.5.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id93">0.5.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id94">0.5.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id95">0.5.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id96">0.5.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id97">0.5.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id98">0.5.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id99">0.5.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id100">0.5.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id101">0.5.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id102">0.5.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id103">0.5.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id103">0.4.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id104">0.4.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id105">0.4.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id106">0.4.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id107">0.4.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id108">0.4.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id109">0.4.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id110">0.4.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id111">0.4.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id112">0.4.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id104">0.4.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id105">0.4.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id106">0.4.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id107">0.4.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id108">0.4.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id109">0.4.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id110">0.4.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id111">0.4.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id112">0.4.3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id113">0.4.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id114">0.4.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id115">0.4.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id114">0.4.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id115">0.4.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id116">0.4.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id116">0.3.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id117">0.3.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id118">0.3.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id119">0.3.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id120">0.3.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id121">0.3.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id122">0.3.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id123">0.3.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id124">0.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id117">0.3.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id118">0.3.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id119">0.3.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id120">0.3.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id121">0.3.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id122">0.3.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id123">0.3.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id124">0.3.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id125">0.3.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id125">0.2.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id126">0.2.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id127">0.2.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id128">0.2.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id129">0.2.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id130">0.2.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id131">0.2.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id132">0.2.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id133">0.2.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id134">0.2.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id135">0.2.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id136">0.2.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id137">0.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id126">0.2.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id127">0.2.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id128">0.2.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id129">0.2.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id130">0.2.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id131">0.2.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id132">0.2.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id133">0.2.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id134">0.2.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id135">0.2.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id136">0.2.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id137">0.2.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id138">0.2.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id138">0.1.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id139">0.1.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id140">0.1.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id141">0.1.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id142">0.1.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id143">0.1.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id144">0.1.1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id145">0.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id139">0.1.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id140">0.1.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id141">0.1.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id142">0.1.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id143">0.1.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id144">0.1.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id145">0.1.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id146">0.1.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id146">0.0.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id147">0.0.12</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id148">0.0.11</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id149">0.0.10</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id150">0.0.9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id151">0.0.8</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id152">0.0.7</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id153">0.0.6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id154">0.0.5</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id155">0.0.4</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id156">0.0.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id157">0.0.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id158">0.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id147">0.0.x</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id148">0.0.12</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id149">0.0.11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id150">0.0.10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id151">0.0.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id152">0.0.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id153">0.0.7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id154">0.0.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id155">0.0.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id156">0.0.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id157">0.0.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id158">0.0.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id159">0.0.1</a></li>
 </ul>
 </li>
 </ul>
@@ -359,14 +362,22 @@
   <div class="section" id="release-notes">
 <span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id2">
-<h2>1.0.4<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2>1.0.5<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Updated arg parsing to better handle delimited input strings for secureParams/AOT input.</li>
+<li>Updated TI module to better handle filters and retrieving generic indicator/group types.</li>
+<li>Updated logging initialization to ensure user provided log path is available before adding file handler.</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>1.0.4<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated datastore module to prevent creating of empty record on index creation.</li>
 <li>Updated batch module to support additional debugging features.</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>1.0.3<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>1.0.3<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated playbook read for <code class="docutils literal notranslate"><span class="pre">\s</span></code> replacement issue in Python 3.7.</li>
 <li>Updated utils <code class="docutils literal notranslate"><span class="pre">unix_time_to_datetime()</span></code> method to handle unix timestamps with milliseconds that are not floats.</li>
@@ -374,22 +385,22 @@
 <li>Updated tcinit for temporary proxy fields names.</li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>1.0.2<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>1.0.2<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated <strong>read_embedded</strong> to escape newline characters in embedded string values</li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>1.0.1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>1.0.1<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Updated <strong>install.json</strong> schema validation to ensure that <strong>displayName</strong> contains a minimum of three characters</li>
 <li>Updated <strong>read_embedded</strong> to cast data value to a string</li>
 <li>Made minor updates to the TI module</li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>1.0.0<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>1.0.0<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Added new Threat Intel (TI) module to interact with ThreatConnect REST API</li>
 <li>Added support of “s” characters to be replaced automatically with a space (” “) character on user string input in Playbook Apps</li>
@@ -400,30 +411,30 @@
 </div>
 <div class="section" id="x">
 <h2>0.9.x<a class="headerlink" href="#x" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id7">
-<h3>0.9.13<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>0.9.13<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>ReadArg</strong> decorator to support <code class="docutils literal notranslate"><span class="pre">fail_on</span></code> parameter</li>
 <li>Updated <strong>IterateOnArg</strong> decorator to support <code class="docutils literal notranslate"><span class="pre">fail_on</span></code> parameter and removed <code class="docutils literal notranslate"><span class="pre">fail_on_empty</span></code></li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">Datastore</span></code> module to support no ID for POST and GET methods</li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h3>0.9.12<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>0.9.12<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new <strong>FailOnInput</strong> decorator</li>
 <li>Changed <strong>FailOn</strong> decorator to <strong>FailOnError</strong> with arg input changes to enable</li>
 <li>Added additional logging to <strong>IterateOnArg</strong> decorator</li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h3>0.9.11<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>0.9.11<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Reverted change to Playbook module <code class="docutils literal notranslate"><span class="pre">read()</span></code> method for null value returned when Array is True</li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h3>0.9.10<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>0.9.10<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated App templates to call <code class="docutils literal notranslate"><span class="pre">parse_args()</span></code> from <strong>init</strong> method</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">IterateOnArg</span></code> decorator to take an addition default value</li>
@@ -432,8 +443,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">TcExProfile</span></code> module to use new <strong>layout.json</strong> output logic and always display output variables unless display value exists and return negative validation</li>
 </ul>
 </div>
-<div class="section" id="id11">
-<h3>0.9.9<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>0.9.9<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new <code class="docutils literal notranslate"><span class="pre">Cache</span></code> module</li>
 <li>Added new <code class="docutils literal notranslate"><span class="pre">DataStore</span></code> module</li>
@@ -444,15 +455,15 @@
 <li>Updated <strong>install.json</strong> schema to include <strong>commitHash</strong></li>
 </ul>
 </div>
-<div class="section" id="id12">
-<h3>0.9.8<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>0.9.8<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> being imported while not required for Apps</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> to better support App bundle projects</li>
 </ul>
 </div>
-<div class="section" id="id13">
-<h3>0.9.7<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>0.9.7<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_args.html#module-tcex.tcex_args" title="tcex.tcex_args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_args</span></code></a> module to parse injected params using a <strong>=</strong> separator instead of a space+ Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command to support permutations logic for Apps with <strong>layout.json</strong> conditional input parameters</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command to update the profile schema to <strong>v3</strong>. Note that <strong>app.arg</strong> is now <strong>app.arg.optional</strong> and <strong>app.arg.required</strong>.</li>
@@ -460,8 +471,8 @@
 <li>Updated Batch module to support new 5.8+ merge of file hash feature</li>
 </ul>
 </div>
-<div class="section" id="id14">
-<h3>0.9.6<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id15">
+<h3>0.9.6<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added a fix for <code class="docutils literal notranslate"><span class="pre">tcvalidate</span></code> output display statement validation</li>
 <li>Updated <strong>install.json</strong> schema file</li>
@@ -469,28 +480,28 @@
 <li>Updated Batch module to handle <strong>xid</strong> as <strong>str</strong> for <strong>py2</strong> Apps</li>
 </ul>
 </div>
-<div class="section" id="id15">
-<h3>0.9.5<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id16">
+<h3>0.9.5<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Enabled <strong>package_data</strong> in <strong>setup.py</strong> for JSON schema files</li>
 </ul>
 </div>
-<div class="section" id="id16">
-<h3>0.9.4<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id17">
+<h3>0.9.4<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Switched from <strong>setup.py package_data</strong> to <strong>MANIFEST.in</strong> for JSON schema files</li>
 </ul>
 </div>
-<div class="section" id="id17">
-<h3>0.9.3<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id18">
+<h3>0.9.3<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new <code class="docutils literal notranslate"><span class="pre">tcvalidate</span></code> command for App Builder</li>
 <li>Added validation of <strong>layout.json</strong> schema, inputs, and outputs</li>
 <li>Migrated JSON validation files from App to TcEx</li>
 </ul>
 </div>
-<div class="section" id="id18">
-<h3>0.9.2<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id19">
+<h3>0.9.2<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new <code class="docutils literal notranslate"><span class="pre">FailOn</span></code> App decorator</li>
 <li>Updated <strong>run.py</strong> in Playbook templates to handle <strong>TypeError</strong> on incorrect action</li>
@@ -498,8 +509,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to handle null value in args</li>
 </ul>
 </div>
-<div class="section" id="id19">
-<h3>0.9.1<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id20">
+<h3>0.9.1<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue in <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> with handling errors</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> command to validate import module for <strong>.py</strong> file in project-root directory</li>
@@ -509,8 +520,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">run.py</span></code> template file to ensure proper paths are set for an App</li>
 </ul>
 </div>
-<div class="section" id="id20">
-<h3>0.9.0<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id21">
+<h3>0.9.0<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated all optional args in Batch module for Group/Indicator objects to kwargs. This will allow easier updates for new values in the future.</li>
 <li>Updated the decode arg on the read Binary/BinaryArray methods to be False by default. When set to True, the <code class="docutils literal notranslate"><span class="pre">read()</span></code> method cannot be used in some use cases.</li>
@@ -534,10 +545,10 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id21">
-<h2>0.8.x<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id22">
-<h3>0.8.27<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<h2>0.8.x<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id23">
+<h3>0.8.27<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added decorator to provide common methods for Playbook Apps.</li>
 <li>Added logic to <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> to do basic syntax validation of <code class="docutils literal notranslate"><span class="pre">.py</span></code> and <code class="docutils literal notranslate"><span class="pre">.json</span></code> files</li>
@@ -546,16 +557,16 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tclib</span></code> logic for <strong>lib_latest</strong> symbolic link</li>
 </ul>
 </div>
-<div class="section" id="id23">
-<h3>0.8.26<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id24">
+<h3>0.8.26<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcinit</span></code> to include <strong>migration</strong> as an action to help convert non-App Builder compliant Apps</li>
 <li>Updated Utils module for additional method to determine local timezone</li>
 <li>Updated Utils module to output correct <strong>total_weeks</strong> value</li>
 </ul>
 </div>
-<div class="section" id="id24">
-<h3>0.8.25<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id25">
+<h3>0.8.25<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcinit</span></code> command CLI option <code class="docutils literal notranslate"><span class="pre">--upgrade</span></code> to download additional files</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command to use <strong>dockerImage</strong> parameter from <strong>install.json</strong> or profile</li>
@@ -566,16 +577,16 @@
 <li>Updated the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file for App templates</li>
 </ul>
 </div>
-<div class="section" id="id25">
-<h3>0.8.24<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id26">
+<h3>0.8.24<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed GH issue #(60)</li>
 <li>Updated App templates.  Added <strong>tc_action</strong> logic to handle launching <strong>action</strong> methods in the App class</li>
 <li>Added <code class="docutils literal notranslate"><span class="pre">--docker</span></code> flag to <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command to launch App in docker container</li>
 </ul>
 </div>
-<div class="section" id="id26">
-<h3>0.8.23<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id27">
+<h3>0.8.23<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updatd Batch module to handle Attribute values of False</li>
 <li>Added <code class="docutils literal notranslate"><span class="pre">read_array</span></code> method to Playbook module</li>
@@ -583,15 +594,15 @@
 <li>Update <strong>tcprofile</strong> to create the <strong>tcex.d</strong> directory automatically</li>
 </ul>
 </div>
-<div class="section" id="id27">
-<h3>0.8.22<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id28">
+<h3>0.8.22<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Removed <code class="docutils literal notranslate"><span class="pre">__slots__</span></code> on Batch module due to issues with Python 2</li>
 <li>Updated <strong>tcinit</strong> and corresponding App templates</li>
 </ul>
 </div>
-<div class="section" id="id28">
-<h3>0.8.21<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id29">
+<h3>0.8.21<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added PDF method to Resource module for supported Group types</li>
 <li>Added <strong>task_id</strong> method for Task class</li>
@@ -600,14 +611,14 @@
 <li>Updated <strong>tcrun</strong> for handling Binary/BinaryArray validation</li>
 </ul>
 </div>
-<div class="section" id="id29">
-<h3>0.8.20<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id30">
+<h3>0.8.20<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed deletion in Batch module for TC instances &lt; 5.7</li>
 </ul>
 </div>
-<div class="section" id="id30">
-<h3>0.8.19<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id31">
+<h3>0.8.19<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Removed <strong>app.lock</strong> logic</li>
 <li>Updated <strong>file_content</strong> logic for Documents and Reports</li>
@@ -615,29 +626,29 @@
 <li>Added <strong>playbook_triggers_enabled</strong> parameter to Batch module (requires ThreatConnect 5.7)</li>
 </ul>
 </div>
-<div class="section" id="id31">
-<h3>0.8.18<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id32">
+<h3>0.8.18<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Made minor change to batch poll</li>
 <li>Updated Batch module <code class="docutils literal notranslate"><span class="pre">close()</span></code> method to check for xids-saved file existence before deletion</li>
 </ul>
 </div>
-<div class="section" id="id32">
-<h3>0.8.17<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id33">
+<h3>0.8.17<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <strong>app.lock</strong> file to temp directory to ensure single execution</li>
 </ul>
 </div>
-<div class="section" id="id33">
-<h3>0.8.16<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id34">
+<h3>0.8.16<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Removed debugging flag from Batch module and replaced with logic to control debug externally</li>
 <li>Updated batch-poll method logic to poll more frequently</li>
 <li>Update Resource module to allow the addition of a body when reading from the datastore</li>
 </ul>
 </div>
-<div class="section" id="id34">
-<h3>0.8.15<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id35">
+<h3>0.8.15<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added signal handler to tcex to gracefully handle interrupts</li>
 <li>Added new <code class="docutils literal notranslate"><span class="pre">tcinit</span></code> command to download files required for a new App or update files in an existing App</li>
@@ -647,8 +658,8 @@
 <li>Moved and added supporting file to <strong>app_init</strong> directory</li>
 </ul>
 </div>
-<div class="section" id="id35">
-<h3>0.8.14<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id36">
+<h3>0.8.14<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code> method to allow cleanup of temp files when batch job is done</li>
 <li>Added global overrides for <strong>halt_on_error</strong> in Batch module</li>
@@ -658,8 +669,8 @@
 <li>Changed tcrun to not use shell on Windows systems</li>
 </ul>
 </div>
-<div class="section" id="id36">
-<h3>0.8.13<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id37">
+<h3>0.8.13<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Batch module to use Submit Job/Submit Data for deletes</li>
 <li>Replaced <strong>tcex_develop</strong> arg with branch arg for tclib command</li>
@@ -667,8 +678,8 @@
 <li>Added default value for Email score in Batch module</li>
 </ul>
 </div>
-<div class="section" id="id37">
-<h3>0.8.12<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id38">
+<h3>0.8.12<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added active property to Indicator type objects</li>
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code> method be best effort</li>
@@ -677,8 +688,8 @@
 <li>Fixed issue with <strong>–unmask</strong> arg not working on tcrun command</li>
 </ul>
 </div>
-<div class="section" id="id38">
-<h3>0.8.11<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id39">
+<h3>0.8.11<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Merged AOT feature in prep for 5.7</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.install_json" title="tcex.tcex.TcEx.install_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">install_json()</span></code></a> method to load <strong>install.json</strong>, which is used in the injection method to determine the structure on the param values</li>
@@ -692,8 +703,8 @@
 <li>Fixed validation issues in tcrun</li>
 </ul>
 </div>
-<div class="section" id="id39">
-<h3>0.8.10<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id40">
+<h3>0.8.10<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>submit_create_and_upload</strong> method to clear raw list after submission</li>
 <li>Rewrote <strong>results_tc</strong> method to handle updates to key/value pairs</li>
@@ -701,8 +712,8 @@
 <li>Updated tclib to support building tcex develop version with <strong>–tcex_develop</strong> CLI flag</li>
 </ul>
 </div>
-<div class="section" id="id40">
-<h3>0.8.9<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id41">
+<h3>0.8.9<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Rewrote tcrun and tcprofile commands</li>
 <li>Removed tcdata commands</li>
@@ -710,56 +721,56 @@
 <li>Changed <strong>read_binary_array</strong> method to decode Redis data automatically</li>
 </ul>
 </div>
-<div class="section" id="id41">
-<h3>0.8.8<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id42">
+<h3>0.8.8<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.exit" title="tcex.tcex.TcEx.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> methods to treat exit code of 3 as non-failure</li>
 <li>Updated v2 Batch createAndUpload</li>
 </ul>
 </div>
-<div class="section" id="id42">
-<h3>0.8.7<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id43">
+<h3>0.8.7<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated secure params injection to handle pipe-delimited multiple-choice values</li>
 </ul>
 </div>
-<div class="section" id="id43">
-<h3>0.8.6<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id44">
+<h3>0.8.6<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with API logging not working when secure params are enabled</li>
 <li>Fixed issue with API logging timestamp precision</li>
 </ul>
 </div>
-<div class="section" id="id44">
-<h3>0.8.5<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id45">
+<h3>0.8.5<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated tcdata for Playbook variable creation during staging testing data</li>
 <li>Updated tcex logging for level and removal of stream logger once API logger is initialized</li>
 </ul>
 </div>
-<div class="section" id="id45">
-<h3>0.8.4<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id46">
+<h3>0.8.4<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated tcdata to handle binary array</li>
 <li>Updated tclib command to support environment variables in <strong>tcex.json</strong> file</li>
 <li>Added initial functionality for v2 Batch <strong>create and upload</strong></li>
 </ul>
 </div>
-<div class="section" id="id46">
-<h3>0.8.3<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id47">
+<h3>0.8.3<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated regex for Playbook variables</li>
 </ul>
 </div>
-<div class="section" id="id47">
-<h3>0.8.2<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id48">
+<h3>0.8.2<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Tcdata module for local testing</li>
 <li>Updated Batch v2 API</li>
 </ul>
 </div>
-<div class="section" id="id48">
-<h3>0.8.1<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id49">
+<h3>0.8.1<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated secureParams loading order</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_logger.html#module-tcex.tcex_logger" title="tcex.tcex_logger"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_logger</span></code></a> module</li>
@@ -768,8 +779,8 @@
 <li>Updated dpcuments for Metrics, Notifications, and Batch</li>
 </ul>
 </div>
-<div class="section" id="id49">
-<h3>0.8.0<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id50">
+<h3>0.8.0<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <strong>tcex.session</strong> to provide access to the ThreatConnect API using Requests’ native interface</li>
 <li>Added <code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_batch_v2</span></code> module to replace the Jobs module starting in ThreatConnect 5.6</li>
@@ -786,23 +797,23 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id50">
-<h2>0.7.x<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id51">
-<h3>0.7.21<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h3>
+<h2>0.7.x<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id52">
+<h3>0.7.21<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with newstr when using quote() method in <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_indicator" title="tcex.tcex.TcEx.safe_indicator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safe_indicator()</span></code></a></li>
 </ul>
 </div>
-<div class="section" id="id52">
-<h3>0.7.20<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id53">
+<h3>0.7.20<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated logging to log App name and other data</li>
 <li>Added Notifications module for ThreatConnect 5.6+</li>
 </ul>
 </div>
-<div class="section" id="id53">
-<h3>0.7.19<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id54">
+<h3>0.7.19<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated secure params injection to treat string value of True as Boolean/flag</li>
 <li>Updated secure params to handle unicode values in py2</li>
@@ -810,8 +821,8 @@
 <li>Updated token renewal to handle issue with newstr</li>
 </ul>
 </div>
-<div class="section" id="id54">
-<h3>0.7.18<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id55">
+<h3>0.7.18<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Jobs module to not call safetag method when using Resource module</li>
 <li>Updated Intrusion Set class in Resource module</li>
@@ -821,15 +832,15 @@
 <li>Added new secure params feature</li>
 </ul>
 </div>
-<div class="section" id="id55">
-<h3>0.7.17<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id56">
+<h3>0.7.17<a class="headerlink" href="#id56" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updatde Utils module for handling naive datetime in py2</li>
 <li>Added <strong>to_bool()</strong> method back to Utils module</li>
 </ul>
 </div>
-<div class="section" id="id56">
-<h3>0.7.16<a class="headerlink" href="#id56" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id57">
+<h3>0.7.16<a class="headerlink" href="#id57" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated utils datetime methods to not require a timezone</li>
 <li>Updated Tag class to urlencode tag value so slashes are supported</li>
@@ -840,65 +851,65 @@
 <li>Added <strong>deleted</strong> endpoint for Indicators.</li>
 </ul>
 </div>
-<div class="section" id="id57">
-<h3>0.7.15<a class="headerlink" href="#id57" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id58">
+<h3>0.7.15<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Jobs module to delete by name when using replace for Groups</li>
 <li>Updated token renewal to log more information on failure</li>
 <li>Updated Playbooks read-binary array to better handle null values</li>
 </ul>
 </div>
-<div class="section" id="id58">
-<h3>0.7.14<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id59">
+<h3>0.7.14<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated file Indicator class for proper handling of Attributes, Tags, and Labels</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.expand_indicators" title="tcex.tcex.TcEx.expand_indicators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">expand_indicators()</span></code></a> method to use a new regex to handle more formats for file hashes and custom Indicators</li>
 </ul>
 </div>
-<div class="section" id="id59">
-<h3>0.7.13<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id60">
+<h3>0.7.13<a class="headerlink" href="#id60" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with embedded variable matching during exact variable check</li>
 </ul>
 </div>
-<div class="section" id="id60">
-<h3>0.7.12<a class="headerlink" href="#id60" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id61">
+<h3>0.7.12<a class="headerlink" href="#id61" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> for py2 unicode issue in ipAddress module</li>
 </ul>
 </div>
-<div class="section" id="id61">
-<h3>0.7.11<a class="headerlink" href="#id61" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id62">
+<h3>0.7.11<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module to automatically handle files hashes in format “md5 : sha1 : sha256”</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module to reformat ipv6 addresses to same format as TC</li>
 </ul>
 </div>
-<div class="section" id="id62">
-<h3>0.7.10<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id63">
+<h3>0.7.10<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>__main__.py</strong> template with better logic to detect Python lib directory version</li>
 <li>Updated regex patterns for variable matching in Paybook module</li>
 <li>Updated Playbook module function in handling variables</li>
 </ul>
 </div>
-<div class="section" id="id63">
-<h3>0.7.9<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id64">
+<h3>0.7.9<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_embedded()</span></code></a> method to better support embedded variables</li>
 <li>Added <strong>–report</strong> arg to <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to output a JSON Report of profiles and run data</li>
 <li>Added new JSON string comparison operator (jc/json compare) to <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to compare two JSON strings (requires DeepDiff to be installed locally)</li>
 </ul>
 </div>
-<div class="section" id="id64">
-<h3>0.7.8<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id65">
+<h3>0.7.8<a class="headerlink" href="#id65" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <strong>KeyValueArray</strong> operator to <code class="docutils literal notranslate"><span class="pre">tcdata</span></code>, which allows searching for a single key/value entry in array</li>
 <li>Updated functionality to replace non-quoted embedded variable to handle duplicate variables in <strong>KeyValueArray</strong></li>
 </ul>
 </div>
-<div class="section" id="id65">
-<h3>0.7.7<a class="headerlink" href="#id65" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id66">
+<h3>0.7.7<a class="headerlink" href="#id66" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new string comparison operator (sc) to <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> that strips all white space before eq comparison</li>
 <li>Added new functionality to <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook" title="tcex.tcex_playbook.TcExPlaybook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExPlaybook</span></code></a> to replace non-quoted embedded variables in <strong>Read KeyValueArrays</strong></li>
@@ -907,14 +918,14 @@
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils.timedelta" title="tcex.tcex_utils.TcExUtils.timedelta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">timedelta()</span></code></a> method to return delta object from two provided datetime expressions</li>
 </ul>
 </div>
-<div class="section" id="id66">
-<h3>0.7.6<a class="headerlink" href="#id66" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id67">
+<h3>0.7.6<a class="headerlink" href="#id67" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with _newstr_ and dynamic-class generation</li>
 </ul>
 </div>
-<div class="section" id="id67">
-<h3>0.7.5<a class="headerlink" href="#id67" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id68">
+<h3>0.7.5<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated all TcEx framework command-line interface (CLI) commands to use utf-8 encoding by default</li>
 <li>Replaced usage of unicode with built-in strs (Python 2/3 compatible</li>
@@ -922,8 +933,8 @@
 <li>Update usage of <strong>urllib.quote</strong> to be Python 2/3 compatible</li>
 </ul>
 </div>
-<div class="section" id="id68">
-<h3>0.7.4<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id69">
+<h3>0.7.4<a class="headerlink" href="#id69" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom" title="tcex.tcex_resources.Resource.association_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">association_custom()</span></code></a> to handle boolean values that are passed as strings</li>
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">_resource()</span></code> method to handle boolean returned as strings from the API</li>
@@ -931,8 +942,8 @@
 <li>Update the Log module to use <strong>tcex</strong> instead of <strong>tcapp</strong></li>
 </ul>
 </div>
-<div class="section" id="id69">
-<h3>0.7.3<a class="headerlink" href="#id69" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id70">
+<h3>0.7.3<a class="headerlink" href="#id70" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_utils.html#tcex.tcex_utils.TcExUtils" title="tcex.tcex_utils.TcExUtils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExUtils</span></code></a> module with date functions to handle common date-use cases</li>
 <li>Added DeepDiff functionality to <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> for validating unsorted dictionaries and list</li>
@@ -942,15 +953,15 @@
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.File.file_action" title="tcex.tcex_resources.File.file_action"><code class="xref py py-meth docutils literal notranslate"><span class="pre">file_action()</span></code></a> method as alias to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom" title="tcex.tcex_resources.Resource.association_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">association_custom()</span></code></a></li>
 </ul>
 </div>
-<div class="section" id="id70">
-<h3>0.7.2<a class="headerlink" href="#id70" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id71">
+<h3>0.7.2<a class="headerlink" href="#id71" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> command for issue on sorting list in Python 3</li>
 <li>Added update for <strong>tcex.json</strong> file to allow the App version to be specified instead of using <strong>programVersion</strong> from <strong>install.json</strong></li>
 </ul>
 </div>
-<div class="section" id="id71">
-<h3>0.7.1<a class="headerlink" href="#id71" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id72">
+<h3>0.7.1<a class="headerlink" href="#id72" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added stub support for <strong>associatedGroup</strong> in Batch Indicator JSON</li>
 <li>Updated the TcEx Job module to better handle Document uploads in Python 3</li>
@@ -959,8 +970,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tclib</span></code> to remove the old lib directory before creating the lib directory</li>
 </ul>
 </div>
-<div class="section" id="id72">
-<h3>0.7.0<a class="headerlink" href="#id72" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id73">
+<h3>0.7.0<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated the TcEx framework to only build custom Indicator classes when working with custom Indicators</li>
 <li>Updated TcEx Jobs module Group add logic to fix issue with skipping existing Groups</li>
@@ -972,17 +983,17 @@
 </div>
 </div>
 </div>
-<div class="section" id="id73">
-<h2>0.6.x<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id74">
-<h3>0.6.3<a class="headerlink" href="#id74" title="Permalink to this headline">¶</a></h3>
+<h2>0.6.x<a class="headerlink" href="#id74" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id75">
+<h3>0.6.3<a class="headerlink" href="#id75" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue in <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> when validating that data is not string type</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> to set type check to binary on binary data</li>
 </ul>
 </div>
-<div class="section" id="id75">
-<h3>0.6.2<a class="headerlink" href="#id75" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id76">
+<h3>0.6.2<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Playbook <strong>create_binary</strong> and <strong>create_binary</strong> array for to better support py3.</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to support Security Labels in staged data</li>
@@ -990,15 +1001,15 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to support variable reference <strong>#App:4768:tc.address!TCEntity::value</strong> during validation</li>
 </ul>
 </div>
-<div class="section" id="id76">
-<h3>0.6.1<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id77">
+<h3>0.6.1<a class="headerlink" href="#id77" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to validate string as <strong>string_types</strong> for “is type” check using six modules</li>
 <li>Added fix for code font not matching line numbers in the documents</li>
 </ul>
 </div>
-<div class="section" id="id77">
-<h3>0.6.0<a class="headerlink" href="#id77" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id78">
+<h3>0.6.0<a class="headerlink" href="#id78" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.CustomMetric" title="tcex.tcex_resources.CustomMetric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">CustomMetric</span></code></a> module to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module</li>
 <li>Renamed <code class="docutils literal notranslate"><span class="pre">_args</span></code> variable in <strong>tcex.py</strong> to <code class="docutils literal notranslate"><span class="pre">default_args</span></code></li>
@@ -1007,10 +1018,10 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id78">
-<h2>0.5.x<a class="headerlink" href="#id78" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id79">
-<h3>0.5.23<a class="headerlink" href="#id79" title="Permalink to this headline">¶</a></h3>
+<h2>0.5.x<a class="headerlink" href="#id79" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id80">
+<h3>0.5.23<a class="headerlink" href="#id80" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Replaced use of <code class="docutils literal notranslate"><span class="pre">str()</span></code> in TcEx Playbook module</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to pass <strong>data_owner</strong> for each action on <code class="docutils literal notranslate"><span class="pre">tcdata</span></code></li>
@@ -1018,8 +1029,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> write entity out as variable</li>
 </ul>
 </div>
-<div class="section" id="id80">
-<h3>0.5.22<a class="headerlink" href="#id80" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id81">
+<h3>0.5.22<a class="headerlink" href="#id81" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> to support new parameters</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to properly handle older <strong>tcex.json</strong> files</li>
@@ -1027,8 +1038,8 @@
 <li>Added additional logging to TcEx Job for logging API response</li>
 </ul>
 </div>
-<div class="section" id="id81">
-<h3>0.5.21<a class="headerlink" href="#id81" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id82">
+<h3>0.5.21<a class="headerlink" href="#id82" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">job()</span></code> association feature to handle Group-&gt; Indicator and Group-&gt; Group associations</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safe_group_name" title="tcex.tcex.TcEx.safe_group_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safe_group_name()</span></code></a> method to ensure Group meets the required length</li>
@@ -1037,8 +1048,8 @@
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">job()</span></code> to support upload of file to Document Group</li>
 </ul>
 </div>
-<div class="section" id="id82">
-<h3>0.5.20<a class="headerlink" href="#id82" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id83">
+<h3>0.5.20<a class="headerlink" href="#id83" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated token renewal URL</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> to include <strong>api_default_org, tc_proxy_external, tc_proxy_host, tc_proxy_port, tcp_proxy_password, tc_proxy_tc, tc_proxy_username</strong></li>
@@ -1047,32 +1058,32 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tclib</span></code> to check for <strong>requirements.txt</strong></li>
 </ul>
 </div>
-<div class="section" id="id83">
-<h3>0.5.19<a class="headerlink" href="#id83" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id84">
+<h3>0.5.19<a class="headerlink" href="#id84" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>tcex.playbook</strong>, tcrun, and tcdata to support deleting data from Redis from previous runs</li>
 </ul>
 </div>
-<div class="section" id="id84">
-<h3>0.5.18<a class="headerlink" href="#id84" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id85">
+<h3>0.5.18<a class="headerlink" href="#id85" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to handle issue where <strong>install_json</strong> is not defined in the <strong>tcex.json</strong> file so that script name was improperly being set</li>
 </ul>
 </div>
-<div class="section" id="id85">
-<h3>0.5.17<a class="headerlink" href="#id85" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id86">
+<h3>0.5.17<a class="headerlink" href="#id86" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>create_output()</strong> method to fix issue when using output variables of the same name and different type</li>
 </ul>
 </div>
-<div class="section" id="id86">
-<h3>0.5.16<a class="headerlink" href="#id86" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id87">
+<h3>0.5.16<a class="headerlink" href="#id87" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to not check for the program main file for Java Apps</li>
 </ul>
 </div>
-<div class="section" id="id87">
-<h3>0.5.15<a class="headerlink" href="#id87" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id88">
+<h3>0.5.15<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> to support running Java Apps</li>
 <li>Added support for <strong>install_json</strong> profile parameter to <strong>tcex.json</strong>. This should be included in all <strong>tcex.json</strong> files going forward.</li>
@@ -1082,16 +1093,16 @@
 <li>Cleaned up PEP8</li>
 </ul>
 </div>
-<div class="section" id="id88">
-<h3>0.5.14<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id89">
+<h3>0.5.14<a class="headerlink" href="#id89" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Bulk.json" title="tcex.tcex_resources.Bulk.json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">json()</span></code></a> method to use proper entity value</li>
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> to use default env values for API credentials</li>
 <li>Added Groups parameter to <strong>tcex.json</strong> so that a profile can be part of multiple Groups</li>
 </ul>
 </div>
-<div class="section" id="id89">
-<h3>0.5.13<a class="headerlink" href="#id89" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id90">
+<h3>0.5.13<a class="headerlink" href="#id90" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added additional exclude values for IDE directories</li>
 <li>Added <strong>app_name</strong> parameter to <strong>tcex.json</strong> for App built on system where App directory is not the App name</li>
@@ -1100,8 +1111,8 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tclib</span></code> to have default config value for instance where there is not <strong>tcex.json</strong> file</li>
 </ul>
 </div>
-<div class="section" id="id90">
-<h3>0.5.12<a class="headerlink" href="#id90" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id91">
+<h3>0.5.12<a class="headerlink" href="#id91" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Update Building Apps section of the documentation</li>
 <li>Updated required module versions (requests, python-dateutil, and Redis)</li>
@@ -1110,39 +1121,39 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> to output Apps zip files with <strong>.tcx</strong> extension</li>
 </ul>
 </div>
-<div class="section" id="id91">
-<h3>0.5.11<a class="headerlink" href="#id91" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id92">
+<h3>0.5.11<a class="headerlink" href="#id92" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added support for binary data type in <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> for staging</li>
 </ul>
 </div>
-<div class="section" id="id92">
-<h3>0.5.10<a class="headerlink" href="#id92" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id93">
+<h3>0.5.10<a class="headerlink" href="#id93" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added platform for docker support</li>
 </ul>
 </div>
-<div class="section" id="id93">
-<h3>0.5.9<a class="headerlink" href="#id93" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id94">
+<h3>0.5.9<a class="headerlink" href="#id94" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added platform check for subprocess calls</li>
 <li>Added additional error logging for <code class="docutils literal notranslate"><span class="pre">tcrun</span></code> command</li>
 </ul>
 </div>
-<div class="section" id="id94">
-<h3>0.5.8<a class="headerlink" href="#id94" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id95">
+<h3>0.5.8<a class="headerlink" href="#id95" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added better support for build and test commands on Windows platform</li>
 </ul>
 </div>
-<div class="section" id="id95">
-<h3>0.5.7<a class="headerlink" href="#id95" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id96">
+<h3>0.5.7<a class="headerlink" href="#id96" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Removed pip as a dependency</li>
 </ul>
 </div>
-<div class="section" id="id96">
-<h3>0.5.6<a class="headerlink" href="#id96" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id97">
+<h3>0.5.6<a class="headerlink" href="#id97" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcdata</span></code> to support multiple operators for validation</li>
 <li>Added <code class="docutils literal notranslate"><span class="pre">tcprofile</span></code> command to automatically build testing profiles from <strong>install.json</strong></li>
@@ -1150,29 +1161,29 @@
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> to exclude <strong>.pyc</strong> files and <strong>__pycache__</strong> directory</li>
 </ul>
 </div>
-<div class="section" id="id97">
-<h3>0.5.5<a class="headerlink" href="#id97" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id98">
+<h3>0.5.5<a class="headerlink" href="#id98" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">tcpackage</span></code> to append version number to zip file</li>
 <li>Added a <strong>bundle_name</strong> parameter to <strong>tcex.json</strong> file for systems where the directory name does not represent the App name</li>
 </ul>
 </div>
-<div class="section" id="id98">
-<h3>0.5.4<a class="headerlink" href="#id98" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id99">
+<h3>0.5.4<a class="headerlink" href="#id99" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated tcdata for issue with bytes string in Python 3</li>
 </ul>
 </div>
-<div class="section" id="id99">
-<h3>0.5.3<a class="headerlink" href="#id99" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id100">
+<h3>0.5.3<a class="headerlink" href="#id100" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added new tcdata, tclib, tcpackage, and tcrun commands for App testing and packaging (The app.py will be deprecated in the future.)</li>
 <li>Updatesd <code class="docutils literal notranslate"><span class="pre">__main__.py</span></code> for new lib directory structure created with pip (replaced easy_install)</li>
 <li>Changed method so that Apps are now built with <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> instead of <code class="docutils literal notranslate"><span class="pre">setup.py</span></code></li>
 </ul>
 </div>
-<div class="section" id="id100">
-<h3>0.5.2<a class="headerlink" href="#id100" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id101">
+<h3>0.5.2<a class="headerlink" href="#id101" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.association_custom" title="tcex.tcex_resources.Resource.association_custom"><code class="xref py py-meth docutils literal notranslate"><span class="pre">association_custom()</span></code></a> method to support DELETE/POST methods</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._association_types" title="tcex.tcex.TcEx._association_types"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_association_types()</span></code></a> method to load Custom Association types from API</li>
@@ -1180,15 +1191,15 @@
 <li>Added <code class="docutils literal notranslate"><span class="pre">indicator_associations_types_data</span></code> property with full Indicator Association Type data</li>
 </ul>
 </div>
-<div class="section" id="id101">
-<h3>0.5.1<a class="headerlink" href="#id101" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id102">
+<h3>0.5.1<a class="headerlink" href="#id102" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Update <strong>playbookdb</strong> variable name</li>
 <li>Updated <strong>__main__.py</strong> template for proper exit code</li>
 </ul>
 </div>
-<div class="section" id="id102">
-<h3>0.5.0<a class="headerlink" href="#id102" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id103">
+<h3>0.5.0<a class="headerlink" href="#id103" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added support for output variable of the same name, but different types</li>
 <li>Added support for new <strong>TCKeyValueAPI</strong> DB types in Playbook Apps.  This is a seamless change to the Apps.</li>
@@ -1198,10 +1209,10 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id103">
-<h2>0.4.x<a class="headerlink" href="#id103" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id104">
-<h3>0.4.11<a class="headerlink" href="#id104" title="Permalink to this headline">¶</a></h3>
+<h2>0.4.x<a class="headerlink" href="#id104" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id105">
+<h3>0.4.11<a class="headerlink" href="#id105" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Changed proxy variable to proxies in <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_external()</span></code> method</li>
 <li>Changed proxy variable to proxies in <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_tc()</span></code> method</li>
@@ -1210,8 +1221,8 @@
 <li>Added 201 as valid status code for Task</li>
 </ul>
 </div>
-<div class="section" id="id105">
-<h3>0.4.10<a class="headerlink" href="#id105" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id106">
+<h3>0.4.10<a class="headerlink" href="#id106" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victims" title="tcex.tcex_resources.Resource.victims"><code class="xref py py-meth docutils literal notranslate"><span class="pre">victims()</span></code></a> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.victim_assets" title="tcex.tcex_resources.Resource.victim_assets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">victim_assets()</span></code></a> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module</li>
@@ -1223,29 +1234,29 @@
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Host.resolution" title="tcex.tcex_resources.Host.resolution"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resolution()</span></code></a> methods to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module to retrieve DNS resolutions on Host Indicators</li>
 </ul>
 </div>
-<div class="section" id="id106">
-<h3>0.4.9<a class="headerlink" href="#id106" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id107">
+<h3>0.4.9<a class="headerlink" href="#id107" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Signature.download" title="tcex.tcex_resources.Signature.download"><code class="xref py py-meth docutils literal notranslate"><span class="pre">download()</span></code></a> method to download Signature data</li>
 <li>Added <strong>urlencoding</strong> to proxy user and password</li>
 </ul>
 </div>
-<div class="section" id="id107">
-<h3>0.4.7<a class="headerlink" href="#id107" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id108">
+<h3>0.4.7<a class="headerlink" href="#id108" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">job()</span></code> method to allow multiple jobs to run in an App</li>
 <li>Update <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.s" title="tcex.tcex.TcEx.s"><code class="xref py py-meth docutils literal notranslate"><span class="pre">s()</span></code></a> method to fix issues in Python 3</li>
 </ul>
 </div>
-<div class="section" id="id108">
-<h3>0.4.6<a class="headerlink" href="#id108" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id109">
+<h3>0.4.6<a class="headerlink" href="#id109" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.create_binary_array" title="tcex.tcex_playbook.TcExPlaybook.create_binary_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_binary_array()</span></code></a> method to properly handle binary array data</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_binary_array" title="tcex.tcex_playbook.TcExPlaybook.read_binary_array"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_binary_array()</span></code></a> method to properly handle binary array data</li>
 </ul>
 </div>
-<div class="section" id="id109">
-<h3>0.4.5<a class="headerlink" href="#id109" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id110">
+<h3>0.4.5<a class="headerlink" href="#id110" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator_body()</span></code></a> to support missing hashes</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.false_positive" title="tcex.tcex_resources.Indicator.false_positive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">false_positive()</span></code></a> endpoint for Indicators</li>
@@ -1254,34 +1265,34 @@
 <li>Increased request timeout to 300 second.</li>
 </ul>
 </div>
-<div class="section" id="id110">
-<h3>0.4.4<a class="headerlink" href="#id110" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id111">
+<h3>0.4.4<a class="headerlink" href="#id111" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_embedded()</span></code></a> method logic for null values and better support of mixed values</li>
 </ul>
 </div>
-<div class="section" id="id111">
-<h3>0.4.3<a class="headerlink" href="#id111" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id112">
+<h3>0.4.3<a class="headerlink" href="#id112" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated TcEx Job module for file hashes updates using <strong>v2/indicators/files</strong></li>
 </ul>
 </div>
-<div class="section" id="id112">
-<h3>0.4.2<a class="headerlink" href="#id112" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id113">
+<h3>0.4.2<a class="headerlink" href="#id113" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExJob</span></code> module for file hashes updates using <code class="docutils literal notranslate"><span class="pre">v2/indicators/files</span></code></li>
 </ul>
 </div>
-<div class="section" id="id113">
-<h3>0.4.2<a class="headerlink" href="#id113" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id114">
+<h3>0.4.2<a class="headerlink" href="#id114" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_embedded()</span></code></a> method to support different formatting dependent on the parent variable type</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module to address issue in which copying the instance causes errors with request instance in Python 3</li>
 <li>Updated T**cExLocal** <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method to better format error output</li>
 </ul>
 </div>
-<div class="section" id="id114">
-<h3>0.4.1<a class="headerlink" href="#id114" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id115">
+<h3>0.4.1<a class="headerlink" href="#id115" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">add_payload()</span></code> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.DataStore" title="tcex.tcex_resources.DataStore"><code class="xref py py-mod docutils literal notranslate"><span class="pre">DataStore</span></code></a> class</li>
 <li>Fixed issue with <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExJob</span></code> module in ehich batch Indicator POST with chunking would fail after first chunk</li>
@@ -1295,8 +1306,8 @@
 <li>Added additional standard args of <code class="docutils literal notranslate"><span class="pre">api_default_org</span></code> and <code class="docutils literal notranslate"><span class="pre">tc_in_path</span></code></li>
 </ul>
 </div>
-<div class="section" id="id115">
-<h3>0.4.0<a class="headerlink" href="#id115" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id116">
+<h3>0.4.0<a class="headerlink" href="#id116" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource" title="tcex.tcex_resources.Resource"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Resource</span></code></a> module. All <code class="docutils literal notranslate"><span class="pre">_pivot()</span></code> and <code class="docutils literal notranslate"><span class="pre">associations()</span></code> methods now take an instance of Resource and return a copy of the current Resource instance. Other methods such as <code class="docutils literal notranslate"><span class="pre">security_label()</span></code> and <code class="docutils literal notranslate"><span class="pre">tags()</span></code> now return a copy of the current Resource instance.</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Tag" title="tcex.tcex_resources.Tag"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Tag</span></code></a> Resource class</li>
@@ -1306,17 +1317,17 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id116">
-<h2>0.3.x<a class="headerlink" href="#id116" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id117">
-<h3>0.3.7<a class="headerlink" href="#id117" title="Permalink to this headline">¶</a></h3>
+<h2>0.3.x<a class="headerlink" href="#id117" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id118">
+<h3>0.3.7<a class="headerlink" href="#id118" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added logic around retrieving Batch errors to handle 404</li>
 <li>Added new <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.exit" title="tcex.tcex_playbook.TcExPlaybook.exit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exit()</span></code></a> method for Playbook Apps (exit code of 3 to 1 for partial success)</li>
 </ul>
 </div>
-<div class="section" id="id118">
-<h3>0.3.6<a class="headerlink" href="#id118" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id119">
+<h3>0.3.6<a class="headerlink" href="#id119" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-mod docutils literal notranslate"><span class="pre">group_results</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">indicator_results</span></code> properties to <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcEx</span> <span class="pre">Job</span></code> module</li>
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_external()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">request_tc()</span></code> methods</li>
@@ -1325,8 +1336,8 @@
 <li>Updated <strong>TcExLocal</strong> <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method to sleep after subprocess executes the first time</li>
 </ul>
 </div>
-<div class="section" id="id119">
-<h3>0.3.5<a class="headerlink" href="#id119" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id120">
+<h3>0.3.5<a class="headerlink" href="#id120" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcEx</span> <span class="pre">Job</span></code> module to allow Indicators to be added via <code class="docutils literal notranslate"><span class="pre">/v2/indicators/&lt;type&gt;</span></code></li>
 <li>Updated structure for Attributes/Tags on Groups to use singular version (Attribute/Tag) in Jobs modules to match format used for Indicators</li>
@@ -1334,34 +1345,34 @@
 <li>Added logic to cleanup temporary JSON bulk file. When logging is <strong>debug</strong>, a compressed copy of the file will remain.</li>
 </ul>
 </div>
-<div class="section" id="id120">
-<h3>0.3.4<a class="headerlink" href="#id120" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id121">
+<h3>0.3.4<a class="headerlink" href="#id121" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module with pagination stopping before all results are retrieved</li>
 </ul>
 </div>
-<div class="section" id="id121">
-<h3>0.3.3<a class="headerlink" href="#id121" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id122">
+<h3>0.3.3<a class="headerlink" href="#id122" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.s" title="tcex.tcex.TcEx.s"><code class="xref py py-meth docutils literal notranslate"><span class="pre">s()</span></code></a> method to replace the <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_string()</span></code> method (handle bad unicode in Python 2 and still support Python 3)</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#tcex.tcex_playbook.TcExPlaybook.read_embedded" title="tcex.tcex_playbook.TcExPlaybook.read_embedded"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_embedded()</span></code></a> method to better handle embedded vars</li>
 </ul>
 </div>
-<div class="section" id="id122">
-<h3>0.3.2<a class="headerlink" href="#id122" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id123">
+<h3>0.3.2<a class="headerlink" href="#id123" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">indicators()</span></code> method to allow iteration over Indicator values in Indicator response JSON</li>
 </ul>
 </div>
-<div class="section" id="id123">
-<h3>0.3.1<a class="headerlink" href="#id123" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id124">
+<h3>0.3.1<a class="headerlink" href="#id124" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.set_basic_auth" title="tcex.tcex_request.TcExRequest.set_basic_auth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_basic_auth()</span></code></a> method to use proper unicode method</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#module-tcex.tcex_playbook" title="tcex.tcex_playbook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_playbook</span></code></a> create and read methods to warn when None value is passed</li>
 </ul>
 </div>
-<div class="section" id="id124">
-<h3>0.3.0<a class="headerlink" href="#id124" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id125">
+<h3>0.3.0<a class="headerlink" href="#id125" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.json" title="tcex.tcex_request.TcExRequest.json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">json()</span></code></a> method that accepts a dictionary and automatically sets content-type and body</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safeurl" title="tcex.tcex.TcEx.safeurl"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safeurl()</span></code></a> and <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx.safetag" title="tcex.tcex.TcEx.safetag"><code class="xref py py-meth docutils literal notranslate"><span class="pre">safetag()</span></code></a> to use <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_string()</span></code></li>
@@ -1369,37 +1380,37 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id125">
-<h2>0.2.x<a class="headerlink" href="#id125" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id126">
-<h3>0.2.11<a class="headerlink" href="#id126" title="Permalink to this headline">¶</a></h3>
+<h2>0.2.x<a class="headerlink" href="#id126" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id127">
+<h3>0.2.11<a class="headerlink" href="#id127" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.add_payload" title="tcex.tcex_request.TcExRequest.add_payload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_payload()</span></code></a> method to not force the value to string</li>
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.files" title="tcex.tcex_request.TcExRequest.files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">files()</span></code></a> method</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.set_basic_auth" title="tcex.tcex_request.TcExRequest.set_basic_auth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_basic_auth()</span></code></a> method for instance where normal method does not work</li>
 </ul>
 </div>
-<div class="section" id="id127">
-<h3>0.2.10<a class="headerlink" href="#id127" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id128">
+<h3>0.2.10<a class="headerlink" href="#id128" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#tcex.tcex_request.TcExRequest.files" title="tcex.tcex_request.TcExRequest.files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">files()</span></code></a> property to <a class="reference internal" href="tcex_docs/tcex.tcex_request.html#module-tcex.tcex_request" title="tcex.tcex_request"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_request</span></code></a> module</li>
 </ul>
 </div>
-<div class="section" id="id128">
-<h3>0.2.9<a class="headerlink" href="#id128" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id129">
+<h3>0.2.9<a class="headerlink" href="#id129" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with boolean parameters having an extra space at the end</li>
 </ul>
 </div>
-<div class="section" id="id129">
-<h3>0.2.8<a class="headerlink" href="#id129" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id130">
+<h3>0.2.8<a class="headerlink" href="#id130" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">_parameters()</span></code> method to build a list for <strong>subprocess.popen</strong> instead of a string</li>
 <li>Updated <strong>install.json</strong> schema to support <strong>note</strong> field</li>
 </ul>
 </div>
-<div class="section" id="id130">
-<h3>0.2.7<a class="headerlink" href="#id130" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id131">
+<h3>0.2.7<a class="headerlink" href="#id131" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Removed hiredis as a dependency</li>
 <li>Added hvac as a dependency for vault-credential storage</li>
@@ -1407,46 +1418,46 @@
 <li>Fixed args wrapper for Windows (‘ to “)</li>
 </ul>
 </div>
-<div class="section" id="id131">
-<h3>0.2.6<a class="headerlink" href="#id131" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id132">
+<h3>0.2.6<a class="headerlink" href="#id132" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added sleep option for test profiles that take time to complete</li>
 </ul>
 </div>
-<div class="section" id="id132">
-<h3>0.2.5<a class="headerlink" href="#id132" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id133">
+<h3>0.2.5<a class="headerlink" href="#id133" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_local</span></code> module to change <strong>tc.json</strong> profiles to list instead of dictionary to maintain order of profiles</li>
 <li>Added feature to <code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_local</span></code> to read environment variables for value in <strong>tc.json</strong> (e.g., $evn.my_api_key)</li>
 </ul>
 </div>
-<div class="section" id="id133">
-<h3>0.2.4<a class="headerlink" href="#id133" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id134">
+<h3>0.2.4<a class="headerlink" href="#id134" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Handled None type returned by Redis module</li>
 </ul>
 </div>
-<div class="section" id="id134">
-<h3>0.2.3<a class="headerlink" href="#id134" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id135">
+<h3>0.2.3<a class="headerlink" href="#id135" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_string()</span></code> method to replace old <code class="docutils literal notranslate"><span class="pre">uni()</span></code> method (handled Python 2/3 encoding for Apps)</li>
 </ul>
 </div>
-<div class="section" id="id135">
-<h3>0.2.2<a class="headerlink" href="#id135" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id136">
+<h3>0.2.2<a class="headerlink" href="#id136" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated string/unicode/bytes issue between Python 2 and 3</li>
 </ul>
 </div>
-<div class="section" id="id136">
-<h3>0.2.1<a class="headerlink" href="#id136" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id137">
+<h3>0.2.1<a class="headerlink" href="#id137" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_local</span></code> module for Python 2/3 support</li>
 <li>Updated binary methods in <a class="reference internal" href="tcex_docs/tcex.tcex_playbook.html#module-tcex.tcex_playbook" title="tcex.tcex_playbook"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_playbook</span></code></a> module for Python 2/3 support</li>
 </ul>
 </div>
-<div class="section" id="id137">
-<h3>0.2.0<a class="headerlink" href="#id137" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id138">
+<h3>0.2.0<a class="headerlink" href="#id138" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Reworked <code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_local</span></code> <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> logic to support updated <strong>tc.json</strong> schema</li>
 <li>Changed <strong>–test</strong> arg to <strong>–profile</strong> in <code class="xref py py-meth docutils literal notranslate"><span class="pre">_required_arguments()</span></code></li>
@@ -1458,58 +1469,58 @@
 </ul>
 </div>
 </div>
-<div class="section" id="id138">
-<h2>0.1.x<a class="headerlink" href="#id138" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id139">
-<h3>0.1.6<a class="headerlink" href="#id139" title="Permalink to this headline">¶</a></h3>
+<h2>0.1.x<a class="headerlink" href="#id139" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id140">
+<h3>0.1.6<a class="headerlink" href="#id140" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added accepted status code of 201 for Custom Indicator POST on dynamic class creation</li>
 </ul>
 </div>
-<div class="section" id="id140">
-<h3>0.1.5<a class="headerlink" href="#id140" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id141">
+<h3>0.1.5<a class="headerlink" href="#id141" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.entity_body" title="tcex.tcex_resources.Indicator.entity_body"><code class="xref py py-meth docutils literal notranslate"><span class="pre">entity_body()</span></code></a> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> for generating Indicator body</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Indicator.indicator_body" title="tcex.tcex_resources.Indicator.indicator_body"><code class="xref py py-meth docutils literal notranslate"><span class="pre">indicator_body()</span></code></a> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> for generating Indicator body</li>
 </ul>
 </div>
-<div class="section" id="id141">
-<h3>0.1.4<a class="headerlink" href="#id141" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id142">
+<h3>0.1.4<a class="headerlink" href="#id142" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed issue with Job <code class="xref py py-meth docutils literal notranslate"><span class="pre">group_cache()</span></code> method</li>
 </ul>
 </div>
-<div class="section" id="id142">
-<h3>0.1.3<a class="headerlink" href="#id142" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id143">
+<h3>0.1.3<a class="headerlink" href="#id143" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExJob</span></code> module to use new pagination functionality in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module</li>
 <li>Updated and labeled <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.paginate" title="tcex.tcex_resources.Resource.paginate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paginate()</span></code></a> method as deprecated</li>
 </ul>
 </div>
-<div class="section" id="id143">
-<h3>0.1.2<a class="headerlink" href="#id143" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id144">
+<h3>0.1.2<a class="headerlink" href="#id144" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>tcex_local</strong> for additional parameter support during build process</li>
 </ul>
 </div>
-<div class="section" id="id144">
-<h3>0.1.1<a class="headerlink" href="#id144" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id145">
+<h3>0.1.1<a class="headerlink" href="#id145" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <strong>tcex_local</strong> for exit code when app.py is called (maven build issue)</li>
 <li>Added new log event for proxy settings</li>
 </ul>
 </div>
-<div class="section" id="id145">
-<h3>0.1.0<a class="headerlink" href="#id145" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id146">
+<h3>0.1.0<a class="headerlink" href="#id146" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Reworked iterator logic in <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module</li>
 </ul>
 </div>
 </div>
-<div class="section" id="id146">
-<h2>0.0.x<a class="headerlink" href="#id146" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id147">
-<h3>0.0.12<a class="headerlink" href="#id147" title="Permalink to this headline">¶</a></h3>
+<h2>0.0.x<a class="headerlink" href="#id147" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id148">
+<h3>0.0.12<a class="headerlink" href="#id148" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated documentation</li>
 <li>Changed <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> to allow iteration over the instance to retrieve paginated results</li>
@@ -1519,8 +1530,8 @@
 <li>Updated Pep 8</li>
 </ul>
 </div>
-<div class="section" id="id148">
-<h3>0.0.11<a class="headerlink" href="#id148" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id149">
+<h3>0.0.11<a class="headerlink" href="#id149" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">file_occurrence()</span></code> in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcEx</span> <span class="pre">Job</span></code> module</li>
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_data_filter.html#module-tcex.tcex_data_filter" title="tcex.tcex_data_filter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_data_filter</span></code></a> module access via <code class="docutils literal notranslate"><span class="pre">tcex.data_filter(data)</span></code></li>
@@ -1528,28 +1539,28 @@
 <li>Added <code class="docutils literal notranslate"><span class="pre">python-dateutil==2.4.2</span></code> as a Python dependency</li>
 </ul>
 </div>
-<div class="section" id="id149">
-<h3>0.0.10<a class="headerlink" href="#id149" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id150">
+<h3>0.0.10<a class="headerlink" href="#id150" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.paginate" title="tcex.tcex_resources.Resource.paginate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paginate()</span></code></a> method to <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> module</li>
 <li>Updated <code class="xref py py-meth docutils literal notranslate"><span class="pre">group_cache()</span></code> module to use <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Resource.paginate" title="tcex.tcex_resources.Resource.paginate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paginate()</span></code></a> method</li>
 </ul>
 </div>
-<div class="section" id="id150">
-<h3>0.0.9<a class="headerlink" href="#id150" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id151">
+<h3>0.0.9<a class="headerlink" href="#id151" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="xref py py-mod docutils literal notranslate"><span class="pre">TcExJob</span></code> module for <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#module-tcex.tcex_resources" title="tcex.tcex_resources"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tcex_resources</span></code></a> modules renamed methods and changes</li>
 </ul>
 </div>
-<div class="section" id="id151">
-<h3>0.0.8<a class="headerlink" href="#id151" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id152">
+<h3>0.0.8<a class="headerlink" href="#id152" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Changed logging level logic to use <code class="docutils literal notranslate"><span class="pre">logging</span></code> over <code class="docutils literal notranslate"><span class="pre">tc_logging_level</span></code>, if it exists</li>
 <li>Added App version logging attempt</li>
 </ul>
 </div>
-<div class="section" id="id152">
-<h3>0.0.7<a class="headerlink" href="#id152" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id153">
+<h3>0.0.7<a class="headerlink" href="#id153" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <a class="reference internal" href="tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._resources" title="tcex.tcex.TcEx._resources"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_resources()</span></code></a> method to handle TC version without custom Indicators</li>
 <li>Updated logging to better debug API request failures</li>
@@ -1557,40 +1568,40 @@
 <li>Updated logging the Logging Level, Python, and TcEx versions for additional debugging</li>
 </ul>
 </div>
-<div class="section" id="id153">
-<h3>0.0.6<a class="headerlink" href="#id153" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id154">
+<h3>0.0.6<a class="headerlink" href="#id154" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated open call for bytes issue on Python 3</li>
 </ul>
 </div>
-<div class="section" id="id154">
-<h3>0.0.5<a class="headerlink" href="#id154" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id155">
+<h3>0.0.5<a class="headerlink" href="#id155" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated to <strong>setup.py</strong> for Python 3 support</li>
 </ul>
 </div>
-<div class="section" id="id155">
-<h3>0.0.4<a class="headerlink" href="#id155" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id156">
+<h3>0.0.4<a class="headerlink" href="#id156" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated Campaign Resource type Class</li>
 <li>Added <code class="docutils literal notranslate"><span class="pre">building_apps</span></code> section to documentation</li>
 </ul>
 </div>
-<div class="section" id="id156">
-<h3>0.0.3<a class="headerlink" href="#id156" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id157">
+<h3>0.0.3<a class="headerlink" href="#id157" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Added <a class="reference internal" href="tcex_docs/tcex.tcex_resources.html#tcex.tcex_resources.Campaign" title="tcex.tcex_resources.Campaign"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Campaign()</span></code></a> Class</li>
 <li>Updated documentation</li>
 </ul>
 </div>
-<div class="section" id="id157">
-<h3>0.0.2<a class="headerlink" href="#id157" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id158">
+<h3>0.0.2<a class="headerlink" href="#id158" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Updated <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> for build</li>
 </ul>
 </div>
-<div class="section" id="id158">
-<h3>0.0.1<a class="headerlink" href="#id158" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id159">
+<h3>0.0.1<a class="headerlink" href="#id159" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Initial Public Release</li>
 </ul>
@@ -1609,7 +1620,7 @@
         <a href="tcex_docs/modules.html" class="btn btn-neutral float-right" title="TcEx Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-        <a href="results_tc.html" class="btn btn-neutral" title="Results TC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="results_tc.html" class="btn btn-neutral float-left" title="Results TC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
     </div>
 
@@ -1634,26 +1645,16 @@
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>

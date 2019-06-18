@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>tcex.tcex &mdash; TcEx 1.0.4 documentation</title>
+  <title>tcex.tcex &mdash; TcEx 1.0.5 documentation</title>
 
 
 
@@ -17,9 +17,16 @@
 
 
 
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
 
 
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
 
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
 
 
@@ -29,10 +36,6 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-
-
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
@@ -40,10 +43,9 @@
 
   <div class="wy-grid-for-nav">
 
-
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
 
 
 
@@ -57,7 +59,7 @@
 
 
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
 
 
@@ -315,7 +317,7 @@
         <span class="sd">&quot;&quot;&quot;Log the current TcEx version number.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;TcEx Version: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">__import__</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="TcEx._logger"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger">[docs]</a>    <span class="k">def</span> <span class="nf">_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TcEx._logger"><a class="viewcode-back" href="../../tcex_docs/tcex.tcex.html#tcex.tcex.TcEx._logger">[docs]</a>    <span class="k">def</span> <span class="nf">_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clear_handler</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create TcEx app logger instance.</span>
 
 <span class="sd">        The logger is accessible via the ``tc.log.&lt;level&gt;`` call.</span>
@@ -341,7 +343,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
         <span class="c1"># clear all handlers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">clear_handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># update logging level</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">logging</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -351,7 +354,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
 
         <span class="c1"># add file handler if not already added</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fh</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_args</span><span class="o">.</span><span class="n">tc_log_path</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger_fh</span><span class="p">()</span>
 
         <span class="c1"># add api handler if not already added</span>
@@ -383,7 +386,7 @@
     <span class="k">def</span> <span class="nf">_logger_formatter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return log formatter.&quot;&quot;&quot;</span>
         <span class="n">tx_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1"> &#39;</span>
-        <span class="n">tx_format</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">%(funcName)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">)&#39;</span>
+        <span class="n">tx_format</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(funcName)s</span><span class="s1">:</span><span class="si">%(lineno)d</span><span class="s1">)&#39;</span>
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">tx_format</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -1221,26 +1224,16 @@
 
 
 
-
-
-
-
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-
-
-
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+
+
+
+
 
 </body>
 </html>

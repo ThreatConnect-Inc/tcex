@@ -22,7 +22,7 @@ class Filters(object):
     def add_filter(self, filter_key, operator, value):
         """ Adds a filter given a key, operator, and value"""
         filter_key = self._metadata_map.get(filter_key, filter_key)
-        self.filters.append({'filter': filter_key, 'operator': operator, 'value': value})
+        self.filters.append({'name': filter_key, 'operator': operator, 'value': value})
 
     def remove_filter(self, filter_key):
         """ Removes filter, given a passed in filter key"""
