@@ -93,7 +93,7 @@ class Validation:
         """Initialize class properties."""
         self.branch = branch
         self.base_dir = base_dir
-        self.validation_file = (base_dir, 'validation.py')
+        self.validation_file = os.path.join(base_dir, 'validation.py')
         self._variable_match = re.compile(r'^{}$'.format(self._variable_pattern))
         self._variable_parse = re.compile(self._variable_pattern)
 
