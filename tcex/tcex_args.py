@@ -131,6 +131,9 @@ class TcExArgs(object):
             # reinitialize logger with new log level and api settings
             self.tcex._logger(fh=True)
 
+            # log system and App data
+            self.tcex.log_info()
+
         return self._default_args
 
     def args_update(self):

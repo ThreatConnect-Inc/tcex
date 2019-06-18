@@ -7,6 +7,7 @@ Release Notes
 =====
 + Updated logging initialization to create file handler when using inject_params.
 + Updated logging of batch sizes to not log when there is not content.
++ Moved the logging of App info to the args call.
 
 1.0.5
 =====

@@ -54,9 +54,6 @@ class TcEx(object):
         if self.default_args.tc_token_expires is not None:
             self._tc_token_expires = self.default_args.tc_token_expires
 
-        # Log system and App data
-        self._log()
-
         # include resources module
         self._resources()
 
@@ -67,15 +64,13 @@ class TcEx(object):
 
         # check for bad status code and response that is not JSON
         if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-            warn = u'Custom Indicators Associations are not supported.'
-            self.log.warning(warn)
+            self.log.warning('Custom Indicators Associations are not supported.')
             return
 
         # validate successful API results
         data = r.json()
         if data.get('status') != 'Success':
-            warn = u'Bad Status: Custom Indicators Associations are not supported.'
-            self.log.warning(warn)
+            self.log.warning('Bad Status: Custom Indicators Associations are not supported.')
             return
 
         try:
@@ -84,14 +79,6 @@ class TcEx(object):
                 self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
             self.handle_error(200, [e])
-
-    def _log(self):
-        """Send System and App data to logs."""
-        self._log_platform()
-        self._log_app_data()
-        self._log_python_version()
-        self._log_tcex_version()
-        self._log_tc_proxy()
 
     def _log_app_data(self):
         """Log the App data information."""
@@ -177,12 +164,11 @@ class TcEx(object):
         # add file handler if not already added
         if fh and os.path.isdir(self.default_args.tc_log_path):
             self._logger_fh()
+            self.log.info('Logging Level: {}'.format(logging.getLevelName(level)))
 
         # add api handler if not already added
         if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
             self._logger_api()
-
-        self.log.info('Logging Level: {}'.format(logging.getLevelName(level)))
 
     def _logger_api(self):
         """Add API logging handler."""
@@ -251,13 +237,13 @@ class TcEx(object):
 
             # check for bad status code and response that is not JSON
             if not r.ok or 'application/json' not in r.headers.get('content-type', ''):
-                warn = u'Custom Indicators are not supported ({}).'.format(r.text)
-                self.log.warning(warn)
+                self.log.warning('Custom Indicators are not supported ({}).'.format(r.text))
                 return
             response = r.json()
             if response.get('status') != 'Success':
-                warn = u'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
-                self.log.warning(warn)
+                self.log.warning(
+                    'Bad Status: Custom Indicators are not supported ({}).'.format(r.text)
+                )
                 return
 
             try:
@@ -325,26 +311,9 @@ class TcEx(object):
             self.exit(1, 'The App received an interrupt signal and will now exit.')
 
     @property
-    def utils(self):
-        """Include the Utils module.
-
-        .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
-        """
-        if self._utils is None:
-            from .tcex_utils import TcExUtils
-
-            self._utils = TcExUtils(self)
-        return self._utils
-
-    @property
     def args(self):
         """Argparser args Namespace."""
         return self.tcex_args.args()
-
-    @property
-    def rargs(self):
-        """Argparser args Namespace with Playbook args automatically resolved (resolved args)."""
-        return self.tcex_args.resolved_args()
 
     def batch(
         self,
@@ -399,8 +368,7 @@ class TcEx(object):
 
             return DataFilter(self, data)
         except ImportError as e:
-            warn = u'Required Module is not installed ({}).'.format(e)
-            self.log.warning(warn)
+            self.log.warning('Required Module is not installed ({}).'.format(e))
 
     def datastore(self, domain, data_type, mapping=None):
         """Get instance of the DataStore module.
@@ -487,7 +455,7 @@ class TcEx(object):
         if code is not None and code in [0, 1, 3]:
             self._exit_code = code
         else:
-            self.log.warning(u'Invalid exit code')
+            self.log.warning('Invalid exit code')
 
     @staticmethod
     def expand_indicators(indicator):
@@ -543,6 +511,41 @@ class TcEx(object):
             'Threat',
             'Task',
         ]
+
+    @property
+    def group_types_data(self):
+        """All supported ThreatConnect Group types."""
+        return {
+            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
+            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
+            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
+            'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
+            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
+            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
+            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
+            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
+            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
+            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
+            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
+        }
+
+    def get_type_from_api_entity(self, api_entity):
+        """
+        Returns the object type as a string given a api entity.
+
+        Args:
+            api_entity:
+
+        Returns:
+
+        """
+        merged = self.group_types_data.copy()
+        merged.update(self.indicator_types_data)
+        print(merged)
+        for (key, value) in merged.items():
+            if value.get('apiEntity') == api_entity:
+                return key
+        return None
 
     def handle_error(self, code, message_values=None, raise_error=True):
         """Raise RuntimeError
@@ -610,41 +613,6 @@ class TcEx(object):
         return self._indicator_types_data
 
     @property
-    def group_types_data(self):
-        """All supported ThreatConnect Group types."""
-        return {
-            'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
-            'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
-            'Document': {'apiBranch': 'documents', 'apiEntity': 'document'},
-            'Email': {'apiBranch': 'emails', 'apiEntity': 'email'},
-            'Event': {'apiBranch': 'events', 'apiEntity': 'event'},
-            'Incident': {'apiBranch': 'incidents', 'apiEntity': 'incident'},
-            'Intrusion Set': {'apiBranch': 'intrusionSets', 'apiEntity': 'intrusionSet'},
-            'Report': {'apiBranch': 'reports', 'apiEntity': 'report'},
-            'Signature': {'apiBranch': 'signatures', 'apiEntity': 'signature'},
-            'Threat': {'apiBranch': 'threats', 'apiEntity': 'threat'},
-            'Task': {'apiBranch': 'tasks', 'apiEntity': 'task'},
-        }
-
-    def get_type_from_api_entity(self, api_entity):
-        """
-        Returns the object type as a string given a api entity.
-
-        Args:
-            api_entity:
-
-        Returns:
-
-        """
-        merged = self.group_types_data.copy()
-        merged.update(self.indicator_types_data)
-        print(merged)
-        for (key, value) in merged.items():
-            if value.get('apiEntity') == api_entity:
-                return key
-        return None
-
-    @property
     def install_json(self):
         """Return contents of install.json configuration file, loading from disk if required."""
         if self._install_json is None:
@@ -653,7 +621,7 @@ class TcEx(object):
                 with open(install_json_filename, 'r') as fh:
                     self._install_json = json.load(fh)
             except IOError:
-                self.log.warning(u'Could not retrieve App Data.')
+                self.log.warning('Could not retrieve App Data.')
                 self._install_json = {}
         return self._install_json
 
@@ -664,6 +632,14 @@ class TcEx(object):
             for param in self.install_json.get('params') or []:
                 self._install_json_params[param.get('name')] = param
         return self._install_json_params
+
+    def log_info(self):
+        """Send System and App data to logs."""
+        self._log_platform()
+        self._log_app_data()
+        self._log_python_version()
+        self._log_tcex_version()
+        self._log_tc_proxy()
 
     def metric(self, name, description, data_type, interval, keyed=False):
         """Get instance of the Metrics module.
@@ -681,16 +657,6 @@ class TcEx(object):
         from .tcex_metrics_v2 import TcExMetricsV2
 
         return TcExMetricsV2(self, name, description, data_type, interval, keyed)
-
-    def notification(self):
-        """Get instance of the Notification module.
-
-        Returns:
-            (object): An instance of the Notification Class.
-        """
-        from .tcex_notification_v2 import TcExNotificationV2
-
-        return TcExNotificationV2(self)
 
     def message_tc(self, message, max_length=255):
         """Write data to message_tc file in TcEX specified directory.
@@ -715,6 +681,16 @@ class TcEx(object):
             with open(message_file, 'a') as mh:
                 mh.write(message[:max_length])
         max_length -= len(message)
+
+    def notification(self):
+        """Get instance of the Notification module.
+
+        Returns:
+            (object): An instance of the Notification Class.
+        """
+        from .tcex_notification_v2 import TcExNotificationV2
+
+        return TcExNotificationV2(self)
 
     @property
     def parser(self):
@@ -778,6 +754,11 @@ class TcEx(object):
                 'https': 'https://{}'.format(proxy_url),
             }
         return proxies
+
+    @property
+    def rargs(self):
+        """Argparser args Namespace with Playbook args automatically resolved (resolved args)."""
+        return self.tcex_args.resolved_args()
 
     def request(self, session=None):
         """Return an instance of the Request Class.
@@ -880,7 +861,7 @@ class TcEx(object):
                 except UnicodeEncodeError:  # 2to3 converts unicode to str
                     # 2to3 converts unicode to str
                     data = str(data.encode('utf-8').strip(), errors=errors)
-                    self.log.warning(u'Encoding poorly encoded string ({})'.format(data))
+                    self.log.warning('Encoding poorly encoded string ({})'.format(data))
                 except AttributeError:
                     pass  # Python 3 can't decode a str
             else:
@@ -976,8 +957,7 @@ class TcEx(object):
                 # handle unicode characters and url encode tag value
                 tag = quote(self.s(tag, errors=errors), safe='~')[:128]
             except KeyError as e:
-                warn = 'Failed converting tag to safetag ({})'.format(e)
-                self.log.warning(warn)
+                self.log.warning('Failed converting tag to safetag ({})'.format(e))
         return tag
 
     def safeurl(self, url, errors='strict'):
@@ -1017,3 +997,15 @@ class TcEx(object):
 
             self._ti = TcExTi(self)
         return self._ti
+
+    @property
+    def utils(self):
+        """Include the Utils module.
+
+        .. Note:: Utils methods can be accessed using ``tcex.utils.<method>``.
+        """
+        if self._utils is None:
+            from .tcex_utils import TcExUtils
+
+            self._utils = TcExUtils(self)
+        return self._utils
