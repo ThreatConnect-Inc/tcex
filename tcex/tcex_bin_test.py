@@ -243,7 +243,7 @@ class TcExTest(TcExBin):
                 profile_data[d.get('profile_name')] = {
                     'exit_codes': d.get('exit_codes'),
                     'inputs': d.get('args', {}).get('app'),
-                    'stage': {'redis': self.add_profile_staging(d.get('data_files'))},
+                    'stage': {'redis': self.add_profile_staging(d.get('data_files', []))},
                 }
 
         elif self.args.permutation_id:
