@@ -131,6 +131,9 @@ class TcExArgs(object):
             # reinitialize logger with new log level and api settings
             self.tcex._logger(fh=True)
 
+            # log system and App data
+            self.tcex.log_info()
+
         return self._default_args
 
     def args_update(self):
@@ -241,7 +244,7 @@ class TcExArgs(object):
         self._default_args, unknown = self.parser.parse_known_args()  # pylint: disable=W0612
 
         # reinitialize logger with new log level and api settings
-        self.tcex._logger()
+        self.tcex._logger(fh=True)
 
     def resolved_args(self):
         """Parse args if they have not already been parsed and return the Namespace for args.
