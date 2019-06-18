@@ -54,6 +54,8 @@ class Redis(object):
             elif variable_type == 'BinaryArray':
                 data = [self._decode_binary(d, variable) for d in data]
             self.provider.tcex.playbook.create(variable, data)
+            self.provider.log.info('[stage] variable: {}'.format(variable))
+            self.provider.log.info('[stage] data: {}'.format(data))
 
     def stage(self, variable, data):
         """Stage data in redis"""

@@ -45,7 +45,7 @@ class TcEx(object):
         self._utils = None
         self._ti = None
 
-        # Parser
+        # Args instance
         self.tcex_args = TcExArgs(self)
 
         # NOTE: odd issue where args is not updating properly

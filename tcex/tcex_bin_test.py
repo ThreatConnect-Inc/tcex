@@ -32,16 +32,15 @@ class Profiles:
         # properties
         self._profiles = None
 
-    def add(self, profile_name, inputs, outputs=None, stage=None, sort_keys=True):
+    def add(self, profile_name, profile_data, sort_keys=True):
         """Add a profile."""
         if not self.exists(profile_name):
             profile = {
-                'exit_codes': [0],
-                'inputs': inputs,
-                'outputs': outputs,
-                'stage': stage or {'redis': {}, 'threatconnect': {}},
+                'exit_codes': profile_data.get('exit_codes', [0]),
+                'inputs': profile_data.get('inputs'),
+                'outputs': profile_data.get('outputs'),
+                'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
             }
-
             self.profiles[profile_name] = profile
 
             with open(self.filename, 'w') as fh:
@@ -242,8 +241,9 @@ class TcExTest(TcExBin):
             profile_data = {}
             for d in data:
                 profile_data[d.get('profile_name')] = {
+                    'exit_codes': d.get('exit_codes'),
                     'inputs': d.get('args', {}).get('app'),
-                    'stage': self.add_profile_staging(d.get('data_files')),
+                    'stage': {'redis': self.add_profile_staging(d.get('data_files'))},
                 }
 
         elif self.args.permutation_id:
@@ -272,9 +272,7 @@ class TcExTest(TcExBin):
 
         # add profiles
         for profile_name, data in profile_data.items():
-            self.profiles.add(
-                profile_name, data.get('inputs'), stage=data.get('stage'), sort_keys=sort_keys
-            )
+            self.profiles.add(profile_name, data, sort_keys=sort_keys)
 
     @staticmethod
     def add_profile_staging(staging_files):
@@ -305,22 +303,17 @@ class TcExTest(TcExBin):
         # TODO: can this method be merged with tcex_bin_init download_file?
         status = 'Failed'
         local_filename = self.test_file
-        if os.path.isfile(local_filename):
-            self.handle_error(
-                'Error downloading file: {}. File already exists'.format(local_filename), False
-            )
-            return
+        if not os.path.isfile(local_filename):
+            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, remote_filename)
+            r = requests.get(url, allow_redirects=True)
+            if r.ok:
+                open(local_filename, 'wb').write(r.content)
+                status = 'Success'
+            else:
+                self.handle_error('Error requesting: {}'.format(url), False)
 
-        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, remote_filename)
-        r = requests.get(url, allow_redirects=True)
-        if r.ok:
-            open(local_filename, 'wb').write(r.content)
-            status = 'Success'
-        else:
-            self.handle_error('Error requesting: {}'.format(url), False)
-
-        # print download status
-        self._print_results(local_filename, status)
+            # print download status
+            self._print_results(local_filename, status)
 
     @staticmethod
     def generate_init(directory):

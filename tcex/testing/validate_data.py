@@ -350,11 +350,11 @@ class Redis(object):
                 test_data = user_data_truncated
 
         self.provider.log.info(
-            '[validate] DB Data   : ({}), Type: [{}]'.format(app_data, type(app_data))
+            '[validate] App Data   : ({}), Type: [{}]'.format(app_data, type(app_data))
         )
         self.provider.log.info('[validate] Operator  : ({})'.format(op))
         self.provider.log.info(
-            '[validate] User Data : ({}), Type: [{}]'.format(test_data, type(test_data))
+            '[validate] Test Data : ({}), Type: [{}]'.format(test_data, type(test_data))
         )
 
         if passed:
