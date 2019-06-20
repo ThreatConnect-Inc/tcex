@@ -41,9 +41,7 @@ parser = argparse.ArgumentParser(
     epilog=epilog, formatter_class=argparse.RawDescriptionHelpFormatter
 )
 parser.add_argument('--branch', default='master', help='Git branch.')
-parser.add_argument(
-    '--feature', default='', help='The sub directory under tests for this test logic'
-)
+parser.add_argument('--feature', help='The sub directory under tests for this test logic')
 parser.add_argument('--file', default='test_cases.py', help='The test file to generate')
 parser.add_argument(
     '--permutation_id',
@@ -72,15 +70,17 @@ if __name__ == '__main__':
 
         if args.permutations:
             tc_test.print_permutations()
-
-        # generates the tests and feature dir
-        tc_test.create_dirs()
-        # generates the validation file if it does not exist
-        tc_test.generate_validation_file()
-        # adds the profile to the json
-        tc_test.add_profile()
-        # downloads the test template file if not already exists
-        tc_test.download_file('test_template.py')
+        elif args.feature and (args.profile_name or args.profile_file):
+            # generates the tests and feature dir
+            tc_test.create_dirs()
+            # generates the validation file if it does not exist
+            tc_test.generate_validation_file()
+            # adds the profile to the json
+            tc_test.add_profile()
+            # downloads the test template file if not already exists
+            tc_test.download_file('test_template.py')
+        else:
+            print('Invalid options.')
 
         # exit
         sys.exit()

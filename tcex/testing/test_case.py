@@ -182,12 +182,17 @@ class TestCasePlaybook(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
-    redis_staging_data = {}
+    redis_staging_data = {
+        '#App:1234:empty!String': '',
+        '#App:1234:null!String': None,
+        '#App:1234:non-ascii!String': 'ドメイン.テスト',
+    }
+
     redis_client = None
 
     def _exit(self, code):
         """Log and return exit code"""
-        self.log.info('[runner] Exit Code: {}'.format(code))
+        self.log.info('[run] Exit Code: {}'.format(code))
         self.tcex().log.info('Exit Code: {}'.format(code))
         return code
 
@@ -248,6 +253,7 @@ class TestCasePlaybook(TestCase):
             [type]: [description]
         """
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        self.log.info('[run] Args: {}'.format(args))
         app = self.app(args)
 
         # Start
