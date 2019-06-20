@@ -30,7 +30,6 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
-    _profile_file = None
     _tcex = None
     _timer_class_start = None
     _timer_method_start = None
@@ -106,6 +105,12 @@ class TestCase(object):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
 
+    @property
+    def profiles_dir(self):
+        """Return profile fully qualified filename."""
+        feature_path = os.path.dirname(self._current_test.split('::')[0])
+        return os.path.join(self._app_path, feature_path, 'profiles.d')
+
     def setup_class(self):
         """Run once before all test cases."""
         self._timer_class_start = time.time()
@@ -117,8 +122,6 @@ class TestCase(object):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
-        test_path = os.path.dirname(self._current_test.split('::')[0])
-        self._profile_file = os.path.join(self._app_path, test_path, 'profiles.json')
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
         self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
@@ -203,14 +206,10 @@ class TestCasePlaybook(TestCase):
 
     def populate_output_variables(self, profile_name):
         """Generate validation rules from App outputs."""
-        profiles_data = None
-        with open(self._profile_file, 'r+') as fh:
-            profiles_data = json.load(fh)
-            if (
-                profiles_data.get(profile_name) is not None
-                and profiles_data.get(profile_name).get('outputs') is None
-            ):
-
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
+        with open(profile_filename, 'r+') as fh:
+            profile_data = json.load(fh)
+            if profile_data.get('outputs') is None:
                 redis_data = self.redis_client.hgetall(self.context)
                 outputs = {}
                 for variable, data in redis_data.items():
@@ -218,26 +217,25 @@ class TestCasePlaybook(TestCase):
                     data = data.decode('utf-8')
                     if variable in self.output_variables:
                         outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
-                profiles_data[profile_name]['outputs'] = outputs
+                profile_data['outputs'] = outputs
                 fh.seek(0)
-                fh.write(json.dumps(profiles_data, indent=2, sort_keys=True))
+                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
                 fh.truncate()
 
     def profile(self, profile_name):
         """Get a profile from the profiles.json file by name"""
         profile = None
-        with open(self._profile_file, 'r') as profiles:
-            data = json.load(profiles)
-            profile = data.get(profile_name, None)
+        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+            profile = json.load(fh)
         return profile
 
     @property
     def profile_names(self):
         """Get a profile from the profiles.json file by name"""
         profile_names = []
-        with open(self._profile_file, 'r') as profiles:
-            data = json.load(profiles)
-            profile_names = data.keys()
+        for filename in sorted(os.listdir(self.profiles_dir)):
+            if filename.endswith('.json'):
+                profile_names.append(filename.replace('.json', ''))
         return profile_names
 
     def run(self, args):  # pylint: disable=too-many-return-statements

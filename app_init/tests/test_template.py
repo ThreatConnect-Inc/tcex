@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """Test case template for App testing."""
-import json
 import os
 import pytest
 
 from tcex.testing import TestCasePlaybook
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
+# gather profile names
+profiles_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d')
 profile_names = []
-profile_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.json')
-if os.path.isfile(profile_file):
-    with open(profile_file, 'r') as fh:
-        profile_names = list(json.load(fh).keys())
+for filename in sorted(os.listdir(profiles_dir)):
+    if filename.endswith('.json'):
+        profile_names.append(filename.replace('.json', ''))
 
 
 # pylint: disable=W0235,too-many-function-args

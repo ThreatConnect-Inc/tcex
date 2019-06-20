@@ -4,6 +4,7 @@
 import json
 import os
 import re
+import sys
 
 from mako.template import Template
 import requests
@@ -25,52 +26,37 @@ class Profiles:
         NotImplementedError: The update method is not currently implemented.
     """
 
-    def __init__(self, filename):
+    def __init__(self, profile_dir):
         """Initialize class properties."""
-        self.filename = filename
+        self.profile_dir = profile_dir
 
         # properties
         self._profiles = None
 
     def add(self, profile_name, profile_data, sort_keys=True):
         """Add a profile."""
-        if not self.exists(profile_name):
-            profile = {
-                'exit_codes': profile_data.get('exit_codes', [0]),
-                'inputs': profile_data.get('inputs'),
-                'outputs': profile_data.get('outputs'),
-                'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
-            }
-            self.profiles[profile_name] = profile
+        profile_filename = os.path.join(self.profile_dir, '{}.json'.format(profile_name))
+        if os.path.isfile(profile_filename):
+            print(
+                '{}{}A profile with the name ({}) already exists.'.format(
+                    c.Style.BRIGHT, c.Fore.RED, profile_name
+                )
+            )
+            sys.exit(1)
 
-            with open(self.filename, 'w') as fh:
-                json.dump(self.profiles, fh, indent=2, sort_keys=sort_keys)
+        profile = {
+            'exit_codes': profile_data.get('exit_codes', [0]),
+            'inputs': profile_data.get('inputs'),
+            'outputs': profile_data.get('outputs'),
+            'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
+        }
+
+        with open(profile_filename, 'w') as fh:
+            json.dump(profile, fh, indent=2, sort_keys=sort_keys)
 
     def delete(self, profile_name):
         """Delete an existing profile."""
         raise NotImplementedError('The delete method is not currently implemented.')
-
-    def exists(self, profile_name):
-        """Check to see if the profile exists."""
-        return profile_name in self.profiles
-
-    @property
-    def file_exists(self):
-        """Check to see if the profile file exists."""
-        return os.path.isfile(self.filename)
-
-    @property
-    def profiles(self):
-        """Return the profile data."""
-        if self._profiles is None:
-            if not self.file_exists:
-                self._profiles = {}
-                with open(self.filename, 'w') as fh:
-                    json.dump(self._profiles, fh)
-            else:
-                with open(self.filename, 'r') as fh:
-                    self._profiles = json.load(fh)
-        return self._profiles
 
     def update(self, profile_name):
         """Update an existing profile."""
@@ -197,7 +183,8 @@ class TcExTest(TcExBin):
         # properties
         self.base_dir = os.path.join(self.app_path, 'tests')
         self.feature_dir = os.path.join(self.base_dir, self.args.feature)
-        self.profiles = Profiles(self.profiles_file)
+        self.feature_profile_dir = os.path.join(self.base_dir, self.args.feature, 'profiles.d')
+        self.profiles = Profiles(self.profiles_dir)
         self.validation = Validation(self.base_dir, self.args.branch)
         self._output_variables = None
 
@@ -287,10 +274,19 @@ class TcExTest(TcExBin):
 
     def create_dirs(self):
         """Create tcex.d directory and sub directories."""
-        for d in [self.base_dir, self.feature_dir]:
+        for d in [self.base_dir, self.feature_dir, self.feature_profile_dir]:
             if not os.path.isdir(d):
                 os.makedirs(d)
-                self.generate_init(d)
+
+        # create __init__ files
+        self.create_dirs_init()
+
+    def create_dirs_init(self):
+        """Create the __init__.py file under dir."""
+        for d in [self.base_dir, self.feature_dir]:
+            if os.path.isdir(d):
+                with open(os.path.join(d, '__init__.py'), 'a'):
+                    os.utime(os.path.join(d, '__init__.py'), None)
 
     def download_file(self, remote_filename):
         """Download file from github.
@@ -314,12 +310,6 @@ class TcExTest(TcExBin):
 
             # print download status
             self._print_results(local_filename, status)
-
-    @staticmethod
-    def generate_init(directory):
-        """Create the __init__.py file under dir."""
-        with open(os.path.join(directory, '__init__.py'), 'a'):
-            os.utime(os.path.join(directory, '__init__.py'), None)
 
     def generate_validation_file(self):
         """Generate the validation file."""
@@ -349,9 +339,9 @@ class TcExTest(TcExBin):
         return os.path.isfile(self.permutations_file)
 
     @property
-    def profiles_file(self):
+    def profiles_dir(self):
         """Return profile fully qualified filename."""
-        return os.path.join(self.base_dir, self.args.feature, 'profiles.json')
+        return os.path.join(self.base_dir, self.args.feature, 'profiles.d')
 
     @property
     def test_file(self):
