@@ -190,7 +190,7 @@ class Redis(object):
         """Validate the type of a redis variable"""
         variable_data = self.provider.tcex.playbook.read(variable)
         self.provider.log.info('[validate] Variable: {}'.format(variable))
-        self.provider.log.info('[validate] App Data:  {}'.format(variable_data))
+        self.provider.log.info('[validate] App Data: {}'.format(variable_data))
         redis_type = self.provider.tcex.playbook.variable_type(variable)
         if redis_type.endswith('Array'):
             redis_type = list
@@ -256,11 +256,11 @@ class Redis(object):
         # self.provider.log.info('[validate] Passed:  {}'.format(passed))
 
         # debug
-        self.provider.log.debug(
-            'redis-cli hget {} \'{}\''.format(
-                self.provider.tcex.args.tc_playbook_db_context, variable
-            )
-        )
+        # self.provider.log.debug(
+        #     'redis-cli hget {} \'{}\''.format(
+        #         self.provider.tcex.args.tc_playbook_db_context, variable
+        #     )
+        # )
 
         return passed
 

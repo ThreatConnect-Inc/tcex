@@ -37,5 +37,7 @@ class TestFeature(TestCasePlaybook):
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name):
         """Run pre-created testing profiles."""
-        assert self.run_profile(profile_name) in self.profile(profile_name).get('exit_codes', [0])
-        ValidateFeature(self.validator).validate(self.profile(profile_name).get('outputs'))
+        pd = self.profile(profile_name)
+        if self.env.intersection(set(pd.get('environments', ['build']))):
+            assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
+            ValidateFeature(self.validator).validate(pd.get('outputs'))

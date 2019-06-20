@@ -36,6 +36,7 @@ class TestCase(object):
     _timer_method_start = None
     context = None
     log = logger
+    env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
 
     @staticmethod
     def _to_bool(value):
@@ -110,6 +111,7 @@ class TestCase(object):
         self._timer_class_start = time.time()
         self.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
         self.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
+        self.log.info('[setup class] local envs: {}'.format(self.env))
 
     def setup_method(self):
         """Run before each test method runs."""
@@ -327,7 +329,8 @@ class TestCasePlaybook(TestCase):
         exit_code = self.run(args)
 
         # populate the output variables
-        self.populate_output_variables(profile_name)
+        if exit_code == 0:
+            self.populate_output_variables(profile_name)
 
         return self._exit(exit_code)
 
@@ -336,7 +339,6 @@ class TestCasePlaybook(TestCase):
         super().setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex().playbook.db.r
-        #
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""

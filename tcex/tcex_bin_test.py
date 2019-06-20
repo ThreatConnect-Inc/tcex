@@ -217,7 +217,7 @@ class TcExTest(TcExBin):
         elif status == 'Skipped':
             status_color = c.Fore.YELLOW
         print(
-            '{}{!s:<13}{}{!s:<35}{}{!s:<8}{}{}'.format(
+            '{}{!s:<13}{}{!s:<50}\n{}{!s:<13}{}{}'.format(
                 c.Fore.CYAN,
                 'Downloading:',
                 file_color,
