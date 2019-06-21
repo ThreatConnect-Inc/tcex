@@ -249,7 +249,7 @@ class Redis(object):
         self.provider.log.info('{0} {1} {0}'.format('-' * 10, variable))
         self.validate_log_output(passed, app_data, test_data, op)
 
-        assert_error = '\nApp Data: {}\nExpected Data: {}\nDetails: {}\n'.format(
+        assert_error = '\n App Data     : {}\n Expected Data: {}\n Details      : {}\n'.format(
             app_data, test_data, details
         )
         return passed, assert_error
@@ -264,19 +264,19 @@ class Redis(object):
                     if diff[0] == ' ':  # no difference
                         continue
                     elif diff[0] == '-':
-                        details += 'Missing data at index {}'.format(i)
+                        details += '\n    * Missing data at index {}'.format(i)
                         self.provider.log.info(
                             '[validate] App Data   : ({}), Type: [{}]'.format(
                                 app_data, type(app_data)
                             )
                         )
                     elif diff[0] == '+':
-                        details += 'Extra data at index {}'.format(i)
+                        details += '\n    * Extra data at index {}'.format(i)
                         self.provider.log.info(
                             '[validate] Diff       : Extra data at index {}'.format(i)
                         )
                     if diff_count > self.max_diff:
-                        details += 'Max number of differences reached.'
+                        details += '\n    * Max number of differences reached.'
                         # don't spam the logs if string are vastly different
                         self.provider.log.info('[validate] Max number of differences reached.')
                         break
