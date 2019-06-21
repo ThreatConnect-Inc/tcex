@@ -23,9 +23,17 @@ class Validate:
 
     def ${data['method']}(self, data):
         """Assert output data for variable ${data['variable']}."""
-        assert self.validator.redis.data(
+        validation_data = self.validator.redis.data(
             '${data['variable']}',
             data.get('expected_output'),
             data.get('op', '='),
         )
+        validation_error = (
+            'App Data: {}\nExpected Data: {}\n,Details: {}\n'.format(
+                validation_data.get('app_data'),
+                validation_data.get('test_data'),
+                validation_data.get('details')
+            )
+        )
+        assert validator_data.get('status', False), validation_error
     % endfor

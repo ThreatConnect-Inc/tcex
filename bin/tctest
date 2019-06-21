@@ -42,7 +42,9 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--branch', default='master', help='Git branch.')
 parser.add_argument('--feature', help='The sub directory under tests for this test logic')
-parser.add_argument('--file', default='test_cases.py', help='The test file to generate')
+parser.add_argument(
+    '--file', default='test_cases.py', help='The test file name to generate (default: test_case.py)'
+)
 parser.add_argument(
     '--permutation_id',
     help='The ID from the "--permutations" option to use for generating the profile.',

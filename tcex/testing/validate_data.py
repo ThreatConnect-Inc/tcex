@@ -248,21 +248,14 @@ class Redis(object):
         self.provider.log.info('{0} {1} {0}'.format('-' * 10, variable))
         self.validate_log_output(passed, app_data, test_data, op)
 
-        # # Logging
-        # self.provider.log.info('[validate] App Data:  {}'.format(app_data))
-        # self.provider.log.info('[validate] Test Data: {}'.format(test_data))
-        # self.provider.log.info('[validate] Operator:  {}'.format(op))
+        validation_data = {
+            'app_data': app_data,
+            'details': None,
+            'status': passed,
+            'test_data': test_data,
+        }
 
-        # self.provider.log.info('[validate] Passed:  {}'.format(passed))
-
-        # debug
-        # self.provider.log.debug(
-        #     'redis-cli hget {} \'{}\''.format(
-        #         self.provider.tcex.args.tc_playbook_db_context, variable
-        #     )
-        # )
-
-        return passed
+        return validation_data
 
     def eq(self, variable, data):
         """Validate test data equality"""
