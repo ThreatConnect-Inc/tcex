@@ -4,10 +4,13 @@ import json
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+import re
 import time
 import uuid
 import sys
 from datetime import datetime
+
+from six import string_types
 
 from tcex import TcEx
 from app import App  # pylint: disable=import-error
@@ -15,7 +18,7 @@ from .stage_data import Stager
 from .validate_data import Validator
 
 logger = logging.getLogger('TestCase')
-rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10_485_760, mode='a')
+rfh = RotatingFileHandler('log/tests.log', backupCount=10, maxBytes=10485760, mode='a')
 rfh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 rfh.setFormatter(formatter)
@@ -71,6 +74,8 @@ class TestCase(object):
             'tc_proxy_tc': self._to_bool(os.getenv('TC_PROXY_TC', 'false')),
             'tc_proxy_username': os.getenv('TC_PROXY_USERNAME', ''),
             'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
+            'tc_token': os.getenv('TC_TOKEN'),
+            'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
         }
 
     @property
@@ -111,12 +116,13 @@ class TestCase(object):
         feature_path = os.path.dirname(self._current_test.split('::')[0])
         return os.path.join(self._app_path, feature_path, 'profiles.d')
 
-    def setup_class(self):
+    @classmethod
+    def setup_class(cls):
         """Run once before all test cases."""
-        self._timer_class_start = time.time()
-        self.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
-        self.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
-        self.log.info('[setup class] local envs: {}'.format(self.env))
+        cls._timer_class_start = time.time()
+        cls.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
+        cls.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
+        cls.log.info('[setup class] local envs: {}'.format(cls.env))
 
     def setup_method(self):
         """Run before each test method runs."""
@@ -132,12 +138,13 @@ class TestCase(object):
         """Return instance of Stager class."""
         return Stager(self.tcex(self.default_args), logger)
 
-    def teardown_class(self):
+    @classmethod
+    def teardown_class(cls):
         """Run once before all test cases."""
-        self.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
-        self.log.info(
+        cls.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
+        cls.log.info(
             '[teardown class] Finished: {}, Elapsed: {}'.format(
-                datetime.now().isoformat(), time.time() - self._timer_class_start
+                datetime.now().isoformat(), time.time() - cls._timer_class_start
             )
         )
 
@@ -243,6 +250,30 @@ class TestCasePlaybook(TestCase):
                 profile_names.append(filename.replace('.json', ''))
         return profile_names
 
+    @staticmethod
+    def resolve_env_args(value):
+        """Resolve env args
+
+        Args:
+            value (str): The value to resolve for environment variable.
+
+        Returns:
+            str: The original string or resolved string.
+        """
+        env_var = re.compile(r'^\$env\.(.*)$')
+        envs_var = re.compile(r'^\$envs\.(.*)$')
+
+        if env_var.match(str(value)):
+            # read value from environment variable
+            env_key = env_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        elif envs_var.match(str(value)):
+            # read secure value from environment variable
+            env_key = envs_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+
+        return value
+
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
 
@@ -252,6 +283,11 @@ class TestCasePlaybook(TestCase):
         Returns:
             [type]: [description]
         """
+        # resolve env vars
+        for k, v in args.items():
+            if isinstance(v, string_types):
+                args[k] = self.resolve_env_args(v)
+
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
         self.log.info('[run] Args: {}'.format(args))
         app = self.app(args)
@@ -340,7 +376,7 @@ class TestCasePlaybook(TestCase):
 
     def setup_method(self):
         """Run before each test method runs."""
-        super().setup_method()
+        super(TestCasePlaybook, self).setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex().playbook.db.r
 
@@ -355,4 +391,4 @@ class TestCasePlaybook(TestCase):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
         self.log.info('[teardown method] Delete Key Count: {}'.format(r))
-        super().teardown_method()
+        super(TestCasePlaybook, self).teardown_method()

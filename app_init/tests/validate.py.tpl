@@ -2,7 +2,7 @@
 """Validate App outputs Class."""
 
 
-class Validate:
+class Validate(object):
     """Validate base class for App output validation."""
 
     def __init__(self, validator):

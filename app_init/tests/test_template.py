@@ -18,21 +18,23 @@ for filename in sorted(os.listdir(profiles_dir)):
 class TestFeature(TestCasePlaybook):
     """TcEx App Testing Template."""
 
-    def setup_class(self):
+    @classmethod
+    def setup_class(cls):
         """Run setup logic before all test cases in this module."""
-        super().setup_class(self)
+        super(TestFeature, cls).setup_class()
 
     def setup_method(self):
         """Run setup logic before test method runs."""
-        super().setup_method()
+        super(TestFeature, self).setup_method()
 
-    def teardown_class(self):
+    @classmethod
+    def teardown_class(cls):
         """Run setup logic after all test cases in this module."""
-        super().teardown_class(self)
+        super(TestFeature, cls).teardown_class()
 
     def teardown_method(self):
         """Run teardown logic after test method completes."""
-        super().teardown_method()
+        super(TestFeature, self).teardown_method()
 
     @pytest.mark.parametrize('profile_name', profile_names)
     def test_profiles(self, profile_name):
