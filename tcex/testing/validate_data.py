@@ -243,19 +243,49 @@ class Redis(object):
             app_data = self.provider.tcex.playbook.read(variable)
 
         passed = self.provider.get_operator(op)(app_data, test_data, **kwargs)
+        details = self.details(app_data, test_data, op)
 
         # log validation data in a readable format
         self.provider.log.info('{0} {1} {0}'.format('-' * 10, variable))
         self.validate_log_output(passed, app_data, test_data, op)
 
-        validation_data = {
-            'app_data': app_data,
-            'details': None,
-            'status': passed,
-            'test_data': test_data,
-        }
+        assert_error = '\nApp Data: {}\nExpected Data: {}\nDetails: {}\n'.format(
+            app_data, test_data, details
+        )
+        return passed, assert_error
 
-        return validation_data
+    def details(self, app_data, test_data, op):
+        """Return details about the validation."""
+        details = ''
+        if app_data is not None and test_data is not None and op in ['=', 'eq', '!=', 'ne']:
+            try:
+                diff_count = 0
+                for i, diff in enumerate(difflib.ndiff(app_data, test_data)):
+                    if diff[0] == ' ':  # no difference
+                        continue
+                    elif diff[0] == '-':
+                        details += 'Missing data at index {}'.format(i)
+                        self.provider.log.info(
+                            '[validate] App Data   : ({}), Type: [{}]'.format(
+                                app_data, type(app_data)
+                            )
+                        )
+                    elif diff[0] == '+':
+                        details += 'Extra data at index {}'.format(i)
+                        self.provider.log.info(
+                            '[validate] Diff       : Extra data at index {}'.format(i)
+                        )
+                    if diff_count > self.max_diff:
+                        details += 'Max number of differences reached.'
+                        # don't spam the logs if string are vastly different
+                        self.provider.log.info('[validate] Max number of differences reached.')
+                        break
+                    diff_count += 1
+            except TypeError:
+                pass
+            except KeyError:
+                pass
+        return details
 
     def eq(self, variable, data):
         """Validate test data equality"""
