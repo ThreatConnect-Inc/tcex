@@ -29,11 +29,11 @@ class Validate:
             data.get('op', '='),
         )
         validation_error = (
-            'App Data: {}\nExpected Data: {}\n,Details: {}\n'.format(
+            '\nApp Data: {}\nExpected Data: {}\nDetails: {}\n'.format(
                 validation_data.get('app_data'),
                 validation_data.get('test_data'),
                 validation_data.get('details')
             )
         )
-        assert validator_data.get('status', False), validation_error
+        assert validation_data.get('status', False), validation_error
     % endfor

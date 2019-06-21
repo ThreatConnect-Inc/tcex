@@ -311,6 +311,22 @@ class TcExTest(TcExBin):
             # print download status
             self._print_results(local_filename, status)
 
+    def download_conftest(self):
+        """Download conftest.py file from github."""
+        status = 'Failed'
+        local_filename = os.path.join('tests', 'conftest.py')
+        if not os.path.isfile(local_filename):
+            url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.args.branch, 'conftest.py')
+            r = requests.get(url, allow_redirects=True)
+            if r.ok:
+                open(local_filename, 'wb').write(r.content)
+                status = 'Success'
+            else:
+                self.handle_error('Error requesting: {}'.format(url), False)
+
+            # print download status
+            self._print_results(local_filename, status)
+
     def generate_validation_file(self):
         """Generate the validation file."""
         self.validation.generate(self.output_variables)

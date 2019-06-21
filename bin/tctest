@@ -81,6 +81,8 @@ if __name__ == '__main__':
             tc_test.add_profile()
             # downloads the test template file if not already exists
             tc_test.download_file('test_template.py')
+            # download conftest.py
+            tc_test.download_conftest()
         else:
             print('Invalid options.')
 
