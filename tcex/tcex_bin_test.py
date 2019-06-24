@@ -224,6 +224,10 @@ class TcExTest(TcExBin):
             if os.path.isfile(self.args.profile_file):
                 with open(self.args.profile_file, 'r') as fh:
                     data = json.load(fh)
+            else:
+                self.handle_error(
+                    'Error reading in profile file: {}'.format(self.args.profile_file), True
+                )
 
             profile_data = {}
             for d in data:
