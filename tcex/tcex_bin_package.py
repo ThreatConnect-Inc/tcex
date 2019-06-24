@@ -181,6 +181,8 @@ class TcExPackage(TcExBin):
             self.args.outdir,
             '__pycache__',
             '.c9',  # C9 IDE
+            '.coverage',  # coverage file
+            '.coveragerc',  # coverage configuration file file
             '.git',  # git directory
             '.gitmodules',  # git modules
             '.idea',  # PyCharm
@@ -189,6 +191,7 @@ class TcExPackage(TcExBin):
             '.python-version',  # pyenv
             '.vscode',  # Visual Studio Code
             'log',  # log directory
+            'tests',  # pytest test directory
         ]
         excludes.extend(self.args.exclude)
         excludes.extend(self.tcex_json.get('package', {}).get('excludes', []))

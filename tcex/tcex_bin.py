@@ -382,6 +382,8 @@ class TcExBin(object):
                 profile_args[p.get('name')] = '[{}]'.format(valid_values)
             elif p.get('type').lower() == 'multichoice':
                 profile_args[p.get('name')] = p.get('validValues', [])
+            elif p.get('type').lower() == 'keyvaluelist':
+                profile_args[p.get('name')] = '<KeyValueList>'
             elif p.get('name') in ['api_access_id', 'api_secret_key']:
                 # leave these parameters set to the value defined in defaults
                 pass
@@ -418,6 +420,8 @@ class TcExBin(object):
                 elif p.get('type').lower() == 'choice':
                     # use the value generated in the permutation
                     profile_args[p.get('name')] = pn.get('value')
+                elif p.get('type').lower() == 'keyvaluelist':
+                    profile_args[p.get('name')] = '<KeyValueList>'
                 elif p.get('name') in ['api_access_id', 'api_secret_key']:
                     # leave these parameters set to the value defined in defaults
                     pass

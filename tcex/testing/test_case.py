@@ -8,6 +8,7 @@ import re
 import time
 import uuid
 import sys
+import traceback
 from datetime import datetime
 
 from six import string_types
@@ -33,12 +34,12 @@ class TestCase(object):
     _current_test = None
     _input_params = None
     _install_json = None
-    _tcex = None
     _timer_class_start = None
     _timer_method_start = None
     context = None
     log = logger
     env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
+    tcex = None
 
     @staticmethod
     def _to_bool(value):
@@ -47,12 +48,12 @@ class TestCase(object):
 
     def app(self, args):
         """Return an instance of App."""
-        return App(self.tcex(args))
+        return App(self.get_tcex(args))
 
     @property
     def default_args(self):
         """Return App default args."""
-        return {
+        args = {
             'api_access_id': os.getenv('API_ACCESS_ID'),
             'api_default_org': os.getenv('API_DEFAULT_ORG'),
             'api_secret_key': os.getenv('API_SECRET_KEY'),
@@ -74,9 +75,31 @@ class TestCase(object):
             'tc_proxy_tc': self._to_bool(os.getenv('TC_PROXY_TC', 'false')),
             'tc_proxy_username': os.getenv('TC_PROXY_USERNAME', ''),
             'tc_temp_path': os.getenv('TC_TEMP_PATH', 'log'),
-            'tc_token': os.getenv('TC_TOKEN'),
-            'tc_token_expires': os.getenv('TC_TOKEN_EXPIRES'),
         }
+        if os.getenv('TC_TOKEN'):
+            args['tc_token'] = os.getenv('TC_TOKEN')
+            args['tc_token_expires'] = os.getenv('TC_TOKEN_EXPIRES')
+        return args
+
+    def get_tcex(self, args=None):
+        """Return an instance of App."""
+        args = args or {}
+        app_args = self.default_args
+        app_args.update(args)
+        if self.tcex is not None and self.context == self.tcex.default_args.tc_playbook_db_context:
+            self.tcex.tcex_args.inject_params(app_args)  # during run this is required
+            return self.tcex
+
+        sys.argv = [
+            sys.argv[0],
+            '--tc_log_path',
+            'log',
+            '--tc_log_file',
+            '{}-app.log'.format(self.context),
+        ]
+        self.tcex = TcEx()
+        self.tcex.tcex_args.inject_params(app_args)  # required for stager
+        return self.tcex
 
     @property
     def install_json(self):
@@ -136,7 +159,7 @@ class TestCase(object):
     @property
     def stager(self):
         """Return instance of Stager class."""
-        return Stager(self.tcex(self.default_args), logger)
+        return Stager(self.get_tcex(self.default_args), logger)
 
     @classmethod
     def teardown_class(cls):
@@ -156,33 +179,10 @@ class TestCase(object):
             )
         )
 
-    def tcex(self, args=None):
-        """Return an instance of App."""
-        args = args or {}
-        app_args = self.default_args
-        app_args.update(args)
-        if (
-            self._tcex is not None
-            and self.context == self._tcex.default_args.tc_playbook_db_context
-        ):
-            self._tcex.tcex_args.inject_params(app_args)  # during run this is required
-            return self._tcex
-
-        sys.argv = [
-            sys.argv[0],
-            '--tc_log_path',
-            'log',
-            '--tc_log_file',
-            '{}-app.log'.format(self.context),
-        ]
-        self._tcex = TcEx()
-        self._tcex.tcex_args.inject_params(app_args)  # required for stager
-        return self._tcex
-
     @property
     def validator(self):
         """Return instance of Stager class."""
-        return Validator(self.tcex(self.default_args), logger)
+        return Validator(self.get_tcex(self.default_args), logger)
 
 
 class TestCasePlaybook(TestCase):
@@ -200,7 +200,7 @@ class TestCasePlaybook(TestCase):
     def _exit(self, code):
         """Log and return exit code"""
         self.log.info('[run] Exit Code: {}'.format(code))
-        self.tcex().log.info('Exit Code: {}'.format(code))
+        self.tcex.log.info('Exit Code: {}'.format(code))
         return code
 
     @property
@@ -263,11 +263,11 @@ class TestCasePlaybook(TestCase):
         env_var = re.compile(r'^\$env\.(.*)$')
         envs_var = re.compile(r'^\$envs\.(.*)$')
 
-        if env_var.match(str(value)):
+        if env_var.match(value):
             # read value from environment variable
             env_key = env_var.match(str(value)).groups()[0]
             value = os.environ.get(env_key, value)
-        elif envs_var.match(str(value)):
+        elif envs_var.match(value):
             # read secure value from environment variable
             env_key = envs_var.match(str(value)).groups()[0]
             value = os.environ.get(env_key, value)
@@ -298,8 +298,10 @@ class TestCasePlaybook(TestCase):
         except SystemExit as e:
             self.log.error('App failed in start() method ({}).'.format(e))
             return self._exit(e.code)
-        except Exception as err:
-            self.log.error('App encountered except in start() method ({}).'.format(err))
+        except Exception:
+            self.log.error(
+                'App encountered except in start() method ({}).'.format(traceback.format_exc())
+            )
             return self._exit(1)
 
         # Run
@@ -319,8 +321,10 @@ class TestCasePlaybook(TestCase):
         except SystemExit as e:
             self.log.error('App failed in run() method ({}).'.format(e))
             return self._exit(e.code)
-        except Exception as err:
-            self.log.error('App encountered except in run() method ({}).'.format(err))
+        except Exception:
+            self.log.error(
+                'App encountered except in run() method ({}).'.format(traceback.format_exc())
+            )
             return self._exit(1)
 
         # Write Output
@@ -329,8 +333,12 @@ class TestCasePlaybook(TestCase):
         except SystemExit as e:
             self.log.error('App failed in write_output() method ({}).'.format(e))
             return self._exit(e.code)
-        except Exception as err:
-            self.log.error('App encountered except in write_output() method ({}).'.format(err))
+        except Exception:
+            self.log.error(
+                'App encountered except in write_output() method ({}).'.format(
+                    traceback.format_exc()
+                )
+            )
             return self._exit(1)
 
         # Done
@@ -339,8 +347,10 @@ class TestCasePlaybook(TestCase):
         except SystemExit as e:
             self.log.error('App failed in done() method ({}).'.format(e))
             return self._exit(e.code)
-        except Exception as err:
-            self.log.error('App encountered except in done() method ({}).'.format(err))
+        except Exception:
+            self.log.error(
+                'App encountered except in done() method ({}).'.format(traceback.format_exc())
+            )
             return self._exit(1)
 
         return self._exit(app.tcex.exit_code)
@@ -378,7 +388,7 @@ class TestCasePlaybook(TestCase):
         """Run before each test method runs."""
         super(TestCasePlaybook, self).setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
-        self.redis_client = self.tcex().playbook.db.r
+        self.redis_client = self.tcex.playbook.db.r
 
     def stage_data(self, staged_data):
         """Stage the data in the profile."""

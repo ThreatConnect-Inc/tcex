@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 """Test case template for App testing."""
 import os
+import sys
+
 import pytest
 
 from tcex.testing import TestCasePlaybook
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
+
+# Python 2 unicode
+if sys.version_info[0] == 2:
+    reload(sys)  # noqa: F821; pylint: disable=E0602
+    sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
 
 # gather profile names
 profiles_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.d')
