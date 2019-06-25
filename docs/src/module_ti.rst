@@ -45,7 +45,7 @@ The example below retrieves all Groups with a group of Crimeware.
 
 Get Groups by Filter
 --------------------
-To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. The calling  ``many()`` method allows pagination over all Groups matching the provided Filter(s).
+To retrieve all Groups using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. The calling  ``many()`` method allows pagination over all Groups matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
 
 The example below retrieves all Groups where the name equals ``my_name_filter``.
 
@@ -193,7 +193,7 @@ The example below retrieves all indicators with a tag of Crimeware.
 
 Get Indicators by Filter
 ------------------------
-To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicators matching the provided Filter(s).
+To retrieve all Indicators using a Filter from the ThreatConnect REST API, the Filters can be provided to the ``many()`` method. Calling ``many()`` method allows pagination over all Indicators matching the provided Filter(s). The filters added should be the same filter parameters as the REST API expects.
 
 The example below retrieves all Indicators where name equals ``my_name_filter``.
 
