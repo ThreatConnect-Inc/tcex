@@ -235,7 +235,7 @@ There are six methods that retrieve metadata for an Indicator: ``group_associati
     ti = self.tcex.ti.indicator(indicator_type='Address', owner='MyOrg', unique_id='1.1.1.1')
 
     # get group associations
-    for association in ti.indicator_associations():
+    for association in ti.group_associations():
         self.tcex.log.debug('association: {}'.format(association))
 
     # get indicator associations
