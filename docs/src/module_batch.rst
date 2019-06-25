@@ -29,7 +29,7 @@ Group Interface 1
 -----------------
 The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the group instance directly.
 
-The example below passes all supported fields to the``adversary()`` method.
+The example below passes all supported fields to the ``adversary()`` method.
 
 .. code-block:: python
     :linenos:
