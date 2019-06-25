@@ -127,7 +127,7 @@ app.py
 External App Templates
 ----------------------
 
-The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method ,``self.tcex.tcex_args.config_file()``, takes a JSON file as input for the App configuration file. The second method, ``self.tcex.tcex_args.config()``, takes a dictionary of configuration data.  Either method will load the data and make it accessible via the ``self.args`` namespace.
+The TcEx Framework provides methods to build an App to run in the ThreatConnect Exchange environment.  However, the TcEx Frameworks also supports writing Apps that run external to the ThreatConnect Exchange environment. Two methods of injecting CLI args are supported.  The first method , ``self.tcex.tcex_args.config_file()``, takes a JSON file as input for the App configuration file. The second method, ``self.tcex.tcex_args.config()``, takes a dictionary of configuration data.  Either method will load the data and make it accessible via the ``self.args`` namespace.
 
 The ``run()`` method is the default method that is called when an App is executed. For simple Apps, the core logic of the App can be written in this method.  For more advanced Apps, additional methods can be added to the **app.py** file, if required.
 
