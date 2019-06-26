@@ -19,7 +19,7 @@ For Interface 1 and 2, the xid is optional; if not provided, a unique xid (UUID4
 
 .. important:: It is best practice to provide a unique and reproducible xid value when creating Groups. If the xid created for a new Group matches the xid for an existing Group, the existing Group will be overwritten.
 
-.. note:: In all of the examples below, the code to create the content is removed. Read more on how to create the content in the `Submit section <https://docs.threatconnect.com/en/latest/tcex/batch.html#submit>`__.
+.. note:: In all of the examples below, the code to create the content is removed. Read more on how to create the content in the `Submit section <https://docs.threatconnect.com/en/latest/tcex/module_batch.html#submit>`__.
 
 Groups
 ======
