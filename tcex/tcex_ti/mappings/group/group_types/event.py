@@ -21,7 +21,7 @@ class Event(Group):
             event_date (str, kwargs): The event datetime expression for this Group.
             status (str, kwargs): The status for this Group.
         """
-        super(Event, self).__init__(tcex, 'Event', 'event', 'events', name, owner, **kwargs)
+        super(Event, self).__init__(tcex, 'Event', 'event', 'events', name, owner=owner, **kwargs)
 
     def status(self, status):
         """
