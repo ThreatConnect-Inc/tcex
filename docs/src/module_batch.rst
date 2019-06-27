@@ -151,6 +151,7 @@ The first interface is for type-specific access.  This interface allows for pass
     address.attribute('Description', 'Example Description', True)
     address.tag('Example Tag')
     address.security_label('TLP Green')
+    address.association('the_xid_of_pre_existing_group')
 
 .. code-block:: python
     :linenos:
