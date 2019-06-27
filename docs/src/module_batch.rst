@@ -151,7 +151,6 @@ The first interface is for type-specific access.  This interface allows for pass
     address.attribute('Description', 'Example Description', True)
     address.tag('Example Tag')
     address.security_label('TLP Green')
-    address.security_label('TLP Green')
 
 .. code-block:: python
     :linenos:
@@ -200,7 +199,7 @@ The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex
     # Add association
     event_name = 'Test event'
     event_xid = str(uuid.uuid4())
-    event = batch.event(event_name, xid=event_xid)
+    event = batch.group('Event', date_added='event-001', xid=event_xid)
     host.association(event_xid)
 
 .. note:: The case of the Indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the Indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
