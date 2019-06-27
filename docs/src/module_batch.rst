@@ -176,8 +176,8 @@ The first interface is for type-specific access.  This interface allows for pass
     occurrence.path = 'C:\\test\\'
     occurrence.date = '2017-02-02 01:02:03'
     # Add Association
-    group_xid = str(uuid.uuid4())
-    file_hash.association(group_xid)
+    pre_existing_group_xid = 'the_xid_of_pre_existing_group'
+    file_hash.association(pre_existing_group_xid)
 
 Indicator Interface 2
 ---------------------
@@ -195,8 +195,8 @@ The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex
     host.attribute('Description', 'Example Description 2', True, 'source')
     host.tag('Example Tag')
     # Add association
-    group_xid = str(uuid.uuid4())
-    host.association(group_xid)
+    pre_existing_group_xid = 'the_xid_of_pre_existing_group'
+    host.association(pre_existing_group_xid)
 
 .. note:: The case of the Indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the Indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
 
