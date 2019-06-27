@@ -139,7 +139,7 @@ There are three interfaces to add Indicator Threat Intelligence data to the Batc
 
 Indicator Interface 1
 ---------------------
-The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, and Tags) can be added to the Indicator instance directly.
+The first interface is for type-specific access.  This interface allows for passing of all the data in the method call or of only the required fields, with optional fields being set via property setters. All metadata (e.g., Attributes, Security Labels, Associations, and Tags) can be added to the Indicator instance directly.
 
 .. code-block:: python
     :linenos:
@@ -150,6 +150,7 @@ The first interface is for type-specific access.  This interface allows for pass
     address = batch.address('123.124.125.126', rating='5.0', confidence='100')
     address.attribute('Description', 'Example Description', True)
     address.tag('Example Tag')
+    address.security_label('TLP Green')
     address.security_label('TLP Green')
 
 .. code-block:: python
@@ -175,6 +176,11 @@ The first interface is for type-specific access.  This interface allows for pass
     occurrence.file_name = 'drop1.exe'
     occurrence.path = 'C:\\test\\'
     occurrence.date = '2017-02-02 01:02:03'
+    # Add Association
+    event_name = 'Test event'
+    event_xid = str(uuid.uuid4())
+    event = batch.event(event_name, xid=event_xid)
+    file_hash.association(event_xid)
 
 Indicator Interface 2
 ---------------------
@@ -191,6 +197,11 @@ The second and more dynamic interface uses the more generic :py:meth:`~tcex.tcex
     host.add_key_value('whoisActive', True)
     host.attribute('Description', 'Example Description 2', True, 'source')
     host.tag('Example Tag')
+    # Add association
+    event_name = 'Test event'
+    event_xid = str(uuid.uuid4())
+    event = batch.event(event_name, xid=event_xid)
+    host.association(event_xid)
 
 .. note:: The case of the Indicator type (the first argument provided to the `batch.indicator()` function) should be the same as the `name` key provided when retrieving the Indicator types <https://docs.threatconnect.com/en/latest/rest_api/indicators/indicators.html#retrieve-available-indicator-types>`__.
 
@@ -333,7 +344,8 @@ Submit the job and wait for completion. In the example below, any error messages
     :emphasize-lines: 1
 
     batch_data = batch.submit_all()
-    errors = batch_data.get('errors')
+    errors = []
+    [errors.extend(d.get('errors', [])) for d in batch_data if d.get('errors', None)]
     if errors:
         tcex.exit(1, 'Errors during Batch: {}'.format(errors))
 
