@@ -2,6 +2,7 @@
 """TcEx Framework Service module"""
 import json
 import threading
+import time
 import uuid
 
 
@@ -16,9 +17,13 @@ class TcExService(object):
         """
         self.tcex = tcex
         self.log = self.tcex.log
+
+        # properties
         self._client = None
-        self.p = None
         self.configs = {}
+        self.default_handlers = self.tcex.log.handlers
+        self.metric = {'hits': 0, 'misses': 0}
+        self.p = None
 
     # def api_service(self, callback):
     #     """Run subscribe method
@@ -100,20 +105,16 @@ class TcExService(object):
                 )
         return self._client.r
 
-    def create_config(self, config_id, params):
+    def create_config(self, config_id, config):
         """Add config item to service config object."""
         try:
-            self.configs[config_id] = params
+            self.configs[config_id] = config
 
-            response = {
-                'status': 'Acknowledged',
-                'type': 'CreateConfig',
-                'configId': config_id,
-                'outputVariables': ['<string array of expected output variables for this config>'],
-            }
-            self.client.publish('channel', response)
-        except Exception:
-            self.tcex.log.error('Could not create config item.')
+            # send ack response
+            response = {'status': 'Acknowledged', 'type': 'CreateConfig', 'configId': config_id}
+            self.publish(json.dumps(response))
+        except Exception as e:
+            self.tcex.log.error('Could not create config for Id {} ({}).'.format(config_id, e))
 
     def custom_trigger(
         self,
@@ -183,14 +184,14 @@ class TcExService(object):
             command = msg_data.get('command')
             # parameters for config commands
             config_id = msg_data.get('configId')
-            params = msg_data.get('params')
+            config = msg_data.get('config')
             # request_key = msg_data.get('requestKey')
 
             if not command:
                 self.tcex.log.warning('Received a message without command ({})'.format(m))
                 continue
             elif command == 'CreateConfig':
-                self.create_config(config_id, params)
+                self.create_config(config_id, config)
                 if callable(create_callback):
                     create_callback(msg_data)
             elif command == 'DeleteConfig':
@@ -198,7 +199,7 @@ class TcExService(object):
                 if callable(delete_callback):
                     delete_callback(msg_data)
             elif command == 'UpdateConfig':
-                self.update_config(config_id, params)
+                self.update_config(config_id, config)
                 if callable(update_callback):
                     update_callback(msg_data)
             elif command == 'Shutdown':
@@ -213,8 +214,12 @@ class TcExService(object):
         """Delete config item from config object."""
         try:
             del self.configs[config_id]
-        except AttributeError:
-            self.tcex.log.warning('Could not delete config item.')
+
+            # send ack response
+            response = {'status': 'Acknowledged', 'type': 'DeleteConfig', 'configId': config_id}
+            self.publish(json.dumps(response))
+        except Exception as e:
+            self.tcex.log.error('Could not delete config for Id {} ({}).'.format(config_id, e))
 
     def fire_event(self, session_id, config_id):
         """Publish a message on client channel.
@@ -231,6 +236,7 @@ class TcExService(object):
         Args:
             message (str): The message to be sent on client channel.
         """
+        self.tcex.log.trace('message: ({})'.format(message))
         self.client.publish(self.tcex.default_args.tc_client_channel, message)
 
     def run_service(self, message, callback):
@@ -257,8 +263,8 @@ class TcExService(object):
         # TODO: what is this and what is responseBody....
         body = message.get('bodySessionId')
 
-        for config_id, params in self.configs:
-            callback(method, params, headers, body, config_id, params)
+        for config_id, config in self.configs:
+            callback(method, params, headers, body, config_id, config)
 
     @property
     def session_id(self):
@@ -274,20 +280,16 @@ class TcExService(object):
             0, 'A shutdown command was received on server channel. Service is shutting down.'
         )
 
-    def update_config(self, config_id, params):
+    def update_config(self, config_id, config):
         """Add config item to service config object."""
         try:
-            self.configs[config_id] = params
+            self.configs[config_id] = config
 
-            response = {
-                'status': 'Acknowledged',
-                'type': 'UpdateConfig',
-                'configId': config_id,
-                'outputVariables': ['<string array of expected output variables for this config>'],
-            }
-            self.client.publish('channel', response)
-        except Exception:
-            self.tcex.log.error('Could not create config item.')
+            # send ack response
+            response = {'status': 'Acknowledged', 'type': 'UpdateConfig', 'configId': config_id}
+            self.publish(json.dumps(response))
+        except Exception as e:
+            self.tcex.log.error('Could not update config for Id {} ({}).'.format(config_id, e))
 
     def webhook_trigger(self, callback):
         """Add webhook subscriber
@@ -309,9 +311,14 @@ class TcExService(object):
         if not callable(callback):
             raise RuntimeError('Callback method is not a callable.')
 
+        # start heartbeat
+        self.heartbeat()
+
+        # subscribe to redis channel
         p = self.client.pubsub()
         p.subscribe(self.tcex.default_args.tc_server_channel)
         for m in p.listen():
+            self.tcex.log.trace('message: ({})'.format(m))
             # only process message on channel (exclude subscriptions)
             if m.get('type') != 'message':
                 continue
@@ -322,25 +329,28 @@ class TcExService(object):
             except ValueError:
                 self.tcex.log.warning('Cannot parse message ({}).'.format(m))
                 continue
-
-            session_id = str(uuid.uuid4())
+            self.tcex.log.trace('msg_data: ({})'.format(msg_data))
 
             # parse message data contents
             command = msg_data.get('command')
             # parameters for config commands
             config_id = msg_data.get('configId')
-            params = msg_data.get('params')
+            config = msg_data.get('config')
             request_key = msg_data.get('requestKey')
 
+            self.tcex.log.trace('command: ({})'.format(command))
+            self.tcex.log.trace('config_id: ({})'.format(config_id))
+            self.tcex.log.trace('config: ({})'.format(config))
+            self.tcex.log.trace('request_key: ({})'.format(request_key))
             if not command:
                 self.tcex.log.warning('Received a message without command ({})'.format(m))
                 continue
             elif command == 'CreateConfig':
-                self.create_config(config_id, params)
+                self.create_config(config_id, config)
             elif command == 'DeleteConfig':
                 self.delete_config(config_id)
             elif command == 'UpdateConfig':
-                self.update_config(config_id, params)
+                self.update_config(config_id, config)
             elif command == 'Shutdown':
                 self.tcex.log.info(
                     'A shutdown command was received on server channel. Service is shutting down.'
@@ -352,13 +362,46 @@ class TcExService(object):
                 method = msg_data.get('method')
                 params = msg_data.get('queryParams')
 
-                for config_id, config in self.configs:
-                    if callback(session_id, method, params, headers, body, config):
+                for config_id, config in self.configs.items():
+                    # generate session id
+                    self.tcex.log.trace('trigger callback for config id: {}'.format(config_id))
+                    session_id = str(uuid.uuid4())
+                    self.tcex.logger.add_file_handler(
+                        name=session_id, filename='{}.log'.format(session_id)
+                    )
+
+                    if callback(session_id, method, headers, params, body, config):
+                        self.metric['hits'] += 1
                         self.publish(
-                            {
-                                'command': 'FireEvent',
-                                'configId': config_id,  # reference to single playbook
-                                'requestKey': request_key,  # reference to playbook execution
-                                'sessionId': session_id,  # session Id where outputs are written
-                            }
+                            json.dumps(
+                                {
+                                    'command': 'FireEvent',
+                                    # reference to single playbook
+                                    'configId': config_id,
+                                    # reference for a specific playbook execution
+                                    'requestKey': request_key,
+                                    # session for the playbook execution
+                                    'sessionId': session_id,
+                                }
+                            )
                         )
+                    else:
+                        self.metric['misses'] += 1
+
+                    # TODO: delete file handle logger for this session
+                    self.tcex.logger.remove_handler_by_name(session_id)
+
+    def heartbeat(self):
+        """Start heartbeat process."""
+        self.tcex.log.info('Starting heartbeat thread.')
+        t = threading.Thread(target=self.heartbeat_publish, daemon=True)
+        t.start()
+
+    def heartbeat_publish(self):
+        """Publish heartbeat on timer."""
+        while True:
+            time.sleep(self.tcex.default_args.tc_heartbeat_seconds)
+            response = {'command': 'Heartbeat', 'metric': self.metric}
+            self.publish(json.dumps(response))
+            self.tcex.log.info('Heartbeat command sent')
+            self.tcex.log.trace('metric: {}'.format(self.metric))

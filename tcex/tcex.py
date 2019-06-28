@@ -3,7 +3,6 @@
 from builtins import str
 import inspect
 import json
-import logging
 import platform
 import os
 import re
@@ -16,6 +15,7 @@ except ImportError:
     from urllib.parse import quote  # Python 3
 
 from .tcex_args import TcExArgs
+from .tcex_logger import TcExLogger
 
 
 class TcEx(object):
@@ -28,9 +28,7 @@ class TcEx(object):
         if platform.system() != 'Windows':
             signal.signal(signal.SIGHUP, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
-        # init logger
-        self.log = logging.getLogger('tcex')
-        self._logger_stream()
+
         # Property defaults
         self._error_codes = None
         self._exit_code = 0
@@ -46,8 +44,12 @@ class TcEx(object):
         self._utils = None
         self._ti = None
 
-        # Parser
+        # init args (needs logger)
         self.tcex_args = TcExArgs(self)
+
+        # init logger (needs args)
+        self.logger = TcExLogger(self)
+        self.logger.add_stream_handler()
 
         # NOTE: odd issue where args is not updating properly
         if self.default_args.tc_token is not None:
@@ -80,141 +82,6 @@ class TcEx(object):
                 self._indicator_associations_types_data[association.get('name')] = association
         except Exception as e:
             self.handle_error(200, [e])
-
-    def _log_app_data(self):
-        """Log the App data information."""
-        # Best Effort
-        if self.install_json:
-            app_commit_hash = self.install_json.get('commitHash')
-            app_features = ','.join(self.install_json.get('features', []))
-            app_min_ver = self.install_json.get('minServerVersion', 'N/A')
-            app_name = self.install_json.get('displayName')
-            app_runtime_level = self.install_json.get('runtimeLevel')
-            app_version = self.install_json.get('programVersion')
-
-            self.log.info(u'App Name: {}'.format(app_name))
-            if app_features:
-                self.log.info(u'App Features: {}'.format(app_features))
-            self.log.info(u'App Minimum ThreatConnect Version: {}'.format(app_min_ver))
-            self.log.info(u'App Runtime Level: {}'.format(app_runtime_level))
-            self.log.info(u'App Version: {}'.format(app_version))
-            if app_commit_hash is not None:
-                self.log.info(u'App Commit Hash: {}'.format(app_commit_hash))
-
-    def _log_platform(self):
-        """Log the current Platform."""
-        self.log.info(u'Platform: {}'.format(platform.platform()))
-
-    def _log_python_version(self):
-        """Log the current Python version."""
-        self.log.info(
-            u'Python Version: {}.{}.{}'.format(
-                sys.version_info.major, sys.version_info.minor, sys.version_info.micro
-            )
-        )
-
-    def _log_tc_proxy(self):
-        """Log the proxy settings."""
-        if self.default_args.tc_proxy_tc:
-            self.log.info(
-                u'Proxy Server (TC): {}:{}.'.format(
-                    self.default_args.tc_proxy_host, self.default_args.tc_proxy_port
-                )
-            )
-
-    def _log_tcex_version(self):
-        """Log the current TcEx version number."""
-        self.log.info(u'TcEx Version: {}'.format(__import__(__name__).__version__))
-
-    def _logger(self, fh=False, clear_handler=True):
-        """Create TcEx app logger instance.
-
-        The logger is accessible via the ``tc.log.<level>`` call.
-
-        **Logging examples**
-
-        .. code-block:: python
-            :linenos:
-            :lineno-start: 1
-
-            tcex.log.debug('logging debug')
-            tcex.log.info('logging info')
-            tcex.log.warning('logging warning')
-            tcex.log.error('logging error')
-
-        Args:
-            stream_only (bool, default:False): If True only the Stream handler will be enabled.
-
-        Returns:
-            logger: An instance of logging
-        """
-        level = logging.INFO
-        self.log.setLevel(level)
-
-        # clear all handlers
-        if clear_handler:
-            self.log.handlers = []
-
-        # update logging level
-        if self.default_args.logging is not None:
-            level = self._logger_levels[self.default_args.logging]
-        elif self.default_args.tc_log_level is not None:
-            level = self._logger_levels[self.default_args.tc_log_level]
-        self.log.setLevel(level)
-
-        # add file handler if not already added
-        if fh and os.path.isdir(self.default_args.tc_log_path):
-            self._logger_fh()
-            self.log.info('Logging Level: {}'.format(logging.getLevelName(level)))
-
-        # add api handler if not already added
-        if self.default_args.tc_token is not None and self.default_args.tc_log_to_api:
-            self._logger_api()
-
-    def _logger_api(self):
-        """Add API logging handler."""
-        from .tcex_logger import TcExLogHandler, TcExLogFormatter
-
-        api = TcExLogHandler(self.session)
-        api.set_name('api')
-        api.setLevel(logging.DEBUG)
-        api.setFormatter(TcExLogFormatter())
-        self.log.addHandler(api)
-
-    def _logger_fh(self):
-        """Add File logging handler."""
-        logfile = os.path.join(self.default_args.tc_log_path, self.default_args.tc_log_file)
-        fh = logging.FileHandler(logfile)
-        fh.set_name('fh')
-        fh.setLevel(logging.DEBUG)
-        fh.setFormatter(self._logger_formatter)
-        self.log.addHandler(fh)
-
-    @property
-    def _logger_formatter(self):
-        """Return log formatter."""
-        tx_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-        tx_format += '(%(filename)s:%(funcName)s:%(lineno)d)'
-        return logging.Formatter(tx_format)
-
-    @property
-    def _logger_levels(self):
-        """Return log levels."""
-        return {
-            'debug': logging.DEBUG,
-            'info': logging.INFO,
-            'warning': logging.WARNING,
-            'error': logging.ERROR,
-            'critical': logging.CRITICAL,
-        }
-
-    def _logger_stream(self):
-        """Add stream logging handler."""
-        sh = logging.StreamHandler()
-        sh.set_name('sh')
-        sh.setLevel(logging.INFO)
-        sh.setFormatter(self._logger_formatter)
-        self.log.addHandler(sh)
 
     def _resources(self, custom_indicators=False):
         """Initialize the resource module.
@@ -390,12 +257,12 @@ class TcEx(object):
 
     @property
     def default_args(self):
-        """All args parsed before App args are added."""
+        """Return all args parsed before App args are added."""
         return self.tcex_args.default_args
 
     @property
     def error_codes(self):
-        """ThreatConnect error codes."""
+        """Return TcEx error codes."""
         if self._error_codes is None:
             from .tcex_error_codes import TcExErrorCodes
 
@@ -515,7 +382,7 @@ class TcEx(object):
 
     @property
     def group_types_data(self):
-        """All supported ThreatConnect Group types."""
+        """Return supported ThreatConnect Group types."""
         return {
             'Adversary': {'apiBranch': 'adversaries', 'apiEntity': 'adversary'},
             'Campaign': {'apiBranch': 'campaigns', 'apiEntity': 'campaign'},
@@ -531,8 +398,7 @@ class TcEx(object):
         }
 
     def get_type_from_api_entity(self, api_entity):
-        """
-        Returns the object type as a string given a api entity.
+        """Return the object type as a string given a api entity.
 
         Args:
             api_entity:
@@ -634,13 +500,10 @@ class TcEx(object):
                 self._install_json_params[param.get('name')] = param
         return self._install_json_params
 
-    def log_info(self):
-        """Send System and App data to logs."""
-        self._log_platform()
-        self._log_app_data()
-        self._log_python_version()
-        self._log_tcex_version()
-        self._log_tc_proxy()
+    @property
+    def log(self):
+        """Return a valid logger."""
+        return self.logger.log
 
     def metric(self, name, description, data_type, interval, keyed=False):
         """Get instance of the Metrics module.
@@ -712,7 +575,7 @@ class TcEx(object):
 
     @property
     def proxies(self):
-        """Formats proxy configuration into required format for Python Requests module.
+        """Format the proxy configuration for Python Requests module.
 
         Generates a dictionary for use with the Python Requests module format
         when proxy is required for remote connections.
@@ -758,7 +621,7 @@ class TcEx(object):
 
     @property
     def rargs(self):
-        """Argparser args Namespace with Playbook args automatically resolved (resolved args)."""
+        """Return argparser args Namespace with Playbook args automatically resolved."""
         return self.tcex_args.resolved_args()
 
     def request(self, session=None):
@@ -884,7 +747,7 @@ class TcEx(object):
         return data
 
     def safe_indicator(self, indicator, errors='strict'):
-        """Indicator encode value for safe HTTP request.
+        """Format indicator value for safe HTTP request.
 
         Args:
             indicator (string): Indicator to URL Encode
@@ -953,11 +816,11 @@ class TcEx(object):
         return group_name
 
     def safetag(self, tag, errors='strict'):
-        """Wrapper method for safe_tag."""
+        """Preserve safetag method name for older Apps."""
         return self.safe_tag(tag, errors)
 
     def safe_tag(self, tag, errors='strict'):
-        """URL Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
+        """Encode and truncate tag to match limit (128 characters) of ThreatConnect API.
 
         Args:
            tag (string): The tag to be truncated
@@ -974,11 +837,11 @@ class TcEx(object):
         return tag
 
     def safeurl(self, url, errors='strict'):
-        """Wrapper method for safe_url."""
+        """Preserve safeurl method name for older Apps."""
         return self.safe_url(url, errors)
 
     def safe_url(self, url, errors='strict'):
-        """URL encode value for safe HTTP request.
+        """Encode value for safe HTTP request.
 
         Args:
             url (string): The string to URL Encode.
