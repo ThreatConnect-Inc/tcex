@@ -156,7 +156,6 @@ class TcExArgParser(ArgumentParser):
             help='The max size before rotating log file',
         )
         self.add_argument('--tc_log_name', default=self._tc_log_name, help='The name of the logger')
-
         self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
         self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         # requires a token

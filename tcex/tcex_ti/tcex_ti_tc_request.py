@@ -1807,11 +1807,23 @@ class TiTcRequest:
         )
 
     def add_attribute(
-        self, main_type, sub_type, unique_id, attribute_type, attribute_value, owner=None
+        self,
+        main_type,
+        sub_type,
+        unique_id,
+        attribute_type,
+        attribute_value,
+        source=None,
+        displayed=None,
+        owner=None,
+        params=None,
     ):
         """
 
         Args:
+            displayed:
+            source:
+            params:
             owner:
             main_type:
             sub_type:
@@ -1822,7 +1834,8 @@ class TiTcRequest:
         Return:
 
         """
-        params = {}
+        if params is None:
+            params = {}
         if owner:
             params['owner'] = owner
         if not sub_type:
@@ -1830,9 +1843,15 @@ class TiTcRequest:
         else:
             url = '/v2/{}/{}/{}/attributes'.format(main_type, sub_type, unique_id)
 
-        return self.tcex.session.post(
-            url, json={'type': attribute_type, 'value': attribute_value}, params=params
-        )
+        json = {'type': attribute_type, 'value': attribute_value}
+
+        if source:
+            json['source'] = source
+
+        if displayed:
+            json['displayed'] = displayed
+
+        return self.tcex.session.post(url, json=json, params=params)
 
     def attribute_labels(
         self, main_type, sub_type, unique_id, attribute_id, owner=None, params=None

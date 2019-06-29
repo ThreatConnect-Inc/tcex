@@ -192,7 +192,7 @@ class TcExTi(object):
 
         group = None
         if not group_type:
-            return Group(self.tcex, None, 'group', owner=owner, **kwargs)
+            return Group(self.tcex, None, 'group', None, owner=owner, **kwargs)
 
         name = kwargs.pop('name', None)
         group_type = group_type.upper()

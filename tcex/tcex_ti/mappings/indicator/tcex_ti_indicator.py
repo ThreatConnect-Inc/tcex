@@ -197,13 +197,11 @@ class Indicator(TIMappings):
     def _metadata_map(self):
         return {
             'date_added': 'dateAdded',
-            'dnsActive': 'flag1',
-            'dns_active': 'flag1',
+            'dns_active': 'dnsActive',
             'last_modified': 'lastModified',
             'private_flag': 'privateFlag',
             'size': 'intValue1',
-            'whoisActive': 'flag2',
-            'whois_active': 'flag2',
+            'whois_active': 'whoisActive',
             'key_name': 'Key Name',
             'value_type': 'Value Type',
             'value_name': 'Value Name',

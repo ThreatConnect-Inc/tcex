@@ -1,0 +1,20 @@
+{
+  "package": {
+    "app_name": "TCPB_-_",
+    "app_version": "v1.0",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "local-*",
+      "pyproject.toml",
+      "setup.cfg",
+      "tcex.json",
+      "*.install.json",
+      "tcex.d"
+    ],
+    "outdir": "target"
+  },
+  "profile_include_dirs": [
+    "tcex.d/profiles"
+  ]
+}

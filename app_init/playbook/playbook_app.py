@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-""" Playbook App Template. """
+"""Playbook App Template."""
 from args import Args
-
-# Typically no changes are required to this file.
 
 
 class PlaybookApp(object):
-    """Playbook App Class"""
+    """Playbook App Class."""
 
     def __init__(self, _tcex):
         """Initialize class properties."""

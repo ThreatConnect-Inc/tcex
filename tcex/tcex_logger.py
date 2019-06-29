@@ -6,6 +6,7 @@ import os
 import platform
 import sys
 import time
+from inspect import getframeinfo, stack
 
 
 # Create trace logging
@@ -13,11 +14,31 @@ logging.TRACE = logging.DEBUG - 5
 logging.addLevelName(logging.TRACE, 'TRACE')
 
 
-class TraceLogger(logging.getLoggerClass()):
+class TraceLogger(logging.Logger):
     """Add trace level to logging"""
+
+    _in_trace = False
+
+    @property
+    def in_trace(self):
+        """Return in trace value. Automatic reset."""
+        in_trace = self._in_trace
+        self._in_trace = False
+        return in_trace
+
+    def findCaller(self, stack_info=False):
+        """Find the caller for the current log event."""
+        caller = getframeinfo(stack()[3][0])
+        if self.in_trace:
+            caller = getframeinfo(stack()[4][0])
+        if sys.version_info < (3,):
+            # return value for py2
+            return (caller.filename, caller.lineno, caller.function)
+        return (caller.filename, caller.lineno, caller.function, None)
 
     def trace(self, msg, *args, **kwargs):
         """Set trace logging level"""
+        self._in_trace = True
         self.log(logging.TRACE, msg, *args, **kwargs)
 
 

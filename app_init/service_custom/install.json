@@ -1,0 +1,22 @@
+{
+  "allowOnDemand": true,
+  "displayName": "",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "secureParams"
+  ],
+  "labels": [],
+  "languageVersion": "3.6",
+  "listDelimiter": "|",
+  "note": "",
+  "params": [],
+  "playbook": {
+    "outputVariables": [],
+    "type": ""
+  },
+  "programLanguage": "PYTHON",
+  "programMain": "run",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Playbook"
+}
