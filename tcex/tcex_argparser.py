@@ -20,6 +20,15 @@ class TcExArgParser(ArgumentParser):
         self._batch_poll_interval_max = 3600
         self._batch_write_type = 'Append'
 
+        # logger defaults
+        self._tc_log_backup_count = 5
+        self._tc_log_file = 'app.log'
+        self._tc_log_level = 'info'
+        self._tc_log_path = '/tmp'
+        self._tc_log_max_bytes = 10485760
+        self._tc_log_name = 'tcex'
+        self._tc_log_to_api = False
+
         # playbook defaults
         self._tc_playbook_db_type = 'Redis'
         self._tc_playbook_db_context = '1234-abcd'
@@ -29,30 +38,26 @@ class TcExArgParser(ArgumentParser):
         # standard defaults
         self._tc_api_path = 'https://api.threatconnect.com'
         self._tc_in_path = '/tmp'
-        self._tc_log_file = 'app.log'
-        self._tc_log_path = '/tmp'
         self._tc_out_path = '/tmp'
         self._tc_secure_params = False
         self._tc_temp_path = '/tmp'
         self._tc_user_id = None
-        self._tc_log_to_api = False
-        self._tc_log_level = 'info'
 
         # include arguments
         self._api_arguments()
         self._batch_arguments()
+        self._logger_arguments()
         self._playbook_arguments()
         self._standard_arguments()
 
     def _api_arguments(self):
-        """Argument specific to working with TC API.
+        """Define TC API args.
 
         --tc_token token                  Token provided by ThreatConnect for app Authorization.
         --tc_token_expires token_expires  Expiration time for the passed Token.
         --api_access_id access_id         Access ID used for HMAC Authorization.
         --api_secret_key secret_key       Secret Key used for HMAC Authorization.
         """
-
         # TC main >= 4.4 token will be passed to jobs.
         self.add_argument('--tc_token', default=None, help='ThreatConnect API Token')
         self.add_argument(
@@ -76,7 +81,7 @@ class TcExArgParser(ArgumentParser):
         )
 
     def _batch_arguments(self):
-        """Arguments specific to Batch API writes.
+        """Define Batch API args.
 
         --batch_action action          Action for the batch job ['Create', 'Delete'].
         --batch_chunk number           The maximum number of indicator per batch job.
@@ -86,7 +91,6 @@ class TcExArgParser(ArgumentParser):
                                        completion.
         --batch_write_type type        Write type for Indicator attributes ['Append', 'Replace'].
         """
-
         self.add_argument(
             '--batch_action',
             choices=['Create', 'Delete'],
@@ -124,8 +128,63 @@ class TcExArgParser(ArgumentParser):
             help='Append or Replace attributes.',
         )
 
+    def _logger_arguments(self):
+        """Define logger args supported by every TcEx App.
+
+        --tc_log_backup_count count  The number of backup files to keep.
+        --tc_log_max_bytes bytes     The max size before rotating log file.
+        --tc_log_name name           The name of the logger (displayed in log file).
+
+        --tc_log_file filename       The app log file name.
+        --tc_log_path path           The app log path.
+        --tc_log_to_api              Flag to indicate that app should log to API.
+        --tc_log_level level         The logging level for the app.
+        --logging level              Alias for **tc_log_level**.
+        """
+        self.add_argument(
+            '--tc_log_backup_count',
+            default=self._tc_log_backup_count,
+            help='The number of backup files to keep',
+        )
+        self.add_argument(
+            '--tc_log_max_bytes',
+            default=self._tc_log_max_bytes,
+            help='The max size before rotating log file',
+        )
+        self.add_argument('--tc_log_name', default=self._tc_log_name, help='The name of the logger')
+        self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
+        self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
+        # requires a token
+        self.add_argument(
+            '--tc_log_to_api',
+            action='store_true',
+            default=self._tc_log_to_api,
+            help='ThreatConnect API Logging',
+        )
+        # self.add_argument(
+        #     '--tc_log_level', '--logging', choices=['trace', 'debug', 'info', 'warning', 'error',
+        #     'critical'],
+        #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level', type=str.lower)
+        # BCS - temporarily until there is some way to configure App logging level in the UI
+        self.add_argument(
+            '--logging',
+            choices=['trace', 'debug', 'info', 'warning', 'error', 'critical'],
+            default=None,
+            dest='logging',
+            help='Logging Level',
+            type=str.lower,
+        )
+        self.add_argument(
+            '--tc_log_level',
+            choices=['trace', 'debug', 'info', 'warning', 'error', 'critical'],
+            default=None,
+            dest='tc_log_level',
+            help='Logging Level',
+            type=str.lower,
+        )
+
     def _playbook_arguments(self):
-        """Argument specific to playbook apps.
+        """Define playbook specific args.
 
         These arguments will be passed to every playbook app by default.
 
@@ -135,7 +194,6 @@ class TcExArgParser(ArgumentParser):
         --tc_playbook_db_port port        The DB port when required.
         --tc_playbook_out_variables vars  The output variable requested by downstream apps.
         """
-
         self.add_argument(
             '--tc_playbook_db_type', default=self._tc_playbook_db_type, help='Playbook DB type'
         )
@@ -155,13 +213,11 @@ class TcExArgParser(ArgumentParser):
         )
 
     def _standard_arguments(self):
-        """These are the standard args passed to every TcEx App.
+        """Define standard args passed to every TcEx App.
 
         --api_default_org org        The TC API user default organization.
         --tc_api_path path           The TC API path (e.g https://api.threatconnect.com).
         --tc_in_path path            The app in path.
-        --tc_log_file filename       The app log file name.
-        --tc_log_path path           The app log path.
         --tc_out_path path           The app out path.
         --tc_secure_params bool      Flag to indicator secure params is supported.
         --tc_temp_path path          The app temp path.
@@ -174,11 +230,7 @@ class TcExArgParser(ArgumentParser):
         --tc_proxy_external          Flag to indicate external communications requires the use of a
                                      proxy.
         --tc_proxy_tc                Flag to indicate TC communications requires the use of a proxy.
-        --tc_log_to_api              Flag to indicate that app should log to API.
-        --tc_log_level               The logging level for the app.
-        --logging level              Alias for **tc_log_level**.
         """
-
         self.add_argument('--api_default_org', default=None, help='ThreatConnect api default Org')
         self.add_argument(
             '--tc_action_channel', default=None, help='ThreatConnect AOT action channel'
@@ -187,8 +239,6 @@ class TcExArgParser(ArgumentParser):
         self.add_argument('--tc_api_path', default=self._tc_api_path, help='ThreatConnect api path')
         self.add_argument('--tc_exit_channel', default=None, help='ThreatConnect AOT exit channel')
         self.add_argument('--tc_in_path', default=self._tc_in_path, help='ThreatConnect in path')
-        self.add_argument('--tc_log_file', default=self._tc_log_file, help='App logfile name')
-        self.add_argument('--tc_log_path', default=self._tc_log_path, help='ThreatConnect log path')
         self.add_argument(
             '--tc_out_path', default=self._tc_out_path, help='ThreatConnect output path'
         )
@@ -229,37 +279,4 @@ class TcExArgParser(ArgumentParser):
             default=False,
             dest='tc_proxy_tc',
             help='Proxy TC Connection',
-        )
-
-        #
-        # Logging
-        #
-
-        # currently only applicable to TC Main
-        self.add_argument(
-            '--tc_log_to_api',
-            action='store_true',
-            default=self._tc_log_to_api,
-            help='ThreatConnect API Logging',
-        )
-        # self.add_argument(
-        #     '--tc_log_level', '--logging', choices=['debug', 'info', 'warning', 'error',
-        #     'critical'],
-        #     default=self._tc_log_level, help='Logging Level', dest='tc_log_level', type=str.lower)
-        # BCS - temporarily until there is some way to configure App logging level in the UI
-        self.add_argument(
-            '--logging',
-            choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None,
-            dest='logging',
-            help='Logging Level',
-            type=str.lower,
-        )
-        self.add_argument(
-            '--tc_log_level',
-            choices=['debug', 'info', 'warning', 'error', 'critical'],
-            default=None,
-            dest='tc_log_level',
-            help='Logging Level',
-            type=str.lower,
         )
