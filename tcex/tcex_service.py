@@ -3,7 +3,9 @@
 import json
 import threading
 import time
+import traceback
 import uuid
+from datetime import datetime
 
 
 class TcExService(object):
@@ -20,9 +22,9 @@ class TcExService(object):
 
         # properties
         self._client = None
-        self._metric = {'hits': 0, 'misses': 0}
+        self._metric = {'errors': 0, 'hits': 0, 'misses': 0}
+        self._start_time = datetime.now()
         self.configs = {}
-        self.default_handlers = self.tcex.log.handlers
 
     # def api_service(self, callback):
     #     """Run subscribe method
@@ -67,11 +69,11 @@ class TcExService(object):
     #             self.tcex.log.warning('Received a message without command ({})'.format(m))
     #             continue
     #         elif command == 'CreateConfig':
-    #             self.create_config(config_id, params)
+    #             self.create_config(config_id, config)
     #         elif command == 'DeleteConfig':
-    #             self.delete_config(config_id, config)
+    #             self.delete_config(config_id)
     #         elif command == 'UpdateConfig':
-    #             self.update_config(config_id, params)
+    #             self.update_config(config_id, config)
     #         elif command == 'Shutdown':
     #             self.tcex.log.info(
     #                 'A shutdown command was received on server channel. Service is shutting down.'
@@ -89,22 +91,7 @@ class TcExService(object):
     @property
     def client(self):
         """Return the correct KV store for this execution."""
-        if self._client is None:
-            if self.tcex.default_args.tc_playbook_db_type == 'Redis':
-                from .tcex_redis import TcExRedis
-
-                self._client = TcExRedis(
-                    self.tcex.default_args.tc_playbook_db_path,
-                    self.tcex.default_args.tc_playbook_db_port,
-                    self.tcex.default_args.tc_playbook_db_context,
-                )
-            elif self.tcex.default_args.tc_playbook_db_type == 'TCKeyValueAPI':
-                raise RuntimeError('Services are not supported on Environment Server.')
-            else:
-                raise RuntimeError(
-                    'Invalid DB Type: ({})'.format(self.tcex.default_args.tc_playbook_db_type)
-                )
-        return self._client.r
+        return self.tcex.playbook.db.client
 
     def create_config(self, config_id, config):
         """Add config item to service config object."""
@@ -211,7 +198,7 @@ class TcExService(object):
                 shutdown_callback=shutdown_callback,
             )
 
-    def delete_config(self, config_id, config):  # pylint: disable=unused-argument
+    def delete_config(self, config_id):
         """Delete config item from config object."""
         try:
             del self.configs[config_id]
@@ -230,7 +217,7 @@ class TcExService(object):
             trigger_callback (str, kwargs): The trigger callback method.
         """
         if not callable(callback):
-            raise RuntimeError('Callback method (trigger_callback) is not a callable.')
+            raise RuntimeError('Callback method (callback) is not a callable.')
 
         trigger_type = kwargs.get('trigger_type')
         if trigger_type is None:
@@ -241,15 +228,25 @@ class TcExService(object):
 
             # generate session id
             session_id = str(uuid.uuid4())
+
+            # update the playbook session id
+            self.tcex.playbook.db.key = session_id
+
+            # add temporary logging file handler for this specific session
             self.tcex.logger.add_file_handler(name=session_id, filename='{}.log'.format(session_id))
             self.tcex.log.info('Trigger Session ID: {}'.format(session_id))
 
             if trigger_type == 'custom':
-                if callback(session_id, config, **kwargs):
-                    self.metric['hits'] += 1
-                    self.fire_event_publish(config_id, session_id)
-                else:
-                    self.metric['misses'] += 1
+                try:
+                    if callback(session_id, config, **kwargs):
+                        self.metric['hits'] += 1
+                        self.fire_event_publish(config_id, session_id)
+                    else:
+                        self.metric['misses'] += 1
+                except Exception as e:
+                    self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
+                    self.tcex.log.trace(traceback.format_exc())
+                    self.metric['errors'] += 1
             elif trigger_type == 'webhook':
                 msg_data = kwargs.get('msg_data')
                 request_key = kwargs.get('request_key')
@@ -259,11 +256,18 @@ class TcExService(object):
                 headers = msg_data.get('headers')
                 method = msg_data.get('method')
                 params = msg_data.get('queryParams')
-                if callback(session_id, method, headers, params, body, config):
-                    self.metric['hits'] += 1
-                    self.fire_event_publish(config_id, session_id, request_key)
-                else:
-                    self.metric['misses'] += 1
+                try:
+                    if callback(session_id, method, headers, params, body, config):
+                        self.metric['hits'] += 1
+                        self.fire_event_publish(config_id, session_id, request_key)
+                    else:
+                        self.metric['misses'] += 1
+                except Exception as e:
+                    self.tcex.log.error('The callback method encountered and error ({}).'.format(e))
+                    self.tcex.log.trace(traceback.format_exc())
+                    self.metric['errors'] += 1
+
+            # remove temporary logging file handler
             self.tcex.logger.remove_handler_by_name(session_id)
 
     def fire_event_publish(self, config_id, session_id, request_key=None):
@@ -299,6 +303,7 @@ class TcExService(object):
     def metric(self):
         """Return current metrics."""
         self._metric['config'] = len(self.configs)
+        self._metric['uptime'] = self.uptime
         return self._metric
 
     def process_config_message(
@@ -316,19 +321,40 @@ class TcExService(object):
         self.tcex.log.trace('in process config message')
         if command == 'CreateConfig':
             self.tcex.log.trace('process config CreateConfig')
-            self.create_config(config_id, config)
             if callable(create_callback):
-                create_callback(config_id, config)
+                try:
+                    # call callback for create config and handle exceptions to protect thread
+                    create_callback(config_id, config)
+                except Exception as e:
+                    self.tcex.log.error(
+                        'The create config callback method encountered and error ({}).'.format(e)
+                    )
+                    self.tcex.log.trace(traceback.format_exc())
+            self.create_config(config_id, config)
         elif command == 'DeleteConfig':
             self.tcex.log.trace('process config DeleteConfig')
-            self.delete_config(config_id, config)
             if callable(delete_callback):
-                delete_callback(config_id, config)
+                try:
+                    # call callback for delete config and handle exceptions to protect thread
+                    delete_callback(config_id)
+                except Exception as e:
+                    self.tcex.log.error(
+                        'The delete config callback method encountered and error ({}).'.format(e)
+                    )
+                    self.tcex.log.trace(traceback.format_exc())
+            self.delete_config(config_id)
         elif command == 'UpdateConfig':
             self.tcex.log.trace('process config UpdateConfig')
-            self.update_config(config_id, config)
             if callable(update_callback):
-                update_callback(config_id, config)
+                try:
+                    # call callback for update config and handle exceptions to protect thread
+                    update_callback(config_id, config)
+                except Exception as e:
+                    self.tcex.log.error(
+                        'The update config callback method encountered and error ({}).'.format(e)
+                    )
+                    self.tcex.log.trace(traceback.format_exc())
+            self.update_config(config_id, config)
         elif command == 'Shutdown':
             self.tcex.log.trace('process config Shutdown')
             message = {'status': 'Acknowledged', 'type': 'Shutdown'}
@@ -337,9 +363,16 @@ class TcExService(object):
                 'A shutdown command was received on server channel. Service is shutting down.'
             )
             if callable(shutdown_callback):
-                shutdown_callback()
+                try:
+                    # call callback for shutdown and handle exceptions to protect thread
+                    shutdown_callback()
+                except Exception as e:
+                    self.tcex.log.error(
+                        'The shutdown callback method encountered and error ({}).'.format(e)
+                    )
+                    self.tcex.log.trace(traceback.format_exc())
             p.unsubscribe()
-            time.sleep(5)  # give app time to cleanup and exit on it's own
+            time.sleep(5)  # give App time to cleanup and exit on it's own
             self.tcex.exit(0)
 
     def publish(self, message):
@@ -351,58 +384,26 @@ class TcExService(object):
         self.tcex.log.trace('message: ({})'.format(message))
         self.client.publish(self.tcex.default_args.tc_client_channel, message)
 
-    # def run_service(self, message, callback):
-    #     """Run the provided service.
-
-    #     {
-    #         "command": "RunService",
-    #         "method": "GET",
-    #         "queryParams": [ { key/value pairs } ],
-    #         "headers": [ { key/value pairs } ],
-    #         "bodySessionId": "85be2761..."
-    #         "responseBodySessionId": "91eee889..."
-    #     }
-
-    #     Args:
-    #         message (dict): The message received on the service channel.
-    #         callback (callable): The function/method to call.  This method should take the
-    #             following args (method, params, headers, body, response.
-    #     """
-    #     method = message.get('method')
-    #     params = message.get('queryParams')
-    #     headers = message.get('headers')
-
-    #     # TODO: what is this and what is responseBody....
-    #     body = message.get('bodySessionId')
-
-    #     for config_id, config in self.configs:
-    #         callback(method, params, headers, body, config_id, config)
-
     @property
     def session_id(self):
         """Return a uuid4 session id."""
         return str(uuid.uuid4())
 
-    # def shutdown(self):
-    #     """Shut down service."""
-    #     message = {'status': 'Acknowledged', 'type': 'Shutdown'}
-    #     self.publish(json.dumps(message))
-    #     # self.p.unsubscribe(self.tcex.default_args.tc_server_channel)
-    #     self.tcex.exit(
-    #         0, 'A shutdown command was received on server channel. Service is shutting down.'
-    #     )
-
     def update_config(self, config_id, config):
         """Add config item to service config object."""
         try:
-            # self.configs[config_id] = config
-            self.configs[config_id] = config.get('current')
+            self.configs[config_id] = config
 
             # send ack response
             response = {'status': 'Acknowledged', 'type': 'UpdateConfig', 'configId': config_id}
             self.publish(json.dumps(response))
         except Exception as e:
             self.tcex.log.error('Could not update config for Id {} ({}).'.format(config_id, e))
+
+    @property
+    def uptime(self):
+        """Return the current uptime of the microservice."""
+        return str(datetime.now() - self._start_time)
 
     def webhook_trigger(
         self,

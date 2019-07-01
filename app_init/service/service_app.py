@@ -35,12 +35,11 @@ class ServiceApp(object):
         """
         self.tcex.log.trace('create config callback')
 
-    def delete_config_callback(self, config_id, config):
+    def delete_config_callback(self, config_id):
         """Handle delete config messages.
 
         Args:
             config_id (str): The ID of the playbook.
-            config (dict): The playbook config inputs.
         """
         self.tcex.log.trace('delete config callback')
 
