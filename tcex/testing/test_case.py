@@ -129,6 +129,11 @@ class TestCase(object):
                 self._input_params.setdefault(p.get('name'), p)
         return self._input_params
 
+    def log_data(self, stage, label, data):
+        """Log validation data."""
+        msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
+        self.log.info(msg)
+
     def run(self, args):
         """Implement in Child Class"""
         raise NotImplementedError('Child class must implement this method.')
@@ -144,45 +149,53 @@ class TestCase(object):
         """Run once before all test cases."""
         cls._timer_class_start = time.time()
         cls.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
-        cls.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
-        cls.log.info('[setup class] local envs: {}'.format(cls.env))
+        # cls.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
+        # cls.log.info('[setup class] local envs: {}'.format(cls.env))
+        cls.log_data(cls, 'setup class', 'started', datetime.now().isoformat())
+        cls.log_data(cls, 'setup class', 'local envs', cls.env)
 
     def setup_method(self):
         """Run before each test method runs."""
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
-        self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
+        # self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
+        self.log_data('setup method', 'started', datetime.now().isoformat())
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
-        self.log.info('[setup method] Context: {}'.format(self.context))
+        # self.log.info('[setup method] Context: {}'.format(self.context))
+        self.log_data('setup method', 'context', self.context)
 
     @property
     def stager(self):
         """Return instance of Stager class."""
-        return Stager(self.get_tcex(self.default_args), logger)
+        return Stager(self.get_tcex(self.default_args), logger, self.log_data)
 
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
         cls.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
-        cls.log.info(
-            '[teardown class] Finished: {}, Elapsed: {}'.format(
-                datetime.now().isoformat(), time.time() - cls._timer_class_start
-            )
-        )
+        # cls.log.info(
+        #     '[teardown class] Finished: {}, Elapsed: {}'.format(
+        #         datetime.now().isoformat(), time.time() - cls._timer_class_start
+        #     )
+        # )
+        cls.log_data(cls, 'teardown class', 'finished', datetime.now().isoformat())
+        cls.log_data(cls, 'teardown class', 'elapsed', time.time() - cls._timer_class_start)
 
     def teardown_method(self):
         """Run after each test method runs."""
-        self.log.info(
-            '[teardown method] Finished: {}, Elapsed: {}'.format(
-                datetime.now().isoformat(), time.time() - self._timer_method_start
-            )
-        )
+        # self.log.info(
+        #     '[teardown method] Finished: {}, Elapsed: {}'.format(
+        #         datetime.now().isoformat(), time.time() - self._timer_method_start
+        #     )
+        # )
+        self.log_data('teardown method', 'finished', datetime.now().isoformat())
+        self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
     @property
     def validator(self):
         """Return instance of Stager class."""
-        return Validator(self.get_tcex(self.default_args), logger)
+        return Validator(self.get_tcex(self.default_args), logger, self.log_data)
 
 
 class TestCasePlaybook(TestCase):
@@ -199,7 +212,8 @@ class TestCasePlaybook(TestCase):
 
     def _exit(self, code):
         """Log and return exit code"""
-        self.log.info('[run] Exit Code: {}'.format(code))
+        # self.log.info('[run] Exit Code: {}'.format(code))
+        self.log_data('run', 'exit code', code)
         self.tcex.log.info('Exit Code: {}'.format(code))
         return code
 
@@ -289,7 +303,8 @@ class TestCasePlaybook(TestCase):
                 args[k] = self.resolve_env_args(v)
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        self.log.info('[run] Args: {}'.format(args))
+        # self.log.info('[run] Args: {}'.format(args))
+        self.log_data('run', 'args', args)
         app = self.app(args)
 
         # Start
@@ -379,6 +394,7 @@ class TestCasePlaybook(TestCase):
         exit_code = self.run(args)
 
         # populate the output variables
+        # TODO: [INT-1320] investigate improvements
         if exit_code == 0:
             self.populate_output_variables(profile_name)
 
@@ -400,5 +416,6 @@ class TestCasePlaybook(TestCase):
     def teardown_method(self):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
-        self.log.info('[teardown method] Delete Key Count: {}'.format(r))
+        # self.log.info('[teardown method] Delete Key Count: {}'.format(r))
+        self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()
