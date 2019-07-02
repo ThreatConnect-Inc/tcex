@@ -23,7 +23,7 @@ class File(Indicator):
         """
         super(File, self).__init__(tcex, 'File', 'file', 'files', owner, **kwargs)
         self.unique_id = (
-            self.unique_id
+            kwargs.get('unique_id', None)
             or md5
             or sha1
             or sha256

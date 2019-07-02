@@ -28,7 +28,7 @@ class RegistryKey(Indicator):
         super(RegistryKey, self).__init__(
             tcex, 'Registry Key', 'registryKey', 'registryKeys', owner, **kwargs
         )
-        self.unique_id = self.unique_id or key_name
+        self.unique_id = kwargs.get('unique_id', key_name)
         self.data['Key Name'] = key_name or self.unique_id
         self.data['Value Name'] = value_name
         self.data['Value Type'] = value_type

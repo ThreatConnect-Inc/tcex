@@ -18,9 +18,6 @@ BASE_URL = 'https://raw.githubusercontent.com/ThreatConnect-Inc/tcex'
 class Profiles:
     """Profile Class
 
-    Args:
-        filename (str): The filename for the profile data.
-
     Raises:
         NotImplementedError: The delete method is not currently implemented.
         NotImplementedError: The update method is not currently implemented.
@@ -65,9 +62,6 @@ class Profiles:
 
 class Validation:
     """Validation Class
-
-    Args:
-        filename (str): The filename for the validation data.
 
     Raises:
         NotImplementedError: The delete method is not currently implemented.
@@ -125,6 +119,15 @@ class Validation:
             with open(validation_file, 'a') as f:
                 f.write(rendered_template)
 
+    def generate_test_template(self, variables, feature, file_):
+        """If not currently exist, generates the test file file."""
+        validation_file = os.path.join(self.base_dir, feature, file_)
+        if not os.path.isfile(validation_file):
+            template = Template(self.test_template)
+            rendered_template = template.render(**variables)
+            with open(validation_file, 'a') as f:
+                f.write(rendered_template)
+
     def generate_feature(self, feature, file_):
         """If not currently exist, generates the validation file."""
         validation_file = os.path.join(self.base_dir, feature, 'validate_feature.py')
@@ -158,6 +161,15 @@ class Validation:
     def validation_feature_template(self):
         """Return template file"""
         url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'validate_feature.py.tpl')
+        r = requests.get(url, allow_redirects=True)
+        if not r.ok:
+            raise RuntimeError('Could not download template file.')
+        return r.content
+
+    @property
+    def test_template(self):
+        """Return template file"""
+        url = '{}/{}/app_init/tests/{}'.format(BASE_URL, self.branch, 'test_template.py.tpl')
         r = requests.get(url, allow_redirects=True)
         if not r.ok:
             raise RuntimeError('Could not download template file.')
@@ -221,6 +233,7 @@ class TcExTest(TcExBin):
         sort_keys = True
         if self.args.profile_file:
             sort_keys = False
+            data = []
             if os.path.isfile(self.args.profile_file):
                 with open(self.args.profile_file, 'r') as fh:
                     data = json.load(fh)
@@ -239,14 +252,25 @@ class TcExTest(TcExBin):
 
         elif self.args.permutation_id:
             # TODO: fix the profile_settings_args_layout_json to not run permutations twice
-            profile_data = {
-                self.args.profile_name: {
-                    'inputs': {
-                        'optional': self.profile_settings_args_layout_json(False),
-                        'required': self.profile_settings_args_layout_json(True),
+            profile_data = {}
+            if self.is_playbook_app():
+                profile_data = {
+                    self.args.profile_name: {
+                        'inputs': {
+                            'optional': self.profile_settings_args_layout_json(False),
+                            'required': self.profile_settings_args_layout_json(True),
+                        }
                     }
                 }
-            }
+            elif self.is_runtime_app():
+                profile_data = {
+                    self.args.profile_name: {
+                        'inputs': {
+                            'optional': self.profile_settings_args_layout_json(False),
+                            'required': self.profile_settings_args_layout_json(True),
+                        }
+                    }
+                }
         else:
             profile_data = {
                 self.args.profile_name: {
@@ -297,8 +321,6 @@ class TcExTest(TcExBin):
 
         Args:
             remote_filename (str): The name of the file as defined in git repository.
-            local_filename (str, optional): Defaults to None. The name of the file as it should be
-                be written to local filesystem.
         """
         # TODO: can this method be merged with tcex_bin_init download_file?
         status = 'Failed'
@@ -335,6 +357,19 @@ class TcExTest(TcExBin):
         """Generate the validation file."""
         self.validation.generate(self.output_variables)
         self.validation.generate_feature(self.args.feature, self.args.file)
+
+        test_template_variables = {'validate_batch_method': '', 'parent_class': 'TestCasePlaybook'}
+        if self.is_runtime_app():
+            test_template_variables = {
+                'validate_batch_method': 'self.validator.threatconnect.batch('
+                'self.context, '
+                'pd.get(\'validation_criteria\', {})'
+                ')',
+                'parent_class': 'TestCaseApp',
+            }
+        self.validation.generate_test_template(
+            test_template_variables, self.args.feature, self.test_file
+        )
 
     @property
     def output_variables(self):

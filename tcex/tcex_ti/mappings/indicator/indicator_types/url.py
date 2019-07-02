@@ -25,7 +25,7 @@ class URL(Indicator):
             xid (str, kwargs): The external id for this Indicator.
         """
         super(URL, self).__init__(tcex, 'URL', 'url', 'urls', owner, **kwargs)
-        self.unique_id = self.unique_id or text
+        self.unique_id = kwargs.get('unique_id', text)
         self.data['text'] = text or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)

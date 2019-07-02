@@ -13,7 +13,7 @@ class Adversary(Group):
             name (str): The name for this Group.
         """
         super(Adversary, self).__init__(
-            tcex, 'Adversary', 'adversary', 'adversaries', name, owner, **kwargs
+            tcex, 'Adversary', 'adversary', 'adversaries', owner=owner, name=name, **kwargs
         )
 
     def add_asset(self, asset_type, asset_name):

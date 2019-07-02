@@ -198,6 +198,182 @@ class TestCase(object):
         return Validator(self.get_tcex(self.default_args), logger, self.log_data)
 
 
+class TestCaseApp(TestCase):
+    """App TestCase Class"""
+
+    _output_variables = None
+    redis_client = None
+
+    def _exit(self, code):
+        """Log and return exit code"""
+        self.log.info('[run] Exit Code: {}'.format(code))
+        self.tcex.log.info('Exit Code: {}'.format(code))
+        return code
+
+    @property
+    def output_variables(self):
+        """Return playbook output variables"""
+        if self._output_variables is None:
+            self._output_variables = []
+            # Currently there is no support for projects with multiple install.json files.
+            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+                # "#App:9876:app.data.count!String"
+                self._output_variables.append(
+                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
+                )
+        return self._output_variables
+
+    def populate_output_variables(self, profile_name):
+        """Generate validation rules from App outputs."""
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
+        with open(profile_filename, 'r+') as fh:
+            profile_data = json.load(fh)
+            if profile_data.get('outputs') is None:
+                redis_data = self.redis_client.hgetall(self.context)
+                outputs = {}
+                for variable, data in list(redis_data.items()):
+                    variable = variable.decode('utf-8')
+                    data = data.decode('utf-8')
+                    if variable in self.output_variables:
+                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
+                profile_data['outputs'] = outputs
+                fh.seek(0)
+                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
+                fh.truncate()
+
+    def profile(self, profile_name):
+        """Get a profile from the profiles.json file by name"""
+        profile = None
+        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+            profile = json.load(fh)
+        return profile
+
+    @property
+    def profile_names(self):
+        """Get a profile from the profiles.json file by name"""
+        profile_names = []
+        for filename in sorted(os.listdir(self.profiles_dir)):
+            if filename.endswith('.json'):
+                profile_names.append(filename.replace('.json', ''))
+        return profile_names
+
+    @staticmethod
+    def resolve_env_args(value):
+        """Resolve env args
+      Args:
+          value (str): The value to resolve for environment variable.
+      Returns:
+          str: The original string or resolved string.
+      """
+        env_var = re.compile(r'^\$env\.(.*)$')
+        envs_var = re.compile(r'^\$envs\.(.*)$')
+        if env_var.match(value):
+            # read value from environment variable
+            env_key = env_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        elif envs_var.match(value):
+            # read secure value from environment variable
+            env_key = envs_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        return value
+
+    def run(self, args):  # pylint: disable=too-many-return-statements
+        """Run the Playbook App.
+      Args:
+          args (dict): The App CLI args.
+      Returns:
+          [type]: [description]
+      """
+        # resolve env vars
+        for k, v in list(args.items()):
+            if isinstance(v, string_types):
+                args[k] = self.resolve_env_args(v)
+        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        self.log.info('[run] Args: {}'.format(args))
+        app = self.app(args)
+        # Start
+        try:
+            app.start()
+        except SystemExit as e:
+            self.log.error('App failed in start() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in start() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+        # Run
+        try:
+            app.run()
+        except SystemExit as e:
+            self.log.error('App failed in run() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in run() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+        # Write Output
+        try:
+            app.write_output()
+        except SystemExit as e:
+            self.log.error('App failed in write_output() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in write_output() method ({}).'.format(
+                    traceback.format_exc()
+                )
+            )
+            return self._exit(1)
+        # Done
+        try:
+            app.done()
+        except SystemExit as e:
+            self.log.error('App failed in done() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in done() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+        return self._exit(app.tcex.exit_code)
+
+    @staticmethod
+    def create_shelf_dir(shelf_path):
+        """Creates a directory in log with the context name containing the batch data."""
+        if not os.path.isdir(shelf_path):
+            os.makedirs(shelf_path)
+            with open(os.path.join(shelf_path, 'DEBUG'), 'a'):
+                os.utime(os.path.join(shelf_path, 'DEBUG'), None)
+
+    def run_profile(self, profile_name):
+        """Run an App using the profile name."""
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+        args = {'tc_temp_path': os.path.join(self._app_path, 'log', self.context)}
+        self.create_shelf_dir(args['tc_temp_path'])
+        # build args from install.json
+        args.update(profile.get('inputs', {}).get('required', {}))
+        args.update(profile.get('inputs', {}).get('optional', {}))
+        if not args:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+        # run the App
+        exit_code = self.run(args)
+        return self._exit(exit_code)
+
+    # def setup_method(self):
+    #     """Run before each test method runs."""
+    #     super(TestCaseApp, self).setup_method()
+    #
+    # def teardown_method(self):
+    #     """Run after each test method runs."""
+    #     super(TestCaseApp, self).teardown_method()
+
+
 class TestCasePlaybook(TestCase):
     """Playbook TestCase Class"""
 
@@ -321,21 +497,7 @@ class TestCasePlaybook(TestCase):
 
         # Run
         try:
-            if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
-                tc_action = app.args.tc_action
-                tc_action_formatted = tc_action.lower().replace(' ', '_')
-                tc_action_map = 'tc_action_map'
-                if hasattr(app, tc_action):
-                    getattr(app, tc_action)()
-                elif hasattr(app, tc_action_formatted):
-                    getattr(app, tc_action_formatted)()
-                elif hasattr(app, tc_action_map):
-                    app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
-            else:
-                app.run()
-        except SystemExit as e:
-            self.log.error('App failed in run() method ({}).'.format(e))
-            return self._exit(e.code)
+            app.run()
         except Exception:
             self.log.error(
                 'App encountered except in run() method ({}).'.format(traceback.format_exc())

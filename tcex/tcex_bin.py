@@ -163,12 +163,15 @@ class TcExBin(object):
             args = []
         try:
             name = self.layout_json_names[index]
-            display = self.layout_json_params.get(name, {}).get('display')
+            is_playbook_app = self.is_playbook_app()
+            display = False
+            if is_playbook_app:
+                display = self.layout_json_params.get(name, {}).get('display')
             input_type = self.install_json_params().get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
 
-            if self.validate_layout_display(self.input_table, display):
+            if self.is_runtime_app() or self.validate_layout_display(self.input_table, display):
                 if input_type.lower() == 'boolean':
                     for val in [True, False]:
                         args.append({'name': name, 'value': val})
@@ -218,6 +221,20 @@ class TcExBin(object):
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
         if halt:
             sys.exit(1)
+
+    def is_runtime_app(self):
+        """Returns True if its a runtime app"""
+        install_json = os.path.join(self.app_path, 'install.json')
+        if os.path.isfile(install_json):
+            return True
+        return False
+
+    def is_playbook_app(self):
+        """Returns True if its a playbook app"""
+        layout_json = os.path.join(self.app_path, 'layout.json')
+        if os.path.isfile(layout_json):
+            return True
+        return False
 
     @property
     def install_json(self):
