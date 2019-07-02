@@ -24,8 +24,8 @@ class ASN(Indicator):
             rating (str, kwargs): The threat rating for this Indicator.
         """
         super(ASN, self).__init__(tcex, 'ASN', 'asn', 'asns', owner, **kwargs)
-        self._data['AS Number'] = as_number
         self.unique_id = self.unique_id or as_number
+        self._data['AS Number'] = as_number or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)
 
