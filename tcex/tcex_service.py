@@ -26,6 +26,10 @@ class TcExService(object):
         self._start_time = datetime.now()
         self.configs = {}
 
+    def add_metric(self, label, value):
+        """Add a metric to get reported in heartbeat."""
+        self._metric[label] = str(value)
+
     # def api_service(self, callback):
     #     """Run subscribe method
 
