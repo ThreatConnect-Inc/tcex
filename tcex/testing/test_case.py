@@ -497,7 +497,21 @@ class TestCasePlaybook(TestCase):
 
         # Run
         try:
-            app.run()
+            if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
+                tc_action = app.args.tc_action
+                tc_action_formatted = tc_action.lower().replace(' ', '_')
+                tc_action_map = 'tc_action_map'
+                if hasattr(app, tc_action):
+                    getattr(app, tc_action)()
+                elif hasattr(app, tc_action_formatted):
+                    getattr(app, tc_action_formatted)()
+                elif hasattr(app, tc_action_map):
+                    app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
+            else:
+                app.run()
+        except SystemExit as e:
+            self.log.error('App failed in run() method ({}).'.format(e))
+            return self._exit(e.code)
         except Exception:
             self.log.error(
                 'App encountered except in run() method ({}).'.format(traceback.format_exc())

@@ -47,6 +47,8 @@ class Profiles:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
+        if profile_data.get('validation_criteria'):
+            profile['validation_criteria'] = profile_data.get('validation_criteria')
 
         with open(profile_filename, 'w') as fh:
             json.dump(profile, fh, indent=2, sort_keys=sort_keys)
@@ -252,25 +254,14 @@ class TcExTest(TcExBin):
 
         elif self.args.permutation_id:
             # TODO: fix the profile_settings_args_layout_json to not run permutations twice
-            profile_data = {}
-            if self.is_playbook_app():
-                profile_data = {
-                    self.args.profile_name: {
-                        'inputs': {
-                            'optional': self.profile_settings_args_layout_json(False),
-                            'required': self.profile_settings_args_layout_json(True),
-                        }
+            profile_data = {
+                self.args.profile_name: {
+                    'inputs': {
+                        'optional': self.profile_settings_args_layout_json(False),
+                        'required': self.profile_settings_args_layout_json(True),
                     }
                 }
-            elif self.is_runtime_app():
-                profile_data = {
-                    self.args.profile_name: {
-                        'inputs': {
-                            'optional': self.profile_settings_args_layout_json(False),
-                            'required': self.profile_settings_args_layout_json(True),
-                        }
-                    }
-                }
+            }
         else:
             profile_data = {
                 self.args.profile_name: {
@@ -284,6 +275,9 @@ class TcExTest(TcExBin):
                     }
                 }
             }
+
+        if self.is_runtime_app():
+            profile_data[self.args.profile_name]['validation_criteria'] = {'percent': 5}
 
         # add profiles
         for profile_name, data in profile_data.items():
@@ -358,7 +352,11 @@ class TcExTest(TcExBin):
         self.validation.generate(self.output_variables)
         self.validation.generate_feature(self.args.feature, self.args.file)
 
-        test_template_variables = {'validate_batch_method': '', 'parent_class': 'TestCasePlaybook'}
+        test_template_variables = {
+            'validate_batch_method': '',
+            'parent_class': 'TestCasePlaybook',
+            'parent_import': 'from tcex.testing import TestCasePlaybook',
+        }
         if self.is_runtime_app():
             test_template_variables = {
                 'validate_batch_method': 'self.validator.threatconnect.batch('
@@ -366,6 +364,7 @@ class TcExTest(TcExBin):
                 'pd.get(\'validation_criteria\', {})'
                 ')',
                 'parent_class': 'TestCaseApp',
+                'parent_import': 'from tcex.testing import TestCasePlaybook',
             }
         self.validation.generate_test_template(
             test_template_variables, self.args.feature, self.test_file

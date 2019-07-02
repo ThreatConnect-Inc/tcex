@@ -4,9 +4,9 @@ import os
 import sys
 
 import pytest
+from tcex.testing.monkeypatch import register_monkeypatch
 
-from tcex.testing import TestCasePlaybook
-from tcex.testing import TestCaseApp
+${parent_import}
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 # Python 2 unicode
@@ -45,9 +45,10 @@ class TestFeature(${parent_class}):
         super(TestFeature, self).teardown_method()
 
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name):
+    def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
+        register_monkeypatch(monkeypatch, pd)
         if self.env.intersection(set(pd.get('environments', ['build']))):
             assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
             ValidateFeature(self.validator).validate(pd.get('outputs'))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Validate feature test case class."""
 from ..validate import Validate
+from tcex.testing.monkeypatch import monkeypatch
 
 
 class ValidateFeature(Validate):

@@ -162,11 +162,14 @@ class TcExBin(object):
         if args is None:
             args = []
         try:
-            name = self.layout_json_names[index]
             is_playbook_app = self.is_playbook_app()
-            display = False
             if is_playbook_app:
+                name = self.layout_json_names[index]
                 display = self.layout_json_params.get(name, {}).get('display')
+            else:
+                name = [*self.install_json_params().keys()][index]
+                display = False
+
             input_type = self.install_json_params().get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
