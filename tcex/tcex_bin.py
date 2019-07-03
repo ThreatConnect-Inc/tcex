@@ -375,6 +375,9 @@ class TcExBin(object):
             # TODO: fix this required logic
             if p.get('required', False) != required and required is not None:
                 continue
+            if p.get('config') is True:
+                # config indicates that this entry is for a service config
+                continue
             if p.get('type').lower() == 'boolean':
                 profile_args[p.get('name')] = self._to_bool(p.get('default', False))
             elif p.get('type').lower() == 'choice':

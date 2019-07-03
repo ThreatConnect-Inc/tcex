@@ -15,5 +15,6 @@
 # limitations under the License.
 
 from tcex.testing.test_case import TestCasePlaybook  # noqa: F401
+from tcex.testing.test_case import TestCaseServiceCustom  # noqa: F401
 from tcex.testing.stage_data import Stager  # noqa: F401
 from tcex.testing.validate_data import Validator  # noqa: F401

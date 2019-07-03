@@ -5,16 +5,21 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import re
+import threading
 import time
 import uuid
 import sys
 import traceback
 from datetime import datetime
+from random import randint
 
 from six import string_types
 
+from _pytest.monkeypatch import MonkeyPatch
+
 from tcex import TcEx
-from app import App  # pylint: disable=import-error
+from tcex.tcex_service import TcExService
+
 from .stage_data import Stager
 from .validate_data import Validator
 
@@ -48,6 +53,8 @@ class TestCase(object):
 
     def app(self, args):
         """Return an instance of App."""
+        from app import App  # pylint: disable=import-error
+
         return App(self.get_tcex(args))
 
     @property
@@ -59,7 +66,7 @@ class TestCase(object):
             'api_secret_key': os.getenv('API_SECRET_KEY'),
             'tc_api_path': os.getenv('TC_API_PATH'),
             'tc_in_path': os.getenv('TC_IN_PATH', 'log'),
-            'tc_log_level': os.getenv('TC_LOG_LEVEL', 'debug'),
+            'tc_log_level': os.getenv('TC_LOG_LEVEL', 'trace'),
             'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
             'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
             'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
@@ -419,3 +426,315 @@ class TestCasePlaybook(TestCase):
         # self.log.info('[teardown method] Delete Key Count: {}'.format(r))
         self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()
+
+
+# class TestCaseTriggerService(TestCase):
+class TestCaseServiceCustom(TestCase):
+    """Playbook TestCase Class"""
+
+    # store original method before monkeypatching the method
+    setattr(TcExService, 'fire_event_orig', TcExService.fire_event)
+
+    _output_variables = None
+    client_channel = 'client-channel-{}'.format(randint(100, 999))
+    server_channel = 'server-channel-{}'.format(randint(100, 999))
+    redis_staging_data = {
+        '#App:1234:empty!String': '',
+        '#App:1234:null!String': None,
+        '#App:1234:non-ascii!String': 'ドメイン.テスト',
+    }
+    # BCS server_channel = 'server-channel-'
+
+    redis_client = None
+
+    def _exit(self, code):
+        """Log and return exit code"""
+        # self.log.info('[run] Exit Code: {}'.format(code))
+        self.log_data('run', 'exit code', code)
+        self.tcex.log.info('Exit Code: {}'.format(code))
+        return code
+
+    @property
+    def output_variables(self):
+        """Return playbook output variables"""
+        if self._output_variables is None:
+            self._output_variables = []
+            # Currently there is no support for projects with multiple install.json files.
+            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+                # "#App:9876:app.data.count!String"
+                self._output_variables.append(
+                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
+                )
+        return self._output_variables
+
+    def populate_output_variables(self, profile_name):
+        """Generate validation rules from App outputs."""
+        time.sleep(1)  # add delay to ensure redis variables are written
+        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
+        with open(profile_filename, 'r+') as fh:
+            profile_data = json.load(fh)
+            if profile_data.get('outputs') is None:
+                redis_data = self.redis_client.hgetall(self.context)
+                outputs = {}
+                for variable, data in list(redis_data.items()):
+                    variable = variable.decode('utf-8')
+                    data = data.decode('utf-8')
+                    if variable in self.output_variables:
+                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
+                profile_data['outputs'] = outputs
+                fh.seek(0)
+                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
+                fh.truncate()
+
+    def profile(self, profile_name):
+        """Get a profile from the profiles.json file by name"""
+        profile = None
+        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+            profile = json.load(fh)
+        return profile
+
+    @staticmethod
+    def resolve_env_args(value):
+        """Resolve env args
+
+        Args:
+            value (str): The value to resolve for environment variable.
+
+        Returns:
+            str: The original string or resolved string.
+        """
+        env_var = re.compile(r'^\$env\.(.*)$')
+        envs_var = re.compile(r'^\$envs\.(.*)$')
+
+        if env_var.match(value):
+            # read value from environment variable
+            env_key = env_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        elif envs_var.match(value):
+            # read secure value from environment variable
+            env_key = envs_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+
+        return value
+
+    def run(self, args):  # pylint: disable=too-many-return-statements
+        """Run the Playbook App.
+
+        Args:
+            args (dict): The App CLI args.
+
+        Returns:
+            [type]: [description]
+        """
+        # resolve env vars
+        for k, v in args.items():
+            if isinstance(v, string_types):
+                args[k] = self.resolve_env_args(v)
+
+        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
+        # self.log.info('[run] Args: {}'.format(args))
+        self.log_data('run', 'args', args)
+        app = self.app(args)
+
+        # Setup
+        try:
+            app.setup()
+        except SystemExit as e:
+            self.log.error('App failed in setup() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in setup() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+
+        # Trigger
+        try:
+            # configure custom trigger message handler
+            app.tcex.service.custom_trigger(
+                create_callback=app.create_config_callback,
+                delete_callback=app.delete_config_callback,
+                update_callback=app.update_config_callback,
+                shutdown_callback=app.shutdown_callback,
+            )
+        except SystemExit as e:
+            self.log.error('App failed in run() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in run() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+
+        # Run
+        try:
+            if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
+                tc_action = app.args.tc_action
+                tc_action_formatted = tc_action.lower().replace(' ', '_')
+                tc_action_map = 'tc_action_map'
+                if hasattr(app, tc_action):
+                    getattr(app, tc_action)()
+                elif hasattr(app, tc_action_formatted):
+                    getattr(app, tc_action_formatted)()
+                elif hasattr(app, tc_action_map):
+                    app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
+            else:
+                app.run()
+        except SystemExit as e:
+            self.log.error('App failed in run() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in run() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+
+        # # Write Output
+        # try:
+        #     app.write_output()
+        # except SystemExit as e:
+        #     self.log.error('App failed in write_output() method ({}).'.format(e))
+        #     return self._exit(e.code)
+        # except Exception:
+        #     self.log.error(
+        #         'App encountered except in write_output() method ({}).'.format(
+        #             traceback.format_exc()
+        #         )
+        #     )
+        #     return self._exit(1)
+
+        # Teardown
+        try:
+            app.teardown()
+        except SystemExit as e:
+            self.log.error('App failed in teardown() method ({}).'.format(e))
+            return self._exit(e.code)
+        except Exception:
+            self.log.error(
+                'App encountered except in teardown() method ({}).'.format(traceback.format_exc())
+            )
+            return self._exit(1)
+
+        return self._exit(app.tcex.exit_code)
+
+    def run_profile(self, profile_name):
+        """Run an App using the profile name."""
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # stage any staging data
+        # self.stage_data(profile.get('stage', {}))
+        # self.stager.redis.from_dict(profile.get('stage', {}))
+        self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
+
+        # build args from install.json
+        args = {}
+        args.update(profile.get('inputs', {}).get('required', {}))
+        args.update(profile.get('inputs', {}).get('optional', {}))
+        if not args:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # run the App
+        self.run(args)
+
+        return self._exit(0)
+
+    def patch_service(self):
+        """Patch the micro-service."""
+
+        current_context = self.context
+
+        def set_session_id(self, *args, **kwargs):
+            """Set the session id via monkeypatch"""
+            kwargs['session_id'] = current_context
+            # print('!!!!!!!!!!!!! BCS set session id context', current_context)
+            # print('!!!!!!!!!!!!! BCS set session id context', dir(self))
+            # print('!!!!!!!!!!!!! BCS set session id context', type(self))
+            return self.fire_event_orig(*args, **kwargs)
+
+        MonkeyPatch().setattr(TcExService, 'fire_event', set_session_id)
+
+    def publish_create_config(self, config_id, config):
+        """Send create config message."""
+        config_msg = {'command': 'CreateConfig', 'configId': config_id, 'config': config}
+        config_msg['config']['outputVariables'] = self.output_variables
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+
+    def publish_delete_config(self, config_id):
+        """Send create config message."""
+        config_msg = {'command': 'DeleteConfig', 'configId': config_id}
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+
+    def publish_shutdown(self):
+        """Publish shutdown message."""
+        config_msg = {'command': 'Shutdown'}
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+
+    def publish_update_config(self, config_id, config):
+        """Send create config message."""
+        config_msg = {'command': 'UpdateConfig', 'configId': config_id, 'config': config}
+        config_msg['config']['outputVariables'] = self.output_variables
+        self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+
+    def run_service(self):
+        """Run the micro-service."""
+        t = threading.Thread(target=self.run, args=(self.args,))
+        t.daemon = True  # use setter for py2
+        t.start()
+        time.sleep(1)
+
+    @classmethod
+    def setup_class(cls):
+        """Run once before all test cases."""
+        super(TestCaseServiceCustom, cls).setup_class()
+        cls.args = {}
+        cls.service_file = 'SERVICE_STARTED'
+
+    def setup_method(self):
+        """Run before each test method runs."""
+        super(TestCaseServiceCustom, self).setup_method()
+        self.stager.redis.from_dict(self.redis_staging_data)
+        self.redis_client = self.tcex.playbook.db.r
+
+        if not os.path.isfile(self.service_file):
+            with open(self.service_file, 'w+') as f:  # noqa: F841; pylint: disable=unused-variable
+                pass
+            self.run_service()
+        self.patch_service()
+
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in list(staged_data.get('redis', {}).items()):
+            self.stager.redis.stage(key, value)
+
+        # TODO: stage threatconnect data
+
+    @classmethod
+    def teardown_class(cls):
+        """Run once before all test cases."""
+        super(TestCaseServiceCustom, cls).teardown_class()
+        os.remove(cls.service_file)
+        # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
+
+    def teardown_method(self):
+        """Run after each test method runs."""
+        r = self.stager.redis.delete_context(self.context)
+        # self.log.info('[teardown method] Delete Key Count: {}'.format(r))
+        self.log_data('teardown method', 'delete count', r)
+        super(TestCaseServiceCustom, self).teardown_method()
+
+    @property
+    def default_args(self):
+        """Return App default args."""
+        args = super(TestCaseServiceCustom, self).default_args
+        args.update(
+            {
+                'tc_client_channel': self.client_channel,
+                'tc_server_channel': self.server_channel,
+                'tc_heartbeat_seconds': int(os.getenv('TC_HEARTBEAT_SECONDS', '60')),
+            }
+        )
+        return args

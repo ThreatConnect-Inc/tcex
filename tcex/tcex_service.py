@@ -230,11 +230,12 @@ class TcExService(object):
         for config_id, config in self.configs.items():
             self.tcex.log.trace('trigger callback for config id: {}'.format(config_id))
 
-            # generate session id
-            session_id = str(uuid.uuid4())
+            # get session_id from kwargs (pytest monkeypatch) or generate session id
+            session_id = kwargs.get('session_id', str(uuid.uuid4()))
 
-            # update the playbook session id
+            # update the playbook session id and outputVariables
             self.tcex.playbook.db.key = session_id
+            self.tcex.playbook.output_variables = config.get('outputVariables', [])
 
             # add temporary logging file handler for this specific session
             self.tcex.logger.add_file_handler(name=session_id, filename='{}.log'.format(session_id))
@@ -242,7 +243,7 @@ class TcExService(object):
 
             if trigger_type == 'custom':
                 try:
-                    if callback(session_id, config, **kwargs):
+                    if callback(config, **kwargs):
                         self.metric['hits'] += 1
                         self.fire_event_publish(config_id, session_id)
                     else:
@@ -261,7 +262,7 @@ class TcExService(object):
                 method = msg_data.get('method')
                 params = msg_data.get('queryParams')
                 try:
-                    if callback(session_id, method, headers, params, body, config):
+                    if callback(method, headers, params, body, config):
                         self.metric['hits'] += 1
                         self.fire_event_publish(config_id, session_id, request_key)
                     else:
