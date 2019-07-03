@@ -521,7 +521,7 @@ class ThreatConnect(object):
         """Initialize class properties"""
         self.provider = provider
 
-    def batch(self, context, validation_criteria):
+    def batch(self, context, owner, validation_criteria):
         """Validates the batch submission"""
 
         validation_percent = validation_criteria.get('percent', 100)
@@ -543,7 +543,7 @@ class ThreatConnect(object):
                     for sub_partition in validation_data.get(key).values():
                         sample_size = math.ceil(len(sub_partition) * (validation_percent / 100))
                         sample_validation_data.extend(random.sample(sub_partition, sample_size))
-                results = self.tc_entities(sample_validation_data, 'TCI')
+                results = self.tc_entities(sample_validation_data, owner)
                 passed = True
                 for result in results:
                     if not result:

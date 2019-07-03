@@ -361,10 +361,11 @@ class TcExTest(TcExBin):
             test_template_variables = {
                 'validate_batch_method': 'self.validator.threatconnect.batch('
                 'self.context, '
+                'pd.get(\'owner\'),'
                 'pd.get(\'validation_criteria\', {})'
                 ')',
                 'parent_class': 'TestCaseApp',
-                'parent_import': 'from tcex.testing import TestCasePlaybook',
+                'parent_import': 'from tcex.testing import TestCaseApp',
             }
         self.validation.generate_test_template(
             test_template_variables, self.args.feature, self.test_file
