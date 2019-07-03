@@ -569,6 +569,24 @@ class ThreatConnect(object):
                     ), '{} in ThreatConnect did not match what was submitted. Errors:{}'.format(
                         name, result.get('errors')
                     )
+        self._log_batch_submit_details(batch_errors, owner)
+
+    def _log_batch_submit_details(self, batch_errors, owner):
+        counts = {}
+        error_regex = r'\((.*?)\)'
+        for error in batch_errors:
+            reason = error.get('errorReason', '')
+            m = re.search(error_regex, reason)
+            if not m.group(1) in counts:
+                counts[m.group(1)] = 0
+            counts[m.group(1)] += 1
+        log_message = ''
+        for code, count in counts.items():
+            log_message += (
+                self.provider.tcex.batch(owner).error_codes.get(code) + ': ' + str(count) + '\n'
+            )
+
+        self.provider.log.error(log_message)
 
     @staticmethod
     def _batch_error(key, batch_errors):

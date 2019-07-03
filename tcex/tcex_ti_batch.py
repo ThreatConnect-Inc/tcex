@@ -655,6 +655,24 @@ class TcExBatch(object):
         indicator_obj = EmailAddress(address, **kwargs)
         return self._indicator(indicator_obj)
 
+    @property
+    def error_codes(self):
+        """Static list of Batch error codes and short description"""
+        error_codes = {}
+        error_codes['0x1001'] = 'General Error'
+        error_codes['0x1002'] = 'Permission Error'
+        error_codes['0x1003'] = 'JsonSyntax Error'
+        error_codes['0x1004'] = 'Internal Error'
+        error_codes['0x1005'] = 'Invalid Indicator Error'
+        error_codes['0x1006'] = 'Invalid Group Error'
+        error_codes['0x1007'] = 'Item Not Found Error'
+        error_codes['0x1008'] = 'Indicator Limit Error'
+        error_codes['0x1009'] = 'Association Error'
+        error_codes['0x100A'] = 'Duplicate Item Error'
+        error_codes['0x100B'] = 'File IO Error'
+
+        return error_codes
+
     def errors(self, batch_id, halt_on_error=True):
         """Retrieve Batch errors to ThreatConnect API.
 
