@@ -6,7 +6,14 @@ import json
 import operator
 import os
 import re
+import math
+import random
 from six import string_types
+
+try:
+    from urllib import unquote  # Python 2
+except ImportError:
+    from urllib.parse import unquote  # Python
 
 
 class Validator(object):
@@ -514,6 +521,38 @@ class ThreatConnect(object):
         """Initialize class properties"""
         self.provider = provider
 
+    def batch(self, context, owner, validation_criteria):
+        """Validates the batch submission"""
+
+        validation_percent = validation_criteria.get('percent', 100)
+        validation_count = validation_criteria.get('count', None)
+        batch_submit_totals = self._get_batch_submit_totals(context)
+
+        if validation_count:
+            validation_percent = self._convert_to_percent(validation_count, batch_submit_totals)
+
+        for filename in os.listdir(os.path.join('.', 'log', context)):
+            if not filename.startswith('batch-') or not filename.endswith('.json'):
+                continue
+
+            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+                data = json.load(fh)
+                validation_data = self._partition_batch_data(data)
+                sample_validation_data = []
+                for key in validation_data:
+                    for sub_partition in validation_data.get(key).values():
+                        sample_size = math.ceil(len(sub_partition) * (validation_percent / 100))
+                        sample_validation_data.extend(random.sample(sub_partition, sample_size))
+                results = self.tc_entities(sample_validation_data, owner)
+                passed = True
+                for result in results:
+                    if not result:
+                        passed = False
+                assert passed, (
+                    'One or more of the Batch Requests did not match with what is '
+                    'currently in ThreatConnect. View tests.log for additional details.'
+                )
+
     def dir(self, directory, owner):
         """Validate the content of a given dir"""
         results = []
@@ -554,9 +593,10 @@ class ThreatConnect(object):
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
         ti_response = ti_entity.single(params=parameters)
         if not self.success(ti_response):
+            print('unique_id: ', ti_entity.unique_id)
             self.provider.log.error(
-                'NotFoundError: Provided entity {} could not be fetched from ThreatConnect'.format(
-                    tc_entity.get('summary')
+                'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
+                    tc_entity.get('type'), tc_entity.get('summary', tc_entity.get('name', None))
                 )
             )
             return False
@@ -590,16 +630,18 @@ class ThreatConnect(object):
                     'actual confidence {}'.format(provided_confidence, expected_confidence)
                 )
                 valid = False
-            provided_summary = ti_entity.unique_id
-            expected_summary = ti_response_entity.get('value', None)
-            if not provided_summary == expected_summary:
+            provided_summary = unquote(
+                ':'.join([x for x in ti_entity.unique_id.split(':') if x.strip()])
+            )
+            expected_summary = unquote(ti_response_entity.get('value', ''))
+            if provided_summary != expected_summary:
                 self.provider.log.error(
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
                 valid = False
         elif ti_entity.type == 'Group':
-            provided_summary = tc_entity.get('summary', None)
+            provided_summary = tc_entity.get('name', None)
             expected_summary = ti_response_entity.get('value', None)
             if not provided_summary == expected_summary:
                 self.provider.log.error(
@@ -624,15 +666,13 @@ class ThreatConnect(object):
         valid = True
         for item in expected:
             if item in actual:
-                if expected.get(item) == actual.get(item):
-                    actual.pop(item)
-                    continue
-                self.provider.log.error(
-                    '{0}{1} : {2} did not match {1} : {3}'.format(
-                        error_type, item, expected.get('item'), actual.get(item)
+                if str(expected.get(item)) != actual.get(item):
+                    self.provider.log.error(
+                        '{0}{1} : {2} did not match {1} : {3}'.format(
+                            error_type, item, expected.get(item), actual.get(item)
+                        )
                     )
-                )
-                valid = False
+                    valid = False
                 actual.pop(item)
             else:
                 self.provider.log.error(
@@ -641,7 +681,7 @@ class ThreatConnect(object):
                     )
                 )
                 valid = False
-        for item in actual.items():
+        for item in list(actual.items()):
             self.provider.log.error(
                 '{}{} : {} was in actual results but not in expected results.'.format(
                     error_type, item, actual.get(item)
@@ -679,25 +719,94 @@ class ThreatConnect(object):
             data = json.load(read_file)
         return data
 
+    def _custom_indicators(self):
+        indicator_details = self.provider.tcex.indicator_types_data
+        custom_indicators = []
+        for indicator in indicator_details.values():
+            if indicator.get('custom', False):
+                custom_indicators.append(indicator.get('name'))
+
+        return custom_indicators
+
     def _convert_to_ti_entity(self, tc_entity, owner):
         """Convert a tc_entity to a ti_entity"""
         ti_entity = None
-        if tc_entity.get('type') in self.provider.tcex.indicator_types:
+
+        if tc_entity.get('type') in self.provider.tcex.group_types:
+            # We can't search by xid sadly so have to search by name and validate xid to
+            # get the id of the group.
+            filters = self.provider.tcex.ti.filters()
+            filters.add_filter('name', '=', tc_entity.get('name'))
+            generic_group_entity = self.provider.tcex.ti.group(
+                group_type=tc_entity.get('type'), owner=owner
+            )
+            parameters = {'includes': ['additional']}
+            for entity in generic_group_entity.many(filters=filters, params=parameters):
+                if entity.get('xid') == tc_entity.get('xid'):
+                    ti_entity = self.provider.tcex.ti.group(
+                        group_type=tc_entity.get('type'),
+                        owner=owner,
+                        name=entity.get('name'),
+                        unique_id=entity.get('id'),
+                    )
+        elif tc_entity.get('type') in self.provider.tcex.indicator_types:
+            tc_entity['summary'] = unquote(tc_entity.get('summary'))
+            if tc_entity.get('type').lower() == 'file':
+                tc_entity['summary'] = tc_entity.get('summary').upper()
             ti_entity = self.provider.tcex.ti.indicator(
                 indicator_type=tc_entity.get('type'),
                 owner=owner,
                 unique_id=tc_entity.get('summary'),
             )
-        elif tc_entity.get('type') in self.provider.tcex.group_types:
-            ti_entity = self.provider.tcex.ti.group(
-                group_type=tc_entity.get('type'), owner=owner, unique_id=tc_entity.get('id')
-            )
         elif tc_entity.get('type') == 'Victim':
-            ti_entity = self.provider.tcex.ti.victim(
-                unique_id=tc_entity.get('summary'), owner=owner
-            )
+            # TODO: Will need to do something similar to what was done to get the groups entity.
+            pass
 
         return ti_entity
+
+    def _get_batch_submit_totals(self, context):
+        """Breaks the batch submitions up into seperate partitions with each partition containing
+        its total."""
+        counts = {}
+        for filename in os.listdir(os.path.join('.', 'log', context)):
+            if not filename.startswith('batch-') or not filename.endswith('.json'):
+                continue
+            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+                data = json.load(fh)
+                partitioned_data = self._partition_batch_data(data)
+                for key in partitioned_data:
+                    if key not in counts:
+                        counts[key] = {}
+                    for sub_key in partitioned_data.get(key):
+                        if sub_key not in counts:
+                            counts[key][sub_key] = 0
+                        counts[key][sub_key] += len(partitioned_data[key][sub_key])
+        return counts
+
+    @staticmethod
+    def _convert_to_percent(validation_count, batch_submit_totals):
+        """Given a count, calculate what percentage of the batch submits that is"""
+        total = 0
+        for key in batch_submit_totals.keys():
+            for count in batch_submit_totals.get(key).values():
+                total += count
+        if validation_count > total:
+            return 100
+        return round((validation_count / total) * 100, 2)
+
+    @staticmethod
+    def _partition_batch_data(data):
+        """Partitions the batch submittions into batch_submit[type][subtype] partitions"""
+        partitioned_data = {}
+        for key in data.keys():
+            partitioned_sub_data = {}
+            for sub_data in data.get(key):
+                if not sub_data.get('type') in partitioned_sub_data.keys():
+                    partitioned_sub_data[sub_data.get('type')] = [sub_data]
+                else:
+                    partitioned_sub_data[sub_data.get('type')].append(sub_data)
+            partitioned_data[key] = partitioned_sub_data
+        return partitioned_data
 
     def _response_attributes(self, ti_response, tc_entity):
         """Validate the ti_response attributes"""
@@ -722,7 +831,7 @@ class ThreatConnect(object):
         expected = []
         actual = []
         for tag in tc_entity.get('tag', []):
-            expected.append(tag)
+            expected.append(tag.get('name'))
         for tag in ti_response.get('tag', []):
             actual.append(tag.get('name'))
         valid = self.compare_lists(expected, actual, error_type='TagError: ')
@@ -746,6 +855,9 @@ class ThreatConnect(object):
 
     def _file(self, ti_entity, file):
         """Handle file data"""
+        if not file:
+            return True
+
         valid = True
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
             actual_hash = ti_entity.get_file_hash()
@@ -762,16 +874,11 @@ class ThreatConnect(object):
                     )
                 )
                 valid = False
-        else:
-            self.provider.log.error(
-                'TypeError: {} entity type does not contain files.'.format(ti_entity.api_sub_type)
-            )
-            valid = False
         return valid
 
     @staticmethod
     def success(r):
-        """???
+        """
 
         Args:
             r:

@@ -27,7 +27,7 @@ class EmailAddress(Indicator):
         super(EmailAddress, self).__init__(
             tcex, 'Email Address', 'emailAddress', 'emailAddresses', owner, **kwargs
         )
-        self.unique_id = self.unique_id or address
+        self.unique_id = kwargs.get('unique_id', address)
         self._data['address'] = address or self.unique_id
         if self.unique_id:
             self.unique_id = quote_plus(self.unique_id)

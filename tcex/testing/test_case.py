@@ -14,11 +14,9 @@ from datetime import datetime
 from random import randint
 
 from six import string_types
-
 from _pytest.monkeypatch import MonkeyPatch
 
 from tcex import TcEx
-from tcex.tcex_service import TcExService
 
 from .stage_data import Stager
 from .validate_data import Validator
@@ -46,6 +44,12 @@ class TestCase(object):
     env = set(os.environ.get('TCEX_TEST_ENVS', 'build').split(','))
     tcex = None
 
+    def _exit(self, code):
+        """Log and return exit code"""
+        self.log.info('[run] Exit Code: {}'.format(code))
+        self.tcex.log.info('Exit Code: {}'.format(code))
+        return code
+
     @staticmethod
     def _to_bool(value):
         """Return bool value from int or string."""
@@ -70,11 +74,6 @@ class TestCase(object):
             'tc_log_path': os.getenv('TC_LOG_PATH', 'log'),
             'tc_log_to_api': self._to_bool(os.getenv('TC_LOG_TO_API', 'false')),
             'tc_out_path': os.getenv('TC_OUT_PATH', 'log'),
-            'tc_playbook_db_context': self.context,
-            'tc_playbook_db_path': os.getenv('TC_PLAYBOOK_DB_PATH', 'localhost'),
-            'tc_playbook_db_port': os.getenv('TC_PLAYBOOK_DB_PORT', '6379'),
-            'tc_playbook_db_type': os.getenv('TC_PLAYBOOK_DB_TYPE', 'Redis'),
-            'tc_playbook_out_variables': '',
             'tc_proxy_external': self._to_bool(os.getenv('TC_PROXY_EXTERNAL', 'false')),
             'tc_proxy_host': os.getenv('TC_PROXY_HOST', 'localhost'),
             'tc_proxy_password': os.getenv('TC_PROXY_PASSWORD', ''),
@@ -141,9 +140,12 @@ class TestCase(object):
         msg = '{!s:>20} : {!s:<15}: {!s:<50}'.format('[{}]'.format(stage), label, data)
         self.log.info(msg)
 
-    def run(self, args):
-        """Implement in Child Class"""
-        raise NotImplementedError('Child class must implement this method.')
+    def profile(self, profile_name):
+        """Get a profile from the profiles.json file by name"""
+        profile = None
+        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
+            profile = json.load(fh)
+        return profile
 
     @property
     def profiles_dir(self):
@@ -151,13 +153,44 @@ class TestCase(object):
         feature_path = os.path.dirname(self._current_test.split('::')[0])
         return os.path.join(self._app_path, feature_path, 'profiles.d')
 
+    @property
+    def profile_names(self):
+        """Get a profile from the profiles.json file by name"""
+        profile_names = []
+        for filename in sorted(os.listdir(self.profiles_dir)):
+            if filename.endswith('.json'):
+                profile_names.append(filename.replace('.json', ''))
+        return profile_names
+
+    @staticmethod
+    def resolve_env_args(value):
+        """Resolve env args
+      Args:
+          value (str): The value to resolve for environment variable.
+      Returns:
+          str: The original string or resolved string.
+      """
+        env_var = re.compile(r'^\$env\.(.*)$')
+        envs_var = re.compile(r'^\$envs\.(.*)$')
+        if env_var.match(value):
+            # read value from environment variable
+            env_key = env_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        elif envs_var.match(value):
+            # read secure value from environment variable
+            env_key = envs_var.match(str(value)).groups()[0]
+            value = os.environ.get(env_key, value)
+        return value
+
+    def run(self, args):
+        """Implement in Child Class"""
+        raise NotImplementedError('Child class must implement this method.')
+
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
         cls._timer_class_start = time.time()
         cls.log.info('{0} {1} {0}'.format('#' * 10, 'Setup Class'))
-        # cls.log.info('[setup class] started: {}'.format(datetime.now().isoformat()))
-        # cls.log.info('[setup class] local envs: {}'.format(cls.env))
         cls.log_data(cls, 'setup class', 'started', datetime.now().isoformat())
         cls.log_data(cls, 'setup class', 'local envs', cls.env)
 
@@ -166,10 +199,8 @@ class TestCase(object):
         self._timer_method_start = time.time()
         self._current_test = os.environ.get('PYTEST_CURRENT_TEST').split(' ')[0]
         self.log.info('{0} {1} {0}'.format('=' * 10, self._current_test))
-        # self.log.info('[setup method] started: {}'.format(datetime.now().isoformat()))
         self.log_data('setup method', 'started', datetime.now().isoformat())
         self.context = os.getenv('TC_PLAYBOOK_DB_CONTEXT', str(uuid.uuid4()))
-        # self.log.info('[setup method] Context: {}'.format(self.context))
         self.log_data('setup method', 'context', self.context)
 
     @property
@@ -181,21 +212,11 @@ class TestCase(object):
     def teardown_class(cls):
         """Run once before all test cases."""
         cls.log.info('{0} {1} {0}'.format('^' * 10, 'Teardown Class'))
-        # cls.log.info(
-        #     '[teardown class] Finished: {}, Elapsed: {}'.format(
-        #         datetime.now().isoformat(), time.time() - cls._timer_class_start
-        #     )
-        # )
         cls.log_data(cls, 'teardown class', 'finished', datetime.now().isoformat())
         cls.log_data(cls, 'teardown class', 'elapsed', time.time() - cls._timer_class_start)
 
     def teardown_method(self):
         """Run after each test method runs."""
-        # self.log.info(
-        #     '[teardown method] Finished: {}, Elapsed: {}'.format(
-        #         datetime.now().isoformat(), time.time() - self._timer_method_start
-        #     )
-        # )
         self.log_data('teardown method', 'finished', datetime.now().isoformat())
         self.log_data('teardown method', 'elapsed', time.time() - self._timer_class_start)
 
@@ -204,25 +225,123 @@ class TestCase(object):
         """Return instance of Stager class."""
         return Validator(self.get_tcex(self.default_args), logger, self.log_data)
 
+    def run_app_method(self, app, method):
+        """Run the provided App method."""
+        try:
+            getattr(app, method)()
+        except SystemExit as e:
+            self.log.info('[run] Exit Code: {}'.format(e.code))
+            self.log.error('App failed in {}() method ({}).'.format(method, e))
+            self.tcex.log.info('Exit Code: {}'.format(e.code))
+            return e.code
+        except Exception:
+            self.log.error(
+                'App encountered except in {}() method ({}).'.format(method, traceback.format_exc())
+            )
+            return 1
+        return 0
 
-class TestCasePlaybook(TestCase):
+
+class TestCaseApp(TestCase):
+    """App TestCase Class"""
+
+    _output_variables = None
+    redis_client = None
+
+    @staticmethod
+    def create_shelf_dir(shelf_path):
+        """Creates a directory in log with the context name containing the batch data."""
+        if not os.path.isdir(shelf_path):
+            os.makedirs(shelf_path)
+            with open(os.path.join(shelf_path, 'DEBUG'), 'a'):
+                os.utime(os.path.join(shelf_path, 'DEBUG'), None)
+
+    def run(self, args):  # pylint: disable=too-many-return-statements
+        """Run the Playbook App.
+
+        Args:
+            args (dict): The App CLI args.
+        Returns:
+            [type]: [description]
+        """
+        # resolve env vars
+        for k, v in list(args.items()):
+            if isinstance(v, string_types):
+                args[k] = self.resolve_env_args(v)
+
+        self.log_data('run', 'args', args)
+        app = self.app(args)
+
+        # Start
+        exit_code = self.run_app_method(app, 'start')
+        if exit_code != 0:
+            return exit_code
+
+        # Run
+        exit_code = self.run_app_method(app, 'run')
+        if exit_code != 0:
+            return exit_code
+
+        # Write Output
+        exit_code = self.run_app_method(app, 'write_output')
+        if exit_code != 0:
+            return exit_code
+
+        # Done
+        exit_code = self.run_app_method(app, 'done')
+        if exit_code != 0:
+            return exit_code
+
+        return self._exit(app.tcex.exit_code)
+
+    def run_profile(self, profile_name):
+        """Run an App using the profile name."""
+        profile = self.profile(profile_name)
+        if not profile:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        args = {'tc_temp_path': os.path.join(self._app_path, 'log', self.context)}
+        self.create_shelf_dir(args['tc_temp_path'])
+
+        # build args from install.json
+        args.update(profile.get('inputs', {}).get('required', {}))
+        args.update(profile.get('inputs', {}).get('optional', {}))
+        if not args:
+            self.log.error('No profile named {} found.'.format(profile_name))
+            return self._exit(1)
+
+        # run the App
+        exit_code = self.run(args)
+
+        return self._exit(exit_code)
+
+
+class TestCasePlaybookCommon(TestCase):
     """Playbook TestCase Class"""
 
     _output_variables = None
+    redis_client = None
     redis_staging_data = {
         '#App:1234:empty!String': '',
         '#App:1234:null!String': None,
         '#App:1234:non-ascii!String': 'ドメイン.テスト',
     }
 
-    redis_client = None
-
-    def _exit(self, code):
-        """Log and return exit code"""
-        # self.log.info('[run] Exit Code: {}'.format(code))
-        self.log_data('run', 'exit code', code)
-        self.tcex.log.info('Exit Code: {}'.format(code))
-        return code
+    @property
+    def default_args(self):
+        """Return App default args."""
+        args = super(TestCasePlaybookCommon, self).default_args
+        args.update(
+            {
+                'tc_playbook_db_context': self.context,
+                'tc_playbook_db_path': os.getenv('TC_PLAYBOOK_DB_PATH', 'localhost'),
+                'tc_playbook_db_port': os.getenv('TC_PLAYBOOK_DB_PORT', '6379'),
+                'tc_playbook_db_type': os.getenv('TC_PLAYBOOK_DB_TYPE', 'Redis'),
+                'tc_playbook_out_variables': '',
+            }
+        )
+        return args
 
     @property
     def output_variables(self):
@@ -255,45 +374,18 @@ class TestCasePlaybook(TestCase):
                 fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
                 fh.truncate()
 
-    def profile(self, profile_name):
-        """Get a profile from the profiles.json file by name"""
-        profile = None
-        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
-            profile = json.load(fh)
-        return profile
+    def run(self, args):
+        """Implement in Child Class"""
+        raise NotImplementedError('Child class must implement this method.')
 
-    @property
-    def profile_names(self):
-        """Get a profile from the profiles.json file by name"""
-        profile_names = []
-        for filename in sorted(os.listdir(self.profiles_dir)):
-            if filename.endswith('.json'):
-                profile_names.append(filename.replace('.json', ''))
-        return profile_names
+    def stage_data(self, staged_data):
+        """Stage the data in the profile."""
+        for key, value in list(staged_data.get('redis', {}).items()):
+            self.stager.redis.stage(key, value)
 
-    @staticmethod
-    def resolve_env_args(value):
-        """Resolve env args
 
-        Args:
-            value (str): The value to resolve for environment variable.
-
-        Returns:
-            str: The original string or resolved string.
-        """
-        env_var = re.compile(r'^\$env\.(.*)$')
-        envs_var = re.compile(r'^\$envs\.(.*)$')
-
-        if env_var.match(value):
-            # read value from environment variable
-            env_key = env_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
-        elif envs_var.match(value):
-            # read secure value from environment variable
-            env_key = envs_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
-
-        return value
+class TestCasePlaybook(TestCasePlaybookCommon):
+    """Playbook TestCase Class"""
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
@@ -310,21 +402,13 @@ class TestCasePlaybook(TestCase):
                 args[k] = self.resolve_env_args(v)
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        # self.log.info('[run] Args: {}'.format(args))
         self.log_data('run', 'args', args)
         app = self.app(args)
 
         # Start
-        try:
-            app.start()
-        except SystemExit as e:
-            self.log.error('App failed in start() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in start() method ({}).'.format(traceback.format_exc())
-            )
-            return self._exit(1)
+        exit_code = self.run_app_method(app, 'start')
+        if exit_code != 0:
+            return exit_code
 
         # Run
         try:
@@ -350,30 +434,14 @@ class TestCasePlaybook(TestCase):
             return self._exit(1)
 
         # Write Output
-        try:
-            app.write_output()
-        except SystemExit as e:
-            self.log.error('App failed in write_output() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in write_output() method ({}).'.format(
-                    traceback.format_exc()
-                )
-            )
-            return self._exit(1)
+        exit_code = self.run_app_method(app, 'write_output')
+        if exit_code != 0:
+            return exit_code
 
         # Done
-        try:
-            app.done()
-        except SystemExit as e:
-            self.log.error('App failed in done() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in done() method ({}).'.format(traceback.format_exc())
-            )
-            return self._exit(1)
+        exit_code = self.run_app_method(app, 'done')
+        if exit_code != 0:
+            return exit_code
 
         return self._exit(app.tcex.exit_code)
 
@@ -385,8 +453,6 @@ class TestCasePlaybook(TestCase):
             return self._exit(1)
 
         # stage any staging data
-        # self.stage_data(profile.get('stage', {}))
-        # self.stager.redis.from_dict(profile.get('stage', {}))
         self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
 
         # build args from install.json
@@ -413,109 +479,38 @@ class TestCasePlaybook(TestCase):
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r
 
-    def stage_data(self, staged_data):
-        """Stage the data in the profile."""
-        for key, value in list(staged_data.get('redis', {}).items()):
-            self.stager.redis.stage(key, value)
-
-        # TODO: stage threatconnect data
-
     def teardown_method(self):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
-        # self.log.info('[teardown method] Delete Key Count: {}'.format(r))
         self.log_data('teardown method', 'delete count', r)
         super(TestCasePlaybook, self).teardown_method()
 
 
-# class TestCaseTriggerService(TestCase):
-class TestCaseServiceCustom(TestCase):
+class TestCaseTriggerService(TestCasePlaybookCommon):
     """Playbook TestCase Class"""
 
-    # store original method before monkeypatching the method
-    setattr(TcExService, 'fire_event_orig', TcExService.fire_event)
+    # TODO: Update after merge of services branch
+    if hasattr(TcEx, 'service'):
+        from tcex.tcex_service import TcExService  # pylint: disable=no-name-in-module
 
-    _output_variables = None
+        # store original method before monkeypatching the method
+        setattr(TcExService, 'fire_event_orig', TcExService.fire_event)
+
     client_channel = 'client-channel-{}'.format(randint(100, 999))
     server_channel = 'server-channel-{}'.format(randint(100, 999))
-    redis_staging_data = {
-        '#App:1234:empty!String': '',
-        '#App:1234:null!String': None,
-        '#App:1234:non-ascii!String': 'ドメイン.テスト',
-    }
-    # BCS server_channel = 'server-channel-'
-
-    redis_client = None
-
-    def _exit(self, code):
-        """Log and return exit code"""
-        # self.log.info('[run] Exit Code: {}'.format(code))
-        self.log_data('run', 'exit code', code)
-        self.tcex.log.info('Exit Code: {}'.format(code))
-        return code
 
     @property
-    def output_variables(self):
-        """Return playbook output variables"""
-        if self._output_variables is None:
-            self._output_variables = []
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # "#App:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
-                )
-        return self._output_variables
-
-    def populate_output_variables(self, profile_name):
-        """Generate validation rules from App outputs."""
-        time.sleep(1)  # add delay to ensure redis variables are written
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
-        with open(profile_filename, 'r+') as fh:
-            profile_data = json.load(fh)
-            if profile_data.get('outputs') is None:
-                redis_data = self.redis_client.hgetall(self.context)
-                outputs = {}
-                for variable, data in list(redis_data.items()):
-                    variable = variable.decode('utf-8')
-                    data = data.decode('utf-8')
-                    if variable in self.output_variables:
-                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
-                profile_data['outputs'] = outputs
-                fh.seek(0)
-                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
-                fh.truncate()
-
-    def profile(self, profile_name):
-        """Get a profile from the profiles.json file by name"""
-        profile = None
-        with open(os.path.join(self.profiles_dir, '{}.json'.format(profile_name)), 'r') as fh:
-            profile = json.load(fh)
-        return profile
-
-    @staticmethod
-    def resolve_env_args(value):
-        """Resolve env args
-
-        Args:
-            value (str): The value to resolve for environment variable.
-
-        Returns:
-            str: The original string or resolved string.
-        """
-        env_var = re.compile(r'^\$env\.(.*)$')
-        envs_var = re.compile(r'^\$envs\.(.*)$')
-
-        if env_var.match(value):
-            # read value from environment variable
-            env_key = env_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
-        elif envs_var.match(value):
-            # read secure value from environment variable
-            env_key = envs_var.match(str(value)).groups()[0]
-            value = os.environ.get(env_key, value)
-
-        return value
+    def default_args(self):
+        """Return App default args."""
+        args = super(TestCaseTriggerService, self).default_args
+        args.update(
+            {
+                'tc_client_channel': self.client_channel,
+                'tc_server_channel': self.server_channel,
+                'tc_heartbeat_seconds': int(os.getenv('TC_HEARTBEAT_SECONDS', '60')),
+            }
+        )
+        return args
 
     def run(self, args):  # pylint: disable=too-many-return-statements
         """Run the Playbook App.
@@ -532,21 +527,13 @@ class TestCaseServiceCustom(TestCase):
                 args[k] = self.resolve_env_args(v)
 
         args['tc_playbook_out_variables'] = ','.join(self.output_variables)
-        # self.log.info('[run] Args: {}'.format(args))
         self.log_data('run', 'args', args)
         app = self.app(args)
 
         # Setup
-        try:
-            app.setup()
-        except SystemExit as e:
-            self.log.error('App failed in setup() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in setup() method ({}).'.format(traceback.format_exc())
-            )
-            return self._exit(1)
+        exit_code = self.run_app_method(app, 'setup')
+        if exit_code != 0:
+            return exit_code
 
         # Trigger
         try:
@@ -567,53 +554,14 @@ class TestCaseServiceCustom(TestCase):
             return self._exit(1)
 
         # Run
-        try:
-            if hasattr(app.args, 'tc_action') and app.args.tc_action is not None:
-                tc_action = app.args.tc_action
-                tc_action_formatted = tc_action.lower().replace(' ', '_')
-                tc_action_map = 'tc_action_map'
-                if hasattr(app, tc_action):
-                    getattr(app, tc_action)()
-                elif hasattr(app, tc_action_formatted):
-                    getattr(app, tc_action_formatted)()
-                elif hasattr(app, tc_action_map):
-                    app.tc_action_map.get(app.args.tc_action)()  # pylint: disable=no-member
-            else:
-                app.run()
-        except SystemExit as e:
-            self.log.error('App failed in run() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in run() method ({}).'.format(traceback.format_exc())
-            )
-            return self._exit(1)
-
-        # # Write Output
-        # try:
-        #     app.write_output()
-        # except SystemExit as e:
-        #     self.log.error('App failed in write_output() method ({}).'.format(e))
-        #     return self._exit(e.code)
-        # except Exception:
-        #     self.log.error(
-        #         'App encountered except in write_output() method ({}).'.format(
-        #             traceback.format_exc()
-        #         )
-        #     )
-        #     return self._exit(1)
+        exit_code = self.run_app_method(app, 'run')
+        if exit_code != 0:
+            return exit_code
 
         # Teardown
-        try:
-            app.teardown()
-        except SystemExit as e:
-            self.log.error('App failed in teardown() method ({}).'.format(e))
-            return self._exit(e.code)
-        except Exception:
-            self.log.error(
-                'App encountered except in teardown() method ({}).'.format(traceback.format_exc())
-            )
-            return self._exit(1)
+        exit_code = self.run_app_method(app, 'teardown')
+        if exit_code != 0:
+            return exit_code
 
         return self._exit(app.tcex.exit_code)
 
@@ -625,8 +573,6 @@ class TestCaseServiceCustom(TestCase):
             return self._exit(1)
 
         # stage any staging data
-        # self.stage_data(profile.get('stage', {}))
-        # self.stager.redis.from_dict(profile.get('stage', {}))
         self.stager.redis.from_dict(profile.get('stage', {}).get('redis', {}))
 
         # build args from install.json
@@ -644,15 +590,13 @@ class TestCaseServiceCustom(TestCase):
 
     def patch_service(self):
         """Patch the micro-service."""
+        from tcex.tcex_service import TcExService  # pylint: disable=no-name-in-module
 
         current_context = self.context
 
         def set_session_id(self, *args, **kwargs):
             """Set the session id via monkeypatch"""
             kwargs['session_id'] = current_context
-            # print('!!!!!!!!!!!!! BCS set session id context', current_context)
-            # print('!!!!!!!!!!!!! BCS set session id context', dir(self))
-            # print('!!!!!!!!!!!!! BCS set session id context', type(self))
             return self.fire_event_orig(*args, **kwargs)
 
         MonkeyPatch().setattr(TcExService, 'fire_event', set_session_id)
@@ -689,13 +633,13 @@ class TestCaseServiceCustom(TestCase):
     @classmethod
     def setup_class(cls):
         """Run once before all test cases."""
-        super(TestCaseServiceCustom, cls).setup_class()
+        super(TestCaseTriggerService, cls).setup_class()
         cls.args = {}
         cls.service_file = 'SERVICE_STARTED'
 
     def setup_method(self):
         """Run before each test method runs."""
-        super(TestCaseServiceCustom, self).setup_method()
+        super(TestCaseTriggerService, self).setup_method()
         self.stager.redis.from_dict(self.redis_staging_data)
         self.redis_client = self.tcex.playbook.db.r
 
@@ -710,31 +654,15 @@ class TestCaseServiceCustom(TestCase):
         for key, value in list(staged_data.get('redis', {}).items()):
             self.stager.redis.stage(key, value)
 
-        # TODO: stage threatconnect data
-
     @classmethod
     def teardown_class(cls):
         """Run once before all test cases."""
-        super(TestCaseServiceCustom, cls).teardown_class()
+        super(TestCaseTriggerService, cls).teardown_class()
         os.remove(cls.service_file)
         # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
 
     def teardown_method(self):
         """Run after each test method runs."""
         r = self.stager.redis.delete_context(self.context)
-        # self.log.info('[teardown method] Delete Key Count: {}'.format(r))
         self.log_data('teardown method', 'delete count', r)
-        super(TestCaseServiceCustom, self).teardown_method()
-
-    @property
-    def default_args(self):
-        """Return App default args."""
-        args = super(TestCaseServiceCustom, self).default_args
-        args.update(
-            {
-                'tc_client_channel': self.client_channel,
-                'tc_server_channel': self.server_channel,
-                'tc_heartbeat_seconds': int(os.getenv('TC_HEARTBEAT_SECONDS', '60')),
-            }
-        )
-        return args
+        super(TestCaseTriggerService, self).teardown_method()

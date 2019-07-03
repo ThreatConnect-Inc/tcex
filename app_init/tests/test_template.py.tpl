@@ -4,8 +4,9 @@ import os
 import sys
 
 import pytest
+from tcex.testing.monkeypatch import register_monkeypatch
 
-from tcex.testing import TestCasePlaybook
+${parent_import}
 from .validate_feature import ValidateFeature  # pylint: disable=E0402
 
 # Python 2 unicode
@@ -22,7 +23,7 @@ for filename in sorted(os.listdir(profiles_dir)):
 
 
 # pylint: disable=W0235,too-many-function-args
-class TestFeature(TestCasePlaybook):
+class TestFeature(${parent_class}):
     """TcEx App Testing Template."""
 
     @classmethod
@@ -44,9 +45,12 @@ class TestFeature(TestCasePlaybook):
         super(TestFeature, self).teardown_method()
 
     @pytest.mark.parametrize('profile_name', profile_names)
-    def test_profiles(self, profile_name):
+    def test_profiles(self, profile_name, monkeypatch):
         """Run pre-created testing profiles."""
         pd = self.profile(profile_name)
+        #uncomment to start using the monkey patch annotations
+        #register_monkeypatch(monkeypatch, pd)
         if self.env.intersection(set(pd.get('environments', ['build']))):
             assert self.run_profile(profile_name) in pd.get('exit_codes', [0])
             ValidateFeature(self.validator).validate(pd.get('outputs'))
+            ${validate_batch_method}

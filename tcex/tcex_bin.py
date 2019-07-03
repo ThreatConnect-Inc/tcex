@@ -162,13 +162,19 @@ class TcExBin(object):
         if args is None:
             args = []
         try:
-            name = self.layout_json_names[index]
-            display = self.layout_json_params.get(name, {}).get('display')
+            is_playbook_app = self.is_playbook_app()
+            if is_playbook_app:
+                name = self.layout_json_names[index]
+                display = self.layout_json_params.get(name, {}).get('display')
+            else:
+                name = [*self.install_json_params().keys()][index]
+                display = False
+
             input_type = self.install_json_params().get(name, {}).get('type')
             if input_type is None:
                 self.handle_error('No value found in install.json for "{}".'.format(name))
 
-            if self.validate_layout_display(self.input_table, display):
+            if self.is_runtime_app() or self.validate_layout_display(self.input_table, display):
                 if input_type.lower() == 'boolean':
                     for val in [True, False]:
                         args.append({'name': name, 'value': val})
@@ -218,6 +224,21 @@ class TcExBin(object):
         print('{}{}{}'.format(c.Style.BRIGHT, c.Fore.RED, err))
         if halt:
             sys.exit(1)
+
+    # if its Organization then its runtime.
+    def is_runtime_app(self):
+        """Returns True if its a runtime app"""
+        runtime_level = self.install_json.get('runtimeLevel', 'Playbook').lower()
+        if runtime_level == 'organization':
+            return True
+        return False
+
+    def is_playbook_app(self):
+        """Returns True if its a playbook app"""
+        runtime_level = self.install_json.get('runtimeLevel', 'Playbook').lower()
+        if runtime_level == 'playbook':
+            return True
+        return False
 
     @property
     def install_json(self):

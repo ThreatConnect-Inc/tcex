@@ -24,7 +24,7 @@ class Report(Group):
             publish_date (str, kwargs): The publish datetime expression for this Group.
         """
         super(Report, self).__init__(
-            tcex, 'Report', 'report', 'reports', name=name, owner=owner, **kwargs
+            tcex, 'Report', 'report', 'reports', owner=owner, name=name, **kwargs
         )
 
     def file_content(self, file_content, update_if_exists=True):

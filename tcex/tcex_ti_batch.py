@@ -1520,7 +1520,9 @@ class TcExBatch(object):
                 # special code for debugging App using batchV2.
                 fqfn = os.path.join(
                     self.tcex.args.tc_temp_path,
-                    '{}--{}--{}'.format(api_branch, xid, content_data.get('fileName')),
+                    '{}--{}--{}'.format(
+                        api_branch, xid, content_data.get('fileName').replace('/', ':')
+                    ),
                 )
                 with open(fqfn, 'wb') as fh:
                     fh.write(content)
