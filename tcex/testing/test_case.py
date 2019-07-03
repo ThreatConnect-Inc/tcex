@@ -210,37 +210,6 @@ class TestCaseApp(TestCase):
         self.tcex.log.info('Exit Code: {}'.format(code))
         return code
 
-    @property
-    def output_variables(self):
-        """Return playbook output variables"""
-        if self._output_variables is None:
-            self._output_variables = []
-            # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
-                # "#App:9876:app.data.count!String"
-                self._output_variables.append(
-                    '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
-                )
-        return self._output_variables
-
-    def populate_output_variables(self, profile_name):
-        """Generate validation rules from App outputs."""
-        profile_filename = os.path.join(self.profiles_dir, '{}.json'.format(profile_name))
-        with open(profile_filename, 'r+') as fh:
-            profile_data = json.load(fh)
-            if profile_data.get('outputs') is None:
-                redis_data = self.redis_client.hgetall(self.context)
-                outputs = {}
-                for variable, data in list(redis_data.items()):
-                    variable = variable.decode('utf-8')
-                    data = data.decode('utf-8')
-                    if variable in self.output_variables:
-                        outputs[variable] = {'expected_output': json.loads(data), 'op': 'eq'}
-                profile_data['outputs'] = outputs
-                fh.seek(0)
-                fh.write(json.dumps(profile_data, indent=2, sort_keys=True))
-                fh.truncate()
-
     def profile(self, profile_name):
         """Get a profile from the profiles.json file by name"""
         profile = None
@@ -288,7 +257,6 @@ class TestCaseApp(TestCase):
         for k, v in list(args.items()):
             if isinstance(v, string_types):
                 args[k] = self.resolve_env_args(v)
-        args['tc_playbook_out_variables'] = ','.join(self.output_variables)
         self.log.info('[run] Args: {}'.format(args))
         app = self.app(args)
         # Start
@@ -364,14 +332,6 @@ class TestCaseApp(TestCase):
         # run the App
         exit_code = self.run(args)
         return self._exit(exit_code)
-
-    # def setup_method(self):
-    #     """Run before each test method runs."""
-    #     super(TestCaseApp, self).setup_method()
-    #
-    # def teardown_method(self):
-    #     """Run after each test method runs."""
-    #     super(TestCaseApp, self).teardown_method()
 
 
 class TestCasePlaybook(TestCase):

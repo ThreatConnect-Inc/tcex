@@ -30,7 +30,7 @@ class Profiles:
         # properties
         self._profiles = None
 
-    def add(self, profile_name, profile_data, sort_keys=True):
+    def add(self, profile_name, profile_data, profile_type='Playbook', sort_keys=True):
         """Add a profile."""
         profile_filename = os.path.join(self.profile_dir, '{}.json'.format(profile_name))
         if os.path.isfile(profile_filename):
@@ -47,8 +47,9 @@ class Profiles:
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
-        if profile_data.get('validation_criteria'):
-            profile['validation_criteria'] = profile_data.get('validation_criteria')
+        if profile_type == 'App':
+            profile['validation_criteria'] = profile_data.get('validation_criteria', {'percent': 5})
+            profile.pop('outputs')
 
         with open(profile_filename, 'w') as fh:
             json.dump(profile, fh, indent=2, sort_keys=sort_keys)
@@ -276,12 +277,12 @@ class TcExTest(TcExBin):
                 }
             }
 
-        if self.is_runtime_app():
-            profile_data[self.args.profile_name]['validation_criteria'] = {'percent': 5}
-
         # add profiles
         for profile_name, data in profile_data.items():
-            self.profiles.add(profile_name, data, sort_keys=sort_keys)
+            if self.is_runtime_app():
+                self.profiles.add(profile_name, data, profile_type='App', sort_keys=sort_keys)
+            else:
+                self.profiles.add(profile_name, data, sort_keys=sort_keys)
 
     @staticmethod
     def add_profile_staging(staging_files):
