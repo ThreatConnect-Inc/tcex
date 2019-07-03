@@ -531,6 +531,15 @@ class ThreatConnect(object):
         if validation_count:
             validation_percent = self._convert_to_percent(validation_count, batch_submit_totals)
 
+        batch_errors = []
+        for filename in os.listdir(os.path.join('.', 'log', context)):
+            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+                if not filename.startswith('errors-') or not filename.endswith('.json'):
+                    continue
+
+            with open(os.path.join('.', 'log', context, filename), 'r') as fh:
+                batch_errors += json.load(fh)
+
         for filename in os.listdir(os.path.join('.', 'log', context)):
             if not filename.startswith('batch-') or not filename.endswith('.json'):
                 continue
@@ -544,14 +553,30 @@ class ThreatConnect(object):
                         sample_size = math.ceil(len(sub_partition) * (validation_percent / 100))
                         sample_validation_data.extend(random.sample(sub_partition, sample_size))
                 results = self.tc_entities(sample_validation_data, owner)
-                passed = True
                 for result in results:
-                    if not result:
-                        passed = False
-                assert passed, (
-                    'One or more of the Batch Requests did not match with what is '
-                    'currently in ThreatConnect. View tests.log for additional details.'
-                )
+                    if result.get('valid'):
+                        continue
+                    name = result.get('name')
+                    batch_error = self._batch_error(name, batch_errors)
+                    if batch_error:
+                        self.provider.log.error(
+                            'Errors validating {} due to batch '
+                            'submission error: {}'.format(name, batch_error)
+                        )
+                        continue
+                    assert result.get(
+                        'valid'
+                    ), '{} in ThreatConnect did not match what was submitted. Errors:{}'.format(
+                        name, result.get('errors')
+                    )
+
+    @staticmethod
+    def _batch_error(key, batch_errors):
+        for error in batch_errors:
+            reason = error.get('errorReason', '')
+            if key in reason:
+                return reason
+        return None
 
     def dir(self, directory, owner):
         """Validate the content of a given dir"""
@@ -573,7 +598,7 @@ class ThreatConnect(object):
         if files:
             if not len(tc_entities) == len(files):
                 return {
-                    'valid': True,
+                    'valid': False,
                     'errors': [
                         'LengthError: Length of files provided does not '
                         'match length of entities provided.'
@@ -581,75 +606,84 @@ class ThreatConnect(object):
                 }
 
         for index, entity in enumerate(tc_entities):
+            name = entity.get('name', entity.get('summary'))
             if files:
-                results.append(self.tc_entity(entity, owner, files[index]))
-            results.append(self.tc_entity(entity, owner))
+                valid, errors = self.tc_entity(entity, owner, files[index])
+            else:
+                valid, errors = self.tc_entity(entity, owner)
+            results.append({'name': name, 'valid': valid, 'errors': errors})
         return results
 
     def tc_entity(self, tc_entity, owner, file=None):
         """Validate the ti_response entity"""
         parameters = {'includes': ['additional', 'attributes', 'labels', 'tags']}
-        valid = True
         ti_entity = self._convert_to_ti_entity(tc_entity, owner)
         ti_response = ti_entity.single(params=parameters)
+        entity_name = tc_entity.get('name')
+        errors = []
         if not self.success(ti_response):
-            print('unique_id: ', ti_entity.unique_id)
-            self.provider.log.error(
-                'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
-                    tc_entity.get('type'), tc_entity.get('summary', tc_entity.get('name', None))
-                )
+            error = 'NotFoundError: Provided {}: {} could not be fetched from ThreatConnect'.format(
+                tc_entity.get('type'), tc_entity.get('summary', entity_name)
             )
-            return False
+            return False, [error]
 
         ti_response_entity = None
         ti_response = ti_response.json().get('data', {}).get(ti_entity.api_entity, {})
         for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
             ti_response_entity = entity
-            valid_attributes = self._response_attributes(ti_response, tc_entity)
-            valid_tags = self._response_tags(ti_response, tc_entity)
-            valid_labels = self._response_labels(ti_response, tc_entity)
-            valid_file = self._file(ti_entity, file)
-            if not valid_attributes or not valid_tags or not valid_labels or not valid_file:
-                valid = False
+            # pylint: disable=W0612
+            valid_attributes, attributes_errors = self._response_attributes(
+                ti_response, tc_entity
+            )  # pylint: disable=W0612
+            valid_tags, tag_errors = self._response_tags(
+                ti_response, tc_entity
+            )  # pylint: disable=W0612
+            valid_labels, label_errors = self._response_labels(
+                ti_response, tc_entity
+            )  # pylint: disable=W0612
+            valid_file, file_errors = self._file(ti_entity, file)  # pylint: disable=W0612
+
+            errors = attributes_errors + tag_errors + label_errors + file_errors
 
         if ti_entity.type == 'Indicator':
             provided_rating = tc_entity.get('rating', None)
             expected_rating = ti_response.get('rating', None)
             if not provided_rating == expected_rating:
-                self.provider.log.error(
-                    'RatingError: Provided rating {} does not match '
-                    'actual rating {}'.format(provided_rating, expected_rating)
+                error = 'RatingError: Provided rating {} does not match ' 'actual rating {}'.format(
+                    provided_rating, expected_rating
                 )
-                valid = False
+                errors += error
 
             provided_confidence = tc_entity.get('confidence', None)
             expected_confidence = ti_response.get('confidence', None)
             if not provided_confidence == expected_confidence:
-                self.provider.log.error(
+                error = (
                     'ConfidenceError: Provided confidence {} does not match '
                     'actual confidence {}'.format(provided_confidence, expected_confidence)
                 )
-                valid = False
+                errors += error
+
             provided_summary = unquote(
                 ':'.join([x for x in ti_entity.unique_id.split(':') if x.strip()])
             )
             expected_summary = unquote(ti_response_entity.get('value', ''))
             if provided_summary != expected_summary:
-                self.provider.log.error(
+                error = (
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
-                valid = False
+                errors += error
         elif ti_entity.type == 'Group':
             provided_summary = tc_entity.get('name', None)
             expected_summary = ti_response_entity.get('value', None)
             if not provided_summary == expected_summary:
-                self.provider.log.error(
+                error = (
                     'SummaryError: Provided summary {} does not match '
                     'actual summary {}'.format(provided_summary, expected_summary)
                 )
-                valid = False
-        return valid
+                errors += error
+
+        return not bool(errors), errors
 
     def flatten(self, lis):
         """Idk why python doesnt have this built in but helper function to flatten a list"""
@@ -661,56 +695,53 @@ class ThreatConnect(object):
                 new_lis.append(item)
         return new_lis
 
-    def compare_dicts(self, expected, actual, error_type=''):
+    @staticmethod
+    def compare_dicts(expected, actual, error_type=''):
         """Compare two dicts and returns a list of errors if they don't match"""
-        valid = True
+        errors = []
         for item in expected:
             if item in actual:
                 if str(expected.get(item)) != actual.get(item):
-                    self.provider.log.error(
+                    errors.append(
                         '{0}{1} : {2} did not match {1} : {3}'.format(
                             error_type, item, expected.get(item), actual.get(item)
                         )
                     )
-                    valid = False
                 actual.pop(item)
             else:
-                self.provider.log.error(
+                errors.append(
                     '{}{} : {} was in expected results but not in actual results.'.format(
                         error_type, item, expected.get(item)
                     )
                 )
-                valid = False
         for item in list(actual.items()):
-            self.provider.log.error(
+            errors.append(
                 '{}{} : {} was in actual results but not in expected results.'.format(
                     error_type, item, actual.get(item)
                 )
             )
-            valid = False
 
-        return valid
+        return bool(errors), errors
 
-    def compare_lists(self, expected, actual, error_type=''):
+    @staticmethod
+    def compare_lists(expected, actual, error_type=''):
         """Compare two lists and returns a list of errors if they don't match"""
-        valid = True
+        errors = []
         for item in expected:
             if item in actual:
                 actual.remove(item)
             else:
-                self.provider.log.error(
+                errors.append(
                     '{}{} was in expected results but not in actual results.'.format(
                         error_type, item
                     )
                 )
-                valid = False
         for item in actual:
-            self.provider.log.error(
+            errors.append(
                 '{}{} was in actual results but not in expected results.'.format(error_type, item)
             )
-            valid = False
 
-        return valid
+        return bool(errors), errors
 
     @staticmethod
     def _convert_to_entities(file):
@@ -819,9 +850,7 @@ class ThreatConnect(object):
             expected[attribute.get('type')] = attribute.get('value')
         for attribute in ti_response.get('attribute', []):
             actual[attribute.get('type')] = attribute.get('value')
-        valid = self.compare_dicts(expected, actual, error_type='AttributeError: ')
-
-        return valid
+        return self.compare_dicts(expected, actual, error_type='AttributeError: ')
 
     def _response_tags(self, ti_response, tc_entity):
         """Validate the ti_response tags"""
@@ -834,9 +863,8 @@ class ThreatConnect(object):
             expected.append(tag.get('name'))
         for tag in ti_response.get('tag', []):
             actual.append(tag.get('name'))
-        valid = self.compare_lists(expected, actual, error_type='TagError: ')
 
-        return valid
+        return self.compare_lists(expected, actual, error_type='TagError: ')
 
     def _response_labels(self, ti_response, tc_entity):
         """Validate the ti_response labels"""
@@ -849,16 +877,16 @@ class ThreatConnect(object):
             expected.append(tag)
         for tag in ti_response.get('securityLabel', []):
             actual.append(tag.get('name'))
-        valid = self.compare_lists(expected, actual, error_type='SecurityLabelError: ')
 
-        return valid
+        return self.compare_lists(expected, actual, error_type='SecurityLabelError: ')
 
-    def _file(self, ti_entity, file):
+    @staticmethod
+    def _file(ti_entity, file):
         """Handle file data"""
         if not file:
-            return True
+            return True, []
 
-        valid = True
+        errors = []
         if ti_entity.api_sub_type == 'Document' or ti_entity.api_sub_type == 'Report':
             actual_hash = ti_entity.get_file_hash()
             actual_hash = actual_hash.hexdigest()
@@ -868,13 +896,11 @@ class ThreatConnect(object):
                     provided_hash.update(byte_block)
             provided_hash = provided_hash.hexdigest()
             if not provided_hash == actual_hash:
-                self.provider.log.error(
-                    'sha256 {} of provided file did not match sha256 of actual file {}'.format(
-                        provided_hash, actual_hash
-                    )
+                errors.append(
+                    'sha256 {} of provided file did not match sha256 of '
+                    'actual file {}'.format(provided_hash, actual_hash)
                 )
-                valid = False
-        return valid
+        return bool(errors), errors
 
     @staticmethod
     def success(r):

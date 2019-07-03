@@ -225,7 +225,6 @@ class TcExBin(object):
         if halt:
             sys.exit(1)
 
-    # if its Organization then its runtime.
     def is_runtime_app(self):
         """Returns True if its a runtime app"""
         runtime_level = self.install_json.get('runtimeLevel', 'Playbook').lower()

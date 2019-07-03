@@ -1417,7 +1417,20 @@ class TcExBatch(object):
                 # submit file data after batch job is complete
                 batch_data['uploadStatus'] = self.submit_files(halt_on_error)
             batch_data_array.append(batch_data)
+
+            if self.debug:
+                self.write_error_json(self.errors(batch_id))
+
         return batch_data_array
+
+    def write_error_json(self, errors):
+        """Writes the errors for debuging purposes"""
+        timestamp = str(time.time()).replace('.', '')
+        error_json_file = os.path.join(
+            self.tcex.args.tc_temp_path, 'errors-{}.json'.format(timestamp)
+        )
+        with open(error_json_file, 'w') as fh:
+            json.dump(errors, fh, indent=2)
 
     def submit_create_and_upload(self, halt_on_error=True):
         """Submit Batch request to ThreatConnect API.
