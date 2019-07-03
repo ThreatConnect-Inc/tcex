@@ -632,16 +632,13 @@ class ThreatConnect(object):
         for entity in self.provider.tcex.ti.entities(ti_response, tc_entity.get('type', None)):
             ti_response_entity = entity
             # pylint: disable=W0612
-            valid_attributes, attributes_errors = self._response_attributes(
-                ti_response, tc_entity
-            )  # pylint: disable=W0612
-            valid_tags, tag_errors = self._response_tags(
-                ti_response, tc_entity
-            )  # pylint: disable=W0612
-            valid_labels, label_errors = self._response_labels(
-                ti_response, tc_entity
-            )  # pylint: disable=W0612
-            valid_file, file_errors = self._file(ti_entity, file)  # pylint: disable=W0612
+            valid_attributes, attributes_errors = self._response_attributes(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_tags, tag_errors = self._response_tags(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_labels, label_errors = self._response_labels(ti_response, tc_entity)
+            # pylint: disable=W0612
+            valid_file, file_errors = self._file(ti_entity, file)
 
             errors = attributes_errors + tag_errors + label_errors + file_errors
 
