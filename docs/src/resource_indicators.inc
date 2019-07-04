@@ -245,7 +245,7 @@ Indicator Associations
                 for indicator_data in results.get('data', []):
                     print(indicator_data.get('summary'))
 
-                    iocs = [x for x in resource.indicators(i)]  # get all iocs if more than 1
+                    iocs = [x for x in resource.indicators(indicator_data)]  # get all iocs if more than 1
                     ioc = iocs[0].get('value')  # only need the first one
 
                     # Get new Resource Object of Indicator Type
