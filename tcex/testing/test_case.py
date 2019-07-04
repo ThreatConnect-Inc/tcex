@@ -104,6 +104,8 @@ class TestCase(object):
             '{}-app.log'.format(self.context),
         ]
         self.tcex = TcEx()
+        # TODO: validate this
+        self.tcex.logger.update_handler_level('error')
         self.tcex.tcex_args.inject_params(app_args)  # required for stager
         return self.tcex
 
@@ -606,6 +608,7 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         config_msg = {'command': 'CreateConfig', 'configId': config_id, 'config': config}
         config_msg['config']['outputVariables'] = self.output_variables
         self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
 
     def publish_delete_config(self, config_id):
         """Send create config message."""
@@ -616,12 +619,14 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         """Publish shutdown message."""
         config_msg = {'command': 'Shutdown'}
         self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
 
     def publish_update_config(self, config_id, config):
         """Send create config message."""
         config_msg = {'command': 'UpdateConfig', 'configId': config_id, 'config': config}
         config_msg['config']['outputVariables'] = self.output_variables
         self.redis_client.publish(self.server_channel, json.dumps(config_msg))
+        time.sleep(0.5)
 
     def run_service(self):
         """Run the micro-service."""
@@ -659,10 +664,12 @@ class TestCaseTriggerService(TestCasePlaybookCommon):
         """Run once before all test cases."""
         super(TestCaseTriggerService, cls).teardown_class()
         os.remove(cls.service_file)
+        # cls.publish_shutdown(cls)
         # cls.redis_client.publish('server-channel-123', '{"command": "Shutdown"}')
 
     def teardown_method(self):
         """Run after each test method runs."""
+        time.sleep(0.5)
         r = self.stager.redis.delete_context(self.context)
         self.log_data('teardown method', 'delete count', r)
         super(TestCaseTriggerService, self).teardown_method()

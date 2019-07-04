@@ -17,6 +17,8 @@ class Stager(object):
         self.log = log
         self.log_data = log_data
         self.tcex = tcex
+        # TODO: validate this
+        self.tcex.logger.update_handler_level('error')
 
         # properties
         self._redis = None

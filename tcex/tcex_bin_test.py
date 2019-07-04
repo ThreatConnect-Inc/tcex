@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+from random import randint
 
 from mako.template import Template
 import requests
@@ -30,7 +31,7 @@ class Profiles:
         # properties
         self._profiles = None
 
-    def add(self, profile_name, profile_data, profile_type='Playbook', sort_keys=True):
+    def add(self, profile_name, profile_data, sort_keys=True):
         """Add a profile."""
         profile_filename = os.path.join(self.profile_dir, '{}.json'.format(profile_name))
         if os.path.isfile(profile_filename):
@@ -43,11 +44,16 @@ class Profiles:
 
         profile = {
             'exit_codes': profile_data.get('exit_codes', [0]),
-            'inputs': profile_data.get('inputs'),
             'outputs': profile_data.get('outputs'),
             'stage': profile_data.get('stage', {'redis': {}, 'threatconnect': {}}),
         }
-        if profile_type == 'App':
+        if profile_data.get('runtime_level').lower() == 'triggerservice':
+            profile['configs'] = profile_data.get('configs')
+            profile['trigger'] = profile_data.get('trigger')
+        else:
+            profile['inputs'] = profile_data.get('inputs')
+
+        if profile_data.get('runtime_level').lower() == 'organization':
             profile['validation_criteria'] = profile_data.get('validation_criteria', {'percent': 5})
             profile.pop('outputs')
 
@@ -250,6 +256,7 @@ class TcExTest(TcExBin):
                 profile_data[d.get('profile_name')] = {
                     'exit_codes': d.get('exit_codes'),
                     'inputs': d.get('args', {}).get('app'),
+                    'runtime_level': self.ij.runtime_level,
                     'stage': {'redis': self.add_profile_staging(d.get('data_files', []))},
                 }
 
@@ -260,27 +267,48 @@ class TcExTest(TcExBin):
                     'inputs': {
                         'optional': self.profile_settings_args_layout_json(False),
                         'required': self.profile_settings_args_layout_json(True),
-                    }
+                    },
+                    'runtime_level': self.ij.runtime_level,
+                }
+            }
+        elif self.ij.runtime_level.lower() == 'triggerservice':
+            profile_data = {
+                self.args.profile_name: {
+                    'configs': [
+                        {
+                            'config_id': str(randint(1000, 9999)),
+                            'config': self.ij.params_to_args(config=True),
+                        }
+                    ],
+                    'runtime_level': self.ij.runtime_level,
+                    'trigger': {},
                 }
             }
         else:
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
-                        'optional': self.profile_settings_args_install_json(
-                            self.install_json, False
-                        ),
-                        'required': self.profile_settings_args_install_json(
-                            self.install_json, True
-                        ),
-                    }
+                        # 'optional': self.profile_settings_args_install_json(
+                        #     # self.install_json, False
+                        #     self.ij,
+                        #     False,
+                        # ),
+                        'optional': self.ij.params_to_args(required=False),
+                        # 'required': self.profile_settings_args_install_json(
+                        #     # self.install_json, True
+                        #     self.ij,
+                        #     True,
+                        # ),
+                        'required': self.ij.params_to_args(required=True),
+                    },
+                    'runtime_level': self.ij.runtime_level,
                 }
             }
 
         # add profiles
         for profile_name, data in profile_data.items():
-            if self.is_runtime_app():
-                self.profiles.add(profile_name, data, profile_type='App', sort_keys=sort_keys)
+            if self.ij.runtime_level.lower() == 'organization':
+                self.profiles.add(profile_name, data, sort_keys=sort_keys)
             else:
                 self.profiles.add(profile_name, data, sort_keys=sort_keys)
 
@@ -358,7 +386,7 @@ class TcExTest(TcExBin):
             'parent_class': 'TestCasePlaybook',
             'parent_import': 'from tcex.testing import TestCasePlaybook',
         }
-        if self.is_runtime_app():
+        if self.ij.runtime_level.lower() == 'organization':
             test_template_variables = {
                 'validate_batch_method': 'self.validator.threatconnect.batch('
                 'self.context, '
@@ -378,7 +406,8 @@ class TcExTest(TcExBin):
         if self._output_variables is None:
             self._output_variables = []
             # Currently there is no support for projects with multiple install.json files.
-            for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+            # for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
+            for p in self.ij.playbook.get('outputVariables') or []:
                 # "#App:9876:app.data.count!String"
                 self._output_variables.append(
                     '#App:{}:{}!{}'.format(9876, p.get('name'), p.get('type'))
