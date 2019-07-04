@@ -260,8 +260,7 @@ class TcExTest(TcExBin):
                     'stage': {'redis': self.add_profile_staging(d.get('data_files', []))},
                 }
 
-        elif self.args.permutation_id:
-            # TODO: fix the profile_settings_args_layout_json to not run permutations twice
+        elif self.args.permutation_id is not None:
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
@@ -288,17 +287,7 @@ class TcExTest(TcExBin):
             profile_data = {
                 self.args.profile_name: {
                     'inputs': {
-                        # 'optional': self.profile_settings_args_install_json(
-                        #     # self.install_json, False
-                        #     self.ij,
-                        #     False,
-                        # ),
                         'optional': self.ij.params_to_args(required=False),
-                        # 'required': self.profile_settings_args_install_json(
-                        #     # self.install_json, True
-                        #     self.ij,
-                        #     True,
-                        # ),
                         'required': self.ij.params_to_args(required=True),
                     },
                     'runtime_level': self.ij.runtime_level,
@@ -406,7 +395,6 @@ class TcExTest(TcExBin):
         if self._output_variables is None:
             self._output_variables = []
             # Currently there is no support for projects with multiple install.json files.
-            # for p in self.install_json.get('playbook', {}).get('outputVariables') or []:
             for p in self.ij.playbook.get('outputVariables') or []:
                 # "#App:9876:app.data.count!String"
                 self._output_variables.append(
